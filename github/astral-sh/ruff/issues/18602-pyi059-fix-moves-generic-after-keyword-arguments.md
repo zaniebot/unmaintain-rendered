@@ -1,0 +1,106 @@
+---
+number: 18602
+title: "PYI059 fix moves `Generic` after keyword arguments"
+type: issue
+state: closed
+author: dscorbett
+labels:
+  - bug
+  - fixes
+assignees: []
+created_at: 2025-06-10T00:37:18Z
+updated_at: 2025-06-10T16:27:07Z
+url: https://github.com/astral-sh/ruff/issues/18602
+synced_at: 2026-01-07T13:12:16-06:00
+---
+
+# PYI059 fix moves `Generic` after keyword arguments
+
+---
+
+_Issue opened by @dscorbett on 2025-06-10 00:37_
+
+### Summary
+
+The fix for [`generic-not-last-base-class` (PYI059)](https://docs.astral.sh/ruff/rules/generic-not-last-base-class/) moves `Generic` after keyword arguments, which is a syntax error. It should be moved after the other positional arguments but before any keyword arguments.
+
+```console
+$ cat >pyi059_1.py <<'# EOF'
+from typing import Generic, TypeVar
+T = TypeVar("T")
+class C1(Generic[T], str, **{"metaclass": type}): ...
+class C2(Generic[T], str, metaclass=type): ...
+# EOF
+
+$ ruff --isolated check pyi059_1.py --select PYI059 --preview --diff 2>&1 | grep error:
+error: Fix introduced a syntax error. Reverting all changes.
+```
+
+A starred argument may follow a keyword argument in an inheritance list (cf. [`star-arg-unpacking-after-keyword-arg` (B026)](https://docs.astral.sh/ruff/rules/star-arg-unpacking-after-keyword-arg/)).
+```console
+$ cat >pyi059_2.py <<'# EOF'
+from typing import Generic, TypeVar
+T = TypeVar("T")
+class C3(Generic[T], metaclass=type, *[str]): ...
+# EOF
+
+$ ruff --isolated check pyi059_2.py --select PYI059 --preview --diff 2>&1 | grep error:
+error: Fix introduced a syntax error. Reverting all changes.
+```
+In that case, one way to make `Generic` be the last base class is to move it after the starred arguments, and then to move the keyword arguments after `Generic`.
+```python
+class C3(*[str], Generic[T], metaclass=type): ...
+```
+Alternatively, `Generic` could be moved into its own starred argument after the other starred arguments, leaving the keyword arguments unmoved.
+```python
+class C3(metaclass=type, *[str], *[Generic[T]]): ...
+```
+
+
+### Version
+
+ruff 0.11.13 (5faf72a4d 2025-06-05)
+
+---
+
+_Label `bug` added by @ntBre on 2025-06-10 02:23_
+
+---
+
+_Label `fixes` added by @ntBre on 2025-06-10 02:23_
+
+---
+
+_Referenced in [astral-sh/ruff#18601](../../astral-sh/ruff/pulls/18601.md) on 2025-06-10 02:23_
+
+---
+
+_Comment by @ntBre on 2025-06-10 02:35_
+
+Thanks for all of these reports, they're very helpful in our stabilization decisions for the release.
+
+The fix is already only sometimes available, so another viable option here could be avoiding a fix when keyword arguments are present.
+
+I think the `**{"metaclass": type}` case will be an important test to add too, either way. I remember running into something surprising with this kind of unpacking in another rule recently.
+
+---
+
+_Comment by @dscorbett on 2025-06-10 12:37_
+
+I’m glad you’re finding them helpful. I generally limit myself to one a day but I don’t want to delay any reports that could affect the release.
+
+The `C2` pattern has [some hits on GitHub](https://github.com/search?q=language%3APython+%2Fclass+%5Cw%2B%5C%28.*%5CbGeneric%5C%5B%5B%5E%5D%5D%2B%5C%5D%2C.*%2C.*%3D%2F&type=code), so a fix for it could be useful. The others are not common.
+
+---
+
+_Assigned to @ntBre by @ntBre on 2025-06-10 13:09_
+
+---
+
+_Referenced in [astral-sh/ruff#18611](../../astral-sh/ruff/pulls/18611.md) on 2025-06-10 14:30_
+
+---
+
+_Closed by @ntBre on 2025-06-10 16:27_
+
+---

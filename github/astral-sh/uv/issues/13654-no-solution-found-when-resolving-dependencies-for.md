@@ -1,0 +1,83 @@
+---
+number: 13654
+title: "No solution found when resolving dependencies for split (python_full_version == '3.9.*')"
+type: issue
+state: closed
+author: winni0
+labels:
+  - question
+assignees: []
+created_at: 2025-05-26T06:16:53Z
+updated_at: 2025-07-11T02:05:01Z
+url: https://github.com/astral-sh/uv/issues/13654
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# No solution found when resolving dependencies for split (python_full_version == '3.9.*')
+
+---
+
+_Issue opened by @winni0 on 2025-05-26 06:16_
+
+### Summary
+
+执行：uv add "mcp[cli]"
+输出：
+Using CPython 3.9.22
+
+(.venv) F:\wangjuan\WJ_code\largemodel\mcp-server-demo>uv run mcp
+Using CPython 3.9.22
+Removed virtual environment at: .venv
+Creating virtual environment at: .venv
+  x No solution found when resolving dependencies for split (python_full_version == '3.9.*'):
+  `-> Because the requested Python version (>=3.9) does not satisfy Python>=3.10 and your project depends on mcp[cli],
+      we can conclude that your project's requirements are unsatisfiable.
+
+执行：uv run mcp
+输出：Using CPython 3.9.22
+Removed virtual environment at: .venv
+Creating virtual environment at: .venv
+  x No solution found when resolving dependencies for split (python_full_version == '3.9.*'):
+  `-> Because the requested Python version (>=3.9) does not satisfy Python>=3.10 and your project depends on mcp[cli],
+      we can conclude that your project's requirements are unsatisfiable.
+### Platform
+
+Windows 11 X86_64
+
+### Version
+
+0.7.8
+
+### Python version
+
+_No response_
+
+---
+
+_Label `bug` added by @winni0 on 2025-05-26 06:16_
+
+---
+
+_Comment by @konstin on 2025-05-26 12:41_
+
+`mcp` require a more recent Python version than you are using.
+
+---
+
+_Label `bug` removed by @konstin on 2025-05-26 12:41_
+
+---
+
+_Label `question` added by @konstin on 2025-05-26 12:41_
+
+---
+
+_Comment by @MilkeCrow on 2025-06-12 09:05_
+
+當時 Python 3.9.22 環境執行 uv init mcp-server-demo，所以 MCP 專案的環境最初是基於 3.9.22。
+
+---
+
+_Closed by @charliermarsh on 2025-07-11 02:05_
+
+---

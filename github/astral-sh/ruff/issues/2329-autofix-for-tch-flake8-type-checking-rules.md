@@ -1,0 +1,170 @@
+---
+number: 2329
+title: autofix for TCH (flake8-type-checking) rules
+type: issue
+state: closed
+author: LefterisJP
+labels:
+  - fixes
+assignees: []
+created_at: 2023-01-29T23:39:43Z
+updated_at: 2023-05-31T17:53:37Z
+url: https://github.com/astral-sh/ruff/issues/2329
+synced_at: 2026-01-07T13:12:14-06:00
+---
+
+# autofix for TCH (flake8-type-checking) rules
+
+---
+
+_Issue opened by @LefterisJP on 2023-01-29 23:39_
+
+I enabled the TCH rules to see what it suggests and finds in rotki's codebase. I got about ~700 hits.
+
+They don't seem like bad suggestions. I .. ehm ... just don't want to do it manually and without knowing the internals of ruff well I can imagine all TCH rules should be autofixable.
+
+---
+
+_Label `autofix` added by @charliermarsh on 2023-01-30 00:08_
+
+---
+
+_Comment by @charliermarsh on 2023-01-30 00:09_
+
+It's non-trivial (but also not impossible) because it requires rewrites across various parts of the file -- we have to remove an import from one part of a file, add it to another part which could be non-adjacent, etc.
+
+---
+
+_Comment by @LefterisJP on 2023-01-30 00:53_
+
+> It's non-trivial (but also not impossible) because it requires rewrites across various parts of the file -- we have to remove an import from one part of a file, add it to another part which could be non-adjacent, etc.
+
+I understand. In some rules you would also need to adjust types and wrap them in quotes if the import is moved inside an `if TYPE_CHECKING` block.
+
+---
+
+_Comment by @Kilo59 on 2023-02-03 14:15_
+
+>I understand. In some rules you would also need to adjust types and wrap them in quotes if the import is moved inside an if TYPE_CHECKING block.
+
+I would expect these fixes to be paired with a `from __future__ import annotations` import. In this case, wrapping them in quotes would be unnecessary.
+Should also make it easier to implement.
+
+Converting the annotations to strings could also lead to problems if an import is removed, the type-checker and linter won't save you.
+
+
+For example. Let's assume this is the initial state of the file.
+```python
+from pandas import DataFrame
+
+def do_something(df: DataFrame):
+   ...
+```
+
+----------
+
+Now here's two different ways of auto-fixing this.
+```python
+from __future__ import annotations
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+  from pandas import DataFrame
+
+def do_something(df: DataFrame):
+   ...
+```
+or with string annotations
+```python
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+  from pandas import DataFrame
+
+def do_something(df: 'DataFrame'):
+   ...
+```
+
+------------
+
+Now imagine the `from pandas import DataFrame` is removed by accident.
+
+
+```python
+from __future__ import annotations
+
+def do_something(df: DataFrame):  # this will get caught by the ruff linter as an undefined-name
+   ...
+```
+
+```python
+def do_something(df: 'DataFrame'):  # this won't be caught and the type-checker won't know what it is
+   ...
+
+# mypy will treat `df` as an `Any` if it can't determine the type.
+```
+
+
+
+---
+
+_Comment by @LefterisJP on 2023-02-03 22:24_
+
+Nice suggestion @Kilo59! One question. Do you know from which version of python `from __future__ import annotations` will no longer be required for this? I thought it was supposed to be 3.10 but seems like this is not the case?
+
+---
+
+_Comment by @charliermarsh on 2023-02-03 22:28_
+
+I believe it will be Python 3.12 at the earliest.
+
+https://docs.python.org/3/library/__future__.html#id2
+https://mail.python.org/archives/list/python-dev@python.org/message/VIZEBX5EYMSYIJNDBF6DMUMZOCWHARSO/
+
+
+---
+
+_Comment by @MaksimZayats on 2023-02-12 17:24_
+
+Hi, @charliermarsh!
+
+Do you have any news/plans on this ?
+
+I don't think the auto-fix should be a big problem in case of using `from __future__ import annotations`.
+What do you think?
+
+---
+
+_Referenced in [astral-sh/ruff#3120](../../astral-sh/ruff/issues/3120.md) on 2023-02-22 19:31_
+
+---
+
+_Referenced in [Olegt0rr/WebServiceTemplate#1](../../Olegt0rr/WebServiceTemplate/issues/1.md) on 2023-02-23 13:18_
+
+---
+
+_Referenced in [great-expectations/great_expectations#7274](../../great-expectations/great_expectations/pulls/7274.md) on 2023-03-03 17:39_
+
+---
+
+_Comment by @charliermarsh on 2023-05-18 15:28_
+
+I'm currently working on this.
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2023-05-18 15:28_
+
+---
+
+_Referenced in [astral-sh/ruff#4742](../../astral-sh/ruff/pulls/4742.md) on 2023-05-31 03:17_
+
+---
+
+_Closed by @charliermarsh on 2023-05-31 17:53_
+
+---
+
+_Referenced in [astral-sh/ruff#20237](../../astral-sh/ruff/issues/20237.md) on 2025-09-04 14:31_
+
+---

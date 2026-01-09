@@ -1,0 +1,124 @@
+---
+number: 12890
+title: "`non-augmented-assignment` (`PLR6104`): Can we reduce the number of unsafe recommendations from this rule?"
+type: issue
+state: open
+author: AlexWaygood
+labels:
+  - rule
+  - help wanted
+assignees: []
+created_at: 2024-08-14T10:30:08Z
+updated_at: 2025-02-07T16:28:12Z
+url: https://github.com/astral-sh/ruff/issues/12890
+synced_at: 2026-01-07T13:12:15-06:00
+---
+
+# `non-augmented-assignment` (`PLR6104`): Can we reduce the number of unsafe recommendations from this rule?
+
+---
+
+_Issue opened by @AlexWaygood on 2024-08-14 10:30_
+
+In #12858, I proposed stabilising `non-augmented-assignment` (`PLR6104`). However, this was reverted in https://github.com/astral-sh/ruff/pull/12884 after concerns were raised that the rule too often gives recommendations that would cause developers to make unsafe changes to their code. This issue is to discuss if there are any ways of improving the rule's heuristics to reduce this problem.
+
+---
+
+In https://github.com/astral-sh/ruff/pull/12858#issuecomment-2287060832, @kdebrab wrote:
+
+> @AlexWaygood I'm a bit concerned about this rule, because there are quite some cases where the application would unintentionally introduce nasty and hard-to-find bugs, in particular when it is applied on input arguments of a function. I'm afraid one could sometimes not be aware that applying the fix causes bugs for these cases. It is especially prevalent for data science libraries when working with numpy arrays or pandas Series / DataFrames, but it could also happen in case the argument is a dictionary or list. In my view, these are false positives which could and should be avoided by not applying the rule on variables that are function arguments.
+> 
+> Skimming through the examples above from the ecosystem, I found 10 such cases where applying the fix would lead to (not always evident) bugs:
+> 
+> [PlasmaPy/PlasmaPy](https://github.com/PlasmaPy/PlasmaPy)
+> + [src/plasmapy/diagnostics/charged_particle_radiography/synthetic_radiography.py:440:13:](https://github.com/PlasmaPy/PlasmaPy/blob/68f548c8614eb7e09d1137176c5c32a2ae7f55bc/src/plasmapy/diagnostics/charged_particle_radiography/synthetic_radiography.py#L440) PLR6104 Use `/=` to perform an augmented assignment directly
+> + [src/plasmapy/diagnostics/charged_particle_radiography/synthetic_radiography.py:446:13:](https://github.com/PlasmaPy/PlasmaPy/blob/68f548c8614eb7e09d1137176c5c32a2ae7f55bc/src/plasmapy/diagnostics/charged_particle_radiography/synthetic_radiography.py#L446) PLR6104 Use `/=` to perform an augmented assignment directly
+> + [src/plasmapy/diagnostics/langmuir.py:1398:5:](https://github.com/PlasmaPy/PlasmaPy/blob/68f548c8614eb7e09d1137176c5c32a2ae7f55bc/src/plasmapy/diagnostics/langmuir.py#L1398) PLR6104 Use `/=` to perform an augmented assignment directly
+> + [src/plasmapy/diagnostics/langmuir.py:809:9:](https://github.com/PlasmaPy/PlasmaPy/blob/68f548c8614eb7e09d1137176c5c32a2ae7f55bc/src/plasmapy/diagnostics/langmuir.py#L809) PLR6104 Use `-=` to perform an augmented assignment directly
+> + [src/plasmapy/diagnostics/thomson.py:553:5:](https://github.com/PlasmaPy/PlasmaPy/blob/68f548c8614eb7e09d1137176c5c32a2ae7f55bc/src/plasmapy/diagnostics/thomson.py#L553) PLR6104 Use `/=` to perform an augmented assignment directly
+> + [src/plasmapy/diagnostics/thomson.py:554:5:](https://github.com/PlasmaPy/PlasmaPy/blob/68f548c8614eb7e09d1137176c5c32a2ae7f55bc/src/plasmapy/diagnostics/thomson.py#L554) PLR6104 Use `/=` to perform an augmented assignment directly
+> 
+> [pandas-dev/pandas](https://github.com/pandas-dev/pandas)
+> + [pandas/core/arrays/boolean.py:232:17:](https://github.com/pandas-dev/pandas/blob/0fadaa9c9da39760e29e05012b14c8ce0782b5fe/pandas/core/arrays/boolean.py#L232) PLR6104 Use `|=` to perform an augmented assignment directly
+> + [pandas/core/arrays/boolean.py:239:17:](https://github.com/pandas-dev/pandas/blob/0fadaa9c9da39760e29e05012b14c8ce0782b5fe/pandas/core/arrays/boolean.py#L239) PLR6104 Use `|=` to perform an augmented assignment directly
+> + [pandas/core/arrays/masked.py:689:17:](https://github.com/pandas-dev/pandas/blob/0fadaa9c9da39760e29e05012b14c8ce0782b5fe/pandas/core/arrays/masked.py#L689) PLR6104 Use `|=` to perform an augmented assignment directly
+> + [pandas/core/arrays/masked.py:691:17:](https://github.com/pandas-dev/pandas/blob/0fadaa9c9da39760e29e05012b14c8ce0782b5fe/pandas/core/arrays/masked.py#L691) PLR6104 Use `|=` to perform an augmented assignment directly
+> 
+> Would it be possible to somehow avoid raising PLR6104 for variables that are function arguments?
+
+I agree that changing code from `x = x + y` to `x += y` is often an unsafe change if `x` is a mutable object like a list or array. It's even something that the rule itself is already partly aware of: the autofix for the rule is marked as unsafe unless we're able to trivially infer that `x` is an instance of an immutable type such as `int` or `str`.
+
+Unfortunately, detecting in general whether an object is an instance of a mutable type is a hard problem without generalised type inference (which we won't have for a long time). So the question becomes: without that capability, how can we reduce unsafe recommendations from this rule? One option would be to make the rule much more conservative. We could match our current behaviour when it comes to deciding whether the autofix is safe or not: we could _only_ emit a diagnostic if the object in question can be trivially inferred to be an instance of an immutable type. Another option would be to apply some kind of heuristic like @kdebrab suggests: we could only emit the diagnostic on variables that are local to a function, since local variables are likely to have shorter lifetimes, so mutating them is less likely to be unsafe even if they are instances of mutable types.
+
+I think applying a heuristic would be likely to reduce the false positives, but I'm not a massive fan of the idea, as it would be unlikely to get rid of false positives completely, it would also increase false negatives, and it might be hard for users to understand the logic we're applying. Applying augmented assignment operators to variables bound via function parameters is perfectly safe and idiomatic _if_ you know that the function is only going to ever be passed instances of immutable types. For example, here's a function [from the standard library's `_pylong.py` module](https://github.com/python/cpython/blob/fe3e623562fb058ef7b8fd6d90ac5098a3b05816/Lib/_pylong.py#L422-L449) that seems quite idiomatic to me:
+
+```py
+def _div2n1n(a, b, n):
+    """Divide a 2n-bit nonnegative integer a by an n-bit positive integer
+    b, using a recursive divide-and-conquer algorithm.
+
+    Inputs:
+      n is a positive integer
+      b is a positive integer with exactly n bits
+      a is a nonnegative integer such that a < 2**n * b
+
+    Output:
+      (q, r) such that a = b*q+r and 0 <= r < b.
+
+    """
+    if a.bit_length() - n <= _DIV_LIMIT:
+        return divmod(a, b)
+    pad = n & 1
+    if pad:
+        a <<= 1
+        b <<= 1
+        n += 1
+    half_n = n >> 1
+    mask = (1 << half_n) - 1
+    b1, b2 = b >> half_n, b & mask
+    q1, r = _div3n2n(a >> n, (a >> half_n) & mask, b, b1, b2, half_n)
+    q2, r = _div3n2n(r, a & mask, b, b1, b2, half_n)
+    if pad:
+        r >>= 1
+    return q1 << half_n | q2, r
+```
+
+I'm very interested in hearing whether any members of the Ruff community have any other ideas about how we could reduce false positives in a principled way here, or what they think of the ideas I posted above!
+
+---
+
+_Label `rule` added by @AlexWaygood on 2024-08-14 10:30_
+
+---
+
+_Label `help wanted` added by @AlexWaygood on 2024-08-14 10:30_
+
+---
+
+_Renamed from "`non-augmented-assignment`: Can we reduce the number of unsafe recommendations from this rule?" to "`non-augmented-assignment` (`PLR1604`): Can we reduce the number of unsafe recommendations from this rule?" by @AlexWaygood on 2024-08-14 10:30_
+
+---
+
+_Renamed from "`non-augmented-assignment` (`PLR1604`): Can we reduce the number of unsafe recommendations from this rule?" to "`non-augmented-assignment` (`PLR6104`): Can we reduce the number of unsafe recommendations from this rule?" by @AlexWaygood on 2024-08-14 10:31_
+
+---
+
+_Referenced in [astral-sh/ruff#12884](../../astral-sh/ruff/pulls/12884.md) on 2024-08-14 10:32_
+
+---
+
+_Referenced in [astral-sh/ruff#12858](../../astral-sh/ruff/pulls/12858.md) on 2024-08-14 10:33_
+
+---
+
+_Comment by @VascoSch92 on 2025-02-07 15:31_
+
+Hey @AlexWaygood I think this issue is closed right? :-)
+
+---
+
+_Comment by @MichaReiser on 2025-02-07 16:28_
+
+This still seems relevant because `PLR6104` hasn't been stabilized (it's still a preview rule)
+
+---

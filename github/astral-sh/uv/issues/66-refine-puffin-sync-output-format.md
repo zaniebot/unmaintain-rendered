@@ -1,0 +1,56 @@
+---
+number: 66
+title: "Refine `puffin sync` output format"
+type: issue
+state: closed
+author: charliermarsh
+labels: []
+assignees: []
+created_at: 2023-10-08T20:51:58Z
+updated_at: 2023-10-10T03:29:10Z
+url: https://github.com/astral-sh/uv/issues/66
+synced_at: 2026-01-07T13:12:16-06:00
+---
+
+# Refine `puffin sync` output format
+
+---
+
+_Issue opened by @charliermarsh on 2023-10-08 20:51_
+
+I like Bun's output, as an example:
+
+<img width="1788" alt="Screen Shot 2023-10-08 at 4 51 07 PM" src="https://github.com/astral-sh/puffin/assets/1309177/aec62674-3b30-423c-aeb1-5f50650a85b7">
+
+They show a loading spinner while installing, then show a summary of the resolved versions for the first-party packages at the end.
+
+
+---
+
+_Comment by @konstin on 2023-10-09 09:06_
+
+Personally i'm a fan of minimal output by default, e.g. only a progress bar (which shows the names of the processed packages like cargo) and a summary the end ("Installed 90 packages in the 6s"), or a line for each package we install and a summary at the end for none-tty. One `-v` should still give pretty output, `-vv` activate tracing backend like logging.
+
+---
+
+_Referenced in [astral-sh/uv#72](../../astral-sh/uv/issues/72.md) on 2023-10-09 16:14_
+
+---
+
+_Comment by @charliermarsh on 2023-10-09 16:15_
+
+I think I'm gonna try a progress bar for the various stages, and then outputting a summary at the end.
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2023-10-10 00:06_
+
+---
+
+_Referenced in [astral-sh/uv#81](../../astral-sh/uv/pulls/81.md) on 2023-10-10 02:20_
+
+---
+
+_Closed by @charliermarsh on 2023-10-10 03:29_
+
+---

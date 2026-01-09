@@ -1,0 +1,693 @@
+---
+number: 8148
+title: "uv refuses to resolve deps with dynamic SCM version, missing tags and cylic dependencies `A:dev -> B`, `B -> A`, hinting at name shadowing"
+type: issue
+state: closed
+author: pawamoy
+labels:
+  - question
+  - error messages
+assignees: []
+created_at: 2024-10-12T17:17:26Z
+updated_at: 2025-02-21T15:46:19Z
+url: https://github.com/astral-sh/uv/issues/8148
+synced_at: 2026-01-07T13:12:17-06:00
+---
+
+# uv refuses to resolve deps with dynamic SCM version, missing tags and cylic dependencies `A:dev -> B`, `B -> A`, hinting at name shadowing
+
+---
+
+_Issue opened by @pawamoy on 2024-10-12 17:17_
+
+It happens in several of my projects now. Proper issue as a follow-up of #7329.
+
+Example:
+
+- CI job on tag 0.26.2: https://github.com/mkdocstrings/mkdocstrings/actions/runs/11307283146/job/31448849897 ("Install dependencies" step OK
+- CI job on same commit (triggered via regular push): https://github.com/mkdocstrings/mkdocstrings/actions/runs/11307282883/job/31448849515 -> **"Install dependencies" step fails**
+
+```
+Using CPython 3.10.15 interpreter at: /opt/hostedtoolcache/Python/3.10.15/x64/bin/python
+Creating virtual environment at: .venv
+  × No solution found when resolving dependencies:
+  ╰─▶ Because only the following versions of mkdocstrings-python-legacy are
+      available:
+          mkdocstrings-python-legacy<=0.2.1
+          mkdocstrings-python-legacy==0.2.2
+          mkdocstrings-python-legacy==0.2.3
+          mkdocstrings-python-legacy==0.2.4
+      and mkdocstrings-python-legacy>=0.2.1,<=0.2.2 depends on your project,
+      we can conclude that mkdocstrings-python-legacy>=0.2.1,<0.2.3 depends on
+      your project.
+      And because mkdocstrings-python-legacy>=0.2.3 depends on your project,
+      we can conclude that mkdocstrings-python-legacy>=0.2.1 depends on your
+      project.
+      And because mkdocstrings[python-legacy] depends on
+      mkdocstrings-python-legacy>=0.2.1 and your project requires
+      mkdocstrings[python-legacy], we can conclude that your projects's
+      requirements are unsatisfiable.
+
+      hint: The package `mkdocstrings-python-legacy` depends on the package
+      `mkdocstrings` but the name is shadowed by your project. Consider
+      changing the name of the project.
+```
+
+Here uv claims that since `mkdocstrings-python-legacy` depends on `mkdocstrings`, and my project is named `mkdocstrings`, it cannot resolve deps. My project *is* `mkdocstrings`, it's not shadowing it :sweat_smile:
+
+In this case, `mkdocstrings` depends on `mkdocstrings-python-legacy` as an extra (optional dependency).
+
+```toml
+[project.optional-dependencies]
+python-legacy = ["mkdocstrings-python-legacy>=0.2.1"]
+```
+
+But I get the same error when project `A` depends on `B` as a *development* dependency.
+
+I'm not sure if the non-editable mode is the issue here, as I cannot reproduce this behavior locally.
+
+
+---
+
+_Comment by @pawamoy on 2024-10-12 17:24_
+
+Here are more verbose logs: https://github.com/mkdocstrings/griffe/actions/runs/11307459194/job/31449208076.
+
+---
+
+_Comment by @pawamoy on 2024-10-12 17:27_
+
+Ah, maybe it's because my `version` is dynamic, and since the project is shallow (tags not fetched), my build backend (pdm-backend) ends up computing the version as `0.1`, which is clearly inferior to what the dev/extra-dependency requires.
+
+---
+
+_Comment by @pawamoy on 2024-10-12 17:29_
+
+Yeah that's probably it. So, possible improvement for uv's error message: show what's the project computed version, and show that it's what is actually causing the resolution failure. Or maybe uv could ignore the fact that the built project has a version incompatible with what a dependency is requiring? Maybe a "responsible adult" move, maybe a footgun.
+
+As for the immediate solution, I guess I'll just always fetch tags in CI! Feel free to close :slightly_smiling_face: 
+
+---
+
+_Comment by @pawamoy on 2024-10-12 17:38_
+
+Wait, no, I actually fetch all tags in this job :weary: Lemme try again with different options on the checkout action.
+
+---
+
+_Comment by @pawamoy on 2024-10-12 17:41_
+
+OK so my previous technique for fetching tags was probably not working well:
+
+```yaml
+    - name: Fetch all tags
+      run: git fetch --depth=1 --tags
+```
+
+I replaced it with:
+
+```yaml
+    - name: Checkout
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+        fetch-tags: true
+```
+
+...and now it works :hot_face: 
+
+---
+
+_Comment by @charliermarsh on 2024-10-14 14:02_
+
+Thank you for following up 🙏 
+
+Is there a bug in the error message hint then? Or is this resolved?
+
+---
+
+_Label `question` added by @charliermarsh on 2024-10-14 14:02_
+
+---
+
+_Label `error messages` added by @charliermarsh on 2024-10-14 14:02_
+
+---
+
+_Comment by @pawamoy on 2024-10-14 14:37_
+
+I wouldn't call it a bug, I would say it is confusing. Seeing this error message didn't help me understand what was going on, and the "name shadowing" hint is... incorrect? As mentioned above, I'm not shadowing a dependency name, the project and the dependency are the *same project*.
+
+So my recommendation, if this is actually what's happening, and if it's possible, is to update the error message by showing that the computed project A version (current project, built for a non-editable install), and the version of project A required by a (dev-)dependency are not compatible. Bonus point if uv detects that the `version` is dynamic and the Git repository shallow, suggesting to fetch all commits and tags to build the project with the correct version.
+
+```
+   × No solution found when resolving dependencies:
+  ╰─▶ Because only the following versions of X are
+      available:
+          X<=1.2.3
+          X==1.2.3
+          etc.
+      and X>=1.2.3,<=1.2.4 depends on your project,
+      we can conclude that X>=1.2.3,<=1.2.4 depends on
+      your project.
+      And because your project version is 0.1, and X depends on your project>=4.5.6,
+      we can conclude that your projects' requirements are unsatisfiable.
+
+      hint: Your project version is computed dynamically, and your Git repository is shallow
+      -> you might need to fetch all commits and tags to compute the up-to-date version.
+```
+
+(well, something like this)
+
+My alternative suggestion above is allow incompatibility between the current project version and the version required by dependencies, and install the current project anyway, always, maybe just showing a warning:
+
+```
+Your project depends on X>=1.2.3, which depends on your project>=7.8.9,
+but your project is currently in v4.5.6, which is incompatible.
+uv will install your project anyway, but things might break.
+
+hint: Your project version is computed dynamically, and your Git repository is shallow
+-> you might need to fetch all commits and tags to compute the up-to-date version.
+```
+
+Let me know if anything is unclear :relaxed: 
+
+---
+
+_Referenced in [pawamoy/duty#23](../../pawamoy/duty/issues/23.md) on 2024-10-23 10:18_
+
+---
+
+_Comment by @pawamoy on 2024-10-23 12:18_
+
+One argument in favor of allowing the current project version to be imcompatible with the version required by a dependency is that when forking a repository on GitHub, tags are not copied over. Then when triggering CI on your fork, the checkout action can't fetch tags since they don't exist, and uv fails to resolve. To fix this, authors of the fork have to explicitly fetch tags from upstream and push them back into their fork.
+
+Or that's an argument in favor of me dropping dynamic versioning and using a static, auto-bumped version for each release :smile: 
+
+---
+
+_Renamed from "uv refuses to resolve deps with --no-editable, untagged commit, and cylic dependencies `A:dev -> B`, `B -> A`, hinting at name shadowing" to "uv refuses to resolve deps with dynamic SCM version, missing tags and cylic dependencies `A:dev -> B`, `B -> A`, hinting at name shadowing" by @pawamoy on 2024-11-01 13:13_
+
+---
+
+_Referenced in [mkdocstrings/mkdocstrings#706](../../mkdocstrings/mkdocstrings/issues/706.md) on 2024-11-01 13:17_
+
+---
+
+_Comment by @pawamoy on 2024-11-01 14:13_
+
+I have updated the title, and built a reproduction.
+
+```bash
+git clone git@github.com:pawamoy/repro-uv-8148-a
+cd repro-uv-8148-a
+uv sync  # works fine
+
+# Now we clone a fork of the same project,
+# meaning we don't have the Git tags.
+cd ..
+git clone git@github.com:pawamoy-forks/repro-uv-8148-a repro-uv-8148-a-fork
+cd repro-uv-8148-a-fork
+uv sync  # fails with the following output
+```
+
+```console
+% uv sync
+Using CPython 3.12.7 interpreter at: /home/pawamoy/.basher-packages/pyenv/pyenv/versions/3.12.7/bin/python
+Creating virtual environment at: .venv
+  × No solution found when resolving dependencies:
+  ╰─▶ Because only repro-uv-8148-b==0.1.1 is available and repro-uv-8148-b==0.1.1 depends on your project, we can conclude that all versions of repro-uv-8148-b depend on
+      your project.
+      And because repro-uv-8148-a:dev depends on repro-uv-8148-b and your project depends on repro-uv-8148-a:dev, we can conclude that your project's requirements are
+      unsatisfiable.
+
+      hint: The package `repro-uv-8148-b` depends on the package `repro-uv-8148-a` but the name is shadowed by your project. Consider changing the name of the project.
+```
+
+I'd love to have a flag (CLI flag or config option in pyproject.toml or both) to tell uv that I'm not shadowing the dependency's name, that they're the same thing, and that I want to install the current project anyway, even if its built version isn't compatible with what the dependency requires.
+
+---
+
+_Referenced in [pdm-project/pdm-backend#269](../../pdm-project/pdm-backend/issues/269.md) on 2024-11-14 12:57_
+
+---
+
+_Comment by @pawamoy on 2024-11-14 13:34_
+
+I thought about and tried using dependency overrides, which solves the resolution issue, but makes uv actually install the current project as a dependency instead of as an editable install.
+
+```toml
+[tool.uv]
+override-dependencies = ["mkdocstrings>=0"]
+```
+
+I also tried configuring a source for `mkdocstrings` (which, again, is the current project) like so:
+
+```toml
+[tool.uv.sources]
+mkdocstrings = { workspace = true }
+```
+
+...and:
+
+```toml
+[tool.uv.sources]
+mkdocstrings = { path = ".", editable = true }
+```
+
+...but it is still not installed as editable. The dependency override seems to take precedence.
+
+---
+
+_Comment by @pawamoy on 2024-11-14 13:45_
+
+Haha, I then tried this:
+
+```toml
+[tool.uv]
+override-dependencies = ["mkdocstrings @ ."]
+```
+
+...which failed with this message:
+
+```
+warning: Failed to parse `pyproject.toml` during settings discovery:
+  TOML parse error at line 88, column 25
+     |
+  88 | override-dependencies = ["mkdocstrings @ ./"]
+     |                         ^^^^^^^^^^^^^^^^^^^^^
+  relative path without a working directory: ./
+  mkdocstrings @ ./
+                 ^^
+
+error: Failed to parse: `pyproject.toml`
+  Caused by: TOML parse error at line 88, column 25
+   |
+88 | override-dependencies = ["mkdocstrings @ ./"]
+   |                         ^^^^^^^^^^^^^^^^^^^^^
+relative path without a working directory: ./
+mkdocstrings @ ./
+```
+
+And then tried this:
+
+```toml
+[tool.uv]
+override-dependencies = ["mkdocstrings @ ${PWD}"]
+```
+
+...which worked :tada: but looks so weird haha
+
+Overriding self with self :melting_face: It makes sense in a way: "yes, use self project as is, don't pay attention to what others say about it".
+
+So, in the end, I think you can close! A paragraph in the docs could be nice (but it feels super niche too, so maybe not worth it).
+
+---
+
+_Comment by @pawamoy on 2024-11-14 16:00_
+
+One issue with using `${PWD}` is that uv commands will only work in the root of the repo. Not an issue in my case though, I usually only run commands in the root. Oh, it might not work on Windows, too :thinking: Could uv provide a `PROJECT_ROOT` env var that I could use instead of `PWD` :thinking:?
+
+---
+
+_Comment by @pawamoy on 2024-11-14 16:17_
+
+Hmm, uv already supports this env var, although it's undocumented (or at least searching for it in the docs doesn't yield anything).
+
+What I'm not sure to understand is that it seems to be equivalent to PWD: if I enter a subdirectory and run `uv lock` from there, it says "can't build because subdirectory is not a Python project". Passing `--project ..` or `--project /abs/path/to/project` doesn't change anything. Is this because I'm not using workspaces/monorepos and therefore `PROJECT_ROOT` defaults to the CWD somehow?
+
+---
+
+_Comment by @zanieb on 2024-11-14 17:04_
+
+> Hmm, uv already supports this env var, although it's undocumented (or at least searching for it in the docs doesn't yield anything).
+
+I think we need to support that to build projects that use Hatch (but otherwise it's not really a first-class thing).
+
+---
+
+_Comment by @zanieb on 2024-11-14 17:07_
+
+I guess what you're looking for here is for us to respect sources on top of overrides? I'm sort of surprised we don't, honestly.
+
+---
+
+_Comment by @pawamoy on 2024-11-14 18:54_
+
+`override-dependencies` works for me, I'm just looking for something more robust than `${PWD}` when specifying the path :slightly_smiling_face: `${PROJECT_ROOT}` is already great, even though I'm a bit confused by its behavior :smile: 
+
+If you think there's some room for improvement in the way uv handles overrides and sources, I'm happy to help any way I can! Just to be clear, I'm only using overrides now, not declaring any source.
+
+---
+
+_Comment by @pawamoy on 2024-11-15 13:49_
+
+I prefer declaring this:
+
+```toml
+[tool.uv]
+override-dependencies = ["mkdocstrings @ ${PROJECT_ROOT}"]
+```
+
+Than this:
+
+```toml
+[tool.uv]
+override-dependencies = ["mkdocstrings>=0"]
+
+[tool.uv.sources]
+mkdocstrings = { workspace = true }
+# or mkdocstrings = { path = "${PROJECT_ROOT}", editable = true }
+```
+
+...because even if the result is the same, it *feels* like the latter will completely disregard any constraints incompatibilities in dependencies regarding `mkdocstrings` (`>=0`), while the former will only "force" installation of the current project, while still checking that dependencies have compatible constraints about `mkdocstrings`. I don't think it's the case though, and both options completely ignore constraints regarding `mkdocstrings`. Even then, the first option is more appealing, as it requires less things to declare.
+
+(I hope it's fine that I commented so much on this issue! Not trying to get your attention, just documenting my journey and thought process :smile:)
+
+---
+
+_Comment by @pawamoy on 2024-11-15 14:38_
+
+Hmm wait, need to confirm. ~~Ah, one more issue, with such an override (`"mkdocstrings @ ${PROJECT_ROOT}"`), the `--no-editable` flag in `uv sync` has no effect anymore :confused:~~
+
+Yeah so it's worse than that, the override actually prevents the project to be installed in editable mode. Damn I'm going in circles :rofl: 
+
+This might be an argument favor in of the second option above, if its changed to support editable installs again, thanks to sources.
+
+UPDATE: I've updated https://github.com/pawamoy/repro-uv-8148-a to document all this in the readme.
+
+---
+
+_Comment by @pawamoy on 2024-11-24 17:31_
+
+In the end you guessed right @zanieb: I think the correct thing to declare on my end is this:
+
+```toml
+[tool.uv]
+override-dependencies = ["mkdocstrings @ ${PROJECT_ROOT}"]
+
+[tool.uv.sources]
+mkdocstrings = { path = "${PROJECT_ROOT}", editable = true }
+```
+
+(or some simplification of this, if such a simplification is already possible, or deemed useful enough to become supported in the future)
+
+uv then just needs to respect the sources on top of overrides, like you said :slightly_smiling_face: 
+
+---
+
+_Comment by @zanieb on 2024-11-25 23:36_
+
+@charliermarsh, wdyt about changing this interaction of sources and overrides?
+
+---
+
+_Referenced in [astral-sh/uv#9258](../../astral-sh/uv/issues/9258.md) on 2024-11-26 00:41_
+
+---
+
+_Comment by @charliermarsh on 2024-11-26 02:59_
+
+Yeah that makes sense... It seems like sources should apply to overrides and constraints too?
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2024-11-26 17:41_
+
+---
+
+_Referenced in [astral-sh/uv#9446](../../astral-sh/uv/issues/9446.md) on 2024-11-26 18:20_
+
+---
+
+_Referenced in [astral-sh/uv#9455](../../astral-sh/uv/pulls/9455.md) on 2024-11-26 22:40_
+
+---
+
+_Closed by @charliermarsh on 2024-11-27 13:56_
+
+---
+
+_Comment by @pawamoy on 2024-11-27 17:11_
+
+Thank you so much! I played with main branch, here are my findings.
+
+This works:
+
+```toml
+[tool.uv]
+override-dependencies = ["repro-uv-8148-a"]
+
+[tool.uv.sources]
+repro-uv-8148-a = { workspace = true }
+```
+
+(and by "this works" I mean no conflicts, `repro-uv-8148-b` installed and `repro-uv-8148-a` v0.1 installed in editable mode)
+
+But none of the following work (which is fine, just had to find the right combination with trial and error):
+
+<table><tr><td>
+
+```toml
+[tool.uv]
+override-dependencies = ["repro-uv-8148-a @ ${PROJECT_ROOT}"]
+
+[tool.uv.sources]
+repro-uv-8148-a = { workspace = true }
+```
+
+</td><td>
+
+```console
+% uv sync                              
+error: Failed to parse entry: `repro-uv-8148-a`
+  Caused by: Can't combine URLs from both `project.dependencies` and `tool.uv.sources`
+```
+
+</td></tr></table>
+<table><tr><td>
+
+```toml
+[tool.uv]
+override-dependencies = ["repro-uv-8148-a @ ${PROJECT_ROOT}"]
+
+[tool.uv.sources]
+repro-uv-8148-a = { path = "${PROJECT_ROOT}", editable = true }
+```
+
+</td><td>
+
+```console
+% uv sync
+error: Failed to parse entry: `repro-uv-8148-a`
+  Caused by: Package is not included as workspace package in `tool.uv.workspace`
+```
+
+</td></tr></table>
+<table><tr><td>
+
+```toml
+[tool.uv]
+override-dependencies = ["repro-uv-8148-a"]
+
+[tool.uv.sources]
+repro-uv-8148-a = { path = "${PROJECT_ROOT}", editable = true }
+```
+
+</td><td>
+
+```console
+% uv sync
+error: Failed to parse entry: `repro-uv-8148-a`
+  Caused by: Package is not included as workspace package in `tool.uv.workspace`
+```
+
+</td></tr></table>
+
+Thank you again!
+
+---
+
+_Comment by @charliermarsh on 2024-11-27 17:25_
+
+In the latter two cases, did you have `repro-uv-8148-a` listed as a workspace member?
+
+---
+
+_Comment by @pawamoy on 2024-11-27 17:32_
+
+No I didn't, because I didn't think it made sense, since `repro-uv-8148-a` is the actual, main, current project. But if I add this anyway:
+
+```toml
+[tool.uv.workspace]
+members = ["${PROJECT_ROOT}"]  # or members = ["."]
+```
+
+...I still get the "Package is not included as workspace package in `tool.uv.workspace`" error message.
+
+---
+
+_Comment by @charliermarsh on 2024-11-27 17:36_
+
+Oh thanks. What do I need to do exactly to reproduce the latter two cases? Clone `repro-uv-8148-a`, then what?
+
+---
+
+_Comment by @pawamoy on 2024-11-27 17:38_
+
+```bash
+git clone https://github.com/pawamoy-forks/repro-uv-8148-a
+cd repro-uv-8148-a
+```
+
+Apply this patch:
+
+```diff
+diff --git a/pyproject.toml b/pyproject.toml
+index 40277fc..769d33c 100644
+--- a/pyproject.toml
++++ b/pyproject.toml
+@@ -20,6 +20,15 @@ version = {source = "scm"}
+ package-dir = "src"
+ 
+ [tool.uv]
+-dev-dependencies = [
++override-dependencies = ["repro-uv-8148-a"]
++
++[tool.uv.sources]
++repro-uv-8148-a = { path = "${PROJECT_ROOT}", editable = true }
++
++[tool.uv.workspace]
++members = ["${PROJECT_ROOT}"]
++
++[dependency-groups]
++dev = [
+     "repro-uv-8148-b>=0.1",
+ ]
+```
+
+Run `uv sync` 🙂 
+
+---
+
+_Comment by @charliermarsh on 2024-11-27 17:44_
+
+Thank you!
+
+---
+
+_Comment by @charliermarsh on 2024-11-27 18:23_
+
+So in this case, you're providing a source for the package itself? (Maybe I missed all the context above.)
+
+---
+
+_Comment by @pawamoy on 2024-11-27 18:41_
+
+Haha yes you probably missed the important bits in the wall of comments I posted above 😄 
+
+So, let say I'm working on project `a`. It dev-depends on `b`. And `b` depends back on `a`. Resolution conflicts can therefore happen since uv checks that `a`, the project I'm in, builds to a version that is compatible with `b`'s constraints on `a`.
+
+The issue here is that my version is dynamic, and based on Git tags (pdm-backend deals with this). When there are no tags (fork, CI), pdm-backend computes version 0.1.devblabla, which is *incompatible* with what `b` requires.
+
+Hence why I'm trying to tell uv to *ignore* constraints on the current project. The only current way to do this, is to use the configuration above:
+
+```toml
+[project]
+name = "a"
+dynamic = ["version"]  # dynamic version...
+
+[build-system]
+requires = ["pdm-backend"]
+build-backend = "pdm.backend"
+
+[tool.pdm]
+version = {source = "scm"}  # ...based on Git tags, through pdm-backend
+
+[tool.uv]
+override-dependencies = ["a"]  # tell uv to ignore constraints...
+
+[tool.uv.sources]
+a = { workspace = true }  # ...while still installing from current folder, in editable mode
+
+[dependency-groups]
+dev = [
+     "b>=0.1",  # b depend on a>=1.0
+]
+```
+
+> So in this case, you're providing a source for the package itself?
+
+Yes 😄 
+
+---
+
+_Comment by @pawamoy on 2024-11-27 18:57_
+
+We could argue it is better solved within pdm-backend itself. It has a "fallback" mechanism, but only triggered when the folder is *not* a Git repository. In my case, it *is* a Git repository, but without tags, so it doesn't fallback. Also, the fallback version is static, so even if it worked and I fell back to v100, this could still be incompatible with what `b` requires. It would have to support a more dynamic fallback, for example running a Python callable that greps the current version in the changelog file. *But even will all that*, uv could still prevent me from resolving and working on `a`, because some dependency doesn't like the current version.
+
+So in the end, when I'm working on `a`, I want to be able to say "I know what I'm doing", and "just install the current project without checking its version".
+
+---
+
+_Referenced in [astral-sh/uv#10121](../../astral-sh/uv/issues/10121.md) on 2024-12-23 14:47_
+
+---
+
+_Comment by @adamtheturtle on 2025-02-21 15:29_
+
+I hit this with a setuptools backend.
+I don't think I would have easily solved the problem if I hadn't found @pawamoy 's comment at https://github.com/astral-sh/uv/issues/8148#issuecomment-2408639333.
+
+`pip`'s error message is clearer to me.
+
+`uv`:
+
+```
+  × No solution found when resolving dependencies:
+  ╰─▶ Because vws-python-mock==2025.2.18 depends on your project and
+      vws-auth-tools[dev] depends on vws-python-mock==2025.2.18, we can
+      conclude that vws-auth-tools[dev] depends on itself at an incompatible
+      version (vws-auth-tools>=2024.7.12).
+      And because your project requires vws-auth-tools[dev], we can conclude
+      that your project's requirements are unsatisfiable.
+
+      hint: The package `vws-python-mock` depends on the package
+      `vws-auth-tools` but the name is shadowed by your project. Consider
+      changing the name of the project.
+```
+
+`pip`:
+
+```
+The conflict is caused by:
+    The user requested vws-auth-tools 0.0.post130+g2de0bcd (from /home/docs/checkouts/readthedocs.org/user_builds/vws-auth-tools/checkouts/1256)
+    vws-auth-tools[dev] 0.0.post130+g2de0bcd depends on vws-auth-tools 0.0.post130+g2de0bcd (from /home/docs/checkouts/readthedocs.org/user_builds/vws-auth-tools/checkouts/1256)
+    vws-python-mock 2025.2.18 depends on vws-auth-tools>=2024.7.12
+```
+
+From `pip`'s error I could work out that the issue is that at this stage the `vws-auth-tools` version is calculated as `0.0.something` and that this is the issue.
+
+---
+
+_Comment by @pawamoy on 2025-02-21 15:42_
+
+Thanks for chiming in @adamtheturtle! I see that uv's message has been updated, it's better than before 👍 :
+
+> vws-auth-tools[dev] depends on itself at an incompatible version (vws-auth-tools>=2024.7.12)
+
+But yes, ideally, it would *especially* show the current version (in your case `0.0.post130+g2de0bcd`), as that would clearly indicate to the user that the build process was missing SCM tags or something.
+
+By the way @adamtheturtle, note that I found a way to fallback using the latest version in the CHANGELOG.md file when tags are not found, see https://github.com/astral-sh/uv/issues/10121#issuecomment-2560402907. It might be possible to do something similar with other backends.
+
+---
+
+_Comment by @adamtheturtle on 2025-02-21 15:46_
+
+Thank you @pawamoy !
+
+---
+
+_Referenced in [audeering/audformat#476](../../audeering/audformat/pulls/476.md) on 2025-10-14 13:46_
+
+---

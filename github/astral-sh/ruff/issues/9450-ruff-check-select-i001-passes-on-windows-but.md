@@ -1,0 +1,106 @@
+---
+number: 9450
+title: "`ruff check --select=I001 .` passes on windows but fails on linux"
+type: issue
+state: closed
+author: karthiknadig
+labels:
+  - isort
+assignees: []
+created_at: 2024-01-09T22:29:03Z
+updated_at: 2024-01-10T01:47:24Z
+url: https://github.com/astral-sh/ruff/issues/9450
+synced_at: 2026-01-07T13:12:15-06:00
+---
+
+# `ruff check --select=I001 .` passes on windows but fails on linux
+
+---
+
+_Issue opened by @karthiknadig on 2024-01-09 22:29_
+
+sample.py:
+```python
+# Copyright (c) Microsoft Corporation. All rights reserved.
+# Licensed under the MIT License.
+
+import json
+
+import hamcrest
+import jsonrpc
+import pytest
+
+from lsprotocol import types as lsp
+
+
+def something():
+    pass
+```
+
+windows: Everything passes
+```
+nox > ruff check .
+nox > ruff check --select=I001 .
+nox > ruff format --check .
+52 files already formatted
+```
+
+Linux: I001 check fails
+```
+nox > ruff check .
+nox > ruff check --select=I001 .
+tests/python/notifications/test_progress.py:4:1: I001 [*] Import block is un-sorted or un-formatted
+tests/python/requests/test_workspace_symbols_request.py:4:1: I001 [*] Import block is un-sorted or un-formatted
+tests/python/test_cattrs_special_cases.py:4:1: I001 [*] Import block is un-sorted or un-formatted
+tests/python/test_custom_validators.py:4:1: I001 [*] Import block is un-sorted or un-formatted
+tests/python/test_enums.py:4:1: I001 [*] Import block is un-sorted or un-formatted
+tests/python/test_generated_data.py:4:1: I001 [*] Import block is un-sorted or un-formatted
+tests/python/test_location.py:4:1: I001 [*] Import block is un-sorted or un-formatted
+tests/python/test_position.py:4:1: I001 [*] Import block is un-sorted or un-formatted
+tests/python/test_range.py:4:1: I001 [*] Import block is un-sorted or un-formatted
+Found 9 errors.
+[*] 9 fixable with the `--fix` option.
+nox > Command ruff check --select=I001 . failed with exit code 1
+```
+
+
+---
+
+_Comment by @charliermarsh on 2024-01-09 22:48_
+
+Just confirming since it's not mentioned in the shell output, you see this behavior with `sample.py`? I can really only think of two culprits here:
+
+1. Something related to line endings.
+2. Some directory exists on Linux but not Windows which is making Ruff think something is first-party.
+
+---
+
+_Label `isort` added by @charliermarsh on 2024-01-09 22:49_
+
+---
+
+_Comment by @karthiknadig on 2024-01-09 23:40_
+
+The `sample.py` is a representation of how each of the failing files look like. This is strange because this check used to pass and some of these files were not modified recently.
+
+---
+
+_Comment by @charliermarsh on 2024-01-09 23:43_
+
+Can you give an example of the import block before and after Ruff's changes?
+
+---
+
+_Comment by @karthiknadig on 2024-01-10 01:46_
+
+Closing this, it turned out to be a weird issue with another tool, that kept adding back the space that caused this error.
+
+The space in question:
+![image](https://github.com/astral-sh/ruff/assets/3840081/ae25e713-0809-4367-862c-8a499eeb6de2)
+
+
+---
+
+_Closed by @karthiknadig on 2024-01-10 01:46_
+
+---

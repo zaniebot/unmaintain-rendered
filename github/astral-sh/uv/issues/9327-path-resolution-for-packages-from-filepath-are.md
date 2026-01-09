@@ -1,0 +1,192 @@
+---
+number: 9327
+title: Path resolution for packages from filepath are inconsistent
+type: issue
+state: closed
+author: Tibiritabara
+labels: []
+assignees: []
+created_at: 2024-11-21T16:19:23Z
+updated_at: 2024-11-22T01:03:25Z
+url: https://github.com/astral-sh/uv/issues/9327
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# Path resolution for packages from filepath are inconsistent
+
+---
+
+_Issue opened by @Tibiritabara on 2024-11-21 16:19_
+
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with uv.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
+* The current uv platform.
+* The current uv version (`uv --version`).
+-->
+
+I have a project called `main-project` on the next route
+
+`$HOME/project/main/apps/current-app`
+
+This project uses two libraries on disk, on the `$HOME/project/libs/` path. These libs are:
+
+`$HOME/project/main/libs/dep1`
+`$HOME/project/main/libs/dep2`
+
+These libraries are specified on the `current-app` project as dependencies like this:
+
+```toml
+...
+dependencies = [
+    "dep1 @ file:///${PROJECT_ROOT}/../../libs/dep2",
+    "dep2 @ file:///${PROJECT_ROOT}/../../libs/dep1",
+]
+...
+```
+
+For some odd reason, it resolves the next path: `file:///$HOME/project/main/apps/dep2`, despite having exited the `apps` folder on the path definition.
+
+UV Is unable to calculate the right path. For some reason, it is unable to exit the `apps` folder, and enter the `libs` folder, despite the route being correct.
+
+I am currently working on a MacOS m2 machine with Python 3.12.
+
+After more testing, I notice that the issue happens with the `main` folder. Whenever I replace the `main` folder name in the route, it resolves correctly.
+
+I have also tested setting relative paths with `uv.tools.source`, and reached the same conclusion. The folder named `main` causes the issue.
+
+---
+
+_Referenced in [astral-sh/uv#9326](../../astral-sh/uv/issues/9326.md) on 2024-11-21 16:31_
+
+---
+
+_Comment by @ReinforcedKnowledge on 2024-11-21 18:29_
+
+Hi!
+
+I can't seem to recreate the issue. Maybe the issue comes from naming the mismatch between `dep_{i}` and the path which is for `dep_{j}`? What `uv` version are you using?
+
+Doing works:
+
+```toml
+[project]
+name = "current-app"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "dep1 @ file:///${PROJECT_ROOT}/../../libs/dep1",
+    "dep2 @ file:///${PROJECT_ROOT}/../../libs/dep2",
+]
+```
+
+Working directory: 
+```
+.
+├── apps
+│   └── current-app
+│       ├── README.md
+│       ├── hello.py
+│       ├── pyproject.toml
+│       ├── uv.lock
+└── libs
+    ├── dep1
+    │   ├── README.md
+    │   ├── hello.py
+    │   └── pyproject.toml
+    └── dep2
+        ├── README.md
+        ├── hello.py
+        └── pyproject.toml
+```
+
+Running `uv sync` in `current-app`:
+```
+Using CPython 3.13.0
+Creating virtual environment at: .venv
+Resolved 3 packages in 9ms
+   Built dep1 @ file:///Users/.../main/libs/dep1
+   Built dep2 @ file:///Users/.../main/libs/dep2
+Prepared 2 packages in 653ms
+Installed 2 packages in 1ms
+ + dep1==0.1.0 (from file:///Users/.../main/libs/dep1)
+ + dep2==0.1.0 (from file:///Users/.../main/libs/dep2)
+```
+
+Platform: Sequoia 15.1.1 (M1)
+CPython: 3.13.0
+uv: 0.5.4 (c62c83c37 2024-11-20)
+
+I tried with CPython 3.12.7 as well and it seems to be working fine.
+
+---
+
+_Comment by @Tibiritabara on 2024-11-21 21:36_
+
+Thank you so much for the quick answer. I found the issue: `dep1` depends on `dep2`. On `dep1`, I pointed to `dep2`using the project root notation on the `dependencies`
+
+```toml
+dependencies = [
+    "dep2 @ file:///${PROJECT_ROOT}/../dep2",
+]
+```
+
+then on `current_app` I added `dep1` and `dep2` as dependencies. There I wrote the next `dependencies`:
+
+```toml
+dependencies = [
+    "dep1 @ file:///${PROJECT_ROOT}/../../dep1",
+    "dep2 @ file:///${PROJECT_ROOT}/../../dep2",
+]
+```
+
+Apparently when `uv` installs the dependencies, it finds a conflict as the route is defined in two different files differently. It takes the route defined on the `pyproject.toml` of `dep1`, ignoring the path redefinition on `current_app`
+
+I do not know if this is expected behavior or not, but I managed to fix the problem using the relative file paths on the `[tool.uv.sources]` block and removing the `@` notation from the dependencies.
+
+---
+
+_Closed by @Tibiritabara on 2024-11-21 21:36_
+
+---
+
+_Reopened by @Tibiritabara on 2024-11-21 21:36_
+
+---
+
+_Comment by @konstin on 2024-11-21 21:43_
+
+My recommendation for such cases is using `tool.uv.sources` to set the deps to a relative path (https://docs.astral.sh/uv/concepts/projects/dependencies/#path). `project.dependencies` doesn't properly support relative paths, and the `tool.uv.sources` allows uv to handle relative paths correctly.
+
+---
+
+_Comment by @charliermarsh on 2024-11-22 00:52_
+
+I'm not sure, but the thing you pasted here is incorrect:
+
+```
+dependencies = [
+    "dep1 @ file:///${PROJECT_ROOT}/../../libs/dep2",
+    "dep2 @ file:///${PROJECT_ROOT}/../../libs/dep1",
+]
+```
+
+The dependencies are inverted.
+
+---
+
+_Comment by @charliermarsh on 2024-11-22 01:03_
+
+I think what you're seeing is that `PROJECT_ROOT` is just the current working directory. It's not tied to the project. You should definitely use `tool.uv.sources` if you want to do this kind of relative pathing across dependencies.
+
+---
+
+_Closed by @charliermarsh on 2024-11-22 01:03_
+
+---

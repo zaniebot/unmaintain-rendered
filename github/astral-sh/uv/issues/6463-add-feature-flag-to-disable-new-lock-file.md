@@ -1,0 +1,178 @@
+---
+number: 6463
+title: Add feature flag to disable new lock file features (PEP 751)
+type: issue
+state: closed
+author: ketozhang
+labels:
+  - documentation
+  - question
+assignees: []
+created_at: 2024-08-22T21:26:28Z
+updated_at: 2024-08-22T23:06:58Z
+url: https://github.com/astral-sh/uv/issues/6463
+synced_at: 2026-01-07T13:12:17-06:00
+---
+
+# Add feature flag to disable new lock file features (PEP 751)
+
+---
+
+_Issue opened by @ketozhang on 2024-08-22 21:26_
+
+I'm not ready to use the new lock files in my dev environment. I need to heavily rely on pip-compile style lock files (`uv sync requirements.in`). 
+
+Is there any way to not be affected by the `uv.lock` (not sure what the existence of that file implies for other uv commands).
+
+---
+
+_Comment by @charliermarsh on 2024-08-22 21:27_
+
+If you use the `pip` API, there's no impact. But you can't use `uv sync` or `uv lock` without `uv.lock`. (Note that `uv.lock` is not the same as PEP 751, which is not yet finished or accepted.)
+
+---
+
+_Comment by @zanieb on 2024-08-22 21:29_
+
+Yeah, I'd recommend just using `uv pip sync` instead of the top-level interface.
+
+---
+
+_Label `question` added by @zanieb on 2024-08-22 21:29_
+
+---
+
+_Comment by @ketozhang on 2024-08-22 21:30_
+
+@charliermarsh Your response speed amazing ❤️! @zanieb (and you! I didn't get a chance to type this)
+
+Doesn't the lock file affect `uv run` ([docs](https://docs.astral.sh/uv/concepts/projects/#lockfile))?
+I think `uv run python` is something I started to use in place of `.venv/bin/python` (or activate -> python). 
+
+---
+
+Gotcha, will try to move remember to always use `uv pip`.
+
+---
+
+_Comment by @zanieb on 2024-08-22 21:34_
+
+`uv run` will always create and use a lockfile in a project, yeah. I presume you have a `pyproject.toml`? 
+
+---
+
+_Comment by @zanieb on 2024-08-22 21:35_
+
+Actually you can use `uv run --no-project` and we will ignore any `pyproject.toml` files
+
+---
+
+_Comment by @ketozhang on 2024-08-22 21:39_
+
+> I presume you have a pyproject.toml?
+
+Yes.
+
+For now, I'm thinking about the project workflow:
+
+```
+$ cd /path/to/project
+
+$ uv venv                               # Optional and redundant to next command (old habit)
+$ uv pip sync dev-requirements.txt      # OR uv pip install -r ...
+
+# Run project environment's python == .venv/bin/python
+$ uv run python
+```
+
+---
+
+_Comment by @zanieb on 2024-08-22 21:46_
+
+Yep! Makes sense. If you do `uv run --no-project python` we _will_ read the `.venv` we just will ignore the `pyproject.toml` (and `uv.lock`)
+
+---
+
+_Comment by @zanieb on 2024-08-22 21:47_
+
+```
+❯ uv init
+Initialized project `example`
+❯ uv venv
+Using Python 3.11.7
+Creating virtualenv at: .venv
+Activate with: source .venv/bin/activate
+❯ uv pip install httpx
+Resolved 7 packages in 201ms
+Installed 7 packages in 19ms
+ + anyio==4.4.0
+ + certifi==2024.7.4
+ + h11==0.14.0
+ + httpcore==1.0.5
+ + httpx==0.27.0
+ + idna==3.7
+ + sniffio==1.3.1
+❯ uv run --no-project python -c "import httpx"
+❯ tree .
+.
+├── README.md
+├── pyproject.toml
+└── src
+    └── example
+        └── __init__.py
+```
+
+(Note we don't create a `uv.lock`)
+
+---
+
+_Label `documentation` added by @zanieb on 2024-08-22 21:48_
+
+---
+
+_Assigned to @zanieb by @zanieb on 2024-08-22 21:48_
+
+---
+
+_Comment by @zanieb on 2024-08-22 21:49_
+
+You can also just do
+
+```toml
+[tool.uv]
+managed = false
+```
+
+if you _never_ want to use `uv sync` and `uv lock`
+
+---
+
+_Comment by @ketozhang on 2024-08-22 21:51_
+
+> `managed = false`
+
+Oh, same as rye. That solves it as a quasi-feature flag. Thank you!
+
+---
+
+_Comment by @zanieb on 2024-08-22 21:55_
+
+Adding documentation for this in https://github.com/astral-sh/uv/pull/6465
+
+---
+
+_Referenced in [astral-sh/uv#6465](../../astral-sh/uv/pulls/6465.md) on 2024-08-22 21:55_
+
+---
+
+_Referenced in [astral-sh/uv#6466](../../astral-sh/uv/pulls/6466.md) on 2024-08-22 22:04_
+
+---
+
+_Closed by @zanieb on 2024-08-22 23:06_
+
+---
+
+_Closed by @zanieb on 2024-08-22 23:06_
+
+---

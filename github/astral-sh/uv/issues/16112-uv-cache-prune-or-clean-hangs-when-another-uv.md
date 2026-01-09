@@ -1,0 +1,101 @@
+---
+number: 16112
+title: "`uv cache` (prune or clean) hangs when another uv process is running"
+type: issue
+state: closed
+author: olivierverdier
+labels:
+  - bug
+assignees: []
+created_at: 2025-10-03T07:58:11Z
+updated_at: 2025-10-06T16:49:25Z
+url: https://github.com/astral-sh/uv/issues/16112
+synced_at: 2026-01-07T13:12:19-06:00
+---
+
+# `uv cache` (prune or clean) hangs when another uv process is running
+
+---
+
+_Issue opened by @olivierverdier on 2025-10-03 07:58_
+
+### Summary
+
+## How to reproduce:
+1. run `uv run python` (and keep it running)
+2. in another shell `uv cache prune` (or clean).
+
+### What should happen
+`uv` should start pruning/caching
+
+### What happens instead
+Nothing, the cache command just hangs.
+
+## The explanation
+
+If you run `uv cache --verbose prune` you see the message:
+```
+DEBUG uv 0.8.22 (Homebrew 2025-09-23)
+INFO Waiting to acquire lock for `/Users/xxxxxx/.cache/uv` at `.cache/uv/.lock`
+```
+
+## How to fix
+If this is not a bug: **please add a message even outside the verbose mode**. Either a warning like: *warning, another uv process is running, cache pruning/cleaning is not available*, or *Please shut down other uv processes*. 
+
+### Platform
+
+Darwin 25.0.0 arm64 Darwin
+
+### Version
+
+uv 0.8.22 (Homebrew 2025-09-23)
+
+### Python version
+
+Python 3.13.7
+
+---
+
+_Label `bug` added by @olivierverdier on 2025-10-03 07:58_
+
+---
+
+_Comment by @oldzoomer-ru on 2025-10-04 01:19_
+
+I have the same problem, bro.
+
+---
+
+_Comment by @zanieb on 2025-10-04 04:47_
+
+This was added in https://github.com/astral-sh/uv/pull/15888
+
+It would make sense for us to add some messaging here. You can also use `--force` (https://github.com/astral-sh/uv/pull/15992) to bypass the lock.
+
+---
+
+_Comment by @zanieb on 2025-10-04 04:47_
+
+cc @konstin 
+
+---
+
+_Comment by @konstin on 2025-10-06 08:35_
+
+The lock from `uv run python` is the lock we removed in https://github.com/astral-sh/uv/pull/15990.
+
+The warning was originally user-facing, but removed in https://github.com/astral-sh/uv/pull/7502. We could re-add it as user facing for exclusive locks only if we're confident it doesn't cause https://github.com/astral-sh/uv/issues/7489 (CC @charliermarsh) again.
+
+---
+
+_Referenced in [astral-sh/uv#16105](../../astral-sh/uv/issues/16105.md) on 2025-10-06 10:21_
+
+---
+
+_Referenced in [astral-sh/uv#16138](../../astral-sh/uv/pulls/16138.md) on 2025-10-06 14:49_
+
+---
+
+_Closed by @zanieb on 2025-10-06 16:49_
+
+---

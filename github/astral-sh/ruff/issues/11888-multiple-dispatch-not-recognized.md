@@ -1,0 +1,77 @@
+---
+number: 11888
+title: Multiple dispatch not recognized 
+type: issue
+state: closed
+author: oskarpfeffer
+labels: []
+assignees: []
+created_at: 2024-06-16T11:36:53Z
+updated_at: 2024-06-18T05:48:37Z
+url: https://github.com/astral-sh/ruff/issues/11888
+synced_at: 2026-01-07T13:12:15-06:00
+---
+
+# Multiple dispatch not recognized 
+
+---
+
+_Issue opened by @oskarpfeffer on 2024-06-16 11:36_
+
+Ruff does not recognize multiple dispatch methods. 
+
+Example:
+```
+from plum import dispatch
+
+@dispatch
+def f(x: str):
+    return "This is a string!"
+
+@dispatch
+def f(x: int):
+    return "This is an integer!"
+```
+
+``` 
+$ ruff check test.py
+test.py:10:5: F811 Redefinition of unused `f` from line 5
+Found 1 error.
+```
+
+```
+$ ruff --version           
+ruff 0.4.9
+```
+
+Is there a way to include it as a rule to ignore the redefinition when there is `@dispatch` before the function?
+
+---
+
+_Comment by @MichaReiser on 2024-06-18 05:48_
+
+Hi
+
+This is an interesting use of type annotations. I don't think it's feasible for us to add an exception for `plum`. Plum bends python semantics in a way that are difficult to understand for static analysis tools and we rather avoid coding framework specific behavior into ruff, unless it is a very popular framework. 
+
+I just tried your example with Pyright and it also reports error when type checking the code
+
+```
+  /home/micha/astral/test/dispatch.py:4:5 - error: Function declaration "f" is obscured by a declaration of the same name (reportRedeclaration)
+  /home/micha/astral/test/dispatch.py:12:3 - error: Argument of type "Literal['test']" cannot be assigned to parameter "x" of type "int" in function "f"
+    "Literal['test']" is incompatible with "int" (reportArgumentType)
+2 errors, 0 warnings, 0 information 
+
+```
+
+
+
+---
+
+_Closed by @MichaReiser on 2024-06-18 05:48_
+
+---
+
+_Referenced in [astral-sh/ruff#20970](../../astral-sh/ruff/issues/20970.md) on 2025-10-20 13:47_
+
+---

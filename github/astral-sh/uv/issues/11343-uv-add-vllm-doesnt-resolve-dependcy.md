@@ -1,0 +1,181 @@
+---
+number: 11343
+title: "`uv add vllm` doesnt resolve dependcy"
+type: issue
+state: closed
+author: dipta007
+labels:
+  - needs-mre
+assignees: []
+created_at: 2025-02-08T20:25:26Z
+updated_at: 2025-02-17T04:19:43Z
+url: https://github.com/astral-sh/uv/issues/11343
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# `uv add vllm` doesnt resolve dependcy
+
+---
+
+_Issue opened by @dipta007 on 2025-02-08 20:25_
+
+### Question
+
+I have installed torch before with version 2.6.0
+
+But when I add vllm, it should downgrade torch to 2.5.1 as it needs that version to work.
+
+But torch is still 2.6.0, thats why vllm doesnt work.
+
+Am I doing something wrong?
+
+### To Reproduce: (Thanks to @notatallshaw)
+```
+uv init
+uv add torch
+uv add vllm
+```
+
+I got the following error:
+```
+And because all of:
+  vllm>=0.6.4,<=0.6.4.post1
+  vllm>=0.6.6
+depend on torch==2.5.1 and torch{platform_machine != 'aarch64'}==2.5.1, we can conclude that all versions of vllm depend on one of:
+  torch==2.1.2
+  torch==2.2.1
+  torch>=2.3.0,<=2.4.0
+  torch==2.5.1
+```
+
+But shouldn't UV downgrade the torch when installing `vllm` as I never mentioned I need the latest torch?
+
+### Platform
+
+Ubuntu 20.04
+
+### Version
+
+uv 0.5.29
+
+---
+
+_Label `question` added by @dipta007 on 2025-02-08 20:25_
+
+---
+
+_Comment by @notatallshaw on 2025-02-08 22:43_
+
+If I do the following in a clean directory:
+
+```bash
+uv init
+uv add torch
+uv add vllm
+```
+
+I get an error that ends in:
+
+```
+And because all of:
+  vllm>=0.6.4,<=0.6.4.post1
+  vllm>=0.6.6
+depend on torch==2.5.1 and torch{platform_machine != 'aarch64'}==2.5.1, we can conclude that all versions of vllm depend on one of:
+  torch==2.1.2
+  torch==2.2.1
+  torch>=2.3.0,<=2.4.0
+  torch==2.5.1
+```
+
+You will need to provide steps for someone else to reproduce.
+
+---
+
+_Comment by @zanieb on 2025-02-08 23:35_
+
+See #9452 for more details on how to share reproduction steps.
+
+---
+
+_Comment by @seanswyi on 2025-02-11 06:39_
+
+> If I do the following in a clean directory:
+> 
+> uv init
+> uv add torch
+> uv add vllm
+> I get an error that ends in:
+> 
+> ```
+> And because all of:
+>   vllm>=0.6.4,<=0.6.4.post1
+>   vllm>=0.6.6
+> depend on torch==2.5.1 and torch{platform_machine != 'aarch64'}==2.5.1, we can conclude that all versions of vllm depend on one of:
+>   torch==2.1.2
+>   torch==2.2.1
+>   torch>=2.3.0,<=2.4.0
+>   torch==2.5.1
+> ```
+> 
+> You will need to provide steps for someone else to reproduce.
+
+How long did it take you to receive this error? I waited for nearly 5 minutes before pressing <kbd>ctrl</kdb> + <kdb>C</kbd> and it's still going.
+
+As the error suggests, I had to run:
+
+```shell
+uv remove torch
+uv add torch==2.5.1
+uv add vllm
+```
+
+but as @dipta007 points out, shouldn't uv automatically downgrade `torch`?
+
+---
+
+_Comment by @charliermarsh on 2025-02-16 18:49_
+
+Closing as we'd need more info to help here. Can always re-open.
+
+---
+
+_Closed by @charliermarsh on 2025-02-16 18:49_
+
+---
+
+_Label `question` removed by @charliermarsh on 2025-02-16 18:49_
+
+---
+
+_Label `needs-mre` added by @charliermarsh on 2025-02-16 18:49_
+
+---
+
+_Comment by @dipta007 on 2025-02-16 23:58_
+
+@charliermarsh added more information with reproducible steps, Please reopen 🙏
+Thanks @notatallshaw for the steps and @zanieb for the checklist
+
+---
+
+_Comment by @charliermarsh on 2025-02-17 03:04_
+
+Ahh I see. I think this won't work as you expect because the first `uv add torch` will set a lower bound in the `pyproject.toml` (intentionally):
+
+```toml
+[project]
+name = "foo"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13.0"
+dependencies = [
+    "torch>=2.6.0",
+]
+```
+
+`uv add vllm` won't loosen that constraint (imagine if you'd written that out by hand -- it'd be surprising for `uv add` to change it!), so it's stuck trying to resolve for the latest `torch`.
+
+My suggestion would be to use `uv add torch vllm` so uv can determine those lower-bounds together?
+
+---

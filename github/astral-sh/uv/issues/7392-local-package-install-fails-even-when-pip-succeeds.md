@@ -1,0 +1,110 @@
+---
+number: 7392
+title: local package install fails, even when pip succeeds.
+type: issue
+state: closed
+author: manbango
+labels:
+  - compatibility
+assignees: []
+created_at: 2024-09-14T14:25:59Z
+updated_at: 2024-09-14T21:39:32Z
+url: https://github.com/astral-sh/uv/issues/7392
+synced_at: 2026-01-07T13:12:17-06:00
+---
+
+# local package install fails, even when pip succeeds.
+
+---
+
+_Issue opened by @manbango on 2024-09-14 14:25_
+
+* A minimal code snippet that reproduces the bug.
+```
+git clone https://github.com/HumanSignal/label-studio-ml-backend
+uv add ./label-studio-ml-backend
+```
+Error:
+```
+error: Failed to download and build: `label-studio-sdk @ git+https://github.com/HumanSignal/label-studio-sdk.git`
+  Caused by: Failed to extract static metadata from `pyproject.toml`
+  Caused by: TOML parse error at line 30, column 2
+   |
+30 | [project.urls]
+   |  ^^^^^^^
+missing field `name`
+```
+
+I have tried this with `uv pip install` as well. I have also tried the `--no-config` option. 
+Running pip itself works on this repository so its unclear to me uv fails.
+
+I do understand the toml is missing the package name, but is there a way I can specify this during install? (I think pixi allows that for example) 
+
+If pip is still able to succeed with this repo I believe uv should as well to bring parity.
+
+Tested on MacOs and ubuntu
+uv 0.4.10 (690716484 2024-09-13)
+
+
+---
+
+_Comment by @charliermarsh on 2024-09-14 14:32_
+
+Honestly it's correct to reject that package. It's the _only_ required field, and it's in the spec:
+
+> Tools MUST require users to statically define this field.
+
+We could support it, but it seems like a spec violation to allow it.
+
+
+---
+
+_Label `compatibility` added by @charliermarsh on 2024-09-14 14:33_
+
+---
+
+_Renamed from "BUG: local package install fails, even when pip succeeds." to "local package install fails, even when pip succeeds." by @manbango on 2024-09-14 14:55_
+
+---
+
+_Comment by @manbango on 2024-09-14 15:04_
+
+So it looks like the reason for it is because that pyproject toml was made by poetry. So the name in is under `[tool.poetry]`
+
+Is that an issue with poetry not following spec, or would it be reasonable for uv to also look under that heading for compatibility?
+
+---
+
+_Comment by @charliermarsh on 2024-09-14 18:58_
+
+We totally support Poetry projects, but the specific issue here is that in addition to `[tool.poetry]`, the `pyproject.toml` includes `[project.urls]`... If you remove the `[project.urls]`, I expect the project to build without issue. The problem is that including _any_ part of the `[project]` table demands that it also include `project.name`.
+
+---
+
+_Comment by @manbango on 2024-09-14 19:56_
+
+I’ll give that a try! I’ll go ahead and close this issue.  The specific need for the name field does make sense. I’ll close this issue and file an issue with the repo owner.
+
+thank you for your help!
+
+---
+
+_Closed by @manbango on 2024-09-14 19:56_
+
+---
+
+_Comment by @charliermarsh on 2024-09-14 21:39_
+
+No problem! We just merged a bunch of PRs that add much better error messages for this specific case.
+
+---
+
+_Comment by @charliermarsh on 2024-09-14 21:39_
+
+For example: #7399
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2024-09-14 21:39_
+
+---

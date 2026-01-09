@@ -1,0 +1,141 @@
+---
+number: 4579
+title: "Isort split doesn't work when imports behind if statement"
+type: issue
+state: closed
+author: bendoerry
+labels:
+  - bug
+  - isort
+assignees: []
+created_at: 2023-05-22T14:14:21Z
+updated_at: 2023-05-22T16:32:01Z
+url: https://github.com/astral-sh/ruff/issues/4579
+synced_at: 2026-01-07T13:12:14-06:00
+---
+
+# Isort split doesn't work when imports behind if statement
+
+---
+
+_Issue opened by @bendoerry on 2023-05-22 14:14_
+
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+## Summary
+When I use `# isort: split` inside of an `if` statement (e.g. behind `if TYPE_CHECKING`) it has no effect. Similarly if using
+```python
+# isort: off
+# isort: on
+```
+to try and replicate it's effect. However `# isort: off` and `# isort: on` work fine if used to actually ignore sorting a block.
+
+### Ruff Version
+[v0.0.269](https://github.com/charliermarsh/ruff/releases/tag/v0.0.269)
+
+### Ruff Config
+```toml
+[isort]
+section-order = [
+  "one",
+  "two",
+]
+
+[isort.sections]
+one = [
+    "a", "b",
+    "A", "B",
+]
+
+two = [
+    "c", "d",
+    "C", "D",
+]
+```
+
+### Ruff Command
+```shell
+ruff check --fix --select I split.py
+```
+### Python File `split.py`
+```python
+import c
+import a
+
+# isort: split
+
+import d
+import b
+
+
+if True:
+    import C
+    import A
+
+    # isort: split
+
+    import D
+    import B
+
+```
+### Ruff Output
+```shell
+warning: `section-order` is missing built-in section: `Known(Future)`
+Found 3 errors (3 fixed, 0 remaining).
+```
+The warning and including the built in sections in the config have no effect.
+I just removed them from the config to keep it short.
+
+### Modified Python File
+```python
+import a
+
+import c
+
+# isort: split
+
+import b
+
+import d
+
+if True:
+    import A
+    import B
+
+    import C
+
+    # isort: split
+    import D
+
+```
+The arrangements of the imports in the `if` statement should be the same as the imports outside of the statement.
+
+---
+
+_Label `bug` added by @charliermarsh on 2023-05-22 14:31_
+
+---
+
+_Label `isort` added by @charliermarsh on 2023-05-22 14:31_
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2023-05-22 15:49_
+
+---
+
+_Referenced in [astral-sh/ruff#4584](../../astral-sh/ruff/pulls/4584.md) on 2023-05-22 15:51_
+
+---
+
+_Closed by @charliermarsh on 2023-05-22 16:32_
+
+---

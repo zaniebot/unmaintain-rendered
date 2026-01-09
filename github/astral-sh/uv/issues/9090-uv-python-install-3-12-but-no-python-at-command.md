@@ -1,0 +1,50 @@
+---
+number: 9090
+title: "uv python install 3.12 -> but no python at command line"
+type: issue
+state: closed
+author: pitosalas
+labels:
+  - duplicate
+assignees: []
+created_at: 2024-11-13T16:40:15Z
+updated_at: 2024-11-14T05:04:24Z
+url: https://github.com/astral-sh/uv/issues/9090
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# uv python install 3.12 -> but no python at command line
+
+---
+
+_Issue opened by @pitosalas on 2024-11-13 16:40_
+
+I am trying to go all uv. I uninstalled python from home-brew so that all I have now is the default python that came with my Mac. It's an old one. So next I did:
+
+$ uv python install 3.12
+
+Which worked without error. But I want 3.12 to be the python I get at a bare shell, even without having created an environment or whatever the equivalent is with uv. I want it to work like pyenv.
+
+Is that possible?
+
+---
+
+_Comment by @zanieb on 2024-11-13 16:54_
+
+Please see https://github.com/astral-sh/uv/issues/6265
+
+---
+
+_Label `duplicate` added by @zanieb on 2024-11-13 16:54_
+
+---
+
+_Closed by @charliermarsh on 2024-11-14 05:03_
+
+---
+
+_Comment by @charliermarsh on 2024-11-14 05:04_
+
+(Thanks for the enthusiasm! Happy to answer more questions but feel free to track the behavior you're looking for in #6265.)
+
+---

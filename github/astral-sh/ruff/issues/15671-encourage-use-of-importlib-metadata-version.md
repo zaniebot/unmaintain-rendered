@@ -1,0 +1,70 @@
+---
+number: 15671
+title: "Encourage use of `importlib.metadata.version`"
+type: issue
+state: open
+author: jakkdl
+labels:
+  - rule
+  - needs-decision
+assignees: []
+created_at: 2025-01-22T12:17:04Z
+updated_at: 2025-01-22T15:53:20Z
+url: https://github.com/astral-sh/ruff/issues/15671
+synced_at: 2026-01-07T13:12:16-06:00
+---
+
+# Encourage use of `importlib.metadata.version`
+
+---
+
+_Issue opened by @jakkdl on 2025-01-22 12:17_
+
+### Description
+
+I only recently found out about [importlib.metadata.version](https://docs.python.org/3/library/importlib.metadata.html#importlib.metadata.version) as a way of getting the installed version of a package; as opposed to reading some global `__version__` variable that may or [may not be](https://github.com/python-trio/trio/pull/3186) properly exported.
+I would love a rule that encouraged the use of the more portable & reliable importlib variant, although I have a feeling that a simple rule that detected any `from ... import __version__` would raise a bunch of false alarms on packages that export it as ways of versioning ... other things than the package itself. (maybe only trigger if importing from the top namespace of a module?) Or idk other weird stuff.
+
+Anyway, thought I'd throw out the idea anyway and see if it sticks.
+
+---
+
+_Referenced in [python-trio/trio#3190](../../python-trio/trio/pulls/3190.md) on 2025-01-22 12:19_
+
+---
+
+_Comment by @AlexWaygood on 2025-01-22 13:10_
+
+This might be controversial for authors of CLIs, since `importlib.metadata` has historically had quite a high import time. Importing `importlib.metadata` and using `importlib.metadata.version()` could mean that running `<your_cli_app> --version` takes longer if it uses `importlib.metadata` than it would if it just checked `__version__`
+
+---
+
+_Label `rule` added by @AlexWaygood on 2025-01-22 13:10_
+
+---
+
+_Label `needs-decision` added by @AlexWaygood on 2025-01-22 13:10_
+
+---
+
+_Comment by @jakkdl on 2025-01-22 15:53_
+
+> This might be controversial for authors of CLIs, since `importlib.metadata` has historically had quite a high import time. Importing `importlib.metadata` and using `importlib.metadata.version()` could mean that running `<your_cli_app> --version` takes longer if it uses `importlib.metadata` than it would if it just checked `__version__`
+
+I was thinking of it more when interfacing with 3rd-party packages rather than within-package use; so you you'd probably want to exclude those imports.
+
+But it definitely is slower, I did some quick benchmarks with
+```python
+import six
+import importlib.metadata
+print(importlib.metadata.version('six')
+```
+vs
+```python
+import six
+print(six.__version__)
+```
+
+and the former averaged .0642s and the latter .0174 for a ~4x difference (py3.13; on py3.9 I got .049 and .022)
+
+---

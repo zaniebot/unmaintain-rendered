@@ -1,0 +1,415 @@
+---
+number: 940
+title: Bug/inconsistency with the help formatting
+type: issue
+state: closed
+author: golddranks
+labels:
+  - C-bug
+assignees: []
+created_at: 2017-04-24T04:20:05Z
+updated_at: 2018-08-02T03:30:05Z
+url: https://github.com/clap-rs/clap/issues/940
+synced_at: 2026-01-07T13:12:19-06:00
+---
+
+# Bug/inconsistency with the help formatting
+
+---
+
+_Issue opened by @golddranks on 2017-04-24 04:20_
+
+Not sure if this is intended or not, but I can't see any reason for this: the value name of trailing var arguments is printed differently in the usage string from how it's printed in the argument list.
+
+### Rust Version
+
+rustc 1.18.0-nightly (2bd4b5c6d 2017-04-23)
+
+### Affected Version of clap
+
+clap 2.23.2
+
+### Expected Behavior Summary
+
+    $ cargo flamegraph --help
+
+Should print out:
+
+```
+cargo-flamegraph
+
+USAGE:
+    cargo flamegraph [FLAGS] [OPTIONS] [<BINFILE>] [-- <ARGS>...]
+
+FLAGS:
+    -h, --help       Prints help information
+    -V, --version    Prints version information
+    -v, --verbose    Prints out more stuff.
+
+OPTIONS:
+    -f, --frequency <HERTZ>    The sampling frequency. By default, this is 99 Hz.
+    -t, --timeout <SECONDS>    Timeout in seconds. By default, there is no timeout.
+
+ARGS:
+    <BINFILE>    The path of the binary to be profiled. If empty, Cargo.toml is searched for a binary.
+    <ARGS>...       Any arguments you wish to pass to the binary being profiled.
+```
+
+### Actual Behavior Summary
+
+It prints out: (Note the discrepancy between `<pass through args>` and `<ARGS>...`)
+
+```
+cargo-flamegraph
+
+USAGE:
+    cargo flamegraph [FLAGS] [OPTIONS] [<BINFILE>] [-- <pass through args>]
+
+FLAGS:
+    -h, --help       Prints help information
+    -V, --version    Prints version information
+    -v, --verbose    Prints out more stuff.
+
+OPTIONS:
+    -f, --frequency <HERTZ>    The sampling frequency. By default, this is 99 Hz.
+    -t, --timeout <SECONDS>    Timeout in seconds. By default, there is no timeout.
+
+ARGS:
+    <BINFILE>    The path of the binary to be profiled. If empty, Cargo.toml is searched for a binary.
+    <ARGS>...       Any arguments you wish to pass to the binary being profiled.
+```
+### Steps to Reproduce the issue
+
+N/A
+
+### Sample Code or Link to Sample Code
+
+```
+fn main() {
+    let matches = App::new("cargo flamegraph")
+        .version("0.1")
+        .bin_name("cargo")
+        .about("Profiles your program and draws a nice flamegraph!")
+        .author("Pyry Kontio")
+        .setting(AppSettings::TrailingVarArg)
+        .subcommand(SubCommand::with_name("flamegraph")
+            .arg(Arg::with_name("verbose")
+                .help("Prints out more stuff.")
+                .short("v")
+                .long("verbose")
+                .multiple(true)
+            )
+            .arg(Arg::with_name("timeout")
+                .help("Timeout in seconds. By default, there is no timeout.")
+                .short("t")
+                .long("timeout")
+                .value_name("SECONDS")
+                .takes_value(true)
+            )
+            .arg(Arg::with_name("frequency")
+                .help("The sampling frequency. By default, this is 99 Hz.")
+                .short("f")
+                .long("frequency")
+                .value_name("HERTZ")
+                .takes_value(true)
+            )
+            .arg(Arg::with_name("binary path")
+                .help("The path of the binary to be profiled. If empty, Cargo.toml is searched for a binary.")
+                .takes_value(true)
+                .value_name("BINFILE")
+            )
+            .arg(Arg::with_name("pass through args")
+                .help("Any arguments you wish to pass to the binary being profiled.")
+                .value_name("ARGS")
+                .last(true)
+                .multiple(true)
+            )
+        )
+        .get_matches();
+}
+```
+
+### Debug output
+
+DEBUG:clap:Parser::add_subcommand: term_w=None, name=flamegraph
+DEBUG:clap:Parser::propogate_settings: self=cargo flamegraph, g_settings=AppFlags(
+    NEEDS_LONG_HELP | NEEDS_LONG_VERSION | NEEDS_SC_HELP | UTF8_NONE | COLOR_AUTO
+)
+DEBUG:clap:Parser::propogate_settings: sc=flamegraph, settings=AppFlags(
+    NEEDS_LONG_HELP | NEEDS_LONG_VERSION | NEEDS_SC_HELP | UTF8_NONE | COLOR_AUTO | DONT_COLLAPSE_ARGS | CONTAINS_LAST
+), g_settings=AppFlags(
+    NEEDS_LONG_HELP | NEEDS_LONG_VERSION | NEEDS_SC_HELP | UTF8_NONE | COLOR_AUTO
+)
+DEBUG:clap:Parser::propogate_settings: self=flamegraph, g_settings=AppFlags(
+    NEEDS_LONG_HELP | NEEDS_LONG_VERSION | NEEDS_SC_HELP | UTF8_NONE | COLOR_AUTO
+)
+DEBUG:clap:Parser::get_matches_with;
+DEBUG:clap:Parser::create_help_and_version;
+DEBUG:clap:Parser::create_help_and_version: Building --help
+DEBUG:clap:Parser::create_help_and_version: Building --version
+DEBUG:clap:Parser::create_help_and_version: Building help
+DEBUG:clap:Parser::get_matches_with: Begin parsing '"flamegraph"' ([102, 108, 97, 109, 101, 103, 114, 97, 112, 104])
+DEBUG:clap:Parser::is_new_arg: arg="flamegraph", Needs Val of=None
+DEBUG:clap:Parser::is_new_arg: Arg::allow_leading_hyphen(false)
+DEBUG:clap:Parser::is_new_arg: probably value
+DEBUG:clap:Parser::is_new_arg: starts_new_arg=false
+DEBUG:clap:Parser::possible_subcommand: arg="flamegraph"
+DEBUG:clap:Parser::get_matches_with: possible_sc=true, sc=Some("flamegraph")
+DEBUG:clap:Parser::parse_subcommand;
+DEBUG:clap:usage::get_required_usage_from: reqs=[], extra=None
+DEBUG:clap:usage::get_required_usage_from: after init desc_reqs=[]
+DEBUG:clap:usage::get_required_usage_from: no more children
+DEBUG:clap:usage::get_required_usage_from: final desc_reqs=[]
+DEBUG:clap:usage::get_required_usage_from: args_in_groups=[]
+DEBUG:clap:Parser::parse_subcommand: About to parse sc=flamegraph
+DEBUG:clap:Parser::parse_subcommand: sc settings=AppFlags(
+    NEEDS_LONG_HELP | NEEDS_LONG_VERSION | NEEDS_SC_HELP | UTF8_NONE | COLOR_AUTO | DONT_COLLAPSE_ARGS | CONTAINS_LAST
+)
+DEBUG:clap:Parser::get_matches_with;
+DEBUG:clap:Parser::create_help_and_version;
+DEBUG:clap:Parser::create_help_and_version: Building --help
+DEBUG:clap:Parser::create_help_and_version: Building --version
+DEBUG:clap:Parser::get_matches_with: Begin parsing '"--help"' ([45, 45, 104, 101, 108, 112])
+DEBUG:clap:Parser::is_new_arg: arg="--help", Needs Val of=None
+DEBUG:clap:Parser::is_new_arg: Arg::allow_leading_hyphen(false)
+DEBUG:clap:Parser::is_new_arg: -- found
+DEBUG:clap:Parser::is_new_arg: starts_new_arg=true
+DEBUG:clap:Parser::possible_subcommand: arg="--help"
+DEBUG:clap:Parser::get_matches_with: possible_sc=false, sc=None
+DEBUG:clap:Parser::parse_long_arg;
+DEBUG:clap:Parser::parse_long_arg: Does it contain '='...No
+DEBUG:clap:Parser::parse_long_arg: Found valid flag '--help'
+DEBUG:clap:Parser::check_for_help_and_version_str;
+DEBUG:clap:Parser::check_for_help_and_version_str: Checking if --help is help or version...Help
+DEBUG:clap:Parser::_help: use_long=true
+DEBUG:clap:Parser::use_long_help: ret=false
+DEBUG:clap:Help::write_parser_help;
+DEBUG:clap:Help::write_parser_help;
+DEBUG:clap:Parser::color;
+DEBUG:clap:Parser::color: Color setting...Auto
+DEBUG:clap:Help::new;
+DEBUG:clap:Help::write_help;
+DEBUG:clap:Help::write_default_help;
+DEBUG:clap:Help::write_bin_name;
+DEBUG:clap:Help::write_version;
+DEBUG:clap:usage::create_usage_no_title;
+DEBUG:clap:usage::get_required_usage_from: reqs=[], extra=None
+DEBUG:clap:usage::get_required_usage_from: after init desc_reqs=[]
+DEBUG:clap:usage::get_required_usage_from: no more children
+DEBUG:clap:usage::get_required_usage_from: final desc_reqs=[]
+DEBUG:clap:usage::get_required_usage_from: args_in_groups=[]
+DEBUG:clap:usage::needs_flags_tag;
+DEBUG:clap:usage::needs_flags_tag:iter: f=verbose;
+DEBUG:clap:Parser::groups_for_arg: name=verbose
+DEBUG:clap:Parser::groups_for_arg: No groups defined
+DEBUG:clap:usage::needs_flags_tag:iter: [FLAGS] required
+DEBUG:clap:usage::get_args_tag;
+DEBUG:clap:usage::get_args_tag:iter:binary path:
+DEBUG:clap:Parser::groups_for_arg: name=binary path
+DEBUG:clap:Parser::groups_for_arg: No groups defined
+DEBUG:clap:usage::get_args_tag:iter: 1 Args not required or hidden
+DEBUG:clap:usage::get_args_tag:iter: Exactly one, returning binary path
+DEBUG:clap:usage::create_help_usage: pass through args has .last(true)
+DEBUG:clap:usage::create_help_usage: usage=cargo flamegraph [FLAGS] [OPTIONS] [<BINFILE>] [-- <pass through args>]
+DEBUG:clap:Help::write_all_args;
+DEBUG:clap:Help::write_args;
+DEBUG:clap:Help::write_args: Current Longest...2
+DEBUG:clap:Help::write_args: New Longest...9
+DEBUG:clap:Help::write_args: Current Longest...9
+DEBUG:clap:Help::write_args: New Longest...9
+DEBUG:clap:Help::write_args: Current Longest...9
+DEBUG:clap:Help::write_args: New Longest...9
+DEBUG:clap:Help::write_arg;
+DEBUG:clap:Help::short;
+DEBUG:clap:Help::long;
+DEBUG:clap:Help::val: arg=--help
+DEBUG:clap:Help::spec_vals: a=--help
+DEBUG:clap:Help::val: Has switch...Yes
+DEBUG:clap:Help::val: force_next_line...false
+DEBUG:clap:Help::val: nlh...false
+DEBUG:clap:Help::val: taken...21
+DEBUG:clap:Help::val: help_width > (width - taken)...23 > (175 - 21)
+DEBUG:clap:Help::val: longest...9
+DEBUG:clap:Help::val: next_line...No
+DEBUG:clap:write_spaces!: num=7
+DEBUG:clap:Help::help;
+DEBUG:clap:Help::help: Next Line...false
+DEBUG:clap:Help::help: Too long...No
+DEBUG:clap:Help::write_arg;
+DEBUG:clap:Help::short;
+DEBUG:clap:Help::long;
+DEBUG:clap:Help::val: arg=--version
+DEBUG:clap:Help::spec_vals: a=--version
+DEBUG:clap:Help::val: Has switch...Yes
+DEBUG:clap:Help::val: force_next_line...false
+DEBUG:clap:Help::val: nlh...false
+DEBUG:clap:Help::val: taken...21
+DEBUG:clap:Help::val: help_width > (width - taken)...26 > (175 - 21)
+DEBUG:clap:Help::val: longest...9
+DEBUG:clap:Help::val: next_line...No
+DEBUG:clap:write_spaces!: num=4
+DEBUG:clap:Help::help;
+DEBUG:clap:Help::help: Next Line...false
+DEBUG:clap:Help::help: Too long...No
+DEBUG:clap:Help::write_arg;
+DEBUG:clap:Help::short;
+DEBUG:clap:Help::long;
+DEBUG:clap:Help::val: arg=--verbose
+DEBUG:clap:Help::spec_vals: a=--verbose
+DEBUG:clap:Help::val: Has switch...Yes
+DEBUG:clap:Help::val: force_next_line...false
+DEBUG:clap:Help::val: nlh...false
+DEBUG:clap:Help::val: taken...21
+DEBUG:clap:Help::val: help_width > (width - taken)...22 > (175 - 21)
+DEBUG:clap:Help::val: longest...9
+DEBUG:clap:Help::val: next_line...No
+DEBUG:clap:write_spaces!: num=4
+DEBUG:clap:Help::help;
+DEBUG:clap:Help::help: Next Line...false
+DEBUG:clap:Help::help: Too long...No
+DEBUG:clap:Help::write_args;
+DEBUG:clap:Help::write_args: Current Longest...2
+DEBUG:clap:OptBuilder::fmt
+DEBUG:clap:Help::write_args: New Longest...19
+DEBUG:clap:Help::write_args: Current Longest...19
+DEBUG:clap:OptBuilder::fmt
+DEBUG:clap:Help::write_args: New Longest...19
+DEBUG:clap:Help::write_arg;
+DEBUG:clap:Help::short;
+DEBUG:clap:Help::long;
+DEBUG:clap:Help::val: arg=DEBUG:clap:OptBuilder::fmt
+--frequency <HERTZ>
+DEBUG:clap:Help::spec_vals: a=DEBUG:clap:OptBuilder::fmt
+--frequency <HERTZ>
+DEBUG:clap:Help::val: Has switch...Yes
+DEBUG:clap:Help::val: force_next_line...false
+DEBUG:clap:Help::val: nlh...false
+DEBUG:clap:Help::val: taken...31
+DEBUG:clap:Help::val: help_width > (width - taken)...50 > (175 - 31)
+DEBUG:clap:Help::val: longest...19
+DEBUG:clap:Help::val: next_line...No
+DEBUG:clap:OptBuilder::fmt
+DEBUG:clap:write_spaces!: num=4
+DEBUG:clap:Help::help;
+DEBUG:clap:Help::help: Next Line...false
+DEBUG:clap:Help::help: Too long...No
+DEBUG:clap:Help::write_arg;
+DEBUG:clap:Help::short;
+DEBUG:clap:Help::long;
+DEBUG:clap:Help::val: arg=DEBUG:clap:OptBuilder::fmt
+--timeout <SECONDS>
+DEBUG:clap:Help::spec_vals: a=DEBUG:clap:OptBuilder::fmt
+--timeout <SECONDS>
+DEBUG:clap:Help::val: Has switch...Yes
+DEBUG:clap:Help::val: force_next_line...false
+DEBUG:clap:Help::val: nlh...false
+DEBUG:clap:Help::val: taken...31
+DEBUG:clap:Help::val: help_width > (width - taken)...52 > (175 - 31)
+DEBUG:clap:Help::val: longest...19
+DEBUG:clap:Help::val: next_line...No
+DEBUG:clap:OptBuilder::fmt
+DEBUG:clap:write_spaces!: num=4
+DEBUG:clap:Help::help;
+DEBUG:clap:Help::help: Next Line...false
+DEBUG:clap:Help::help: Too long...No
+DEBUG:clap:Help::write_args_unsorted;
+DEBUG:clap:Help::write_arg;
+DEBUG:clap:Help::short;
+DEBUG:clap:Help::long;
+DEBUG:clap:Help::val: arg=<BINFILE>
+DEBUG:clap:Help::spec_vals: a=<BINFILE>
+DEBUG:clap:Help::val: Has switch...No, and not next_line
+DEBUG:clap:write_spaces!: num=4
+DEBUG:clap:Help::help;
+DEBUG:clap:Help::help: Next Line...false
+DEBUG:clap:Help::help: Too long...No
+DEBUG:clap:Help::write_arg;
+DEBUG:clap:Help::short;
+DEBUG:clap:Help::long;
+DEBUG:clap:Help::val: arg=<ARGS>
+DEBUG:clap:Help::spec_vals: a=<ARGS>
+DEBUG:clap:Help::val: Has switch...No, and not next_line
+DEBUG:clap:write_spaces!: num=7
+DEBUG:clap:Help::help;
+DEBUG:clap:Help::help: Next Line...false
+DEBUG:clap:Help::help: Too long...No
+cargo-flamegraph
+
+USAGE:
+    cargo flamegraph [FLAGS] [OPTIONS] [<BINFILE>] [-- <pass through args>]
+
+FLAGS:
+    -h, --help       Prints help information
+    -V, --version    Prints version information
+    -v, --verbose    Prints out more stuff.
+
+OPTIONS:
+    -f, --frequency <HERTZ>    The sampling frequency. By default, this is 99 Hz.
+    -t, --timeout <SECONDS>    Timeout in seconds. By default, there is no timeout.
+
+ARGS:
+    <BINFILE>    The path of the binary to be profiled. If empty, Cargo.toml is searched for a binary.
+    <ARGS>...       Any arguments you wish to pass to the binary being profiled.
+
+
+---
+
+_Comment by @kbknapp on 2017-05-05 01:00_
+
+Sorry for the long wait. Would doing this solve it?
+
+```rust
+ .arg(Arg::with_name("ARGS")
+                .help("Any arguments you wish to pass to the binary being profiled.")
+                .last(true)
+                .multiple(true)
+            )
+```
+
+Although this still probably a bug because it *should* be using the value name.
+
+---
+
+_Label `C: args` added by @kbknapp on 2017-05-05 01:01_
+
+---
+
+_Label `C: usage strings` added by @kbknapp on 2017-05-05 01:01_
+
+---
+
+_Label `D: easy` added by @kbknapp on 2017-05-05 01:01_
+
+---
+
+_Label `P2: need to have` added by @kbknapp on 2017-05-05 01:01_
+
+---
+
+_Label `T: bug` added by @kbknapp on 2017-05-05 01:01_
+
+---
+
+_Label `W: 2.x` added by @kbknapp on 2017-05-05 01:01_
+
+---
+
+_Comment by @golddranks on 2017-05-06 07:06_
+
+That does its job the as a workaround, and actually this didn't provide any real problem to *me* 😄 I just thought this might be an unintended inconsistency, so I reported it.
+
+---
+
+_Added to milestone `2.24.1` by @kbknapp on 2017-05-06 18:14_
+
+---
+
+_Closed by @kbknapp on 2017-05-07 14:46_
+
+---
+
+_Comment by @kbknapp on 2017-05-07 14:48_
+
+2.24.1 is on crates.io
+
+---

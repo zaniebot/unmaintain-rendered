@@ -1,0 +1,68 @@
+---
+number: 2555
+title: "Allow different documentation for subcommands for SUBCOMMANDS list and subcommand's help"
+type: issue
+state: closed
+author: anatawa12
+labels: []
+assignees: []
+created_at: 2021-06-20T05:36:17Z
+updated_at: 2021-06-20T09:58:35Z
+url: https://github.com/clap-rs/clap/issues/2555
+synced_at: 2026-01-07T13:12:19-06:00
+---
+
+# Allow different documentation for subcommands for SUBCOMMANDS list and subcommand's help
+
+---
+
+_Issue opened by @anatawa12 on 2021-06-20 05:36_
+
+### Please complete the following tasks
+
+- [X] I have searched the [discussions](https://github.com/clap-rs/clap/discussions)
+- [X] I have searched the existing issues
+
+### Clap Version
+
+= 3.0.0-beta.2
+
+### Describe your use case
+
+For a subcommand with long documentation, in the `SUBCOMMANDS` list in parent command, I want to show a summary of a command instead of long documentation.
+
+### Describe the solution you'd like
+
+Add an option to show only first line in the documentation on the subcommand's struct or field.
+```
+/// Simple description
+/// 
+/// long documentation
+#[derive(Clap)]
+#[clap(single_line_doc_in_parent_doc)]
+pub struct SubcommandOptions {
+}
+```
+
+### Alternatives, if applicable
+
+_No response_
+
+### Additional Context
+
+I'm using #[derive(Clap)] pattern.
+
+
+---
+
+_Label `T: new feature` added by @anatawa12 on 2021-06-20 05:36_
+
+---
+
+_Closed by @pksunkara on 2021-06-20 09:58_
+
+---
+
+_Locked by @clap-rs on 2021-06-20 09:58_
+
+---

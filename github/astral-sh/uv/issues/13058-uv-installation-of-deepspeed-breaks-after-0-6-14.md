@@ -1,0 +1,116 @@
+---
+number: 13058
+title: uv installation of deepspeed breaks after 0.6.14
+type: issue
+state: open
+author: mritterfigma
+labels:
+  - bug
+assignees: []
+created_at: 2025-04-22T17:48:21Z
+updated_at: 2025-04-22T19:34:23Z
+url: https://github.com/astral-sh/uv/issues/13058
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# uv installation of deepspeed breaks after 0.6.14
+
+---
+
+_Issue opened by @mritterfigma on 2025-04-22 17:48_
+
+### Summary
+
+I have a project that installs `deepspeed==0.16.5`. This was working without issue, but it broke in the latest versions of uv (released within the last 24h). Pinning my uv to `0.6.14` fixes the issue.
+
+I found error text like:
+```
+12.38    Building deepspeed==0.16.5
+12.43  Downloaded llguidance
+12.62  Downloaded gradio
+12.74  Downloaded scikit-image
+13.43  Downloaded numpy
+13.54  Downloaded duckdb
+13.78  Downloaded wandb
+14.19  Downloaded gensim
+14.43  Downloaded mlflow
+15.24  Downloaded scipy
+15.57  Downloaded pyarrow
+16.27  Downloaded opencv-python
+16.39  Downloaded onnx
+16.75  Downloaded bitsandbytes
+17.08  Downloaded cupy-cuda12x
+17.11  Downloaded ray
+18.00  Downloaded plotly
+18.10   × Failed to build `deepspeed==0.16.5`
+18.10   ├─▶ The build backend returned an error
+18.11   ╰─▶ Call to `setuptools.build_meta:__legacy__.build_wheel` failed (exit
+18.11       status: 1)
+18.11 
+18.11       [stdout]
+18.11       [2025-04-22 17:17:57,063] [WARNING]
+18.11       [real_accelerator.py:194:get_accelerator] Setting accelerator to CPU. If
+18.11       you have GPU or other accelerator, we were unable to detect it.
+18.11       [2025-04-22 17:17:57,075] [INFO]
+18.11       [real_accelerator.py:239:get_accelerator] Setting ds_accelerator to cpu
+18.11       (auto detect)
+18.11       [2025-04-22 17:17:57,240] [WARNING]
+18.11       [real_accelerator.py:194:get_accelerator] Setting accelerator to CPU. If
+18.11       you have GPU or other accelerator, we were unable to detect it.
+18.11       [2025-04-22 17:17:57,242] [INFO]
+18.11       [real_accelerator.py:239:get_accelerator] Setting ds_accelerator to cpu
+18.11       (auto detect)
+18.11       [WARNING] Torch did not find cuda available, if cross-compiling or
+18.11       running with cpu only you can ignore this message. Adding compute
+18.11       capability for Pascal, Volta, and Turing (compute capabilities 6.0,
+18.11       6.1, 6.2)
+```
+
+Not sure about root cause, seems to be some weird interaction between latest uv and cuda (can't find the accelerator)
+
+### Platform
+
+Ubuntu 22.04
+
+### Version
+
+0.6.15
+
+### Python version
+
+3.11.12
+
+---
+
+_Label `bug` added by @mritterfigma on 2025-04-22 17:48_
+
+---
+
+_Comment by @charliermarsh on 2025-04-22 18:34_
+
+I'm struggling to see anything in the release that could've affected this. Where are you performing your build? Are you certain that you're not (e.g.) getting a cached build when you revert back to 0.6.14?
+
+---
+
+_Comment by @mritterfigma on 2025-04-22 19:34_
+
+I'm performing my build in Docker, basing off of a base image from AWS Sagemaker (https://github.com/aws/deep-learning-containers/blob/master/available_images.md#available-deep-learning-containers-images). I don't think `uv` is a red herring masking some caching problem, I think the problem is actually with `uv`, but I'm not sure how to prove that. Here is a test Dockerfile, you can toggle between uv versions and observe `docker build` succeed and then fail. Note per the link that you have to do a login to pull the base image. Not sure if the issue would repro with a different base image.
+
+```
+FROM 763104351884.dkr.ecr.us-west-2.amazonaws.com/pytorch-training:2.6.0-gpu-py312-cu126-ubuntu22.04-sagemaker@sha256:5e85beba891d763fae73069cb7189feac0b1d458148ae9bcfed93deee7576cf8
+
+# ADD https://astral.sh/uv/install.sh /uv-installer.sh <--- FAILURE
+ADD https://astral.sh/uv/0.6.14/install.sh /uv-installer.sh
+RUN sh /uv-installer.sh && rm /uv-installer.sh
+ENV PATH="/root/.local/bin/:$PATH"
+
+RUN uv venv --python 3.11 /venv
+ENV PATH="/venv/bin:$PATH"
+
+RUN uv pip install pip setuptools==79.0.0 wheel==0.45.1 psutil==7.0.0 --no-cache
+RUN uv pip install torch==2.6.0 --no-build-isolation --no-cache
+RUN DS_BUILD_CPU_ADAM=1 uv pip install --no-build-isolation --index-strategy unsafe-best-match deepspeed==0.16.5 --no-cache
+
+```
+
+---

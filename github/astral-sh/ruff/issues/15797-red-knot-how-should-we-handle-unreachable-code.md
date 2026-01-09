@@ -1,0 +1,361 @@
+---
+number: 15797
+title: "[red-knot] How should we handle unreachable code?"
+type: issue
+state: closed
+author: dcreager
+labels:
+  - ty
+assignees: []
+created_at: 2025-01-28T22:15:53Z
+updated_at: 2025-05-07T15:22:22Z
+url: https://github.com/astral-sh/ruff/issues/15797
+synced_at: 2026-01-07T13:12:16-06:00
+---
+
+# [red-knot] How should we handle unreachable code?
+
+---
+
+_Issue opened by @dcreager on 2025-01-28 22:15_
+
+We can statically determine that code is unreachable, due to terminal statements or statically known branches:
+
+```py
+def f():
+    x = 1
+    return
+    reveal_type(x)  # ???
+
+def g():
+    x = 1
+    if True:
+        return
+    reveal_type(x)  # ???
+```
+
+We should consider how we want to handle this.  I think the uncontroversial part is that we should produce a (possibly optional?) diagnostic about the code being unreachable.  But after that, there are several options:
+
+- We could mark all bindings as not visible once we reach a terminal statement.  That would produce an `unresolved-reference` errors.  This seems least helpful, since it seems likely that the user either (a) didn't intend for the code to become unreachable or (b) is inserting e.g. early returns as part of a debugging process.  In both cases the user expects the supposedly unreachable code to be well-typed, and would want diagnostics about ways that it's not.
+
+- We could consider the bindings visible, but update their inferred type to be `Never` to signify that those symbols wouldn't have any values in the unreachable code.  This is arguably the most accurate interpretation, but doesn't provide much value over the "this code is unreachable" diagnostic.
+
+- We could type-check the unreachable code as if it were reachable.  Note that this would only apply to truly unreachable code, but not in something like:
+
+  ```py
+  def h(cond: bool):
+      x = 1
+      if cond:
+          return
+      reveal_type(x)  # revealed: Literal[1]
+  ```
+
+  Here, the `return` statement isn't always executed, and so the `reveal_type` is _not_ unreachable, and the obviously correct result is `Literal[1]`.
+
+
+We should also look into what mypy and pyright do here, to see if there's an obvious community consensus we should follow.
+
+---
+
+_Label `red-knot` added by @dcreager on 2025-01-28 22:15_
+
+---
+
+_Comment by @dcreager on 2025-01-28 22:16_
+
+Per @AlexWaygood: https://github.com/astral-sh/ruff/pull/15676#discussion_r1932611116
+
+> Mypy has terrible UX if it sees a `reveal_type` in a block of code it considers unreachable: it just doesn't emit any diagnostic for the `reveal_type` call at all. This has been the source of many bug reports at mypy over the years, because the rule that tells you off for having unreachable code in the first place is disabled by default, even if you opt into mypy's `--strict` flag. We shouldn't do what mypy does!
+
+
+---
+
+_Referenced in [astral-sh/ruff#15676](../../astral-sh/ruff/pulls/15676.md) on 2025-01-28 22:16_
+
+---
+
+_Comment by @sharkdp on 2025-01-29 09:36_
+
+> since it seems likely that the user either (a) didn't intend for the code to become unreachable or (b) is inserting e.g. early returns as part of a debugging process. In both cases the user expects the supposedly unreachable code to be well-typed, and would want diagnostics about ways that it's not.
+
+I think there is also a valid use case (c) where the user *intends* the code to be unreachable, but only in certain scenarios. This would be the case for `sys.version_info`/`sys.platform` checks that would lead to unreachable code if checked on a version/platform that does not meet the criterion:
+```py
+if sys.version_info >= (3, 11):
+    # [code that makes use of symbols only available in 3.11+]
+```
+
+> * We could type-check the unreachable code as if it were reachable.
+
+I think this could lead to many false-positives for the scenario (c) above, because we would emit unresolved-reference diagnostics for all 3.11+ symbols, if we check that code with a target version <3.11.
+
+As @AlexWaygood pointed out recently: we shouldn't even treat that use case (c) in the same way that we treat (a) and (b).  Of course we would/could still gray-out the code inside that conditional if the target version is <3.11, but emitting a unreachable-code diagnostic for this code section would be rather annoying, I believe.
+
+> We can statically determine that code is unreachable, due to terminal statements or statically known branches:
+
+There is also a distinct third option, where we call a function that does not return (has return type `Never`/`NoReturn`). Like a function that always raises, goes into an infinite loop or that aborts the process.
+
+See also: [this section](https://github.com/microsoft/pyright/blob/main/docs/type-concepts-advanced.md#reachability) in the Pyright documentation.
+
+---
+
+_Comment by @mitsuhiko on 2025-01-29 19:10_
+
+Personal feedback: my expectation as a user is that the type inference is unchanged because of the presence of a known return. The reason is that for debugging purposes it's very common to introduce a temporary early return that is unconditional.
+
+Now there are subtleties but I think that the right thing to do is to type check it as if it was reachable.
+
+---
+
+_Comment by @eltoder on 2025-01-29 20:22_
+
+I think in general, if some code is provably unreachable, this warrants a warning, but should not by itself change types of anything. If the code is unreachable because, for example, you eliminated all alternatives in a union, that should be a warning, plus the union type should decay to Never.
+
+---
+
+_Referenced in [astral-sh/ruff#15817](../../astral-sh/ruff/pulls/15817.md) on 2025-02-05 14:53_
+
+---
+
+_Referenced in [astral-sh/ruff#14014](../../astral-sh/ruff/issues/14014.md) on 2025-02-05 22:49_
+
+---
+
+_Comment by @sharkdp on 2025-02-22 09:06_
+
+Example where this leads to false positive diagnostics:
+```py
+def f(arg):
+    if True:
+        return arg
+    return arg  # Name `arg` used when not defined
+```
+
+---
+
+_Comment by @sharkdp on 2025-03-10 08:11_
+
+Another instance of this that I found highly irritating until I minified it and found that there was an infinite while loop much further down in the function that causes the public symbol to be invisible:
+
+```py
+def outer():
+    x = 1
+
+    def inner():
+        return x  # Name `x` used when not defined
+
+    # imagine many lines of code here
+
+    while True:
+        pass
+```
+
+---
+
+_Referenced in [astral-sh/ruff#15697](../../astral-sh/ruff/issues/15697.md) on 2025-03-10 11:30_
+
+---
+
+_Comment by @dcreager on 2025-03-10 14:00_
+
+> Another instance of this that I found highly irritating until I minified it and found that there was an infinite while loop much further down in the function that causes the public symbol to be invisible
+
+That example would also be addressed by astral-sh/ty#210, if we choose to consider the public type of `x` to include all of the definitions in its scope, not just the ones that are still visible at end-of-scope.
+
+---
+
+_Added to milestone `Red Knot Alpha` by @carljm on 2025-03-27 18:33_
+
+---
+
+_Referenced in [astral-sh/ruff#17016](../../astral-sh/ruff/issues/17016.md) on 2025-03-27 19:27_
+
+---
+
+_Comment by @carljm on 2025-03-27 19:59_
+
+> my expectation as a user is that the type inference is unchanged because of the presence of a known return
+
+I understand why this could be desirable for simple cases, but I think it's a very hard answer to generalize to all dead code in any consistent way.
+
+Consider this example:
+
+```py
+def f(flag: bool):
+    x = 1
+    if flag:
+        x = 2
+        return
+        reveal_type(x)  # we currently consider `x` to be undefined here
+    reveal_type(x)  # Literal[1]
+```
+
+The behavior of the two different `reveal_type` here are very closely connected in our control-flow model. It's important here that we understand in the final `reveal_type` that `x` cannot be `Literal[2]`. But it's difficult to split this understanding from our (correct!) understanding that, after the "known return" in the branch, `x` has no visible definitions at the point of the first `reveal_type` (because this point is not reachable at all.) It is not clear to me yet how to implement "type check unreachable code 'as normal'", even as a special case.
+
+I think in the short term at least, the minimal right answer here is that, if we find a symbol has no visible definitions, we should check if we are in unreachable code, and if so we should not emit an undefined reference diagnostic, we should just silently infer the type as `Never` instead.
+
+---
+
+_Referenced in [astral-sh/ruff#17049](../../astral-sh/ruff/issues/17049.md) on 2025-03-28 20:04_
+
+---
+
+_Comment by @AlexWaygood on 2025-03-28 20:12_
+
+We just closed out astral-sh/ruff#17049 as another duplicate of this. Note that the diagnostic in that case is `[unresolved-import]` rather than `[unresolved-reference]`.
+
+---
+
+_Assigned to @sharkdp by @sharkdp on 2025-04-02 14:33_
+
+---
+
+_Comment by @sharkdp on 2025-04-03 15:39_
+
+Here's my current analysis of the situation. I think there are two cases that need to be distinguished:
+
+The first case is something like
+```py
+def f():
+    x = 1
+
+    return  # early return, maybe for debugging
+
+    x  # no diagnostic should be emitted here.
+```
+this is what was just fixed in https://github.com/astral-sh/ruff/pull/17169.
+
+The other case is something like:
+```py
+import sys
+
+if sys.platform == "win32":
+    def some_special_windows_api(): ...
+
+# later, or in another module:
+
+if sys.platform == "win32": # this could be the same condition, or a narrower condition
+    some_special_windows_api()  # no diagnostic should be emitted here
+```
+which seems much harder to solve. The unreachable-code part of this is when we statically *know* that the condition is false. In that case, both branches become unreachable and it's "only" a matter of silencing the diagnostic (that part is still missing). The easy part of this is when we statically know that the condition is true, because we handle that correctly already. The hard part about this is when we don't know what `sys.platform` is.
+
+If we think of it in more general terms:
+```py
+if <some condition>:
+    x = …
+
+# arbitrary code in between
+
+if <same or narrower condition>:
+    use(x)
+```
+it becomes clear that we can only regard `x` to be definitely-bound if those conditions only involve type-check-time constants. Otherwise, the truthiness of the condition could change between those two branches. So it seems to me that we need to record the set of conditions under which a particular symbol has been defined, possibly limited to a set of known constants like `sys.version_info`, `sys.platform`, and `TYPE_CHECKING`. When we later encounter a use of that symbol, we need to check if the current set of conditions is narrower than or equal to the set under which it has been defined. For example:
+```py
+if sys.version_info >= (3, 9) and sys.version_info < (3, 11):
+    if sys.platform == "win32":
+        x = …  # record set of constraints: {platform: "win32", version_info: [3.9, 3.11)}
+        if some_runtime_check():
+            y = … # no constraints need to be recorded; we can never know if that will be available later on
+
+if sys.platform == "win32":
+    use(x)  # not okay
+    if sys.version_info >= (3, 10):
+        use(x)  # not okay
+        if sys.version_info == (3, 10):
+            use(x)  # okay!
+            use(y)  # not okay, `y` is possibly unbound.
+```
+
+---
+
+_Comment by @carljm on 2025-04-03 17:21_
+
+Correct me if I'm wrong: for type-checking-time-constants that we always require a known single value for in our type-checking configuration environment (this includes both `sys.version_info` and `TYPE_CHECKING`, which is always `True` at type-check time), there's really no issue here (besides the general handling of unreachable branches). Every analyzable condition involving `sys.version_info` will resolve to known-False or known-True based on the configured Python version, and every code branch guarded by a `sys.version_info` check will either be dead code, or will be code that we should analyze, and any names it uses should be reported as bound or not based on the known reachability of their definitions, according to that same configured Python version. So I don't think we need to implement any new constraint-tracking system for `sys.version_info` or for `TYPE_CHECKING`.
+
+So I think the only place we need any additional handling is for `sys.platform`, because we don't require our type-checking environment to provide a single value for it. (There is also the possibility that in future we could allow a single type-check to cover multiple supported Python versions simultaneously, in which case we would want this same handling for `sys.version_info` as well.)
+
+The more specific issue tracking this already is https://github.com/astral-sh/ty/issues/160. I think we should probably prefer to discuss it there, since it's not really an issue of unreachable code exactly, it's an issue of understanding the relationship between multiple different tests of a type-checking-time-constant, even when the result of those checks can't be statically known (so we don't know if the code is unreachable.) There's already mention there of some ideas we've discussed previously of representing these constraints using intersections with a type like `PlatformIs('win32')`.
+
+---
+
+_Comment by @sharkdp on 2025-04-04 08:25_
+
+> Correct me if I'm wrong: for type-checking-time-constants that we always require a known single value for in our type-checking configuration environment (this includes both `sys.version_info` and `TYPE_CHECKING`, which is always `True` at type-check time), there's really no issue here (besides the general handling of unreachable branches). Every analyzable condition involving `sys.version_info` will resolve to known-False or known-True based on the configured Python version, and every code branch guarded by a `sys.version_info` check will either be dead code, or will be code that we should analyze, and any names it uses should be reported as bound or not based on the known reachability of their definitions, according to that same configured Python version. So I don't think we need to implement any new constraint-tracking system for `sys.version_info` or for `TYPE_CHECKING`.
+
+Correct.
+
+
+
+> So I think the only place we need any additional handling is for `sys.platform`, because we don't require our type-checking environment to provide a single value for it. (There is also the possibility that in future we could allow a single type-check to cover multiple supported Python versions simultaneously, in which case we would want this same handling for `sys.version_info` as well.)
+> 
+> The more specific issue tracking this already is [#16983](https://github.com/astral-sh/ty/issues/160). I think we should probably prefer to discuss it there, since it's not really an issue of unreachable code exactly, it's an issue of understanding the relationship between multiple different tests of a type-checking-time-constant, even when the result of those checks can't be statically known (so we don't know if the code is unreachable.) There's already mention there of some ideas we've discussed previously of representing these constraints using intersections with a type like `PlatformIs('win32')`.
+
+Yes, good idea.
+
+
+I will keep this ticket open because there is one case that we still don't handle:
+```py
+import sys
+
+if sys.version_info >= (3, 10):
+    aiter  # checking this on 3.9 leads to "unresolved reference"
+```
+Similarly, we emit an error here:
+```py
+if False:
+    x = 1
+
+if False:
+    x  # unresolved-reference
+```
+
+---
+
+_Referenced in [astral-sh/ruff#17286](../../astral-sh/ruff/pulls/17286.md) on 2025-04-08 07:49_
+
+---
+
+_Comment by @sharkdp on 2025-04-09 10:04_
+
+We now handle the cases mentioned above, but I found some new problems. They are documented in the following test cases:
+
+- [x] https://github.com/astral-sh/ruff/blob/main/crates/red_knot_python_semantic/resources/mdtest/unreachable.md#attributes (Draft PR which attempts to solve this: https://github.com/astral-sh/ruff/pull/17305)
+- [x] https://github.com/astral-sh/ruff/blob/main/crates/red_knot_python_semantic/resources/mdtest/unreachable.md#imports (can follow a similar strategy)
+- [x] https://github.com/astral-sh/ruff/blob/main/crates/red_knot_python_semantic/resources/mdtest/unreachable.md#use-of-unreachable-symbols-in-type-annotations-or-as-class-bases (may be solvable by an easier fix)
+- [x] https://github.com/astral-sh/ruff/blob/main/crates/red_knot_python_semantic/resources/mdtest/unreachable.md#nested-scopes (may require "solving" https://github.com/astral-sh/ty/issues/210 first?)
+
+---
+
+_Comment by @sharkdp on 2025-04-10 20:49_
+
+With my latest PR merged, we now have an initial version of handling unreachable-code sections in Red Knot. That is, we do not emit false positives (that I know of) in these sections.
+
+Our handling differs quite a bit from what other type checkers seem to do (which seems to be: silence all diagnostics in unreachable sections that match a certain pattern / do not require type inference to be detected as unreachable).
+
+There are two things that we do differently: (1) we do not distinguish between "unreachable because we detected a certain pattern like if sys.version_info >= …" and "unreachable because we did the full control flow analysis and type checking and now determined that this section is unreachable". And (2) we do not silence all diagnostics, but only those that would lead to false positives otherwise.
+
+In code:
+```py
+import sys
+
+# Unreachable branch with known `version_info` pattern
+if sys.version_info >= (3, 20):
+    x: int = "abc"       # Red Knot:            `Literal["abc"]` is not assignable to `int`
+                         # Other type checkers: no diagnostic
+
+    print(unknown_name)  # Red Knot:            no diagnostic
+                         # Other type checkers: no diagnostic
+
+# Unreachable branch that requires type inference
+# (Red Knot treats this the same way, but other type checkers do not)
+if 1 + 2 == 5:
+    print(unknown_name)  # Red Knot:            no diagnostic
+                         # Other type checkers: `unknown_name` is not defined
+```
+
+I'm going to close this ticket for now, but let me know if you have any feedback on the approach we took here.
+
+---
+
+_Closed by @sharkdp on 2025-04-10 20:49_
+
+---

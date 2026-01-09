@@ -1,0 +1,73 @@
+---
+number: 11597
+title: error from version 4.3 on Windows 7
+type: issue
+state: closed
+author: melassa
+labels:
+  - documentation
+  - windows
+assignees: []
+created_at: 2024-05-29T09:47:48Z
+updated_at: 2024-05-30T07:49:39Z
+url: https://github.com/astral-sh/ruff/issues/11597
+synced_at: 2026-01-07T13:12:15-06:00
+---
+
+# error from version 4.3 on Windows 7
+
+---
+
+_Issue opened by @melassa on 2024-05-29 09:47_
+
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* List of keywords you searched for before creating this issue. Write them down here so that others can find this issue more easily and help provide feedback.
+  e.g. "RUF001", "unused variable", "Jupyter notebook"
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+From version 4.3 ruff.exe on Windows 7 with python 3.8 generates a 0C0000005 error when launched.
+It is no more compatible? I do not see anything in the ruff changelog.
+
+
+---
+
+_Label `windows` added by @AlexWaygood on 2024-05-29 10:13_
+
+---
+
+_Comment by @MichaReiser on 2024-05-29 10:41_
+
+I think that's due to https://github.com/astral-sh/ruff/pull/11260 and Rust now requiring [Win 10](https://blog.rust-lang.org/2024/05/02/Rust-1.78.0.html#compatibility-notes)
+
+---
+
+_Comment by @melassa on 2024-05-29 10:56_
+
+Yes, I see, Rust 1.78 requires W10. A note on the changelog?
+
+---
+
+_Comment by @MichaReiser on 2024-05-29 11:09_
+
+Yeah, that seems reasonable and I should probably have waited with this change until Ruff 0.5.
+
+---
+
+_Label `documentation` added by @MichaReiser on 2024-05-30 07:28_
+
+---
+
+_Referenced in [astral-sh/ruff#11613](../../astral-sh/ruff/pulls/11613.md) on 2024-05-30 07:31_
+
+---
+
+_Closed by @MichaReiser on 2024-05-30 07:49_
+
+---

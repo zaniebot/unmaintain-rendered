@@ -1,0 +1,121 @@
+---
+number: 8605
+title: "[D417] Missing argument descriptions in the docstring for `**kwargs` and `*args` should be allowed"
+type: issue
+state: closed
+author: mikeweltevrede
+labels:
+  - question
+  - docstring
+assignees: []
+created_at: 2023-11-10T15:46:06Z
+updated_at: 2023-11-11T15:07:24Z
+url: https://github.com/astral-sh/ruff/issues/8605
+synced_at: 2026-01-07T13:12:15-06:00
+---
+
+# [D417] Missing argument descriptions in the docstring for `**kwargs` and `*args` should be allowed
+
+---
+
+_Issue opened by @mikeweltevrede on 2023-11-10 15:46_
+
+I would expect D417 to not require `*args` and `**kwargs` to be put in the descriptions. Maybe this is not good practice, in which case please let me know.
+
+* A minimal code snippet that reproduces the bug.
+```
+def f(*args, **kwargs):
+    """Description"""
+```
+
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+`pre-commit install` with the following config:
+
+```
+repos:
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.1.4
+    hooks:
+      - id: ruff
+      - id: ruff-format
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.5.0
+    hooks:
+      - id: check-ast
+      - id: check-case-conflict
+      - id: check-json
+      - id: check-toml
+      - id: check-yaml
+      - id: end-of-file-fixer
+      - id: name-tests-test
+        exclude: ^tests/utils/
+      - id: no-commit-to-branch
+      - id: trailing-whitespace
+
+```
+
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+
+```
+[tool.poetry.group.dev.dependencies]
+pre-commit = "3.5.0"
+ruff = "0.1.4"
+pre-commit-hooks = "4.5.0"
+
+[tool.ruff.lint]
+extend-select = [
+    "D",  # pydocstyle
+]
+ignore = ["B026", "D100", "D415", "ANN101", "ANN102", "ANN002", "ANN003"]
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+```
+
+* The current Ruff version (`ruff --version`).
+    * 0.1.4
+
+
+---
+
+_Comment by @charliermarsh on 2023-11-10 18:59_
+
+Ah yeah, I think this is correct, though it should only be triggering if you include an `Args:` section in your docstring. If you _do_ document the arguments, I believe it's intended that you also document the `*args` and `**kwargs`, and this matches `pydocstyle` behavior.
+
+If your signature is _just_ `*args` and `**kwargs` as above, then it probably makes sense to omit the `Args:` section altogether -- if I run `ruff check --select D417` on the example you provided above, we don't raise an error, which makes sense to me, but are you seeing differently? Here's an example from the [playground](https://play.ruff.rs/5deffe8c-8d30-4c62-b5e0-8178257ce6f5) with that rule selected.
+
+---
+
+_Closed by @charliermarsh on 2023-11-10 18:59_
+
+---
+
+_Label `question` added by @charliermarsh on 2023-11-10 18:59_
+
+---
+
+_Label `docstring` added by @charliermarsh on 2023-11-10 18:59_
+
+---
+
+_Comment by @mikeweltevrede on 2023-11-11 15:07_
+
+That is a fair comment. I had something like the following:
+
+```
+def f(path, *args, **kwargs):
+    """
+    Description
+
+    Args:
+        path: xxx
+    """
+```
+
+I guess then I would have to provide documentation for `args` and `kwargs`, thanks!
+
+---
+
+_Referenced in [astral-sh/ruff#10112](../../astral-sh/ruff/issues/10112.md) on 2024-02-24 15:50_
+
+---

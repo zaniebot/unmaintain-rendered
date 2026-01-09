@@ -1,0 +1,230 @@
+---
+number: 16431
+title: "Some python_find:: tests don’t find system interpreters, require network"
+type: issue
+state: closed
+author: musicinmybrain
+labels:
+  - bug
+  - good first issue
+  - testing
+assignees: []
+created_at: 2025-10-24T06:11:15Z
+updated_at: 2026-01-04T23:17:44Z
+url: https://github.com/astral-sh/uv/issues/16431
+synced_at: 2026-01-07T13:12:19-06:00
+---
+
+# Some python_find:: tests don’t find system interpreters, require network
+
+---
+
+_Issue opened by @musicinmybrain on 2025-10-24 06:11_
+
+### Summary
+
+Working with the latest uv (0.9.5) on Fedora, even if the system packages for free-threaded Python 3.13 and 3.14 are installed (`python3.13-freethreading` and `python3.14-freethreading`, providing `/usr/bin/python3.13t` and `/usr/bin/python3.14t`), the tests `python_find_freethreaded_313` and `python_find_freethreaded_314` do not find the system free-threaded interpreters and instead try to download them from the network. This fails in an offline build environment:
+
+```
+---- python_find::python_find_freethreaded_313 stdout ----
+
+thread 'python_find::python_find_freethreaded_313' panicked at /builddir/build/BUILD/rust-1.90.0-build/rustc-1.90.0-src/library/core/src/ops/function.rs:253:5:
+Unexpected failure.
+code=1
+stderr=`‌`‌`‌`‌`‌`
+error: Failed to install cpython-3.13.8+freethreaded-linux-x86_64-gnu
+  Caused by: Request failed after 3 retries
+  Caused by: Failed to download https://github.com/astral-sh/python-build-standalone/releases/download/20251007/cpython-3.13.8%2B20251007-x86_64-unknown-linux-gnu-freethreaded%2Bpgo%2Blto-full.tar.zst
+  Caused by: error sending request for url (https://github.com/astral-sh/python-build-standalone/releases/download/20251007/cpython-3.13.8%2B20251007-x86_64-unknown-linux-gnu-freethreaded%2Bpgo%2Blto-full.tar.zst)
+  Caused by: client error (Connect)
+  Caused by: dns error
+  Caused by: failed to lookup address information: Temporary failure in name resolution
+`‌`‌`
+`‌`‌`
+command=`cd "/tmp/uv/tests/.tmp1FdNJ8/temp" && env -u UV_CACHE_DIR -u UV_TOOL_BIN_DIR -u XDG_CONFIG_HOME APPDATA="/tmp/uv/tests/.tmp1FdNJ8/home" COLUMNS="100" GIT_CEILING_DIRECTORIES="/tmp/uv/tests/.tmp1FdNJ8" HOME="/tmp/uv/tests/.tmp1FdNJ8/home" LC_ALL="C" PATH="/tmp/uv/tests/.tmp1FdNJ8/bin:/usr/bin:/bin:/usr/sbin:/sbin" USERPROFILE="/tmp/uv/tests/.tmp1FdNJ8/home" UV_EXCLUDE_NEWER="2024-03-25T00:00:00Z" UV_NO_WRAP="1" UV_PYTHON_BIN_DIR="/tmp/uv/tests/.tmp1FdNJ8/bin" UV_PYTHON_CACHE_DIR="/builddir/.cache/uv/python-v0" UV_PYTHON_DOWNLOADS="automatic" UV_PYTHON_INSTALL_DIR="/tmp/uv/tests/.tmp1FdNJ8/temp/managed" UV_PYTHON_INSTALL_REGISTRY="0" UV_TEST_NO_CLI_PROGRESS="1" UV_TEST_PYTHON_PATH="" VIRTUAL_ENV="/tmp/uv/tests/.tmp1FdNJ8/temp/.venv" XDG_DATA_HOME="/tmp/uv/tests/.tmp1FdNJ8/home/data" "/builddir/build/BUILD/uv-0.9.0-build/uv-0.9.0/target/rpm/uv" "--cache-dir" "/tmp/uv/tests/.tmp1FdNJ8/cache" "python" "install" "--preview" "3.13t"`
+code=1
+stdout=""
+stderr=```
+error: Failed to install cpython-3.13.8+freethreaded-linux-x86_64-gnu
+  Caused by: Request failed after 3 retries
+  Caused by: Failed to download https://github.com/astral-sh/python-build-standalone/releases/download/20251007/cpython-3.13.8%2B20251007-x86_64-unknown-linux-gnu-freethreaded%2Bpgo%2Blto-full.tar.zst
+  Caused by: error sending request for url (https://github.com/astral-sh/python-build-standalone/releases/download/20251007/cpython-3.13.8%2B20251007-x86_64-unknown-linux-gnu-freethreaded%2Bpgo%2Blto-full.tar.zst)
+  Caused by: client error (Connect)
+  Caused by: dns error
+  Caused by: failed to lookup address information: Temporary failure in name resolution
+`‌`‌`
+
+
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+---- python_find::python_find_freethreaded_314 stdout ----
+
+thread 'python_find::python_find_freethreaded_314' panicked at /builddir/build/BUILD/rust-1.90.0-build/rustc-1.90.0-src/library/core/src/ops/function.rs:253:5:
+Unexpected failure.
+code=1
+stderr=`‌`‌`‌`‌`‌`
+error: Failed to install cpython-3.14.0+freethreaded-linux-x86_64-gnu
+  Caused by: Request failed after 3 retries
+  Caused by: Failed to download https://github.com/astral-sh/python-build-standalone/releases/download/20251007/cpython-3.14.0%2B20251007-x86_64-unknown-linux-gnu-freethreaded%2Bpgo%2Blto-full.tar.zst
+  Caused by: error sending request for url (https://github.com/astral-sh/python-build-standalone/releases/download/20251007/cpython-3.14.0%2B20251007-x86_64-unknown-linux-gnu-freethreaded%2Bpgo%2Blto-full.tar.zst)
+  Caused by: client error (Connect)
+  Caused by: dns error
+  Caused by: failed to lookup address information: Temporary failure in name resolution
+`‌`‌`
+`‌`‌`
+command=`cd "/tmp/uv/tests/.tmpN03ESX/temp" && env -u UV_CACHE_DIR -u UV_TOOL_BIN_DIR -u XDG_CONFIG_HOME APPDATA="/tmp/uv/tests/.tmpN03ESX/home" COLUMNS="100" GIT_CEILING_DIRECTORIES="/tmp/uv/tests/.tmpN03ESX" HOME="/tmp/uv/tests/.tmpN03ESX/home" LC_ALL="C" PATH="/tmp/uv/tests/.tmpN03ESX/bin:/usr/bin:/bin:/usr/sbin:/sbin" USERPROFILE="/tmp/uv/tests/.tmpN03ESX/home" UV_EXCLUDE_NEWER="2024-03-25T00:00:00Z" UV_NO_WRAP="1" UV_PYTHON_BIN_DIR="/tmp/uv/tests/.tmpN03ESX/bin" UV_PYTHON_CACHE_DIR="/builddir/.cache/uv/python-v0" UV_PYTHON_DOWNLOADS="automatic" UV_PYTHON_INSTALL_DIR="/tmp/uv/tests/.tmpN03ESX/temp/managed" UV_PYTHON_INSTALL_REGISTRY="0" UV_TEST_NO_CLI_PROGRESS="1" UV_TEST_PYTHON_PATH="" VIRTUAL_ENV="/tmp/uv/tests/.tmpN03ESX/temp/.venv" XDG_DATA_HOME="/tmp/uv/tests/.tmpN03ESX/home/data" "/builddir/build/BUILD/uv-0.9.0-build/uv-0.9.0/target/rpm/uv" "--cache-dir" "/tmp/uv/tests/.tmpN03ESX/cache" "python" "install" "--preview" "3.14t"`
+code=1
+stdout=""
+stderr=`‌‌`‌‌`
+error: Failed to install cpython-3.14.0+freethreaded-linux-x86_64-gnu
+  Caused by: Request failed after 3 retries
+  Caused by: Failed to download https://github.com/astral-sh/python-build-standalone/releases/download/20251007/cpython-3.14.0%2B20251007-x86_64-unknown-linux-gnu-freethreaded%2Bpgo%2Blto-full.tar.zst
+  Caused by: error sending request for url (https://github.com/astral-sh/python-build-standalone/releases/download/20251007/cpython-3.14.0%2B20251007-x86_64-unknown-linux-gnu-freethreaded%2Bpgo%2Blto-full.tar.zst)
+  Caused by: client error (Connect)
+  Caused by: dns error
+  Caused by: failed to lookup address information: Temporary failure in name resolution
+`‌`‌`
+```
+
+I think that these tests should ideally find the system interpreters. If there’s some reason they shouldn’t, then they should at least be gated on the `python-managed` feature.
+
+### Platform
+
+Fedora Rawhide, all architectures
+
+### Version
+
+0.9.5
+
+### Python version
+
+Python 3.14.0
+
+---
+
+_Label `bug` added by @musicinmybrain on 2025-10-24 06:11_
+
+---
+
+_Renamed from "Tests python_find_freethreaded_31* don’t find system interpreters, require network" to "Some python_find:: don’t find system interpreters, require network" by @musicinmybrain on 2025-10-24 06:14_
+
+---
+
+_Comment by @musicinmybrain on 2025-10-24 06:16_
+
+Ah, the above was based on uv 0.9.0, not 0.9.5. It’s still valid in 0.9.5, but there are two more tests that fail for similar reasons, `python_find_prerelease_version_specifiers` and `python_find_prerelease_with_patch_request`. These are very unlikely to be satisfied by system packages, so I’m pretty sure the right move for these two will be to gate them on `python-managed` regardless of what we do with `python_find_freethreaded_313` and `python_find_freethreaded_314`.
+
+```
+---- python_find::python_find_prerelease_with_patch_request stdout ----
+
+thread 'python_find::python_find_prerelease_with_patch_request' panicked at /builddir/build/BUILD/rust-1.90.0-build/rustc-1.90.0-src/library/core/src/ops/function.rs:253:5:
+Unexpected failure.
+code=1
+stderr=`‌`‌`‌`‌`‌`
+error: Failed to install cpython-3.14.0rc3-linux-x86_64-gnu
+  Caused by: Request failed after 3 retries
+  Caused by: Failed to download https://github.com/astral-sh/python-build-standalone/releases/download/20250918/cpython-3.14.0rc3%2B20250918-x86_64-unknown-linux-gnu-install_only_stripped.tar.gz
+  Caused by: error sending request for url (https://github.com/astral-sh/python-build-standalone/releases/download/20250918/cpython-3.14.0rc3%2B20250918-x86_64-unknown-linux-gnu-install_only_stripped.tar.gz)
+  Caused by: client error (Connect)
+  Caused by: dns error
+  Caused by: failed to lookup address information: Temporary failure in name resolution
+`‌`‌`
+`‌`‌`
+command=`cd "/tmp/uv/tests/.tmpCaum0o/temp" && env -u UV_CACHE_DIR -u UV_TOOL_BIN_DIR -u XDG_CONFIG_HOME APPDATA="/tmp/uv/tests/.tmpCaum0o/home" COLUMNS="100" GIT_CEILING_DIRECTORIES="/tmp/uv/tests/.tmpCaum0o" HOME="/tmp/uv/tests/.tmpCaum0o/home" LC_ALL="C" PATH="/tmp/uv/tests/.tmpCaum0o/bin:/usr/bin:/bin:/usr/sbin:/sbin" USERPROFILE="/tmp/uv/tests/.tmpCaum0o/home" UV_EXCLUDE_NEWER="2024-03-25T00:00:00Z" UV_NO_WRAP="1" UV_PYTHON_BIN_DIR="/tmp/uv/tests/.tmpCaum0o/bin" UV_PYTHON_CACHE_DIR="/builddir/.cache/uv/python-v0" UV_PYTHON_DOWNLOADS="automatic" UV_PYTHON_INSTALL_DIR="/tmp/uv/tests/.tmpCaum0o/temp/managed" UV_PYTHON_INSTALL_REGISTRY="0" UV_TEST_NO_CLI_PROGRESS="1" UV_TEST_PYTHON_PATH="" VIRTUAL_ENV="/tmp/uv/tests/.tmpCaum0o/temp/.venv" XDG_DATA_HOME="/tmp/uv/tests/.tmpCaum0o/home/data" "/builddir/build/BUILD/uv-0.9.5-build/uv-0.9.5/target/rpm/uv" "--cache-dir" "/tmp/uv/tests/.tmpCaum0o/cache" "python" "install" "3.14.0rc3"`
+code=1
+stdout=""
+stderr=`‌`‌`
+error: Failed to install cpython-3.14.0rc3-linux-x86_64-gnu
+  Caused by: Request failed after 3 retries
+  Caused by: Failed to download https://github.com/astral-sh/python-build-standalone/releases/download/20250918/cpython-3.14.0rc3%2B20250918-x86_64-unknown-linux-gnu-install_only_stripped.tar.gz
+  Caused by: error sending request for url (https://github.com/astral-sh/python-build-standalone/releases/download/20250918/cpython-3.14.0rc3%2B20250918-x86_64-unknown-linux-gnu-install_only_stripped.tar.gz)
+  Caused by: client error (Connect)
+  Caused by: dns error
+  Caused by: failed to lookup address information: Temporary failure in name resolution
+`‌`‌`
+
+
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+```
+
+```
+---- python_find::python_find_prerelease_version_specifiers stdout ----
+
+thread 'python_find::python_find_prerelease_version_specifiers' panicked at /builddir/build/BUILD/rust-1.90.0-build/rustc-1.90.0-src/library/core/src/ops/function.rs:253:5:
+Unexpected failure.
+code=1
+stderr=`‌`‌`‌`‌`‌`
+error: Failed to install cpython-3.14.0rc2-linux-x86_64-gnu
+  Caused by: Request failed after 3 retries
+  Caused by: Failed to download https://github.com/astral-sh/python-build-standalone/releases/download/20250902/cpython-3.14.0rc2%2B20250902-x86_64-unknown-linux-gnu-install_only_stripped.tar.gz
+  Caused by: error sending request for url (https://github.com/astral-sh/python-build-standalone/releases/download/20250902/cpython-3.14.0rc2%2B20250902-x86_64-unknown-linux-gnu-install_only_stripped.tar.gz)
+  Caused by: client error (Connect)
+  Caused by: dns error
+  Caused by: failed to lookup address information: Temporary failure in name resolution
+`‌`‌`
+`‌`‌`
+command=`cd "/tmp/uv/tests/.tmpOJCPhj/temp" && env -u UV_CACHE_DIR -u UV_TOOL_BIN_DIR -u XDG_CONFIG_HOME APPDATA="/tmp/uv/tests/.tmpOJCPhj/home" COLUMNS="100" GIT_CEILING_DIRECTORIES="/tmp/uv/tests/.tmpOJCPhj" HOME="/tmp/uv/tests/.tmpOJCPhj/home" LC_ALL="C" PATH="/tmp/uv/tests/.tmpOJCPhj/bin:/usr/bin:/bin:/usr/sbin:/sbin" USERPROFILE="/tmp/uv/tests/.tmpOJCPhj/home" UV_EXCLUDE_NEWER="2024-03-25T00:00:00Z" UV_NO_WRAP="1" UV_PYTHON_BIN_DIR="/tmp/uv/tests/.tmpOJCPhj/bin" UV_PYTHON_CACHE_DIR="/builddir/.cache/uv/python-v0" UV_PYTHON_DOWNLOADS="automatic" UV_PYTHON_INSTALL_DIR="/tmp/uv/tests/.tmpOJCPhj/temp/managed" UV_PYTHON_INSTALL_REGISTRY="0" UV_TEST_NO_CLI_PROGRESS="1" UV_TEST_PYTHON_PATH="" VIRTUAL_ENV="/tmp/uv/tests/.tmpOJCPhj/temp/.venv" XDG_DATA_HOME="/tmp/uv/tests/.tmpOJCPhj/home/data" "/builddir/build/BUILD/uv-0.9.5-build/uv-0.9.5/target/rpm/uv" "--cache-dir" "/tmp/uv/tests/.tmpOJCPhj/cache" "python" "install" "3.14.0rc2"`
+code=1
+stdout=""
+stderr=`‌`‌`
+error: Failed to install cpython-3.14.0rc2-linux-x86_64-gnu
+  Caused by: Request failed after 3 retries
+  Caused by: Failed to download https://github.com/astral-sh/python-build-standalone/releases/download/20250902/cpython-3.14.0rc2%2B20250902-x86_64-unknown-linux-gnu-install_only_stripped.tar.gz
+  Caused by: error sending request for url (https://github.com/astral-sh/python-build-standalone/releases/download/20250902/cpython-3.14.0rc2%2B20250902-x86_64-unknown-linux-gnu-install_only_stripped.tar.gz)
+  Caused by: client error (Connect)
+  Caused by: dns error
+  Caused by: failed to lookup address information: Temporary failure in name resolution
+`‌`‌`
+```
+
+---
+
+_Renamed from "Some python_find:: don’t find system interpreters, require network" to "Some python_find:: tests don’t find system interpreters, require network" by @musicinmybrain on 2025-10-24 06:18_
+
+---
+
+_Label `good first issue` added by @zanieb on 2025-11-30 15:43_
+
+---
+
+_Label `testing` added by @zanieb on 2025-11-30 15:43_
+
+---
+
+_Comment by @zanieb on 2025-11-30 15:43_
+
+Happy to add the missing feature gates when needed here.
+
+---
+
+_Comment by @skyepurchase on 2025-12-03 14:46_
+
+I would be curious to look into this, but should I wait for the gates?
+
+---
+
+_Comment by @zanieb on 2025-12-03 18:15_
+
+We already have the `python-managed` feature, you can use that
+
+---
+
+_Referenced in [astral-sh/uv#17312](../../astral-sh/uv/pulls/17312.md) on 2026-01-03 21:19_
+
+---
+
+_Comment by @tnguyen21 on 2026-01-03 21:24_
+
+Saw this thread went stale for a bit so hopefully it's ok I took a stab at a PR: https://github.com/astral-sh/uv/pull/17312
+
+---
+
+_Closed by @zanieb on 2026-01-03 22:30_
+
+---
+
+_Comment by @musicinmybrain on 2026-01-04 23:17_
+
+I tested #17312, and it seems to work. Thank you!
+
+---

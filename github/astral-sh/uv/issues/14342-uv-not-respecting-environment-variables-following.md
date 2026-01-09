@@ -1,0 +1,134 @@
+---
+number: 14342
+title: UV not respecting environment variables following installation
+type: issue
+state: closed
+author: sodium-hydroxide
+labels:
+  - question
+assignees: []
+created_at: 2025-06-28T21:25:21Z
+updated_at: 2025-07-11T01:51:03Z
+url: https://github.com/astral-sh/uv/issues/14342
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# UV not respecting environment variables following installation
+
+---
+
+_Issue opened by @sodium-hydroxide on 2025-06-28 21:25_
+
+### Summary
+
+Potentially related to issue  #7117
+
+Installing uv with the following command:
+
+```{sh}
+> curl -LsSf https://astral.sh/uv/install.sh | env \
+  UV_INSTALL_DIR="/opt/uv/bin" \
+  UV_TOOL_DIR="/opt/uv/share" \
+  UV_CACHE_DIR="/opt/uv/cache" \
+  UV_PYTHON_BIN_DIR="/opt/uv/python/bin" \
+  UV_COMPILE_CONFIG=1 \
+  sh
+```
+
+Returns the following:
+
+```
+downloading uv 0.7.16 aarch64-apple-darwin
+no checksums to verify
+installing to /opt/uv/bin
+  uv
+  uvx
+everything's installed!
+[1]   Done                    mkdir -p /opt/uv/bin
+[2]   Done                    mkdir -p /opt/uv/share
+[3]-  Done                    mkdir -p /opt/uv/cache
+[4]+  Done                    mkdir -p /opt/uv/python/bin
+```
+
+However, when those same environment variables are set in .bash_profile and uv tool install ... or uv python install ... are executed, they still install to $HOME/.local/{bin, shared}
+
+
+### Platform
+
+macOS 14 arm64
+
+### Version
+
+uv 0.7.16 (b6b7409d1 2025-06-27)
+
+### Python version
+
+Python 3.13.5
+
+---
+
+_Label `bug` added by @sodium-hydroxide on 2025-06-28 21:25_
+
+---
+
+_Comment by @zanieb on 2025-06-28 22:03_
+
+I'm not sure I follow. Are you using `export` for your variables in your bash profile?
+
+
+e.g.
+
+```
+❯ UV_CACHE_DIR=/tmp/foo uv cache dir
+/tmp/foo
+❯ UV_CACHE_DIR=/tmp/foo
+❯ uv cache dir
+/Users/zb/.cache/uv
+❯ export UV_CACHE_DIR=/tmp/foo
+❯ uv cache dir
+/tmp/foo
+```
+
+---
+
+_Label `bug` removed by @zanieb on 2025-06-28 22:03_
+
+---
+
+_Label `question` added by @zanieb on 2025-06-28 22:03_
+
+---
+
+_Comment by @sodium-hydroxide on 2025-06-29 01:16_
+
+My .bash_profile contains the following lines:
+
+```bash
+UV_INSTALL_DIR="/opt/uv/bin"
+UV_TOOL_DIR="/opt/uv/share"
+UV_CACHE_DIR="/opt/uv/cache"
+UV_PYTHON_BIN_DIR="/opt/uv/python/bin"
+UV_COMPILE_CONFIG=1
+export UV_INSTALL_DIR
+export UV_TOOL_DIR
+export UV_PYTHON_BIN_DIR
+export UV_COMPILE_CONFIG
+```
+
+---
+
+_Comment by @charliermarsh on 2025-06-29 13:32_
+
+Sorry, I suspect this is an error in your own configuration somewhere. Note that you need to make sure those variables are set when you run `uv`, not just at install time. `UV_INSTALL_DIR` dictates the directory that uv itself is installed into, so that one _should_ be set at install time. But setting `UV_TOOL_DIR` at install time has no effect. You need to make sure that's set when you run `uv tool install`.
+
+---
+
+_Comment by @zanieb on 2025-06-29 16:25_
+
+You can also try to see if these are set at runtime with a query like `env | grep UV_`
+
+---
+
+_Closed by @charliermarsh on 2025-07-11 01:51_
+
+---

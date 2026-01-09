@@ -1,0 +1,141 @@
+---
+number: 850
+title: Implement flake8-noqa
+type: issue
+state: open
+author: JonathanPlasse
+labels:
+  - plugin
+assignees: []
+created_at: 2022-11-21T11:28:19Z
+updated_at: 2025-08-26T08:49:22Z
+url: https://github.com/astral-sh/ruff/issues/850
+synced_at: 2026-01-07T13:12:14-06:00
+---
+
+# Implement flake8-noqa
+
+---
+
+_Issue opened by @JonathanPlasse on 2022-11-21 11:28_
+
+# [`flake8-noqa`](https://pypi.org/project/flake8-noqa/)
+
+## Error codes
+
+- [x] `NQA001` "#noqa" must have a single space after the hash, e.g. "# noqa"
+- [x] `NQA002` "# noqa X000" must have a colon, e.g. "# noqa: X000"
+- [x] `NQA003` "# noqa : X000" must not have a space before the colon, e.g. "# noqa: X000"'
+- [ ] `NQA004` "# noqa:  X000" must have at most one space before the codes, e.g. "# noqa: X000"
+- [x] `NQA005` "# noqa: X000, X000" has duplicate codes, remove X000
+- [x] `NQA101` "# noqa" has no violations
+- [x] `NQA102` "# noqa: X000" has no matching violations
+- [x] `NQA103` as `RUF100` "# noqa: X000, X001" has unmatched code(s), remove X001
+- [x] `NQA104` as `PGH004` "# noqa" must have codes, e.g. "# noqa: X000" (enable via noqa-require-code)
+
+### Flake8 specific rules
+
+Should we ignore them?
+
+- [ ] `NQA011` "#flake8: noqa" must have a single space after the hash, e.g. "# flake8: noqa"
+- [ ] `NQA012` "# flake8 noqa" must have a colon or equals, e.g. "# flake8: noqa"
+- [ ] `NQA013` "# flake8 : noqa" must not have a space before the colon, e.g. "# flake8: noqa"
+
+## Options
+
+- [x] `noqa-require-code` as `PGH004` : Require code(s) to be included in # noqa comments
+- [x] `noqa-no-require-code` : Do not require code(s) in # noqa comments (default setting)
+- [ ] `noqa-include-name` : Include plugin name in messages
+- [ ] `noqa-no-include-name` : Do not include plugin name in messages (default setting)
+
+---
+
+_Label `rule` added by @charliermarsh on 2022-11-21 14:49_
+
+---
+
+_Label `rule` removed by @charliermarsh on 2022-12-31 18:18_
+
+---
+
+_Label `plugin` added by @charliermarsh on 2022-12-31 18:18_
+
+---
+
+_Referenced in [astral-sh/ruff#2043](../../astral-sh/ruff/issues/2043.md) on 2023-01-20 22:47_
+
+---
+
+_Referenced in [astral-sh/ruff#3211](../../astral-sh/ruff/issues/3211.md) on 2023-02-24 18:43_
+
+---
+
+_Comment by @charliermarsh on 2023-03-22 03:11_
+
+We have `NQA101`, `NQA102`, and `NQA103` as `RUF100`, but it'd be great to have better diagnostics around noqa validation.
+
+---
+
+_Referenced in [astral-sh/ruff#5371](../../astral-sh/ruff/issues/5371.md) on 2023-06-26 15:21_
+
+---
+
+_Referenced in [astral-sh/ruff#5729](../../astral-sh/ruff/issues/5729.md) on 2023-07-13 13:50_
+
+---
+
+_Referenced in [PaddlePaddle/Paddle#57860](../../PaddlePaddle/Paddle/pulls/57860.md) on 2023-10-07 19:46_
+
+---
+
+_Referenced in [astral-sh/ruff#10160](../../astral-sh/ruff/issues/10160.md) on 2024-02-29 15:55_
+
+---
+
+_Comment by @augustelalande on 2024-03-08 21:53_
+
+`NQA001` seems covered by `E262`
+
+---
+
+_Comment by @augustelalande on 2024-03-08 22:37_
+
+I'm gonna work on `NQA002`, `NQA003`, `NQA004`, and `NQA005`.
+
+---
+
+_Referenced in [astral-sh/ruff#10325](../../astral-sh/ruff/pulls/10325.md) on 2024-03-11 06:07_
+
+---
+
+_Referenced in [astral-sh/ruff#10850](../../astral-sh/ruff/pulls/10850.md) on 2024-04-09 23:00_
+
+---
+
+_Referenced in [astral-sh/ruff#10851](../../astral-sh/ruff/pulls/10851.md) on 2024-04-09 23:23_
+
+---
+
+_Comment by @augustelalande on 2024-04-27 04:17_
+
+The functionality of `NQA002` and `NQA003` was added to `PGH004`
+
+---
+
+_Comment by @augustelalande on 2024-04-27 17:12_
+
+The functionality of `NQA005` was added to `RUF100`
+
+---
+
+_Comment by @augustelalande on 2024-04-27 17:13_
+
+FYI @JonathanPlasse `NQA001` and `NQA005` should be checked in the summary, but `NQA004` should be unchecked for now.
+
+---
+
+_Comment by @charliermarsh on 2024-04-27 17:51_
+
+Okay, I think I corrected them.
+
+---

@@ -1,0 +1,109 @@
+---
+number: 4214
+title: "Command::get_opts doesn't return arguments that don't take values"
+type: issue
+state: closed
+author: larswirzenius
+labels:
+  - C-bug
+assignees: []
+created_at: 2022-09-14T17:32:24Z
+updated_at: 2022-09-15T00:22:01Z
+url: https://github.com/clap-rs/clap/issues/4214
+synced_at: 2026-01-07T13:12:20-06:00
+---
+
+# Command::get_opts doesn't return arguments that don't take values
+
+---
+
+_Issue opened by @larswirzenius on 2022-09-14 17:32_
+
+### Please complete the following tasks
+
+- [X] I have searched the [discussions](https://github.com/clap-rs/clap/discussions)
+- [X] I have searched the [open](https://github.com/clap-rs/clap/issues) and [rejected](https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed) issues
+
+### Rust Version
+
+rustc 1.63.0 (4b91a6ea7 2022-08-08)
+
+### Clap Version
+
+3.2.21
+
+### Minimal reproducible code
+
+```rust
+use clap::{CommandFactory, Parser};
+
+#[derive(Parser)]
+struct Args {
+    #[clap(long)]
+    foo: bool,
+
+    #[clap(long)]
+    bar: String,
+}
+
+fn main() {
+    let args = Args::command();
+    for arg in args.get_arguments() {
+        println!("arg: {:?}", arg.get_name());
+    }
+    for arg in args.get_opts() {
+        println!("opt: {:?}", arg.get_name());
+    }
+}
+```
+
+
+### Steps to reproduce the bug with the above code
+
+Run the program with `cargo run`
+
+### Actual Behaviour
+
+The output looks like this:
+
+```
+arg: "help"
+arg: "version"
+arg: "foo"
+arg: "bar"
+opt: "bar"
+```
+
+Note that both "foo" and "bar" are printed as arguments (i.e., returned by `get_arguments`), but only `bar` is returned by `get_opts`.
+
+### Expected Behaviour
+
+Both `foo` and `bar` should be returned by `get_opts`.
+
+### Additional Context
+
+I expect that the `get_opts` method should only filter on `!a.is_positional()`.
+
+### Debug Output
+
+_No response_
+
+---
+
+_Label `C-bug` added by @larswirzenius on 2022-09-14 17:32_
+
+---
+
+_Comment by @epage on 2022-09-15 00:22_
+
+Historically, clap has had specific terminology
+- `flag` is `--foo`
+- `option` is `--foo <bar>`
+
+These functions are conveying that and are working as expected.  If there was something to change about these functions, it would probably be to remove them as they are convenience functions that can easily be recreated.
+
+---
+
+_Closed by @epage on 2022-09-15 00:22_
+
+---

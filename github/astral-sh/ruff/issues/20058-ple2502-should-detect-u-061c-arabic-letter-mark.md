@@ -1,0 +1,54 @@
+---
+number: 20058
+title: PLE2502 should detect U+061C ARABIC LETTER MARK
+type: issue
+state: closed
+author: dscorbett
+labels:
+  - rule
+assignees: []
+created_at: 2025-08-24T02:50:41Z
+updated_at: 2025-08-28T20:35:49Z
+url: https://github.com/astral-sh/ruff/issues/20058
+synced_at: 2026-01-07T13:12:16-06:00
+---
+
+# PLE2502 should detect U+061C ARABIC LETTER MARK
+
+---
+
+_Issue opened by @dscorbett on 2025-08-24 02:50_
+
+### Summary
+
+[`bidirectional-unicode` (PLE2502)](https://docs.astral.sh/ruff/rules/bidirectional-unicode/) should detect U+061C ARABIC LETTER MARK, a bidi control character similar to U+200F RIGHT-TO-LEFT MARK.
+```
+$ python -c 'print("""example = "x\N{ARABIC LETTER MARK}" * 100  #    "\N{ARABIC LETTER MARK}x" is assigned\nprint(len(example))""")' >ple2502.py
+
+$ cat ple2502.py
+example = "x؜" * 100  #    "؜x" is assigned
+print(len(example))
+
+$ python ple2502.py
+200
+
+$ ruff --isolated check ple2502.py --select PLE2502
+All checks passed!
+
+### Version
+
+ruff 0.12.10 (c68ff8d90 2025-08-21)
+
+---
+
+_Label `rule` added by @ntBre on 2025-08-25 12:48_
+
+---
+
+_Referenced in [astral-sh/ruff#20106](../../astral-sh/ruff/pulls/20106.md) on 2025-08-26 21:52_
+
+---
+
+_Closed by @ntBre on 2025-08-28 20:35_
+
+---

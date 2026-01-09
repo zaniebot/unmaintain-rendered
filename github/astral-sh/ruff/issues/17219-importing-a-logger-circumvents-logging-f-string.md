@@ -1,0 +1,66 @@
+---
+number: 17219
+title: "Importing a logger circumvents \"logging-f-string (G004)\""
+type: issue
+state: closed
+author: Topher-the-Geek
+labels:
+  - question
+assignees: []
+created_at: 2025-04-05T08:46:24Z
+updated_at: 2025-04-28T08:33:25Z
+url: https://github.com/astral-sh/ruff/issues/17219
+synced_at: 2026-01-07T13:12:16-06:00
+---
+
+# Importing a logger circumvents "logging-f-string (G004)"
+
+---
+
+_Issue opened by @Topher-the-Geek on 2025-04-05 08:46_
+
+### Summary
+
+I have G004 active. It works when the LOGGER is setup in the file that commits the sin
+
+```
+LOGGER = logging.getLogger("mymodule")
+
+LOGGER.info(f"Hello, {name}")  # correctly flagged
+```
+
+But it breaks when the logger is imported
+
+```
+from somemodule import LOGGER
+
+LOGGER.info(f"Hello, {name}")  # not flagged
+```
+
+Possibly other G rules are broken too. This is the one I noticed. This maybe looks a bit like #12295
+
+### Version
+
+ 0.11.2
+
+---
+
+_Comment by @loRes228 on 2025-04-05 12:32_
+
+https://docs.astral.sh/ruff/settings/#lint_logger-objects
+
+---
+
+_Label `question` added by @MichaReiser on 2025-04-05 13:54_
+
+---
+
+_Comment by @Topher-the-Geek on 2025-04-05 13:54_
+
+Oh, I see. That's going to be a long list, and tedious to maintain. We are adding loggers throughout submodules, but then different modules of that submodule may all import from a shared location. 
+
+---
+
+_Closed by @MichaReiser on 2025-04-28 08:33_
+
+---

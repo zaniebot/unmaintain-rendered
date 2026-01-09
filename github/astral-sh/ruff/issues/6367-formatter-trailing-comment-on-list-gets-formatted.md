@@ -1,0 +1,96 @@
+---
+number: 6367
+title: "Formatter: Trailing comment on list gets formatted to a separate line"
+type: issue
+state: closed
+author: dhruvmanila
+labels:
+  - formatter
+assignees: []
+created_at: 2023-08-05T15:13:01Z
+updated_at: 2023-08-16T07:11:07Z
+url: https://github.com/astral-sh/ruff/issues/6367
+synced_at: 2026-01-07T13:12:15-06:00
+---
+
+# Formatter: Trailing comment on list gets formatted to a separate line
+
+---
+
+_Issue opened by @dhruvmanila on 2023-08-05 15:13_
+
+Given:
+
+```python
+[  # comment
+    first,
+    second,
+    third
+]  # another comment
+```
+
+Notice that there's no magic trailing comma, so the list will be collapsed.
+
+Ruff:
+
+```python
+[first, second, third]  # comment
+  # another comment
+```
+
+Black:
+
+```python
+[first, second, third]  # comment  # another comment
+```
+
+---
+
+_Label `formatter` added by @dhruvmanila on 2023-08-05 15:14_
+
+---
+
+_Comment by @charliermarsh on 2023-08-05 15:14_
+
+I can take a look.
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2023-08-05 15:14_
+
+---
+
+_Comment by @dhruvmanila on 2023-08-05 15:20_
+
+This might be relevant: I noticed it first while working on the `StmtMatch` node and one of the test cases contained a list as the match subject:
+
+https://github.com/astral-sh/ruff/blob/a755afe7288cd17539710a074acbfad57d35be40/crates/ruff_python_formatter/tests/snapshots/format%40statement__match.py.snap#L32-L36
+
+which gets formatted correctly (although the comments are in wrong order) when using `dangling_comments`:
+
+https://github.com/astral-sh/ruff/blob/a755afe7288cd17539710a074acbfad57d35be40/crates/ruff_python_formatter/tests/snapshots/format%40statement__match.py.snap#L93
+
+But, it gets formatted in the way mentioned in the issue description when using `trailing_comments` here:
+
+https://github.com/astral-sh/ruff/blob/a755afe7288cd17539710a074acbfad57d35be40/crates/ruff_python_formatter/src/statement/stmt_match.rs#L32
+
+
+---
+
+_Comment by @charliermarsh on 2023-08-05 15:50_
+
+It kind of feels like a bug in line_suffix, but I need to understand the implementation better to say for certain.
+
+---
+
+_Referenced in [astral-sh/ruff#6380](../../astral-sh/ruff/pulls/6380.md) on 2023-08-07 01:50_
+
+---
+
+_Closed by @charliermarsh on 2023-08-07 14:15_
+
+---
+
+_Added to milestone `Formatter: Alpha` by @MichaReiser on 2023-08-16 07:11_
+
+---

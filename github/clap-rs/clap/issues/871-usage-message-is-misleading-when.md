@@ -1,0 +1,196 @@
+---
+number: 871
+title: Usage message is misleading when SubcommandsNegateReqs is used
+type: issue
+state: closed
+author: malbarbo
+labels:
+  - C-bug
+assignees: []
+created_at: 2017-02-22T15:48:44Z
+updated_at: 2018-08-02T03:30:02Z
+url: https://github.com/clap-rs/clap/issues/871
+synced_at: 2026-01-07T13:12:19-06:00
+---
+
+# Usage message is misleading when SubcommandsNegateReqs is used
+
+---
+
+_Issue opened by @malbarbo on 2017-02-22 15:48_
+
+### Affected Version of clap
+
+2.20.5
+
+### Expected Behavior Summary
+
+Show a usage message that is more accurate, like
+
+```
+USAGE:
+    16_app_settings (<input> | SUBCOMMAND)
+```
+
+or
+
+```
+USAGE:
+    16_app_settings <input>
+    16_app_settings SUBCOMMAND
+```
+
+With flags it become more difficult to write a usage message...
+
+### Actual Behavior Summary
+
+Show a usage message that is misleading
+
+```
+myapp 
+
+USAGE:
+    16_app_settings <input> [SUBCOMMAND]
+
+FLAGS:
+    -h, --help       Prints help information
+    -V, --version    Prints version information
+
+ARGS:
+    <input>    input file to use
+
+SUBCOMMANDS:
+    help    Prints this message or the help of the given subcommand(s)
+    test    does some testing
+```
+
+This suggests that a subcommand can be used after `<input>` but it cannot.
+
+### Steps to Reproduce the issue
+
+```
+cargo run --example 16_app_settings -- -h
+```
+
+
+
+
+---
+
+_Comment by @kbknapp on 2017-02-22 20:40_
+
+Good catch, I agree. I tend to like the dual line usage, but that may be slightly harder to implement in current clap. I'll play with it and see.
+
+---
+
+_Label `C: settings` added by @kbknapp on 2017-02-22 21:41_
+
+---
+
+_Label `C: usage strings` added by @kbknapp on 2017-02-22 21:41_
+
+---
+
+_Label `D: intermediate` added by @kbknapp on 2017-02-22 21:41_
+
+---
+
+_Label `P3: want to have` added by @kbknapp on 2017-02-22 21:41_
+
+---
+
+_Label `T: bug` added by @kbknapp on 2017-02-22 21:41_
+
+---
+
+_Label `W: 2.x` added by @kbknapp on 2017-02-22 21:41_
+
+---
+
+_Added to milestone `2.20.6` by @kbknapp on 2017-02-22 21:41_
+
+---
+
+_Comment by @wfraser on 2017-02-25 07:45_
+
+I noticed that in addition to showing the <input> arg in the help for the main command, it also shows it in the help for the subcommand, but DOES NOT show it if you give a value for it. Really weird.
+
+I.e.:
+
+```
+extern crate clap;
+use clap::{Arg, SubCommand};
+
+fn main() {
+    let args = clap::App::new("")
+        .arg(Arg::with_name("input")
+            .required(true)
+            .help("the input"))
+        .subcommand(SubCommand::new("test"))
+        .get_matches();
+
+    println!("{:#?}", args);
+}
+```
+
+```
+$ cargo run -- --help
+   Compiling clap-experiments v0.1.0 (file:///D:/code/clap-experiments)
+    Finished dev [unoptimized + debuginfo] target(s) in 1.22 secs
+     Running `target\debug\clap-experiments.exe --help`
+
+
+USAGE:
+    clap-experiments.exe <input> [SUBCOMMAND]
+
+FLAGS:
+    -h, --help       Prints help information
+    -V, --version    Prints version information
+
+ARGS:
+    <input>    the input
+
+SUBCOMMANDS:
+    help    Prints this message or the help of the given subcommand(s)
+    test
+```
+
+```
+$ cargo run -- test --help
+    Finished dev [unoptimized + debuginfo] target(s) in 0.0 secs
+     Running `target\debug\clap-experiments.exe test --help`
+clap-experiments.exe-test
+
+USAGE:
+    clap-experiments.exe <input> test
+
+FLAGS:
+    -h, --help       Prints help information
+    -V, --version    Prints version information
+```
+
+```
+$ cargo run -- foo test --help
+    Finished dev [unoptimized + debuginfo] target(s) in 0.0 secs
+     Running `target\debug\clap-experiments.exe foo test --help`
+clap-experiments.exe-test
+
+USAGE:
+    clap-experiments.exe test
+
+FLAGS:
+    -h, --help       Prints help information
+    -V, --version    Prints version information
+```
+
+Note how in the last example, the `<input>` parameter is gone from the help text.
+
+---
+
+_Referenced in [clap-rs/clap#883](../../clap-rs/clap/issues/883.md) on 2017-03-02 15:20_
+
+---
+
+_Closed by @homu on 2017-03-11 18:31_
+
+---

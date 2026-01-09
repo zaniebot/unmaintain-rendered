@@ -1,0 +1,108 @@
+---
+number: 944
+title: Support for Eradicate
+type: issue
+state: closed
+author: patrick91
+labels:
+  - rule
+assignees: []
+created_at: 2022-11-28T18:32:31Z
+updated_at: 2022-11-29T15:32:02Z
+url: https://github.com/astral-sh/ruff/issues/944
+synced_at: 2026-01-07T13:12:14-06:00
+---
+
+# Support for Eradicate
+
+---
+
+_Issue opened by @patrick91 on 2022-11-28 18:32_
+
+Hi there! 
+
+I was looking into migrating Strawberry to Ruff, but I'd love to keep the eradicate plugin :)
+
+Is this something you'd like to add to Ruff?
+
+https://pypi.org/project/flake8-eradicate/
+
+TLDR: it detects commented code and forbids you from commiting it 
+
+We don't use any of the options :)
+
+---
+
+_Label `rule` added by @charliermarsh on 2022-11-28 18:46_
+
+---
+
+_Comment by @charliermarsh on 2022-11-28 18:46_
+
+Yeah this looks very tractable. I don't know that I can get to it _today_, but it's definitely doable.
+
+---
+
+_Comment by @charliermarsh on 2022-11-28 21:19_
+
+I'm gonna give this a try now.
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2022-11-28 21:19_
+
+---
+
+_Referenced in [astral-sh/ruff#947](../../astral-sh/ruff/pulls/947.md) on 2022-11-28 22:10_
+
+---
+
+_Comment by @charliermarsh on 2022-11-28 22:22_
+
+This'll ship tonight.
+
+---
+
+_Closed by @charliermarsh on 2022-11-29 01:54_
+
+---
+
+_Comment by @charliermarsh on 2022-11-29 01:58_
+
+This is going out in [v0.0.145](https://github.com/charliermarsh/ruff/releases/tag/v0.0.145).
+
+@patrick91 - Do you mind trying it out and sharing any issues? I used the same test suite as `eradicate` for the actual code detection.
+
+
+---
+
+_Comment by @patrick91 on 2022-11-29 12:47_
+
+I had some false positives for these lines, but I changed them 😊
+
+```
+# # TODO:
+# # 2. test fragments
+# # 3. test variables
+# # 7. test input objects
+# # 13. test mutations (raise?)
+# # 14. test subscriptions (raise)
+```
+
+But for the rest it seems to work very well!
+
+---
+
+_Comment by @charliermarsh on 2022-11-29 15:29_
+
+Oh nice! I'll take a look at those false positives, assuming `eradicate` successfully ignored them :)
+
+---
+
+_Comment by @patrick91 on 2022-11-29 15:32_
+
+> Oh nice! I'll take a look at those false positives, assuming `eradicate` successfully ignored them :)
+
+yes, it did :) but it is not a deal breaker for me :)
+
+---

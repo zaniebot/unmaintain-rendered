@@ -1,0 +1,206 @@
+---
+number: 3259
+title: "`min_values` when using Parser not respected"
+type: issue
+state: closed
+author: jarrodsfarrell
+labels:
+  - C-bug
+  - A-docs
+  - E-easy
+assignees: []
+created_at: 2022-01-05T00:07:37Z
+updated_at: 2022-05-16T13:57:14Z
+url: https://github.com/clap-rs/clap/issues/3259
+synced_at: 2026-01-07T13:12:19-06:00
+---
+
+# `min_values` when using Parser not respected
+
+---
+
+_Issue opened by @jarrodsfarrell on 2022-01-05 00:07_
+
+### Please complete the following tasks
+
+- [X] I have searched the [discussions](https://github.com/clap-rs/clap/discussions)
+- [X] I have searched the existing issues
+
+### Rust Version
+
+rustc 1.57.0 (f1edd0429 2021-11-29)
+
+### Clap Version
+
+3.0.4
+
+### Minimal reproducible code
+
+```toml
+[dependencies.clap]
+version = "3.0.1"
+features = ["derive"]
+```
+
+```rust
+use clap::{App, Parser};
+
+#[derive(Parser, Debug)]
+struct Args {
+    #[clap(short, min_values = 1)]
+    test: Vec<String>,
+}
+fn main() {
+    let args = Args::parse();
+    println!("{:#?}", args);
+}
+```
+
+
+### Steps to reproduce the bug with the above code
+
+_No arguments_
+
+### Actual Behaviour
+
+App executes, no error.
+
+### Expected Behaviour
+
+An error should occur since there are not enough values for `--test`
+
+### Additional Context
+
+_No response_
+
+### Debug Output
+
+```
+    Finished dev [unoptimized + debuginfo] target(s) in 0.02s
+     Running `target/debug/clap-test`
+[            clap::build::app]  App::_do_parse
+[            clap::build::app]  App::_build
+[            clap::build::app]  App::_propagate:clap-test
+[            clap::build::app]  App::_check_help_and_version
+[            clap::build::app]  App::_check_help_and_version: Removing generated version
+[            clap::build::app]  App::_propagate_global_args:clap-test
+[            clap::build::app]  App::_derive_display_order:clap-test
+[clap::build::app::debug_asserts]       App::_debug_asserts
+[clap::build::arg::debug_asserts]       Arg::_debug_asserts:help
+[clap::build::arg::debug_asserts]       Arg::_debug_asserts:test
+[         clap::parse::parser]  Parser::get_matches_with
+[         clap::parse::parser]  Parser::_build
+[         clap::parse::parser]  Parser::_verify_positionals
+[      clap::parse::validator]  Validator::validate
+[         clap::parse::parser]  Parser::add_defaults
+[         clap::parse::parser]  Parser::add_defaults:iter:test:
+[         clap::parse::parser]  Parser::add_value: doesn't have conditional defaults
+[         clap::parse::parser]  Parser::add_value:iter:test: doesn't have default vals
+[         clap::parse::parser]  Parser::add_value:iter:test: doesn't have default missing vals
+[      clap::parse::validator]  Validator::validate_conflicts
+[      clap::parse::validator]  Validator::validate_exclusive
+[      clap::parse::validator]  Validator::validate_required: required=ChildGraph([])
+[      clap::parse::validator]  Validator::gather_requirements
+[      clap::parse::validator]  Validator::validate_required_unless
+[      clap::parse::validator]  Validator::validate_matched_args
+[    clap::parse::arg_matcher]  ArgMatcher::get_global_values: global_arg_vec=[help]
+Args {
+    test: [],
+}
+```
+
+---
+
+_Label `C-bug` added by @jarrodsfarrell on 2022-01-05 00:07_
+
+---
+
+_Comment by @jarrodsfarrell on 2022-01-05 00:11_
+
+`max_values` seems to be okay.
+```rs
+use clap::Parser;
+
+#[derive(Parser, Debug)]
+struct Args {
+    #[clap(short, max_values = 2)]
+    test: Vec<String>,
+}
+fn main() {
+    let args = Args::parse();
+    println!("{:#?}", args);
+}
+```
+`cargo run -- -t too -t many -t bees`
+```
+[...]
+error: The value 'bees' was provided to '-t <TEST>...' but it wasn't expecting any more values
+````
+
+---
+
+_Comment by @jarrodsfarrell on 2022-01-05 00:17_
+
+Turns out to make it work _correctly_ is having a `required = true` as well. So `min_value` needs to inherently be required as well.
+
+```rs
+use clap::Parser;
+
+#[derive(Parser, Debug)]
+struct Args {
+    #[clap(short, min_values = 2, required = true)]
+    test: Vec<String>,
+}
+fn main() {
+    let args = Args::parse();
+    println!("{:#?}", args);
+}
+```
+`.. -t need` Errors correctly
+`.. -t need -t bees` Program runs
+
+---
+
+_Comment by @jarrodsfarrell on 2022-01-05 01:21_
+
+Actually this might be of design; I can figure a reason why someone would need to not require an arg's `Vec<T>` to contain values when not given but when it _is_ given then it must have `X` values of some kind.
+
+---
+
+_Comment by @epage on 2022-01-05 01:24_
+
+Currently, we only do min/max value checks against present arguments.  
+
+I think keeping it that way makes sense but a caveat should be added to the documentation.
+
+`min_values` does imply `multiple_values` and they are assumed to be used together.
+
+---
+
+_Label `A-docs` added by @epage on 2022-01-05 01:25_
+
+---
+
+_Label `E-easy` added by @epage on 2022-01-05 01:25_
+
+---
+
+_Comment by @AndreasBackx on 2022-05-14 01:28_
+
+@epage What about making `min_values(1)` implicitly specify `required(true)` and `min_values(0)` implicitly specify `required(false)` with a note in the documentation so these human errors are prevented without hopefully a trip to the documentation?
+
+---
+
+_Comment by @epage on 2022-05-14 02:39_
+
+Any changes along those lines would be a breaking change which won't happen until 4.0 at least but I am hoping to change a lot about how validation works in 4.0 between https://github.com/clap-rs/clap/issues/2688 and https://github.com/clap-rs/clap/discussions/3476.  I expect the only value count function that will exist will be for the number of values per occurrence and everything else will be handled through plugins, whether included with clap or written by end users.  My hope is we'll be at a point where those plugins can opt arguments into being required or not, so that type of implication can be done.
+
+---
+
+_Referenced in [clap-rs/clap#3728](../../clap-rs/clap/pulls/3728.md) on 2022-05-14 17:58_
+
+---
+
+_Closed by @epage on 2022-05-16 13:57_
+
+---

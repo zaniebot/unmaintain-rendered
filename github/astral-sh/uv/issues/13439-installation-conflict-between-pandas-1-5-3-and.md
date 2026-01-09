@@ -1,0 +1,79 @@
+---
+number: 13439
+title: Installation Conflict Between pandas==1.5.3 and numpy==1.20.3 in Python 3.9 Environment
+type: issue
+state: closed
+author: huajason
+labels:
+  - question
+assignees: []
+created_at: 2025-05-14T02:01:25Z
+updated_at: 2025-05-14T18:40:06Z
+url: https://github.com/astral-sh/uv/issues/13439
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# Installation Conflict Between pandas==1.5.3 and numpy==1.20.3 in Python 3.9 Environment
+
+---
+
+_Issue opened by @huajason on 2025-05-14 02:01_
+
+### Summary
+
+When attempting to install the specified versions of pandas and numpy in a Python 3.9 environment using:
+`uv add pandas==1.5.3 numpy==1.20.3  `
+
+the installation fails with a dependency conflict error:
+` pandas==1.5.3 depends on numpy{python_full_version >= '3.10'}>=1.21.0, we can conclude that pandas==1.5.3 depends on numpy>=1.21.0.
+      And because your project depends on numpy==1.20.3 and pandas==1.5.3, we can conclude that your project's requirements are unsatisfiable.`
+
+**Expected Behavior​**
+pandas==1.5.3 and numpy==1.20.3 should install successfully in a Python 3.9 environment.
+
+
+![Image](https://github.com/user-attachments/assets/ab0ff859-d577-47c1-849f-cc840c581e16)
+
+### Platform
+
+windows 10
+
+### Version
+
+uv 0.7.3
+
+### Python version
+
+3.9.22
+
+---
+
+_Label `bug` added by @huajason on 2025-05-14 02:01_
+
+---
+
+_Comment by @konstin on 2025-05-14 07:23_
+
+The important information is part of the error message:
+
+>   × No solution found when resolving dependencies for split (python_full_version >= '3.11'):
+
+uv can resolve for Python 3.9, but for the universal lockfile, the resolution fails for more recent versions, due to the lines below the ones you highlighted. You can adjust this to only Python 3.9 with:
+
+```toml
+requires-python = "==3.9.*"
+```
+
+---
+
+_Label `bug` removed by @konstin on 2025-05-14 07:23_
+
+---
+
+_Label `question` added by @konstin on 2025-05-14 07:23_
+
+---
+
+_Closed by @charliermarsh on 2025-05-14 18:40_
+
+---

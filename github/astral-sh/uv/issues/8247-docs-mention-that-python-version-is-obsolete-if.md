@@ -1,0 +1,170 @@
+---
+number: 8247
+title: "Docs: Mention that `.python-version` is obsolete if `project.requires-python` is present in `pyproject.toml`?"
+type: issue
+state: closed
+author: jnussbaum
+labels:
+  - question
+assignees: []
+created_at: 2024-10-16T09:39:52Z
+updated_at: 2024-12-12T01:33:16Z
+url: https://github.com/astral-sh/uv/issues/8247
+synced_at: 2026-01-07T13:12:17-06:00
+---
+
+# Docs: Mention that `.python-version` is obsolete if `project.requires-python` is present in `pyproject.toml`?
+
+---
+
+_Issue opened by @jnussbaum on 2024-10-16 09:39_
+
+First a big thumbs up for the great work you're doing with ruff and uv! We have adopted both in our company, and we're overwhelmed!
+
+I have just a quick request for clarification: https://docs.astral.sh/uv/guides/projects/ implies that it is always necessary (or at least best practice) to have the file `.python-version` checked in. But for standards-compliant projects that define `project.requires-python` in `pyproject.toml`, this seems obsolete. I tried it out, and in fact, uv correctly detects `project.requires-python` and installs the intended python version, even without `.python-version`. 
+
+In our project, I wanted to remove `.python-version`, so that we don't have the python version defined in 2 separate places. But then I became insecure because of the documentation.
+
+Therefore, I think it would be helpful to add a remark to https://docs.astral.sh/uv/guides/projects/, mentioning that `.python-version` is obsolete in this case. WDYT?
+
+---
+
+_Comment by @charliermarsh on 2024-10-16 12:22_
+
+The `.python-version` file is not quite obsolete with `requires-python` -- they're subtly different. `requires-python` is the range of versions supported by your project. `.python-version` is the exact version you want to use when developing. For example, if you're working on a library, your `requires-python` might be `>= "3.10"`. But when developing on your machine, you might want to use `3.12.4` by default -- so you'd set that in a `.python-version`.
+
+---
+
+_Label `question` added by @charliermarsh on 2024-10-16 12:22_
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2024-10-16 12:22_
+
+---
+
+_Comment by @jnussbaum on 2024-10-17 06:40_
+
+Thanks for this information, that makes sense 👍 
+
+---
+
+_Referenced in [astral-sh/uv#8920](../../astral-sh/uv/issues/8920.md) on 2024-11-08 15:13_
+
+---
+
+_Comment by @apoorvkh on 2024-11-08 15:55_
+
+Hey, I wonder if we can just add a `tool.uv.python-resolution` (which could be `highest`, `lowest`, `lowest-major`, `3.10.15`, etc.) but would be overriden if `.python-version` does exist.
+
+This would save projects from one excess file (`.python-version`) in the git tracking. And would permit maintainers to specify a certain Python version for development, but give contributors a hook to change this if desired (and without altering any git-tracked file).
+
+Happy to attempt a PR if this sounds reasonable!
+
+---
+
+_Comment by @zanieb on 2024-11-08 17:00_
+
+See #5609 and https://github.com/astral-sh/uv/issues/7779
+
+Yeah; I'd like to have a `python-strategy` or something, it just hasn't been implemented. If you're interested, you're welcome to give it a go.
+
+---
+
+_Referenced in [astral-sh/uv#5609](../../astral-sh/uv/issues/5609.md) on 2024-11-08 17:03_
+
+---
+
+_Referenced in [astral-sh/uv#9083](../../astral-sh/uv/issues/9083.md) on 2024-11-13 14:01_
+
+---
+
+_Comment by @ANL06488 on 2024-11-13 14:08_
+
+I understand the need for specifically specifying a python version, but I would argue a better default behaviour for `uv init` should be to specify this as a separate setting within pyproject.toml with the same reasoning as in #8920 , AKA, not worth adding a whole new file to the root folder for.
+
+---
+
+_Comment by @charliermarsh on 2024-11-13 16:38_
+
+They have different meanings though. `requires-python` is not meant for that purpose -- it's meant to indicate your minimum-supported Python version. They're distinct concepts, and I don't think it's a good practice to encourage them to be mixed like that.
+
+---
+
+_Comment by @ANL06488 on 2024-11-14 08:06_
+
+> They have different meanings though. `requires-python` is not meant for that purpose -- it's meant to indicate your minimum-supported Python version. They're distinct concepts, and I don't think it's a good practice to encourage them to be mixed like that.
+
+No, I'm saying add a specific `tools.uv` setting like `python-version` inside pyproject.toml apart from the existing `requires-python` setting.
+
+Yes there's a need to specify a specific python version, but there's no need for it to be specified in a separate file, much less dedicate an entire file for a single config setting.
+
+---
+
+_Comment by @apoorvkh on 2024-11-14 15:03_
+
+[I said I would try a PR for this above, but I have little Rust experience, so this is subject to my schedule. Anyone else should feel free to work on this too! Would be really great to have this feature.]
+
+---
+
+_Comment by @zanieb on 2024-11-14 15:06_
+
+There are already issues tracking that at https://github.com/astral-sh/uv/issues/4970 and https://github.com/astral-sh/uv/issues/4359
+
+There is a reason to have it in a separate file — other tools can read it. For example, GitHub Actions's `setup-python` action can read a version from a `.python-file` but not from a `[tool.uv]` option.
+
+---
+
+_Comment by @ANL06488 on 2024-11-15 08:25_
+
+I see, once those PRs are merged, I'd still argue that the default behaviour should still be to put it in pyproject.toml first, and if needed a user can always move it to it's own file.
+
+---
+
+_Referenced in [astral-sh/uv#9494](../../astral-sh/uv/issues/9494.md) on 2024-11-28 09:07_
+
+---
+
+_Comment by @edmorley on 2024-12-11 23:46_
+
+IMO this issue should be wontfixed, since the `.python-version` file is not equivalent to the `pyproject.toml` `requires-python` field. The latter can be a range, which is not suitable/safe for bootstrapping/deployment purposes.
+
+I'd love for there to be an official single-version field in `pyproject.toml` (where the single version can be either the full `X.Y.Z` version, or a major `X.Y` version), but until there is, there is no like-for-like replacement for `.python-version` defined in the `pyproject.toml` spec. (If people would like to see one, then I'd recommend starting a [PEP](https://peps.python.org/) upstream)
+
+
+
+---
+
+_Comment by @zanieb on 2024-12-12 01:33_
+
+I agree, we won't be saying it's obsolete. Perhaps there's room to improve the documentation though? @charliermarsh I'm not sure if you were planning on revisiting that. Regardless, we can track in a clearer issue.
+
+---
+
+_Closed by @zanieb on 2024-12-12 01:33_
+
+---
+
+_Referenced in [astral-sh/uv#7429](../../astral-sh/uv/issues/7429.md) on 2024-12-14 17:31_
+
+---
+
+_Referenced in [astral-sh/uv#11697](../../astral-sh/uv/issues/11697.md) on 2025-02-21 17:02_
+
+---
+
+_Referenced in [astral-sh/uv#12169](../../astral-sh/uv/issues/12169.md) on 2025-03-14 20:48_
+
+---
+
+_Referenced in [acorg/dark-matter#818](../../acorg/dark-matter/pulls/818.md) on 2025-05-07 09:01_
+
+---
+
+_Referenced in [heroku/heroku-buildpack-python#1802](../../heroku/heroku-buildpack-python/issues/1802.md) on 2025-06-04 12:24_
+
+---
+
+_Referenced in [astral-sh/setup-uv#557](../../astral-sh/setup-uv/issues/557.md) on 2025-09-08 21:20_
+
+---

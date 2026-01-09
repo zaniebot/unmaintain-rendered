@@ -1,0 +1,127 @@
+---
+number: 11461
+title: W605 fix is unsafe
+type: issue
+state: closed
+author: njzjz
+labels:
+  - bug
+assignees: []
+created_at: 2024-05-17T21:02:28Z
+updated_at: 2024-05-19T03:32:33Z
+url: https://github.com/astral-sh/ruff/issues/11461
+synced_at: 2026-01-07T13:12:15-06:00
+---
+
+# W605 fix is unsafe
+
+---
+
+_Issue opened by @njzjz on 2024-05-17 21:02_
+
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* List of keywords you searched for before creating this issue. Write them down here so that others can find this issue more easily and help provide feedback.
+  e.g. "RUF001", "unused variable", "Jupyter notebook"
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+Before fix:
+```py
+print("\
+test\.")
+```
+
+The original output:
+```sh
+$ python test_w605.py
+test\.
+```
+
+Fix it:
+```sh
+$ ruff check test_w605.py --select W605 --fix --isolated
+Found 1 error (1 fixed, 0 remaining).
+```
+
+The file becomes
+```py
+print(r"\
+test\.") 
+```
+
+Run it again:
+```sh
+$ python test_w605.py 
+\
+test\.
+```
+
+The output changes. So the fix is unsafe.
+
+---
+
+_Comment by @charliermarsh on 2024-05-17 21:22_
+
+I'm sorry, I don't understand the difference between the two snippets. I something being obscured by GitHub's formatting?
+
+---
+
+_Comment by @njzjz on 2024-05-17 21:51_
+
+Sorry I made a mistake, I fixed it.
+
+In short, the first backslash (`\`) gives different outputs with the raw string and the regular string.
+
+```py
+>>> "\
+... "
+''
+>>> r"\
+... "
+'\\\n'
+```
+
+---
+
+_Comment by @zanieb on 2024-05-18 17:08_
+
+Is this an unsafe fix or is this just a bug that we should fix?
+
+---
+
+_Comment by @njzjz on 2024-05-19 02:47_
+
+> Is this an unsafe fix or is this just a bug that we should fix?
+
+I think it is a bug that should be fixed, and due to this bug, the current fix is unsafe.
+
+---
+
+_Label `bug` added by @charliermarsh on 2024-05-19 02:57_
+
+---
+
+_Comment by @charliermarsh on 2024-05-19 02:57_
+
+Let's fix the bug rather than changing the safety.
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2024-05-19 03:22_
+
+---
+
+_Referenced in [astral-sh/ruff#11465](../../astral-sh/ruff/pulls/11465.md) on 2024-05-19 03:27_
+
+---
+
+_Closed by @charliermarsh on 2024-05-19 03:32_
+
+---

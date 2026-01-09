@@ -1,0 +1,148 @@
+---
+number: 15920
+title: Conflicting behavior of ruff isort rule for same file in different environments
+type: issue
+state: closed
+author: rashishhume
+labels:
+  - question
+  - isort
+assignees: []
+created_at: 2025-02-04T01:43:47Z
+updated_at: 2025-02-05T08:37:11Z
+url: https://github.com/astral-sh/ruff/issues/15920
+synced_at: 2026-01-07T13:12:16-06:00
+---
+
+# Conflicting behavior of ruff isort rule for same file in different environments
+
+---
+
+_Issue opened by @rashishhume on 2025-02-04 01:43_
+
+### Description
+
+I've noticed that ruff linter with isort enabled is behaving differently for me when running locally (in a Linux machine with Ubuntu) vs in a Github action runner (running ubuntu-latest).
+
+Locally, its not happy about the **lack of line** between `yaml` and `RcloneHelper`.
+```
+$ ruff check --config ./pyproject.toml ./backup.py
+backup2.py:5:1: I001 [*] Import block is un-sorted or un-formatted
+   |
+ 3 |   """
+ 4 |
+ 5 | / import logging
+ 6 | | import os
+ 7 | | from typing import Annotated, List
+ 8 | |
+ 9 | | import typer
+10 | | import yaml
+11 | | from data_backup.rclone_helper import RcloneHelper
+   | |__________________________________________________^ I001
+12 |
+13 |   logging.basicConfig(
+   |
+   = help: Organize imports
+
+Found 1 error.
+```
+
+In a Github action runner its not happy **with a line** (ran below via tmate ssh session in the runner)
+```
+$ ruff check --config ./tools/data-backup/pyproject.toml ./tools/data-backup/backup.py
+tools/data-backup/backup.py:5:1: I001 [*] Import block is un-sorted or un-formatted
+   |
+ 3 |   """
+ 4 |
+ 5 | / import logging
+ 6 | | import os
+ 7 | | from typing import Annotated, List
+ 8 | |
+ 9 | | import typer
+10 | | import yaml
+11 | |
+12 | | from data_backup.rclone_helper import RcloneHelper
+   | |__________________________________________________^ I001
+13 |
+14 |   logging.basicConfig(
+   |
+   = help: Organize imports
+
+Found 1 error.
+```
+
+My pyproject.toml is:
+```
+[tool.ruff]
+line-length = 120
+indent-width = 4
+
+[tool.ruff.lint]
+ignore = ["E203", "E501"]
+extend-select = ["I"]
+```
+
+Any thoughts on what might be the issue here ?
+
+---
+
+_Comment by @MichaReiser on 2025-02-04 08:41_
+
+The reason for the difference seems to be that Ruff once categorizes `data_backup` as first party (locally) and as third-party (GitHub) dependencies and it then tries to group it with the other first/third-party imports. You can run ruff with `ruff check --verbose` and it should log how imports are categorizes. 
+
+Now, the reason why I think Ruff once detects `data_backup` as first-party locally but not on GitHub is because you run ruff from different directories. Ruff defaults to treat `./` and `./src` as first-party and everything else as third-party (see [`src`](https://docs.astral.sh/ruff/settings/#src). 
+
+Can you try running ruff in the `tools/data-backup` directory on GitHub, the same as you do locally and let me know if that helped?
+
+---
+
+_Label `question` added by @MichaReiser on 2025-02-04 08:41_
+
+---
+
+_Label `isort` added by @MichaReiser on 2025-02-04 08:41_
+
+---
+
+_Comment by @rashishhume on 2025-02-04 18:56_
+
+Thanks @MichaReiser. That might be right. I tried changing the dir locally, and I see the same error as Github
+```
+$ ruff check --config ./research/tools/data-backup/pyproject.toml ./research/tools/data-backup/backup2.py
+research/tools/data-backup/backup2.py:5:1: I001 [*] Import block is un-sorted or un-formatted
+   |
+ 3 |   """
+ 4 |
+ 5 | / import logging
+ 6 | | import os
+ 7 | | from typing import Annotated, List
+ 8 | |
+ 9 | | import typer
+10 | | import yaml
+11 | |
+12 | | from data_backup.rclone_helper import RcloneHelper
+   | |__________________________________________________^ I001
+13 |
+14 |   logging.basicConfig(
+   |
+   = help: Organize imports
+
+Found 1 error.
+[*] 1 fixable with the `--fix` option.
+```
+
+---
+
+_Comment by @rashishhume on 2025-02-04 19:19_
+
+I was able to fix it by simply omitting the `--config` argument when invoking it in Github
+
+---
+
+_Closed by @MichaReiser on 2025-02-05 08:37_
+
+---
+
+_Referenced in [astral-sh/ruff-pre-commit#103](../../astral-sh/ruff-pre-commit/issues/103.md) on 2025-03-03 06:28_
+
+---

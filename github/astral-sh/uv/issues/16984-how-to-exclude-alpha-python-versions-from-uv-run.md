@@ -1,0 +1,117 @@
+---
+number: 16984
+title: How to exclude alpha Python versions from uv run
+type: issue
+state: closed
+author: jdumas
+labels:
+  - question
+assignees: []
+created_at: 2025-12-04T18:05:29Z
+updated_at: 2025-12-04T23:32:17Z
+url: https://github.com/astral-sh/uv/issues/16984
+synced_at: 2026-01-07T13:12:19-06:00
+---
+
+# How to exclude alpha Python versions from uv run
+
+---
+
+_Issue opened by @jdumas on 2025-12-04 18:05_
+
+### Question
+
+Hi. I have a linux machine with the follow Python version installed:
+
+```
+uv python list
+cpython-3.14.0-linux-x86_64-gnu                 <download available>
+cpython-3.14.0+freethreaded-linux-x86_64-gnu    <download available>
+cpython-3.14.0a6-linux-x86_64-gnu               /home/user/.local/share/uv/python/cpython-3.14.0a6-linux-x86_64-gnu/bin/python3.14
+cpython-3.13.8-linux-x86_64-gnu                 <download available>
+cpython-3.13.8+freethreaded-linux-x86_64-gnu    <download available>
+cpython-3.13.1-linux-x86_64-gnu                 /home/user/.local/share/uv/python/cpython-3.13.1-linux-x86_64-gnu/bin/python3.13
+cpython-3.12.11-linux-x86_64-gnu                <download available>
+cpython-3.12.8-linux-x86_64-gnu                 /home/user/.local/share/uv/python/cpython-3.12.8-linux-x86_64-gnu/bin/python3.12
+cpython-3.11.13-linux-x86_64-gnu                <download available>
+cpython-3.11.11-linux-x86_64-gnu                /home/user/.local/share/uv/python/cpython-3.11.11-linux-x86_64-gnu/bin/python3.11
+cpython-3.10.18-linux-x86_64-gnu                <download available>
+cpython-3.10.16-linux-x86_64-gnu                /home/user/.local/share/uv/python/cpython-3.10.16-linux-x86_64-gnu/bin/python3.10
+cpython-3.10.11-linux-x86_64-gnu                /home/user/.local/share/uv/python/cpython-3.10.11-linux-x86_64-gnu/bin/python3.10
+cpython-3.9.23-linux-x86_64-gnu                 <download available>
+cpython-3.9.21-linux-x86_64-gnu                 /home/user/.local/share/uv/python/cpython-3.9.21-linux-x86_64-gnu/bin/python3.9
+cpython-3.8.20-linux-x86_64-gnu                 <download available>
+pypy-3.11.13-linux-x86_64-gnu                   <download available>
+pypy-3.10.16-linux-x86_64-gnu                   <download available>
+pypy-3.9.19-linux-x86_64-gnu                    <download available>
+pypy-3.8.16-linux-x86_64-gnu                    <download available>
+graalpy-3.12.0-linux-x86_64-gnu                 <download available>
+graalpy-3.11.0-linux-x86_64-gnu                 <download available>
+graalpy-3.10.0-linux-x86_64-gnu                 <download available>
+graalpy-3.8.5-linux-x86_64-gnu                  <download available>
+```
+
+When I run `uv run` it picks up the following Python version:
+
+```
+uv run --python 3.14 --isolated --no-project python --version
+Python 3.14.0a6
+```
+
+How can I force `uv run` specifically to use a non-alpha version of Python? It seems related to #16608. I tried passing `--reinstall` or `--refresh` to the `uv run` command, but that doesn't seem to affect the Python executable itself.
+
+### Platform
+
+RedHat 8.6
+
+### Version
+
+0.9.0
+
+---
+
+_Label `question` added by @jdumas on 2025-12-04 18:05_
+
+---
+
+_Comment by @zanieb on 2025-12-04 18:42_
+
+You can use `uv python install --upgrade 3.14` from the latest version of uv (or `uv python upgrade 3.14`)
+
+---
+
+_Comment by @jdumas on 2025-12-04 19:21_
+
+Thanks. So it seems we can't enforce it as a one-liner. I see that `uv run` supports an `--upgrade` option, but for some reason this doesn't seems to upgrade the installed Python version. Should it?
+
+---
+
+_Comment by @zanieb on 2025-12-04 20:20_
+
+no, `--upgrade` is not for Python versions, that's for the package resolver.
+
+You can use `3.14.0` and that'll require a stable version.
+
+---
+
+_Comment by @jdumas on 2025-12-04 22:04_
+
+Got it. And just to confirm `3.14.0` will not get me the latest patch release `3.14.1`? There's no way to match `~=3.14` without matching alpha and pre-release versions?
+
+---
+
+_Comment by @zanieb on 2025-12-04 22:40_
+
+Yeah there's not a way to get that today.
+
+---
+
+_Comment by @jdumas on 2025-12-04 23:32_
+
+Ok thanks. I'll close the issue then.
+
+---
+
+_Closed by @jdumas on 2025-12-04 23:32_
+
+---

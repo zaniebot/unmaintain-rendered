@@ -1,0 +1,104 @@
+---
+number: 4731
+title: "`uv tool` should support man pages"
+type: issue
+state: open
+author: zanieb
+labels:
+  - enhancement
+  - help wanted
+assignees: []
+created_at: 2024-07-02T15:23:06Z
+updated_at: 2024-09-05T07:58:44Z
+url: https://github.com/astral-sh/uv/issues/4731
+synced_at: 2026-01-07T13:12:17-06:00
+---
+
+# `uv tool` should support man pages
+
+---
+
+_Issue opened by @zanieb on 2024-07-02 15:23_
+
+pipx supports installation of man pages for documentation. We should do the same in the `uv tool` commands.
+
+---
+
+_Label `enhancement` added by @zanieb on 2024-07-02 15:23_
+
+---
+
+_Label `help wanted` added by @zanieb on 2024-07-02 15:23_
+
+---
+
+_Label `preview` added by @zanieb on 2024-07-02 15:23_
+
+---
+
+_Label `preview` removed by @zanieb on 2024-08-20 18:22_
+
+---
+
+_Comment by @harkabeeparolus on 2024-09-02 05:13_
+
+Agreed. This is the biggest feature that's still keeping me on pipx right now.
+
+---
+
+_Comment by @eth3lbert on 2024-09-05 07:58_
+
+> Agreed. This is the biggest feature that's still keeping me on pipx right now.
+
+Before this feature is fully implemented, you can use the following workaround: `uv tool run --from package man package`.
+
+e.g., `uv tool run --from pycowsay man pycowsay`.
+
+
+
+
+---
+
+_Referenced in [astral-sh/uv#7171](../../astral-sh/uv/pulls/7171.md) on 2024-09-07 17:02_
+
+---
+
+_Referenced in [astral-sh/uv#8209](../../astral-sh/uv/issues/8209.md) on 2024-10-15 13:54_
+
+---
+
+_Referenced in [astral-sh/uv#8435](../../astral-sh/uv/issues/8435.md) on 2024-10-22 13:34_
+
+---
+
+_Referenced in [astral-sh/uv#11354](../../astral-sh/uv/issues/11354.md) on 2025-02-09 13:54_
+
+---
+
+_Referenced in [astral-sh/uv#13729](../../astral-sh/uv/issues/13729.md) on 2025-05-30 10:28_
+
+---
+
+_Referenced in [walles/px#138](../../walles/px/pulls/138.md) on 2025-08-26 04:10_
+
+---
+
+_Referenced in [kellyjonbrazil/jello#74](../../kellyjonbrazil/jello/pulls/74.md) on 2025-08-29 23:16_
+
+---
+
+_Referenced in [rfinnie/2ping#9](../../rfinnie/2ping/pulls/9.md) on 2025-08-30 00:04_
+
+---
+
+_Referenced in [ulif/diceware#119](../../ulif/diceware/pulls/119.md) on 2025-08-30 00:54_
+
+---
+
+_Referenced in [astral-sh/uv#16549](../../astral-sh/uv/pulls/16549.md) on 2025-11-01 21:02_
+
+---
+
+_Referenced in [jarun/buku#876](../../jarun/buku/pulls/876.md) on 2025-11-15 22:40_
+
+---

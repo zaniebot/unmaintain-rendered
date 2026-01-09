@@ -1,0 +1,98 @@
+---
+number: 19752
+title: "E301 is inconsistent with `flake8`"
+type: issue
+state: closed
+author: whitequark
+labels:
+  - bug
+  - rule
+assignees: []
+created_at: 2025-08-05T06:22:14Z
+updated_at: 2025-09-16T15:00:08Z
+url: https://github.com/astral-sh/ruff/issues/19752
+synced_at: 2026-01-07T13:12:16-06:00
+---
+
+# E301 is inconsistent with `flake8`
+
+---
+
+_Issue opened by @whitequark on 2025-08-05 06:22_
+
+### Summary
+
+[Playground link](https://play.ruff.rs/2f560296-53b8-4c6d-9856-8a7c410ac345)
+
+In this snippet:
+
+```py
+class foo:
+    async def recv(self, *, length=65536):
+        loop = asyncio.get_event_loop()
+        def callback():
+            loop.remove_reader(self._fd)
+        loop.add_reader(self._fd, callback)
+```
+
+It appears that ruff applies E301 `blank-line-between-methods` to `foo.recv.callback` because it is "within" a `class` node, but flake8 (correctly) does not apply E301 to it because it is not "immediately within" a `class` node and is not actually a method.
+
+(I do weird things within methods but not outside of them.)
+
+### Version
+
+ruff 0.12.7
+
+---
+
+_Comment by @ntBre on 2025-08-05 12:51_
+
+That makes sense to me, `callback` isn't a method and should only trigger [blank-lines-before-nested-definition (E306)](https://docs.astral.sh/ruff/rules/blank-lines-before-nested-definition/#blank-lines-before-nested-definition-e306), not `E301`.
+
+---
+
+_Label `bug` added by @ntBre on 2025-08-05 12:51_
+
+---
+
+_Label `rule` added by @ntBre on 2025-08-05 12:51_
+
+---
+
+_Referenced in [GlasgowEmbedded/glasgow#993](../../GlasgowEmbedded/glasgow/pulls/993.md) on 2025-08-05 13:43_
+
+---
+
+_Comment by @mikeleppane on 2025-08-05 16:11_
+
+I will take a look on this.
+
+---
+
+_Comment by @whitequark on 2025-08-05 16:48_
+
+Thank you!
+
+---
+
+_Assigned to @mikeleppane by @ntBre on 2025-08-05 18:22_
+
+---
+
+_Referenced in [astral-sh/ruff#19768](../../astral-sh/ruff/pulls/19768.md) on 2025-08-05 18:27_
+
+---
+
+_Comment by @danparizher on 2025-08-05 18:28_
+
+So sorry, I didn't realize this was assigned out! I had started working on it before that comment was posted.
+
+---
+
+_Unassigned @mikeleppane by @ntBre on 2025-08-05 18:29_
+
+---
+
+_Closed by @ntBre on 2025-09-16 15:00_
+
+---

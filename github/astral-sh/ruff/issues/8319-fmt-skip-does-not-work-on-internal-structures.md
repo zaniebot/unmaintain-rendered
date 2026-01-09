@@ -1,0 +1,165 @@
+---
+number: 8319
+title: "`fmt: skip` does not work on internal structures"
+type: issue
+state: closed
+author: SigureMo
+labels:
+  - documentation
+  - formatter
+assignees: []
+created_at: 2023-10-29T03:53:14Z
+updated_at: 2024-02-13T15:35:29Z
+url: https://github.com/astral-sh/ruff/issues/8319
+synced_at: 2026-01-07T13:12:15-06:00
+---
+
+# `fmt: skip` does not work on internal structures
+
+---
+
+_Issue opened by @SigureMo on 2023-10-29 03:53_
+
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+This is a minimal reproduction:
+
+```toml
+# pyproject.toml
+[tool.ruff]
+line-length = 120
+
+[tool.black]
+line-length = 120
+```
+
+```python
+# ruff-fmt-skip-repro.py
+x = [
+    {
+        1: 2
+    }  # fmt: skip
+]
+```
+
+black left unchanged:
+
+```bash
+❯ black --version           
+black, 23.10.1 (compiled: no)
+Python (CPython) 3.12.0
+
+❯ black ruff-fmt-skip-repro.py
+All done! ✨ 🍰 ✨
+1 file left unchanged.
+```
+
+But ruff will format the code:
+
+```bash
+❯ ruff --version                    
+ruff 0.1.3
+
+❯ ruff format ruff-fmt-skip-repro.py           
+1 file reformatted
+```
+
+The formatted code shown below:
+
+```python
+x = [
+    {1: 2}  # fmt: skip
+]
+```
+
+---
+
+_Comment by @zanieb on 2023-10-29 05:09_
+
+I believe this is intended, and is a limitation due to the difficulty of implementing consistent formatting when partially disabled. @MichaReiser can confirm though.
+
+Here's the relevant documentation, which could probably be expanded: https://docs.astral.sh/ruff/formatter/#format-suppression
+
+
+
+---
+
+_Comment by @MichaReiser on 2023-10-29 10:12_
+
+Yes, fmt:skip is not supported on expression level
+
+---
+
+_Label `formatter` added by @charliermarsh on 2023-10-30 23:30_
+
+---
+
+_Comment by @charliermarsh on 2023-10-30 23:30_
+
+@MichaReiser - Do you want to close, or how should we proceed?
+
+---
+
+_Closed by @MichaReiser on 2023-10-30 23:56_
+
+---
+
+_Comment by @zanieb on 2023-10-31 00:48_
+
+@MichaReiser can we add some clear examples of where it's not intended to work to the docs? I think the docs also make it clear that `fmt: on` needs to be at the statement level but is less clear about `fmt :skip`?
+
+---
+
+_Reopened by @MichaReiser on 2023-10-31 00:53_
+
+---
+
+_Label `documentation` added by @MichaReiser on 2023-10-31 00:53_
+
+---
+
+_Added to milestone `Formatter: Stable` by @MichaReiser on 2023-10-31 00:53_
+
+---
+
+_Comment by @dtrckd on 2024-01-25 15:10_
+
+Hi,
+Here is another problematic case, where `fmt: skip` does not work.
+
+```
+    data = {
+            "value": x / 100,  # a long comment... # fmt:skip
+        }
+```
+will be render like this if line-length exceeds : 
+
+```
+    data = {
+            "value": x 
+             / 100,  # very long comment.. # fmt:skip
+        }
+```
+
+---
+
+_Assigned to @MichaReiser by @MichaReiser on 2024-02-13 11:43_
+
+---
+
+_Referenced in [astral-sh/ruff#9973](../../astral-sh/ruff/pulls/9973.md) on 2024-02-13 11:51_
+
+---
+
+_Closed by @MichaReiser on 2024-02-13 15:35_
+
+---

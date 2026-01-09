@@ -1,0 +1,76 @@
+---
+number: 4652
+title: "Zsh shell completion doesn't work for flags/args that come after positional values"
+type: issue
+state: closed
+author: gbrlsnchs
+labels:
+  - C-bug
+  - A-completion
+assignees: []
+created_at: 2023-01-19T20:26:53Z
+updated_at: 2024-08-10T00:45:21Z
+url: https://github.com/clap-rs/clap/issues/4652
+synced_at: 2026-01-07T13:12:20-06:00
+---
+
+# Zsh shell completion doesn't work for flags/args that come after positional values
+
+---
+
+_Issue opened by @gbrlsnchs on 2023-01-19 20:26_
+
+### Discussed in https://github.com/clap-rs/clap/discussions/4648
+
+<div type='discussions-op-text'>
+
+<sup>Originally posted by **gbrlsnchs** January 18, 2023</sup>
+One practical example is the tool I wrote using clap, [park](https://git.sr.ht/~gbrlsnchs/park). When I mix values and flags/args, the shell completion no longer works.
+
+This works:
+```console
+$ park --<Tab>
+```
+
+This doesn't:
+```console
+$ park something --<Tab>
+```
+
+And despite the completion not working, flags/args that come after values effectively work when run, so... am I missing something? I just want to confirm whether it's a misconfiguration by my part, otherwise I'll proceed to open an issue.</div>
+
+---
+
+_Label `C-bug` added by @epage on 2023-01-19 20:28_
+
+---
+
+_Label `A-completion` added by @epage on 2023-01-19 20:28_
+
+---
+
+_Comment by @epage on 2023-01-19 20:28_
+
+Could you provide a complete, minimal reproduction case, meaning a program that combined with those completion examples will show the problem?
+
+---
+
+_Referenced in [rust-lang/rust#108083](../../rust-lang/rust/pulls/108083.md) on 2023-02-17 00:46_
+
+---
+
+_Referenced in [clap-rs/clap#4898](../../clap-rs/clap/issues/4898.md) on 2023-05-10 17:29_
+
+---
+
+_Comment by @epage on 2024-08-10 00:45_
+
+As I believe this is resolved with the native completions, I'm going to close this.  If this was incorrect, let us know!
+
+You can track stabilization at #3166
+
+---
+
+_Closed by @epage on 2024-08-10 00:45_
+
+---

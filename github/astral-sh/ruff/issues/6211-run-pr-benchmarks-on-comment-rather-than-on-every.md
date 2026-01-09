@@ -1,0 +1,46 @@
+---
+number: 6211
+title: Run PR benchmarks on comment, rather than on every PR
+type: issue
+state: closed
+author: charliermarsh
+labels:
+  - internal
+  - help wanted
+assignees: []
+created_at: 2023-07-31T20:37:17Z
+updated_at: 2023-11-06T05:52:54Z
+url: https://github.com/astral-sh/ruff/issues/6211
+synced_at: 2026-01-07T13:12:15-06:00
+---
+
+# Run PR benchmarks on comment, rather than on every PR
+
+---
+
+_Issue opened by @charliermarsh on 2023-07-31 20:37_
+
+The benchmarks that run on each pull request are useful, but they're somewhat noisy and require a release build, which means we spend a lot of GitHub Action worker-time running the benchmarks, even for PRs that very-confidently won't affect performance.
+
+Instead, we'd like to move towards running the benchmarks on selective PRs by adding a comment. Rome has a workflow for this, which we likely learn from: https://github.com/rome/tools/blob/main/.github/workflows/bench_analyzer.yml.
+
+
+---
+
+_Label `help wanted` added by @charliermarsh on 2023-07-31 20:37_
+
+---
+
+_Label `internal` added by @charliermarsh on 2023-07-31 20:37_
+
+---
+
+_Comment by @zanieb on 2023-08-01 14:55_
+
+Change needs to be on `main` for testing so I'm testing over in https://github.com/zanieb/ruff/pull/1
+
+---
+
+_Closed by @charliermarsh on 2023-11-06 05:52_
+
+---

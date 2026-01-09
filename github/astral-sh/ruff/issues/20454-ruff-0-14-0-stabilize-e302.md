@@ -1,0 +1,98 @@
+---
+number: 20454
+title: "[ruff 0.14.0] Stabilize `E302`"
+type: issue
+state: open
+author: chirizxc
+labels:
+  - rule
+  - needs-decision
+assignees: []
+created_at: 2025-09-17T17:42:11Z
+updated_at: 2025-11-26T10:13:08Z
+url: https://github.com/astral-sh/ruff/issues/20454
+synced_at: 2026-01-07T13:12:16-06:00
+---
+
+# [ruff 0.14.0] Stabilize `E302`
+
+---
+
+_Issue opened by @chirizxc on 2025-09-17 17:42_
+
+### Summary
+
+[blank-lines-top-level (E302)](https://docs.astral.sh/ruff/rules/blank-lines-top-level/#blank-lines-top-level-e302)
+
+---
+
+_Renamed from "Stabilize `E302`" to "[ruff 0.14.0] Stabilize `E302`" by @chirizxc on 2025-09-17 17:43_
+
+---
+
+_Comment by @ntBre on 2025-09-17 18:20_
+
+We've been a bit hesitant to stabilize most of the `pycodestyle`/`E` rules because even when they don't _conflict_ with the formatter, they still overlap with the formatter's functionality. All of these rules have been in preview long enough to consider stabilizing, but I think we want to decide what to do with them long-term as a group rather than stabilizing individual rules.
+
+Is there a reason you're interested in this one in particular?
+
+---
+
+_Label `rule` added by @ntBre on 2025-09-17 18:20_
+
+---
+
+_Label `needs-decision` added by @ntBre on 2025-09-17 18:20_
+
+---
+
+_Comment by @chirizxc on 2025-09-17 18:28_
+
+> We've been a bit hesitant to stabilize most of the `pycodestyle`/`E` rules because even when they don't _conflict_ with the formatter, they still overlap with the formatter's functionality. All of these rules have been in preview long enough to consider stabilizing, but I think we want to decide what to do with them long-term as a group rather than stabilizing individual rules.
+> 
+> Is there a reason you're interested in this one in particular?
+
+Some of these rules are PEP8 compliant, I would like to see them in stable, as not everyone uses the formatter
+
+---
+
+_Comment by @chirizxc on 2025-09-17 18:36_
+
+In fact `black` / `ruff format` doesn't fully format the code in PEP8 style either
+
+---
+
+_Comment by @chirizxc on 2025-09-17 18:41_
+
+Although PEP8 makes the following [recommendations](https://peps.python.org/pep-0008/#other-recommendations):
+
+<img width="1090" height="706" alt="Image" src="https://github.com/user-attachments/assets/55c780ed-63e0-451c-b6c7-8e3ea800855c" />
+
+```bash
+ruff format _b.py --diff     
+```
+```diff
+--- _b.py
++++ _b.py
+@@ -6,6 +6,6 @@
+ 
+ i = i + 1
+ 
+-x = x*2 - 1
+-hypot2 = x*x + y*y
+-c = (a+b) * (a-b)
+\ No newline at end of file
++x = x * 2 - 1
++hypot2 = x * x + y * y
++c = (a + b) * (a - b)
+```
+
+[Playground*](https://play.ruff.rs/1f90ca00-efa2-4eb0-b75b-c984bcd83590)
+
+---
+
+_Comment by @xi on 2025-11-26 10:13_
+
+IMHO E302 should absolutely be part of the default rules. Just as one example: If E302 is not enabled but I001 is, `ruff check --fix` can leave blank lines at the top of the file, which is almost certainly not what you want.
+
+---

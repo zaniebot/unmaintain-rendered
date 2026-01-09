@@ -1,0 +1,122 @@
+---
+number: 15444
+title: uv does not respect platform markers when resolving dependencies into uv.lock
+type: issue
+state: closed
+author: OmegaAISP
+labels:
+  - question
+assignees: []
+created_at: 2025-08-22T05:43:54Z
+updated_at: 2025-08-25T04:16:57Z
+url: https://github.com/astral-sh/uv/issues/15444
+synced_at: 2026-01-07T13:12:19-06:00
+---
+
+# uv does not respect platform markers when resolving dependencies into uv.lock
+
+---
+
+_Issue opened by @OmegaAISP on 2025-08-22 05:43_
+
+### Summary
+
+I have a problem when using uv with platform-specific dependencies. In my project I use TensorRT, which only exists on x86_64 and not on Jetson (aarch64). In my pyproject.toml I added the following:
+
+```
+tensorrt >= 10.9.0.34; platform_machine == "x86_64"
+```
+
+The problem is that when I run uv lock on an aarch64 system, uv still tries to resolve tensorrt and fails with Package not found: tensorrt. It seems that uv does not respect platform markers when generating the lockfile.
+
+If I generate uv.lock on x86_64 and commit it to my repository, then installation works fine on Jetson. But I cannot regenerate the lockfile on Jetson itself, which makes it impossible to have a flexible multi-platform setup. What I want is the ability to build uv.lock on either x86_64 or aarch64 and have uv correctly skip dependencies that do not match the current platform markers.
+
+Right now the only workaround is to always generate the lockfile on x86 and reuse it, but this breaks workflows where I need to rebuild the lockfile on different platforms. Ideally, uv should evaluate the platform markers during resolution and not attempt to fetch packages that are excluded by them.
+
+
+
+### Platform
+
+x86 and aarch64
+
+### Version
+
+0.8.9
+
+### Python version
+
+python 3.11
+
+---
+
+_Label `bug` added by @OmegaAISP on 2025-08-22 05:43_
+
+---
+
+_Comment by @konstin on 2025-08-22 08:27_
+
+uv needs to be able to determine the metadata of tensorrt on any platform to write the lockfile. If we ignored not having the metadata on aarch64, then uv could only create a lockfile that doesn't x86_64. As tensorrt only has a source distribution, the best solution would be for tensorrt to follow PEP 643 and provide its metadata statically.
+
+Can you share the full error message? The should not be a package not found error either way.
+
+---
+
+_Comment by @charliermarsh on 2025-08-22 10:09_
+
+> Ideally, uv should evaluate the platform markers during resolution and not attempt to fetch packages that are excluded by them.
+
+Unfortunately this isn't possible -- the lockfile applies to both platforms, and that package _requires_ building in order to determine its dependencies. So we can't determine the dependencies on ARM, because the package isn't supported.
+
+The best you can do, absent the package re-building with a newer version of setuptools, is (see: [Dependency Metadata](https://docs.astral.sh/uv/concepts/resolution/#dependency-metadata)):
+
+```toml
+[[tool.uv.dependency-metadata]]
+name = "tensorrt"
+version = "10.13.2.6"
+requires-dist = ["tensorrt_cu13==10.13.2.6"]
+```
+
+---
+
+_Label `bug` removed by @charliermarsh on 2025-08-22 10:09_
+
+---
+
+_Label `question` added by @charliermarsh on 2025-08-22 10:09_
+
+---
+
+_Closed by @charliermarsh on 2025-08-24 21:53_
+
+---
+
+_Comment by @OmegaAISP on 2025-08-25 04:16_
+
+Thanks for the response, everyone. I see there’s no way to avoid building that package on aarch64. Thanks again—here’s the error log:
+
+```
+  × Failed to build `tensorrt-cu12==10.13.2.6`
+  ├─▶ The build backend returned an error
+  ╰─▶ Call to `setuptools.build_meta:__legacy__.build_wheel` failed (exit status: 1)
+
+      [stderr]
+      Traceback (most recent call last):
+        File "<string>", line 14, in <module>
+        File "/home/user/.cache/uv/builds-v0/.tmpRVELnX/lib/python3.11/site-packages/setuptools/build_meta.py", line 331, in get_requires_for_build_wheel
+          return self._get_build_requires(config_settings, requirements=[])
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        File "/home/user/.cache/uv/builds-v0/.tmpRVELnX/lib/python3.11/site-packages/setuptools/build_meta.py", line 301, in _get_build_requires
+          self.run_setup()
+        File "/home/user/.cache/uv/builds-v0/.tmpRVELnX/lib/python3.11/site-packages/setuptools/build_meta.py", line 512, in run_setup
+          super().run_setup(setup_script=setup_script)
+        File "/home/user/.cache/uv/builds-v0/.tmpRVELnX/lib/python3.11/site-packages/setuptools/build_meta.py", line 317, in run_setup
+          exec(code, locals())
+        File "<string>", line 71, in <module>
+      RuntimeError: TensorRT does not currently build wheels for Tegra systems
+
+      hint: This usually indicates a problem with the package or the build environment.
+  help: `tensorrt-cu12` (v10.13.2.6) was included because `app:tensorrt` (v0.1.6.dev76+gd2f5408.d20250825) depends on `tensorrt-cu12>=10.9.0.34`
+```
+
+
+---

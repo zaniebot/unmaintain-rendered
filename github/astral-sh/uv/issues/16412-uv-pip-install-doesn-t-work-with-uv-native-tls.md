@@ -1,0 +1,133 @@
+---
+number: 16412
+title: "uv pip install doesn't work with :  ⁠UV_NATIVE_TLS and ⁠--native-tls -  No detection system certificates, requiring ⁠--allow-insecure-host"
+type: issue
+state: open
+author: errajibadr
+labels:
+  - needs-mre
+assignees: []
+created_at: 2025-10-22T16:37:27Z
+updated_at: 2025-11-19T02:04:03Z
+url: https://github.com/astral-sh/uv/issues/16412
+synced_at: 2026-01-07T13:12:19-06:00
+---
+
+# uv pip install doesn't work with :  ⁠UV_NATIVE_TLS and ⁠--native-tls -  No detection system certificates, requiring ⁠--allow-insecure-host
+
+---
+
+_Issue opened by @errajibadr on 2025-10-22 16:37_
+
+### Summary
+
+Description:
+Environment
+
+uv version: 0.8.14	
+Python Version: 3.12.10
+Platform/Architecture: Linux aarch64 (ARM64)
+Kernel: 6.10.14-linuxkit
+OS Distribution: Wolfi (a minimal Linux distribution designed for containers)
+Version: 20230201
+(The CICD is in Debian Worker)
+
+Problem
+
+When using ⁠uv pip install --system, neither the ⁠UV_NATIVE_TLS environment variable nor the ⁠--native-tls flag successfully enable native TLS certificate verification.  ( uv sync works ) 
+
+Despite properly configuring system certificates, uv fails to recognize them and only works when using ⁠--allow-insecure-host, which bypasses security.
+Steps to Reproduce
+	1.	Copy certificates to ⁠/etc/ssl/certs 
+	2.	Set environment variables:
+ export UV_NATIVE_TLS=true
+export SSL_CERT_DIR=/etc/ssl/certs
+export SSL_CERT_FILE=....
+  	3.	Attempt installation:
+ uv pip install --system --native-tls <package>
+  	4.	Installation fails with certificate verification error 	
+  	5.	Only succeeds when using:
+ uv pip install --system --allow-insecure-host <host> <package>
+ 
+Expected Behavior
+When ⁠UV_NATIVE_TLS=true or ⁠--native-tls is specified, uv should use the system's native certificate store (including certificates in ⁠/etc/ssl/certs and respecting ⁠SSL_CERT_DIR) for TLS verification.
+Actual Behavior
+Certificate verification fails despite:
+•	Certificates being present in ⁠/etc/ssl/certs 	
+•	⁠SSL_CERT_DIR environment variable being set 	
+•	⁠UV_NATIVE_TLS=true being set 	
+•	⁠--native-tls flag being used
+The only workaround is using ⁠--allow-insecure-host, which defeats the purpose of certificate verification.
+Additional Context
+According to the [uv documentation](https://docs.astral.sh/uv/concepts/authentication/certificates/), ⁠UV_NATIVE_TLS should enable the platform's native certificate store. 
+
+However, this doesn't appear to be working as expected in this configuration.
+Related Issues
+	
+Workaround
+Currently forced to use ⁠--allow-insecure-host, which is not acceptable for production environments due to security implications.
+
+### Platform
+
+Wolfi 20230201
+
+### Version
+
+0.8.14	
+
+### Python version
+
+3.12.10
+
+---
+
+_Label `bug` added by @errajibadr on 2025-10-22 16:37_
+
+---
+
+_Comment by @samypr100 on 2025-10-23 03:23_
+
+Thanks, for the report. I'd be great if you can provide
+
+(1) a reproduceable dockerfile showing step by step how you're adding the cert (using a dummy cert is fine) - you can generate one using something like [mkcert](https://github.com/FiloSottile/mkcert).
+(2) the actual verbose errors (e.g. running uv with --verbose)
+(3) Ideally, how the problematic cert was generated (e.g. openssl args/params/config) or any generic info you can share about the cert (algorithm, etc.)
+
+I'd avoid setting `UV_NATIVE_TLS` along with either  `SSL_CERT_DIR` or `SSL_CERT_FILE` as they're mutually exclusive.
+
+Sidenote, `uv` doesn't support `SSL_CERT_DIR` directly but we should probably add explicit support so as its properly supported by `rustls-native-certs` as of a few months ago.
+
+---
+
+_Label `needs-mre` added by @samypr100 on 2025-10-23 03:23_
+
+---
+
+_Label `bug` removed by @samypr100 on 2025-10-23 03:23_
+
+---
+
+_Referenced in [astral-sh/uv#16414](../../astral-sh/uv/issues/16414.md) on 2025-10-23 03:28_
+
+---
+
+_Referenced in [astral-sh/uv#16473](../../astral-sh/uv/pulls/16473.md) on 2025-10-27 16:40_
+
+---
+
+_Comment by @michael-o on 2025-11-18 17:19_
+
+@errajibadr Your problem is 99% related to openssl-probe.
+
+---
+
+_Comment by @samypr100 on 2025-11-19 02:02_
+
+> [@errajibadr](https://github.com/errajibadr) Your problem is 99% related to openssl-probe.
+
+@michael-o Thanks for digging, could you provide more details as to what led you to that conclusion?
+
+`uv` delgates to `rustls-native-certs` which is then delegated to `openssl-probe` on unix build configurations but only when `--native-tls` is used and `SSL_CERT_DIR` or `SSL_CERT_FILE` are not set.
+When `SSL_CERT_DIR` or `SSL_CERT_FILE` are set, native certs are not loaded due to `rustls-native-certs` [behavior](https://github.com/rustls/rustls-native-certs/blob/3ec7d86977f04fba8d369571595b47d16c8a60f2/src/lib.rs#L118-L125) on this, not `openssl-probe` as a far as I can see.
+
+---

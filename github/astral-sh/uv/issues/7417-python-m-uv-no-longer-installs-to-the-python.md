@@ -1,0 +1,180 @@
+---
+number: 7417
+title: python -m uv no longer installs to the python specified (if prerelease)
+type: issue
+state: closed
+author: hauntsaninja
+labels:
+  - bug
+assignees: []
+created_at: 2024-09-16T01:55:12Z
+updated_at: 2024-09-17T03:51:51Z
+url: https://github.com/astral-sh/uv/issues/7417
+synced_at: 2026-01-07T13:12:17-06:00
+---
+
+# python -m uv no longer installs to the python specified (if prerelease)
+
+---
+
+_Issue opened by @hauntsaninja on 2024-09-16 01:55_
+
+I think this is from https://github.com/astral-sh/uv/pull/7300 cc @zanieb 
+
+Using the `python -m uv` / `python3.13 -m uv` form should count as opt-in here?
+Came up in https://github.com/psf/black/actions/runs/10876175035/job/30175719632?pr=4453
+
+Setup:
+```
+λ docker run --rm -it python:3.13.0rc2 sh
+Unable to find image 'python:3.13.0rc2' locally
+3.13.0rc2: Pulling from library/python
+56c9b9253ff9: Pull complete 
+364d19f59f69: Pull complete 
+843b1d832182: Pull complete 
+a348c2a8d946: Pull complete 
+4e73bb8758d7: Pull complete 
+38ea74b559d3: Pull complete 
+ecad7386bb32: Pull complete 
+Digest: sha256:b40565d2da0deec1e7ae3ba7e170376cbbf8d0a5a75b2a049a980193a196b81d
+Status: Downloaded newer image for python:3.13.0rc2
+# curl -LsSf https://astral.sh/uv/install.sh | sh
+downloading uv 0.4.10 aarch64-unknown-linux-gnu
+installing to /root/.cargo/bin
+  uv
+  uvx
+everything's installed!
+
+To add $HOME/.cargo/bin to your PATH, either restart your shell or run:
+
+    source $HOME/.cargo/env (sh, bash, zsh)
+    source $HOME/.cargo/env.fish (fish)
+# . $HOME/.cargo/env
+# uv --version
+uv 0.4.10
+# uv pip install --python $(which python) uv
+Resolved 1 package in 182ms
+Prepared 1 package in 238ms
+Installed 1 package in 0.62ms
+ + uv==0.4.10
+```
+
+Failure (that's a little confusing until you realise what's going on):
+```
+# python -m uv pip install --system pypyp 
+error: The interpreter at /usr is externally managed, and indicates the following:
+
+  To install Python packages system-wide, try apt install
+  python3-xyz, where xyz is the package you are trying to
+  install.
+
+  If you wish to install a non-Debian-packaged Python package,
+  create a virtual environment using python3 -m venv path/to/venv.
+  Then use path/to/venv/bin/python and path/to/venv/bin/pip. Make
+  sure you have python3-full installed.
+
+  If you wish to install a non-Debian packaged Python application,
+  it may be easiest to use pipx install xyz, which will manage a
+  virtual environment for you. Make sure you have pipx installed.
+
+  See /usr/share/doc/python3.11/README.venv for more information.
+
+Consider creating a virtual environment with `uv venv`.
+```
+
+Success with uv 0.4.9
+```
+# uv pip install --python $(which python) 'uv<0.4.10'
+Resolved 1 package in 61ms
+Prepared 1 package in 246ms
+Uninstalled 1 package in 0.30ms
+Installed 1 package in 0.52ms
+ - uv==0.4.10
+ + uv==0.4.9
+
+# python -m uv --version
+uv 0.4.9
+# python -m uv pip install --system pypyp 
+Resolved 1 package in 66ms
+Prepared 1 package in 20ms
+Installed 1 package in 1ms
+ + pypyp==1.2.0
+```
+
+---
+
+_Referenced in [psf/black#4460](../../psf/black/pulls/4460.md) on 2024-09-16 06:59_
+
+---
+
+_Label `bug` added by @konstin on 2024-09-16 07:43_
+
+---
+
+_Assigned to @zanieb by @zanieb on 2024-09-16 19:46_
+
+---
+
+_Comment by @zanieb on 2024-09-16 19:56_
+
+@hauntsaninja I think this is because you use `--system` which opts out of using the current interpreter. Perhaps that's a bug if the current interpreter is not from a virtual environment?
+
+---
+
+_Comment by @zanieb on 2024-09-16 20:01_
+
+See the test cases added in
+
+- #7439 
+- #7438
+
+---
+
+_Comment by @zanieb on 2024-09-16 20:10_
+
+Reproduced this with
+
+```
+❯ uv pip install --python /Users/zb/.local/share/uv/python/cpython-3.13.0rc2-macos-aarch64-none/bin/python3 uv --break-system-packages
+Resolved 1 package in 235ms
+Prepared 1 package in 767ms
+Installed 1 package in 8ms
+ + uv==0.4.10
+❯ /Users/zb/.local/share/uv/python/cpython-3.13.0rc2-macos-aarch64-none/bin/python3 -m uv pip install --system -v httpx
+DEBUG uv 0.4.10
+DEBUG Searching for Python interpreter in system path
+DEBUG Found `cpython-3.12.6-macos-aarch64-none` at `/opt/homebrew/bin/python3` (search path)
+DEBUG Using Python 3.12.6 environment at /opt/homebrew/opt/python@3.12/bin/python3.12
+```
+
+---
+
+_Comment by @zanieb on 2024-09-16 20:11_
+
+And this is because of the implementation here https://github.com/astral-sh/uv/blob/f22e5ef69ac2f3dbdcb7d6d7c68ff6d85891e0a8/crates/uv-python/src/discovery.rs#L386-L395
+
+---
+
+_Referenced in [astral-sh/uv#7440](../../astral-sh/uv/pulls/7440.md) on 2024-09-16 20:22_
+
+---
+
+_Comment by @zanieb on 2024-09-16 20:22_
+
+Considering this a bug and fixing at https://github.com/astral-sh/uv/pull/7440
+
+---
+
+_Comment by @hauntsaninja on 2024-09-17 03:27_
+
+Thanks for the fix!
+
+---
+
+_Closed by @zanieb on 2024-09-17 03:51_
+
+---
+
+_Closed by @zanieb on 2024-09-17 03:51_
+
+---

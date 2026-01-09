@@ -1,0 +1,119 @@
+---
+number: 11226
+title: uv add seems to have a hard time with python version constraint
+type: issue
+state: closed
+author: Elmekior
+labels:
+  - bug
+  - needs-mre
+assignees: []
+created_at: 2025-02-04T20:58:09Z
+updated_at: 2025-02-04T23:03:53Z
+url: https://github.com/astral-sh/uv/issues/11226
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# uv add seems to have a hard time with python version constraint
+
+---
+
+_Issue opened by @Elmekior on 2025-02-04 20:58_
+
+### Summary
+
+Hello everyone, 
+
+I was looking to use UV into our system because the speed gain is just... amazing to say the least. I looked a bit around but didn't seem to find a relatable issue so I wanted to open this one. I tried to summarize the issue as much as possible.
+
+Currently, I am trying to install a package with Pillow inside of my package with this information (we are using setup.cfg):
+
+```
+[options]
+install_requires=
+pillow==7.2.0 ; python_version<"3.10"
+pillow==8.4.0 ; python_version>="3.10"
+```
+
+```
+example requirement.txt
+internal_pkg_name==1.0.0
+Pillow==7.2.0
+```
+
+In my requirement.txt file, I have the version of my package that I wanted to use and pillow==7.2.0. But, for some reason, it looks like UV tries to tell me that:
+
+```
+No solution found when resolving dependencies for split '3.10'}==8.4.0 and your project depends on internal_pkg_name==1.0.0, we can conclude that your project depends on pillow==8.4.0.
+And because your project depends on pillow==7.2.0, we can conclude that your project's requirements are unsatisfiable. 
+help: If you want to add the packag e regardless of the failed resolution,provide the `--frozen` flag to skip locking and syncing.
+```
+
+I am leaving some information blank for the default-index and index ( but we have our own )
+
+The command I am trying to run : 
+
+```
+uv.exe add -r requirements.txt --default-index (Internal_index) --index-strategy unsafe-best-match --python 3.9.7 --python-preference only-managed --directory "Path\to\a\directory" --link-mode=copy --no-cache
+```
+
+Beforehand, I also make a uv init with a forced python 3.9.7 project and always give the python_version in all command lines.
+
+I know that it says that I could just use --frozen, but, for me, this feels like a weird behavior that even tho everything is running in 3.9.7, it tells me the other version is a requirement.
+
+
+### Platform
+
+Windows 11
+
+### Version
+
+0.5.27
+
+### Python version
+
+3.9.7
+
+---
+
+_Label `bug` added by @Elmekior on 2025-02-04 20:58_
+
+---
+
+_Comment by @zanieb on 2025-02-04 21:16_
+
+Is some chunk of the error missing here?
+
+> No solution found when resolving dependencies for split '3.10'}==8.4.0
+
+---
+
+_Comment by @zanieb on 2025-02-04 21:18_
+
+It's pretty hard to tell what's going on here. Do you think you could create a minimal project in a Git repository to demonstrate the issue?
+
+---
+
+_Comment by @Elmekior on 2025-02-04 21:23_
+
+> Is some chunk of the error missing here?
+> 
+> > No solution found when resolving dependencies for split '3.10'}==8.4.0
+
+Weirdly enough, that's the error message I get from my system. I'll try to make a more 'barebone' test with UV directly and a git package. I'll report back when those are setupped
+
+---
+
+_Label `needs-mre` added by @charliermarsh on 2025-02-04 21:24_
+
+---
+
+_Comment by @Elmekior on 2025-02-04 23:03_
+
+I am sorry, after making some more investigation, I believe that this might be from a weird version in our pypi since I cannot seem to be able to reproduce this with a barebone package. I'll close this and apologize for the noise and appreciate the quick reply. If I can find a better reproductible version of this issue, I'll create another issue.
+
+---
+
+_Closed by @Elmekior on 2025-02-04 23:03_
+
+---

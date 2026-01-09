@@ -1,0 +1,77 @@
+---
+number: 2444
+title: "D402: Discrepancy with pycodestyle behavior with `noqa` annotation"
+type: issue
+state: closed
+author: dalcinl
+labels:
+  - suppression
+assignees: []
+created_at: 2023-02-01T16:03:52Z
+updated_at: 2023-02-01T16:38:11Z
+url: https://github.com/astral-sh/ruff/issues/2444
+synced_at: 2026-01-07T13:12:14-06:00
+---
+
+# D402: Discrepancy with pycodestyle behavior with `noqa` annotation
+
+---
+
+_Issue opened by @dalcinl on 2023-02-01 16:03_
+
+Here you have a minimal reproducer
+
+```py
+# file: code.py
+
+def starmap(*args):  # noqa: D402
+    """Equivalent to `itertools.starmap(...)`.
+
+    Blah Blah Blah.
+    """
+    return True
+```
+
+```
+$ ruff --version
+ruff 0.0.239
+
+$ ruff --select=D402 code.py 
+code.py:2:5: D402 First line should not be the function's signature
+Found 1 error.
+
+$ pycodestyle --version
+2.10.0
+$ pycodestyle --select=D402 code.py 
+
+```
+
+As the issue happens in a multiline docstring, I cannot just place the `noqa` annotation in the actual offending line. Therefore, I guess the pycodestyle behavior is kind of sensible.
+
+---
+
+_Comment by @charliermarsh on 2023-02-01 16:38_
+
+Ruff associates the error with the docstring, not the function, and so wants it at the end of the docstring, like this:
+
+```py
+def starmap(*args):
+    """Equivalent to `itertools.starmap(...)`.
+
+    Blah Blah Blah.
+    """  # noqa: D402
+    return True
+```
+
+Flake8 respects this too (just tested it!), so hopefully that works for you!
+
+
+---
+
+_Closed by @charliermarsh on 2023-02-01 16:38_
+
+---
+
+_Label `noqa` added by @charliermarsh on 2023-02-01 16:38_
+
+---

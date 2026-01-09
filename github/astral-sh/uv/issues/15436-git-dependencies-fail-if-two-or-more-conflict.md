@@ -1,0 +1,111 @@
+---
+number: 15436
+title: git dependencies fail if two or more conflict
+type: issue
+state: open
+author: evbo
+labels:
+  - bug
+assignees: []
+created_at: 2025-08-21T22:20:00Z
+updated_at: 2025-08-26T16:08:31Z
+url: https://github.com/astral-sh/uv/issues/15436
+synced_at: 2026-01-07T13:12:19-06:00
+---
+
+# git dependencies fail if two or more conflict
+
+---
+
+_Issue opened by @evbo on 2025-08-21 22:20_
+
+### Summary
+
+I'm getting:
+>  Invalid username or token. Password authentication is not supported for Git operations.
+
+when I have 2 dependencies listed that use the same github dependency (transistive dependency conflict). I fix it by removing one of them, but should that be happening?
+
+example:
+
+```toml
+dependencies = [
+    "a @ git+https://github.com/private/a@main",
+    "b @ git+https://github.com/private/b_depends_on_a@main",
+]
+```
+
+So I just remove `a` and it's all good, but still that error doesn't make sense. Should I open a new issue or is it similar enough to this one?
+
+### Platform
+
+Ubuntu 22.04
+
+### Version
+
+0.8.9
+
+### Python version
+
+3.13.6
+
+---
+
+_Label `bug` added by @evbo on 2025-08-21 22:20_
+
+---
+
+_Comment by @zanieb on 2025-08-21 22:59_
+
+I presume this requires that the repositories are private?
+
+---
+
+_Comment by @evbo on 2025-08-22 00:25_
+
+I think so, else no authentication would be necessary. Also, it's tricky to reproduce since these repositories must both have the same dependency, which itself must also be a git dependency. In other words, two private repos no issue unless those repos both have another git dependency common between the two of them. Here's one other interesting fact not covered by the logs:
+
+In VS Code when in asked for my credentials, it should a different repository url with what appeared to be some kind of hash! I thought I was being maliciously hacked!
+
+So I think it's trying to distinguish dupes and leading to a bad url that of course my private key can't authenticate 
+
+---
+
+_Comment by @evbo on 2025-08-23 16:06_
+
+@zanieb here's the user/password (.ssh ignored) in vscode after `uv sync --upgrade`:
+
+<img width="485" height="59" alt="Image" src="https://github.com/user-attachments/assets/9ca8cf2a-0f90-4cbd-bd3e-47b8a7af6ab7" />
+
+> uv sync --upgrade
+warning: No `requires-python` value found in the workspace. Defaulting to `>=3.13`.
+   Updating https://github.com/private/a (feature/branch)
+    Updated https://github.com/private/b (58d8733162e53cb14331a8429e9f128e0b95d4ac)
+   Updating https://github.com/private/c (main)
+⠦ Resolving dependencies...                                                                                                                                  × Failed to download and build `launch-view @ git+https://github.com/private/c@main`
+  ├─▶ Git operation failed
+  ├─▶ failed to fetch into: /home/gym/.cache/uv/git-v0/db/59e02c7f8556f97f
+  ├─▶ failed to fetch branch or tag `main`
+  ╰─▶ process didn't exit successfully: `/usr/bin/git fetch --force --update-head-ok 'https://github.com/private/c'
+      '+refs/tags/main:refs/remotes/origin/tags/main'` (exit status: 128)
+      --- stderr
+      fatal: couldn't find remote ref refs/tags/main
+
+
+But if I remove the shared git dependency it works fine. And I have no issue cloning these with ssh. Not possible to use user/pass auth since the hostname is nonsense.
+
+Work around: 
+
+If the project has only only 1 git dependency:
+`rm -rf .venv` and then `uv sync`, source again.
+
+If multiple:
+same as above, but remove all git dependencies. Then, repeatedly sync, each time adding 1 git dependency back at a time. If multiple are added and you sync it is a total blocker.
+
+---
+
+_Comment by @evbo on 2025-08-26 16:08_
+
+@zanieb I apologize for having a poor minimal reproduction. If DM me, I'd be happy to give you temporary access to my private repos so you can quickly see the behavior in no time. Just let me know.
+
+---

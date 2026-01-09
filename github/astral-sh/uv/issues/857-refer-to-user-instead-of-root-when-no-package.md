@@ -1,0 +1,44 @@
+---
+number: 857
+title: "Refer to user instead of \"root\" when no package name is available"
+type: issue
+state: closed
+author: zanieb
+labels:
+  - error messages
+assignees: []
+created_at: 2024-01-09T18:53:55Z
+updated_at: 2024-01-19T17:17:43Z
+url: https://github.com/astral-sh/uv/issues/857
+synced_at: 2026-01-07T13:12:16-06:00
+---
+
+# Refer to user instead of "root" when no package name is available
+
+---
+
+_Issue opened by @zanieb on 2024-01-09 18:53_
+
+e.g. in https://github.com/astral-sh/puffin/blob/ee3a6431c75b932674cf350266b575f97a43e119/crates/puffin-cli/tests/pip_install_scenarios.rs#L1275
+
+the user requested a package via `pip-install` but we say "root depends on" instead of "you requested".
+
+Note sometimes a root package name is available e.g. when we infer the project name from a pyproject.toml file during `pip-compile`
+
+---
+
+_Label `error messages` added by @zanieb on 2024-01-09 18:53_
+
+---
+
+_Assigned to @zanieb by @zanieb on 2024-01-09 18:57_
+
+---
+
+_Referenced in [astral-sh/uv#982](../../astral-sh/uv/pulls/982.md) on 2024-01-19 00:02_
+
+---
+
+_Closed by @zanieb on 2024-01-19 17:17_
+
+---

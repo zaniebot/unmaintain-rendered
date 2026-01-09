@@ -1,0 +1,129 @@
+---
+number: 2355
+title: uv venv got os error 5
+type: issue
+state: closed
+author: spin6lock
+labels:
+  - needs-mre
+assignees: []
+created_at: 2024-03-11T12:17:31Z
+updated_at: 2024-03-12T03:21:48Z
+url: https://github.com/astral-sh/uv/issues/2355
+synced_at: 2026-01-07T13:12:17-06:00
+---
+
+# uv venv got os error 5
+
+---
+
+_Issue opened by @spin6lock on 2024-03-11 12:17_
+
+```powershell
+uv venv     
+```  
+got
+```
+x Failed to query python interpreter `C:\Users\spin6lock\AppData\Local\Programs\Python\Python312\python.exe`
+```
+This path is ok, I can run Python 3.12 by this exe:
+```powershell
+PS C:\Users\spin6lock> C:\Users\spin6lock\AppData\Local\Programs\Python\Python312\python.exe
+Python 3.12.1 (tags/v3.12.1:2305ca5, Dec  7 2023, 22:03:25) [MSC v.1937 64 bit (AMD64)] on win32
+```
+
+uv version
+uv 0.1.17 (bb2d06cbb 2024-03-10)
+
+windows version: win10 21H2
+
+Am I missing something? Any help would be appreciate, thank you!
+
+
+---
+
+_Comment by @konstin on 2024-03-11 12:27_
+
+Did you got any more error message output? And how did you install python? 
+
+---
+
+_Comment by @spin6lock on 2024-03-11 12:30_
+
+```powershell
+PS C:\Users\spin6lock> uv venv
+  x Failed to query python interpreter `C:\Users\spin6lock\AppData\Local\Programs\Python\Python312\python.exe`
+  `-> 拒绝访问。 (os error 5)
+```
+
+This is all I got. I downloaded python installer from [https://www.python.org/downloads/windows/](https://www.python.org/downloads/windows/)
+
+---
+
+_Label `needs-mre` added by @konstin on 2024-03-11 13:19_
+
+---
+
+_Comment by @konstin on 2024-03-11 13:20_
+
+I never had this happen on windows, so unfortunately i don't know
+
+---
+
+_Comment by @spin6lock on 2024-03-11 14:48_
+
+Maybe it's something about anti-virus or security policy. I can't reproduce it in my homelab pc. I'd try to hook up ProcMon to see what happen there
+
+---
+
+_Comment by @spin6lock on 2024-03-12 03:00_
+
+![image](https://github.com/astral-sh/uv/assets/734304/15d11e3d-6144-43f1-bdcb-f04b17fde050)
+Seems like this overflow cause the OS Error 5. 
+
+---
+
+_Comment by @spin6lock on 2024-03-12 03:21_
+
+![image](https://github.com/astral-sh/uv/assets/734304/3dc44895-8da1-4312-a8d1-666e2472b73f)
+The stack is here:
+```stack
+0	FLTMGR.SYS	FltDecodeParameters + 0x210c	0xfffff80617f264cc	C:\windows\System32\drivers\FLTMGR.SYS
+1	FLTMGR.SYS	FltDecodeParameters + 0x1bba	0xfffff80617f25f7a	C:\windows\System32\drivers\FLTMGR.SYS
+2	FLTMGR.SYS	FltDecodeParameters + 0xc61	0xfffff80617f25021	C:\windows\System32\drivers\FLTMGR.SYS
+3	FLTMGR.SYS	FltDecodeParameters + 0x66b	0xfffff80617f24a2b	C:\windows\System32\drivers\FLTMGR.SYS
+4	ntoskrnl.exe	IofCallDriver + 0x55	0xfffff80616235cf5	C:\windows\system32\ntoskrnl.exe
+5	ntoskrnl.exe	NtDeviceIoControlFile + 0x112c	0xfffff806166451dc	C:\windows\system32\ntoskrnl.exe
+6	ntoskrnl.exe	NtQueryVolumeInformationFile + 0x4c9	0xfffff8061660e7e9	C:\windows\system32\ntoskrnl.exe
+7	ntoskrnl.exe	setjmpex + 0x8435	0xfffff80616411135	C:\windows\system32\ntoskrnl.exe
+8	ntdll.dll	NtQueryVolumeInformationFile + 0x14	0x7ff8a4f6d904	C:\Windows\System32\ntdll.dll
+9	KernelBase.dll	GetFileInformationByHandle + 0x46	0x7ff8a28679c6	C:\Windows\System32\KernelBase.dll
+10	uv.exe	git_odb_object_data + 0x159784	0x7ff646608cc4	C:\Users\spin6lock\AppData\Local\Programs\Python\Python312\Scripts\uv.exe
+11	uv.exe	git_odb_object_data + 0x15b8e2	0x7ff64660ae22	C:\Users\spin6lock\AppData\Local\Programs\Python\Python312\Scripts\uv.exe
+12	uv.exe	git_odb_object_data + 0x15b783	0x7ff64660acc3	C:\Users\spin6lock\AppData\Local\Programs\Python\Python312\Scripts\uv.exe
+13	uv.exe	git_filter_source_repo + 0x5efe9a	0x7ff6460f033a	C:\Users\spin6lock\AppData\Local\Programs\Python\Python312\Scripts\uv.exe
+14	uv.exe	git_filter_source_repo + 0x5f00ac	0x7ff6460f054c	C:\Users\spin6lock\AppData\Local\Programs\Python\Python312\Scripts\uv.exe
+15	uv.exe	git_filter_source_repo + 0x5e7e17	0x7ff6460e82b7	C:\Users\spin6lock\AppData\Local\Programs\Python\Python312\Scripts\uv.exe
+16	uv.exe	git_filter_source_repo + 0x5e2fef	0x7ff6460e348f	C:\Users\spin6lock\AppData\Local\Programs\Python\Python312\Scripts\uv.exe
+17	uv.exe	git_filter_source_repo + 0x5b3d5a	0x7ff6460b41fa	C:\Users\spin6lock\AppData\Local\Programs\Python\Python312\Scripts\uv.exe
+18	uv.exe	git_filter_source_repo + 0x5b7c67	0x7ff6460b8107	C:\Users\spin6lock\AppData\Local\Programs\Python\Python312\Scripts\uv.exe
+19	uv.exe	git_filter_source_repo + 0x21bebe	0x7ff645d1c35e	C:\Users\spin6lock\AppData\Local\Programs\Python\Python312\Scripts\uv.exe
+20	uv.exe	git_filter_source_repo + 0x23180c	0x7ff645d31cac	C:\Users\spin6lock\AppData\Local\Programs\Python\Python312\Scripts\uv.exe
+21	uv.exe	git_filter_source_repo + 0x1f0b32	0x7ff645cf0fd2	C:\Users\spin6lock\AppData\Local\Programs\Python\Python312\Scripts\uv.exe
+22	uv.exe	git_filter_source_repo + 0x166438	0x7ff645c668d8	C:\Users\spin6lock\AppData\Local\Programs\Python\Python312\Scripts\uv.exe
+23	uv.exe	git_filter_source_repo + 0x2e05db	0x7ff645de0a7b	C:\Users\spin6lock\AppData\Local\Programs\Python\Python312\Scripts\uv.exe
+24	uv.exe	git_filter_source_repo + 0xe070a	0x7ff645be0baa	C:\Users\spin6lock\AppData\Local\Programs\Python\Python312\Scripts\uv.exe
+25	uv.exe	git_filter_source_repo + 0x13e2b6	0x7ff645c3e756	C:\Users\spin6lock\AppData\Local\Programs\Python\Python312\Scripts\uv.exe
+26	uv.exe	git_odb_object_data + 0x145a02	0x7ff6465f4f42	C:\Users\spin6lock\AppData\Local\Programs\Python\Python312\Scripts\uv.exe
+27	uv.exe	git_filter_source_repo + 0x13b53c	0x7ff645c3b9dc	C:\Users\spin6lock\AppData\Local\Programs\Python\Python312\Scripts\uv.exe
+28	uv.exe	git_midx_writer_new + 0x3c16c	0x7ff64674b83c	C:\Users\spin6lock\AppData\Local\Programs\Python\Python312\Scripts\uv.exe
+29	kernel32.dll	BaseThreadInitThunk + 0x14	0x7ff8a4dd7344	C:\Windows\System32\kernel32.dll
+30	ntdll.dll	RtlUserThreadStart + 0x21	0x7ff8a4f226b1	C:\Windows\System32\ntdll.dll
+```
+Since that I can't close the anti-virus by myself, I'd close the issue this time
+
+---
+
+_Closed by @spin6lock on 2024-03-12 03:21_
+
+---

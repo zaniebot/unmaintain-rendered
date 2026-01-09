@@ -1,0 +1,98 @@
+---
+number: 12496
+title: Consider adding a return link to rules?
+type: issue
+state: open
+author: Anselmoo
+labels:
+  - documentation
+assignees: []
+created_at: 2024-07-24T19:55:08Z
+updated_at: 2024-07-25T04:46:00Z
+url: https://github.com/astral-sh/ruff/issues/12496
+synced_at: 2026-01-07T13:12:15-06:00
+---
+
+# Consider adding a return link to rules?
+
+---
+
+_Issue opened by @Anselmoo on 2024-07-24 19:55_
+
+Currently, rules are listed under https://docs.astral.sh/ruff/rules. When a rule is selected, for instance, [unpacked-list-comprehension](https://docs.astral.sh/ruff/rules/unpacked-list-comprehension/), there is no way to return to the overview.
+
+<details><summary>Details</summary>
+<p>
+
+<img width="1399" alt="image" src="https://github.com/user-attachments/assets/8cf60447-6ee7-4768-b95d-20eb8d20a8ee">
+
+
+</p>
+</details> 
+
+Furthermore, it is recommended to consider adding a discussion button, similar to the edit buttons, on the following URLs:
+
+1. https://squidfunk.github.io/mkdocs-material/setup/adding-a-git-repository/?h=repo#code-actions
+2. https://squidfunk.github.io/mkdocs-material/reference/buttons/?h=button
+
+Option 2 enables the direct opening of a new discussion thread about the rule. This highlights the importance of discussion in reviewing the implemented rules, as demonstrated in #12345.
+
+---
+
+_Renamed from "The request is to consider adding a return link to rules. " to "Consider adding a return link to rules?" by @Anselmoo on 2024-07-24 19:55_
+
+---
+
+_Comment by @charliermarsh on 2024-07-24 21:22_
+
+I would love a PR for this, I'm not sure how to make it work in MkDocs.
+
+---
+
+_Label `documentation` added by @charliermarsh on 2024-07-24 21:22_
+
+---
+
+_Comment by @zanieb on 2024-07-24 21:40_
+
+Would this just involve generating a link to the overview in each rule doc?
+
+I'd rather not include discussion buttons, personally. It feels invasive, the repository is already pinned in the header.
+
+---
+
+_Comment by @charliermarsh on 2024-07-24 21:42_
+
+Sorry yes, I was mostly commenting on the backlink.
+
+---
+
+_Comment by @Anselmoo on 2024-07-25 04:00_
+
+> Would this just involve generating a link to the overview in each rule doc?
+> 
+> I'd rather not include discussion buttons, personally. It feels invasive, the repository is already pinned in the header.
+
+Make sense ... had only the feeling people tend to open faster an Issue then going to the discussion panel.
+
+---
+
+_Comment by @Anselmoo on 2024-07-25 04:39_
+
+> Sorry yes, I was mostly commenting on the backlink.
+
+So, rules and format are excluded from the navigation bar so as not to mess up the sidebar, but does this actually mean that a customized JS has to be used?
+
+https://github.com/astral-sh/ruff/blob/2a64cccb61f1c84e5a58f907f46111ab36321466/mkdocs.template.yml#L66-L68
+
+Sorry for the question, @charliermarsh and @zanieb, but do you know where the actual docs are in the org, I could not find the markdown files for the rules.
+
+
+
+---
+
+_Comment by @zanieb on 2024-07-25 04:45_
+
+They're generated with `scripts/generate_mkdocs.py` which includes `crates/ruff_dev/src/generate_docs.rs`
+
+---

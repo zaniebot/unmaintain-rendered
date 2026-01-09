@@ -1,0 +1,63 @@
+---
+number: 5622
+title: "If resolution fails after `uv add`, should we remove the dependency?"
+type: issue
+state: closed
+author: charliermarsh
+labels:
+  - bug
+  - preview
+assignees: []
+created_at: 2024-07-30T18:07:21Z
+updated_at: 2024-07-31T17:27:35Z
+url: https://github.com/astral-sh/uv/issues/5622
+synced_at: 2026-01-07T13:12:17-06:00
+---
+
+# If resolution fails after `uv add`, should we remove the dependency?
+
+---
+
+_Issue opened by @charliermarsh on 2024-07-30 18:07_
+
+It's confusing because running `uv add` again with a different dependency will continue to fail.
+
+---
+
+_Comment by @ibraheemdev on 2024-07-30 18:59_
+
+I think we should. If `uv add` fails the `pyproject.toml` should not be updated.
+
+---
+
+_Label `bug` added by @charliermarsh on 2024-07-30 19:01_
+
+---
+
+_Label `preview` added by @charliermarsh on 2024-07-30 19:01_
+
+---
+
+_Comment by @charliermarsh on 2024-07-30 19:47_
+
+I tend to agree.
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2024-07-31 00:28_
+
+---
+
+_Comment by @charliermarsh on 2024-07-31 02:39_
+
+I will try to do this tomorrow.
+
+---
+
+_Referenced in [astral-sh/uv#5664](../../astral-sh/uv/pulls/5664.md) on 2024-07-31 17:14_
+
+---
+
+_Closed by @charliermarsh on 2024-07-31 17:27_
+
+---

@@ -1,0 +1,109 @@
+---
+number: 10040
+title: "uv add \"uwsgi; platform_system == 'Linux'\"  fails when on Windows machine"
+type: issue
+state: closed
+author: jacobthetechy
+labels:
+  - question
+  - resolver
+assignees: []
+created_at: 2024-12-19T20:08:20Z
+updated_at: 2024-12-20T00:49:11Z
+url: https://github.com/astral-sh/uv/issues/10040
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# uv add "uwsgi; platform_system == 'Linux'"  fails when on Windows machine
+
+---
+
+_Issue opened by @jacobthetechy on 2024-12-19 20:08_
+
+I'm very new with this package manager and I am trying to learn how to properly use it by trying to convert old projects to use `uv`.
+
+I do most of my development work on Windows but deploy on Linux. Most of my projects use the `uwsgi` package but I do not want it to install on Windows. 
+
+```
+uv add "uwsgi; platform_system == 'Linux'"                   
+warning: No `requires-python` value found in the workspace. Defaulting to `>=3.12`.
+  x Failed to build `uwsgi==2.0.28`
+  |-> The build backend returned an error
+  `-> Call to `setuptools.build_meta:__legacy__.build_wheel` failed (exit code: 1)
+
+      [stderr]
+      Traceback (most recent call last):
+        File "<string>", line 14, in <module>
+        File "C:\Users\jacobthetechy\AppData\Local\uv\cache\builds-v0\.tmpUMmIEX\Lib\site-packages\setuptools\build_meta.py", line 334, in get_requires_for_build_wheel
+          return self._get_build_requires(config_settings, requirements=[])
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        File "C:\Users\jacobthetechy\AppData\Local\uv\cache\builds-v0\.tmpUMmIEX\Lib\site-packages\setuptools\build_meta.py", line 304, in _get_build_requires
+          self.run_setup()
+        File "C:\Users\jacobthetechy\AppData\Local\uv\cache\builds-v0\.tmpUMmIEX\Lib\site-packages\setuptools\build_meta.py", line 522, in run_setup
+          super().run_setup(setup_script=setup_script)
+        File "C:\Users\jacobthetechy\AppData\Local\uv\cache\builds-v0\.tmpUMmIEX\Lib\site-packages\setuptools\build_meta.py", line 320, in run_setup
+          exec(code, locals())
+        File "<string>", line 3, in <module>
+        File "C:\Users\jacobthetechy\AppData\Local\uv\cache\sdists-v6\pypi\uwsgi\2.0.28\IcmJI-FyWg16K1hit9AeZ\src\uwsgiconfig.py", line 8, in <module>
+          uwsgi_os = os.uname()[0]
+                     ^^^^^^^^
+      AttributeError: module 'os' has no attribute 'uname'. Did you mean: 'name'?
+
+      hint: This usually indicates a problem with the package or the build environment.
+  help: `uwsgi` (v2.0.28) was included because `new_project` (v0.1.0) depends on `uwsgi`
+```
+
+From this [issue comment](https://github.com/astral-sh/uv/issues/3308#issuecomment-2521163807) I followed the build failure guided a little checked how pip would attempt to install.
+
+```
+pip install --use-pep517 "uwsgi; platform_system == 'Linux'" 
+Ignoring uwsgi: markers 'platform_system == "Linux"' don't match your environment
+```
+
+I expected `uv` to follow this behavior, but if there is a proper way to add `uwsgi` as a dependency without it failing on Windows I am open to learn.
+
+---
+
+_Comment by @charliermarsh on 2024-12-20 00:05_
+
+If you use `uv add`, we need to resolve your dependencies for all possible environments. So we still need to resolve it, even if it's not going to be _installed_ on the current platform. And in this case, that appears to mean that we have to build it.
+
+You can add this to your `pyproject.toml` to skip the build and instead pre-define the metadata:
+
+```toml
+[[tool.uv.dependency-metadata]]
+name = "uwsgi"
+version = "2.0.28"
+requires-dist = []
+```
+
+See: https://docs.astral.sh/uv/concepts/resolution/#dependency-metadata
+
+---
+
+_Label `question` added by @charliermarsh on 2024-12-20 00:05_
+
+---
+
+_Label `resolver` added by @charliermarsh on 2024-12-20 00:05_
+
+---
+
+_Comment by @jacobthetechy on 2024-12-20 00:46_
+
+Okay, that makes sense. Thanks for help!
+
+Is there a better/preferred method then manually adding the metadata?
+
+
+---
+
+_Comment by @charliermarsh on 2024-12-20 00:49_
+
+The best would be if the package was updated to report static metadata via a `pyproject.toml` file, but in the absence of that, there aren't great options unfortunately!
+
+---
+
+_Closed by @charliermarsh on 2024-12-20 00:49_
+
+---

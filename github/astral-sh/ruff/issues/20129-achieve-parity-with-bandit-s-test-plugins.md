@@ -1,0 +1,60 @@
+---
+number: 20129
+title: "Achieve parity with Bandit's test plugins"
+type: issue
+state: closed
+author: micmalti
+labels:
+  - question
+assignees: []
+created_at: 2025-08-28T09:50:12Z
+updated_at: 2025-08-28T19:05:44Z
+url: https://github.com/astral-sh/ruff/issues/20129
+synced_at: 2026-01-07T13:12:16-06:00
+---
+
+# Achieve parity with Bandit's test plugins
+
+---
+
+_Issue opened by @micmalti on 2025-08-28 09:50_
+
+### Summary
+
+First of all, thank you for your work on this project which has made it so much easier to maintain coding standards, as proven by its quick adoption by the Python community. 
+
+According to the docs, Ruff implements Bandit's test plugins through `flake8-bandit` but that project has last received an update 3 years ago. Meanwhile, `bandit` is actively being maintained and includes 5 extra ones ([B324](https://bandit.readthedocs.io/en/latest/plugins/b324_hashlib.html), [B613](https://bandit.readthedocs.io/en/latest/plugins/b613_trojansource.html), [B614](https://bandit.readthedocs.io/en/latest/plugins/b614_pytorch_load.html), [B615](https://bandit.readthedocs.io/en/latest/plugins/b615_huggingface_unsafe_download.html), and [B703](https://bandit.readthedocs.io/en/latest/plugins/b703_django_mark_safe.html)).
+
+Could you clarify why these are excluded? Is it because they are [weakly implemented](https://github.com/PyCQA/bandit/issues/592) or throw [false positives](https://github.com/PyCQA/bandit/issues/1293), or is it just because the integration is happening downstream? Thank you.
+
+---
+
+_Comment by @martimlobao on 2025-08-28 12:33_
+
+Ran into a similar question and found that this issue was created just 2 hours ago!
+
+FWIW, i believe B324 is already implemented in [S324](https://docs.astral.sh/ruff/rules/hashlib-insecure-hash-function/). The remaining 4 currently do seem to be missing afaict.
+
+---
+
+_Comment by @ntBre on 2025-08-28 12:47_
+
+It looks like B613 also overlaps with [bidirectional-unicode (PLE2502)](https://docs.astral.sh/ruff/rules/bidirectional-unicode/#bidirectional-unicode-ple2502), and I think B703 is covered by [suspicious-mark-safe-usage (S308)](https://docs.astral.sh/ruff/rules/suspicious-mark-safe-usage/#suspicious-mark-safe-usage-s308).
+
+Beyond that, I don't think there's any specific reason these are excluded. We just haven't been prioritizing adding new rules recently. We also somewhat tend to stay away from rules for third-party libraries, it looks like B614 and B615 are for pytorch and huggingface, respectively, but there are many exceptions of course.
+
+---
+
+_Label `question` added by @ntBre on 2025-08-28 12:47_
+
+---
+
+_Comment by @micmalti on 2025-08-28 19:05_
+
+Thank you @ntBre for quickly addressing this. While I still believe that achieving feature parity with Bandit is something worth pursuing, your justification for not including B614 and B615 is a valid one, as well as the fact that you have other priorities at the moment. And 3 out of the 5 missing rules are basically being implemented, so it's close enough ;)
+
+---
+
+_Closed by @micmalti on 2025-08-28 19:05_
+
+---

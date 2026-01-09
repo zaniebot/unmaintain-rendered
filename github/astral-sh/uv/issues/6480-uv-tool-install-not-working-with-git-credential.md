@@ -1,0 +1,71 @@
+---
+number: 6480
+title: uv tool install not working with Git Credential Manager for private GitHub repository
+type: issue
+state: closed
+author: daviewales
+labels:
+  - question
+assignees: []
+created_at: 2024-08-23T00:41:10Z
+updated_at: 2024-08-23T03:25:06Z
+url: https://github.com/astral-sh/uv/issues/6480
+synced_at: 2026-01-07T13:12:17-06:00
+---
+
+# uv tool install not working with Git Credential Manager for private GitHub repository
+
+---
+
+_Issue opened by @daviewales on 2024-08-23 00:41_
+
+**OS**: Windows 11
+**command invoked**: `uv tool install git+https://git@github.com/example/private-repo.git`
+**uv --version**: `uv 0.3.1 (be17d132a 2024-08-21)`
+
+Error message:
+
+```
+error: Git operation failed
+  Caused by: failed to clone into: AppData\Local\uv\git-v0\db\1ac2ec12aa800fea
+  Caused by: process didn't exit successfully: `git fetch --force --update-head-ok https://git@github.com/example/private-repo.git +HEAD:refs/remotes/origin/HEAD` (exit code: 128)
+--- stderr
+remote: Support for password authentication was removed on August 13, 2021.
+remote: Please see https://docs.github.com/get-started/getting-started-with-git/about-remote-repositories#cloning-with-https-urls for information on currently recommended modes of authentication.
+fatal: Authentication failed for 'https://github.com/swsphn/github-tools.git/'
+```
+
+`pipx` is able to install this repository.
+It triggers Git Credential Manager to authenticate me in the browser. (For some reason it does this multiple times, but eventually works.)
+
+`uv tool install` appears to attempt unsupported direct password authentication, and does not trigger Git Credential Manager.
+
+---
+
+_Comment by @zanieb on 2024-08-23 00:44_
+
+Thanks for the report. Can you use SSH credentials instead of HTTPS? Or authenticate prior to the command and use a [Git credential store](https://git-scm.com/docs/git-credential-store)? Our supported authentication schemes are discussed in the documentation: https://docs.astral.sh/uv/configuration/authentication/#git-authentication
+
+I don't think we'll support interactive authentication anytime soon.
+
+---
+
+_Label `question` added by @zanieb on 2024-08-23 00:44_
+
+---
+
+_Comment by @daviewales on 2024-08-23 03:25_
+
+Thanks. I'm using [Git Credential Manager](https://github.com/git-ecosystem/git-credential-manager), which is supposed to be the best way to manage git credentials on Windows. (Windows and `ssh-agent` don't play well.) Do you call a local git binary, or do you roll your own git support? I believe (could be wrong!) that pip and pipx use the local git binary, which automatically knows to talk to Git Credential Manager.
+
+OK.... I just tried this again, and `uv` triggered the Git Credential Manager prompt, which allowed me to authenticate in the browser. It then successfully installed the package from the private repository.
+
+So, I guess it works after all. I'll report back if the issue occurs again.
+Until that, maybe it was just a temporary glitch somewhere.
+Closing for now as I can't reproduce it.
+
+---
+
+_Closed by @daviewales on 2024-08-23 03:25_
+
+---

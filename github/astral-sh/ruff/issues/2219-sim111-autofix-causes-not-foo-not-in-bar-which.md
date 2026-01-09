@@ -1,0 +1,63 @@
+---
+number: 2219
+title: "SIM111 autofix causes \"not foo not in bar\" which can be enhanced"
+type: issue
+state: closed
+author: spaceone
+labels: []
+assignees: []
+created_at: 2023-01-26T20:28:15Z
+updated_at: 2023-02-12T22:39:31Z
+url: https://github.com/astral-sh/ruff/issues/2219
+synced_at: 2026-01-07T13:12:14-06:00
+---
+
+# SIM111 autofix causes "not foo not in bar" which can be enhanced
+
+---
+
+_Issue opened by @spaceone on 2023-01-26 20:28_
+
+`SIM111` simplifies 
+```diff
+-               for oc in self.objectClasses:
+-                       if oc not in objectClasses:
+-                               return False
+-               return True
++               return all(not oc not in objectClasses for oc in self.objectClasses)
+```
+
+better would be:
+`return not any(oc in objectClasses for oc in self.objectClasses)`
+
+---
+
+_Renamed from "SIM111 enhancement" to "SIM111 autofix causes "not foo not in bar" which can be enhanced" by @spaceone on 2023-01-30 12:23_
+
+---
+
+_Referenced in [astral-sh/ruff#2394](../../astral-sh/ruff/issues/2394.md) on 2023-01-31 13:25_
+
+---
+
+_Referenced in [astral-sh/ruff#2397](../../astral-sh/ruff/issues/2397.md) on 2023-01-31 14:22_
+
+---
+
+_Comment by @spaceone on 2023-01-31 23:00_
+
+could be identified and fixed by `SIM110` instead of `SIM111` then.
+
+---
+
+_Referenced in [astral-sh/ruff#2547](../../astral-sh/ruff/issues/2547.md) on 2023-02-03 16:26_
+
+---
+
+_Referenced in [astral-sh/ruff#2831](../../astral-sh/ruff/pulls/2831.md) on 2023-02-12 22:35_
+
+---
+
+_Closed by @charliermarsh on 2023-02-12 22:39_
+
+---

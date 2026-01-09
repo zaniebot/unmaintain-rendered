@@ -1,0 +1,88 @@
+---
+number: 8024
+title: Support for multiple versions of the same package in different optional dependencies
+type: issue
+state: closed
+author: gbaudino
+labels:
+  - duplicate
+assignees: []
+created_at: 2024-10-08T22:41:06Z
+updated_at: 2024-11-13T14:52:30Z
+url: https://github.com/astral-sh/uv/issues/8024
+synced_at: 2026-01-07T13:12:17-06:00
+---
+
+# Support for multiple versions of the same package in different optional dependencies
+
+---
+
+_Issue opened by @gbaudino on 2024-10-08 22:41_
+
+### Summary
+I'm working on a project that requires different versions of the same package for two separate environments. For example, I need `numpy==2.1.2` for one environment and `numpy==2.0.0` for another. However, UV does not seem to support this scenario, as it results in dependency resolution conflicts.
+
+### Expected behavior
+Is there a way to specify different versions of the same package in separate optional dependencies without causing conflicts?
+
+### Example
+Here is a simplified example of my `pyproject.toml` file:
+
+```toml
+dependencies = [
+    "some-shared-lib",
+]
+
+[project.optional-dependencies]
+project1 = [
+    "numpy==2.1.2",
+    "some-other-lib",
+]
+
+project2 = [
+    "numpy==2.0.0",
+    "some-other-lib",
+]
+```
+
+### Issue
+When I run uv sync with this configuration, I get `No solution found when resolving dependencies for split (python_full_version == '3.11.*')` error.
+
+My current uv version is 0.4.19 installed from brew.
+
+### Why this would be useful
+In cases like our repository, where different subprojects require different versions of the same package, not having this feature forces us to create a separate project for each subproject within the same repository. This approach is less convenient compared to having distinct optional dependencies that are exclusive to each other.
+
+---
+
+_Renamed from "Support for installing multiple versions of the same package in different optional dependencies" to "Support for multiple versions of the same package in different optional dependencies" by @gbaudino on 2024-10-08 22:54_
+
+---
+
+_Comment by @zanieb on 2024-10-08 23:34_
+
+Duplicate of #6981 
+
+cc @BurntSushi 
+
+---
+
+_Closed by @zanieb on 2024-10-08 23:34_
+
+---
+
+_Label `duplicate` added by @zanieb on 2024-10-08 23:34_
+
+---
+
+_Referenced in [astral-sh/uv#8976](../../astral-sh/uv/pulls/8976.md) on 2024-11-09 18:11_
+
+---
+
+_Closed by @BurntSushi on 2024-11-13 14:52_
+
+---
+
+_Referenced in [astral-sh/uv#9120](../../astral-sh/uv/pulls/9120.md) on 2024-11-14 16:11_
+
+---

@@ -1,0 +1,314 @@
+---
+number: 2059
+title: "`uv pip install --system` cannot create directory"
+type: issue
+state: open
+author: haarisr
+labels:
+  - compatibility
+assignees: []
+created_at: 2024-02-28T22:03:08Z
+updated_at: 2024-07-14T16:20:49Z
+url: https://github.com/astral-sh/uv/issues/2059
+synced_at: 2026-01-07T13:12:17-06:00
+---
+
+# `uv pip install --system` cannot create directory
+
+---
+
+_Issue opened by @haarisr on 2024-02-28 22:03_
+
+* A minimal code snippet that reproduces the bug.
+```
+uv pip install --python 3.12 pre-commit
+Resolved 10 packages in 44ms
+error: Failed to install: cfgv-3.4.0-py2.py3-none-any.whl (cfgv==3.4.0)
+  Caused by: failed to create directory `/usr/local/lib/python3.12/dist-packages/cfgv-3.4.0.dist-info`
+  Caused by: Permission denied (os error 13)
+```
+* The current uv platform. 
+```
+Ubuntu 22.04
+```
+* The current uv version (`uv --version`).
+```
+uv 0.1.12
+```
+
+
+pip defaults to `.local/lib/python3.12/site-packages/` if the directory is not writeable
+
+---
+
+_Comment by @charliermarsh on 2024-02-28 22:05_
+
+My initial reaction is that we're unlikely to support this. (I'm also unsure how `python` knows to look in `.local/lib/python3.12/site-packages/` later?)
+
+Can you say more about the use-case? Why attempt to install into a directory for which you don't have write access?
+
+
+---
+
+_Label `compatibility` added by @charliermarsh on 2024-02-28 22:10_
+
+---
+
+_Comment by @haarisr on 2024-02-28 22:20_
+
+I would like some packages like pre-commit to be installed globally on the system so that so that I do not have to source an environment everytime I commit, if the repo is not related to python, or in a mono-repo where a child directory specifices the python requirements.
+
+---
+
+_Comment by @NMertsch on 2024-02-28 22:41_
+
+This is something I encounter regularly on Linux and Windows systems managed by companies, universities, research institutes, or other organizations: Python is installed system-wide and has system-wide packages in `/usr/local`. When users use pip outside a venv, packages will be installed in `~/.local`. Python will import from both sources.
+
+How to reproduce on a fresh Ubuntu 22.04:
+
+```shell
+$ sudo apt install python3-pip python3-is-python
+$ pip install numpy  # install as "normal" user
+$ sudo su -  # switch to root
+# pip install pandas  # install as root
+$ exit  # switch to "normal" user
+$ python
+>>> import numpy, pandas
+>>> numpy.__file__
+'/home/username/.local/lib/pythonX.X/site-packages/numpy/__init__.py'
+>>> pandas.__file__
+'/usr/local/lib/pythonX.X/dist-packages/pandas/__init__.py'
+```
+
+To me this seems to be desirable behavior for pip outside of venv. But I would understand if you don't want to support this because you (iiuc) want to encourage venv usage and added `--system` only for CI.
+
+---
+
+_Comment by @charliermarsh on 2024-02-28 22:43_
+
+What does `sysconfig.get_paths()` return for the system interpreter in this case?
+
+---
+
+_Comment by @haarisr on 2024-02-28 22:45_
+
+> What does `sysconfig.get_paths()` return for the system interpreter in this case?
+```
+{'stdlib': '/usr/lib/python3.10', 'platstdlib': '/usr/lib/python3.10', 'purelib': '/usr/local/lib/python3.10/dist-packages', 'platlib': '/usr/local/lib/python3.10/dist-packages', 'include': '/usr/include/python3.10', 'platinclude': '/usr/include/python3.10', 'scripts': '/usr/local/bin', 'data': '/usr/local'}
+```
+
+---
+
+_Comment by @danielhollas on 2024-02-28 22:47_
+
+To clarify, pip supports installing to `~/.local` via the `--user` option. As mentioned above, this option is automatically a fallback when the system python install is not writeable. My guess is that this was deemed as a preferred behaviour so that users don't try to re-run pip with sudo.
+
+---
+
+_Comment by @charliermarsh on 2024-02-28 22:48_
+
+Yeah, this makes sense. I see the fallback [here](https://github.com/pypa/pip/blob/0ad4c94be74cc24874c6feb5bb3c2152c398a18e/src/pip/_internal/commands/install.py#L652): if the directory isn't writeable, they assume `--user`.
+
+---
+
+_Comment by @charliermarsh on 2024-02-28 22:49_
+
+This was also requested here: https://github.com/astral-sh/uv/issues/1584. I'm more open to supporting `--user` than to doing this automatic fallback.
+
+---
+
+_Comment by @NMertsch on 2024-02-28 22:51_
+
+In case you don't want to implement this automatic fallback, I think a more specific error message would be helpful (e.g. pointing to `--user` or `uv venv`).
+
+---
+
+_Comment by @charliermarsh on 2024-02-28 22:51_
+
+Definitely!
+
+---
+
+_Comment by @danielhollas on 2024-02-28 22:55_
+
+> I would like some packages like pre-commit to be installed globally on the system so that so that I do not have to source an environment everytime I commit
+
+I've been trying to be "good" and use `pipx` instead for these cases, e.g. python CLI application that I want globally. Would be great if `uv` eventually supported something like this ("global venvs"?) so that the `--user` option is not needed.
+
+---
+
+_Comment by @charliermarsh on 2024-02-28 22:58_
+
+(Aside: we plan to add `pipx`-like global installs for tools (https://github.com/astral-sh/uv/issues/1173). We actually have all the pieces we need to do this.)
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2024-02-29 03:47_
+
+---
+
+_Referenced in [astral-sh/uv#2387](../../astral-sh/uv/issues/2387.md) on 2024-03-12 17:40_
+
+---
+
+_Comment by @gaby on 2024-03-17 02:00_
+
+@charliermarsh Is this similar to https://github.com/pypa/pipx/issues/754 which is approved in https://github.com/pypa/pipx/pull/1281 ?
+
+That PR will add support for `--global` allowing users to install applications in venv at the global label (Multi-user)
+
+---
+
+_Comment by @charliermarsh on 2024-03-17 02:16_
+
+No, I was more referring to the idea of adding pipx install-like behavior in general.
+
+---
+
+_Comment by @gaby on 2024-03-17 02:25_
+
+> No, I was more referring to the idea of adding pipx install-like behavior in general.
+
+Are there plans to add support for global packages in uv? Specially venv for multi-users?
+
+---
+
+_Comment by @charliermarsh on 2024-03-17 15:31_
+
+Can you say more about what a global package is, and what use-case you’re trying to accomplish?
+
+---
+
+_Comment by @gaby on 2024-03-17 16:00_
+
+> Can you say more about what a global package is, and what use-case you’re trying to accomplish?
+
+Global packages allows you to install isolated applications at the system(global) level. These can be applications/cli's managed by admins for systems with multiple users.
+
+Example:
+- cli A uses pydantic v2
+- cli B uses pydantic v1
+
+All users should be able to use both cli A and B. Without the global/system feature these packages dependencies will conflict. The PR from pipx allows for these to be installed in isolated environments but available to all users at the global/system level.
+
+---
+
+_Comment by @charliermarsh on 2024-03-17 16:06_
+
+Yeah, that’s something we want to transparently support in the future.
+
+---
+
+_Comment by @ulasozguler on 2024-07-14 12:58_
+
+Is there a recommended workaround for this issue other than using a venv? If not, I can take a shot at implementing the `--user` parameter.
+
+---
+
+_Comment by @T-256 on 2024-07-14 13:48_
+
+@ulasozguler  when system python's directory has not Write access, it's recommended to use isolated python environment for installing tools. You can use pipx for such case which create isolated python for each tool and also expose to globally use.
+
+Also, uv has pipx-like feature which is in preview now: `uv tool install pre-commit` which install and expose that tool Or you can run your tool directly by `uvx pre-commit`.
+
+---
+
+_Comment by @gaby on 2024-07-14 13:50_
+
+@T-256 pipx added support for global venv back in May with v1.5.0 The main purpose is for tools/cli's that are used by multiple users in the same system. For example `ruff`.
+
+---
+
+_Comment by @T-256 on 2024-07-14 14:12_
+
+(Wrong person mentioned in previous comment, edited)
+ 
+> The main purpose is for tools/cli's that are used by multiple users in the same system.
+
+@gaby Correct, that is purpose of this issue 👍 
+
+---
+
+_Comment by @ulasozguler on 2024-07-14 14:32_
+
+> @ulasozguler when system python's directory has not Write access, it's recommended to use isolated python environment for installing tools. You can use pipx for such case which create isolated python for each tool and also expose to globally use.
+> 
+> Also, uv has pipx-like feature which is in preview now: `uv tool install pre-commit` which install and expose that tool Or you can run your tool directly by `uvx pre-commit`.
+
+I'm not actually trying to install a shared tool, it's just a package that would normally (with `pip`) fallback to installing to user.
+
+My environment is in a Docker container, where I don't really need another python environment. I didn't want to add a venv to avoid increasing complexity, and I didn't want to run `uv pip install` with root privileges for security concerns. So it looks like I'm out of options.
+
+---
+
+_Comment by @charliermarsh on 2024-07-14 14:51_
+
+I don't currently plan to support `--user` as I'm not yet convinced that it outweighs its complexity budget. In other words, it adds a lot of complexity (both to uv and to the user experience) but doesn't strike me as sufficiently useful to merit it -- the situations in which folks want it seem rare and I feel like the alternative solutions are totally fine (I don't think adding a venv is a big problem, nor is running with root privileges in a container). But I may change my mind on this in the future based on demand.
+
+
+---
+
+_Comment by @gaby on 2024-07-14 15:09_
+
+@charliermarsh The `--user` would matter if `uv` wants to tackle the enterprise environment. A lot of places require containers to be rootless in production. For local dev, homelabs, etc probably doesnt matter.
+
+---
+
+_Comment by @charliermarsh on 2024-07-14 15:14_
+
+But it seems natural that those containers could just use a virtual environment?
+
+In practice, you may also be able to use `--prefix <PATH_TO_USER_DIR>`, e.g., `--prefix /Users/crmarsh/.local`, but not sure if that will work as expected on all Linux distros if they patch `distutils` or `sysconfig`.
+
+
+---
+
+_Comment by @zanieb on 2024-07-14 16:16_
+
+Please see the extensive discussion at https://github.com/astral-sh/uv/issues/2077 regarding the `--user` flag and workarounds.
+
+---
+
+_Comment by @ulasozguler on 2024-07-14 16:20_
+
+I think it's totally fair not to include it. The only reason I mentioned it is that it sounded like you were planning to add it in a previous comment.
+
+`--prefix` solution works fine too, at least with the official Docker images. Just needed to change `PATH`.
+
+```Dockerfile
+FROM ghcr.io/astral-sh/uv:0.2.24 as uv
+FROM python:3.11.6
+COPY --from=uv /uv /bin/uv
+
+# Copy requirements file
+WORKDIR /code
+ARG REQFILE=requirements.txt
+COPY $REQFILE .
+
+# Do NOT use root
+ARG USERNAME=appuser
+RUN useradd -m $USERNAME
+USER $USERNAME
+
+# Install python dependencies
+ENV PATH="/home/$USERNAME/.local/bin:$PATH"
+ENV UV_HTTP_TIMEOUT=100 \
+    UV_NO_CACHE=1 \
+    UV_SYSTEM_PYTHON=1
+RUN uv pip install -r $REQFILE --prefix "/home/$USERNAME/.local/"
+```
+
+
+---
+
+_Referenced in [astral-sh/uv#2077](../../astral-sh/uv/issues/2077.md) on 2024-08-09 23:22_
+
+---
+
+_Referenced in [we3lab/valuing-flexibility-from-water#14](../../we3lab/valuing-flexibility-from-water/pulls/14.md) on 2024-10-14 23:07_
+
+---
+
+_Referenced in [giaever-online-iot/home-assistant-snap#37](../../giaever-online-iot/home-assistant-snap/issues/37.md) on 2025-01-19 15:18_
+
+---

@@ -1,0 +1,144 @@
+---
+number: 12492
+title: Align the progress bars
+type: issue
+state: closed
+author: debnath-d
+labels:
+  - enhancement
+  - help wanted
+  - cli
+assignees: []
+created_at: 2025-03-26T17:01:09Z
+updated_at: 2025-08-28T17:00:59Z
+url: https://github.com/astral-sh/uv/issues/12492
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# Align the progress bars
+
+---
+
+_Issue opened by @debnath-d on 2025-03-26 17:01_
+
+### Summary
+
+Vertically align the progress bars and progress values (### MiB /### MiB) when installing packages.
+
+![Image](https://github.com/user-attachments/assets/1ac58666-b064-4107-9db3-fb42640424b1)
+
+### Example
+
+_No response_
+
+---
+
+_Label `enhancement` added by @debnath-d on 2025-03-26 17:01_
+
+---
+
+_Comment by @zanieb on 2025-03-26 20:55_
+
+I think we do? e.g., see `torch` and `triton`. We just don't for longer names. Perhaps this is a request to increase the name padding?
+
+---
+
+_Label `cli` added by @zanieb on 2025-03-26 20:55_
+
+---
+
+_Comment by @debnath-d on 2025-03-26 22:51_
+
+Perhaps you can get the width of the terminal window and allow increasing padding as much as needed to align the progress bars, unless it's no longer possible to increase padding because it will overflow the terminal window width.
+
+---
+
+_Comment by @Tremeschin on 2025-03-29 21:13_
+
+Aye, that's a good improvement that would make `uv` look even more professional to my eyes 🙂 
+
+The padding could be the max name length of the resolved packages to be installed. I'm worried it might look empty when long ones finish their download, perhaps the value needs to be dynamic over the _current_ downloads?
+
+Also, the sizes on the right could be formatted as `%6.2f` for alignment too! (or `%7.2f` if any size is `>= 1000 MiB`). They could jump around with the dynamic padding, maybe stretch the bar to always match the original max padding's ending len?
+
+---
+
+_Comment by @zanieb on 2025-04-01 21:22_
+
+If the value is dynamic won't things move around in a weird way?
+
+I'm open to improvements here, if people want to propose them in pull requests — but I'm hesitant to invest much into it myself given we have lots of tangible friction points to focus on.
+
+---
+
+_Label `help wanted` added by @zanieb on 2025-04-01 21:22_
+
+---
+
+_Comment by @debnath-d on 2025-04-01 21:52_
+
+@zanieb Doesn't uv have the list of all packages to download, before it starts downloading the packages and showing the progress bars?
+
+If that's the case, then the dynamic value will be set before the progress bars show up, and things won't move around in a weird way.
+
+---
+
+_Comment by @Tremeschin on 2025-04-01 22:09_
+
+@debnath-d Yea, I also think just setting it to the max package name at the start is non-ambiguous and solves the issue.
+
+<sup>The (other) dynamic thing I said was just me overcomplicating things, as I spend wayy too much time on formatting in my stuff 😅 
+
+---
+
+_Comment by @eduardorittner on 2025-04-22 20:04_
+
+I was looking into this and I'm not sure it's actually a simple change, since packages are streamed using a `tokio::Stream` (in the `resolve` function in `uv-resolver/src/resolver/mod.rs`). This means that packages are streamed as they are found, so when we get the information for the first package, we don't actually have the list of all packages which will be downloaed in order to set the "correct" alignment. I may be wrong since I'm new to the codebase, but I think the only way of doing this would be to store the largest package name found, and then update it as packages trickle in from the stream, and update all the `ProgressStyle`s dynamically.
+
+---
+
+_Comment by @zanieb on 2025-04-22 21:13_
+
+cc @konstin who has the most context on the progress bars
+
+---
+
+_Comment by @konstin on 2025-04-24 07:50_
+
+We could store context on the `ProgressReporter` as we add and remove progress bars.
+
+---
+
+_Comment by @eduardorittner on 2025-05-01 20:56_
+
+I have a (very basic) implementation which adds a `max_len` field to `BarState` which is updated everytime a new progress bar is inserted. This works, but for example when the biggest package name ends I don't update `max_len` (since that would require storing all lengths), so the padding can only increase and never decrease. Do you think it's worth opening a PR? Below is an example of how it looks when doing `uv pip install torch`
+
+![Image](https://github.com/user-attachments/assets/f4b40a05-9f1c-49d6-b8c4-b00df2a4b11f)
+
+---
+
+_Comment by @konstin on 2025-05-02 10:22_
+
+A (draft) pull request would be easiest place to discuss the changes, it's often easier to decide if something is viable with some code.
+
+---
+
+_Referenced in [astral-sh/uv#13266](../../astral-sh/uv/pulls/13266.md) on 2025-05-02 14:06_
+
+---
+
+_Comment by @Secrus on 2025-08-28 16:21_
+
+Is this issue still valid? Looks like appropriate PR was already merged.
+
+---
+
+_Closed by @zanieb on 2025-08-28 17:00_
+
+---
+
+_Comment by @zanieb on 2025-08-28 17:00_
+
+Thanks!
+
+---

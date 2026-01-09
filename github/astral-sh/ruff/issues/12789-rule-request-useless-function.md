@@ -1,0 +1,114 @@
+---
+number: 12789
+title: "Rule Request: useless function"
+type: issue
+state: open
+author: KangOl
+labels:
+  - rule
+  - needs-decision
+assignees: []
+created_at: 2024-08-09T17:08:31Z
+updated_at: 2024-08-12T10:57:53Z
+url: https://github.com/astral-sh/ruff/issues/12789
+synced_at: 2026-01-07T13:12:15-06:00
+---
+
+# Rule Request: useless function
+
+---
+
+_Issue opened by @KangOl on 2024-08-09 17:08_
+
+Today, I (mostly) wrote the following code:
+
+```python
+class BaseConverter:
+    def to_html(self):
+        return HTMLConverter()
+
+    def _loads(self, string):
+        raise NotImplementedError
+
+    def __call__(self):
+        ...
+
+def HTMLConverter(BaseConverter):
+    def to_html(self):
+        return self
+    
+    def _loads(self, string):
+        return lxml.html.fromstring(string)
+```
+
+Did you spot the error? Obviously, the title of this issue is a big hint, but for the other ones, here is how to fix the code:
+```diff
+- def HTMLConverter(BaseConverter):
++ class HTMLConverter(BaseConverter):
+```
+
+I think this kind of error can be detected by ruff, as the body of the `HTMLConverter` *function* only contains other functions and its sole argument is the name of a defined class.
+
+---
+
+_Label `rule` added by @charliermarsh on 2024-08-10 04:04_
+
+---
+
+_Label `needs-decision` added by @charliermarsh on 2024-08-10 04:05_
+
+---
+
+_Comment by @charliermarsh on 2024-08-10 04:05_
+
+That's funny. We could probably support functions that only contain definitions. What do you think, @AlexWaygood?
+
+---
+
+_Comment by @AlexWaygood on 2024-08-10 10:37_
+
+Yeah, I think this is a reasonable request. I agree that a function that only contains other functions is almost certainly not what was intended, so I think it's safe to flag it 😄
+
+> We could probably support functions that only contain definitions.
+
+Hmm, functions that only contain class definitions aren't quite so clear cut, since they can still have side effects when they're executed:
+
+```pycon
+>>> def foo():
+...   class Bar:
+...     print('yo')
+...     
+>>> foo()
+yo
+```
+
+Though I suppose even for a function that only contains function definitions (and doesn't return any of them), it's hard to say _for sure_ that it didn't have any side effects, because of decorators:
+
+```pycon
+>>> REGISTRY = []
+>>> def foo():
+...   @REGISTRY.append
+...   def bar(): pass
+...     
+>>> foo()
+>>> REGISTRY
+[<function foo.<locals>.bar at 0x11b6a3370>]
+```
+
+---
+
+_Comment by @dhruvmanila on 2024-08-12 05:45_
+
+@AlexWaygood feel free to update the labels accordingly :)
+
+---
+
+_Comment by @AlexWaygood on 2024-08-12 10:57_
+
+I think exactly what the decision should be here depends on how many false positives we'd be willing to tolerate from this rule:
+- If we want it to have a "pyflakes level of accuracy", where the rule has close to zero false positives, then we should _only_ emit a diagnostic if we see a function where the only items in the function body are function definitions, and none of the inner functions have any decorators
+- If we're prepared to accept more false positives from the rule -- because we want it to catch more errors -- then we could also emit the diagnostic even if some of the inner functions are decorated, or if some of the inner definitions are class definitions.
+
+So while I'm supportive of adding a rule like this, I'm not 100% sure what exactly the rule should look like. @charliermarsh / @dhruvmanila -- any thoughts from you on that?
+
+---

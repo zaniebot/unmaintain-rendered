@@ -1,0 +1,89 @@
+---
+number: 2869
+title: Wrong fix for TID252
+type: issue
+state: closed
+author: Olegt0rr
+labels:
+  - bug
+assignees: []
+created_at: 2023-02-13T21:11:54Z
+updated_at: 2023-02-14T22:25:01Z
+url: https://github.com/astral-sh/ruff/issues/2869
+synced_at: 2026-01-07T13:12:14-06:00
+---
+
+# Wrong fix for TID252
+
+---
+
+_Issue opened by @Olegt0rr on 2023-02-13 21:11_
+
+# File
+
+File path: `app.telegram.handlers.start.py`
+
+ 
+```tree
+app
+├── __init__.py
+├── __main__.py
+└── telegram
+    ├── __init__.py
+    ├── ...
+    ├── filters
+    │   ├── __init__.py
+    │   └── chat_type.py
+    ├── handlers
+    │   ├── __init__.py
+    │   └── start.py
+    └── ...
+
+```
+
+## Before fix
+
+```python
+from ..filters import ChatType
+```
+
+
+## Expected fix
+
+```python
+from app.telegram.filters import ChatType
+```
+
+## Actual fix
+
+```python
+from app.filters import ChatType
+```
+
+```log
+Found 1 error (1 fixed, 0 remaining).
+```
+
+---
+
+_Comment by @sbrugman on 2023-02-13 21:14_
+
+Working on a fix, tracked here https://github.com/charliermarsh/ruff/issues/2764
+
+---
+
+_Label `bug` added by @charliermarsh on 2023-02-13 21:24_
+
+---
+
+_Referenced in [astral-sh/ruff#2891](../../astral-sh/ruff/pulls/2891.md) on 2023-02-14 08:55_
+
+---
+
+_Closed by @charliermarsh on 2023-02-14 22:25_
+
+---
+
+_Closed by @charliermarsh on 2023-02-14 22:25_
+
+---

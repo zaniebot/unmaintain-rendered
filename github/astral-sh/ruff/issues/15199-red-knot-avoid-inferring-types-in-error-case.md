@@ -1,0 +1,44 @@
+---
+number: 15199
+title: "[red-knot] Avoid inferring types in error case during unpacking"
+type: issue
+state: closed
+author: dhruvmanila
+labels:
+  - ty
+assignees: []
+created_at: 2024-12-30T07:39:13Z
+updated_at: 2025-03-07T19:04:45Z
+url: https://github.com/astral-sh/ruff/issues/15199
+synced_at: 2026-01-07T13:12:16-06:00
+---
+
+# [red-knot] Avoid inferring types in error case during unpacking
+
+---
+
+_Issue opened by @dhruvmanila on 2024-12-30 07:39_
+
+Refer: https://github.com/astral-sh/ruff/pull/15086#discussion_r1896889031
+
+---
+
+_Label `red-knot` added by @dhruvmanila on 2024-12-30 07:39_
+
+---
+
+_Referenced in [astral-sh/ruff#16530](../../astral-sh/ruff/pulls/16530.md) on 2025-03-06 10:31_
+
+---
+
+_Closed by @carljm on 2025-03-07 19:04_
+
+---
+
+_Closed by @carljm on 2025-03-07 19:04_
+
+---
+
+_Referenced in [astral-sh/ruff#16469](../../astral-sh/ruff/pulls/16469.md) on 2025-03-08 02:32_
+
+---

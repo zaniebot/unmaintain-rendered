@@ -1,0 +1,93 @@
+---
+number: 2323
+title: Support flake8-annotations-complexity
+type: issue
+state: open
+author: Crocmagnon
+labels:
+  - plugin
+assignees: []
+created_at: 2023-01-29T10:00:49Z
+updated_at: 2026-01-06T23:31:02Z
+url: https://github.com/astral-sh/ruff/issues/2323
+synced_at: 2026-01-07T13:12:14-06:00
+---
+
+# Support flake8-annotations-complexity
+
+---
+
+_Issue opened by @Crocmagnon on 2023-01-29 10:00_
+
+I'm using https://github.com/best-doctor/flake8-annotations-complexity to keep my type annotations from going wild, and would love to see support in ruff :)
+
+There are two config options (https://github.com/best-doctor/flake8-annotations-complexity/blob/master/flake8_annotations_complexity/checker.py#L27-L38) and two checks (https://github.com/best-doctor/flake8-annotations-complexity/blob/master/flake8_annotations_complexity/ast_helpers.py#L59-L69).
+
+---
+
+_Label `plugin` added by @charliermarsh on 2023-01-29 16:30_
+
+---
+
+_Comment by @karpa4o4 on 2023-01-31 13:29_
+
+@charliermarsh, hi. can i take this issue? 
+
+---
+
+_Comment by @charliermarsh on 2023-01-31 17:31_
+
+@karpa4o4 - Sure, this seems reasonable to include.
+
+---
+
+_Referenced in [inovintell/py-template#142](../../inovintell/py-template/issues/142.md) on 2023-02-24 18:08_
+
+---
+
+_Referenced in [astral-sh/ruff#7845](../../astral-sh/ruff/issues/7845.md) on 2024-04-10 10:09_
+
+---
+
+_Comment by @darikoneil on 2025-12-19 22:24_
+
+Is anyone still on this?
+
+---
+
+_Comment by @ntBre on 2025-12-22 14:32_
+
+@darikoneil I don't think so.
+
+---
+
+_Referenced in [astral-sh/ruff#22427](../../astral-sh/ruff/pulls/22427.md) on 2026-01-06 22:57_
+
+---
+
+_Comment by @danjones1618 on 2026-01-06 23:01_
+
+I've started working on this in https://github.com/astral-sh/ruff/pull/22427
+
+---
+
+_Comment by @danjones1618 on 2026-01-06 23:31_
+
+A couple of discussion points/questions for this rule(s):
+
+## 1. single rule vs multiple rules
+The plugin only implements one rule, `TAE002`, which flags for any annotation. This means there is no differentiation between annotation complexity in function/method arguments vs parameter declarations.
+
+By splitting into two rules, function parameters can be configured to warn at a lower complexity than variable annotations. Is this desired or is it better to align with the plugin?
+
+## 2. The `Annotated` type
+
+The `Annotated` type introduced by [PEP-593](https://peps.python.org/pep-0593/) allows adding additional metadata that can be queried at runtime. This is used by libraries such as Pydantic to provide contextual configuration.
+
+`flake8-annotations-complexity` does not make any special considerations for this type therefore using an `Annotated` type increases the reported complexity. Given the default configuration, a type of `Annotated[dict[str, Model], Field(...)]` would become an error. This is a likely annotation in a application. Should the `Annotated` type be ignored for the purpose of complexity calculation? Perhaps, with a configuration flag to disable this behaviour?
+
+## 3. PEP-604 union syntax
+
+[PEP-604](https://peps.python.org/pep-0604/) provides syntactic sugar for `Union[int, str]` as `int | str`. `flake8-annoations-complexity` does not increase complexity with the PEP-604 syntax. This seems like an oversight in the plugin as opposed to a feature therefore the new syntax should be reported as increasing complexity.
+
+---

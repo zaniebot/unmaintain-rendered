@@ -1,0 +1,89 @@
+---
+number: 14015
+title: UV Behaving differently with administrator rights
+type: issue
+state: closed
+author: MCRE-BE
+labels:
+  - question
+assignees: []
+created_at: 2025-06-13T06:36:31Z
+updated_at: 2025-06-13T11:07:23Z
+url: https://github.com/astral-sh/uv/issues/14015
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# UV Behaving differently with administrator rights
+
+---
+
+_Issue opened by @MCRE-BE on 2025-06-13 06:36_
+
+### Summary
+
+uv behaves differently with `cmd` having administrator rights as without.
+I would have expected that it can detect all the network drives regardless of the rights...
+
+```python
+import os
+from pathlib import Path
+
+os.startfile(r"F:")
+```
+
+![Image](https://github.com/user-attachments/assets/c8bec48d-bde7-472d-9dde-f0369c305d18)
+
+### Platform
+
+Microsoft Windows [Version 10.0.19045.5371]
+
+### Version
+
+uv 0.7.10 (1e5120e15 2025-06-03)
+
+### Python version
+
+Python 3.13.3
+
+---
+
+_Label `bug` added by @MCRE-BE on 2025-06-13 06:36_
+
+---
+
+_Comment by @m-ad on 2025-06-13 09:44_
+
+What happens if you just type "F:" in the command prompts? That should change the prompt from "C:\Users\..." to "F:". 
+
+If that does not work for the admin user, then the admin user has not mounted the "F:" drive and this is not a uv issue.
+
+---
+
+_Label `bug` removed by @konstin on 2025-06-13 10:21_
+
+---
+
+_Label `question` added by @konstin on 2025-06-13 10:21_
+
+---
+
+_Comment by @konstin on 2025-06-13 10:21_
+
+Is that specific to uv, or does this happen with Python generally?
+
+---
+
+_Comment by @MCRE-BE on 2025-06-13 11:07_
+
+@m-ad  : You are indeed correct. F: does not seem to be mounted for admin. Strange, but maybe a company setting...
+
+@konstin  : Fair point. Running the same command in a Conda environment (I don't have python system wide) raises the same issue.
+I'll close as not related to UV specifically.
+
+![Image](https://github.com/user-attachments/assets/be2cf77b-5e8a-4a28-963d-f834a339ccb7)
+
+---
+
+_Closed by @MCRE-BE on 2025-06-13 11:07_
+
+---

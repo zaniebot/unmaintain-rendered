@@ -1,0 +1,122 @@
+---
+number: 13373
+title: "`uv lock && uv lock --check` fails"
+type: issue
+state: closed
+author: NellyWhads
+labels:
+  - bug
+assignees: []
+created_at: 2025-05-10T03:04:07Z
+updated_at: 2025-05-13T04:45:08Z
+url: https://github.com/astral-sh/uv/issues/13373
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# `uv lock && uv lock --check` fails
+
+---
+
+_Issue opened by @NellyWhads on 2025-05-10 03:04_
+
+### Summary
+
+Hey guys,
+
+I've:
+* unset all UV related variables from the env
+* ensured that the first command does run idempotently (second run of `uv lock` does not update the lock file, but the first one does)
+* tried on multiple machines
+
+The key change I made was from this setup:
+
+```toml
+...
+[dependency-groups]
+rospy = [
+  "rospy>=1.15",
+]
+...
+
+[[tool.uv.index]]
+name = "rospy"
+url = "https://rospypi.github.io/simple/"
+```
+
+To this one to be more specific:
+```toml
+...
+[dependency-groups]
+rospy = [
+  "rospy>=1.15",
+  "roscpp",
+  "rosgraph",
+  "roslib",
+  "genpy",
+  "genmsg",
+  "std-msgs",
+  "rosgraph-msgs",
+]
+...
+
+[tool.uv.sources]
+...
+rospy = [{ index = "rospy" }]
+roscpp = [{ index = "rospy" }]
+rosgraph = [{ index = "rospy" }]
+roslib = [{ index = "rospy" }]
+genpy = [{ index = "rospy" }]
+genmsg = [{ index = "rospy" }]
+std-msgs = [{ index = "rospy" }]
+rosgraph-msgs = [{ index = "rospy" }]
+...
+
+[[tool.uv.index]]
+name = "rospy"
+url = "https://rospypi.github.io/simple/"
+explicit = true
+```
+
+Am I missing something? Running with `--verbose` prints a rather lot bit of output which I'd like to avoid human-parsing. The entire polylithic monorepo locks ~850 packages.
+
+### Platform
+
+MacOS 14, Ubuntu 22.04
+
+### Version
+
+0.16.13, 0.16.17, 0.7.3
+
+### Python version
+
+3.10.15
+
+---
+
+_Label `bug` added by @NellyWhads on 2025-05-10 03:04_
+
+---
+
+_Comment by @NellyWhads on 2025-05-11 01:17_
+
+Leaving the dependency group open as per the original example is causing me to `429` the `rospy` index ... I probably shouldn't do that.
+
+---
+
+_Comment by @konstin on 2025-05-12 10:02_
+
+What error message do you get?
+
+---
+
+_Comment by @NellyWhads on 2025-05-13 04:45_
+
+Hey again,
+
+I did some deep dependency cleaning and found that a user of the monorepo did not include their dependency source properly at the workspace level. Closing as this is not an issue with `uv`
+
+---
+
+_Closed by @NellyWhads on 2025-05-13 04:45_
+
+---

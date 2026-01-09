@@ -1,0 +1,112 @@
+---
+number: 4761
+title: "`default_value_factory`"
+type: issue
+state: closed
+author: Jasha10
+labels:
+  - C-enhancement
+assignees: []
+created_at: 2023-03-14T20:45:13Z
+updated_at: 2023-03-15T02:50:36Z
+url: https://github.com/clap-rs/clap/issues/4761
+synced_at: 2026-01-07T13:12:20-06:00
+---
+
+# `default_value_factory`
+
+---
+
+_Issue opened by @Jasha10 on 2023-03-14 20:45_
+
+### Please complete the following tasks
+
+- [X] I have searched the [discussions](https://github.com/clap-rs/clap/discussions)
+- [X] I have searched the [open](https://github.com/clap-rs/clap/issues) and [rejected](https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed) issues
+
+### Clap Version
+
+4.1.8
+
+### Describe your use case
+
+I'd like to supply a _factory_ that creates a default value for a given Cli argument.
+Compared with the existing methods for specifying a default value, e.g. `#[arg(default_value_t = 2020)]`, being able to pass a callback `#[arg(default_value_factory = || 2020)]` would enable more complex use-cases such as reading a default value from disk or performing some computation to produce the default value.
+
+### Describe the solution you'd like
+
+Here is a demo of the API that I have in mind:
+```rust
+#[derive(Parser)]
+struct Cli {
+    #[arg(default_value_factory = get_default_port)]
+    port: u16,
+}
+fn get_default_port() -> u16 {
+    123
+}
+```
+
+I would think that, in general, `default_value_factory` should accept something that implements `Fn() -> u16` or perhaps `Fn() -> Result<u16>`. (I'm not sure which would be more consistent with the existing API).
+
+### Alternatives, if applicable
+
+The alternative I've used involves `Option<u16>`:
+```rust
+#[derive(Parser)]
+struct Cli {
+    maybe_port: u16,
+}
+fn get_default_port() -> u16 {
+    123
+}
+
+fn main() {
+    let Cli { maybe_port } = Cli::parse();
+    let port: u16 = maybe_port.unwrap_or_else(get_default_port);
+    println!("{}", port);
+}
+```
+
+### Additional Context
+
+This feature request is inspired by Python's [dataclasses](https://docs.python.org/3/library/dataclasses.html), which support using a [`default_factory` ](https://docs.python.org/3/library/dataclasses.html#dataclasses.field) to compute the default value of a dataclass field:
+```python
+>>> from dataclasses import dataclass, field
+>>> @dataclass
+... class Cli:
+...     port: int = field(default_factory=lambda: 123)
+...
+>>> Cli()
+Cli(port=123)
+```
+
+---
+
+_Label `C-enhancement` added by @Jasha10 on 2023-03-14 20:45_
+
+---
+
+_Comment by @epage on 2023-03-15 01:15_
+
+Our primary focus in providing a default value is for showing it in the help.  As you mentioned, you can handle this on your side by making the field and `Option` and using an `unwrap_or_else` on it to call your factory.  Frequently, I wrap this behavior in my applications in a function on my `Args` which is what I then use to access it.
+
+Unless a strong enough motivating case is provided, I lean towards rejecting this.  We are trying to balance the features we provide with our binary size and compile times and this feels it'll just be responsible for more bloat.
+
+Note: If you weren't aware, you can have the attribute be initialized with a function call.  That doesn't help in all situations but it can be useful.
+
+---
+
+_Comment by @Jasha10 on 2023-03-15 02:50_
+
+Thanks for the reply @epage. I understand you explanation and will close this feature request as out of scope.
+
+> Note: If you weren't aware, you can have the attribute be initialized with a function call.
+
+Not sure what you mean by this. Could you please point me to the relevant part of the docs?
+
+---
+
+_Closed by @Jasha10 on 2023-03-15 02:50_
+
+---

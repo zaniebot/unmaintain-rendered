@@ -1,0 +1,71 @@
+---
+number: 4933
+title: Change help message when prompt skippable
+type: issue
+state: closed
+author: dariocurr
+labels:
+  - C-enhancement
+assignees: []
+created_at: 2023-05-23T12:41:45Z
+updated_at: 2023-05-23T14:37:13Z
+url: https://github.com/clap-rs/clap/issues/4933
+synced_at: 2026-01-07T13:12:20-06:00
+---
+
+# Change help message when prompt skippable
+
+---
+
+_Issue opened by @dariocurr on 2023-05-23 12:41_
+
+### Please complete the following tasks
+
+- [X] I have searched the [discussions](https://github.com/clap-rs/clap/discussions)
+- [X] I have searched the [open](https://github.com/clap-rs/clap/issues) and [rejected](https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed) issues
+
+### Clap Version
+
+4.3
+
+### Describe your use case
+
+When using the skippable prompt I get the same help message as the classic prompt
+
+### Describe the solution you'd like
+
+For example when I use a `Select`, the prompt help message is:
+`"↑↓ to move, enter to select, type to filter"`
+
+The when I use a `Select`, the skippable prompt help message should be something like this:
+`"↑↓ to move, enter to select, type to filter, ESC to select none"`
+
+### Alternatives, if applicable
+
+_No response_
+
+### Additional Context
+
+I would like to contribute, but I guess I need some guidelines
+
+---
+
+_Label `C-enhancement` added by @dariocurr on 2023-05-23 12:41_
+
+---
+
+_Comment by @epage on 2023-05-23 13:15_
+
+Are you sure you opened this against the right crate?  clap does not have any prompt support
+
+---
+
+_Comment by @dariocurr on 2023-05-23 14:37_
+
+You're right, I was referring to [inquire](https://github.com/mikaelmello/inquire)
+
+---
+
+_Closed by @dariocurr on 2023-05-23 14:37_
+
+---

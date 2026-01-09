@@ -1,0 +1,85 @@
+---
+number: 13573
+title: Is there a way to get the virtual environment with the requirements from the script?
+type: issue
+state: closed
+author: paulefoe
+labels:
+  - question
+assignees: []
+created_at: 2025-05-21T12:08:29Z
+updated_at: 2025-05-21T12:28:09Z
+url: https://github.com/astral-sh/uv/issues/13573
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# Is there a way to get the virtual environment with the requirements from the script?
+
+---
+
+_Issue opened by @paulefoe on 2025-05-21 12:08_
+
+### Question
+
+I have a script that have external dependencies and I want to be able to get the environment with those requirements to run an ipython shell for example
+
+jobs/main.py
+```python
+# /// script
+# requires-python = ">=3.11"
+# dependencies = [
+#     "pydantic",
+# ]
+# ///
+
+def main():
+    pass
+```
+
+For example
+uv run --with jobs/main.py ipython
+
+Sorry if that was asked before, I couldn't find it?
+
+### Platform
+
+Linux 6.14.6-arch1-1 x86_64 GNU/Linux
+
+### Version
+
+uv 0.6.5
+
+---
+
+_Label `question` added by @paulefoe on 2025-05-21 12:08_
+
+---
+
+_Comment by @charliermarsh on 2025-05-21 12:09_
+
+```
+❯ uv sync --script script.py
+Creating script environment at: /Users/crmarsh/.cache/uv/environments-v2/script-7719f6250ba57df9
+Resolved 5 packages in 144ms
+Installed 5 packages in 22ms
+ + annotated-types==0.7.0
+ + pydantic==2.11.4
+ + pydantic-core==2.33.2
+ + typing-extensions==4.13.2
+ + typing-inspection==0.4.0
+
+❯ uv python find --script script.py
+/Users/crmarsh/.cache/uv/environments-v2/script-7719f6250ba57df9/bin/python3
+```
+
+---
+
+_Comment by @paulefoe on 2025-05-21 12:28_
+
+This is great, thank you @charliermarsh !
+
+---
+
+_Closed by @paulefoe on 2025-05-21 12:28_
+
+---

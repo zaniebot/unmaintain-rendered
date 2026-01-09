@@ -1,0 +1,91 @@
+---
+number: 1327
+title: "[behavior-change] D202 don't flag if there is a leading comment"
+type: issue
+state: closed
+author: smackesey
+labels:
+  - docstring
+assignees: []
+created_at: 2022-12-22T02:54:42Z
+updated_at: 2023-05-19T12:28:50Z
+url: https://github.com/astral-sh/ruff/issues/1327
+synced_at: 2026-01-07T13:12:14-06:00
+---
+
+# [behavior-change] D202 don't flag if there is a leading comment
+
+---
+
+_Issue opened by @smackesey on 2022-12-22 02:54_
+
+Upgraded to black 22.12.0 (preview mode) and noticed that ruff now disagrees with black over how to format this:
+
+```
+def analytics_call(fn):
+    """Decorator for all functions below that write to segment.com."""
+
+    # Catch and log errors but don't propagate. We don't want analytics write failure to bubble up
+    # to user actions.
+    # Ensure write_key is present or log warning.
+```
+
+Ruff `D202` wants to get rid of the blank line after docstring, but black requires that it be there (only since the next bit of code is a comment). I don't know how Flake8 does it but I think black's way makes sense here.
+
+---
+
+_Comment by @charliermarsh on 2022-12-22 03:08_
+
+Oh, interesting, so it wants a blank line when it's followed by a comment? We can do that.
+
+---
+
+_Label `enhancement` added by @charliermarsh on 2022-12-23 03:56_
+
+---
+
+_Comment by @charliermarsh on 2022-12-26 01:19_
+
+Confusingly, if I run `black --preview` on 22.12.0 over this code:
+
+```py
+def analytics_call(fn):
+    """Decorator for all functions below that write to segment.com."""
+    # Catch and log errors but don't propagate. We don't want analytics write failure to bubble up
+    # to user actions.
+    # Ensure write_key is present or log warning.
+```
+
+It doesn't add that newline. Is that what you're seeing?
+
+---
+
+_Label `enhancement` removed by @charliermarsh on 2022-12-31 18:13_
+
+---
+
+_Label `docstring` added by @charliermarsh on 2022-12-31 18:13_
+
+---
+
+_Comment by @charliermarsh on 2023-05-18 15:17_
+
+Closing for now, Black seems ok with either.
+
+---
+
+_Closed by @charliermarsh on 2023-05-18 15:17_
+
+---
+
+_Comment by @smackesey on 2023-05-19 12:11_
+
+Hey sorry for not following up here, I'm not sure what exactly was going on but the issue seems resolved now in any case.
+
+---
+
+_Comment by @charliermarsh on 2023-05-19 12:28_
+
+All good, no prob :)
+
+---

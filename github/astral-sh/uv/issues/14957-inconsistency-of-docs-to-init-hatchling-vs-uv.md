@@ -1,0 +1,91 @@
+---
+number: 14957
+title: "Inconsistency of docs to init: hatchling vs uv_build"
+type: issue
+state: closed
+author: michellepace
+labels:
+  - documentation
+  - good first issue
+assignees: []
+created_at: 2025-07-29T15:25:58Z
+updated_at: 2025-07-30T12:04:08Z
+url: https://github.com/astral-sh/uv/issues/14957
+synced_at: 2026-01-07T13:12:19-06:00
+---
+
+# Inconsistency of docs to init: hatchling vs uv_build
+
+---
+
+_Issue opened by @michellepace on 2025-07-29 15:25_
+
+### Summary
+
+Hello. 
+
+When I initialise with `uv init —package my-thing` as of July 29, 2025 with latest uv version 0.8.3 the default is uv_build .  
+
+But in the docs there is only mention of  `hatchling` making it appear like UV's typical default. 
+
+Reported as a Bug to align consistency - I’m unsure which to use?
+
+Thank you for UV, discovered it a few days ago as a novice. It’s lovely.
+
+Michelle
+
+### Platform
+
+Windows 11
+
+### Version
+
+0.8.3
+
+### Python version
+
+3.12.6
+
+---
+
+_Label `bug` added by @michellepace on 2025-07-29 15:25_
+
+---
+
+_Comment by @konstin on 2025-07-29 15:26_
+
+Which documentation page are you referring to, where does it say uv uses hatchling?
+
+---
+
+_Label `bug` removed by @konstin on 2025-07-29 15:27_
+
+---
+
+_Label `documentation` added by @konstin on 2025-07-29 15:27_
+
+---
+
+_Comment by @michellepace on 2025-07-29 15:53_
+
+If you do a search on the docs website you’ll find multiple mentions. But this is the page that got me confused specifically: https://docs.astral.sh/uv/concepts/projects/init/#packaged-applications
+
+---
+
+_Comment by @zanieb on 2025-07-29 16:18_
+
+That's just outdated, thanks!
+
+---
+
+_Label `good first issue` added by @zanieb on 2025-07-29 16:18_
+
+---
+
+_Referenced in [astral-sh/uv#14968](../../astral-sh/uv/pulls/14968.md) on 2025-07-30 11:51_
+
+---
+
+_Closed by @konstin on 2025-07-30 12:04_
+
+---

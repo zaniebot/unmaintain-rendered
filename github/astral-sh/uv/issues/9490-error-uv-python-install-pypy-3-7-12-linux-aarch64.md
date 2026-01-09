@@ -1,0 +1,96 @@
+---
+number: 9490
+title: "Error: uv python install pypy-3.7.12-linux-aarch64-gnu --verbose"
+type: issue
+state: open
+author: loganoxo
+labels:
+  - bug
+  - uv python
+assignees: []
+created_at: 2024-11-28T02:46:32Z
+updated_at: 2024-11-28T02:53:30Z
+url: https://github.com/astral-sh/uv/issues/9490
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# Error: uv python install pypy-3.7.12-linux-aarch64-gnu --verbose
+
+---
+
+_Issue opened by @loganoxo on 2024-11-28 02:46_
+
+- command
+
+```
+uv python install pypy-3.7.12-linux-aarch64-gnu --verbose
+```
+
+- screenshot
+
+![Image](https://github.com/user-attachments/assets/ad9f77f1-392c-4d3f-91bf-cfae519c02c4)
+
+
+![Image](https://github.com/user-attachments/assets/a62e7749-a45f-4b68-98dc-a33efe4fdd03)
+
+![Image](https://github.com/user-attachments/assets/f1cff78e-1239-4e7e-87f0-e5706b1d3116)
+
+> There is no pypy3.7 directory under ~/.local/share/uv/python/pypy-3.7.12-linux-aarch64-gnu/lib.
+
+
+
+---
+
+_Comment by @zanieb on 2024-11-28 02:53_
+
+Please use code blocks and text instead of screenshots in the future, it helps discoverability. See #9452.
+
+I can reproduce this
+
+```
+❯ uv python install pypy-3.7.12-linux-aarch64-gnu --verbose
+DEBUG uv 0.5.3 (56d362208 2024-11-19)
+DEBUG Acquired lock for `/Users/zb/.local/share/uv/python`
+DEBUG No installation found for request `pypy-3.7.12-linux-aarch64-gnu`
+DEBUG Found download `pypy-3.7.12-linux-aarch64-gnu` for request `pypy-3.7.12-linux-aarch64-gnu`
+DEBUG Using request timeout of 30s
+DEBUG Downloading https://downloads.python.org/pypy/pypy3.7-v7.3.8-aarch64-portable.tar.bz2 to temporary location: /Users/zb/.local/share/uv/python/.cache/.tmp8zcrNT
+DEBUG Extracting pypy3.7-v7.3.8-aarch64-portable.tar.bz2
+DEBUG Moving /Users/zb/.local/share/uv/python/.cache/.tmp8zcrNT/pypy3.7-v7.3.8-aarch64 to /Users/zb/.local/share/uv/python/pypy-3.7.12-linux-aarch64-gnu
+DEBUG Released lock at `/Users/zb/.local/share/uv/python/.lock`
+error: failed to create file `/Users/zb/.local/share/uv/python/pypy-3.7.12-linux-aarch64-gnu/lib/pypy3.7/EXTERNALLY-MANAGED`: No such file or directory (os error 2)
+```
+
+Notably this does not occur for pypy-3.8
+
+```
+❯ uv python install pypy-3.8-linux-aarch64-gnu --verbose
+DEBUG uv 0.5.3 (56d362208 2024-11-19)
+DEBUG Acquired lock for `/Users/zb/.local/share/uv/python`
+DEBUG No installation found for request `pypy-3.8-linux-aarch64-gnu`
+DEBUG Found download `pypy-3.8.16-linux-aarch64-gnu` for request `pypy-3.8-linux-aarch64-gnu`
+DEBUG Using request timeout of 30s
+DEBUG Downloading https://downloads.python.org/pypy/pypy3.8-v7.3.11-aarch64.tar.bz2 to temporary location: /Users/zb/.local/share/uv/python/.cache/.tmprcEHd7
+DEBUG Extracting pypy3.8-v7.3.11-aarch64.tar.bz2
+DEBUG Moving /Users/zb/.local/share/uv/python/.cache/.tmprcEHd7/pypy3.8-v7.3.11-aarch64 to /Users/zb/.local/share/uv/python/pypy-3.8.16-linux-aarch64-gnu
+DEBUG Skipping installation of Python executables, use `--preview` to enable.
+Installed Python 3.8.16 in 2.72s
+ + pypy-3.8.16-linux-aarch64-gnu
+DEBUG Released lock at `/Users/zb/.local/share/uv/python/.lock`
+```
+
+In 3.8, the path is `/Users/zb/.local/share/uv/python/pypy-3.8.16-linux-aarch64-gnu/lib/pypy3.8`
+
+The equivalent path in 3.7 appears to be `/Users/zb/.local/share/uv/python/pypy-3.7.12-linux-aarch64-gnu/lib_pypy`.
+
+I'm not sure where we check for `EXTERNALLY-MANAGED` markers, that will determine if we should put it in `lib_pypy` or create a `pypy3.7` directory.
+
+---
+
+_Label `bug` added by @zanieb on 2024-11-28 02:53_
+
+---
+
+_Label `uv python` added by @zanieb on 2024-11-28 02:53_
+
+---

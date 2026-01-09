@@ -1,0 +1,51 @@
+---
+number: 8980
+title: Unsafe ANN2 autofix ignores tuple return type in try black
+type: issue
+state: closed
+author: twoertwein
+labels:
+  - bug
+assignees: []
+created_at: 2023-12-03T15:58:02Z
+updated_at: 2023-12-03T16:01:50Z
+url: https://github.com/astral-sh/ruff/issues/8980
+synced_at: 2026-01-07T13:12:15-06:00
+---
+
+# Unsafe ANN2 autofix ignores tuple return type in try black
+
+---
+
+_Issue opened by @twoertwein on 2023-12-03 15:58_
+
+```py
+def test():  # ruff adds -> None
+    try:
+        return (9,)
+    except:
+        return None
+```
+
+```sh
+$ ruff --select ANN2 test.py --unsafe-fixes
+Found 1 error (1 fixed, 0 remaining).
+$ ruff --version
+ruff 0.1.6
+```
+
+---
+
+_Comment by @charliermarsh on 2023-12-03 16:01_
+
+I believe this is fixed on main but not-yet released: https://github.com/astral-sh/ruff/pull/8881
+
+---
+
+_Closed by @charliermarsh on 2023-12-03 16:01_
+
+---
+
+_Label `bug` added by @charliermarsh on 2023-12-03 16:01_
+
+---

@@ -1,0 +1,287 @@
+---
+number: 6867
+title: Dockerfile with a workspace project
+type: issue
+state: closed
+author: Afoucaul
+labels:
+  - question
+assignees: []
+created_at: 2024-08-30T13:14:50Z
+updated_at: 2024-09-02T13:42:48Z
+url: https://github.com/astral-sh/uv/issues/6867
+synced_at: 2026-01-07T13:12:17-06:00
+---
+
+# Dockerfile with a workspace project
+
+---
+
+_Issue opened by @Afoucaul on 2024-08-30 13:14_
+
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with uv.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
+* The current uv platform.
+* The current uv version (`uv --version
+-->
+
+The [doc](https://docs.astral.sh/uv/guides/integration/docker/#intermediate-layers) proposes the following Dockerfile to build a project into a Dockerfile while caching intermediate layers (uv version 0.4.0):
+
+```Dockerfile
+# Install uv
+FROM python:3.12-slim
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /bin/uv
+
+# Change the working directory to the `app` directory
+WORKDIR /app
+
+# Copy the lockfile and `pyproject.toml` into the image
+ADD uv.lock /app/uv.lock
+ADD pyproject.toml /app/pyproject.toml
+
+# Install dependencies
+RUN uv sync --frozen --no-install-project
+
+# Copy the project into the image
+ADD . /app
+
+# Sync the project
+RUN uv sync --frozen
+```
+
+However, when the project is a worskpace, `uv sync --frozen --no-install-project` won't do anything unless the workspace members are there. As a result, if a workspace contains libs in a `libs/` dir, one has to also `ADD` all `libs/*/pyproject.toml` files so `uv sync --frozen --no-install-project` actually installs 3rd party dependencies.
+We could easily `COPY` the whole `libs/` dir, but then the cache would be invalidated every time sources change.
+
+Is there a workaround? Or a workspace-specific strategy for building Docker images?
+
+---
+
+_Comment by @charliermarsh on 2024-09-01 17:45_
+
+Have you seen `uv sync --frozen --no-install-workspace`? That should omit the library and workspace members (but install all dependencies).
+
+---
+
+_Label `question` added by @charliermarsh on 2024-09-01 17:45_
+
+---
+
+_Comment by @Afoucaul on 2024-09-02 08:08_
+
+> Have you seen `uv sync --frozen --no-install-workspace`? That should omit the library and workspace members (but install all dependencies).
+
+Actually I have, and I may be failing to understand what `--frozen` does.
+When I run `uv sync --frozen --no-install-workspace`, nothing gets installed:
+
+```bash
+$ uv sync --frozen --no-install-workspace
+Using Python 3.8.12
+Creating virtualenv at: .venv
+Audited in 0.00ms
+
+$ ls -a .venv/lib/python3.8/site-packages 
+_virtualenv.pth  _virtualenv.py
+```
+
+However when I replace `--frozen` with `--locked`, packages do get installed, except indeed workspace members:
+
+```bash
+$ uv sync --locked --no-install-workspace
+Resolved 16 packages in 2ms
+Prepared 12 packages in 0.79ms
+Installed 12 packages in 19ms
+ + anyio==4.4.0
+ + certifi==2024.8.30
+ + charset-normalizer==3.3.2
+ + exceptiongroup==1.2.2
+ + h11==0.14.0
+ + httpcore==1.0.5
+ + httpx==0.27.2
+ + idna==3.8
+ + requests==2.32.3
+ + sniffio==1.3.1
+ + typing-extensions==4.12.2
+ + urllib3==2.2.2
+
+$ ls -a .venv/lib/python3.8/site-packages 
+_virtualenv.pth        certifi-2024.8.30.dist-info         h11                       httpx-0.27.2.dist-info     sniffio                             urllib3-2.2.2.dist-info
+_virtualenv.py         charset_normalizer                  h11-0.14.0.dist-info      idna                       sniffio-1.3.1.dist-info             
+anyio                  charset_normalizer-3.3.2.dist-info  httpcore                  idna-3.8.dist-info         typing_extensions-4.12.2.dist-info  
+anyio-4.4.0.dist-info  exceptiongroup                      httpcore-1.0.5.dist-info  requests                   typing_extensions.py                
+certifi                exceptiongroup-1.2.2.dist-info      httpx                     requests-2.32.3.dist-info  urllib3
+```
+
+From what I understand from `uv sync --help`, `--frozen` and `--locked` enforce the same behavior, except that `--locked` causes a failure if the lock file needs to be updated, while `--frozen` will proceed anyway:
+
+```bash
+      --locked                                   Assert that the `uv.lock` will remain unchanged
+      --frozen                                   Sync without updating the `uv.lock` file
+```
+
+On that note, why would `--frozen` be recommended rather than `--locked` in Dockerfiles? It looks to me one would want to enforce as many static guarantees as possible at build time - but again I may be misunderstanding the purpose of these flags.
+
+Am I missing something here? (I'm sorry the discussion is drifting a bit, I guess I'm confused with the `sync` command in general)
+
+---
+
+_Comment by @Afoucaul on 2024-09-02 08:29_
+
+I can confirm that with uv 0.4.0, and the following layout, `uv sync --frozen --no-install-workspace` does not install anything if I don't `ADD` the `pyproject.toml` file of apps and libs in the Dockerfile
+
+<details>
+<summary>Structure</summary>
+
+```bash
+.
+├── Dockerfile
+├── README.md
+├── apps
+│   ├── app1
+│   │   ├── README.md
+│   │   ├── pyproject.toml
+│   │   └── src
+│   │       └── app1
+│   │           └── __init__.py
+│   └── app2
+│       ├── README.md
+│       ├── pyproject.toml
+│       └── src
+│           └── app2
+│               └── __init__.py
+├── libs
+│   ├── lib1
+│   │   ├── README.md
+│   │   ├── pyproject.toml
+│   │   └── src
+│   │       └── lib1
+│   │           └── __init__.py
+│   └── lib2
+│       ├── README.md
+│       ├── pyproject.toml
+│       └── src
+│           └── lib2
+│               └── __init__.py
+├── pyproject.toml
+├── src
+│   └── uv_monorepo_test
+│       └── __init__.py
+└── uv.lock
+```
+</details>
+
+## With child `pyproject.toml` files
+
+```Dockerfile
+# Install uv
+FROM python:3.12-slim
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /bin/uv
+
+# Change the working directory to the `app` directory
+WORKDIR /app
+
+# Copy the lockfile and `pyproject.toml` into the image
+ADD uv.lock /app/uv.lock
+ADD pyproject.toml /app/pyproject.toml
+
+# Add child pyproject.toml files
+ADD libs/lib1/pyproject.toml /app/libs/lib1/pyproject.toml
+ADD libs/lib2/pyproject.toml /app/libs/lib2/pyproject.toml
+ADD apps/app1/pyproject.toml /app/apps/app1/pyproject.toml
+ADD apps/app2/pyproject.toml /app/apps/app2/pyproject.toml
+
+# Install dependencies
+# Omitting --frozen because I don't understand how it behaves
+RUN uv sync --no-install-workspace
+```
+
+```bash
+$ docker build --quiet . -t demo && docker run --rm demo ls -a .venv/lib/python3.12/site-packages
+sha256:62dffa4e4e3d9d54af08c172042e1f3f84749fdc0fef56b6aa891407ae04eb44
+.
+..
+_virtualenv.pth
+_virtualenv.py
+anyio
+anyio-4.4.0.dist-info
+certifi
+certifi-2024.8.30.dist-info
+charset_normalizer
+charset_normalizer-3.3.2.dist-info
+charset_normalizer.libs
+h11
+h11-0.14.0.dist-info
+httpcore
+httpcore-1.0.5.dist-info
+httpx
+httpx-0.27.2.dist-info
+idna
+idna-3.8.dist-info
+requests
+requests-2.32.3.dist-info
+sniffio
+sniffio-1.3.1.dist-info
+urllib3
+urllib3-2.2.2.dist-info
+```
+
+
+## Without child `pyproject.toml` files
+
+```Dockerfile
+# Install uv
+FROM python:3.12-slim
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /bin/uv
+
+# Change the working directory to the `app` directory
+WORKDIR /app
+
+# Copy the lockfile and `pyproject.toml` into the image
+ADD uv.lock /app/uv.lock
+ADD pyproject.toml /app/pyproject.toml
+
+# Add child pyproject.toml files
+# ADD libs/lib1/pyproject.toml /app/libs/lib1/pyproject.toml
+# ADD libs/lib2/pyproject.toml /app/libs/lib2/pyproject.toml
+# ADD apps/app1/pyproject.toml /app/apps/app1/pyproject.toml
+# ADD apps/app2/pyproject.toml /app/apps/app2/pyproject.toml
+
+# Install dependencies
+# Omitting --frozen because I don't understand how it behaves
+RUN uv sync --no-install-workspace
+```
+
+```bash
+$ docker build --quiet . -t demo && docker run --rm demo ls -a .venv/lib/python3.12/site-packages
+sha256:26cc1ba1a021cdc10d60c60f3015a545579a7a66f516dd81bb37ad1c60718c29
+.
+..
+_virtualenv.pth
+_virtualenv.py
+```
+
+I'd be ok with `ADD`ing all `pyproject.toml` files, but Dockerfile `ADD` doesn't support a structure-preserving glob (eg an `ADD */*/pyproject.toml` that would add all `pyproject.toml` files under `apps/` or `libs/`, and which would end up at the same location in the Docker image), and `ADD`ing each file individually is tedious and error prone...
+
+---
+
+_Referenced in [astral-sh/uv#6935](../../astral-sh/uv/issues/6935.md) on 2024-09-02 12:09_
+
+---
+
+_Comment by @Afoucaul on 2024-09-02 13:42_
+
+Closing in favor of https://github.com/astral-sh/uv/issues/6935
+
+---
+
+_Closed by @Afoucaul on 2024-09-02 13:42_
+
+---
+
+_Referenced in [bgreenawald/bananagrams#75](../../bgreenawald/bananagrams/pulls/75.md) on 2025-08-03 18:31_
+
+---

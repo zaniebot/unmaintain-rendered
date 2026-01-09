@@ -1,0 +1,68 @@
+---
+number: 12723
+title: Upgrade ESLint to version 9
+type: issue
+state: closed
+author: dhruvmanila
+labels:
+  - internal
+  - help wanted
+  - dependencies
+assignees: []
+created_at: 2024-08-07T02:08:41Z
+updated_at: 2025-03-03T09:00:00Z
+url: https://github.com/astral-sh/ruff/issues/12723
+synced_at: 2026-01-07T13:12:15-06:00
+---
+
+# Upgrade ESLint to version 9
+
+---
+
+_Issue opened by @dhruvmanila on 2024-08-07 02:08_
+
+Now that typescript-eslint v8 is released (https://typescript-eslint.io/blog/announcing-typescript-eslint-v8) with full support for ESLint v9, we should remove the Renovate constraint and upgrade the dependency:
+
+https://github.com/astral-sh/ruff/blob/90e5bc2bd95e15086a3af81589cc2a1af298b6b2/.github/renovate.json5#L74-L80
+
+---
+
+_Label `internal` added by @dhruvmanila on 2024-08-07 02:08_
+
+---
+
+_Label `help wanted` added by @dhruvmanila on 2024-08-07 02:08_
+
+---
+
+_Comment by @calumy on 2024-08-26 15:07_
+
+The issue with updating to eslint v9 now appears to be eslint plugin import; see https://github.com/import-js/eslint-plugin-import/issues/2948.
+
+If a PR to remove the removate.json5 snippet above would be useful, please let me know. 
+
+---
+
+_Comment by @dhruvmanila on 2024-08-26 15:52_
+
+> The issue with updating to eslint v9 now appears to be eslint plugin import; see [import-js/eslint-plugin-import#2948](https://github.com/import-js/eslint-plugin-import/issues/2948).
+
+Oh, I wasn't aware of that. Thanks for checking that. I'd hold the upgrade for now then.
+
+---
+
+_Label `dependencies` added by @dhruvmanila on 2024-12-09 05:31_
+
+---
+
+_Referenced in [astral-sh/ruff#16470](../../astral-sh/ruff/pulls/16470.md) on 2025-03-03 08:34_
+
+---
+
+_Closed by @MichaReiser on 2025-03-03 09:00_
+
+---
+
+_Closed by @MichaReiser on 2025-03-03 09:00_
+
+---

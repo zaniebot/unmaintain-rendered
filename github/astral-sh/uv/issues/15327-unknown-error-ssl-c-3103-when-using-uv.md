@@ -1,0 +1,296 @@
+---
+number: 15327
+title: "unknown error (_ssl.c:3103) when using uv"
+type: issue
+state: open
+author: S4r4h-O
+labels:
+  - bug
+assignees: []
+created_at: 2025-08-16T18:00:38Z
+updated_at: 2025-11-18T16:23:58Z
+url: https://github.com/astral-sh/uv/issues/15327
+synced_at: 2026-01-07T13:12:19-06:00
+---
+
+# unknown error (_ssl.c:3103) when using uv
+
+---
+
+_Issue opened by @S4r4h-O on 2025-08-16 18:00_
+
+### Summary
+
+Hi! I'm creating an app that needs to send emails, and this error occurs when I create the virtual environment with uv:
+
+```
+Internal Server Error: /signup/
+Traceback (most recent call last):
+  File "/home/sarah/Desktop/Python/myapp/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/sarah/Desktop/Python/myapp/.venv/lib/python3.10/site-packages/django/core/
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/sarah/Desktop/Python/myapp/.venv/lib/python3.10/site-packages/django/views
+    return self.dispatch(request, *args, **kwargs)
+  File "/home/sarah/Desktop/Python/myapp/.venv/lib/python3.10/site-packages/django/views
+    return handler(request, *args, **kwargs)
+  File "/home/sarah/Desktop/Python/myapp/.venv/lib/python3.10/site-packages/django/views
+    return super().post(request, *args, **kwargs)
+  File "/home/sarah/Desktop/Python/myapp/.venv/lib/python3.10/site-packages/django/views/generic/edit.py", line 151, in post
+    return self.form_valid(form)
+  File "/home/sarah/Desktop/Python/myapp/backend/src/userspace/views.py", line 58, in form_valid
+    ssl_send_email(message, subject)
+  File "/home/sarah/Desktop/Python/myapp/backend/src/backend/emailing.py", line 34, in ssl_send_email
+    with smtplib.SMTP_SSL(EMAIL_HOST, EMAIL_PORT) as server:
+  File "/home/sarah/.local/share/uv/python/cpython-3.10.18-linux-x86_64-gnu/lib/python3.10/smtplib.py", line 1047, in __init__
+    context = ssl._create_stdlib_context(certfile=certfile,
+  File "/home/sarah/.local/share/uv/python/cpython-3.10.18-linux-x86_64-gnu/lib/python3.10/ssl.py", line 806, in _create_unverified_context
+    context = SSLContext(protocol)
+  File "/home/sarah/.local/share/uv/python/cpython-3.10.18-linux-x86_64-gnu/lib/python3.10/ssl.py", line 496, in __new__
+    self = _SSLContext.__new__(cls, protocol)
+ssl.SSLError: unknown error (_ssl.c:3103)
+```
+
+However, the code is executed without issues in an environment without uv (python -m venv .venv, no uv installed in the system). I found someone else having the same issue [here](https://github.com/pydantic/pydantic-ai/issues/1756#issuecomment-2911258724). Let me know if you need more info.
+
+### Platform
+
+Fedora 42 / Arch Linux
+
+### Version
+
+0.7.13
+
+### Python version
+
+3.12.11 / 3.10
+
+---
+
+_Label `bug` added by @S4r4h-O on 2025-08-16 18:00_
+
+---
+
+_Comment by @S4r4h-O on 2025-08-16 21:44_
+
+Yes, I'm inclined to think that this error is related to uv environment. Just tested with poetry and no issues.
+
+---
+
+_Comment by @ckutlu on 2025-09-12 19:35_
+
+I am having the same problem. I found out the following reproduces the issue:
+
+mre.py
+```python
+import urllib.request
+from concurrent import futures
+
+url = "https://docs.python.org/3/objects.inv"
+
+
+def download() -> bytes:
+    req = urllib.request.Request(url)
+    with urllib.request.urlopen(req) as resp:
+        return resp.read()
+
+
+# If uncommented, no failure.
+# download()
+
+# This fails
+thread_pool = futures.ThreadPoolExecutor()
+future = thread_pool.submit(download)
+futures.wait([future], timeout=10)
+print(future.result())
+```
+
+Running it with
+`uvx --python 3.10.18 python mre.py`
+
+gives 
+
+<details><summary>the traceback</summary>
+<p>
+
+Traceback (most recent call last):
+  File "/tmp/mre.py", line 20, in <module>
+    print(future.result())
+  File "/home/ckutlu/.local/share/uv/python/cpython-3.10.18-linux-x86_64-gnu/lib/python3.10/concurrent/futures/_base.py", line 451, in result
+    return self.__get_result()
+  File "/home/ckutlu/.local/share/uv/python/cpython-3.10.18-linux-x86_64-gnu/lib/python3.10/concurrent/futures/_base.py", line 403, in __get_result
+    raise self._exception
+  File "/home/ckutlu/.local/share/uv/python/cpython-3.10.18-linux-x86_64-gnu/lib/python3.10/concurrent/futures/thread.py", line 58, in run
+    result = self.fn(*self.args, **self.kwargs)
+  File "/tmp/mre.py", line 9, in download
+    with urllib.request.urlopen(req) as resp:
+  File "/home/ckutlu/.local/share/uv/python/cpython-3.10.18-linux-x86_64-gnu/lib/python3.10/urllib/request.py", line 216, in urlopen
+    return opener.open(url, data, timeout)
+  File "/home/ckutlu/.local/share/uv/python/cpython-3.10.18-linux-x86_64-gnu/lib/python3.10/urllib/request.py", line 519, in open
+    response = self._open(req, data)
+  File "/home/ckutlu/.local/share/uv/python/cpython-3.10.18-linux-x86_64-gnu/lib/python3.10/urllib/request.py", line 536, in _open
+    result = self._call_chain(self.handle_open, protocol, protocol +
+  File "/home/ckutlu/.local/share/uv/python/cpython-3.10.18-linux-x86_64-gnu/lib/python3.10/urllib/request.py", line 496, in _call_chain
+    result = func(*args)
+  File "/home/ckutlu/.local/share/uv/python/cpython-3.10.18-linux-x86_64-gnu/lib/python3.10/urllib/request.py", line 1391, in https_open
+    return self.do_open(http.client.HTTPSConnection, req,
+  File "/home/ckutlu/.local/share/uv/python/cpython-3.10.18-linux-x86_64-gnu/lib/python3.10/urllib/request.py", line 1317, in do_open
+    h = http_class(host, timeout=req.timeout, **http_conn_args)
+  File "/home/ckutlu/.local/share/uv/python/cpython-3.10.18-linux-x86_64-gnu/lib/python3.10/http/client.py", line 1422, in __init__
+    context = ssl._create_default_https_context()
+  File "/home/ckutlu/.local/share/uv/python/cpython-3.10.18-linux-x86_64-gnu/lib/python3.10/ssl.py", line 757, in create_default_context
+    context = SSLContext(PROTOCOL_TLS_CLIENT)
+  File "/home/ckutlu/.local/share/uv/python/cpython-3.10.18-linux-x86_64-gnu/lib/python3.10/ssl.py", line 496, in __new__
+    self = _SSLContext.__new__(cls, protocol)
+ssl.SSLError: unknown error (_ssl.c:3103)
+
+</p>
+</details> 
+
+Both 3.11 and 3.12 fail similarly with slightly different tracebacks. 3.13 does not fail, i.e. `uvx --python 3.13 python mre.py` returns.
+
+**Platform:** Fedora 42
+**uv version:** 0.8.17
+
+---
+
+_Comment by @zsol on 2025-09-13 09:26_
+
+I'm unable to repro this on Ubuntu 24.04 x86_64:
+```
+> uv run --managed-python --python 3.10.18 -v repro.py
+...
+DEBUG Found `cpython-3.10.18-linux-x86_64-gnu` at `/home/zsol/.local/share/uv/python/cpython-3.10.18-linux-x86_64-gnu/bin/python3.10` (managed installations)
+DEBUG Using Python 3.10.18 interpreter at: /home/zsol/.local/share/uv/python/cpython-3.10.18-linux-x86_64-gnu/bin/python3.10
+...
+DEBUG Command exited with code: 0
+```
+same story with 3.11 and 3.12
+
+---
+
+_Referenced in [mkdocstrings/mkdocstrings#796](../../mkdocstrings/mkdocstrings/issues/796.md) on 2025-09-13 10:19_
+
+---
+
+_Comment by @ckutlu on 2025-09-13 10:45_
+
+@zsol Thanks for giving it a try! I had a feeling this had strong platform dependence as I don't remember running into this issue on my work laptop which happens to be Ubuntu 24.04 as well.
+
+I noticed just by simply creating a default ssl context with `ssl.create_default_context` make the issue go away. I have little to no experience with urllib and ssl, so not sure what's happening there...
+
+I ran into this issue on `mkdocstrings`, and made a hotfix PR there: https://github.com/mkdocstrings/mkdocstrings/pull/797
+
+---
+
+_Comment by @geofft on 2025-09-13 14:14_
+
+I can reproduce this on a Fedora Docker container. Taking a look....
+
+---
+
+_Assigned to @geofft by @geofft on 2025-09-13 14:14_
+
+---
+
+_Comment by @geofft on 2025-09-13 14:48_
+
+This seems specific to Fedora's /etc/openssl/openssl.cnf. In particular if I comment out the `config_diagnostics = 1` line or some other combinations of lines, it works fine.
+
+I suspect this is related to openssl/openssl#23772 and the linked bugs, particularly given the mention that Fedora/RHEL "heavily patch OpenSSL." There is also a Debian patch that seems related. We may need to pick up some of those patches. :(
+
+There's also an argument that we should by default ignore the system's OpenSSL configuration given that we ship our own, but there's a pretty strong argument in the opposite direction that we should respect security config on the system, so I'm hesitant to do that. Regardless, until we figure out what to do here, a viable workaround to this bug is to manually ignore the system configuration, i.e.,
+
+```
+OPENSSL_CONF=/dev/null uvx --python 3.10.18 python mre.py
+```
+
+works fine.
+
+Given the relevance of threading and thread-safety, causing OpenSSL to initialize itself on the main thread before doing any threaded work also seems like a great workaround.
+
+---
+
+_Comment by @ckutlu on 2025-09-15 10:33_
+
+Thank you for investigating this @geofft. The `OPENSSL_CONF=/dev/null` is a nice workaround for my local use as I was running into this bug while calling `mkdocs`. I can just set the env var before running it. We also just merged the quickfix for the `mkdocstrings` library, so at least it won't be seen there.
+
+I think I understand the issue a little better now and it looks like there's not much `uv` can do here.
+
+---
+
+_Comment by @S4r4h-O on 2025-09-15 16:28_
+
+> This seems specific to Fedora's /etc/openssl/openssl.cnf. In particular if I comment out the `config_diagnostics = 1` line or some other combinations of lines, it works fine.
+
+I also tested on Arch and had the same results. Will try to reproduce again when I have more free time.
+
+
+
+---
+
+_Comment by @geofft on 2025-09-15 17:27_
+
+I meant to say, I am guessing Arch has a similar /etc/openssl/openssl.cnf file e.g. with `config_diagnostics = 1` or something, but I haven't gotten a chance to look. If so, the same workarounds should hopefully work. (But that's a good reminder, Arch may have fewer patches so I should look at what they have.)
+
+---
+
+_Comment by @TheScreechingBagel on 2025-11-16 01:57_
+
+I am having what seems to be the same issue, but what's a bit odd is I am able to replicate it with the following:
+
+(Fedora 42, aarch64, uv 0.9.9)
+
+minrep.py
+```py
+import ssl
+
+_ = ssl.create_default_context()
+```
+
+`uvx --python 3.11.14 python minrep.py` fails:
+
+<details>
+<summary>Traceback</summary>
+```
+Traceback (most recent call last):
+  File "/home/bagel/Desktop/repro/minrep.py", line 3, in <module>
+    _ = ssl.create_default_context()
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/bagel/.local/share/uv/python/cpython-3.11.14-linux-aarch64-gnu/lib/python3.11/ssl.py", line 761, in create_default_context
+    context = SSLContext(PROTOCOL_TLS_CLIENT)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/bagel/.local/share/uv/python/cpython-3.11.14-linux-aarch64-gnu/lib/python3.11/ssl.py", line 500, in __new__
+    self = _SSLContext.__new__(cls, protocol)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ssl.SSLError: [CONF: MODULE_INITIALIZATION_ERROR] module initialization error (_ssl.c:3108)
+```
+</details>
+
+`uvx --python 3.13.9 python minrep.py` does not fail
+`OPENSSL_CONF=/dev/null uvx --python 3.11.14 python minrep.py` does not fail
+
+which I copied from the hotfix @ckutlu did in https://github.com/mkdocstrings/mkdocstrings/pull/797
+
+
+
+
+P.S.
+I encountered the issue while trying to use the IMAPClient library, noticing that the same issue did not occur with raw imaplib as long as I used `.starttls()`
+
+
+
+
+---
+
+_Referenced in [astral-sh/uv#16703](../../astral-sh/uv/issues/16703.md) on 2025-11-18 14:53_
+
+---
+
+_Comment by @geofft on 2025-11-18 16:23_
+
+> `uvx --python 3.13.9 python minrep.py` does not fail
+
+Fedora has Python 3.13.9 as the system Python, so I'm assuming uv is finding that one and not installing our own builds. I expect `uvx --managed-python --python 3.13.9 python minrep.py` would fail on your machine.
+
+---

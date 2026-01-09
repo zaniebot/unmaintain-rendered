@@ -1,0 +1,105 @@
+---
+number: 8814
+title: Allow conflicting dependency groups
+type: issue
+state: closed
+author: ReinforcedKnowledge
+labels: []
+assignees: []
+created_at: 2024-11-04T18:43:33Z
+updated_at: 2024-11-04T19:56:58Z
+url: https://github.com/astral-sh/uv/issues/8814
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# Allow conflicting dependency groups
+
+---
+
+_Issue opened by @ReinforcedKnowledge on 2024-11-04 18:43_
+
+I have noticed that `uv` doesn't the installation of a dependency group when there are conflicting dependency groups.
+
+Example of a `pyproject.toml`:
+```toml
+[project]
+name = "dep-groups"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = []
+
+
+[dependency-groups]
+scikit = [
+    "scikit-learn==1.3.2"
+]
+scikit-prev = [
+    "scikit-learn==1.3.1"
+]
+```
+
+`uv sync --group scikit` returns the error:
+```
+Creating virtual environment at: .venv
+  × No solution found when resolving dependencies:
+  ╰─▶ Because dep-groups:scikit depends on scikit-learn==1.3.2 and dep-groups:scikit-prev depends on
+      scikit-learn==1.3.1, we can conclude that dep-groups:scikit and dep-groups:scikit-prev are incompatible.
+      And because your project depends on dep-groups:scikit and dep-groups:scikit-prev, we can conclude that your
+      project's requirements are unsatisfiable.
+```
+
+**PS**: 
+I'm not opening this issue to say that `uv` should or should not. That's something that [PEP 735](https://peps.python.org/pep-0735/) left for the tools to implement their own strategy (see [lockfile generation](https://peps.python.org/pep-0735/#lockfile-generation)).
+I'm opening it to provide a link to fix a typo, in my opinion, in the documentation here: https://docs.astral.sh/uv/concepts/dependencies/#dependency-groups
+The issue referred to in the note concerns optional dependencies and not dependency groups.
+
+---
+
+_Referenced in [astral-sh/uv#8815](../../astral-sh/uv/pulls/8815.md) on 2024-11-04 18:48_
+
+---
+
+_Comment by @zanieb on 2024-11-04 19:32_
+
+https://github.com/astral-sh/uv/issues/6981 is intended to cover all forms of optional dependencies, including the `dependency-groups` and the `project.optional-dependency` tables. The problem we need to solve is the same in both cases.
+
+---
+
+_Comment by @zanieb on 2024-11-04 19:45_
+
+I'll update that to reflect it
+
+---
+
+_Comment by @ReinforcedKnowledge on 2024-11-04 19:47_
+
+Oh I see sorry then.
+
+Is there perhaps an issue or just an idea somewhere to have a clearer "nomenclature"? For the moment I have noticed these things:
+- The `sync` command doesn't have an `--optional` option. If we want to install an optional dependency, we have to use the `--extra` option. Which makes sense since the "groups" inside the `optional-dependencies` table are called `extras`.
+- But, the `--extra` option for the `add` command is used to install the extra for a given package we want to add, and not add the package as an extra for the optional dependencies. It is explicitly specified in the manual for the `add` command to use `--optional` when we want to add an optional dependency, but I can't shake of the feeling that it's a bit confusing. I'm wondering if it'd be less confusing to unify on a same interface, either using `--optional` or `--extra`, especially since we can use dependency specifiers to install extras. `uv add "pandas[excel]"` is the same as `uv add --extra excel pandas`
+- The error message when either two optional dependencies extras are conflicting, two dependency groups are conflicting, or at least one extra and one dependency groups are conflicting always mentions `dep-groups[a-conflicting-extra-or-group-name]`
+
+But it's nothing that can't be learned! I'm just trying to pinpoint some minor things as I'm trying to get incorporate `uv` in my workflows.
+
+Do you advise I close both this issue and the PR or do you think it's better if someone from your team does that?
+
+---
+
+_Comment by @zanieb on 2024-11-04 19:56_
+
+Thanks for pointing out the discrepancies — it's a bit tricky because we designed all the interfaces before dependency groups were available. Since we added supported for them so recently, it's not surprising that there are some rough edges. Feel free to open an issue regarding changing the interface.
+
+---
+
+_Closed by @zanieb on 2024-11-04 19:56_
+
+---
+
+_Comment by @zanieb on 2024-11-04 19:56_
+
+Also, thanks for taking the time to contribute :)
+
+---

@@ -1,0 +1,90 @@
+---
+number: 15907
+title: uv tree shows incorrect output for circular dependency trees
+type: issue
+state: closed
+author: chaosct
+labels:
+  - bug
+assignees: []
+created_at: 2025-09-17T11:51:22Z
+updated_at: 2025-10-27T02:01:02Z
+url: https://github.com/astral-sh/uv/issues/15907
+synced_at: 2026-01-07T13:12:19-06:00
+---
+
+# uv tree shows incorrect output for circular dependency trees
+
+---
+
+_Issue opened by @chaosct on 2025-09-17 11:51_
+
+### Summary
+
+This issue is possibly related to https://github.com/astral-sh/uv/issues/11349
+
+When using `uv tree --package ...` the package you requested should be in the root of the tree.
+
+If the package you request has a circular dependency, that might not be the case. In [a simple case with a workspaces with two packages](https://github.com/chaosct/uv-circular-dependency-poc):
+
+```
+uv-circular-dependency-poc/
+├── pyproject.toml          # Workspace configuration
+├── packages/
+│   ├── package-a/
+│   │   ├── pyproject.toml  # Depends on package-b
+│   │   └── src/package_a/
+│   │       └── __init__.py
+│   └── package-b/
+│       ├── pyproject.toml  # Depends on package-a
+│       └── src/package_b/
+│           └── __init__.py
+└── README.md
+```
+
+when asking for the `package-b` dependency tree we get the correct output:
+```
+uv tree --package package-b
+Resolved 2 packages in 4ms
+package-b v0.1.0
+└── package-a v0.1.0
+    └── package-b v0.1.0 (*)
+(*) Package tree already displayed
+```
+
+However, when asking for `package-a`, the dependency tree does not start with `package-a`:
+
+```
+uv tree --package package-a
+Resolved 2 packages in 20ms
+package-b v0.1.0
+└── package-a v0.1.0
+    └── package-b v0.1.0 (*)
+(*) Package tree already displayed
+```
+
+### Platform
+
+Darwin 23.5.0 arm64
+
+### Version
+
+uv 0.8.17 (10960bc13 2025-09-10)
+
+### Python version
+
+Python 3.12.5
+
+---
+
+_Label `bug` added by @chaosct on 2025-09-17 11:51_
+
+---
+
+_Referenced in [astral-sh/uv#15908](../../astral-sh/uv/pulls/15908.md) on 2025-09-17 12:14_
+
+---
+
+_Closed by @charliermarsh on 2025-10-27 02:01_
+
+---

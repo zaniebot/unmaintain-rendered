@@ -1,0 +1,1231 @@
+---
+number: 8031
+title: Problem installing fontawesomepro package from the extra fontawesome package index
+type: issue
+state: closed
+author: jacklinke
+labels:
+  - bug
+assignees: []
+created_at: 2024-10-09T02:39:52Z
+updated_at: 2024-11-22T17:10:32Z
+url: https://github.com/astral-sh/uv/issues/8031
+synced_at: 2026-01-07T13:12:17-06:00
+---
+
+# Problem installing fontawesomepro package from the extra fontawesome package index
+
+---
+
+_Issue opened by @jacklinke on 2024-10-09 02:39_
+
+I am trying to install the fontawesomepro in my DOCKERFILE (in a docker compose project). I am installing the latest stable version of `uv`.
+
+Per [the fontawesome docs](https://docs.fontawesome.com/web/use-with/python-django), which have worked well for years using `pip`, the requirements-fontawesomepro.txt file should look like:
+
+```
+--extra-index-url https://dl.fontawesome.com/TOKEN/fontawesome-pro/python/simple/
+fontawesomepro==version_number
+```
+
+This does not work with `uv`, but none of the recommended approaches in the docs or in dozens of past Issues seem to work either. In each attempt to get fontawesome to install, I have gotten variations on the error messages below.
+
+```
+ > [django builder 17/20] RUN uv -v --no-cache pip install --index-url https://dl.fontawesome.com/MYTOKENHERE/fontawesome-pro/python/simple/ -r /requirements/requirements-fontawesomepro.txt:                                                   
+0.359 DEBUG uv 0.4.18                                                                                                                                                                                                                                                     
+0.360 DEBUG Searching for default Python interpreter in system path                                                                                                                                                                                                       
+0.641 DEBUG Found `cpython-3.12.7-linux-x86_64-gnu` at `/app/.venv/bin/python3` (virtual environment)                                                                                                                                                                     
+0.641 DEBUG Using Python 3.12.7 environment at .venv/bin/python3                                                                                                                                                                                                          
+0.641 DEBUG Acquired lock for `.venv`
+0.641 DEBUG At least one requirement is not satisfied: fontawesomepro==6.6
+0.642 DEBUG Using request timeout of 30s
+0.642 DEBUG Solving with installed Python version: 3.12.7
+0.642 DEBUG Solving with target Python version: >=3.12.7
+0.642 DEBUG Adding direct dependency: fontawesomepro==6.6
+0.643 DEBUG No cache entry for: https://dl.fontawesome.com/MYTOKENHERE/fontawesome-pro/python/simple/fontawesomepro/
+1.185 DEBUG Searching for a compatible version of fontawesomepro (==6.6)
+1.185 DEBUG Selecting: fontawesomepro==6.6.0 [compatible] (fontawesomepro-6.6.0-py3-none-any.whl)
+1.186 DEBUG No cache entry for: https://dl.fontawesome.com/MYTOKENHERE/fontawesome-pro/python/fontawesomepro-6.6.0-py3-none-any.whl#sha256=c55aa14a36ad731ad95d71da23b912891e721e7ed7786cd7757fcb9fd8b699cb
+7.742 DEBUG Tried 1 versions: fontawesomepro 1
+7.742 DEBUG Split specific environment resolution took 7.099s
+7.742 Resolved 1 package in 7.10s
+7.742 DEBUG Identified uncached distribution: fontawesomepro==6.6.0
+7.743 DEBUG No cache entry for: https://dl.fontawesome.com/MYTOKENHERE/fontawesome-pro/python/fontawesomepro-6.6.0-py3-none-any.whl#sha256=c55aa14a36ad731ad95d71da23b912891e721e7ed7786cd7757fcb9fd8b699cb
+117.5 DEBUG Released lock at `/app/.venv/.lock`
+117.5 error: Failed to prepare distributions
+117.5   Caused by: Failed to fetch wheel: fontawesomepro==6.6.0
+117.5   Caused by: Failed to extract archive
+117.5   Caused by: Encountered an unexpected header (actual: 0x6064b50, expected: 0x2014b50).
+------
+DEBU[0000] using default config store "/home/myprojectname/.docker/buildx" 
+DEBU[0000] serving grpc connection                       spanID=9c51c3a2411963be traceID=ccefa193233fffe47ef3c0e212c81590
+DEBU[0000] stopping session                              span="load buildkit capabilities" spanID=9c51c3a2411963be traceID=ccefa193233fffe47ef3c0e212c81590
+DEBU[0000] serving grpc connection                       spanID=b2ac617816981cc9 traceID=ccefa193233fffe47ef3c0e212c81590
+DEBU[0005] otel error                                    error="<nil>"
+DEBU[0120] stopping session                              spanID=b2ac617816981cc9 traceID=ccefa193233fffe47ef3c0e212c81590
+DEBU[0120] otel error                                    error="<nil>"
+DEBU[0120] otel error                                    error="<nil>"
+failed to solve: process "/bin/sh -c uv -v --no-cache pip install --index-url https://dl.fontawesome.com/MYTOKENHERE/fontawesome-pro/python/simple/ -r /requirements/requirements-fontawesomepro.txt" did not complete successfully: exit code: 2
+```
+
+And another attempt:
+
+```
+#47 [celeryworker_orders builder 16/16] RUN uv -v pip install -r /requirements/requirements-fontawesomepro.txt
+#47 0.378 DEBUG uv 0.4.18
+#47 0.378 DEBUG Searching for default Python interpreter in system path
+#47 0.666 DEBUG Found `cpython-3.12.7-linux-x86_64-gnu` at `/app/.venv/bin/python3` (virtual environment)
+#47 0.666 DEBUG Using Python 3.12.7 environment at [36m.venv/bin/python3[39m
+#47 0.666 DEBUG Acquired lock for `.venv`
+#47 0.672 DEBUG At least one requirement is not satisfied: fontawesomepro~=6.6
+#47 0.672 DEBUG Using request timeout of 30s
+#47 0.673 DEBUG Solving with installed Python version: 3.12.7
+#47 0.673 DEBUG Solving with target Python version: >=3.12.7
+#47 0.673 DEBUG Adding direct dependency: fontawesomepro>=6.6, <7.dev0
+#47 0.673 DEBUG No cache entry for: https://dl.fontawesome.com/MYTOKENHERE/fontawesome-pro/python/simple/fontawesomepro/
+#47 1.540 DEBUG Searching for a compatible version of fontawesomepro (>=6.6, <7.dev0)
+#47 1.540 DEBUG Selecting: fontawesomepro==6.6.0 [compatible] (fontawesomepro-6.6.0-py3-none-any.whl)
+#47 1.540 DEBUG No cache entry for: https://dl.fontawesome.com/MYTOKENHERE/fontawesome-pro/python/fontawesomepro-6.6.0-py3-none-any.whl#sha256=c55aa14a36ad731ad95d71da23b912891e721e7ed7786cd7757fcb9fd8b699cb
+#47 7.541 DEBUG Tried 1 versions: fontawesomepro 1
+#47 7.541 DEBUG Split specific environment resolution took 6.868s
+#47 7.541 Resolved 1 package in 6.86s
+#47 7.542 DEBUG Identified uncached distribution: fontawesomepro==6.6.0
+#47 7.545 DEBUG No cache entry for: https://dl.fontawesome.com/MYTOKENHERE/fontawesome-pro/python/fontawesomepro-6.6.0-py3-none-any.whl#sha256=c55aa14a36ad731ad95d71da23b912891e721e7ed7786cd7757fcb9fd8b699cb
+#47 129.0 DEBUG Released lock at `/app/.venv/.lock`
+#47 129.0 error: Failed to prepare distributions
+#47 129.0   Caused by: Failed to fetch wheel: fontawesomepro==6.6.0
+#47 129.0   Caused by: Failed to extract archive
+#47 129.0   Caused by: Encountered an unexpected header (actual: 0x6064b50, expected: 0x2014b50).
+#47 ERROR: process "/bin/sh -c uv -v pip install -r /requirements/requirements-fontawesomepro.txt" did not complete successfully: exit code: 2
+------
+ > [celeryworker_orders builder 16/16] RUN uv -v pip install -r /requirements/requirements-fontawesomepro.txt:
+7.545 DEBUG No cache entry for: https://dl.fontawesome.com/MYTOKENHERE/fontawesome-pro/python/fontawesomepro-6.6.0-py3-none-any.whl#sha256=c55aa14a36ad731ad95d71da23b912891e721e7ed7786cd7757fcb9fd8b699cb
+129.0 DEBUG Released lock at `/app/.venv/.lock`
+129.0 error: Failed to prepare distributions
+129.0   Caused by: Failed to fetch wheel: fontawesomepro==6.6.0
+129.0   Caused by: Failed to extract archive
+129.0   Caused by: Encountered an unexpected header (actual: 0x6064b50, expected: 0x2014b50).
+------
+```
+
+---
+
+# Some of the approaches I have taken, based on docs and other Issues
+
+## 1
+
+requirements-fontawesomepro.txt
+
+```
+-i https://dl.fontawesome.com/MYTOKENHERE/fontawesome-pro/python/simple/
+
+fontawesomepro~=6.6
+```
+
+DOCKERFILE
+
+```
+COPY ./myprojectname/config/requirements/ /requirements/
+RUN uv venv
+RUN uv -v pip install -r /requirements/requirements-fontawesomepro.txt
+```
+
+---
+
+## 2
+
+requirements-fontawesomepro.txt
+
+```
+-i https://dl.fontawesome.com/MYTOKENHERE/fontawesome-pro/python/simple/
+
+fontawesomepro==6.6.0  # Same for 6.5.0 etc
+```
+
+DOCKERFILE
+
+```
+COPY ./myprojectname/config/requirements/ /requirements/
+RUN uv venv
+RUN uv -v --no-cache pip install -r /requirements/requirements-fontawesomepro.txt
+```
+
+---
+
+## 3
+
+requirements-fontawesomepro.txt
+
+```
+-i https://dl.fontawesome.com/MYTOKENHERE/fontawesome-pro/python/simple/
+
+fontawesomepr==6.6.0  # Same for 6.5.0 etc
+```
+
+DOCKERFILE
+
+```
+COPY ./myprojectname/config/requirements/ /requirements/
+RUN uv venv
+RUN uv -v --no-cache pip install --index-url https://dl.fontawesome.com/MYTOKENHERE/fontawesome-pro/python/simple/ -r /requirements/requirements-fontawesomepro.txt
+```
+
+---
+
+## 4
+
+requirements-fontawesomepro.txt
+
+```
+--extra-index-url https://dl.fontawesome.com/TOMYTOKENHEREEN/fontawesome-pro/python/simple/
+
+fontawesomepro==6.6.0  # Same for 6.5.0 etc
+```
+
+DOCKERFILE
+
+```
+COPY ./myprojectname/config/requirements/ /requirements/
+RUN uv venv
+RUN uv -v --no-cache pip install -r /requirements/requirements-fontawesomepro.txt
+```
+
+---
+
+## 5
+
+DOCKERFILE
+
+```
+RUN uv venv
+RUN uv add "https://dl.fontawesome.com/MYTOKENHERE/fontawesome-pro/python/fontawesomepro-6.6.0-py3-none-any.whl"
+```
+
+---
+
+## 6
+
+DOCKERFILE
+
+```
+RUN uv venv
+RUN uv -v --no-cache pip install --index-url https://dl.fontawesome.com/MYTOKENHERE/fontawesome-pro/python/simple/ fontawesomepro==6.6.0
+```
+
+---
+
+## 7
+
+DOCKERFILE
+
+```
+RUN uv venv
+RUN uv -v --no-cache pip install --index-url https://dl.fontawesome.com/MYTOKENHERE/fontawesome-pro/python/simple/ --extra-index-url https://dl.fontawesome.com/MYTOKENHERE/fontawesome-pro/python/simple/ fontawesomepro==6.6.0
+```
+
+---
+
+## 8
+
+docker-compose.yml
+
+```yaml
+
+services:
+
+  django: &django
+    build:
+      context: .
+      dockerfile: ./compose/django/Dockerfile
+      target: development
+      args:
+        UV_EXTRA_INDEX_URL: ${UV_EXTRA_INDEX_URL}
+    env_file:
+      - .env
+```
+
+.env
+
+```
+UV_EXTRA_INDEX_URL=https://dl.fontawesome.com/MYTOKENHERE/fontawesome-pro/python/simple/
+```
+
+requirements-fontawesomepro.txt
+
+```
+--extra-index-url https://dl.fontawesome.com/TOMYTOKENHEREEN/fontawesome-pro/python/simple/
+
+fontawesomepro==6.6.0  # Same for 6.5.0 etc
+```
+
+DOCKERFILE
+
+```
+COPY ./myprojectname/config/requirements/ /requirements/
+RUN uv venv
+RUN uv -v --no-cache pip install -r /requirements/requirements-fontawesomepro.txt
+```
+
+---
+
+## 9
+
+pyproject.toml
+
+```toml
+[project]
+name = "myprojectname"
+version = "0.1.0"
+description = "My Project Description"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "fontawesomepro==6.6.0",
+]
+
+[tool.uv.sources]
+fontawesomepro = {url = "https://dl.fontawesome.com/MYTOKENHERE/fontawesome-pro/python/fontawesomepro-6.6.0-py3-none-any.whl"}
+```
+
+DOCKERFILE
+
+```
+COPY ./pyproject.toml /app/pyproject.toml
+RUN uv venv
+RUN uv sync
+```
+
+---
+
+## 10
+
+pyproject.toml
+
+```toml
+[project]
+name = "myprojectname"
+version = "0.1.0"
+description = "My Project Description"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "fontawesomepro==6.6.0",
+]
+
+[tool.uv.pip]
+extra-index-url = ["https://dl.fontawesome.com/MYTOKENHERE/fontawesome-pro/python/simple/"]
+
+[tool.uv]
+extra-index-url = ["https://dl.fontawesome.com/MYTOKENHERE/fontawesome-pro/python/simple/"]
+
+```
+
+DOCKERFILE
+
+```
+COPY ./pyproject.toml /app/pyproject.toml
+RUN uv venv
+RUN uv sync
+```
+
+---
+
+## 11
+
+pyproject.toml
+
+```toml
+[project]
+name = "myprojectname"
+version = "0.1.0"
+description = "My Project Description"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "fontawesomepro==6.6.0",
+]
+```
+
+DOCKERFILE
+
+```
+COPY ./pyproject.toml /app/pyproject.toml
+RUN uv venv
+RUN uv sync -v --extra-index-url https://dl.fontawesome.com/MYTOKENHERE/fontawesome-pro/python/simple/
+```
+
+---
+
+Any guidance would be much appreciated.
+
+---
+
+_Comment by @zanieb on 2024-10-09 02:46_
+
+Thanks for all the details. From
+
+> Encountered an unexpected header (actual: 0x6064b50, expected: 0x2014b50)
+
+It sounds like something is actually wrong with the zipfile? Or that the upstream library we're using can't handle it?
+
+I can't investigate further since the file itself is private.
+
+---
+
+_Comment by @jacklinke on 2024-10-09 13:42_
+
+It is so strange, because I can install any of the various available versions of this package via plain old `pip` and have not ever had a problem. I can also install all of my PyPI-based dependencies with no issues.
+
+Is there any analysis I could do on a downloaded copy of the wheel that might provide more insight? Alternately, if I got permission from the FontAwesome folks to send you a copy of the wheel, could someone at Astral take a look at it? 
+
+---
+
+One of the lines in the error is "Failed to fetch wheel" (before it says "Failed to extract archive" and "Encountered an unexpected header").  That makes me wonder if it's even getting the actual *.whl file to begin with.
+
+---
+
+Also, the only other Issue with a similar error is https://github.com/astral-sh/uv/issues/3687. That one seems to be due to a credentials issue. While I don't have the same `DEBUG: redirecting` statement, the end result seems to be the same.
+
+---
+
+_Comment by @zanieb on 2024-10-09 13:45_
+
+We unzip the wheel while streaming the request, so fetching fails if extraction fails.
+
+Can you run with `RUST_LOG=trace`? That will produce a lot more logs.
+
+---
+
+_Comment by @jacklinke on 2024-10-09 14:33_
+
+Here is the output with `RUST_LOG=trace`
+
+First, with `uv pip install`
+
+```
+ > [django builder 16/18] RUN uv -v --no-cache pip install --index-url https://dl.fontawesome.com/MYTOKENHERE/fontawesome-pro/python/simple/ fontawesomepro==6.6.0:                                                                                                                                                                                                                                       
+0.334 DEBUG uv 0.4.20                                                                                                                                                                                                                                                     
+0.334 DEBUG Searching for default Python interpreter in system path                                                                                                                                                                                                       
+0.334 TRACE Querying interpreter executable at /app/.venv/bin/python3                                                                                                                                                                                                     
+0.559 DEBUG Found `cpython-3.12.7-linux-x86_64-gnu` at `/app/.venv/bin/python3` (virtual environment)
+0.559 DEBUG Using Python 3.12.7 environment at .venv
+0.559 TRACE Checking lock for `.venv` at `.venv/.lock`
+0.559 DEBUG Acquired lock for `.venv`
+0.559 DEBUG At least one requirement is not satisfied: fontawesomepro==6.6.0
+0.560 DEBUG Using request timeout of 900s
+0.560 DEBUG Solving with installed Python version: 3.12.7
+0.560 DEBUG Solving with target Python version: >=3.12.7
+0.560 DEBUG Adding direct dependency: fontawesomepro==6.6.0
+0.560 INFO add_decision: root @ 0a0.dev0    
+0.561 TRACE Fetching metadata for fontawesomepro from https://dl.fontawesome.com/MYTOKENHERE/fontawesome-pro/python/simple/fontawesomepro/
+0.561 TRACE No cache entry exists for /tmp/.tmpsEu9s8/simple-v13/index/50c2a1e15dc8244a/fontawesomepro.rkyv
+0.561 DEBUG No cache entry for: https://dl.fontawesome.com/MYTOKENHERE/fontawesome-pro/python/simple/fontawesomepro/
+0.561 TRACE Sending fresh GET request for https://dl.fontawesome.com/MYTOKENHERE/fontawesome-pro/python/simple/fontawesomepro/
+0.561 TRACE Handling request for https://dl.fontawesome.com/MYTOKENHERE/fontawesome-pro/python/simple/fontawesomepro/
+0.561 TRACE Request for https://dl.fontawesome.com/MYTOKENHERE/fontawesome-pro/python/simple/fontawesomepro/ is unauthenticated, checking cache
+0.561 TRACE No credentials in cache for URL https://dl.fontawesome.com/MYTOKENHERE/fontawesome-pro/python/simple/fontawesomepro/
+0.561 TRACE Attempting unauthenticated request for https://dl.fontawesome.com/MYTOKENHERE/fontawesome-pro/python/simple/fontawesomepro/
+0.561 TRACE checkout waiting for idle connection: ("https", dl.fontawesome.com)
+0.561 DEBUG starting new connection: https://dl.fontawesome.com/    
+0.561 TRACE Http::connect; scheme=Some("https"), host=Some("dl.fontawesome.com"), port=None
+0.561 DEBUG resolving host="dl.fontawesome.com"
+0.583 DEBUG connecting to 18.165.98.66:443
+0.605 DEBUG connected to 18.165.98.66:443
+0.630 TRACE http1 handshake complete, spawning background dispatcher task
+0.630 TRACE checkout dropped for ("https", dl.fontawesome.com)
+0.774 TRACE cached request https://dl.fontawesome.com/MYTOKENHERE/fontawesome-pro/python/simple/fontawesomepro/ is storable because its response has an 'max-age' cache-control directive
+0.775 TRACE put; add idle connection for ("https", dl.fontawesome.com)
+0.775 DEBUG pooling idle connection for ("https", dl.fontawesome.com)
+0.776 TRACE idle interval checking for expired
+0.776 TRACE Received package metadata for: fontawesomepro
+0.776 TRACE Selecting candidate for fontawesomepro with range ==6.6.0 with 22 remote versions
+0.776 DEBUG Searching for a compatible version of fontawesomepro (==6.6.0)
+0.776 TRACE Selecting candidate for fontawesomepro with range ==6.6.0 with 22 remote versions
+0.776 TRACE found candidate for package PackageName("fontawesomepro") with range Range { segments: [(Included("6.6.0"), Included("6.6.0"))] } after 1 steps: "6.6.0" version
+0.776 TRACE found candidate for package PackageName("fontawesomepro") with range Range { segments: [(Included("6.6.0"), Included("6.6.0"))] } after 1 steps: "6.6.0" version
+0.776 DEBUG Selecting: fontawesomepro==6.6.0 [compatible] (fontawesomepro-6.6.0-py3-none-any.whl)
+0.777 TRACE No cache entry exists for /tmp/.tmpsEu9s8/wheels-v2/index/50c2a1e15dc8244a/fontawesomepro/fontawesomepro-6.6.0-py3-none-any.msgpack
+0.777 DEBUG No cache entry for: https://dl.fontawesome.com/MYTOKENHERE/fontawesome-pro/python/fontawesomepro-6.6.0-py3-none-any.whl#sha256=a55aa23a36ad731ed95cd1da29b012891e721e7ed3386bd7757fcb9fd8b688cc
+0.777 TRACE Sending fresh HEAD request for https://dl.fontawesome.com/MYTOKENHERE/fontawesome-pro/python/fontawesomepro-6.6.0-py3-none-any.whl#sha256=a55aa23a36ad731ed95cd1da29b012891e721e7ed3386bd7757fcb9fd8b688cc
+0.777 TRACE Handling request for https://dl.fontawesome.com/MYTOKENHERE/fontawesome-pro/python/fontawesomepro-6.6.0-py3-none-any.whl#sha256=a55aa23a36ad731ed95cd1da29b012891e721e7ed3386bd7757fcb9fd8b688cc
+0.777 TRACE Request for https://dl.fontawesome.com/MYTOKENHERE/fontawesome-pro/python/fontawesomepro-6.6.0-py3-none-any.whl#sha256=a55aa23a36ad731ed95cd1da29b012891e721e7ed3386bd7757fcb9fd8b688cc is unauthenticated, checking cache
+0.777 TRACE No credentials in cache for URL https://dl.fontawesome.com/MYTOKENHERE/fontawesome-pro/python/fontawesomepro-6.6.0-py3-none-any.whl#sha256=a55aa23a36ad731ed95cd1da29b012891e721e7ed3386bd7757fcb9fd8b688cc
+0.777 TRACE Attempting unauthenticated request for https://dl.fontawesome.com/MYTOKENHERE/fontawesome-pro/python/fontawesomepro-6.6.0-py3-none-any.whl#sha256=a55aa23a36ad731ed95cd1da29b012891e721e7ed3386bd7757fcb9fd8b688cc
+0.777 TRACE take? ("https", dl.fontawesome.com): expiration = Some(90s)
+0.777 DEBUG reuse idle connection for ("https", dl.fontawesome.com)
+0.805 TRACE put; add idle connection for ("https", dl.fontawesome.com)
+0.805 DEBUG pooling idle connection for ("https", dl.fontawesome.com)
+0.805 TRACE cached request https://dl.fontawesome.com/MYTOKENHERE/fontawesome-pro/python/fontawesomepro-6.6.0-py3-none-any.whl#sha256=a55aa23a36ad731ed95cd1da29b012891e721e7ed3386bd7757fcb9fd8b688cc is storable because its response has an 'max-age' cache-control directive
+0.805 TRACE Getting metadata for fontawesomepro-6.6.0-py3-none-any.whl by range request
+0.805 TRACE Handling request for https://dl.fontawesome.com/MYTOKENHERE/fontawesome-pro/python/fontawesomepro-6.6.0-py3-none-any.whl#sha256=a55aa23a36ad731ed95cd1da29b012891e721e7ed3386bd7757fcb9fd8b688cc
+0.805 TRACE Request for https://dl.fontawesome.com/MYTOKENHERE/fontawesome-pro/python/fontawesomepro-6.6.0-py3-none-any.whl#sha256=a55aa23a36ad731ed95cd1da29b012891e721e7ed3386bd7757fcb9fd8b688cc is unauthenticated, checking cache
+0.805 TRACE No credentials in cache for URL https://dl.fontawesome.com/MYTOKENHERE/fontawesome-pro/python/fontawesomepro-6.6.0-py3-none-any.whl#sha256=a55aa23a36ad731ed95cd1da29b012891e721e7ed3386bd7757fcb9fd8b688cc
+0.805 TRACE Attempting unauthenticated request for https://dl.fontawesome.com/MYTOKENHERE/fontawesome-pro/python/fontawesomepro-6.6.0-py3-none-any.whl#sha256=a55aa23a36ad731ed95cd1da29b012891e721e7ed3386bd7757fcb9fd8b688cc
+0.805 TRACE take? ("https", dl.fontawesome.com): expiration = Some(90s)
+0.805 DEBUG reuse idle connection for ("https", dl.fontawesome.com)
+0.837 TRACE put; add idle connection for ("https", dl.fontawesome.com)
+0.837 DEBUG pooling idle connection for ("https", dl.fontawesome.com)
+0.837 TRACE Handling request for https://dl.fontawesome.com/MYTOKENHERE/fontawesome-pro/python/fontawesomepro-6.6.0-py3-none-any.whl#sha256=a55aa23a36ad731ed95cd1da29b012891e721e7ed3386bd7757fcb9fd8b688cc
+0.837 TRACE Request for https://dl.fontawesome.com/MYTOKENHERE/fontawesome-pro/python/fontawesomepro-6.6.0-py3-none-any.whl#sha256=a55aa23a36ad731ed95cd1da29b012891e721e7ed3386bd7757fcb9fd8b688cc is unauthenticated, checking cache
+0.837 TRACE No credentials in cache for URL https://dl.fontawesome.com/MYTOKENHERE/fontawesome-pro/python/fontawesomepro-6.6.0-py3-none-any.whl#sha256=a55aa23a36ad731ed95cd1da29b012891e721e7ed3386bd7757fcb9fd8b688cc
+0.837 TRACE Attempting unauthenticated request for https://dl.fontawesome.com/MYTOKENHERE/fontawesome-pro/python/fontawesomepro-6.6.0-py3-none-any.whl#sha256=a55aa23a36ad731ed95cd1da29b012891e721e7ed3386bd7757fcb9fd8b688cc
+0.837 TRACE take? ("https", dl.fontawesome.com): expiration = Some(90s)
+0.837 DEBUG reuse idle connection for ("https", dl.fontawesome.com)
+13.85 TRACE put; add idle connection for ("https", dl.fontawesome.com)
+13.85 DEBUG pooling idle connection for ("https", dl.fontawesome.com)
+14.12 TRACE Handling request for https://dl.fontawesome.com/MYTOKENHERE/fontawesome-pro/python/fontawesomepro-6.6.0-py3-none-any.whl#sha256=a55aa23a36ad731ed95cd1da29b012891e721e7ed3386bd7757fcb9fd8b688cc
+14.12 TRACE Request for https://dl.fontawesome.com/MYTOKENHERE/fontawesome-pro/python/fontawesomepro-6.6.0-py3-none-any.whl#sha256=a55aa23a36ad731ed95cd1da29b012891e721e7ed3386bd7757fcb9fd8b688cc is unauthenticated, checking cache
+14.12 TRACE No credentials in cache for URL https://dl.fontawesome.com/MYTOKENHERE/fontawesome-pro/python/fontawesomepro-6.6.0-py3-none-any.whl#sha256=a55aa23a36ad731ed95cd1da29b012891e721e7ed3386bd7757fcb9fd8b688cc
+14.12 TRACE Attempting unauthenticated request for https://dl.fontawesome.com/MYTOKENHERE/fontawesome-pro/python/fontawesomepro-6.6.0-py3-none-any.whl#sha256=a55aa23a36ad731ed95cd1da29b012891e721e7ed3386bd7757fcb9fd8b688cc
+14.12 TRACE take? ("https", dl.fontawesome.com): expiration = Some(90s)
+14.12 DEBUG reuse idle connection for ("https", dl.fontawesome.com)
+15.29 TRACE put; add idle connection for ("https", dl.fontawesome.com)
+15.29 DEBUG pooling idle connection for ("https", dl.fontawesome.com)
+15.32 TRACE Handling request for https://dl.fontawesome.com/MYTOKENHERE/fontawesome-pro/python/fontawesomepro-6.6.0-py3-none-any.whl#sha256=a55aa23a36ad731ed95cd1da29b012891e721e7ed3386bd7757fcb9fd8b688cc
+15.32 TRACE Request for https://dl.fontawesome.com/MYTOKENHERE/fontawesome-pro/python/fontawesomepro-6.6.0-py3-none-any.whl#sha256=a55aa23a36ad731ed95cd1da29b012891e721e7ed3386bd7757fcb9fd8b688cc is unauthenticated, checking cache
+15.32 TRACE No credentials in cache for URL https://dl.fontawesome.com/MYTOKENHERE/fontawesome-pro/python/fontawesomepro-6.6.0-py3-none-any.whl#sha256=a55aa23a36ad731ed95cd1da29b012891e721e7ed3386bd7757fcb9fd8b688cc
+15.32 TRACE Attempting unauthenticated request for https://dl.fontawesome.com/MYTOKENHERE/fontawesome-pro/python/fontawesomepro-6.6.0-py3-none-any.whl#sha256=a55aa23a36ad731ed95cd1da29b012891e721e7ed3386bd7757fcb9fd8b688cc
+15.32 TRACE take? ("https", dl.fontawesome.com): expiration = Some(90s)
+15.32 DEBUG reuse idle connection for ("https", dl.fontawesome.com)
+15.36 TRACE put; add idle connection for ("https", dl.fontawesome.com)
+15.36 DEBUG pooling idle connection for ("https", dl.fontawesome.com)
+15.36 TRACE Handling request for https://dl.fontawesome.com/MYTOKENHERE/fontawesome-pro/python/fontawesomepro-6.6.0-py3-none-any.whl#sha256=a55aa23a36ad731ed95cd1da29b012891e721e7ed3386bd7757fcb9fd8b688cc
+15.36 TRACE Request for https://dl.fontawesome.com/MYTOKENHERE/fontawesome-pro/python/fontawesomepro-6.6.0-py3-none-any.whl#sha256=a55aa23a36ad731ed95cd1da29b012891e721e7ed3386bd7757fcb9fd8b688cc is unauthenticated, checking cache
+15.36 TRACE No credentials in cache for URL https://dl.fontawesome.com/MYTOKENHERE/fontawesome-pro/python/fontawesomepro-6.6.0-py3-none-any.whl#sha256=a55aa23a36ad731ed95cd1da29b012891e721e7ed3386bd7757fcb9fd8b688cc
+15.36 TRACE Attempting unauthenticated request for https://dl.fontawesome.com/MYTOKENHERE/fontawesome-pro/python/fontawesomepro-6.6.0-py3-none-any.whl#sha256=a55aa23a36ad731ed95cd1da29b012891e721e7ed3386bd7757fcb9fd8b688cc
+15.36 TRACE take? ("https", dl.fontawesome.com): expiration = Some(90s)
+15.36 DEBUG reuse idle connection for ("https", dl.fontawesome.com)
+15.38 TRACE put; add idle connection for ("https", dl.fontawesome.com)
+15.38 DEBUG pooling idle connection for ("https", dl.fontawesome.com)
+15.43 TRACE Received built distribution metadata for: fontawesomepro==6.6.0
+15.43 INFO add_decision: fontawesomepro @ 6.6.0    
+15.43 DEBUG Tried 1 versions: fontawesomepro 1
+15.43 DEBUG Split specific environment resolution took 14.873s
+15.43 TRACE Resolution: <matches all marker environments>
+15.43 TRACE Resolution edge: ROOT -> fontawesomepro
+15.43 TRACE Resolution edge:     0a0.dev0 -> 6.6.0
+15.43 Resolved 1 package in 14.87s
+15.43 DEBUG Identified uncached distribution: fontawesomepro==6.6.0
+15.44 TRACE No cache entry exists for /tmp/.tmpsEu9s8/wheels-v2/index/50c2a1e15dc8244a/fontawesomepro/fontawesomepro-6.6.0-py3-none-any.http
+15.44 DEBUG No cache entry for: https://dl.fontawesome.com/MYTOKENHERE/fontawesome-pro/python/fontawesomepro-6.6.0-py3-none-any.whl#sha256=a55aa23a36ad731ed95cd1da29b012891e721e7ed3386bd7757fcb9fd8b688cc
+15.44 TRACE Sending fresh GET request for https://dl.fontawesome.com/MYTOKENHERE/fontawesome-pro/python/fontawesomepro-6.6.0-py3-none-any.whl#sha256=a55aa23a36ad731ed95cd1da29b012891e721e7ed3386bd7757fcb9fd8b688cc
+15.44 TRACE Handling request for https://dl.fontawesome.com/MYTOKENHERE/fontawesome-pro/python/fontawesomepro-6.6.0-py3-none-any.whl#sha256=a55aa23a36ad731ed95cd1da29b012891e721e7ed3386bd7757fcb9fd8b688cc
+15.44 TRACE Request for https://dl.fontawesome.com/MYTOKENHERE/fontawesome-pro/python/fontawesomepro-6.6.0-py3-none-any.whl#sha256=a55aa23a36ad731ed95cd1da29b012891e721e7ed3386bd7757fcb9fd8b688cc is unauthenticated, checking cache
+15.44 TRACE No credentials in cache for URL https://dl.fontawesome.com/MYTOKENHERE/fontawesome-pro/python/fontawesomepro-6.6.0-py3-none-any.whl#sha256=a55aa23a36ad731ed95cd1da29b012891e721e7ed3386bd7757fcb9fd8b688cc
+15.44 TRACE Attempting unauthenticated request for https://dl.fontawesome.com/MYTOKENHERE/fontawesome-pro/python/fontawesomepro-6.6.0-py3-none-any.whl#sha256=a55aa23a36ad731ed95cd1da29b012891e721e7ed3386bd7757fcb9fd8b688cc
+15.44 TRACE take? ("https", dl.fontawesome.com): expiration = Some(90s)
+15.44 DEBUG reuse idle connection for ("https", dl.fontawesome.com)
+15.46 TRACE cached request https://dl.fontawesome.com/MYTOKENHERE/fontawesome-pro/python/fontawesomepro-6.6.0-py3-none-any.whl#sha256=a55aa23a36ad731ed95cd1da29b012891e721e7ed3386bd7757fcb9fd8b688cc is storable because its response has an 'max-age' cache-control directive
+90.78 TRACE idle interval checking for expired
+180.8 TRACE idle interval checking for expired
+270.8 TRACE idle interval checking for expired
+360.8 TRACE idle interval checking for expired
+450.8 TRACE idle interval checking for expired
+524.8 TRACE put; add idle connection for ("https", dl.fontawesome.com)
+524.8 DEBUG pooling idle connection for ("https", dl.fontawesome.com)
+527.5 DEBUG Released lock at `/app/.venv/.lock`
+527.5 error: Failed to prepare distributions
+527.5   Caused by: Failed to fetch wheel: fontawesomepro==6.6.0
+527.5   Caused by: Failed to extract archive
+527.5   Caused by: Encountered an unexpected header (actual: 0x6064b50, expected: 0x2014b50).
+------
+DEBU[0000] using default config store "/home/myprojectname/.docker/buildx" 
+DEBU[0000] serving grpc connection                       spanID=f3c9b9c0e876c744 traceID=b0eb087128779f0ccf67f7bdbbfda95f
+DEBU[0000] stopping session                              span="load buildkit capabilities" spanID=f3c9b9c0e876c744 traceID=b0eb087128779f0ccf67f7bdbbfda95f
+DEBU[0000] serving grpc connection                       spanID=f2edc4db51e1c2aa traceID=b0eb087128779f0ccf67f7bdbbfda95f
+DEBU[0005] otel error                                    error="<nil>"
+DEBU[0531] stopping session                              spanID=f2edc4db51e1c2aa traceID=b0eb087128779f0ccf67f7bdbbfda95f
+DEBU[0531] otel error                                    error="<nil>"
+DEBU[0531] otel error                                    error="<nil>"
+failed to solve: process "/bin/sh -c uv -v --no-cache pip install --index-url https://dl.fontawesome.com/MYTOKENHERE/fontawesome-pro/python/simple/ fontawesomepro==6.6.0" did not complete successfully: exit code: 2
+```
+
+And again, when trying to install from pyproject.toml with `uv sync`
+
+```
+ > [django builder 16/19] RUN uv sync -v --extra-index-url https://dl.fontawesome.com/MYTOKENHERE/fontawesome-pro/python/simple/:                                                                                                                
+0.325 DEBUG uv 0.4.20                                                                                                                                                                                                                                                     
+0.325 DEBUG Found project root: `/app`                                                                                                                                                                                                                                    
+0.325 DEBUG No workspace root found, using project root                                                                                                                                                                                                                   
+0.326 TRACE Querying interpreter executable at /app/.venv/bin/python3                                                                                                                                                                                                     
+0.569 DEBUG The virtual environment's Python version satisfies `Python >=3.12`
+0.570 DEBUG Using request timeout of 900s
+0.570 DEBUG Starting clean resolution
+0.570 TRACE Performing lookahead for myprojectname @ file:///app
+0.570 DEBUG Found static `pyproject.toml` for: myprojectname @ file:///app
+0.570 DEBUG No workspace root found, using project root
+0.571 DEBUG Solving with installed Python version: 3.12.7
+0.571 DEBUG Solving with target Python version: >=3.12
+0.571 DEBUG Adding direct dependency: myprojectname*
+0.571 INFO add_decision: root @ 0a0.dev0    
+0.571 DEBUG Searching for a compatible version of myprojectname @ file:///app (*)
+0.571 DEBUG Adding transitive dependency for myprojectname==0.1.0: fontawesomepro==6.6.0
+0.571 INFO add_decision: myprojectname @ 0.1.0    
+0.571 TRACE Fetching metadata for fontawesomepro from https://dl.fontawesome.com/MYTOKENHERE/fontawesome-pro/python/simple/fontawesomepro/
+0.571 TRACE No cache entry exists for /root/.cache/uv/simple-v13/index/50c2a1e15dc8244a/fontawesomepro.rkyv
+0.571 DEBUG No cache entry for: https://dl.fontawesome.com/MYTOKENHERE/fontawesome-pro/python/simple/fontawesomepro/
+0.571 TRACE Sending fresh GET request for https://dl.fontawesome.com/MYTOKENHERE/fontawesome-pro/python/simple/fontawesomepro/
+0.571 TRACE Handling request for https://dl.fontawesome.com/MYTOKENHERE/fontawesome-pro/python/simple/fontawesomepro/
+0.571 TRACE Request for https://dl.fontawesome.com/MYTOKENHERE/fontawesome-pro/python/simple/fontawesomepro/ is unauthenticated, checking cache
+0.571 TRACE No credentials in cache for URL https://dl.fontawesome.com/MYTOKENHERE/fontawesome-pro/python/simple/fontawesomepro/
+0.571 TRACE Attempting unauthenticated request for https://dl.fontawesome.com/MYTOKENHERE/fontawesome-pro/python/simple/fontawesomepro/
+0.571 TRACE checkout waiting for idle connection: ("https", dl.fontawesome.com)
+0.571 DEBUG starting new connection: https://dl.fontawesome.com/    
+0.571 TRACE Http::connect; scheme=Some("https"), host=Some("dl.fontawesome.com"), port=None
+0.571 DEBUG resolving host="dl.fontawesome.com"
+0.631 DEBUG connecting to 18.165.98.6:443
+0.657 DEBUG connected to 18.165.98.6:443
+0.682 TRACE http1 handshake complete, spawning background dispatcher task
+0.682 TRACE checkout dropped for ("https", dl.fontawesome.com)
+0.830 TRACE cached request https://dl.fontawesome.com/MYTOKENHERE/fontawesome-pro/python/simple/fontawesomepro/ is storable because its response has an 'max-age' cache-control directive
+0.831 TRACE put; add idle connection for ("https", dl.fontawesome.com)
+0.831 DEBUG pooling idle connection for ("https", dl.fontawesome.com)
+0.832 TRACE idle interval checking for expired
+0.832 TRACE Received package metadata for: fontawesomepro
+0.832 TRACE Selecting candidate for fontawesomepro with range ==6.6.0 with 22 remote versions
+0.832 TRACE found candidate for package PackageName("fontawesomepro") with range Range { segments: [(Included("6.6.0"), Included("6.6.0"))] } after 1 steps: "6.6.0" version
+0.832 DEBUG Searching for a compatible version of fontawesomepro (==6.6.0)
+0.832 TRACE Selecting candidate for fontawesomepro with range ==6.6.0 with 22 remote versions
+0.832 TRACE found candidate for package PackageName("fontawesomepro") with range Range { segments: [(Included("6.6.0"), Included("6.6.0"))] } after 1 steps: "6.6.0" version
+0.832 DEBUG Selecting: fontawesomepro==6.6.0 [compatible] (fontawesomepro-6.6.0-py3-none-any.whl)
+0.833 TRACE No cache entry exists for /root/.cache/uv/wheels-v2/index/50c2a1e15dc8244a/fontawesomepro/fontawesomepro-6.6.0-py3-none-any.msgpack
+0.833 DEBUG No cache entry for: https://dl.fontawesome.com/MYTOKENHERE/fontawesome-pro/python/fontawesomepro-6.6.0-py3-none-any.whl#sha256=a55aa23a36ad731ed95cd1da29b012891e721e7ed3386bd7757fcb9fd8b688cc
+0.833 TRACE Sending fresh HEAD request for https://dl.fontawesome.com/MYTOKENHERE/fontawesome-pro/python/fontawesomepro-6.6.0-py3-none-any.whl#sha256=a55aa23a36ad731ed95cd1da29b012891e721e7ed3386bd7757fcb9fd8b688cc
+0.833 TRACE Handling request for https://dl.fontawesome.com/MYTOKENHERE/fontawesome-pro/python/fontawesomepro-6.6.0-py3-none-any.whl#sha256=a55aa23a36ad731ed95cd1da29b012891e721e7ed3386bd7757fcb9fd8b688cc
+0.833 TRACE Request for https://dl.fontawesome.com/MYTOKENHERE/fontawesome-pro/python/fontawesomepro-6.6.0-py3-none-any.whl#sha256=a55aa23a36ad731ed95cd1da29b012891e721e7ed3386bd7757fcb9fd8b688cc is unauthenticated, checking cache
+0.833 TRACE No credentials in cache for URL https://dl.fontawesome.com/MYTOKENHERE/fontawesome-pro/python/fontawesomepro-6.6.0-py3-none-any.whl#sha256=a55aa23a36ad731ed95cd1da29b012891e721e7ed3386bd7757fcb9fd8b688cc
+0.833 TRACE Attempting unauthenticated request for https://dl.fontawesome.com/MYTOKENHERE/fontawesome-pro/python/fontawesomepro-6.6.0-py3-none-any.whl#sha256=a55aa23a36ad731ed95cd1da29b012891e721e7ed3386bd7757fcb9fd8b688cc
+0.833 TRACE take? ("https", dl.fontawesome.com): expiration = Some(90s)
+0.833 DEBUG reuse idle connection for ("https", dl.fontawesome.com)
+1.472 TRACE put; add idle connection for ("https", dl.fontawesome.com)
+1.472 DEBUG pooling idle connection for ("https", dl.fontawesome.com)
+1.472 TRACE cached request https://dl.fontawesome.com/MYTOKENHERE/fontawesome-pro/python/fontawesomepro-6.6.0-py3-none-any.whl#sha256=a55aa23a36ad731ed95cd1da29b012891e721e7ed3386bd7757fcb9fd8b688cc is storable because its response has an 'max-age' cache-control directive
+1.472 TRACE Getting metadata for fontawesomepro-6.6.0-py3-none-any.whl by range request
+1.472 TRACE Handling request for https://dl.fontawesome.com/MYTOKENHERE/fontawesome-pro/python/fontawesomepro-6.6.0-py3-none-any.whl#sha256=a55aa23a36ad731ed95cd1da29b012891e721e7ed3386bd7757fcb9fd8b688cc
+1.472 TRACE Request for https://dl.fontawesome.com/MYTOKENHERE/fontawesome-pro/python/fontawesomepro-6.6.0-py3-none-any.whl#sha256=a55aa23a36ad731ed95cd1da29b012891e721e7ed3386bd7757fcb9fd8b688cc is unauthenticated, checking cache
+1.472 TRACE No credentials in cache for URL https://dl.fontawesome.com/MYTOKENHERE/fontawesome-pro/python/fontawesomepro-6.6.0-py3-none-any.whl#sha256=a55aa23a36ad731ed95cd1da29b012891e721e7ed3386bd7757fcb9fd8b688cc
+1.472 TRACE Attempting unauthenticated request for https://dl.fontawesome.com/MYTOKENHERE/fontawesome-pro/python/fontawesomepro-6.6.0-py3-none-any.whl#sha256=a55aa23a36ad731ed95cd1da29b012891e721e7ed3386bd7757fcb9fd8b688cc
+1.472 TRACE take? ("https", dl.fontawesome.com): expiration = Some(90s)
+1.472 DEBUG reuse idle connection for ("https", dl.fontawesome.com)
+1.500 TRACE put; add idle connection for ("https", dl.fontawesome.com)
+1.500 DEBUG pooling idle connection for ("https", dl.fontawesome.com)
+1.500 TRACE Handling request for https://dl.fontawesome.com/MYTOKENHERE/fontawesome-pro/python/fontawesomepro-6.6.0-py3-none-any.whl#sha256=a55aa23a36ad731ed95cd1da29b012891e721e7ed3386bd7757fcb9fd8b688cc
+1.500 TRACE Request for https://dl.fontawesome.com/MYTOKENHERE/fontawesome-pro/python/fontawesomepro-6.6.0-py3-none-any.whl#sha256=a55aa23a36ad731ed95cd1da29b012891e721e7ed3386bd7757fcb9fd8b688cc is unauthenticated, checking cache
+1.500 TRACE No credentials in cache for URL https://dl.fontawesome.com/MYTOKENHERE/fontawesome-pro/python/fontawesomepro-6.6.0-py3-none-any.whl#sha256=a55aa23a36ad731ed95cd1da29b012891e721e7ed3386bd7757fcb9fd8b688cc
+1.500 TRACE Attempting unauthenticated request for https://dl.fontawesome.com/MYTOKENHERE/fontawesome-pro/python/fontawesomepro-6.6.0-py3-none-any.whl#sha256=a55aa23a36ad731ed95cd1da29b012891e721e7ed3386bd7757fcb9fd8b688cc
+1.500 TRACE take? ("https", dl.fontawesome.com): expiration = Some(90s)
+1.500 DEBUG reuse idle connection for ("https", dl.fontawesome.com)
+12.42 TRACE put; add idle connection for ("https", dl.fontawesome.com)
+12.42 DEBUG pooling idle connection for ("https", dl.fontawesome.com)
+12.68 TRACE Handling request for https://dl.fontawesome.com/MYTOKENHERE/fontawesome-pro/python/fontawesomepro-6.6.0-py3-none-any.whl#sha256=a55aa23a36ad731ed95cd1da29b012891e721e7ed3386bd7757fcb9fd8b688cc
+12.68 TRACE Request for https://dl.fontawesome.com/MYTOKENHERE/fontawesome-pro/python/fontawesomepro-6.6.0-py3-none-any.whl#sha256=a55aa23a36ad731ed95cd1da29b012891e721e7ed3386bd7757fcb9fd8b688cc is unauthenticated, checking cache
+12.68 TRACE No credentials in cache for URL https://dl.fontawesome.com/MYTOKENHERE/fontawesome-pro/python/fontawesomepro-6.6.0-py3-none-any.whl#sha256=a55aa23a36ad731ed95cd1da29b012891e721e7ed3386bd7757fcb9fd8b688cc
+12.68 TRACE Attempting unauthenticated request for https://dl.fontawesome.com/MYTOKENHERE/fontawesome-pro/python/fontawesomepro-6.6.0-py3-none-any.whl#sha256=a55aa23a36ad731ed95cd1da29b012891e721e7ed3386bd7757fcb9fd8b688cc
+12.68 TRACE take? ("https", dl.fontawesome.com): expiration = Some(90s)
+12.68 DEBUG reuse idle connection for ("https", dl.fontawesome.com)
+12.97 TRACE put; add idle connection for ("https", dl.fontawesome.com)
+12.97 DEBUG pooling idle connection for ("https", dl.fontawesome.com)
+13.01 TRACE Handling request for https://dl.fontawesome.com/MYTOKENHERE/fontawesome-pro/python/fontawesomepro-6.6.0-py3-none-any.whl#sha256=a55aa23a36ad731ed95cd1da29b012891e721e7ed3386bd7757fcb9fd8b688cc
+13.01 TRACE Request for https://dl.fontawesome.com/MYTOKENHERE/fontawesome-pro/python/fontawesomepro-6.6.0-py3-none-any.whl#sha256=a55aa23a36ad731ed95cd1da29b012891e721e7ed3386bd7757fcb9fd8b688cc is unauthenticated, checking cache
+13.01 TRACE No credentials in cache for URL https://dl.fontawesome.com/MYTOKENHERE/fontawesome-pro/python/fontawesomepro-6.6.0-py3-none-any.whl#sha256=a55aa23a36ad731ed95cd1da29b012891e721e7ed3386bd7757fcb9fd8b688cc
+13.01 TRACE Attempting unauthenticated request for https://dl.fontawesome.com/MYTOKENHERE/fontawesome-pro/python/fontawesomepro-6.6.0-py3-none-any.whl#sha256=a55aa23a36ad731ed95cd1da29b012891e721e7ed3386bd7757fcb9fd8b688cc
+13.01 TRACE take? ("https", dl.fontawesome.com): expiration = Some(90s)
+13.01 DEBUG reuse idle connection for ("https", dl.fontawesome.com)
+13.04 TRACE put; add idle connection for ("https", dl.fontawesome.com)
+13.04 DEBUG pooling idle connection for ("https", dl.fontawesome.com)
+13.04 TRACE Handling request for https://dl.fontawesome.com/MYTOKENHERE/fontawesome-pro/python/fontawesomepro-6.6.0-py3-none-any.whl#sha256=a55aa23a36ad731ed95cd1da29b012891e721e7ed3386bd7757fcb9fd8b688cc
+13.04 TRACE Request for https://dl.fontawesome.com/MYTOKENHERE/fontawesome-pro/python/fontawesomepro-6.6.0-py3-none-any.whl#sha256=a55aa23a36ad731ed95cd1da29b012891e721e7ed3386bd7757fcb9fd8b688cc is unauthenticated, checking cache
+13.04 TRACE No credentials in cache for URL https://dl.fontawesome.com/MYTOKENHERE/fontawesome-pro/python/fontawesomepro-6.6.0-py3-none-any.whl#sha256=a55aa23a36ad731ed95cd1da29b012891e721e7ed3386bd7757fcb9fd8b688cc
+13.04 TRACE Attempting unauthenticated request for https://dl.fontawesome.com/MYTOKENHERE/fontawesome-pro/python/fontawesomepro-6.6.0-py3-none-any.whl#sha256=a55aa23a36ad731ed95cd1da29b012891e721e7ed3386bd7757fcb9fd8b688cc
+13.04 TRACE take? ("https", dl.fontawesome.com): expiration = Some(90s)
+13.04 DEBUG reuse idle connection for ("https", dl.fontawesome.com)
+13.06 TRACE put; add idle connection for ("https", dl.fontawesome.com)
+13.06 DEBUG pooling idle connection for ("https", dl.fontawesome.com)
+13.12 TRACE Received built distribution metadata for: fontawesomepro==6.6.0
+13.12 INFO add_decision: fontawesomepro @ 6.6.0    
+13.12 DEBUG Tried 2 versions: fontawesomepro 1, myprojectname 1
+13.12 DEBUG Split universal resolution took 12.547s
+13.12 TRACE Resolution: <matches all marker environments>
+13.12 TRACE Resolution edge: ROOT -> myprojectname
+13.12 TRACE Resolution edge:     0a0.dev0 -> 0.1.0
+13.12 TRACE Resolution edge: myprojectname -> fontawesomepro
+13.12 TRACE Resolution edge:     0.1.0 -> 6.6.0
+13.12 Resolved 2 packages in 12.54s
+13.12 TRACE pool closed, canceling idle interval
+13.12 DEBUG Using request timeout of 900s
+13.12 DEBUG Identified uncached distribution: fontawesomepro==6.6.0
+13.12 TRACE No cache entry exists for /root/.cache/uv/wheels-v2/index/50c2a1e15dc8244a/fontawesomepro/fontawesomepro-6.6.0-py3-none-any.http
+13.12 DEBUG No cache entry for: https://dl.fontawesome.com/MYTOKENHERE/fontawesome-pro/python/fontawesomepro-6.6.0-py3-none-any.whl
+13.12 TRACE Sending fresh GET request for https://dl.fontawesome.com/MYTOKENHERE/fontawesome-pro/python/fontawesomepro-6.6.0-py3-none-any.whl
+13.12 TRACE Handling request for https://dl.fontawesome.com/MYTOKENHERE/fontawesome-pro/python/fontawesomepro-6.6.0-py3-none-any.whl
+13.12 TRACE Request for https://dl.fontawesome.com/MYTOKENHERE/fontawesome-pro/python/fontawesomepro-6.6.0-py3-none-any.whl is unauthenticated, checking cache
+13.12 TRACE No credentials in cache for URL https://dl.fontawesome.com/MYTOKENHERE/fontawesome-pro/python/fontawesomepro-6.6.0-py3-none-any.whl
+13.12 TRACE Attempting unauthenticated request for https://dl.fontawesome.com/MYTOKENHERE/fontawesome-pro/python/fontawesomepro-6.6.0-py3-none-any.whl
+13.12 TRACE checkout waiting for idle connection: ("https", dl.fontawesome.com)
+13.12 DEBUG starting new connection: https://dl.fontawesome.com/    
+13.12 TRACE Http::connect; scheme=Some("https"), host=Some("dl.fontawesome.com"), port=None
+13.12 DEBUG resolving host="dl.fontawesome.com"
+13.14 DEBUG connecting to 18.165.98.6:443
+13.16 DEBUG connected to 18.165.98.6:443
+13.18 TRACE http1 handshake complete, spawning background dispatcher task
+13.18 TRACE checkout dropped for ("https", dl.fontawesome.com)
+13.21 TRACE cached request https://dl.fontawesome.com/MYTOKENHERE/fontawesome-pro/python/fontawesomepro-6.6.0-py3-none-any.whl is storable because its response has an 'max-age' cache-control directive
+528.9 TRACE put; add idle connection for ("https", dl.fontawesome.com)
+528.9 DEBUG pooling idle connection for ("https", dl.fontawesome.com)
+532.0 error: Failed to prepare distributions
+532.0   Caused by: Failed to fetch wheel: fontawesomepro==6.6.0
+532.0   Caused by: Failed to extract archive
+532.0   Caused by: Encountered an unexpected header (actual: 0x6064b50, expected: 0x2014b50).
+------
+DEBU[0000] using default config store "/home/myprojectname/.docker/buildx" 
+DEBU[0000] serving grpc connection                       spanID=9e4d5d72d1c3de7b traceID=c02fff25111ae31a10d30eeaa7702464
+DEBU[0000] stopping session                              span="load buildkit capabilities" spanID=9e4d5d72d1c3de7b traceID=c02fff25111ae31a10d30eeaa7702464
+DEBU[0000] serving grpc connection                       spanID=d9f6165eb7403b03 traceID=c02fff25111ae31a10d30eeaa7702464
+DEBU[0005] otel error                                    error="<nil>"
+DEBU[0535] stopping session                              spanID=d9f6165eb7403b03 traceID=c02fff25111ae31a10d30eeaa7702464
+DEBU[0535] otel error                                    error="<nil>"
+DEBU[0535] otel error                                    error="<nil>"
+failed to solve: process "/bin/sh -c uv sync -v --extra-index-url https://dl.fontawesome.com/MYTOKENHERE/fontawesome-pro/python/simple/" did not complete successfully: exit code: 2
+```
+
+
+---
+
+_Comment by @jacklinke on 2024-10-09 15:05_
+
+I am able to download the wheel file and manually extract it on my computer with no error. Here is the directory structure, if it helps at all:
+
+```
+./fontawesomepro-6.6.0-py3-none-any
+├── fontawesomepro
+│   ├── __init__.py
+│   └── static
+│       └── fontawesomepro
+│           ├── assetTemplates
+│           │   ├── css
+│           │   │   ├── brands.css.hbs
+│           │   │   ├── ... etc
+│           │   │   └── kit.css.hbs
+│           │   ├── js
+│           │   │   ├── fontawesome.js
+│           │   │   ├── fontawesome.min.js
+│           │   │   ├── icons.js.hbs
+│           │   │   └── icons.min.js.hbs
+│           │   ├── json
+│           │   │   ├── custom-icons.otf.json.hbs
+│           │   │   ├── custom-icons.webfont.json.hbs
+│           │   │   └── kit-download-meta.json
+│           │   ├── otfs
+│           │   │   ├── Font Awesome 6 Brands-Regular-400.otf.json
+│           │   │   ├── ... etc
+│           │   │   └── Font Awesome 6 Sharp-Thin-100.otf.json
+│           │   ├── preprocessor
+│           │   │   ├── custom-icons.less
+│           │   │   ├── ... etc
+│           │   │   └── _variables.scss.hbs
+│           │   └── webfonts
+│           │       ├── fa-brands-400.ttf.json
+│           │       ├── ... etc
+│           │       └── fa-v4compatibility.woff2.json
+│           ├── css
+│           │   ├── all.css
+│           │   ├── ... etc
+│           │   └── v5-font-face.min.css
+│           ├── js
+│           │   ├── all.js
+│           │   ├── ... etc
+│           │   └── v4-shims.min.js
+│           ├── js-packages
+│           │   └── @fortawesome
+│           │       ├── fontawesome-common-types
+│           │       │   ├── fortawesome-fontawesome-common-types-6.6.0.tgz
+│           │       │   ├── ... etc
+│           │       │   └── README.md
+│           │       ├── fontawesome-pro
+│           │       │   ├── css
+│           │       │   │   ├── all.css
+│           │       │   │   ├── ... etc
+│           │       │   │   └── v5-font-face.min.css
+│           │       │   ├── fortawesome-fontawesome-pro-6.6.0.tgz
+│           │       │   ├── js
+│           │       │   │   ├── all.js
+│           │       │   │   ├── ... etc
+│           │       │   │   └── v4-shims.min.js
+│           │       │   ├── less
+│           │       │   │   ├── _animated.less
+│           │       │   │   ├── ... etc
+│           │       │   │   └── _variables.less
+│           │       │   ├── metadata
+│           │       │   │   ├── categories.yml
+│           │       │   │   ├── ... etc
+│           │       │   │   └── sponsors.yml
+│           │       │   ├── scss
+│           │       │   │   ├── _animated.scss
+│           │       │   │   ├── ... etc
+│           │       │   │   └── _variables.scss
+│           │       │   ├── sprites
+│           │       │   │   ├── brands.svg
+│           │       │   │   ├── ... etc
+│           │       │   │   └── thin.svg
+│           │       │   ├── svgs
+│           │       │   │   ├── brands
+│           │       │   │   │   ├── 42-group.svg
+│           │       │   │   │   ├── ... etc
+│           │       │   │   │   └── zhihu.svg
+│           │       │   │   ├── duotone
+│           │       │   │   │   ├── 00.svg
+│           │       │   │   │   ├── ... etc
+│           │       │   │   │   └── z.svg
+│           │       │   │   ├── light
+│           │       │   │   │   ├── 00.svg
+│           │       │   │   │   ├── ... etc
+│           │       │   │   │   └── z.svg
+│           │       │   │   ├── regular
+│           │       │   │   │   ├── 00.svg
+│           │       │   │   │   ├── ... etc
+│           │       │   │   │   └── z.svg
+│           │       │   │   ├── sharp-duotone-solid
+│           │       │   │   │   ├── 00.svg
+│           │       │   │   │   ├── ... etc
+│           │       │   │   │   └── z.svg
+│           │       │   │   ├── sharp-light
+│           │       │   │   │   ├── 00.svg
+│           │       │   │   │   ├── ... etc
+│           │       │   │   │   └── z.svg
+│           │       │   │   ├── sharp-regular
+│           │       │   │   │   ├── 00.svg
+│           │       │   │   │   ├── ... etc
+│           │       │   │   │   └── z.svg
+│           │       │   │   ├── sharp-solid
+│           │       │   │   │   ├── 00.svg
+│           │       │   │   │   ├── ... etc
+│           │       │   │   │   └── z.svg
+│           │       │   │   ├── sharp-thin
+│           │       │   │   │   ├── 00.svg
+│           │       │   │   │   ├── ... etc
+│           │       │   │   │   └── z.svg
+│           │       │   │   ├── solid
+│           │       │   │   │   ├── 00.svg
+│           │       │   │   │   ├── ... etc
+│           │       │   │   │   └── z.svg
+│           │       │   │   └── thin
+│           │       │   │       ├── 00.svg
+│           │       │   │       ├── ... etc
+│           │       │   │       └── z.svg
+│           │       │   └── webfonts
+│           │       │       ├── fa-brands-400.ttf
+│           │       │       ├── ... etc
+│           │       │       └── fa-v4compatibility.woff2
+│           │       ├── fontawesome-svg-core
+│           │       │   ├── import.macro.d.ts
+│           │       │   ├── ... etc
+│           │       │   └── styles.css
+│           │       ├── pro-brands-svg-icons
+│           │       │   ├── fa42Group.d.ts
+│           │       │   ├── ... etc
+│           │       │   └── package.json
+│           │       ├── pro-duotone-svg-icons
+│           │       │   ├── fa00.d.ts
+│           │       │   ├── ... etc
+│           │       │   └── README.md
+│           │       ├── pro-light-svg-icons
+│           │       │   ├── fa00.d.ts
+│           │       │   ├── ... etc
+│           │       │   └── README.md
+│           │       ├── pro-regular-svg-icons
+│           │       │   ├── fa00.d.ts
+│           │       │   ├── ... etc
+│           │       │   └── README.md
+│           │       ├── pro-solid-svg-icons
+│           │       │   ├── fa00.d.ts
+│           │       │   ├── ... etc
+│           │       │   └── README.md
+│           │       ├── pro-thin-svg-icons
+│           │       │   ├── fa00.d.ts
+│           │       │   ├── ... etc
+│           │       │   └── package.json
+│           │       ├── sharp-duotone-solid-svg-icons
+│           │       │   ├── fa00.d.ts
+│           │       │   ├── ... etc
+│           │       │   └── package.json
+│           │       ├── sharp-light-svg-icons
+│           │       │   ├── fa00.d.ts
+│           │       │   ├── ... etc
+│           │       │   └── package.json
+│           │       ├── sharp-regular-svg-icons
+│           │       │   ├── fa00.d.ts
+│           │       │   ├── ... etc
+│           │       │   └── package.json
+│           │       ├── sharp-solid-svg-icons
+│           │       │   ├── fa00.d.ts
+│           │       │   ├── ... etc
+│           │       │   └── package.json
+│           │       └── sharp-thin-svg-icons
+│           │           ├── fa00.d.ts
+│           │           ├── ... etc
+│           │           └── package.json
+│           ├── less
+│           │   ├── _animated.less
+│           │   ├── ... etc
+│           │   └── _variables.less
+│           ├── LICENSE.txt
+│           ├── metadata
+│           │   ├── categories.yml
+│           │   ├── ... etc
+│           │   └── sponsors.yml
+│           ├── otfs
+│           │   ├── Font Awesome 6 Brands-Regular-400.otf
+│           │   ├── ... etc
+│           │   └── Font Awesome 6 Sharp-Thin-100.otf
+│           ├── README.md
+│           ├── scss
+│           │   ├── _animated.scss
+│           │   ├── ... etc
+│           │   └── _variables.scss
+│           ├── sprites
+│           │   ├── brands.svg
+│           │   ├── ... etc
+│           │   └── thin.svg
+│           ├── svgs
+│           │   ├── brands
+│           │   │   ├── 42-group.svg
+│           │   │   ├── ... etc
+│           │   │   └── zhihu.svg
+│           │   ├── duotone
+│           │   │   ├── 00.svg
+│           │   │   ├── ... etc
+│           │   │   └── z.svg
+│           │   ├── light
+│           │   │   ├── 00.svg
+│           │   │   ├── ... etc
+│           │   │   └── z.svg
+│           │   ├── regular
+│           │   │   ├── 00.svg
+│           │   │   ├── ... etc
+│           │   │   └── z.svg
+│           │   ├── sharp-duotone-solid
+│           │   │   ├── 00.svg
+│           │   │   ├── ... etc
+│           │   │   └── z.svg
+│           │   ├── sharp-light
+│           │   │   ├── 00.svg
+│           │   │   ├── ... etc
+│           │   │   └── z.svg
+│           │   ├── sharp-regular
+│           │   │   ├── 00.svg
+│           │   │   ├── ... etc
+│           │   │   └── z.svg
+│           │   ├── sharp-solid
+│           │   │   ├── 00.svg
+│           │   │   ├── ... etc
+│           │   │   └── z.svg
+│           │   ├── sharp-thin
+│           │   │   ├── 00.svg
+│           │   │   ├── ... etc
+│           │   │   └── z.svg
+│           │   ├── solid
+│           │   │   ├── 00.svg
+│           │   │   ├── ... etc
+│           │   │   └── z.svg
+│           │   └── thin
+│           │       ├── 00.svg
+│           │       ├── ... etc
+│           │       └── z.svg
+│           └── webfonts
+│               ├── fa-brands-400.ttf
+│               ├── ... etc
+│               └── fa-v4compatibility.woff2
+└── fontawesomepro-6.6.0.dist-info
+    ├── METADATA
+    ├── RECORD
+    ├── top_level.txt
+    └── WHEEL
+
+67 directories, 154626 files
+```
+
+And from the dist-info
+
+WHEEL
+
+```
+Wheel-Version: 1.0
+Generator: bdist_wheel (0.42.0)
+Root-Is-Purelib: true
+Tag: py3-none-any
+
+```
+
+top_level.txt
+
+```
+fontawesomepro
+```
+
+RECORD (154626 lines in total)
+
+```
+fontawesomepro/__init__.py,sha256=47DEQpj8HBSa-_TImW-5JCeuQeRkm5NMpJWZG3hSuFU,0
+fontawesomepro/static/fontawesomepro/LICENSE.txt,sha256=pUdsPRB_MD3k89GhCz7NRPyNQHsjl5MHueiWxZCFWQk,735
+fontawesomepro/static/fontawesomepro/README.md,sha256=Jzd8lgvCnf6ajjFZxzMOA6yPrMbjJkUNMELTH8VCk8g,170
+...
+fontawesomepro-6.6.0.dist-info/WHEEL,sha256=oiQVh_5PnQM0E3gPdiz09WCNmwiHDMaGer_elqB3coM,92
+fontawesomepro-6.6.0.dist-info/top_level.txt,sha256=5q62qaGraOR8eB_jlG2zU8X4z4pWZEBBE8PToQAZSok,15
+fontawesomepro-6.6.0.dist-info/RECORD,,
+```
+
+METADATA
+
+```
+Metadata-Version: 2.1
+Name: fontawesomepro
+Version: 6.6.0
+Summary: Font Awesome Pro Files
+Home-page: https://github.com/FortAwesome/Font-Awesome
+Author: Font Awesome
+Author-email: hello@fontawesome.com
+License: https://fontawesome.com/license
+Keywords: pip,font,awesome
+Platform: UNKNOWN
+
+UNKNOWN
+
+```
+
+
+
+
+---
+
+_Comment by @jacklinke on 2024-10-30 02:43_
+
+@zanieb  Any other ideas or things I could try?
+
+I am really hoping to start using uv for my project, but this is a major obstacle.
+
+---
+
+_Comment by @jacklinke on 2024-10-30 02:50_
+
+If I do either of:
+
+- `uv pip install fontawesomepro --index-url https://dl.fontawesome.com/MYTOKENHERE/fontawesome-pro/python/simple/`
+- `uv pip install fontawesomepro --extra-index-url https://dl.fontawesome.com/MYTOKENHERE/fontawesome-pro/python/simple/`
+
+the command fails the same as the examples given previously.
+
+But...
+
+⭐⭐⭐⭐⭐
+**If I manually download the wheel and `uv pip install "fontawesomepro-6.6.0-py3-none-any.whl"`, it succeeds.**
+⭐⭐⭐⭐⭐
+
+Likewise, if I use another local package version, `uv pip install "fontawesomepro-6.5.0-py3-none-any.whl"`, it works just fine.
+
+_(But I don't want to put the 300mb wheel into my git repo 😲)_
+
+---
+
+The fact that it works if the wheel is local makes me think it's an issue with how the file is being streamed/downloaded when using an index.
+
+As @zanieb mentioned:
+
+> We unzip the wheel while streaming the request, so fetching fails if extraction fails.
+
+And...
+
+> It sounds like something is actually wrong with the zipfile? Or that the upstream library we're using can't handle it?
+
+Does `uv` use a different library for unzipping a local wheel vs unzipping while streaming a request from a remote index? 🤔
+
+
+---
+
+_Comment by @jacklinke on 2024-10-31 21:08_
+
+@zanieb could it be an issue with how large the Wheel is? Fontawesome pro is about 330 MB, which is a lot larger than most wheels.
+
+I've verified on two wheels for this package that the files are good, valid zip files.
+
+---
+
+Running `zip -T fontawesomepro-6.5.0-py3-none-any.whl`: test of fontawesomepro-6.5.0-py3-none-any.whl OK
+
+Runnning `unzip -t fontawesomepro-6.5.0-py3-none-any.whl`: No errors detected in compressed data of fontawesomepro-6.5.0-py3-none-any.whl.
+
+Running `file fontawesomepro-6.5.0-py3-none-any.whl`: Zip archive data, at least v2.0 to extract, compression method=deflate
+
+Running `python -m zipfile -t fontawesomepro-6.5.0-py3-none-any.whl`: Done testing
+
+Running `7z t fontawesomepro-6.5.0-py3-none-any.whl`:
+
+```
+7-Zip 23.01 (x64) : Copyright (c) 1999-2023 Igor Pavlov : 2023-06-20
+ 64-bit locale=en_US.UTF-8 Threads:12 OPEN_MAX:1024
+
+Scanning the drive for archives:
+1 file, 289831412 bytes (277 MiB)
+
+Testing archive: fontawesomepro-6.5.0-py3-none-any.whl
+--            
+Path = fontawesomepro-6.5.0-py3-none-any.whl
+Type = zip
+Physical Size = 289831412
+64-bit = +
+Characteristics = Zip64
+
+Everything is Ok                                                                                                               
+
+Files: 138191
+Size:       639195676
+Compressed: 289831412
+```
+
+
+
+---
+
+_Comment by @jacklinke on 2024-11-01 21:38_
+
+I know nearly nothing when it comes to rust, but I did some digging around in the hopes that I could find something useful for narrowing the problem down and helping the `uv` maintainers with as much context as possible about this issue. Hope this is helpful.
+
+---
+
+It looks like `uv` first started unzipping while streaming the wheels in #1157. At that point, `uv` started using the `async_zip` (aka: rs-async-zip) in a repo owned by @charliermarsh, forked from @Majored.
+
+The error message I'm seeing, "Encountered an unexpected header (actual: 0x6064b50, expected: 0x2014b50).", is defined in [error.rs](https://github.com/charliermarsh/rs-async-zip/blob/main/src/error.rs#L65) in that package's repository with the error `UnexpectedHeaderError`.
+
+
+If I am understanding the flow of the code correctly, this is what's happening:
+
+In `CentralDirectoryReader` ([src/base/read/cd.rs](https://github.com/charliermarsh/rs-async-zip/blob/011b24604fa7bc223daaad7712c0694bac8f0a87/src/base/read/cd.rs#L44C13-L44C35)), when unzipping a streaming file we iterate through each `CentralDirectoryEntry`. We expect to either get the `CDH_SIGNATURE` for a `CentralDirectoryEntry`, or if we get [`EOCDR_SIGNATURE`]((https://github.com/charliermarsh/rs-async-zip/blob/011b24604fa7bc223daaad7712c0694bac8f0a87/src/spec/consts.rs#L16)) we consider that `OK` and end the loop. Otherwise we return an `UnexpectedHeaderError`.
+
+The problem is that after the last `CentralDirectoryEntry`, instead of `EOCDR_SIGNATURE`, we are seeing [`ZIP64_EOCDR_SIGNATURE`](https://github.com/charliermarsh/rs-async-zip/blob/011b24604fa7bc223daaad7712c0694bac8f0a87/src/spec/consts.rs#L29C32) - which is perfectly valid for a zip64 file - but we return an `UnexpectedHeaderError` even though a perfectly good `EOCDR_SIGNATURE` is just a few bytes further away.
+
+From the zipfile spec:
+
+### 4.3.6
+   Overall .ZIP file format:
+
+      [local file header 1]
+      [encryption header 1]
+      [file data 1]
+      [data descriptor 1]
+      . 
+      .
+      .
+      [local file header n]
+      [encryption header n]
+      [file data n]
+      [data descriptor n]
+      [archive decryption header] 
+      [archive extra data record] 
+      [central directory header 1]
+      .
+      .
+      .
+      [central directory header n]
+      [zip64 end of central directory record]  <-- What cd.rs finds after last CentralDirectoryEntry
+      [zip64 end of central directory locator] 
+      [end of central directory record]  <-- What cd.rs expects after last CentralDirectoryEntry
+
+---
+
+I can't provide the whole file, but here is the beginning and end of the wheel. You can clearly see the last central directory header signature, the zip64 end of central directory record signature, and the end of central directory record signature.
+
+```
+50 4B 03 04 14 00 00 00 08 00 E5 9B 7C 57 00 00 
+00 00 02 00 00 00 00 00 00 00 1A 00 00 00 66 6F 
+6E 74 61 77 65 73 6F 6D 65 70 72 6F 2F 5F 5F 69 
+6E 69 74 5F 5F 2E 70 79 03 00 50 4B 03 04 14 00 
+00 00 08 00 E5 9B 7C 57 F2 89 6B 4E 73 01 00 00 
+DF 02 00 00 30 00 00 00 66 6F 6E 74 61 77 65 73 
+6F 6D 65 70 72 6F 2F 73 74 61 74 69 63 2F 66 6F 
+6E 74 61 77 65 73 6F 6D 65 70 72 6F 2F 4C 49 43 
+45 4E 53 45 2E 74 78 74 8D 51 BD 6E DB 30 10 DE 
+
+...
+
+0F 66 6F 6E 74 61 77 65 73 6F 6D 65 70 72 6F 2D 
+36 2E 35 2E 30 2E 64 69 73 74 2D 69 6E 66 6F 2F 
+57 48 45 45 4C 50 4B 01 02 14 03 14 00 00 00 08 
+00 E6 9B 7C 57 AC 1A 5F A9 11 00 00 00 0F 00 00 
+00 2C 00 00 00 00 00 00 00 00 00 00 00 A4 81 97 
+6E C3 0F 66 6F 6E 74 61 77 65 73 6F 6D 65 70 72 
+6F 2D 36 2E 35 2E 30 2E 64 69 73 74 2D 69 6E 66 
+6F 2F 74 6F 70 5F 6C 65 76 65 6C 2E 74 78 74 50 
+4B 01 02 14 03 14 00 00 00 08 00 5B 9C 7C 57 AE 
+75 97 40 7F 93 5A 00 5A 1F 3E 01 25 00 00 00 00 
+00 00 00 00 00 00 00 B4 81 F2 6E C3 0F 66 6F 6E 
+74 61 77 65 73 6F 6D 65 70 72 6F 2D 36 2E 35 2E 
+30 2E 64 69 73 74 2D 69 6E 66 6F 2F 52 45 43 4F 
+52 44 50 4B 06 06 2C 00 00 00 00 00 00 00 2D 00 
+2D 00 00 00 00 00 00 00 00 00 CF 1B 02 00 00 00 
+00 00 CF 1B 02 00 00 00 00 00 DE 76 28 01 00 00 
+00 00 B4 02 1E 10 00 00 00 00 50 4B 06 07 00 00 
+00 00 92 79 46 11 00 00 00 00 01 00 00 00 50 4B 
+05 06 00 00 00 00 FF FF FF FF DE 76 28 01 B4 02 
+1E 10 00 00
+```
+
+---
+
+I would appreciate guidance on next steps. If my understanding of the problem above is correct, there are several things that **might** be appropriate:
+
+- Request `uv` consider adding an option to prevent unzipping while streaming or maybe if unzipping while streaming fails, download the file and try to unzip locally.
+- Submit an Issue to https://github.com/charliermarsh/rs-async-zip
+- Submit an Issue to the repo `rs-async-zip` is forced from https://github.com/Majored/rs-async-zip
+
+---
+
+_Comment by @zanieb on 2024-11-01 23:48_
+
+Thank you for digging into the details again! It's really helpful for pushing things forward.
+
+@charliermarsh will probably have the best recommendation regarding next steps. No need to open an issue in our fork, but it does sound worth opening one upstream since they're presumably the expert.
+
+---
+
+_Referenced in [Majored/rs-async-zip#151](../../Majored/rs-async-zip/issues/151.md) on 2024-11-02 17:20_
+
+---
+
+_Comment by @jacklinke on 2024-11-13 14:00_
+
+@charliermarsh did you have any thoughts on this one?
+
+I [opened an issue at the upstream](https://github.com/Majored/rs-async-zip/issues/151), but have heard nothing further.
+
+---
+
+_Comment by @charliermarsh on 2024-11-13 16:49_
+
+Thanks @jacklinke. The context is very helpful. I will try to take a look when I can -- just juggling a lot and have a few other issues ahead of this in my queue.
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2024-11-13 16:49_
+
+---
+
+_Label `bug` added by @charliermarsh on 2024-11-13 16:49_
+
+---
+
+_Referenced in [astral-sh/uv#9110](../../astral-sh/uv/pulls/9110.md) on 2024-11-14 02:22_
+
+---
+
+_Closed by @charliermarsh on 2024-11-14 21:45_
+
+---
+
+_Closed by @charliermarsh on 2024-11-14 21:45_
+
+---
+
+_Comment by @jacklinke on 2024-11-22 17:10_
+
+@charliermarsh Thank you for the quick work ❤️! And thank you also, @zanieb!
+
+---

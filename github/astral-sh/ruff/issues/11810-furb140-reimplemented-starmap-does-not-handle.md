@@ -1,0 +1,88 @@
+---
+number: 11810
+title: "`FURB140` (reimplemented-starmap) does not handle multiple uses of the loop variable"
+type: issue
+state: closed
+author: tdulcet
+labels:
+  - bug
+assignees: []
+created_at: 2024-06-09T14:04:23Z
+updated_at: 2024-06-10T21:10:07Z
+url: https://github.com/astral-sh/ruff/issues/11810
+synced_at: 2026-01-07T13:12:15-06:00
+---
+
+# `FURB140` (reimplemented-starmap) does not handle multiple uses of the loop variable
+
+---
+
+_Issue opened by @tdulcet on 2024-06-09 14:04_
+
+Input code:
+```py
+def output_table(rows):
+    amax = max(len(row) for row in rows)
+    for row in rows:
+        row.extend("" for _ in range(amax - len(row)))
+    lens = [max(strcol(v) for v in col) for col in zip(*rows)]
+    print(
+        "\n".join(
+            "  ".join(
+                "{{{0}:<{1}}}".format(i, alen - (strcol(v) - len(v)))
+                for i, (alen, v) in enumerate(zip(lens, row))      # << use 1 of `row`
+            ).format(*row)                                         # << use 2 of `row`
+            for row in rows
+        )
+    )
+ ```
+ Command: `ruff check --isolated --select FURB140 --preview --fix example.py`
+ Resulting code after autofix:
+ ```py
+ from itertools import starmap
+# ...
+def output_table(rows):
+    amax = max(len(row) for row in rows)
+    for row in rows:
+        row.extend("" for _ in range(amax - len(row)))
+    lens = [max(strcol(v) for v in col) for col in zip(*rows)]
+    print(
+        "\n".join(
+            starmap(
+                "  ".join(
+                    "{{{0}:<{1}}}".format(i, alen - (strcol(v) - len(v)))
+                    for i, (alen, v) in enumerate(zip(lens, row))     # << `row` is no longer defined here
+                ).format,
+                rows,
+            )
+        )
+    )
+```
+Note how the original generator comprehension had two uses use of the `row` loop variable, but the autofix only replaces one of them with the `starmap`, which breaks the code.
+
+Ruff version: `ruff 0.4.8`
+
+
+---
+
+_Label `bug` added by @charliermarsh on 2024-06-09 23:43_
+
+---
+
+_Comment by @charliermarsh on 2024-06-09 23:43_
+
+Thanks!
+
+---
+
+_Referenced in [astral-sh/ruff#11830](../../astral-sh/ruff/pulls/11830.md) on 2024-06-10 20:43_
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2024-06-10 20:45_
+
+---
+
+_Closed by @charliermarsh on 2024-06-10 21:10_
+
+---

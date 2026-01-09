@@ -1,0 +1,124 @@
+---
+number: 3426
+title: Custom exit code
+type: issue
+state: closed
+author: tertsdiepraam
+labels:
+  - C-enhancement
+  - A-parsing
+  - S-wont-fix
+assignees: []
+created_at: 2022-02-09T09:04:17Z
+updated_at: 2023-06-19T17:49:38Z
+url: https://github.com/clap-rs/clap/issues/3426
+synced_at: 2026-01-07T13:12:19-06:00
+---
+
+# Custom exit code
+
+---
+
+_Issue opened by @tertsdiepraam on 2022-02-09 09:04_
+
+### Please complete the following tasks
+
+- [X] I have searched the [discussions](https://github.com/clap-rs/clap/discussions)
+- [X] I have searched the [open](https://github.com/clap-rs/clap/issues) and [rejected](https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed) issues
+
+### Clap Version
+
+3.0.10
+
+### Describe your use case
+
+At the [uutils](https://github.com/uutils/coreutils) project, we need to match the exit code of the original GNU utilities. GNU often (but not always) uses 1 as an exit code when the arguments are wrong, so we regressed when moving to clap 3 due to https://github.com/clap-rs/clap/issues/1327 and https://github.com/clap-rs/clap/pull/1653.
+
+The relevant issue on our repository is https://github.com/uutils/coreutils/issues/3102.
+
+### Describe the solution you'd like
+
+I don't think there is a one size fits all solution for exit codes. Therefore, I'd like `App` to have some method that specifies the exit code in case of a usage error. The default would continue to be `2`. It could look something like this:
+```rust
+App::new("test")
+    .fail_exit_code(1);
+```
+I'm not sure what the best name would be. It could also be `exit_code`, `usage_error_code` or `error_code`.
+
+### Alternatives, if applicable
+
+We also have our own error type with exit code information, which we could convert a clap error into. In this case we would implement conversion to our own error type and then use `try_get_matches` to get the error. However, this would require quite a bit of code for the conversion.
+
+A third possible solution would be to provide a method on `Error` to modify the exit code before calling `Error::exit()`, which could be used like this:
+```rust
+App::new("test")
+    .try_get_matches()
+    .map_err(|e| e.exit_code(1).exit())
+```
+However, this solution is unintuitive for `DisplayHelp` and `DisplayVersion`, which should probably ignore this method.
+
+### Additional Context
+
+I would be happy to try to implement this if this is indeed something you'd like to include. We're still very happy with clap! Thank you for this amazing crate!
+
+---
+
+_Label `C-enhancement` added by @tertsdiepraam on 2022-02-09 09:04_
+
+---
+
+_Referenced in [uutils/coreutils#3102](../../uutils/coreutils/issues/3102.md) on 2022-02-09 09:05_
+
+---
+
+_Label `A-parsing` added by @epage on 2022-02-09 15:27_
+
+---
+
+_Label `S-wont-fix` added by @epage on 2022-02-09 15:27_
+
+---
+
+_Comment by @epage on 2022-02-09 15:27_
+
+As part of our effort to trim down clap, we're focusing on the built-in / easy path being for the majority case while offering building blocks for the exceptions.  I think exit codes fall in that boat.  Here is an example of a program that provides custom exit codes: https://github.com/crate-ci/typos/blob/master/src/bin/typos-cli/main.rs#L17
+
+I'd recommend using a testing tool like [`trycmd`](https://docs.rs/trycmd/) which will help in testing exit codes.
+
+---
+
+_Closed by @epage on 2022-02-09 15:27_
+
+---
+
+_Comment by @tertsdiepraam on 2022-02-09 16:49_
+
+I completely understand. Thank you for your time!
+
+---
+
+_Referenced in [clap-rs/clap#3439](../../clap-rs/clap/issues/3439.md) on 2022-02-10 18:21_
+
+---
+
+_Referenced in [uutils/coreutils#3331](../../uutils/coreutils/issues/3331.md) on 2022-03-29 18:13_
+
+---
+
+_Referenced in [uutils/coreutils#4254](../../uutils/coreutils/issues/4254.md) on 2023-01-03 15:14_
+
+---
+
+_Referenced in [tweag/topiary#350](../../tweag/topiary/pulls/350.md) on 2023-03-16 13:18_
+
+---
+
+_Comment by @OddBloke on 2023-06-19 17:49_
+
+For anyone else who's wound up here, that example code has moved to: https://github.com/crate-ci/typos/blob/master/crates/typos-cli/src/bin/typos-cli/main.rs
+
+---
+
+_Referenced in [clap-rs/clap#5311](../../clap-rs/clap/pulls/5311.md) on 2024-01-15 22:29_
+
+---

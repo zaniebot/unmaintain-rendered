@@ -1,0 +1,93 @@
+---
+number: 6883
+title: "`.python-version` overrides inline script metadata `required-python` for `uv run`"
+type: issue
+state: closed
+author: dbohdan
+labels:
+  - bug
+assignees: []
+created_at: 2024-08-30T19:01:29Z
+updated_at: 2024-08-30T19:26:51Z
+url: https://github.com/astral-sh/uv/issues/6883
+synced_at: 2026-01-07T13:12:17-06:00
+---
+
+# `.python-version` overrides inline script metadata `required-python` for `uv run`
+
+---
+
+_Issue opened by @dbohdan on 2024-08-30 19:01_
+
+I ran a script with `uv run`, and `.python-version` in the current directory overrode `required-python` in the inline script metadata. The version in `.python-version` wasn't in the range of `required-python`. When the script ran with the wrong Python version, it failed. The problem took me five minutes to debug. I am not sure what should happen in this situation, but it confused me, so I am reporting it. (I think I'd prefer uv to either report a conflict in the  Python version requirements and not run the script or to ignore `.python-version` in favor of `required-python`.)
+
+I encountered this conflict on Ubuntu 24.04 on x86-64. uv was installed with pipx. Here is a POSIX shell script to reproduce it.
+
+```sh
+#! /bin/sh
+set -e
+
+uv --version
+
+cat >demo.py <<EOF
+#! /usr/bin/env -S uv run
+# /// script
+# dependencies = [
+#   "httpx<2",
+# ]
+# requires-python = ">=3.10"
+# ///
+
+import sys
+print(sys.version)
+EOF
+
+chmod +x demo.py
+
+rm .python-version || true
+./demo.py
+
+echo 3.7 >.python-version
+./demo.py
+```
+
+Output:
+
+```none
+uv 0.4.1
+Reading inline script metadata from: ./demo.py
+Installed 7 packages in 4ms
+3.12.1 (main, Jan 31 2024, 04:48:37) [GCC 11.4.0]
+Reading inline script metadata from: ./demo.py
+Installed 9 packages in 3ms
+3.7.17 (default, Oct 16 2023, 22:17:29) 
+[GCC 11.4.0]
+```
+
+---
+
+_Label `bug` added by @charliermarsh on 2024-08-30 19:01_
+
+---
+
+_Comment by @charliermarsh on 2024-08-30 19:01_
+
+Definitely wrong, thanks!
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2024-08-30 19:19_
+
+---
+
+_Referenced in [astral-sh/uv#6884](../../astral-sh/uv/pulls/6884.md) on 2024-08-30 19:19_
+
+---
+
+_Closed by @charliermarsh on 2024-08-30 19:26_
+
+---
+
+_Closed by @charliermarsh on 2024-08-30 19:26_
+
+---

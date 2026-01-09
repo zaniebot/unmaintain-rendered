@@ -1,0 +1,71 @@
+---
+number: 13699
+title: "`unexpected-spaces-around-keyword-parameter-equals` (`E251`) - conflicts with formatter / false positive on python 3.13 type var defaults"
+type: issue
+state: closed
+author: DetachHead
+labels:
+  - bug
+  - python313
+assignees: []
+created_at: 2024-10-10T01:10:38Z
+updated_at: 2024-10-10T16:24:19Z
+url: https://github.com/astral-sh/ruff/issues/13699
+synced_at: 2026-01-07T13:12:15-06:00
+---
+
+# `unexpected-spaces-around-keyword-parameter-equals` (`E251`) - conflicts with formatter / false positive on python 3.13 type var defaults
+
+---
+
+_Issue opened by @DetachHead on 2024-10-10 01:10_
+
+```py
+def foo[T = int](): ... # Unexpected spaces around keyword / parameter equals
+```
+https://play.ruff.rs/ae847913-3125-4fe5-88a5-376630dfd337
+
+i think it's best to keep the spaces because it would look strange especially when used with bounds:
+
+```py
+def foo[T: int | str=int](): ...
+```
+
+---
+
+_Comment by @KotlinIsland on 2024-10-10 01:19_
+
+it type parameters should be consistent with value parameters
+```py
+def foo[T: int = 1](t: int = 1): ...
+```
+
+---
+
+_Label `bug` added by @dhruvmanila on 2024-10-10 04:51_
+
+---
+
+_Label `python313` added by @dhruvmanila on 2024-10-10 04:51_
+
+---
+
+_Assigned to @AlexWaygood by @AlexWaygood on 2024-10-10 11:33_
+
+---
+
+_Referenced in [astral-sh/ruff#13704](../../astral-sh/ruff/pulls/13704.md) on 2024-10-10 14:12_
+
+---
+
+_Closed by @AlexWaygood on 2024-10-10 16:24_
+
+---
+
+_Referenced in [astral-sh/ruff#15202](../../astral-sh/ruff/issues/15202.md) on 2024-12-30 15:17_
+
+---
+
+_Referenced in [astral-sh/ruff#20471](../../astral-sh/ruff/issues/20471.md) on 2025-09-18 17:03_
+
+---

@@ -1,0 +1,184 @@
+---
+number: 10354
+title: Caching uv pip install in Gitlab CI
+type: issue
+state: open
+author: ticapix
+labels:
+  - documentation
+  - question
+assignees: []
+created_at: 2025-01-07T10:24:54Z
+updated_at: 2025-03-17T16:55:57Z
+url: https://github.com/astral-sh/uv/issues/10354
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# Caching uv pip install in Gitlab CI
+
+---
+
+_Issue opened by @ticapix on 2025-01-07 10:24_
+
+Hello,
+
+Reading the doc at https://docs.astral.sh/uv/guides/integration/gitlab/, how do I cache the `uv pip install` ?
+
+I would have expected the following `.gitlab-ci.yml` to success.
+
+```yaml
+variables:
+  UV_SYSTEM_PYTHON: 1 # remove the need to create a venv
+  UV_CACHE_DIR: .uv-cache
+
+default:
+  image: ghcr.io/astral-sh/uv:0.5-python3.11-alpine
+  cache:
+    - key: test
+      paths:
+        - $UV_CACHE_DIR
+
+uv-install:
+  stage: .pre
+  script:
+    - uv pip show rdflib || true # fails as expected
+    - uv pip install rdflib
+    - uv cache prune --ci
+    - uv pip show rdflib
+
+test:
+  stage: test
+  script:
+    - uv pip show rdflib # fails here
+```
+
+But I have the error where rdflib is not installed in the test stage.
+
+Note: _I'm using [gitlab-ci-local](https://github.com/firecow/gitlab-ci-local) to test locally_
+
+```shell
+$ gitlab-ci-local
+Unable to retrieve default remote branch, falling back to `main`.
+  The default remote branch can be set via `git remote set-head origin <default_branch>`
+parsing and downloads finished in 57 ms.
+json schema validated in 220 ms
+uv-install starting ghcr.io/astral-sh/uv:0.5-python3.11-alpine (.pre)
+uv-install copied to docker volumes in 516 ms
+uv-install imported cache 'test' in 274 ms
+uv-install $ uv pip show rdflib || true
+uv-install > Using Python 3.11.11 environment at: /usr/local
+uv-install > warning: Package(s) not found for: rdflib
+uv-install $ uv pip install rdflib
+uv-install > Using Python 3.11.11 environment at: /usr/local
+uv-install > Resolved 2 packages in 14ms
+uv-install > warning: Failed to hardlink files; falling back to full copy. This may lead to degraded performance.
+uv-install >          If the cache and target directories are on different filesystems, hardlinking may not be supported.
+uv-install >          If this is intentional, set `export UV_LINK_MODE=copy` or use `--link-mode=copy` to suppress this warning.
+uv-install > Installed 2 packages in 10ms
+uv-install >  + pyparsing==3.2.1
+uv-install >  + rdflib==7.1.1
+uv-install $ uv cache prune --ci
+uv-install > Pruning cache at: .uv-cache
+uv-install > Removed 3422 files (59.5MiB)
+uv-install $ uv pip show rdflib
+uv-install > Using Python 3.11.11 environment at: /usr/local
+uv-install > Name: rdflib
+uv-install > Version: 7.1.1
+uv-install > Location: /usr/local/lib/python3.11/site-packages
+uv-install > Requires: pyparsing
+uv-install > Required-by:
+uv-install finished in 1.42 s
+uv-install exported cache .uv-cache 'test' in 633 ms
+test       starting ghcr.io/astral-sh/uv:0.5-python3.11-alpine (test)
+test       copied to docker volumes in 503 ms
+test       imported cache 'test' in 283 ms
+test       $ uv pip show rdflib
+test       > Using Python 3.11.11 environment at: /usr/local
+test       > warning: Package(s) not found for: rdflib
+test       finished in 1.35 s  FAIL 1
+
+ PASS  uv-install
+ FAIL  test
+  > Using Python 3.11.11 environment at: /usr/local
+  > warning: Package(s) not found for: rdflib
+pipeline finished in 3.76 s
+```
+
+Apparently it fails because `uv pip` installs in `/usr/local` which is outside the project directory, hence, can't be cached by Gitlab.
+
+
+To make it work, I have to NOT use `UV_SYSTEM_PYTHON: 1` and run `ux venv` in my `.pre` stage.
+
+Is the config below supposed to be the correct way to cache `uv pip install` ?
+
+```yaml
+variables:
+  UV_CACHE_DIR: .uv-cache
+
+
+default:
+  image: ghcr.io/astral-sh/uv:0.5-python3.11-alpine
+  cache:
+    - key: test
+      paths:
+        - $UV_CACHE_DIR
+        - .venv
+
+uv-install:
+  stage: .pre
+  script:
+    - uv venv --allow-existing
+    - uv pip show rdflib || true
+    - uv pip install rdflib
+    - uv cache prune --ci
+    - uv pip show rdflib
+
+test:
+  stage: test
+  script:
+    - uv pip show rdflib # works
+```
+
+Or is there another way to install packages from the `pyproject.toml` file than `uv pip install -r pyproject.toml` ?
+
+Thank you,
+Pierre
+
+
+---
+
+_Comment by @zanieb on 2025-01-07 18:32_
+
+Yeah I would use a virtual environment, that seems right to me.
+
+> Or is there another way to install packages from the pyproject.toml file than uv pip install -r pyproject.toml ?
+
+You can use `uv sync` or `uv pip install .`
+
+---
+
+_Label `documentation` added by @zanieb on 2025-01-07 18:32_
+
+---
+
+_Label `question` added by @zanieb on 2025-01-07 18:32_
+
+---
+
+_Comment by @zanieb on 2025-01-07 18:33_
+
+cc @jvacek not sure if you think the documentation should change?
+
+---
+
+_Comment by @zanieb on 2025-01-07 18:34_
+
+cc @sisp who also worked on these docs
+
+---
+
+_Comment by @jvacek on 2025-03-17 16:55_
+
+@ticapix are you expecting the environment to persist across steps, or are you expecting uv's cache to persist across steps?
+
+---

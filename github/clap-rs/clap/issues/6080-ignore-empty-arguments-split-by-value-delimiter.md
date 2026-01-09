@@ -1,0 +1,139 @@
+---
+number: 6080
+title: "Ignore empty arguments split by `value_delimiter`"
+type: issue
+state: open
+author: Andrew15-5
+labels:
+  - C-enhancement
+  - S-waiting-on-decision
+  - A-parsing
+assignees: []
+created_at: 2025-07-29T08:42:29Z
+updated_at: 2025-08-01T13:51:16Z
+url: https://github.com/clap-rs/clap/issues/6080
+synced_at: 2026-01-07T13:12:20-06:00
+---
+
+# Ignore empty arguments split by `value_delimiter`
+
+---
+
+_Issue opened by @Andrew15-5 on 2025-07-29 08:42_
+
+### Please complete the following tasks
+
+- [x] I have searched the [discussions](https://github.com/clap-rs/clap/discussions)
+- [x] I have searched the [open](https://github.com/clap-rs/clap/issues) and [rejected](https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed) issues
+
+### Clap Version
+
+master
+
+### Describe your use case
+
+Additionally to https://github.com/clap-rs/clap/issues/6079, the cargo `--features` parser eliminates empty arguments that were produced by splitting, therefore not causing an error for, e.g., `--features a,b,`. If this can be done declaratively with clap (and https://github.com/clap-rs/clap/issues/6079), then cargo can remove the custom parser and use a built-in solution. This also can be used by any other CLI, including `dx`, to offer a very flexible and friendly way to pass multiple arguments to the same flag.
+
+### Describe the solution you'd like
+
+Something like `ignore_empty_delimited_values(true)`. It probably should only apply to `Vec<_>` flags. Not sure how useful it would be for `Option<_>` ones (`--flag ''`).
+
+### Alternatives, if applicable
+
+Using custom parser, like `cargo` does.
+
+### Additional Context
+
+_No response_
+
+---
+
+_Label `C-enhancement` added by @Andrew15-5 on 2025-07-29 08:42_
+
+---
+
+_Label `S-waiting-on-decision` added by @epage on 2025-07-29 19:03_
+
+---
+
+_Label `A-parsing` added by @epage on 2025-07-29 19:03_
+
+---
+
+_Comment by @epage on 2025-07-29 19:05_
+
+This can be worked around on the callers side by ignoring empty strings.
+
+What I'm unsure of is there is enough gain over the workaround to outweigh the costs
+- Binary size
+- Build times
+- API size (the more that exists in the API, the harder it is to find things, the less people use anything in the API including the new feature, the less value gained by these features)
+
+---
+
+_Comment by @Andrew15-5 on 2025-07-29 19:33_
+
+Wait, what? I thought clap errors on empty argument. Is this only true for custom types and not `String`? In `Vec<_>`.
+
+That was half of why I thought it would be nice to have. The other half is that cargo could use this. And by eliminating this and https://github.com/clap-rs/clap/issues/6079, it can remove the custom parser.
+
+I personally never really thought of having a delimiter to the end of an argument. And to make it not error. But cargo does this for _some_ reason, right? If there is no good reason, then I guess there is not really enough demand/reasoning for having this feature in clap, and https://github.com/rust-lang/cargo/blob/37eeab7c165aaccc7c70dfdf2bbd239cbd2b7269/src/bin/cargo/commands/add.rs?plain=1#L416 should be removed or made into a hard error.
+
+---
+
+_Comment by @epage on 2025-07-29 20:19_
+
+> Wait, what? I thought clap errors on empty argument. Is this only true for custom types and not String? In Vec<_>.
+
+It accepts them, see https://play.rust-lang.org/?version=stable&mode=debug&edition=2024&gist=ed97e604a1b30e7af53eae904a84bd1f
+
+---
+
+_Comment by @Andrew15-5 on 2025-07-30 10:17_
+
+TIL
+
+> API size (the more that exists in the API, the harder it is to find things, the less people use anything in the API including the new feature, the less value gained by these features)
+
+I don't think this is how it works. If a library can do things, then there is almost no reason not to use it. Although my only gripe was that clap's docs, at least for derived stuff, was very confusing, and I often got lost in it. This was like 1 or 2 years ago. I don't use it enough to know how it has changed. But now I know roughly how things work, so it's much easier to search for specific features/API.
+
+> Binary size
+
+Weeell... It looks like with derive clap it's exactly 1 MiB, without derive it's about 1000 KiB. But without clap it's almost 0.5 MiB, so for zero-config binaries you still ain't getting anywhere close to sub 100 KiB or whatever. I think binary size is not an issue, since it is drastically increased by many or even few other dependencies. For example, Typst is just shy of 40 MiB, while `dx` is 84 MiB for me.
+
+> Build times
+
+This can be true, it does take about 4 s on my machine. But it is probably not that noticeable if you still use any alternative to clap. I assume it would be something like 2 s vs. 4 s, or 3 vs. 4. Not sure if this will add 0.1 s, or less, or more.
+
+With that said, I don't know how many CLIs will actually want to use this, so it might still be a niche feature.
+
+---
+
+_Comment by @epage on 2025-07-31 15:22_
+
+> > API size (the more that exists in the API, the harder it is to find things, the less people use anything in the API including the new feature, the less value gained by these features)
+> 
+> I don't think this is how it works. If a library can do things, then there is almost no reason not to use it.
+
+Yes, it is; I'm speaking from the experience of supporting users. The key word is "find". People have to assume a feature exists and the right terms to find them to use it.
+
+> > Binary size
+> 
+> Weeell... It looks like with derive clap it's exactly 1 MiB, without derive it's about 1000 KiB. But without clap it's almost 0.5 MiB, so for zero-config binaries you still ain't getting anywhere close to sub 100 KiB or whatever. I think binary size is not an issue, since it is drastically increased by many or even few other dependencies. For example, Typst is just shy of 40 MiB, while `dx` is 84 MiB for me.
+>
+> > Build times
+> 
+> This can be true, it does take about 4 s on my machine. But it is probably not that noticeable if you still use any alternative to clap. I assume it would be something like 2 s vs. 4 s, or 3 vs. 4. Not sure if this will add 0.1 s, or less, or more.
+> 
+> With that said, I don't know how many CLIs will actually want to use this, so it might still be a niche feature.
+
+I'm not speaking of the impact of any one feature but the impact if we add every feature people ask for. We have to weigh the benefit to the users who want the feature against the costs to all users.
+
+
+---
+
+_Comment by @Andrew15-5 on 2025-08-01 13:51_
+
+I assume we have to wait for a third party/others to give an opinion.
+
+---

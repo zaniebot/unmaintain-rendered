@@ -1,0 +1,62 @@
+---
+number: 6662
+title: Please implement PIE808 (prefer-simple-range)
+type: issue
+state: closed
+author: nth10sd
+labels:
+  - rule
+  - accepted
+assignees: []
+created_at: 2023-08-17T20:47:36Z
+updated_at: 2023-08-19T21:59:13Z
+url: https://github.com/astral-sh/ruff/issues/6662
+synced_at: 2026-01-07T13:12:15-06:00
+---
+
+# Please implement PIE808 (prefer-simple-range)
+
+---
+
+_Issue opened by @nth10sd on 2023-08-17 20:47_
+
+`range(0, 10)` will turn into `range(10)`.
+
+```
+$ ruff --version
+ruff 0.0.284
+```
+
+---
+
+_Label `rule` added by @zanieb on 2023-08-17 20:56_
+
+---
+
+_Label `accepted` added by @charliermarsh on 2023-08-18 03:30_
+
+---
+
+_Comment by @harupy on 2023-08-18 11:45_
+
+Can I work on this?
+
+---
+
+_Comment by @charliermarsh on 2023-08-18 13:29_
+
+Go for it!
+
+---
+
+_Assigned to @harupy by @charliermarsh on 2023-08-18 13:29_
+
+---
+
+_Referenced in [astral-sh/ruff#6690](../../astral-sh/ruff/pulls/6690.md) on 2023-08-19 05:47_
+
+---
+
+_Closed by @charliermarsh on 2023-08-19 21:59_
+
+---

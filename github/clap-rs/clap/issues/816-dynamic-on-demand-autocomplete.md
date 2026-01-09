@@ -1,0 +1,41 @@
+---
+number: 816
+title: Dynamic, on-demand autocomplete
+type: issue
+state: closed
+author: Xion
+labels: []
+assignees: []
+created_at: 2017-01-14T02:18:15Z
+updated_at: 2018-08-02T03:29:59Z
+url: https://github.com/clap-rs/clap/issues/816
+synced_at: 2026-01-07T13:12:19-06:00
+---
+
+# Dynamic, on-demand autocomplete
+
+---
+
+_Issue opened by @Xion on 2017-01-14 02:18_
+
+In Python, there is a package called [argcomplete](https://pypi.python.org/pypi/argcomplete) which provides very flexible autocompletion for apps that use the standard argparse module. What it allows is to implement a custom completion provider: essentially a piece of your own code that's executed when the the binary is invoked in a Special Way (tm) by the shell-specific completion script.
+
+For an example, see [here](https://github.com/Xion/gisht.py/blob/master/gisht/args/autocomplete.py#L26). The code is preparing completions dynamically from the filesystem, or even from a remote API (if certain flag isn't passed (flags are partially parsed at this point)).
+
+Having something like this in clap would be very nice. I know this is a potentially complex subsystem so it'd be unreasonable to expect it implemented anytime, but I wanted to at least put this feature on the radar.
+
+---
+
+_Comment by @kbknapp on 2017-01-14 02:25_
+
+Thanks for taking the time to suggest this! It's been mentioned before in #568 but hasn't been implemented yet. There's still some design details that need to be figured out, but it's something I *do* want to add. I'm going to close this issue but copy your comments over to 568.
+
+---
+
+_Closed by @kbknapp on 2017-01-14 02:25_
+
+---
+
+_Referenced in [clap-rs/clap#568](../../clap-rs/clap/issues/568.md) on 2017-01-14 02:25_
+
+---

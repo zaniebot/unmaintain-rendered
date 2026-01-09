@@ -1,0 +1,166 @@
+---
+number: 12389
+title: "PEP517 backend: support fallback to `uv` executable?"
+type: issue
+state: closed
+author: mgorny
+labels:
+  - enhancement
+assignees: []
+created_at: 2025-03-22T10:01:25Z
+updated_at: 2025-04-22T11:46:44Z
+url: https://github.com/astral-sh/uv/issues/12389
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# PEP517 backend: support fallback to `uv` executable?
+
+---
+
+_Issue opened by @mgorny on 2025-03-22 10:01_
+
+### Summary
+
+Currently, the `uv_build` PEP517 backend supports using `uv-build` executable only. However, FWIU the backend code is fully included in `uv` itself, and FWICS it is exposed as `uv build-backend` subcommand. Would it be possible to add a fallback to the Python code, to support using `uv build-backend` when `uv-build` is not available?
+
+Our use case is that since we're packaging `uv` already, we'd like to reuse this package instead of having to build a second `uv-build` executable that has a very wide overlap with it.
+
+### Example
+
+_No response_
+
+---
+
+_Label `enhancement` added by @mgorny on 2025-03-22 10:01_
+
+---
+
+_Assigned to @konstin by @charliermarsh on 2025-03-23 13:25_
+
+---
+
+_Comment by @charliermarsh on 2025-03-23 13:26_
+
+\cc @konstin 
+
+---
+
+_Comment by @mgorny on 2025-03-23 13:49_
+
+For the record, I'd be happy to make a pull request — but wanted to ask first, so I wouldn't impose.
+
+---
+
+_Comment by @konstin on 2025-03-23 19:03_
+
+It's possible to expose the build backend through uv itself and to make Python shim with the `uv` binary, too.
+
+There's one caveat: For the Python packages, it's possible to install a different version of `uv_build` and `uv` in the same environment (we intentionally keep both zero-dependency, so we can't prevent this). For this reason, we want the default `uv_build` Python shim to only use build backend binary, not the `uv` binary. Would it work for you if we merge the infrastructure for the Python shim working with the `uv` binary, but the setting which binary to use is a build setting or a downstream (one line) patch?
+
+---
+
+_Comment by @mgorny on 2025-03-23 19:08_
+
+Not sure if I understand the concern. What I'm proposing is that if `uv-build` executable is not found, `uv` is used instead. Since the `uv-build` PyPI package installs both the `uv_build` Python backend and the `uv-build` executable, I don't believe the fallback would be used at all under normal circumstances — i.e. `uv` would only be used if someone deliberately removed `uv-build` executable.
+
+That said, I'm happy with anything that makes our lives easier. If all it takes it a trivial patch (ideally something that could be reliably done via `sed`), I'm all for it.
+
+---
+
+_Comment by @zanieb on 2025-03-23 21:46_
+
+Does this contradict the concerns that were raised in the build backend thread about the build backend's dependencies? If we're going through the effort to make a minimal package (i.e., reduced dependencies and binary size) doesn't it make sense to package it separately?
+
+> Would it work for you if we merge the infrastructure for the Python shim working with the uv binary, but the setting which binary to use is a build setting or a downstream (one line) patch?
+
+I am worried about third-party distributions of `uv` / `uv-build` behaving differently than ours — couldn't this be confusing to users?
+
+> What I'm proposing is that if uv-build executable is not found, uv is used instead.
+
+Where would this be implemented? In the `uv_build` Python code? As Konsti noted, the concern here is that the `uv-build` version must match the `uv` version for this to work — or the user may not be invoking the version of the build backend they expect.
+
+---
+
+_Comment by @musicinmybrain on 2025-04-04 20:19_
+
+I just wanted to note that, in Fedora, we’ve elected to package [`python-uv-build`](https://src.fedoraproject.org/rpms/python-uv-build) as an entirely separate source package from [`uv`](https://src.fedoraproject.org/rpms/uv). I’m happy that `uv` and `uv-build` have been designed to be relatively independent by default.
+
+- This `python-uv-build` package can be quite a bit simpler than the `uv` package.
+- Separate source packages make it easier to keep track of which patches, licenses, additional sources, etc. apply to each binary package.
+- While it normally makes sense to synchronize updates of `uv` and `python-uv-build`, there will likely be times when we want to keep updating `uv` (which we primarily see as a developer tool for end users) while holding `python-uv-build` (which we primarily see as a dependency for building packages) at an older version for compatibility in stable branches.
+
+This comment is not intended to express an opinion on the merits of this proposal, and I do hope there will be some sensible way to make @mgorny’s life easier.
+
+---
+
+_Comment by @mgorny on 2025-04-22 10:12_
+
+Ah, sorry, I've missed the followup comments.
+
+> Does this contradict the concerns that were raised in the build backend thread about the build backend's dependencies? If we're going through the effort to make a minimal package (i.e., reduced dependencies and binary size) doesn't it make sense to package it separately?
+
+I'd say these are different use cases. In general, if you don't have `uv` installed and don't plan on having it installed, then certainly a smaller `uv-build` executable makes sense. However, if you built `uv` already, building `uv-build` is redundant and a waste of energy.
+
+On top of that, Maturin makes things difficult. `uv-build` consists of a Python module and an executable. Gentoo supports 7 Python targets right now, and this currently means building the identical `uv-build` executable 7 times. Of course, we can hack that around to have it built only once — but in the end, for me it's cleaner to have a single `uv` package that's already built as plain Rust package (i.e. without repeating the build for 7 Python versions), and an `uv-build` package that installs only Python modules.
+
+That said, as I've said, there are valid use cases for this. If you're doing an isolated build, you definitely prefer building a smaller `uv-build` executable than the whole `uv`. On PowerPC, you can't even `pip install uv` anymore — after 20 minutes, the compiler runs out of address space. On the other hand, `uv-build` is still buildable out of the box. This also implies that we may elect to use `uv-build` in some cases in the future — but we still want to provide the option to avoid duplication.
+
+> I am worried about third-party distributions of `uv` / `uv-build` behaving differently than ours — couldn't this be confusing to users?
+
+If I understand correctly, `uv build-backend` is supposed to work exactly the same as `uv-build`. Isn't that the case? I think it needs to be the case, if `uv` is supposed to special-case building packages that use its own backend.
+
+> Where would this be implemented? In the `uv_build` Python code?
+
+Yes.
+
+> As Konsti noted, the concern here is that the `uv-build` version must match the `uv` version for this to work — or the user may not be invoking the version of the build backend they expect.
+
+This is not a problem for us — we control the dependency versions.
+
+---
+
+_Referenced in [astral-sh/uv#13049](../../astral-sh/uv/pulls/13049.md) on 2025-04-22 10:16_
+
+---
+
+_Comment by @konstin on 2025-04-22 10:19_
+
+> On top of that, Maturin makes things difficult. uv-build consists of a Python module and an executable. Gentoo supports 7 Python targets right now, and this currently means building the identical uv-build executable 7 times. Of course, we can hack that around to have it built only once — but in the end, for me it's cleaner to have a single uv package that's already built as plain Rust package (i.e. without repeating the build for 7 Python versions), and an uv-build package that installs only Python modules.
+
+Both packages, uv and uv-build, work across all supported Python versions (`py3-none-*` wheel tag), with no need to rebuild for different Python version. Is there anything specifically where maturin makes this hard? Note that maturin is not doing much work here, we're compiling a rust executable and adding a single Python file. If building uv-build is harder than copy&paste-ing the uv build configuration and replacing "uv" with "uv-build", I'd consider this a problem in our setup.
+
+> On PowerPC, you can't even pip install uv anymore — after 20 minutes, the compiler runs out of address space.
+
+If you've hit the same problem we've hit (32-bit compilers being allowed 4GB which fails to link uv), we're working around this by "cross-compiling" from a 64-bit host and compiler to a 32-bit target of the same OS.
+
+---
+
+_Comment by @mgorny on 2025-04-22 10:36_
+
+> Both packages, uv and uv-build, work across all supported Python versions (`py3-none-*` wheel tag), with no need to rebuild for different Python version. Is there anything specifically where maturin makes this hard?
+
+That assumes a build process where you can reuse wheels. This is not guaranteed nor required from Gentoo users.
+
+> If building uv-build is harder than copy&paste-ing the uv build configuration and replacing "uv" with "uv-build", I'd consider this a problem in our setup.
+
+Building `uv` is nowhere near trivial, provided you need to meet QA concerns. It requires fetching the archive from GitHub, so that we can run tests. It requires handling all the different switches and workarounds to make `*-sys` crates actually use system dependencies. It requires building a tarball with vendored crates and keeping the license list up-to-date. Finally, it implies running the test suite.
+
+I honestly don't have the energy to maintain the same thing for `uv-build`, provided it is even possible to isolate the `uv-build` parts and run their tests separately. On top of that, last I checked `Cargo.lock` includes more crates than necessary, which effectively implies we end up fetching too much. Plus, avoiding all the hassle lets us use PyPI source distributions.
+
+> If you've hit the same problem we've hit (32-bit compilers being allowed 4GB which fails to link uv), we're working around this by "cross-compiling" from a 64-bit host and compiler to a 32-bit target of the same OS.
+
+We can't really tell Gentoo's PPC users "sorry, you have to use a second machine and cross-compile to run this package".
+
+---
+
+_Closed by @konstin on 2025-04-22 11:46_
+
+---
+
+_Closed by @konstin on 2025-04-22 11:46_
+
+---
+
+_Referenced in [astral-sh/uv#15000](../../astral-sh/uv/issues/15000.md) on 2025-07-31 18:21_
+
+---

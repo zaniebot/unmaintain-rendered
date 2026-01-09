@@ -1,0 +1,192 @@
+---
+number: 7845
+title: Editable installation with extras
+type: issue
+state: closed
+author: detlefla
+labels:
+  - documentation
+  - question
+assignees: []
+created_at: 2024-10-01T14:39:41Z
+updated_at: 2025-02-03T22:12:40Z
+url: https://github.com/astral-sh/uv/issues/7845
+synced_at: 2026-01-07T13:12:17-06:00
+---
+
+# Editable installation with extras
+
+---
+
+_Issue opened by @detlefla on 2024-10-01 14:39_
+
+When I try to install extras for an editable installation, e.g. `uv pip install -e . --all-extras`, uv refuses this with an error message:
+```
+error: Requesting extras requires a `pyproject.toml`, `setup.cfg`, or `setup.py` file.
+```
+Without `--extra` or ´--all-extras` everything is fine, so the pyproject.toml file is obviously present and can be processed.
+
+Particularly with an `install -e`, however, it's often desirable to install the dev dependencies; `uv pip install` doesn't have any kind of `--dev` flag (unless I miss something).
+
+I haven't provided a full working sample as I think this behaviour doesn't depend on any particular conditions, but of course I'll try to prepare a stripped-down sample if it helps. I'm using uv 0.4.17.
+
+---
+
+_Comment by @notatallshaw-gts on 2024-10-01 16:24_
+
+Don't you want `uv pip install -e .[my-extra]`?
+
+That's how it works for pip, and I believe uv is copying the behavior here.
+
+---
+
+_Comment by @detlefla on 2024-10-01 16:56_
+
+OK, thanks for pointing this out, in fact it works. It's a bit surprising that `--all-extras` doesn't work then, and it seems that an extra `[dev]` is apparently better suited for development than using `tool.uv.dev-dependencies`.
+
+But I can very well live with that, thank you for doing a great job with uv.
+
+---
+
+_Comment by @notatallshaw-gts on 2024-10-01 17:01_
+
+> It's a bit surprising that `--all-extras` doesn't work then
+
+`--all-extras` isn't an option from pip, it's an option from pip-compile, so while I'm sure that uv could add it, it's behavior is not currently defined, e.g. would you wanting it installing every extra from every transitive dependency?
+
+---
+
+_Comment by @detlefla on 2024-10-01 17:12_
+
+As this option appears in the output for `uv pip install --help` and this output looks significantly different from `uv pip compile --help`, I thought this option was related to the install subcommand.
+
+In fact IMO it wouldn't be useful to apply this to all transitive dependencies, no.
+
+---
+
+_Comment by @notatallshaw-gts on 2024-10-01 17:22_
+
+> As this option appears in the output for `uv pip install --help`
+
+Yeah:
+
+```
+$ uv pip install --help | grep "all-extras"
+      --all-extras                           Include all optional dependencies
+
+$ ls pyproject.toml
+pyproject.toml
+
+$ uv pip install . --all-extras
+error: Requesting extras requires a `pyproject.toml`, `setup.cfg`, or `setup.py` file.
+```
+
+This looks like a bug, `--all-extras` should not be available for `uv pip install`? Or the docs / error message isn't clear when it should work? @charliermarsh ?
+
+---
+
+_Comment by @charliermarsh on 2024-10-01 17:30_
+
+`--all-extras` applies to passing a `pyproject.toml` or similar directly -- like `uv pip install ./pyproject.toml --all-extras`. There's no defined syntax for enabling extras there, unlike when passing a path (`uv pip install .[dev]`).
+
+---
+
+_Comment by @notatallshaw-gts on 2024-10-01 17:33_
+
+That makes sense, the `--help` and the error are both pretty unclear though if you're not already familiar with that exact use case.
+
+If no one else does I might write a PR, or else I will be confused when I come across this again in a years time.
+
+---
+
+_Label `documentation` added by @zanieb on 2024-10-01 18:52_
+
+---
+
+_Label `question` added by @zanieb on 2024-10-01 18:52_
+
+---
+
+_Referenced in [astral-sh/uv#8416](../../astral-sh/uv/issues/8416.md) on 2024-10-21 21:58_
+
+---
+
+_Referenced in [pypa/pip#12963](../../pypa/pip/issues/12963.md) on 2024-10-26 16:03_
+
+---
+
+_Comment by @pamelafox on 2024-11-12 19:41_
+
+I was just writing up a similar experience when I found this one. What I wrote up--
+
+I attempted to install a project that had a pyproject.toml in the root and several extras defined:
+
+```
+(flask-admin) flask-admin % uv pip install -e . --all-extras                  
+error: Requesting extras requires a `pyproject.toml`, `setup.cfg`, or `setup.py` file.
+```
+
+It worked when I ran:
+
+```
+(flask-admin) flask-admin % uv pip install -e . --all-extras -r pyproject.toml
+```
+
+It seemed unnecessary, since `-e .` works fine when not specifying extras, so I was surprised I needed to explicitly pass in the pyproject.toml when asking for extras.
+
+I think another example in the documentation could be helpful. I was looking through https://docs.astral.sh/uv/pip/packages/#editable-packages for guidance.
+
+---
+
+_Comment by @ssbarnea on 2025-01-02 10:02_
+
+Keep in mind that --editable can also be mentioned multiple times, this means that we might want to ensure that we allow mentioning the all extras as a part of the --editable argument. Maybe `...[*]` or `...[all]` (star is bit problematic as it might need to be escaped for shell.
+
+---
+
+_Comment by @akaihola on 2025-01-11 17:07_
+
+> `uv pip install ./pyproject.toml --all-extras`
+
+@charliermarsh,
+```bash
+$ uv --version
+uv 0.5.15
+$ uv pip install ./pyproject.toml --all-extras
+error: Requesting extras requires a `pyproject.toml`, `setup.cfg`, or `setup.py` file.     <-- why?
+$ uv pip install ./pyproject.toml
+error: Failed to parse: `./pyproject.toml`
+  Caused by: Expected path (`./pyproject.toml`) to end in a supported file extension:      <-- why?
+  `.whl`, `.tar.gz`, `.zip`, `.tar.bz2`, `.tar.lz`, `.tar.lzma`, `.tar.xz`, `.tar.zst`, `.tar`, `.tbz`, `.tgz`, `.tlz`, or `.txz`
+./pyproject.toml
+^^^^^^^^^^^^^^^^
+$ ls pyproject.toml
+pyproject.toml
+$ uv pip install -e .
+Using Python 3.12.7 environment at: /home/akaihola/.cache/myproject/.venv
+Audited 1 package in 131ms
+```
+
+As a work-around, this seems to work:
+```bash
+$ uv pip compile --all-extras pyproject.toml | uv pip install -r -
+Resolved 34 packages in 39ms
+Using Python 3.12.7 environment at: /home/akaihola/.cache/aider-chat/.venv
+Resolved 34 packages in 33ms
+Prepared 9 packages in 202ms
+Uninstalled 9 packages in 115ms
+Installed 9 packages in 37ms
+$ uv pip install -e .
+Using Python 3.12.7 environment at: /home/akaihola/.cache/myproject/.venv
+Audited 1 package in 131ms
+```
+
+---
+
+_Referenced in [astral-sh/uv#11193](../../astral-sh/uv/pulls/11193.md) on 2025-02-03 20:37_
+
+---
+
+_Closed by @zanieb on 2025-02-03 22:12_
+
+---

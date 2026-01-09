@@ -1,0 +1,75 @@
+---
+number: 5207
+title: "Add `-?` alias for `-h`"
+type: issue
+state: closed
+author: SUPERCILEX
+labels:
+  - C-enhancement
+assignees: []
+created_at: 2023-11-10T23:06:32Z
+updated_at: 2023-11-13T18:24:57Z
+url: https://github.com/clap-rs/clap/issues/5207
+synced_at: 2026-01-07T13:12:20-06:00
+---
+
+# Add `-?` alias for `-h`
+
+---
+
+_Issue opened by @SUPERCILEX on 2023-11-10 23:06_
+
+### Please complete the following tasks
+
+- [X] I have searched the [discussions](https://github.com/clap-rs/clap/discussions)
+- [X] I have searched the [open](https://github.com/clap-rs/clap/issues) and [rejected](https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed) issues
+
+### Clap Version
+
+4.x
+
+### Describe your use case
+
+Other CLIs (ocaml for example) use `-?` in addition to `-h`:
+
+```
+arty.exe c -?
+Compile into verilog
+
+  arty.exe compile 
+
+=== flags ===
+
+  [-output Output]           . file
+  [-help], -?                . print this help text and exit
+```
+
+### Describe the solution you'd like
+
+Alias `-h` with `-?`
+
+### Alternatives, if applicable
+
+_No response_
+
+### Additional Context
+
+_No response_
+
+---
+
+_Comment by @epage on 2023-11-11 01:56_
+
+In that case, they don `-?` instead of `-h`. `less` is another example of this.
+
+We are unlikely to run into conflicts with other flags.
+
+However, I don't like the idea of this being a visible alias, in part because I'm unsure about forcing the help item. I also see little value if it were a hidden alias.
+
+---
+
+_Comment by @kbknapp on 2023-11-13 14:49_
+
+I would also be 👎🏻 on this as a default implementation. People can already add `-?` if desired as either a hidden/visible alias or even replace `-h` entirely.
+
+---

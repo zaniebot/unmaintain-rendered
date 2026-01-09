@@ -1,0 +1,63 @@
+---
+number: 8245
+title: "Docs: Ruff formatter and conflicting isort rules ambiguity"
+type: issue
+state: closed
+author: thernstig
+labels:
+  - documentation
+  - formatter
+assignees: []
+created_at: 2023-10-26T06:55:14Z
+updated_at: 2023-10-31T09:32:40Z
+url: https://github.com/astral-sh/ruff/issues/8245
+synced_at: 2026-01-07T13:12:15-06:00
+---
+
+# Docs: Ruff formatter and conflicting isort rules ambiguity
+
+---
+
+_Issue opened by @thernstig on 2023-10-26 06:55_
+
+I have read all the docs now, and they are in general in great shape! So good job. There was only one section I could not grok, and I believe it could use some kind of improvement in its description.
+
+From https://docs.astral.sh/ruff/formatter/#conflicting-lint-rules
+
+> Similarly, we recommend disabling the following isort settings, which are incompatible with the formatter's treatment of import statements when set to non-default values:
+
+Some of the settings are not able to be "disabled" per se. And there seems to be no action to take by a user if just using the formatter as-is, right?
+
+Could the sentence be rephrased slightly?
+
+---
+
+_Label `documentation` added by @MichaReiser on 2023-10-26 07:05_
+
+---
+
+_Label `formatter` added by @MichaReiser on 2023-10-26 07:05_
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2023-10-26 15:17_
+
+---
+
+_Comment by @charliermarsh on 2023-10-26 15:17_
+
+Good feedback -- will tweak today.
+
+---
+
+_Referenced in [astral-sh/ruff#8257](../../astral-sh/ruff/pulls/8257.md) on 2023-10-26 17:05_
+
+---
+
+_Closed by @charliermarsh on 2023-10-26 17:19_
+
+---
+
+_Added to milestone `Formatter: Stable` by @MichaReiser on 2023-10-30 00:47_
+
+---

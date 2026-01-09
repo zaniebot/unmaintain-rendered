@@ -1,0 +1,101 @@
+---
+number: 7968
+title: Update uv on winget to v0.4.18
+type: issue
+state: closed
+author: timrid
+labels:
+  - releases
+assignees: []
+created_at: 2024-10-07T11:28:01Z
+updated_at: 2024-11-09T06:54:33Z
+url: https://github.com/astral-sh/uv/issues/7968
+synced_at: 2026-01-07T13:12:17-06:00
+---
+
+# Update uv on winget to v0.4.18
+
+---
+
+_Issue opened by @timrid on 2024-10-07 11:28_
+
+At `winget` the latest available version of `uv` is v0.4.15. But currently v0.4.18 is already released. It would be good if the latest version of uv could also be obtained via winget.
+
+See here: https://winstall.app/apps/astral-sh.uv
+![image](https://github.com/user-attachments/assets/24265c76-3b0d-4c2b-8e08-e56720854b6b)
+
+---
+
+_Comment by @FishAlchemist on 2024-10-07 12:04_
+
+https://github.com/microsoft/winget-pkgs/pulls?q=is%3Apr+astral-sh.uv
+If you need it on winget, maybe it would be faster to open a PR to provide the new version?
+Because winget doesn't seem to be an officially maintained source by UV.
+
+Edit:
+Someone has opened a PR.
+https://github.com/microsoft/winget-pkgs/pull/179173
+
+
+---
+
+_Comment by @timrid on 2024-10-07 15:05_
+
+Ok, thanks. I assumed that it is officially supported as it is also mentioned in the [official documentation](https://docs.astral.sh/uv/getting-started/installation/#winget).
+
+---
+
+_Comment by @charliermarsh on 2024-10-08 22:30_
+
+Yeah we don't control this distribution unfortunately.
+
+---
+
+_Closed by @charliermarsh on 2024-10-08 22:30_
+
+---
+
+_Label `releases` added by @charliermarsh on 2024-10-08 22:30_
+
+---
+
+_Comment by @FishAlchemist on 2024-10-09 03:40_
+
+> Yeah we don't control this distribution unfortunately.
+
+Have you considered having a member of the UV team create PRs for UV on [winget-pkgs](https://github.com/microsoft/winget-pkgs)?
+ Or let the community create PRs for UV on [winget-pkgs](https://github.com/microsoft/winget-pkgs) on their own?
+
+---
+
+_Comment by @zanieb on 2024-10-09 04:10_
+
+I don't see any reason you'd be prohibited from creating an update pull request — our project is permissively licensed and I  think the CLA is just for your code changes over there. Is there something specific you're referring to or concerned about?
+
+---
+
+_Comment by @Ravencentric on 2024-10-09 06:27_
+
+A project I'm familiar with uses <https://github.com/vedantmgoyal9/winget-releaser> to keep winget distribution in sync. Might be worth looking into if you haven't already.
+
+---
+
+_Comment by @FishAlchemist on 2024-10-09 10:15_
+
+@zanieb I'm unsure about the specific licensing terms for distributing binaries under MIT and Apache-2.0 licenses, and I want to avoid violating any CLA agreements. However, based on my understanding of these licenses, as long as I provide the original source and licensing terms, I should be fine.
+
+Edit:
+After verifying that there are no problems and that no identical PRs exist, I will complete [my pull request](https://github.com/microsoft/winget-pkgs/pull/179771).
+The PR Merged.
+
+---
+
+_Comment by @Dragon1573 on 2024-11-09 06:54_
+
+> A project I'm familiar with uses [WinGet Releaser v2](https://github.com/vedantmgoyal9/winget-releaser) to keep `winget` distribution in sync. Might be worth looking into if you haven't already.
+
+Also, as the pull request is directly created by the package publisher & author, the pull request will be "privileged" and can immediately merged after validation pipeline is passed. Contributors & volunteers don't have these privileges, and they might not be noticed at once, leading "always outdated" problem.
+
+Please refer to [JanDeDobbeleer/oh-my-posh](https://github.com/JanDeDobbeleer/oh-my-posh), he performs version updates frequently and all these updates are synced and merged to `winget` source soon after the release action. 🙏🏼
+
+---

@@ -1,0 +1,62 @@
+---
+number: 20305
+title: Gitlab code quality report must use forward slash in paths
+type: issue
+state: open
+author: mathieugouin
+labels:
+  - diagnostics
+assignees: []
+created_at: 2025-09-08T14:27:45Z
+updated_at: 2025-09-08T17:42:12Z
+url: https://github.com/astral-sh/ruff/issues/20305
+synced_at: 2026-01-07T13:12:16-06:00
+---
+
+# Gitlab code quality report must use forward slash in paths
+
+---
+
+_Issue opened by @mathieugouin on 2025-09-08 14:27_
+
+### Summary
+
+(issue was originally discussed in #14732 )
+
+If the gitlab report is ran on a windows host, the generated paths in the json file have backslashes (`\`).
+
+However, gitlab does not accept backslashes in path for the report to work, they have to be forward slashes (`/`).
+
+The command to reproduce the problem (must run on a windows host):
+
+```ps1
+ruff check --exit-zero --no-cache --output-format gitlab --output-file python-gl-codequality.json
+```
+
+
+### Version
+
+```
+ruff 0.12.11 (c2bc15bc1 2025-08-28)
+```
+
+
+---
+
+_Renamed from "Gitlab code quality must use forward slash in paths" to "Gitlab code quality report must use forward slash in paths" by @mathieugouin on 2025-09-08 14:30_
+
+---
+
+_Comment by @ntBre on 2025-09-08 17:42_
+
+Thanks for the report! I can look into this since I've been working on the GitLab output format recently, unless someone beats me to it :)
+
+---
+
+_Assigned to @ntBre by @ntBre on 2025-09-08 17:42_
+
+---
+
+_Label `diagnostics` added by @ntBre on 2025-09-08 17:42_
+
+---

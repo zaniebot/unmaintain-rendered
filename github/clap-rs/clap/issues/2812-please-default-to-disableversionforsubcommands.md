@@ -1,0 +1,112 @@
+---
+number: 2812
+title: Please default to DisableVersionForSubcommands
+type: issue
+state: closed
+author: joshtriplett
+labels: []
+assignees: []
+created_at: 2021-10-04T21:46:25Z
+updated_at: 2021-10-11T09:25:59Z
+url: https://github.com/clap-rs/clap/issues/2812
+synced_at: 2026-01-07T13:12:19-06:00
+---
+
+# Please default to DisableVersionForSubcommands
+
+---
+
+_Issue opened by @joshtriplett on 2021-10-04 21:46_
+
+### Please complete the following tasks
+
+- [X] I have searched the [discussions](https://github.com/clap-rs/clap/discussions)
+- [X] I have searched the existing issues
+
+### Clap Version
+
+3.0.0-beta.4
+
+### Describe your use case
+
+I have various subcommands, each of which has various options, and in the help for those subcommands, the display space and cognitive space of the user is precious. I don't want to show the `--version` option on subcommands, because it takes up one more line and one more bit of "complexity at a glance".
+
+### Describe the solution you'd like
+
+I'd propose that either `DisableVersionForSubcommands` should become the default, or a new `HideVersionForSubcommands` should become the default.
+
+### Alternatives, if applicable
+
+I think it'd be fine if `--version` *worked* on subcommands; I just don't want it to show up in the help output. So, a `HideVersionForSubcommands` option would be fine, and would avoid any potential backwards compatibility issues.
+
+### Additional Context
+
+_No response_
+
+---
+
+_Label `T: new feature` added by @joshtriplett on 2021-10-04 21:46_
+
+---
+
+_Comment by @epage on 2021-10-05 15:18_
+
+I'll be upfront, I'm unsure how we should go about a decision like this.
+
+Something that might help is if we have an idea what precedent there is for current behavior and any of the proposed behaviors like we did for https://github.com/clap-rs/clap/issues/2808
+
+---
+
+_Comment by @epage on 2021-10-05 18:51_
+
+Forgot to mention, this is being carried over from https://github.com/clap-rs/clap/discussions/2627#discussioncomment-1308589
+
+Two concerns I raised there
+- As a user, its handy to be able to add a flag to my last command and it just work, rather than having to edit the entire command or type it over
+- `cargo subcmd` maps to `cargo-subcmd subcmd`.  If we make DisableVersionForSubcommands the default, then `cargo subcmd --version` will not work by default.
+  - I wonder how often this pattern for external subcommands exists.  I know git doesn't do it
+  - However, `cargo` is likely enough for people to plug into that I worry about people releasing without knowing they are missing `--version` and then them having to discover how to get it back
+
+---
+
+_Comment by @kbknapp on 2021-10-06 00:02_
+
+Agreed that subcommands are rarely individually versioned. I'd be in favor of making the global version the default. 
+
+As for wanting to hide or disable `--version` from all subcommands I think that should be opt-in via `DisableVersionForSubcommands`.
+
+Actually...now that I think about it. Why do we build/show a `--version` when no version exists? I.e. if the user hasn't set a version, we shouldn't present that as a flag. Granted, if we did this, my first statement about making global version the default would then still require @joshtriplett or similar use cases to do something like `DisableVersionForSubcommands`. 
+
+---
+
+_Comment by @kbknapp on 2021-10-06 00:03_
+
+To be clear, I'd like to address the building a `--version` when no version exists regardless. Doing that would solve the problem of this issue outright with no additional changes. 
+
+Making global versions the default could then be either addressed separately and either kicked down the road, or rejected.
+
+---
+
+_Referenced in [clap-rs/clap#2831](../../clap-rs/clap/pulls/2831.md) on 2021-10-08 18:01_
+
+---
+
+_Closed by @bors[bot] on 2021-10-09 16:27_
+
+---
+
+_Comment by @joshtriplett on 2021-10-11 09:25_
+
+FWIW, another approach to solve this would be a different method to set the version, which only sets it for the top level command; effectively, combine setting version with setting a common option about --version.
+
+That can be done post-3.0, so I don't think it needs to be a blocker.
+
+---
+
+_Referenced in [SeaQL/sea-orm#664](../../SeaQL/sea-orm/issues/664.md) on 2022-04-10 05:41_
+
+---
+
+_Referenced in [solana-labs/solana-program-library#4511](../../solana-labs/solana-program-library/issues/4511.md) on 2023-06-08 23:33_
+
+---

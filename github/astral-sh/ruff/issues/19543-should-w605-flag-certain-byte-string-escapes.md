@@ -1,0 +1,85 @@
+---
+number: 19543
+title: Should W605 flag certain byte string escapes?
+type: issue
+state: open
+author: MeGaGiGaGon
+labels:
+  - question
+assignees: []
+created_at: 2025-07-24T23:18:00Z
+updated_at: 2025-07-25T08:38:59Z
+url: https://github.com/astral-sh/ruff/issues/19543
+synced_at: 2026-01-07T13:12:16-06:00
+---
+
+# Should W605 flag certain byte string escapes?
+
+---
+
+_Issue opened by @MeGaGiGaGon on 2025-07-24 23:18_
+
+### Question
+
+I'm planning to work on #11491 (Edit: worked on it #19546), and I noticed while reading the code that there's no special casing for escapes that aren't valid in byte strings:
+```powershell
+PS >Set-Content issue.py 'print(b"\u0000")'
+PS >cat issue.py | py -
+<stdin>:1: SyntaxWarning: invalid escape sequence '\u'
+b'\\u0000'
+PS >cat issue.py | uvx ruff check - --select W605 --isolated
+All checks passed!
+```
+Should I also work on getting the `\N`, `\u`, and `\U` cases to report on byte strings? It looks like this behavior is the same as in `pycodestyle`:
+```powershell
+PS >Set-Content issue.py 'print(b"\u0000")'
+PS >uvx pycodestyle issue.py
+PS >Set-Content issue.py 'b"\XFF"'
+PS >uvx pycodestyle issue.py
+issue.py:1:3: W605 invalid escape sequence '\X'
+```
+
+### Version
+
+ruff 0.12.5 (d13228ab8 2025-07-24)
+
+---
+
+_Label `question` added by @MeGaGiGaGon on 2025-07-24 23:18_
+
+---
+
+_Comment by @MichaReiser on 2025-07-25 07:38_
+
+Can you check if `\u` also shows an error on Python 3.6. If not, then we'd have to at least update the rule documentation to mention that some errors are deprecated since 3.12
+
+---
+
+_Comment by @MeGaGiGaGon on 2025-07-25 07:50_
+
+I'm confused on what you mean, but I did test it:
+Testing with `b"\u0000";b"\X";"\X"`:
+On python 3.6 - 3.11 no warnings are issued
+On python 3.12-3.13 three warnings are issued
+```
+<string>:1: SyntaxWarning: invalid escape sequence '\u'
+<string>:1: SyntaxWarning: invalid escape sequence '\X'
+<string>:1: SyntaxWarning: invalid escape sequence '\X'
+```
+3.14 also issues 3 warnings, but more verbose ones.
+
+---
+
+_Comment by @MichaReiser on 2025-07-25 08:38_
+
+Thank you. 
+
+The rule explicitly mentions that invalid escapes were deprecated in 3.6
+
+> Invalid escape sequences are deprecated in Python 3.6.
+
+However, it appears that these are escapes that were later marked as invalid. 
+
+That's why I think we should make the change but, while doing so, update the documentation that these now emit a `SyntaxWarning` in Python 3.12 and newer
+
+---

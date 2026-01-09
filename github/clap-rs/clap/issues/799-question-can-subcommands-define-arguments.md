@@ -1,0 +1,170 @@
+---
+number: 799
+title: "Question: Can subcommands define arguments?"
+type: issue
+state: closed
+author: matthiasbeyer
+labels: []
+assignees: []
+created_at: 2016-12-31T22:14:03Z
+updated_at: 2018-08-02T03:29:59Z
+url: https://github.com/clap-rs/clap/issues/799
+synced_at: 2026-01-07T13:12:19-06:00
+---
+
+# Question: Can subcommands define arguments?
+
+---
+
+_Issue opened by @matthiasbeyer on 2016-12-31 22:14_
+
+I would love to have a way to pass arguments to subcommands, to build CLIs like this:
+
+```
+foo bar <argument>
+```
+
+(I removed the template because no section applied to my problem). I'm not sure whether I told you this before... but a short google search and github search did not bring up anything useful...
+
+---
+
+_Comment by @matthiasbeyer on 2016-12-31 22:21_
+
+@panicbit said on IRC that I should write "positional arguments". :smile: 
+
+---
+
+_Comment by @panicbit on 2016-12-31 23:54_
+
+This actually seems to work already. Oddly I remember it not working though. Was this added recently?
+Maybe it was subcommands and positional args being mutually exclusive?
+
+Anyways, here is an example:
+
+```rust
+extern crate clap;
+
+use clap::{Arg, App, SubCommand};
+
+fn main() {
+    let matches = App::new("My Super Program")
+        .subcommand(SubCommand::with_name("foo")
+            .arg(Arg::with_name("BAR")
+                .index(1)
+                .required(true)
+            )
+        )
+        .get_matches();
+}
+```
+
+Which yields the following with `foo --help`:
+
+```
+clapper-foo 
+
+USAGE:
+    clapper foo <BAR>
+
+FLAGS:
+    -h, --help       Prints help information
+    -V, --version    Prints version information
+
+ARGS:
+    <BAR> 
+```
+
+---
+
+_Comment by @kbknapp on 2017-01-01 03:41_
+
+@panicbit Thanks! 
+
+@matthiasbeyer yep, they aleady work exactly like that. Subcommands are actually just aliases for `App`s. So anything `App` can do, so can a `SubCommand`. I know it's somewhat confusing so I'm actually just considering going to `Cmd` for both the `App` and `SubCommand` since're identical.
+
+The reasoning behind going through two different names was they originally didn't have the same functionality. And it allowed you "switch mental contexts" between what you were doing. 
+
+Edit: [Here's the docs page](https://docs.rs/clap/2.19.3/clap/struct.SubCommand.html), which I think could be worded a little better to reduce confusion.
+
+---
+
+_Label `T: RFC / question` added by @kbknapp on 2017-01-01 03:42_
+
+---
+
+_Renamed from "Feature request: Arguments for subcommands." to "Quesiton: Can subcommands define arguments?" by @kbknapp on 2017-01-01 03:46_
+
+---
+
+_Renamed from "Quesiton: Can subcommands define arguments?" to "Question: Can subcommands define arguments?" by @kbknapp on 2017-01-01 03:52_
+
+---
+
+_Comment by @kbknapp on 2017-01-01 04:08_
+
+> Was this added recently? Maybe it was subcommands and positional args being mutually exclusive?
+
+It's been in for quite a while. There may have been a bug at the time you tried it? Also there are some oddities like trying to use a value for a positional argument which happens to be the same as one of your subcommands (i.e.  trying to use `$ prog foo` for `$ prog <positional>` when `prog foo` is a valid subcommand as well...but this is super rare in reality, and would just require to use `$ prog -- foo` to solve it which is also conventional.). Recently added (as of last night) there is also a new setting to combat that issue, if it ever comes up (such as designing a CLI where you'd like some positional values to be the same your subcommands), see [`AppSettings::ArgsNegateSubcommands`](https://github.com/kbknapp/clap-rs/blob/3ca4a08f0f7da9046ceccc9debebc156f79053b1/src/app/settings.rs#L228-L248) for details (sorry it's not on docs.rs yet as I haven't put out the new version yet!)
+
+---
+
+_Comment by @panicbit on 2017-01-03 12:08_
+
+Sorry, I had some other stuff to do.
+
+I just replicated my scenario and minified it:
+
+```
+    App::new("App")
+        .arg(Arg::with_name("foo")
+            .required_unless("bar")
+        )
+        .subcommand(SubCommand::with_name("quux"))
+        .get_matches()
+```
+
+Results in:
+
+```
+App 
+
+USAGE:
+    super <foo> [SUBCOMMAND]
+
+FLAGS:
+    -h, --help       Prints help information
+    -V, --version    Prints version information
+
+ARGS:
+    <foo>    
+
+SUBCOMMANDS:
+    bar     
+    help    Prints this message or the help of the given subcommand(s)
+```
+
+I guess this is not a bug because of the `.required_unless`.
+
+---
+
+_Comment by @panicbit on 2017-01-03 12:15_
+
+But you can't specify subcommands in `required_unless` and co, which is an issue.
+
+---
+
+_Comment by @kbknapp on 2017-01-03 13:18_
+
+@panicbit you can use [`AppSettings:: SubcommandsNegateReqs`](https://docs.rs/clap/2.19.3/clap/enum.AppSettings.html#variant.SubcommandsNegateReqs) which does what you're looking for.
+
+---
+
+_Comment by @panicbit on 2017-01-03 14:01_
+
+Cool, thanks!
+
+---
+
+_Closed by @kbknapp on 2017-01-03 21:24_
+
+---

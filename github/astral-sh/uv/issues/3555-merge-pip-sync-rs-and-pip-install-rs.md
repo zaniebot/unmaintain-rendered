@@ -1,0 +1,59 @@
+---
+number: 3555
+title: "Merge `pip_sync.rs` and `pip_install.rs`."
+type: issue
+state: closed
+author: charliermarsh
+labels:
+  - internal
+assignees: []
+created_at: 2024-05-13T17:23:55Z
+updated_at: 2024-05-22T16:15:18Z
+url: https://github.com/astral-sh/uv/issues/3555
+synced_at: 2026-01-07T13:12:17-06:00
+---
+
+# Merge `pip_sync.rs` and `pip_install.rs`.
+
+---
+
+_Issue opened by @charliermarsh on 2024-05-13 17:23_
+
+These used to be more different but they've since converged a lot. The difference now is just that we resolve with --no-deps and we uninstall extraneous packages.
+
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2024-05-13 17:23_
+
+---
+
+_Label `internal` added by @charliermarsh on 2024-05-13 17:23_
+
+---
+
+_Comment by @palfrey on 2024-05-17 18:50_
+
+Would this result in `pip sync` gaining various `pip install` args? e.g. `-r foo.txt`
+
+---
+
+_Comment by @zanieb on 2024-05-17 21:15_
+
+I don't think so, the idea here is that we should combine our internal implementation to avoid duplicated logic.
+
+---
+
+_Comment by @charliermarsh on 2024-05-17 21:50_
+
+It will enable us to add constraints though.
+
+---
+
+_Referenced in [astral-sh/uv#3737](../../astral-sh/uv/pulls/3737.md) on 2024-05-22 15:10_
+
+---
+
+_Closed by @charliermarsh on 2024-05-22 16:15_
+
+---

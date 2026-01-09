@@ -1,0 +1,286 @@
+---
+number: 2848
+title: SIM114 and comments / line-length
+type: issue
+state: closed
+author: spaceone
+labels:
+  - question
+assignees: []
+created_at: 2023-02-13T10:22:41Z
+updated_at: 2023-06-13T00:54:23Z
+url: https://github.com/astral-sh/ruff/issues/2848
+synced_at: 2026-01-07T13:12:14-06:00
+---
+
+# SIM114 and comments / line-length
+
+---
+
+_Issue opened by @spaceone on 2023-02-13 10:22_
+
+I am unsure about `SIM114` - it makes sense in most cases but here for example I dislike it:
+```python
+            if request.flavor == "class" and not user.is_teacher(ldap_user_read):
+                continue  # only display teachers
+            elif request.flavor == "workgroup" and not user.is_student(ldap_user_read):
+                continue  # only display students
+```
+
+There are explanatory comments.
+I could change it into:
+```python
+            if (request.flavor == "class" and not user.is_teacher(ldap_user_read)) or (request.flavor == "workgroup" and not user.is_student(ldap_user_read)):
+                continue  # only display teachers or students
+```
+→ but that exceeds line length.
+
+and even worse for readability is this (or whatever black and such tools would do):
+```python
+            if (
+                request.flavor == "class" and not user.is_teacher(ldap_user_read))
+                or (request.flavor == "workgroup" and not user.is_student(ldap_user_read)
+            ):
+                continue  # only display teachers or students
+```
+
+
+---
+the actual block is even more complicated and putting it in one statement makes more complex brackets necessary.
+```python
+            if request.flavor == "class" and not user.is_teacher(ldap_user_read):
+                continue  # only display teachers
+            elif request.flavor == "workgroup" and not user.is_student(ldap_user_read):
+                continue  # only display students
+            elif (
+                request.flavor == "workgroup-admin"
+                and not user.is_student(ldap_user_read)
+                and not user.is_administrator(ldap_user_read)
+                and not user.is_staff(ldap_user_read)
+                and not user.is_teacher(ldap_user_read)
+            ):
+                continue  # only display school users
+```
+
+---
+
+_Comment by @spaceone on 2023-02-13 10:27_
+
+maybe some complexity rules could be applied. it makes sense if the statement would be more complex (multiple statements instead of just a `continue`).  if it-s a single statement which is even not calling a function but `continue`, `return`, `raise` or whatever but the if-conditions contain many `and` or `or` conditions it makes it more complex to read and understand.
+
+---
+
+_Comment by @charliermarsh on 2023-02-13 13:57_
+
+Yeah I agree that the rule is not helpful in those cases. We could definitely change it to ignore simple statements, though at that point, part of me wonders why have the rule enabled at all.
+
+---
+
+_Comment by @spaceone on 2023-02-13 14:34_
+
+The rule is helpful - I fixed a bunch of issues. But it's not useful in the future when I now have to disable it and new violations aren't detected.
+
+---
+
+_Comment by @charliermarsh on 2023-02-13 14:38_
+
+Can you give one or two examples of the kinds of issues you fixed, and the ones you ignored? Just to establish better heuristics.
+
+---
+
+_Comment by @spaceone on 2023-02-13 15:08_
+
+fixes:
+```diff
+                 if (
+                     only_distributed
+                     and "isDistributed" in project.dict
+                     and project.dict["isDistributed"]
+-                ):
+-                    projectlist.append(project)
+-                elif not only_distributed:
++                ) or not only_distributed:
+                     projectlist.append(project)
+```
+
+```diff
+             if self.is_student():
+                 subdir = os.path.join(self.school, "schueler")
+-            elif self.is_teacher():
+-                subdir = os.path.join(self.school, "lehrer")
+-            elif self.is_teacher_staff():
++            elif self.is_teacher() or self.is_teacher_staff():
+                 subdir = os.path.join(self.school, "lehrer")
+             elif self.is_staff():
+                 subdir = os.path.join(self.school, "mitarbeiter")
+```
+
+```diff
+     if isinstance(val, bytes):
+-        if b':' not in val:
++        if b':' not in val or val.lower().startswith(b'smtp:'):
+             return val
+-        else:
+-            if val.lower().startswith(b'smtp:'):
+-                return val
+
+```
+
+```diff
+-            if not compat_version:
+-                pass
+-            elif not vint:
++            if not compat_version or not vint:
+                 pass
+             elif compat_version > vint:
+```
+
+```diff
+                 # search for "set -e" in line
+-                if line.startswith('set -e'):
+-                    checks['set-e-body'] = True
+-                elif 'set -e' in line:
++                if line.startswith('set -e') or 'set -e' in line:
+                     checks['set-e-body'] = True
+```
+
+```diff
+-                if not mindiff:
++                if not mindiff or mindiff > diff:
+                     mindiff = diff
+-                else:
+-                    if mindiff > diff:
+-                        mindiff = diff
+```
+
+```diff
+-            if not self['password']:
+-                self['password'] = self.oldattr.get('password', [b''])[0].decode('ASCII')
+-                self.modifypassword = 0
+-            elif not self.info['password']:
++            if not self['password'] or not self.info['password']:
+                 self['password'] = self.oldattr.get('password', [b''])[0].decode('ASCII')
+                 self.modifypassword = 0
+             else:
+```
+
+
+unsure (not fixed therefore):
+
+```
+        if is_master_or_backup and membership:
+            raise DCMembership()
+        elif not is_master_or_backup and not membership:
+            raise DCMembership()
+```
+
+```
+                if setting.printmode == "none" and setting.ip[0] not in ucr.get(
+                    "samba/printmode/hosts/none", ""
+                ):  
+                    raise NotOk()
+                elif setting.printmode == "default" and (
+                    setting.ip[0] in ucr.get("samba/printmode/hosts/all", "") 
+                    or setting.ip[0] in ucr.get("samba/printmode/hosts/none", "") 
+                ):  
+                    raise NotOk()
+```
+
+
+
+```
+        while tokens:
+            t = tokens.pop(0)
+            if t == ')':
+                break
+            elif t == '(':
+                result |= cls.parse_test(tokens)
+            elif t == '!':
+                pass
+            elif t in COND:
+                pass
+            elif t in UNARY:
+                tokens.pop(0)
+            elif t.startswith('-'):
+                raise ValueError(t)
+```
+
+```
+            if key in (
+                "samba/othershares/hosts/deny",
+                "samba/othershares/hosts/none",
+                "samba/printmode/hosts/none",
+                "samba/printmode/hosts/all",
+                "cups/printmode/hosts/none",
+                "cups/printmode/hosts/all",
+            ):  
+                remove_list.append(key)
+            elif key.startswith("proxy/filter/room/") and key.endswith(("/ip", "/rule")):
+                remove_list.append(key)
+            elif key.startswith("samba/share/") and key.endswith("/hosts/deny"):
+                remove_list.append(key)
+            elif key.startswith("samba/sharemode/room/"):
+                remove_list.append(key)
+            elif key.startswith("samba/printmode/room/"):
+                remove_list.append(key)
+            elif key.startswith("proxy/filter/setting-user/"):
+                remove_list.append(key)
+```
+```
+146 |               if not filter and not regex:                                                                                                                            
+    |  _____________^                                                                                                                                                       
+147 | |                 _objs.append(obj)                                                                                                                                   
+148 | |             elif filter and obj.has_property(filter[0]) and obj[filter[0]] and fnmatch.fnmatch(obj[filter[0]], filter[1]):                                          
+149 | |                 _objs.append(obj)                                                                                                                                   
+    | |_________________________________^ SIM114  
+```
+
+```
+103 |               if relative_domain_name + "." + zone_name in deadEndRecords:                                                                                            
+    |  _____________^                                                                                                                                                       
+104 | |                 print("\t%s" % comp[0])                                                                                                                             
+105 | |             elif relative_domain_name + "." + zone_name not in allRecords:                                                                                          
+106 | |                 print("\t%s" % comp[0])                                                                                                                             
+    | |_______________________________________^ SIM114     
+```
+
+---
+
+_Label `question` added by @charliermarsh on 2023-02-13 17:45_
+
+---
+
+_Comment by @charliermarsh on 2023-02-13 18:13_
+
+We could skip if any of the bodies contain comments, although there are some cases where this is a good pattern even without comments, like:
+
+```
+if related_table == "stream" and item["type"] == 2:
+    pass
+elif related_table == "user_profile" and item["type"] == 1:
+    pass
+elif related_table == "huddle" and item["type"] == 3:
+    # save the recipient id with the huddle id, so that we can extract
+    # the user_profile ids involved in a huddle with the help of the
+    # subscription object
+    # check function 'get_huddles_from_subscription'
+    ID_MAP["recipient_to_huddle_map"][item["id"]] = lookup_table[old_id]
+else:
+    continue
+```
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2023-06-12 23:51_
+
+---
+
+_Comment by @charliermarsh on 2023-06-13 00:54_
+
+I'm going to close this for now, I'm unsure how to improve it.
+
+---
+
+_Closed by @charliermarsh on 2023-06-13 00:54_
+
+---

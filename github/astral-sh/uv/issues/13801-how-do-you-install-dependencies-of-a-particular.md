@@ -1,0 +1,109 @@
+---
+number: 13801
+title: How do you install dependencies of a particular group?
+type: issue
+state: closed
+author: alexei
+labels:
+  - question
+assignees: []
+created_at: 2025-06-03T10:24:16Z
+updated_at: 2025-06-03T10:57:30Z
+url: https://github.com/astral-sh/uv/issues/13801
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# How do you install dependencies of a particular group?
+
+---
+
+_Issue opened by @alexei on 2025-06-03 10:24_
+
+### Question
+
+Basically the title. I've been using `uv` for the past 6 months and I've just come to realise I don't know how to manage a venv:
+
+```shell
+$ uv init foo
+$ cd foo
+$ uv add starlette
+$ uv add --group production uvicorn
+$ uv add --dev boto3
+$ cat pyproject.toml
+[project]
+name = "foo"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "starlette>=0.47.0",
+]
+
+[dependency-groups]
+dev = [
+    "boto3>=1.38.28",
+]
+production = [
+    "uvicorn>=0.34.3",
+]
+$ ls -la .venv/lib/python3.13/site-packages/
+boto3/
+starlette/
+uvicorn/
+$ rm -rf .venv/
+$ uv venv
+$ ls -la .venv/lib/python3.13/site-packages/
+[empty]
+$ uv sync --group production
+$ ls -la .venv/lib/python3.13/site-packages/
+boto3/
+starlette/
+uvicorn/
+```
+
+What is `boto3` doing there if it was declared for the "dev" group?
+
+### Platform
+
+_No response_
+
+### Version
+
+uv 0.7.8
+
+---
+
+_Label `question` added by @alexei on 2025-06-03 10:24_
+
+---
+
+_Comment by @blueraft on 2025-06-03 10:49_
+
+`dev` is part of `default-groups`, which gets installed by default , see https://docs.astral.sh/uv/concepts/projects/dependencies/#default-groups
+
+---
+
+_Comment by @alexei on 2025-06-03 10:57_
+
+So then the solution is:
+
+```shell
+$ uv sync --no-default-groups --group production
+```
+
+And that does the trick:
+
+```shell
+$ ls -l .venv/lib/python3.13/site-packages/
+starlette/
+uvicorn/
+```
+
+Thanks @blueraft 
+
+---
+
+_Closed by @alexei on 2025-06-03 10:57_
+
+---

@@ -1,0 +1,296 @@
+---
+number: 1993
+title: Unix style line endings in error message on Windows
+type: issue
+state: closed
+author: davepacheco
+labels:
+  - C-bug
+  - S-waiting-on-decision
+  - A-help
+assignees: []
+created_at: 2020-06-29T20:49:21Z
+updated_at: 2020-07-10T18:19:58Z
+url: https://github.com/clap-rs/clap/issues/1993
+synced_at: 2026-01-07T13:12:19-06:00
+---
+
+# Unix style line endings in error message on Windows
+
+---
+
+_Issue opened by @davepacheco on 2020-06-29 20:49_
+
+### Code
+
+```rust
+fn main() {
+    clap::App::new("demo")
+        .arg(clap::Arg::with_name("foo").required(true))
+        .get_matches();
+}
+```
+
+### Steps to reproduce the issue
+
+1. On Windows 2019 (e.g., GitHub Actions CI), run `cargo run 2>&1 | xxd` (using xxd just so that you can see the line endings)
+
+### Version
+
+* **Rust**: `rustc 1.44.1 (c7087fe00 2020-06-17)`
+* **Clap**: 2.33.1
+
+### Actual Behavior Summary
+
+Line endings in the output are Unix-style (`\n` only):
+
+```
+00000000: 2020 2020 4669 6e69 7368 6564 2064 6576      Finished dev
+00000010: 205b 756e 6f70 7469 6d69 7a65 6420 2b20   [unoptimized + 
+00000020: 6465 6275 6769 6e66 6f5d 2074 6172 6765  debuginfo] targe
+00000030: 7428 7329 2069 6e20 302e 3033 730a 2020  t(s) in 0.03s.  
+00000040: 2020 2052 756e 6e69 6e67 2060 7461 7267     Running `targ
+00000050: 6574 5c64 6562 7567 5c64 6170 2d77 696e  et\debug\dap-win
+00000060: 2d74 6573 742e 6578 6560 0a65 7272 6f72  -test.exe`.error
+00000070: 3a20 5468 6520 666f 6c6c 6f77 696e 6720  : The following 
+00000080: 7265 7175 6972 6564 2061 7267 756d 656e  required argumen
+00000090: 7473 2077 6572 6520 6e6f 7420 7072 6f76  ts were not prov
+000000a0: 6964 6564 3a0a 2020 2020 3c66 6f6f 3e0a  ided:.    <foo>.
+000000b0: 0a55 5341 4745 3a0a 2020 2020 6461 702d  .USAGE:.    dap-
+000000c0: 7769 6e2d 7465 7374 2e65 7865 203c 666f  win-test.exe <fo
+000000d0: 6f3e 0a0a 466f 7220 6d6f 7265 2069 6e66  o>..For more inf
+000000e0: 6f72 6d61 7469 6f6e 2074 7279 202d 2d68  ormation try --h
+000000f0: 656c 700a 6572 726f 723a 2070 726f 6365  elp.error: proce
+00000100: 7373 2064 6964 6e27 7420 6578 6974 2073  ss didn't exit s
+00000110: 7563 6365 7373 6675 6c6c 793a 2060 7461  uccessfully: `ta
+00000120: 7267 6574 5c64 6562 7567 5c64 6170 2d77  rget\debug\dap-w
+00000130: 696e 2d74 6573 742e 6578 6560 2028 6578  in-test.exe` (ex
+00000140: 6974 2063 6f64 653a 2031 290a            it code: 1).
+```
+
+(see line 14, address a0)
+
+### Expected Behavior Summary
+
+I expected to get Windows-style line endings (`\r\n`) in the output.
+
+### Additional context
+
+In case it's helpful to you, this commit of this repo contains a reproduction:
+
+https://github.com/davepacheco/rust-windows-testing/tree/57367634c5d37e6f100728d833a30a9d944bfb30
+
+and here's CI output showing the output:
+
+https://github.com/davepacheco/rust-windows-testing/runs/819951343?check_suite_focus=true#step:5:14
+
+### Debug output
+
+Compile clap with `debug` feature:
+
+```toml
+[dependencies]
+clap = { version = "*", features = ["debug"] }
+```
+
+<details>
+<summary> Debug Output </summary>
+<pre>
+<code>
+
+DEBUG:clap:Parser::propagate_settings: self=demo, g_settings=AppFlags(
+    (empty),
+)
+DEBUG:clap:Parser::get_matches_with;
+DEBUG:clap:Parser::create_help_and_version;
+DEBUG:clap:Parser::create_help_and_version: Building --help
+DEBUG:clap:Parser::create_help_and_version: Building --version
+DEBUG:clap:ArgMatcher::process_arg_overrides:None;
+DEBUG:clap:Parser::remove_overrides:[];
+DEBUG:clap:Validator::validate;
+DEBUG:clap:Parser::add_defaults;
+DEBUG:clap:Parser::add_defaults:iter:foo: doesn't have conditional defaults
+DEBUG:clap:Parser::add_defaults:iter:foo: doesn't have default vals
+DEBUG:clap:Validator::validate_blacklist;
+DEBUG:clap:Validator::validate_required: required=["foo"];
+DEBUG:clap:Validator::validate_required:iter:foo:
+DEBUG:clap:Validator::is_missing_required_ok: a=foo
+DEBUG:clap:Validator::validate_arg_conflicts: a="foo";
+DEBUG:clap:Validator::validate_required_unless: a="foo";
+DEBUG:clap:Validator::missing_required_error: extra=None
+DEBUG:clap:Parser::color;
+DEBUG:clap:Parser::color: Color setting...Auto
+DEBUG:clap:is_a_tty: stderr=true
+DEBUG:clap:Validator::missing_required_error: reqs=[
+    "foo",
+]
+DEBUG:clap:usage::get_required_usage_from: reqs=["foo"], extra=None
+DEBUG:clap:usage::get_required_usage_from: after init desc_reqs=[]
+DEBUG:clap:usage::get_required_usage_from: no more children
+DEBUG:clap:usage::get_required_usage_from: final desc_reqs=["foo"]
+DEBUG:clap:usage::get_required_usage_from: args_in_groups=[]
+DEBUG:clap:Colorizer::error;
+DEBUG:clap:Validator::missing_required_error: req_args="\n    <foo>"
+DEBUG:clap:usage::create_usage_with_title;
+DEBUG:clap:usage::create_usage_no_title;
+DEBUG:clap:usage::get_required_usage_from: reqs=["foo"], extra=None
+DEBUG:clap:usage::get_required_usage_from: after init desc_reqs=[]
+DEBUG:clap:usage::get_required_usage_from: no more children
+DEBUG:clap:usage::get_required_usage_from: final desc_reqs=["foo"]
+DEBUG:clap:usage::get_required_usage_from: args_in_groups=[]
+DEBUG:clap:usage::needs_flags_tag;
+DEBUG:clap:usage::needs_flags_tag:iter: f=hclap_help;
+DEBUG:clap:usage::needs_flags_tag:iter: f=vclap_version;
+DEBUG:clap:usage::needs_flags_tag: [FLAGS] not required
+DEBUG:clap:usage::create_help_usage: usage=dap-win-test.exe <foo>
+DEBUG:clap:Parser::color;
+DEBUG:clap:Parser::color: Color setting...Auto
+DEBUG:clap:is_a_tty: stderr=true
+DEBUG:clap:Colorizer::error;
+DEBUG:clap:Colorizer::good;
+error: The following required arguments were not provided:
+    <foo>
+
+USAGE:
+    dap-win-test.exe <foo>
+
+For more information try --help
+error: process didn't exit successfully: `target\debug\dap-win-test.exe` (exit code: 1)
+
+</code>
+</pre>
+</details>
+
+
+---
+
+_Label `T: bug` added by @davepacheco on 2020-06-29 20:49_
+
+---
+
+_Comment by @CreepySkeleton on 2020-06-30 08:56_
+
+Yes, I think we've never been paying attention to line endings. On the other hand, considering that:
+
+* Clap errors and help messages are meant to be user-facing, printed to Console/TTY. The precise format must not be relied upon, so there's very little use saving it to a file or piping to another program.
+* Windows CMD on Win 10 seems to handle `\n` just fine.
+
+With the bullet points in mind, is that really a problem?
+
+For clarity: I'm not saying no, I'm just pointing out that _maybe_ this doesn't really matter. For example, both `structopt` and `clap_derive` use `\n` when transforming doc comments to help strings, and somebody has yet to complain about it...
+
+---
+
+_Label `C: errors` added by @CreepySkeleton on 2020-06-30 08:57_
+
+---
+
+_Label `C: help message` added by @CreepySkeleton on 2020-06-30 08:57_
+
+---
+
+_Label `W: maybe` added by @CreepySkeleton on 2020-06-30 08:57_
+
+---
+
+_Comment by @CreepySkeleton on 2020-06-30 09:05_
+
+By the way, even if you were saving it to a file, you would need to try _very hard_ to find a modern text editor that doesn't handle `\n` properly. Meh, even [notepad has learned to do that](https://devblogs.microsoft.com/commandline/extended-eol-in-notepad/)!
+
+---
+
+_Added to milestone `3.1` by @pksunkara on 2020-06-30 22:58_
+
+---
+
+_Comment by @CreepySkeleton on 2020-07-06 17:14_
+
+OK, after consulting with a few friends, I'm leaning very strongly to considering this a far-fetched problem (see the bullet points above). @davepacheco Did it cause you any actual inconvenience or something?
+
+---
+
+_Comment by @davepacheco on 2020-07-07 16:03_
+
+@CreepySkeleton thanks for taking a look.  "inconvenience" is about it -- I was building a test to verify that my program produces a useful help message when run with invalid arguments.  The easiest thing was to store the expected output in a file.  (I know the output is not stable, but I'm okay with the tradeoff in this case.)  I'm able to work around this by converting line endings on Windows only.  I don't use Windows enough to know if there are any other cases where this would be a problem for people.
+
+---
+
+_Comment by @CreepySkeleton on 2020-07-07 16:18_
+
+> I'm able to work around this by converting line endings on Windows only.
+
+That is the part I don't get - why do you need to convert them? Don't you just compare expected and actual outputs byte-after-byte? Or is it your test system that adores `\r\n` and can't live without them?
+
+That all sounds a lot like there's the [`XY` problem](https://en.wikipedia.org/wiki/XY_problem) involved at some point...
+
+---
+
+_Comment by @CreepySkeleton on 2020-07-07 16:30_
+
+Another drop in the bucked - people often hardcode `\n` (and not `\r\n`) in the help messages that clap displays "as is". It's really common out there and I have yet to see somebody accounting for `\r\n` on Windows. 
+
+[Even Rust std doesn't bother with it](https://stackoverflow.com/a/47541878/11966336). 
+
+---
+
+_Comment by @davepacheco on 2020-07-07 16:42_
+
+More details, if you want to know: I want an automated test that ensures that my (cross-platform) executable produces a useful help message when run with no arguments.  An easy way to do that is to run it with no arguments, save the stderr output to a file, and write an automated test that runs the executable and compares its output against the contents of the file.  (I understand this means if I upgrade clap and the output format has changed, I have to fix the test, and I'm okay with that tradeoff in this case to make sure this behavior doesn't regress in my executable.)  This works as you'd expect on MacOS and Linux.  On Windows, in a typical Git install, `autocrlf` is enabled so that the file in the repo that contains the expected output has its line endings converted to Windows-style on `checkout`.   As a result, the test fails because when it runs the program, the output has Unix-style line endings, but the expected output file has Windows-style line endings.  I've worked around this by converting the line endings of the expected output file before doing the comparison.  There are other ways to work around this, like using Git attributes to disable the line ending conversion for files of this type.
+
+I filed this because I expected that a Windows user might find this to be surprising behavior, but I don't use Windows much myself and I can definitely see how it would rarely come up, if ever, and it may not be worth changing anything here.
+
+---
+
+_Comment by @CreepySkeleton on 2020-07-07 18:07_
+
+> On Windows, in a typical Git install, autocrlf is enabled 
+
+Oh boy! That rings a bell.
+
+Listen to me for I am telling truth: thou shalt not set `autocrlf = true`. There are some [great](https://jessitron.com/2019/11/11/line-endings-in-git/) [explanations](https://stackoverflow.com/questions/2825428/why-should-i-use-core-autocrlf-true-in-git) of why this is useless nowadays and hazardous in some cases, like yours. Long story short: use `autocrlf = input` in tandem with basically any text editor that was developed after dinosaurs had stopped roaming earth and humans had crawled out of caves, and you'll live happily ever after. (Sometimes you need somewhat more nuanced setup, see the links, but it's never `autocrlf = true`). 
+ 
+> I filed this because I expected that a Windows user might find this to be surprising behavior, but I don't use Windows much myself and I can definitely see how it would rarely come up, if ever, and it may not be worth changing anything here.
+
+As a very active Windows 10 user and a heavy user of Git for Windows I can state: it's all in your hands, really. GfW explicitly asks this during installation, describing every option, and if you mindlessly press "Next", you deserve what you get.
+
+Well, I hope it didn't come across wrong, and thank you for bringing this up - it was nice history excursion - but I don't think we should do anything about it. We better teach people to configure Git properly. 
+
+---
+
+_Closed by @CreepySkeleton on 2020-07-07 18:08_
+
+---
+
+_Comment by @pksunkara on 2020-07-10 12:59_
+
+@davepacheco I had the same issue as you when I was doing the same thing on a project I was using clap in. I fixed it by modifying the test helper to replace the `\r\n` to `\n` in fixtures and the tests were then passing in Windows CI.
+
+---
+
+_Removed from milestone `3.1` by @pksunkara on 2020-07-10 12:59_
+
+---
+
+_Comment by @CreepySkeleton on 2020-07-10 13:55_
+
+Frankly, I don't understand why people even use CRLF these days and keep biting the bullet (outside of `.bat` files and such, but those are covered by `.gitattributes`). Out of curiosity, could anybody explain me that?
+
+Whatever the case, the universal solution to this problem would be creating a `.gitattributes` in your project's repo with the following content:
+```
+* text=auto
+/tests/fixtures/* text eol=lf
+```
+
+Super fast to set up, works literally everywhere, everybody's happy.
+
+---
+
+_Comment by @davepacheco on 2020-07-10 18:19_
+
+@pksunkara Thanks!  I did the same.
+
+@CreepySkeleton Defaults are pretty influential (and for good reason).  Not only does autocrlf=true appear to be the default in the Git for Windows installer, but it's also the default in the GitHub Actions Windows runner, which is how I got here.  [GitHub also recommends that Windows users set autocrlf=true.](https://docs.github.com/en/github/using-git/configuring-git-to-handle-line-endings#)  The GitHub engineer in [this thread](https://github.community/t/git-config-core-autocrlf-should-default-to-false/16140) says that you should use git attributes to control this if it's important to you, but he also says that they use this default because "most guidance" recommends setting `autocrlf=true` and because of the Git for Windows installer default.
+
+You might find it interesting that when I used `--help` in my test program, [the help output from clap on Windows also includes `\r\n`](https://github.com/davepacheco/rust-windows-testing/runs/819811169#step:4:6).  I'm not sure where that comes from.  It's possible something's busted in this test, but it appears that clap is inconsistent about the line endings it uses.  
+
+---

@@ -1,0 +1,67 @@
+---
+number: 210
+title: Regression on GHA with ruff==0.0.39
+type: issue
+state: closed
+author: amotl
+labels: []
+assignees: []
+created_at: 2022-09-16T08:38:51Z
+updated_at: 2022-09-16T09:22:59Z
+url: https://github.com/astral-sh/ruff/issues/210
+synced_at: 2026-01-07T13:12:14-06:00
+---
+
+# Regression on GHA with ruff==0.0.39
+
+---
+
+_Issue opened by @amotl on 2022-09-16 08:38_
+
+Dear Charlie,
+
+after being upgraded to `ruff==0.0.39` on our CI setup for `mqttwarn` (https://github.com/charliermarsh/ruff/issues/203#issuecomment-1249055408), I found `ruff` croaks on GHA without any output [1].
+
+```
+Error: Process completed with exit code 1.
+```
+
+After downgrading to `ruff==0.0.37` again with https://github.com/jpmens/mqttwarn/commit/ba3ecd9ac and https://github.com/jpmens/mqttwarn/commit/f4ffb30, linting works again [2].
+
+I did not observe this on my macOS workstation, upgrading to `ruff==0.0.39` worked well there, leading to https://github.com/jpmens/mqttwarn/commit/fad50af.
+
+With kind regards,
+Andreas.
+
+[1] https://github.com/jpmens/mqttwarn/actions/runs/3066395439/jobs/4951520280
+[2] https://github.com/jpmens/mqttwarn/actions/runs/3066498037/jobs/4951739524 (only tests fail here, but "Check code style" succeeds)
+
+---
+
+_Comment by @charliermarsh on 2022-09-16 08:49_
+
+Thank you, I realized this lying in bed last night hah. Going to fix as soon as I’m back at a computer.
+
+---
+
+_Comment by @amotl on 2022-09-16 08:51_
+
+Thank you for the quick response, and please take your time.
+
+---
+
+_Comment by @charliermarsh on 2022-09-16 08:58_
+
+Should be fixed via `24de97d9514e7a27cfbf2940023c0752734c6744`, please let me know if you see otherwise. (Building now as `0.0.40`.)
+
+---
+
+_Closed by @charliermarsh on 2022-09-16 08:58_
+
+---
+
+_Comment by @amotl on 2022-09-16 09:22_
+
+I can confirm `ruff-0.0.40` works well again on CI/GHA. Thank you so much, you rock.
+
+---

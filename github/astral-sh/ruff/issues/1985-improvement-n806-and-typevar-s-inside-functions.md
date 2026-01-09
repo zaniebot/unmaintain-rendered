@@ -1,0 +1,67 @@
+---
+number: 1985
+title: "Improvement: N806 and `TypeVar`s inside functions"
+type: issue
+state: closed
+author: patrick91
+labels:
+  - bug
+assignees: []
+created_at: 2023-01-19T00:14:10Z
+updated_at: 2023-01-22T17:54:15Z
+url: https://github.com/astral-sh/ruff/issues/1985
+synced_at: 2026-01-07T13:12:14-06:00
+---
+
+# Improvement: N806 and `TypeVar`s inside functions
+
+---
+
+_Issue opened by @patrick91 on 2023-01-19 00:14_
+
+I don't think this is too important, but while running Ruff on Strawberry's codebase (tests especially) I had a lot of `N806` errors. I'm happy to ignore this check, but maybe this specific case can be improved, since it works for when T is defined outside the function (I guess it is taken as a global):
+
+```python
+from typing import TypeVar
+
+def x():
+    T = TypeVar("T")
+
+    print(T)
+```
+
+I don't know how common it is to create TypeVars (same goes for NewTypes) inside functions, so if it is not an easy fix I'd ignore the issue completely :D
+
+[Playground link](https://ruff.pages.dev/#N4KABGBECGA2sHsDuBTAJgWgMYIHYDMBXAZ2gCNYVjIAuMAbQF0AacKMwgS1gBdPdqdJqwiQ0hALYSAnhgBu0AE6dylDIoDmAD1pQAegAoA+gGoAPsZP1oGAF4BBDAC0ADBgCcRxgCprdx64ejCYA-ACUYQAkkCJQKFo8KLiYnBq4CIoousJskPGJyRjEKJRYPNksufkoirhwFbGQqemZDbmw-CgYlLgaPAAWugAcQ43FpeVCbKIAojHTUABi8xCiAHKQbJWiPEoaKDzyNcSceLqQAA7SAMwAjC4rUPiw0ADWKEMY0Ljpu3x4gjAoFWUBkVww-E4h0yPEItV0+DgxViomIhAuF0yxGIGHEUlke0BiNgyIWkDRGKxOPSuC6MLhuH4GgRSJQKKgcEQSCKu0UX00X1w0hZJJQbAAvo1nm8PhgyN80FDdMDVpB+ko0Dg0OgMDwJBdcZxMmUMsKpiDRAB6PUXR4gyCWhSKa36u2qy3auSW4j9CSbEGMCVSl7vT4cDRkFBKZVk6qFThSQi7ChdLCcwFMIO5aWhjA1RQSYjMugq0QSaBaHnKXrdJJ9QZ0FxZ0Q52UAR0ICESgNLUH4HVpGA7Xao5zQCEIKbdkAkhF43E6Q873bHE6n7LECCwxB41Y0S5HgM3k8o0+gcgQnEwVDTFyydF3hDFEEl2ZDsr4aFkCYuGR4PbJeVcHUEpoD4OQuh-P8jwuJQkn-acgNpTBoAuThlXFZsnnfT4oMUQ4cFwCDcH+AQY3tOAVGKACLSgWDkmgGC0DdVEozIDJcHOYgyPZURcEkK5zlwW1eI5XhoCNc44HKUSZzAi5EB4DoyAAOiuBSu3OBTygWTCX2DGVPiubtDh3aRTxLMl8E4BI4S6WDMhI-oqFHB9FCfDcHOgCQDmUWwujqHycR4aQ73OWEFKyTylG83zOH8+Q4CfYLQvvKAOh3acvJ83d4q6BRYGS9RkF1VLwvRU8N0UCTqJAjsjS6cseCwfoMHwDJsgWUQACFGJQGYtCwFALlIlioAGoaRtOTjZIANSS-rFEUDrZIAeQAZRmJaVq6qAAElVq25bFDGyAZiIo08B8kijp22jyS3d4eBU-MOoWbZVWqzharjTBMnqzIMCalq2o6oQPrLJRXgwBz4Oc6jdEfZ8wFfFscIwQh+OKFDNEkeCaNVZoMnypQVEVLAMEC1ywGJYosKaYg-3I1V2sUIaMCQaqDUovqiVZDdWfZk5ejUAc0tptkyWFjRRcXeIsEKk4ATae0cAkMhF0YiF9WgkVSXtYgFKhDA8F1L6B33NXy0R9zJftDJtT5MhZBCsK3I8qyMiFv8Oahfp+CKFAymmvnRQ3V50iQYDrMUHcYaUEKVdVCPkGAgYjUwBzE-Bjd8mqnkFQ1bpODIarFDNBgIagTIXnAyCdfwnEHZqc4iHw+HDh4BBsEQaiZLJf6uEyFIG4QnOyQVxiEfH1WAV2EiMyryAnRUFNF43dJi9pHFI1ZtLM303IJCwNNI2ZyHKzVyKtChCv7npu8Lk+QKmXPvs0mJynYozXbyQOABVESv9EhKAACKp1OsUHggCADCLxsSnRAYocBUc4FT0gQAi4ABZBA4hKrAKjMg1OOC8FRV-oxaQuAsDrUwadChVCAAqhCUEzV-lAwBTCdygLAtAU6iJuB2QmsNUaslEC9CwVQUg+xTrli0KAzg+B8D+lWEvSe2Icr9FwbiIOGQwIZB-vdNRxANG4OURAJeO4wKcCwCYzA2ocDVS7rHTq91LF8BsQcTRzF3oP2kFqKgIULJAjJETQGCAIKKDEfuXYxBoZW3xnrZGqM6LSHHNuQJaVgDJMuNIdEGhqrajfpAd4w11CYz4D5UqaFeiJIlCAcUkRGn4GWhIMArsmRgDwjwMADDUrzUUCAEA2p8BgC0AYMINAFgMLAAAXh6X0pQBhIAMMgGEQZIJMT8B4AYBhayQBAA)
+
+---
+
+_Label `bug` added by @charliermarsh on 2023-01-20 23:34_
+
+---
+
+_Comment by @charliermarsh on 2023-01-20 23:34_
+
+I think it's reasonable to special-case this, though could get tricky outside of the common case (e.g., `(A, B) = (TypeVar("A"), TypeVar("B"))`).
+
+---
+
+_Comment by @patrick91 on 2023-01-21 10:57_
+
+> I think it's reasonable to special-case this, though could get tricky outside of the common case (e.g., `(A, B) = (TypeVar("A"), TypeVar("B"))`).
+
+I wonder if there's cases like those 🤔 
+
+They both work in [the playground](https://ruff.pages.dev/#N4KABGBECGA2sHsDuBTAJgWgMYIHYDMBXAZ2gCNYVjIAuMAbQF0AacKMwgS1gBdPdqdJqwiQ0hALYSAnhgBu0AE6dylDIoDmAD1pQAegAoA+gGoAPsZP1oGAF4BBDAC0ADBgCcRxgCprdx64ejCYA-ACUYQAkkCJQKFo8KLiYnBq4CIoousJskPGJyRjEKJRYPNksufkoirhwFbGQqemZDbmw-CgYlLgaPAAWugAcQ43FpeVCbKIAojHTUABi8xCiAHKQbJWiPEoaKDzyNcSceLqQAA7SAMwAjC4rUPiw0ADWKEMY0Ljpu3x4gjAoFWUBkVww-E4h0yPEItV0+DgxViomIhAuF0yxGIGHEUlke0BiNgyIWkDRGKxOPSuC6MLhuH4GgRSJQKKgcEQSCKu0UX00X1w0hZJJQbAAvo1nm8PhgyN80FDdMDVpB+ko0Dg0OgMDwJBdcZxMmUMsKpiDRAB6PUXR4gyCWhSKa36u2qy3auSW4j9CSbEGMCVSl7vT4cDRkFBKZVk6qFThSQi7ChdLCcwFMIO5aWhjA1RQSYjMugq0QSaBaHnKXrdJJ9QZ0FxZ0Q52UAR0ICESgNLUH4HVpGA7Xao5zQCEIKbdkAkhF43E6Q873bHE6n7LECCwxB41Y0S5HgM3k8o0+gcgQnEwVDTFyydF3hDFEEl2ZDsr4aFkCYuGR4PbJeVcHUEpoD4OQuh-P8jwuJQkn-acgNpTBoAuThlXFZsnnfT4oMUQ4cFwCDcH+AQY3tOAVGKACLSgWDkmgGC0DdVEozIDJcHOYgyPZURcEkK5zlwW1eI5XhoCNc44HKUSZzAi5EB4DoyAAOiuBSu3OBTygWTCX2DGVPiubtDh3aRTxLMl8E4BI4S6WDMhI-oqFHB9FCfDcHOgCQDmUWwujqHycR4aQ73OWEFKyTylG83zOH8+Q4CfYLQvvKAOh3acvJ83d4q6BRYGS9RkF1VLwvRU8N0UCTqJAjsjS6cseCwfoMHwDJsgWUQACFGJQGYtCwFALlIlioAGoaRtOTjZIANSS-rFEUDrZIAeQAZRmJaVq6qAAElVq25bFDGyAZiIo08B8kijp22jyS3d4eBU-MOoWbZVWqzharjTBMnqzIMCalq2o6oQPrLJRXgwBz4Oc6jdEfZ8wFfFscIwQh+OKFDNEkeCaNVZoMnypQVEVLAMEC1ywGJYosKaYg-3I1V2sUIaMCQaqDUovqiVZDdWfZk5ejUAc0tptkyWFjRRcXeIsEKk4ATae0cAkMhF0YiF9WgkVSXtYgFKhDA8F1L6B33NXy0R9zJftDJtT5MhZBCsK3I8qyMiFv8Oahfp+CKFAymmvnRQ3V50iQYDrMUHcYaUEKVdVCPkGAgYjUwBzE-Bjd8mqnkFQ1bpODIarFDNBgIagTIXnAyCdfwnEHZqc4iHw+HDh4BBsEQaiZLJf6uEyFIG4QnOyQVxiEfH1WAV2EiMyryAnRUFNF43dJi9pHFI1ZtLM303IJCwNNI2ZyHKzVyKtChCv7npu8Lk+QKmXPvs0mJynYozXbyQOABVESv9EhKAACKp1OsUHggCADCLxsSnRAYocBUc4FT0gQAi4ABZBA4hKrAKjMg1OOC8FRV-oxaQuAsDrUwadChVCAAqhCUEzV-lAwBTCdygLAtAU6iJuB2QmsNUaslEC9CwVQUg+xTrli0KAzg+B8D+lWEvSe2Icr9FwbiIOGQwIZB-vdNRxANG4OURAJeO4wKcCwCYzA2ocDVS7rHTq91LF8BsQcTRzF3oP2kFqKgIULJAjJETQGCAIKKDEfuXYxBoZW3xnrZGqM6LSHHNuQJaVgDJMuNIdEGhqrajfpAd4w11CYz4D5UqaFeiJIlCAcUkRGn4GWhIMArsmRgDwjwMADDUrzUUCAEADCwAAF4el9KUAYSADDIBhBAPYZgYBuqjPGXefpUz7CzMWb0tZkzIDdVmYMkA2p8BgC0AYMINAFjDLGTslA6zpmHJBAspZKy7kPM2WEbZEzFBTIOXMhYmJ+A8AMAwgFQA) when outside functions. 
+
+I'm not sure how common it is to have typevars inside functions (we use them only in tests so it's not a big deal to skip this check there)
+
+---
+
+_Referenced in [astral-sh/ruff#2085](../../astral-sh/ruff/pulls/2085.md) on 2023-01-22 14:25_
+
+---
+
+_Closed by @charliermarsh on 2023-01-22 17:54_
+
+---

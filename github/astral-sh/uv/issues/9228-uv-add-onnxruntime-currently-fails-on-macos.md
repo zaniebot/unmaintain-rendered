@@ -1,0 +1,125 @@
+---
+number: 9228
+title: "`uv add onnxruntime` currently fails on MacOS"
+type: issue
+state: closed
+author: reyammer
+labels:
+  - bug
+assignees: []
+created_at: 2024-11-19T14:56:57Z
+updated_at: 2024-12-05T22:30:26Z
+url: https://github.com/astral-sh/uv/issues/9228
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# `uv add onnxruntime` currently fails on MacOS
+
+---
+
+_Issue opened by @reyammer on 2024-11-19 14:56_
+
+Hello,
+
+Running `uv add onnxruntime` in a new `uv` repo currently fails on MacOS. The installation works with `pip`.
+
+Commands:
+`$ uv init`
+`$ uv add onnxruntime`
+
+Output:
+```
+error: Distribution `onnxruntime==1.20.0 @ registry+https://pypi.org/simple` can't be installed because it doesn't have a source distribution or wheel for the current platform
+```
+
+Platform: MacOS, 12.5
+
+uv version: 0.5.2.
+
+More context, which hopefully helps debugging:
+- `pip install onnxruntime` works; the catch seems to be that it installs onnxruntime 1.19.2.
+- I came across this problem while preparing a new release for magika (https://pypi.org/project/magika/0.6.0rc2/), see [pyproject.toml](https://github.com/google/magika/blob/main/python/pyproject.toml); on MacOS, `uv add magika==0.6.0rc2` fails (referencing "can't find a proper wheel for onnxruntime 1.20.0"). On the same platform `pip install magika==0.6.0rc2` works (by picking onnxruntime 1.19.2). Another way to make it work is: `uv add onnxruntime==1.19.2; uv add magika==0.6.2rc2`).
+- I don't encounter these issues when testing on an ubuntu VM.
+
+The gist of the problem seems to be that onnxruntime 1.20.0 is not compatible with the MacOS, but uv quits instead of trying with 1.19.2, which is compatible.
+
+Happy to help debugging this, I'm a massive uv fan!
+
+---
+
+_Referenced in [google/magika#798](../../google/magika/issues/798.md) on 2024-11-19 14:57_
+
+---
+
+_Comment by @charliermarsh on 2024-11-19 15:10_
+
+Ah yeah. This is working as intended right now. `uv add` will resolve for all platforms. But if a package is published without a source distribution, and the set of wheels doesn't cover all platforms, we won't know that when resolving. (In general, the set of wheels will _never_ cover all platforms, since the set of platforms isn't fixed, so we basically assume that the wheels cover all platforms as long as they include the Python versions we care about.) I suggest adding a constraint for now, though the most relevant issue to track would be #5182.
+
+---
+
+_Comment by @charliermarsh on 2024-11-19 15:12_
+
+(I'm going to combine with https://github.com/astral-sh/uv/issues/5182 since it's ultimately the same problem as with PyTorch.)
+
+---
+
+_Closed by @charliermarsh on 2024-11-19 15:12_
+
+---
+
+_Label `bug` added by @charliermarsh on 2024-11-19 15:12_
+
+---
+
+_Comment by @reyammer on 2024-11-19 17:14_
+
+Thanks for the very fast reply, I now understand the challenge. I will track the other gh issue and add a constraint for now. Thanks!
+
+---
+
+_Referenced in [google/magika#801](../../google/magika/issues/801.md) on 2024-11-19 17:29_
+
+---
+
+_Comment by @charliermarsh on 2024-11-19 18:47_
+
+Thanks @reyammer. I promise it's a hard problem :joy: But I'd like to make the situation better here.
+
+---
+
+_Referenced in [crewAIInc/crewAI#1599](../../crewAIInc/crewAI/issues/1599.md) on 2024-11-20 09:59_
+
+---
+
+_Comment by @reyammer on 2024-11-20 10:03_
+
+oh I fully believe you 😂  what confused me is that pip worked well this time, but given your note it seems there are cons in doing whatever pip is doing. Anyways, no big deal, added an upper bound for onnxruntime and everything now works as expected. Thanks again!
+
+---
+
+_Comment by @msmygit on 2024-12-05 22:01_
+
+I've the same problem as well with python 3.12,
+```
+error: Distribution `onnxruntime==1.20.1 @ registry+https://pypi.org/simple` can't be installed because it doesn't have a source distribution or wheel for the current platform
+```
+
+@reyammer I've kept the version at `onnxruntime==1.19.2` to fix my problem. FWIW, I'm using python `3.12` in my app.
+
+---
+
+_Referenced in [astral-sh/uv#9711](../../astral-sh/uv/issues/9711.md) on 2024-12-07 20:47_
+
+---
+
+_Referenced in [crewAIInc/crewAI-tools#136](../../crewAIInc/crewAI-tools/issues/136.md) on 2025-01-01 03:48_
+
+---
+
+_Referenced in [google/magika#922](../../google/magika/issues/922.md) on 2025-01-24 10:57_
+
+---
+
+_Referenced in [google/magika#928](../../google/magika/issues/928.md) on 2025-01-24 12:12_
+
+---

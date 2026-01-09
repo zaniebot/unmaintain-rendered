@@ -1,0 +1,107 @@
+---
+number: 14466
+title: Pin to latest version in uv.lock
+type: issue
+state: open
+author: Shlomixg
+labels:
+  - question
+assignees: []
+created_at: 2025-07-05T15:07:56Z
+updated_at: 2025-07-09T05:42:04Z
+url: https://github.com/astral-sh/uv/issues/14466
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# Pin to latest version in uv.lock
+
+---
+
+_Issue opened by @Shlomixg on 2025-07-05 15:07_
+
+### Question
+
+## TL;DR
+How can we configure `uv` to always install the latest version of a package **without modifying `uv.lock`**?
+
+## Use case
+We're using an internal package which receives frequent updates, lets say it's name is `pypack-dev`.
+
+Before migrating to `uv`, we managed this dependency in a `requirements.txt` file using `pip`, without version pinning. This allowed us to always install the most recent version each time a dev container started. That behavior is essential for us as we don't want to manually update the package multiple times a day on multiple containers.
+
+Since migrating to `uv`, we've moved the dependency into `pyproject.toml`, unpinned, under the `dev` group:
+```pyproject.toml
+[dependency-groups]
+dev = ["pypack-dev", "debugpy"]
+```
+
+Running `uv lock` correctly locks the current latest version:
+```toml
+[[package]]
+name = "pypack-dev"
+version = "1.2.30"
+```
+
+We also tried enabling auto-upgrade for it:
+```pyproject.toml
+[tool.uv]
+upgrade-package = ["pypack-dev"]
+```
+
+This works in that `uv lock` + `uv sync` brings in the latest version.
+
+## The problem
+However, this creates a new problem. Each run of `uv lock` updates `uv.lock`:
+```toml
+[[package]]
+name = "pypack-dev"
+version = "1.2.35"
+```
+
+That leads to constant changes in `uv.lock`, which causes **merge conflicts and noise in Git**.
+But we don’t need to track this specific dependency’s version history in `uv.lock`.
+
+We also tried `uv pip install -U pypack-dev`, which works but isn’t viable for us since we can’t reliably inject that into every dev container lifecycle.
+
+## What we’re looking for
+Is there a way to configure uv to:
+
+- Always install the latest version of a specific package
+-  Without updating `uv.lock`
+- And without falling back to pip or scripting around container startup?
+
+We’d appreciate any guidance on best practices here!
+
+### Platform
+
+Debian 12
+
+### Version
+
+uv 0.7.19
+
+---
+
+_Label `question` added by @Shlomixg on 2025-07-05 15:07_
+
+---
+
+_Comment by @konstin on 2025-07-07 09:53_
+
+For reproducibility, `uv sync` locks all packages in `uv.lock` and installs that version. If updates happen in regular intervals, there are tools such as dependabot and renovate that can regularly update packages, but we're unlikely to installs versions outside the lockfile as an option.
+
+To install something in a higher version separate from the project workflow, you can use `uv pip install --upgrade`.
+
+---
+
+_Comment by @charliermarsh on 2025-07-08 16:20_
+
+Unfortunately, I don't know that we can provide a great solution here. It's somewhat against the nature of the lockfile to _not_ pin the version, since you lose reproducibility and hermeticity.
+
+---
+
+_Comment by @Shlomixg on 2025-07-09 05:42_
+
+So for now the best practice is to use `uv pip install -U`?
+
+---

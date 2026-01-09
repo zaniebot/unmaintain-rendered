@@ -1,0 +1,67 @@
+---
+number: 16142
+title: RUF009 Triggered on NewType wrapper around immutable type
+type: issue
+state: closed
+author: adampauls
+labels: []
+assignees: []
+created_at: 2025-02-13T18:25:21Z
+updated_at: 2025-02-13T22:08:07Z
+url: https://github.com/astral-sh/ruff/issues/16142
+synced_at: 2026-01-07T13:12:16-06:00
+---
+
+# RUF009 Triggered on NewType wrapper around immutable type
+
+---
+
+_Issue opened by @adampauls on 2025-02-13 18:25_
+
+### Description
+
+```python
+from dataclasses import dataclass
+from typing import NewType
+
+Int = NewType("Int", int)
+
+
+@dataclass
+class Foo:
+    x: int = 5
+    y: Int = Int(5)  # Do not perform function call `Int` in dataclass defaults
+```
+
+As of version 0.9.6. Possibly solved by https://github.com/astral-sh/ruff/pull/16048, not sure.
+
+---
+
+_Comment by @InSyncWithFoo on 2025-02-13 18:55_
+
+That PR has indeed resolved #15772, which I think this issue is a duplicate of.
+
+```shell
+$ ruff --version
+ruff 0.9.6
+
+$ ruff check --select RUF009 --isolated -
+from dataclasses import dataclass
+from typing import NewType
+
+Int = NewType("Int", int)
+
+
+@dataclass
+class Foo:
+    x: int = 5
+    y: Int = Int(5)
+
+All checks passed!
+```
+
+---
+
+_Closed by @MichaReiser on 2025-02-13 22:08_
+
+---

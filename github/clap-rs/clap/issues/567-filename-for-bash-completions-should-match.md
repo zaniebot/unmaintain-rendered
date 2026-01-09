@@ -1,0 +1,68 @@
+---
+number: 567
+title: Filename for bash completions should match existing conventions
+type: issue
+state: closed
+author: joshtriplett
+labels:
+  - C-enhancement
+  - A-docs
+  - A-completion
+assignees: []
+created_at: 2016-07-04T12:39:32Z
+updated_at: 2018-08-02T03:29:51Z
+url: https://github.com/clap-rs/clap/issues/567
+synced_at: 2026-01-07T13:12:19-06:00
+---
+
+# Filename for bash completions should match existing conventions
+
+---
+
+_Issue opened by @joshtriplett on 2016-07-04 12:39_
+
+bash-completion expects files installed in `/usr/share/bash-completion/completions/$binname`, named exactly like the binary they provide completions for.  (This enables bash-completion's dynamic script loading, so it doesn't need to load all completion scripts at shell startup.)  At packaging time, to avoid conflict with binaries or directories of the same name, packaging systems (like Debian's) typically expect files named `${binname}.bash-completion`, which they then install to the appropriate directory with the appropriate name.  Please consider changing the default name of clap's generated completion scripts to match that pattern.
+
+Also, as #566 suggests, consider separating the generation of completions from the writing of files, and expose a function for the former too.
+
+
+---
+
+_Comment by @kbknapp on 2016-07-04 21:32_
+
+This should be a quick easy fix. The docs will need to be updated as well. Thanks!
+
+
+---
+
+_Label `T: enhancement` added by @kbknapp on 2016-07-04 21:32_
+
+---
+
+_Label `C: docs` added by @kbknapp on 2016-07-04 21:32_
+
+---
+
+_Label `D: easy` added by @kbknapp on 2016-07-04 21:32_
+
+---
+
+_Label `P3: want to have` added by @kbknapp on 2016-07-04 21:32_
+
+---
+
+_Label `W: 2.x` added by @kbknapp on 2016-07-04 21:32_
+
+---
+
+_Label `C: completion gen` added by @kbknapp on 2016-07-04 21:32_
+
+---
+
+_Added to milestone `2.10.5` by @kbknapp on 2016-08-26 15:51_
+
+---
+
+_Closed by @kbknapp on 2016-08-28 03:42_
+
+---

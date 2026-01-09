@@ -1,0 +1,105 @@
+---
+number: 15033
+title: "[red-knot] Incorrect control flow modelling in if-elif chains"
+type: issue
+state: closed
+author: sharkdp
+labels:
+  - bug
+  - ty
+assignees: []
+created_at: 2024-12-17T09:55:59Z
+updated_at: 2025-01-05T18:35:30Z
+url: https://github.com/astral-sh/ruff/issues/15033
+synced_at: 2026-01-07T13:12:16-06:00
+---
+
+# [red-knot] Incorrect control flow modelling in if-elif chains
+
+---
+
+_Issue opened by @sharkdp on 2024-12-17 09:55_
+
+We currently infer a type of `Literal[1, 2, 4]` in the following example, but `1` is not a possible value of `x`. And `3` *is* a possible value for `x`.
+
+```py
+def check(x: int) -> bool: ...
+
+if check(x := 1):
+    x = 2
+elif check(x := 3):
+    x = 4
+
+reveal_type(x)  # revealed: Literal[1, 2, 4]; should be Literal[2, 3, 4]
+```
+
+---
+
+_Label `red-knot` added by @sharkdp on 2024-12-17 09:55_
+
+---
+
+_Comment by @AlexWaygood on 2024-12-17 14:13_
+
+```pycon
+% python
+Python 3.13.0 (main, Oct  8 2024, 11:56:29) [Clang 15.0.0 (clang-1500.3.9.4)] on darwin
+Type "help", "copyright", "credits" or "license" for more information.
+>>> def check(x: int) -> bool: return False
+... 
+>>> if check(x := 1):
+...     x = 2
+... elif False:
+...     x = 3
+... 
+>>> x
+1
+```
+
+?
+
+---
+
+_Comment by @sharkdp on 2024-12-17 14:27_
+
+@AlexWaygood I don't understand? If you change the example to use `elif False`, then `1` is a possible value, yes 😄 
+
+---
+
+_Comment by @AlexWaygood on 2024-12-17 14:30_
+
+Oh, sorry, I thought you were claiming the bug would still be evident if the `elif True` were changed to another boolean value when you said
+
+> This is not related to statically known conditions (`True` can be replaced by something else).
+
+What _did_ you mean by that sentence, in that case? :-)
+
+---
+
+_Comment by @sharkdp on 2024-12-17 14:49_
+
+I'm sorry. I messed up my original example when I minified it to report the bug. I reverted it to what I had originally. I hope it makes more sense now.
+
+---
+
+_Comment by @AlexWaygood on 2024-12-17 14:54_
+
+Aha! Yes, makes perfect sense now. Great catch!
+
+---
+
+_Label `bug` added by @AlexWaygood on 2024-12-17 14:57_
+
+---
+
+_Referenced in [astral-sh/ruff#15274](../../astral-sh/ruff/pulls/15274.md) on 2025-01-05 17:57_
+
+---
+
+_Closed by @carljm on 2025-01-05 18:35_
+
+---
+
+_Closed by @carljm on 2025-01-05 18:35_
+
+---

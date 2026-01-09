@@ -1,0 +1,53 @@
+---
+number: 8916
+title: uv self update to 0.5.0 loses uv
+type: issue
+state: closed
+author: hutcho
+labels:
+  - bug
+  - external
+assignees: []
+created_at: 2024-11-08T04:14:48Z
+updated_at: 2024-11-08T14:36:12Z
+url: https://github.com/astral-sh/uv/issues/8916
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# uv self update to 0.5.0 loses uv
+
+---
+
+_Issue opened by @hutcho on 2024-11-08 04:14_
+
+After `uv self update` uv not found.
+I had to reinstall uv using installation instructions to get it working again.
+Windows 10. I think i was on 0.4.29 previously but could have been 1 or 2 versions before that. I update frequently and this has never happened before.
+
+---
+
+_Comment by @zanieb on 2024-11-08 04:23_
+
+It looks like a bug in the updater library we use. We're investigating. Thanks for the report!
+
+---
+
+_Label `bug` added by @zanieb on 2024-11-08 04:23_
+
+---
+
+_Label `upstream` added by @zanieb on 2024-11-08 04:23_
+
+---
+
+_Comment by @zanieb on 2024-11-08 06:56_
+
+The self update should be fixed now.
+
+The upstream issue is at https://github.com/axodotdev/axoupdater/issues/210
+
+---
+
+_Closed by @zanieb on 2024-11-08 14:36_
+
+---

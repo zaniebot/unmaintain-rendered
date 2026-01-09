@@ -1,0 +1,48 @@
+---
+number: 16593
+title: Check if a package exists
+type: issue
+state: closed
+author: DhruvSrikanth
+labels:
+  - question
+assignees: []
+created_at: 2025-11-04T17:09:49Z
+updated_at: 2025-11-04T17:11:39Z
+url: https://github.com/astral-sh/uv/issues/16593
+synced_at: 2026-01-07T13:12:19-06:00
+---
+
+# Check if a package exists
+
+---
+
+_Issue opened by @DhruvSrikanth on 2025-11-04 17:09_
+
+### Question
+
+Currently, when I want to verify if a package is installed (happens in various different common scenarios), I use something like `uv pip list | grep <pkg_name>`. Is there a `uv` native way to do this?
+
+### Platform
+
+_No response_
+
+### Version
+
+_No response_
+
+---
+
+_Label `question` added by @DhruvSrikanth on 2025-11-04 17:09_
+
+---
+
+_Comment by @DhruvSrikanth on 2025-11-04 17:11_
+
+Just realized I could use `pip show` through `uv`
+
+---
+
+_Closed by @DhruvSrikanth on 2025-11-04 17:11_
+
+---

@@ -1,0 +1,38 @@
+---
+number: 2331
+title: "Set accept-encoding: identity for all compressed downloads "
+type: issue
+state: closed
+author: konstin
+labels:
+  - performance
+assignees: []
+created_at: 2024-03-10T11:59:52Z
+updated_at: 2024-03-10T12:00:29Z
+url: https://github.com/astral-sh/uv/issues/2331
+synced_at: 2026-01-07T13:12:17-06:00
+---
+
+# Set accept-encoding: identity for all compressed downloads 
+
+---
+
+_Issue opened by @konstin on 2024-03-10 11:59_
+
+We should extend #2319 to all downloads of .tar.gz, .zip and .whl files, since they are also compressed already.
+
+---
+
+_Label `performance` added by @konstin on 2024-03-10 11:59_
+
+---
+
+_Comment by @konstin on 2024-03-10 12:00_
+
+Already fixed by #2321 :sweat_smile: 
+
+---
+
+_Closed by @konstin on 2024-03-10 12:00_
+
+---

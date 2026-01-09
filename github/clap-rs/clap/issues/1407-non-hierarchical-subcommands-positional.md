@@ -1,0 +1,196 @@
+---
+number: 1407
+title: Non-hierarchical subcommands / positional subcommands
+type: issue
+state: closed
+author: andreycizov
+labels:
+  - C-enhancement
+  - A-builder
+  - A-parsing
+  - S-wont-fix
+assignees: []
+created_at: 2019-01-27T13:29:48Z
+updated_at: 2022-01-11T18:20:38Z
+url: https://github.com/clap-rs/clap/issues/1407
+synced_at: 2026-01-07T13:12:19-06:00
+---
+
+# Non-hierarchical subcommands / positional subcommands
+
+---
+
+_Issue opened by @andreycizov on 2019-01-27 13:29_
+
+### Rust Version
+
+`rustc 1.32.0 (9fda7c223 2019-01-16)`
+
+### Affected Version of clap
+
+`2.32.0`
+
+### Bug or Feature Request Summary
+
+I would like to be able to create a set an argument parsers for an utility that takes a list of commands to specify a list of input formats (let's call them `IFs`) and the set of commands that specify the output formats (`OFs`).
+
+Currently, in order to do that I would need to create a whole tree of subcommands independently for each `IF` and for each `OF`. It doesn't seem to be an issue, but the output of `--help` would require to always specify at least one of the `IFs` in order to see the outputs of duplicated `OFs` in each of the `IFs` - that doesn't make for a user-friendly experience.
+
+I come from python where `argparse` module allows you to do that: instead of specifying subcommands on the root parser - they simply return an instance of `SubCommands` that allows you to then specify the subcommands for that specific positional subcommand group.
+
+### Current Behaviour
+Given `IFs` of `xml, csv, txt` and `OFs` of `xml, csv, txt`, the only way to specify those as subcommands would be (showing the output of the `--help`)
+
+`IFs` help
+```shell
+>> convert --help
+USAGE:
+    convert [SUBCOMMAND]
+
+SUBCOMMANDS:
+    xml      desc_a
+    csv     desc_b
+    txt     desc_c
+```
+
+The going down to `OFs`:
+
+```shell
+>> convert xml --help
+USAGE:
+    convert xml [SUBCOMMAND]
+
+SUBCOMMANDS:
+    xml      desc_a
+    csv     desc_b
+    txt     desc_c
+```
+
+As is shown above, the output of every sub-sub-command would be the same regardless of what had been picked in the sub-command.
+
+### Expected Behavior Summary
+```shell
+>> convert --help
+USAGE:
+    convert [INPUT] [OUTPUT]
+
+INPUT_SUBCOMMANDS:
+    xml      desc_a
+    csv     desc_b
+    txt     desc_c
+
+OUTPUT_SUBCOMMANDS:
+    xml      desc_a
+    csv     desc_b
+    txt     desc_c
+```
+
+
+
+
+
+---
+
+_Label `C: subcommands` added by @CreepySkeleton on 2020-02-01 15:11_
+
+---
+
+_Label `D: hard` added by @CreepySkeleton on 2020-02-01 15:11_
+
+---
+
+_Label `T: new feature` added by @CreepySkeleton on 2020-02-01 15:11_
+
+---
+
+_Referenced in [TeXitoi/structopt#392](../../TeXitoi/structopt/issues/392.md) on 2020-05-16 15:27_
+
+---
+
+_Referenced in [epage/clapng#112](../../epage/clapng/issues/112.md) on 2021-12-06 18:34_
+
+---
+
+_Label `C: subcommands` removed by @epage on 2021-12-08 20:09_
+
+---
+
+_Label `A-builder` added by @epage on 2021-12-08 20:09_
+
+---
+
+_Label `A-parsing` added by @epage on 2021-12-08 20:09_
+
+---
+
+_Label `T: new feature` removed by @epage on 2021-12-08 21:16_
+
+---
+
+_Label `C-enhancement` added by @epage on 2021-12-08 21:16_
+
+---
+
+_Comment by @epage on 2021-12-09 19:45_
+
+I know its been a while since you've posted on this, so sorry about this.
+
+I'm assuming that there are args specific to the input and output subcommands that you want specific ordering for and that is why you need to use subcommands rather than positional arguments with `possible_values`.  Is that correct?
+
+> I come from python where argparse module allows you to do that: instead of specifying subcommands on the root parser - they simply return an instance of SubCommands that allows you to then specify the subcommands for that specific positional subcommand group.
+
+Have an example?  I've used argparse but not familiar with this functionality.  I'm curious to see how other libraries handle this as this adds a certain level of complexity
+
+---
+
+_Label `E-hard` removed by @epage on 2021-12-09 19:45_
+
+---
+
+_Label `S-waiting-on-author` added by @epage on 2021-12-09 19:45_
+
+---
+
+_Comment by @pksunkara on 2021-12-11 01:12_
+
+Forget to tag this as related to #2222. Maybe even a duplicate?
+
+---
+
+_Comment by @epage on 2021-12-12 03:18_
+
+I think they are slightly different.
+
+In #2222, the request is for the following to be equivalent
+```bash
+$ cmd start stop
+$ cmd staet && cmd stop
+```
+
+While this would have
+```
+$ cmd xml --path ./in.xml xml --path ./out,.xml
+```
+If we applied #2222's reasoning, this would run the `xml` command twice but the request here is for the two `xml` commands to be different, with different args and behavior.
+
+---
+
+_Comment by @epage on 2022-01-11 17:31_
+
+btw if the main concern is the help output, the user can provide that directly.  Maintaining that is annoying.  https://github.com/clap-rs/clap/issues/2913 and https://github.com/clap-rs/clap/issues/2914 would allow custom dynamic help generation.
+
+For now, I'm leaning towards that being our suggested route forward as this seems fairly specialized with a degree of its own complications.  If there are concerns about that, let us know!
+
+---
+
+_Closed by @epage on 2022-01-11 17:31_
+
+---
+
+_Label `S-waiting-on-author` removed by @epage on 2022-01-11 18:20_
+
+---
+
+_Label `S-wont-fix` added by @epage on 2022-01-11 18:20_
+
+---

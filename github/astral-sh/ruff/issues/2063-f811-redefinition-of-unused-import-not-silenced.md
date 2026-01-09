@@ -1,0 +1,134 @@
+---
+number: 2063
+title: F811 Redefinition of unused import not silenced by noqa for grouped imports
+type: issue
+state: closed
+author: alisaifee
+labels:
+  - bug
+assignees: []
+created_at: 2023-01-21T16:57:12Z
+updated_at: 2023-02-03T21:07:33Z
+url: https://github.com/astral-sh/ruff/issues/2063
+synced_at: 2026-01-07T13:12:14-06:00
+---
+
+# F811 Redefinition of unused import not silenced by noqa for grouped imports
+
+---
+
+_Issue opened by @alisaifee on 2023-01-21 16:57_
+
+When there are conditional (re)imports which are subsequently exported the `noqa` directive doesn't silence the F811 rule. 
+
+This can be demonstrated by the following example:
+- reimport.py
+  ```python
+  from typing import (
+      TYPE_CHECKING,
+      Dict,
+      List,
+  )
+
+  if not TYPE_CHECKING:
+      from beartype.typing import (  # noqa: F811
+          Dict,
+          List
+      )
+
+  __all__ = [
+      "Dict",
+      "List"
+  ]
+  ```
+  
+  > **Note**
+  > If I change the second import to:
+  > ```
+  > if not TYPE_CHECKING:
+  >    from beartype.typing import Dict  # noqa: F811
+  >    from beartype.typing import List  # noqa: F811
+  > ```
+  > the `noqa` is respected.
+
+- ruff version:
+  ```shell
+  $ ruff --version
+  ruff 0.0.225
+  ```
+- ruff output:
+  ```shell
+  $ ruff reimport.py
+  reimport.py:11:9: F811 Redefinition of unused `Dict` from line 5
+  reimport.py:12:9: F811 Redefinition of unused `List` from line 6
+  Found 2 error(s).
+  ```
+
+
+
+---
+
+_Comment by @charliermarsh on 2023-01-21 16:59_
+
+Ah yeah. We can support this. (`noqa` after `(` works for unused imports, but it's special-cased. We can do the same for F811.)
+
+---
+
+_Label `bug` added by @charliermarsh on 2023-01-21 16:59_
+
+---
+
+_Comment by @charliermarsh on 2023-01-21 17:00_
+
+You should also be able to do this:
+
+```py
+if not TYPE_CHECKING:
+    from beartype.typing import (
+        Dict,  # noqa: F811
+        List,  # noqa: F811
+    )
+```
+
+---
+
+_Comment by @alisaifee on 2023-01-21 17:20_
+
+> You should also be able to do this:
+> 
+> ```python
+> if not TYPE_CHECKING:
+>     from beartype.typing import (
+>         Dict,  # noqa: F811
+>         List,  # noqa: F811
+>     )
+> ```
+A few observations (nothing to do with ruff, but perhaps interesting):
+- `flake8` doesn't like the above and complains `redefinition of unused import`
+- `isort` says `Imports are incorrectly sorted and/or formatted` and "fixes" that by flattening them
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2023-02-03 19:41_
+
+---
+
+_Referenced in [astral-sh/ruff#2553](../../astral-sh/ruff/pulls/2553.md) on 2023-02-03 19:45_
+
+---
+
+_Closed by @charliermarsh on 2023-02-03 19:51_
+
+---
+
+_Comment by @alisaifee on 2023-02-03 21:04_
+
+Thank you!
+
+---
+
+_Comment by @charliermarsh on 2023-02-03 21:07_
+
+No problem! It'll go out later today.
+
+---

@@ -1,0 +1,70 @@
+---
+number: 1784
+title: Any way to create a stdlib style venv instead of virtualenv style?
+type: issue
+state: open
+author: wimglenn
+labels:
+  - enhancement
+  - needs-decision
+assignees: []
+created_at: 2024-02-20T21:27:27Z
+updated_at: 2024-02-21T00:21:56Z
+url: https://github.com/astral-sh/uv/issues/1784
+synced_at: 2026-01-07T13:12:16-06:00
+---
+
+# Any way to create a stdlib style venv instead of virtualenv style?
+
+---
+
+_Issue opened by @wimglenn on 2024-02-20 21:27_
+
+I wonder if it is possible to ask `uv venv` for a [stdlib venv](https://docs.python.org/3/library/venv.html) style env instead of a [virtualenv](https://github.com/pypa/virtualenv) style one?
+
+The latter registers a new `meta_path` importer which I don't really want in my envs (it makes every import statement a little bit slower).
+
+```
+$ uv venv -q .venv1
+$ python3 -m venv .venv2
+$ .venv1/bin/python3 -c 'import sys; print(sys.meta_path)'
+[<_virtualenv._Finder object at 0x7ffff6f99c10>, <class '_frozen_importlib.BuiltinImporter'>, <class '_frozen_importlib.FrozenImporter'>, <class '_frozen_importlib_external.PathFinder'>]
+$ .venv2/bin/python3 -c 'import sys; print(sys.meta_path)'
+[<class '_frozen_importlib.BuiltinImporter'>, <class '_frozen_importlib.FrozenImporter'>, <class '_frozen_importlib_external.PathFinder'>]
+```
+
+Thanks!
+
+---
+
+_Comment by @mitsuhiko on 2024-02-20 21:32_
+
+While it's true to that it makes the imports a tiny bit slower, I wonder how the stdlib avoids this finder. It exists to solve specific issues with distutils and setuptools.
+
+---
+
+_Comment by @wimglenn on 2024-02-20 21:35_
+
+Maybe they don't? Not sure.
+My env is externally managed, and it's Python 3.12+ so the stdlib distutils is gone.
+I don't have setuptools/distutils installed in the env so there is no issue for the finder to solve (but still the check happens on every import statement).
+
+---
+
+_Comment by @mitsuhiko on 2024-02-20 21:39_
+
+I have been trying to get rid of this finder in rye for a while and I have not found a good alternative. You can find some history and related links to it: https://github.com/pypa/virtualenv/pull/1688
+
+I really wish this hack was not necessary but I'm not aware of a much better one. It might be interesting to see if that `.pth` can be placed only when `setuptools` or `distutils` are in the venv.
+
+I really don't like giving the user a flag to shoot themselves in the foot.
+
+---
+
+_Label `enhancement` added by @zanieb on 2024-02-21 00:21_
+
+---
+
+_Label `needs-decision` added by @zanieb on 2024-02-21 00:21_
+
+---

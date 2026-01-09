@@ -1,0 +1,88 @@
+---
+number: 17070
+title: "New test failure in 0.9.17: uv-resolver exclude_newer::tests::test_exclude_newer_timestamp_absolute"
+type: issue
+state: closed
+author: musicinmybrain
+labels:
+  - bug
+assignees: []
+created_at: 2025-12-10T13:27:53Z
+updated_at: 2025-12-10T14:04:06Z
+url: https://github.com/astral-sh/uv/issues/17070
+synced_at: 2026-01-07T13:12:19-06:00
+---
+
+# New test failure in 0.9.17: uv-resolver exclude_newer::tests::test_exclude_newer_timestamp_absolute
+
+---
+
+_Issue opened by @musicinmybrain on 2025-12-10 13:27_
+
+### Summary
+
+Working on Fedora 43:
+
+```
+$ git clone https://github.com/astral-sh/uv.git
+$ cd uv
+$ cargo nextest run -p uv-resolver --lib
+[…]
+        FAIL [   0.006s] uv-resolver exclude_newer::tests::test_exclude_newer_timestamp_absolute
+  stdout ───
+
+    running 1 test
+    test exclude_newer::tests::test_exclude_newer_timestamp_absolute ... FAILED
+
+    failures:
+
+    failures:
+        exclude_newer::tests::test_exclude_newer_timestamp_absolute
+
+    test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 32 filtered out; finished in 0.00s
+    
+  stderr ───
+
+    thread 'exclude_newer::tests::test_exclude_newer_timestamp_absolute' (4084122) panicked at crates/uv-resolver/src/exclude_newer.rs:657:9:
+    assertion failed: timestamp.to_string().contains("2023-06-16")
+    note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+  Cancelling due to test failure: 15 tests still running
+[…]
+```
+
+In case it matters, my system timezone is GMT.
+
+I added some debugging output to the test and determined that the value of `timestamp` is `"2023-01-01T00:00:00Z"` for the RFC 3339 test and `"2023-06-15T23:00:00Z"` for the local time test.
+
+### Platform
+
+Linux 6.17.9-300.fc43.x86_64 x86_64 GNU/Linux
+
+### Version
+
+uv 0.9.17+91 (36806f8e6 2025-12-10)
+
+### Python version
+
+Python 3.14.0
+
+---
+
+_Label `bug` added by @musicinmybrain on 2025-12-10 13:27_
+
+---
+
+_Comment by @zanieb on 2025-12-10 13:31_
+
+Thanks! I'll look into this
+
+---
+
+_Referenced in [astral-sh/uv#17071](../../astral-sh/uv/pulls/17071.md) on 2025-12-10 13:50_
+
+---
+
+_Closed by @zanieb on 2025-12-10 14:04_
+
+---

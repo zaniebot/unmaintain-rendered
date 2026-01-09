@@ -1,0 +1,194 @@
+---
+number: 6613
+title: Work across multiple drives
+type: issue
+state: open
+author: YDX-2147483647
+labels:
+  - windows
+  - cache
+assignees: []
+created_at: 2024-08-25T18:21:44Z
+updated_at: 2025-12-02T15:39:09Z
+url: https://github.com/astral-sh/uv/issues/6613
+synced_at: 2026-01-07T13:12:17-06:00
+---
+
+# Work across multiple drives
+
+---
+
+_Issue opened by @YDX-2147483647 on 2024-08-25 18:21_
+
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with uv.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
+* The current uv platform.
+* The current uv version (`uv --version`).
+-->
+
+```shell
+$ uv add <any-package>
+warning: Failed to hardlink files; falling back to full copy. This may lead to degraded performance.
+If the cache and target directories are on different filesystems, hardlinking may not be supported.
+```
+
+If uv only has cache in `C:\`, then I am unable to use uv in `D:\`, at least with “degraded performance”. This case might be common for Windows machines. For example, https://github.com/astral-sh/uv/issues/6397#issuecomment-2303368424:
+
+> this is about the relationship between the cache directory and the drive you're installing on. I'm guessing your cache is not on `file:///E:`? You can use `--cache-dir` or `UV_CACHE_DIR` to set a different cache directory on `file:///E:`.
+
+I understand that hard links are not permitted across drives. However, [pnpm creates multiple stores (one per drive)](https://pnpm.io/faq#does-pnpm-work-across-multiple-drives-or-filesystems), solving the issue. Will it be possible for uv?
+
+---
+
+_Comment by @charliermarsh on 2024-08-25 20:31_
+
+I suppose we could do something like that. It could end up being _less_ efficient sometimes, though, since you duplicate and re-cache any data that's used across drives.
+
+---
+
+_Label `windows` added by @charliermarsh on 2024-08-25 20:31_
+
+---
+
+_Label `cache` added by @charliermarsh on 2024-08-25 20:31_
+
+---
+
+_Comment by @samypr100 on 2024-08-25 22:18_
+
+This arguably applies on linux too as you can have a mounted secondary drive under some arbitrary path as stated here https://github.com/pnpm/pnpm/issues/712#issuecomment-363295013, I do think using `UV_CACHE_DIR` is a reasonable solution in the mean time.
+
+
+
+---
+
+_Comment by @Holi0317 on 2024-09-02 15:08_
+
+Also on MacOS as well. I use a separate, case sensitive filesystem for all code project that is different form the fs backing `~/.cache`.
+
+While this is not mentioned in the pnpm thread, I think users who hits this issue are storing all of their projects in a separate filesystem. Whether it is because of disk space, speed or want to use a different fs. The current behavior is actually less efficient for us because the setup basically disables hard-link dependency deduplication.
+
+---
+
+_Referenced in [astral-sh/uv#9500](../../astral-sh/uv/issues/9500.md) on 2024-11-28 12:42_
+
+---
+
+_Comment by @Winand on 2025-01-01 23:44_
+
+So I can simply create `uv.toml` in the root folder of a disk with contents `cache-dir = "D:/.uv/cache"`? Do i understand it correctly that uv searches for `uv.toml` in all parent folders of a project?
+
+> [Configuration files](https://docs.astral.sh/uv/configuration/files/#configuration-files)
+> Specifically, uv will search for a pyproject.toml or uv.toml file in the current directory, or in the nearest parent directory.
+
+It means that uv checks each parent folder until it finds the nearest uv.toml file?
+
+---
+
+_Referenced in [astral-sh/uv#11721](../../astral-sh/uv/issues/11721.md) on 2025-02-23 09:21_
+
+---
+
+_Comment by @maphew on 2025-03-03 17:58_
+
+> So I can simply create `uv.toml` in the root folder of a disk with contents `cache-dir = "D:/.uv/cache"`? Do i understand it correctly that uv searches for `uv.toml` in all parent folders of a project?
+
+This worked for me, thanks.
+
+---
+
+_Comment by @Winand on 2025-03-06 20:58_
+
+> This worked for me, thanks.
+
+But it won't work if you put uv.tool section in pyproject.toml, because uv doesn't merge these configuration sources and use pyproject.toml OR the nearest uv.toml file.
+
+---
+
+_Comment by @wilsonmfaria on 2025-05-23 12:44_
+
+On Windows, by using Powershell, I 've added this to my profile... So once I open a terminal, it sets the `UV_CACHE_DIR` based on the drive... Except for C: which is the standard..
+
+```
+$DriveLetter = (Get-Location).Drive.Name
+if ($DriveLetter -in @("D", "E")) {
+    switch ($DriveLetter) {
+        "D" { $Env:UV_CACHE_DIR = "D:\.uv" }
+        "E" { $Env:UV_CACHE_DIR = "E:\.uv" }
+    }
+	Write-Host "UV Cache set to: UV_CACHE_DIR=$Env:UV_CACHE_DIR"
+}
+```
+
+It works quite well..
+
+---
+
+_Referenced in [invoke-ai/launcher#54](../../invoke-ai/launcher/issues/54.md) on 2025-05-23 21:23_
+
+---
+
+_Comment by @mirh on 2025-05-23 21:58_
+
+Can't you make something up with junction points?
+You can only soft link individual folders but that shouldn't be a problem with the layout archive-v0 already has.
+
+---
+
+_Comment by @maphew on 2025-05-24 06:15_
+
+TIL: On Windows setting the cache without drive letter will make it use the current drive of wherever the project is.
+
+```
+setx UV_CACHE_DIR "\.uv"
+```
+
+```
+:: will use C:\.uv
+C:\Users\me\projects> uv run ...
+```
+
+```
+:: will use E:\.uv
+E:\work\projects> uv run ...
+```
+
+---
+
+_Comment by @brainbytes42 on 2025-12-02 13:51_
+
+Thanks @maphew, your workaround works perfectly!
+
+May I suggest to add this solution (`setx UV_CACHE_DIR "\.uv"`) to the **docs** as another Note [here](https://docs.astral.sh/uv/concepts/cache/#cache-directory)?
+
+Though, **for the long term**, I'd suggest a built-in solution (or maybe `\.uv` as default?), as this would greatly increase usability in my opinion. 
+I think it's a trade-off between performance (see @charliermarsh's concern above) and disk-space; disk-space isn't the problem nowadays most of the time, but one of uv's core features is performance. So I'd advocate for duplicate data on different drives in favor of higher performance.
+
+I would imagine a mechanism, that knows the cache-dirs on all drives and first tries to "download" from another drive's cache (which should be quite fast), before downloading from external resources if no cache provides the needed resource. 
+(Or maybe this isn't needed at all and it's just fine to have one cache per drive completely independent...? _+1 for simplicity..._)
+
+---
+
+_Comment by @maphew on 2025-12-02 15:31_
+
+I've learned of some related vars for tools and am testing a similar approach with them. It seems to work but I'm uncertain if this is a good idea  -- uv likely assumes all tools in one dir, so, for example, `uv tool list` might not be accurate.
+```
+UV_CACHE_DIR=\.local\.uv
+UV_LINK_MODE=hardlink
+UV_TOOL_BIN_DIR=\.local\bin
+UV_TOOL_DIR=\.local\uv\tools
+```
+
+There's also UV_INSTALL_DIR which I've left alone as having multiple `uv.exe` will almost certainly be a problem if they're of different versions, or run at the same time:
+```
+UV_INSTALL_DIR=%USERPROFILE%/.local/bin
+```
+
+_Edit:_ A caveat with this convention is mapped network drives: uv will create the `.local` dirs on the server share, and that is definitely a performance hit. Also potentially over time leading to scattered .uv throughout the share tree if the mapped drive is not always using the same root. (If, for example,  `pushd \\server\share\path\place` is commonly used to map and change dir in one operation and new connections are set to not be remembered.)
+
+---

@@ -1,0 +1,106 @@
+---
+number: 12539
+title: "Server doesn't consider a file with no extension"
+type: issue
+state: closed
+author: Khufu0
+labels:
+  - bug
+  - server
+assignees: []
+created_at: 2024-07-26T22:15:40Z
+updated_at: 2024-09-12T01:11:56Z
+url: https://github.com/astral-sh/ruff/issues/12539
+synced_at: 2026-01-07T13:12:15-06:00
+---
+
+# Server doesn't consider a file with no extension
+
+---
+
+_Issue opened by @Khufu0 on 2024-07-26 22:15_
+
+consider this minimal example
+`
+#!/usr/bin/python3
+target = None
+if target != None:
+    print   ("target's not none")
+`
+if the file that contains the script has a .py extension it will display the following
+
+![Screenshot from 2024-07-27 01-04-31](https://github.com/user-attachments/assets/88b55cb8-9a84-438d-8690-2f8ed4e64161)
+
+and if i remove the .py extension ,no warnings will display nor file can be formatted even though vscode detects
+that it's a python file.
+
+ruff version: 0.5.5
+Python version: 3.12.4
+vscode version: 1.91.1
+OS: archlinux
+
+
+
+---
+
+_Comment by @dhruvmanila on 2024-07-27 05:43_
+
+Yeah, that's happening because a file without an extension is excluded as it's [not in the inclusion set](https://docs.astral.sh/ruff/settings/#include). This is a side effect of https://github.com/astral-sh/ruff/commit/0bb2fc6eec875b1fbf06dc25fd9ea9ded4c5cc2b. Maybe in the LSP context, we should look at the [`languageId` in the `TextDocument`](https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/#textDocumentItem) in case it's not excluded and not present in the inclusion set.
+
+---
+
+_Renamed from "ruff doesnt work when file doesn't have an extention." to "Server doesn't consider a file with no extension" by @dhruvmanila on 2024-07-27 05:44_
+
+---
+
+_Label `bug` added by @dhruvmanila on 2024-07-27 05:44_
+
+---
+
+_Label `server` added by @dhruvmanila on 2024-07-27 05:44_
+
+---
+
+_Comment by @majutsushi on 2024-09-10 04:21_
+
+I just wasted several hours trying to debug why the Ruff server wasn't working for me in Zed, where I was editing extension-less Python scripts that Ruff apparently silently skips. There really needs to be a way for the server to consider these files to make it generally useful.
+
+---
+
+_Comment by @dhruvmanila on 2024-09-11 13:49_
+
+Apologies for the trouble, I can make this a priority. Thanks for sharing your experience.
+
+---
+
+_Assigned to @dhruvmanila by @dhruvmanila on 2024-09-11 15:27_
+
+---
+
+_Referenced in [astral-sh/ruff#13326](../../astral-sh/ruff/pulls/13326.md) on 2024-09-11 15:33_
+
+---
+
+_Closed by @dhruvmanila on 2024-09-11 19:05_
+
+---
+
+_Closed by @dhruvmanila on 2024-09-11 19:05_
+
+---
+
+_Comment by @majutsushi on 2024-09-12 00:42_
+
+Thanks for the fix! Sorry if I came across as a bit rude, I was just frustrated because according to all the logs I could find everything seemed to be fine, but it still wasn't working. Maybe it would be useful to log ignored files at debug level?
+
+---
+
+_Comment by @dhruvmanila on 2024-09-12 01:11_
+
+> Thanks for the fix! Sorry if I came across as a bit rude, I was just frustrated because according to all the logs I could find everything seemed to be fine, but it still wasn't working. Maybe it would be useful to log ignored files at debug level?
+
+No need to apologize, sharing your experience is helpful and bugs are always considered high priority :) 
+
+The PR that fixes this also added debug level log for cases where this kind of exlusion happens.
+
+---

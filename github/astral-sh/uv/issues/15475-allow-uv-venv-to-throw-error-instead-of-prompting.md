@@ -1,0 +1,156 @@
+---
+number: 15475
+title: "Allow `uv venv` to throw error instead of prompting"
+type: issue
+state: closed
+author: notatallshaw
+labels:
+  - enhancement
+  - good first issue
+assignees: []
+created_at: 2025-08-23T17:51:01Z
+updated_at: 2025-09-22T13:36:47Z
+url: https://github.com/astral-sh/uv/issues/15475
+synced_at: 2026-01-07T13:12:19-06:00
+---
+
+# Allow `uv venv` to throw error instead of prompting
+
+---
+
+_Issue opened by @notatallshaw on 2025-08-23 17:51_
+
+### Summary
+
+I often use imperative  commands as part of a script, e.g. `uv pip`, `uv venv`.
+
+I therefore want them to fail with a non-zero status code when they can't complete an action. 
+
+But it appears `uv venv` only has two options when the directory it's writing to is non-empty:
+
+ * Automatically delete everything in the directory,
+ * Prompt for user interaction.
+
+But I want `uv venv` to fail without user prompt, is that currently possible? I don't see an option.
+
+### Example
+
+```bash
+cd /
+uv venv .
+```
+
+---
+
+_Label `enhancement` added by @notatallshaw on 2025-08-23 17:51_
+
+---
+
+_Comment by @zanieb on 2025-08-23 18:45_
+
+`uv venv` should fail without a tty instead of prompting, are you seeing otherwise?
+
+---
+
+_Comment by @zanieb on 2025-08-23 18:46_
+
+Anyway, the fix is to add `--no-clear` which will always error if it needs to clear.
+
+---
+
+_Label `good first issue` added by @zanieb on 2025-08-23 18:46_
+
+---
+
+_Comment by @notatallshaw on 2025-08-23 19:22_
+
+> `uv venv` should fail without a tty instead of prompting, are you seeing otherwise?
+
+Don't think that's relevant to my use case of running a bash script locally?
+
+Create `test_tty.sh`:
+
+```bash
+if tty -s; then
+  echo "Has a TTY"
+else
+  echo "No TTY"
+fi
+```
+
+Then:
+
+```bash
+$ bash test_tty.sh 
+Has a TTY
+```
+
+As a side note, as someone who has wrote far too many shell scripts, I don't love commands behaving differently based on environment output capabilities, at most I would only want the output to change, and even then I would always want an option to make it the same regardless of environment.
+
+This kind of magic, where a command tries to preempt the user and "do the right thing", can cause a lot of pain to script users.
+
+---
+
+_Comment by @zanieb on 2025-08-23 19:23_
+
+The alternative was going straight to a hard-failure, which we didn't want to do since it's a disruptive breaking change.
+
+---
+
+_Renamed from "All `uv venv` to throw error instead of prompting" to "Allow `uv venv` to throw error instead of prompting" by @notatallshaw on 2025-08-23 19:24_
+
+---
+
+_Comment by @notatallshaw on 2025-08-23 19:35_
+
+> The alternative was going straight to a hard-failure, which we didn't want to do since it's a disruptive breaking change.
+
+I personally would have preferred this, it's consistent and logical, though I understand the compromise it has made `uv venv` magical in a way that other imperative commands aren't.
+
+And it's incorrectly documented:
+
+[uv venv docs](https://docs.astral.sh/uv/reference/cli/#uv-venv) still document old behavior:
+
+> If a virtual environment exists at the target path, it will be removed and a new, empty virtual environment will be created.
+
+And [clear flag docs](https://docs.astral.sh/uv/reference/cli/#uv-venv--clear) actually state `uv venv` will exit with an error, nothing about the user prompt:
+
+> Remove any existing files or directories at the target path.
+>
+> By default, uv venv will exit with an error if the given path is non-empty. The --clear option will instead clear a non-empty path before creating a new virtual environment.
+>
+> May also be set with the UV_VENV_CLEAR environment variable.
+
+
+
+---
+
+_Referenced in [astral-sh/uv#15485](../../astral-sh/uv/pulls/15485.md) on 2025-08-24 17:06_
+
+---
+
+_Referenced in [astral-sh/uv#15538](../../astral-sh/uv/pulls/15538.md) on 2025-08-26 16:49_
+
+---
+
+_Comment by @harshithvh on 2025-09-11 14:10_
+
+@notatallshaw is this fixed?
+
+---
+
+_Comment by @notatallshaw on 2025-09-11 14:14_
+
+@harshithvh No
+
+---
+
+_Comment by @zanieb on 2025-09-22 13:36_
+
+Closed by https://github.com/astral-sh/uv/pull/15795
+
+---
+
+_Closed by @zanieb on 2025-09-22 13:36_
+
+---

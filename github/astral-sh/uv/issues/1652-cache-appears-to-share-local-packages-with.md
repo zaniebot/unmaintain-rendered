@@ -1,0 +1,173 @@
+---
+number: 1652
+title: cache appears to share local packages with packages from PyPI
+type: issue
+state: closed
+author: alex
+labels:
+  - bug
+assignees: []
+created_at: 2024-02-18T15:22:47Z
+updated_at: 2024-02-18T15:46:06Z
+url: https://github.com/astral-sh/uv/issues/1652
+synced_at: 2026-01-07T13:12:16-06:00
+---
+
+# cache appears to share local packages with packages from PyPI
+
+---
+
+_Issue opened by @alex on 2024-02-18 15:22_
+
+```
+/tmp ❯❯❯ uv --version
+uv 0.1.4
+```
+
+I'm a developer of cryptography, as a result I build it locally a bunch. `uv pip install` appears to share those local development builds into other virtualenvs in a way I did not expect.
+
+```
+/tmp ❯❯❯ uv venv
+Using Python 3.11.7 interpreter at /opt/homebrew/opt/python@3.11/bin/python3.11
+Creating virtualenv at: .venv
+/tmp ❯❯❯ uv pip install --prerelease=allow cryptography
+Resolved 3 packages in 3ms
+Downloaded 1 package in 30.45s
+Installed 3 packages in 7ms
+ + cffi==1.16.0
+ + cryptography==43.0.0.dev1
+ + pycparser==2.21
+```
+
+The only place that `cryptography==43.0.0.dev1` exists is on Github and elsewhere on my system -- I did not expect it to end up shared into other virtualenvs.
+
+---
+
+_Comment by @charliermarsh on 2024-02-18 15:36_
+
+I think that's not intentional, non-direct-URL dependencies are only intended to pull from the registry cache. Do you mind running with `-v` to see if there's any relevant logging from the install plan?
+
+---
+
+_Label `bug` added by @charliermarsh on 2024-02-18 15:36_
+
+---
+
+_Comment by @alex on 2024-02-18 15:39_
+
+```
+/tmp ❯❯❯ uv venv
+Using Python 3.11.7 interpreter at /opt/homebrew/opt/python@3.11/bin/python3.11
+Creating virtualenv at: .venv
+/tmp ❯❯❯ uv pip install -v --prerelease=allow cryptography
+ uv::requirements::from_source source=cryptography
+    0.000670s DEBUG uv_interpreter::virtual_env Found a virtualenv named .venv at: /private/tmp/.venv
+    0.000879s DEBUG uv_interpreter::interpreter Using cached markers for: /private/tmp/.venv/bin/python
+    0.000896s DEBUG uv::commands::pip_install Using Python 3.11.7 environment at /private/tmp/.venv/bin/python
+ uv_client::flat_index::from_entries 
+ uv_resolver::resolver::solve 
+      0.149524s   0ms DEBUG uv_resolver::resolver Solving with target Python version 3.11.7
+   uv_resolver::resolver::choose_version package=root
+   uv_resolver::resolver::get_dependencies package=root, version=0a0.dev0
+        0.149597s   0ms DEBUG uv_resolver::resolver Adding direct dependency: cryptography*
+   uv_resolver::resolver::choose_version package=cryptography
+     uv_resolver::resolver::package_wait package_name=cryptography
+ uv_resolver::resolver::process_request request=Versions cryptography
+   uv_client::registry_client::simple_api package=cryptography
+     uv_client::cached_client::get_cacheable 
+       uv_client::cached_client::read_and_parse_cache file=/Users/alex_gaynor/Library/Caches/uv/simple-v1/pypi/cryptography.rkyv
+ uv_resolver::resolver::process_request request=Prefetch cryptography *
+          0.150282s   0ms DEBUG uv_client::cached_client Found stale response for: https://pypi.org/simple/cryptography/
+          0.150290s   0ms DEBUG uv_client::cached_client Sending revalidation request for: https://pypi.org/simple/cryptography/
+       uv_client::cached_client::revalidation_request url="https://pypi.org/simple/cryptography/"
+          1.247858s   1s  DEBUG uv_client::cached_client Found not-modified response for: https://pypi.org/simple/cryptography/
+       uv_client::cached_client::refresh_cache file=/Users/alex_gaynor/Library/Caches/uv/simple-v1/pypi/cryptography.rkyv
+ uv_resolver::version_map::from_metadata 
+   uv_distribution::distribution_database::get_or_build_wheel_metadata dist=cryptography==43.0.0.dev1
+     uv_client::registry_client::wheel_metadata built_dist=cryptography==43.0.0.dev1
+       uv_client::cached_client::get_serde 
+         uv_client::cached_client::get_cacheable 
+           uv_client::cached_client::read_and_parse_cache file=/Users/alex_gaynor/Library/Caches/uv/wheels-v0/pypi/cryptography/cryptography-43.0.0.dev1-cp37-abi3-macosx_10_12_universal2.msgpack
+        1.253920s   1s  DEBUG uv_resolver::resolver Searching for a compatible version of cryptography (*)
+        1.253938s   1s  DEBUG uv_resolver::resolver Selecting: cryptography==43.0.0.dev1 (cryptography-43.0.0.dev1-cp37-abi3-macosx_10_12_universal2.whl)
+   uv_resolver::resolver::get_dependencies package=cryptography, version=43.0.0.dev1
+     uv_resolver::resolver::distributions_wait package_id=cryptography-43.0.0.dev1
+              1.254088s   0ms DEBUG uv_client::cached_client Found fresh response for: https://files.pythonhosted.org/packages/97/d5/0064cb02f98edc8a506ba95e2e5cc6577bedf565d5fed2f2d41a15c295d7/cryptography-43.0.0.dev1-cp37-abi3-macosx_10_12_universal2.whl
+        1.254295s   0ms DEBUG uv_resolver::resolver Adding transitive dependency: cffi>=1.12
+   uv_resolver::resolver::choose_version package=cffi
+     uv_resolver::resolver::package_wait package_name=cffi
+ uv_resolver::resolver::process_request request=Versions cffi
+   uv_client::registry_client::simple_api package=cffi
+     uv_client::cached_client::get_cacheable 
+       uv_client::cached_client::read_and_parse_cache file=/Users/alex_gaynor/Library/Caches/uv/simple-v1/pypi/cffi.rkyv
+ uv_resolver::resolver::process_request request=Prefetch cffi >=1.12
+          1.255299s   0ms DEBUG uv_client::cached_client Found stale response for: https://pypi.org/simple/cffi/
+          1.255313s   0ms DEBUG uv_client::cached_client Sending revalidation request for: https://pypi.org/simple/cffi/
+       uv_client::cached_client::revalidation_request url="https://pypi.org/simple/cffi/"
+          1.275644s  21ms DEBUG uv_client::cached_client Found not-modified response for: https://pypi.org/simple/cffi/
+       uv_client::cached_client::refresh_cache file=/Users/alex_gaynor/Library/Caches/uv/simple-v1/pypi/cffi.rkyv
+ uv_resolver::version_map::from_metadata 
+   uv_distribution::distribution_database::get_or_build_wheel_metadata dist=cffi==1.16.0
+     uv_client::registry_client::wheel_metadata built_dist=cffi==1.16.0
+       uv_client::cached_client::get_serde 
+         uv_client::cached_client::get_cacheable 
+           uv_client::cached_client::read_and_parse_cache file=/Users/alex_gaynor/Library/Caches/uv/wheels-v0/pypi/cffi/cffi-1.16.0-cp311-cp311-macosx_11_0_arm64.msgpack
+        1.283642s  29ms DEBUG uv_resolver::resolver Searching for a compatible version of cffi (>=1.12)
+        1.283697s  29ms DEBUG uv_resolver::resolver Selecting: cffi==1.16.0 (cffi-1.16.0-cp311-cp311-macosx_11_0_arm64.whl)
+   uv_resolver::resolver::get_dependencies package=cffi, version=1.16.0
+     uv_resolver::resolver::distributions_wait package_id=cffi-1.16.0
+              1.283861s   0ms DEBUG uv_client::cached_client Found fresh response for: https://files.pythonhosted.org/packages/18/6c/0406611f3d5aadf4c5b08f6c095d874aed8dfc2d3a19892707d72536d5dc/cffi-1.16.0-cp311-cp311-macosx_11_0_arm64.whl
+        1.283920s   0ms DEBUG uv_resolver::resolver Adding transitive dependency: pycparser*
+   uv_resolver::resolver::choose_version package=pycparser
+     uv_resolver::resolver::package_wait package_name=pycparser
+ uv_resolver::resolver::process_request request=Versions pycparser
+   uv_client::registry_client::simple_api package=pycparser
+     uv_client::cached_client::get_cacheable 
+       uv_client::cached_client::read_and_parse_cache file=/Users/alex_gaynor/Library/Caches/uv/simple-v1/pypi/pycparser.rkyv
+ uv_resolver::resolver::process_request request=Prefetch pycparser *
+          1.284179s   0ms DEBUG uv_client::cached_client Found stale response for: https://pypi.org/simple/pycparser/
+          1.284192s   0ms DEBUG uv_client::cached_client Sending revalidation request for: https://pypi.org/simple/pycparser/
+       uv_client::cached_client::revalidation_request url="https://pypi.org/simple/pycparser/"
+          1.305781s  21ms DEBUG uv_client::cached_client Found not-modified response for: https://pypi.org/simple/pycparser/
+       uv_client::cached_client::refresh_cache file=/Users/alex_gaynor/Library/Caches/uv/simple-v1/pypi/pycparser.rkyv
+ uv_resolver::version_map::from_metadata 
+   uv_distribution::distribution_database::get_or_build_wheel_metadata dist=pycparser==2.21
+     uv_client::registry_client::wheel_metadata built_dist=pycparser==2.21
+       uv_client::cached_client::get_serde 
+         uv_client::cached_client::get_cacheable 
+           uv_client::cached_client::read_and_parse_cache file=/Users/alex_gaynor/Library/Caches/uv/wheels-v0/pypi/pycparser/pycparser-2.21-py2.py3-none-any.msgpack
+        1.307313s  23ms DEBUG uv_resolver::resolver Searching for a compatible version of pycparser (*)
+        1.307323s  23ms DEBUG uv_resolver::resolver Selecting: pycparser==2.21 (pycparser-2.21-py2.py3-none-any.whl)
+   uv_resolver::resolver::get_dependencies package=pycparser, version=2.21
+     uv_resolver::resolver::distributions_wait package_id=pycparser-2.21
+              1.307414s   0ms DEBUG uv_client::cached_client Found fresh response for: https://files.pythonhosted.org/packages/62/d5/5f610ebe421e85889f2e55e33b7f9a6795bd982198517d912eb1c76e1a53/pycparser-2.21-py2.py3-none-any.whl
+Resolved 3 packages in 1.15s
+    1.308125s DEBUG uv_installer::plan Requirement already cached: cffi==1.16.0
+    1.308294s DEBUG uv_installer::plan Requirement already cached: cryptography==43.0.0.dev1
+    1.308557s DEBUG uv_installer::plan Requirement already cached: pycparser==2.21
+ uv_installer::installer::install num_wheels=3
+Installed 3 packages in 6ms
+ + cffi==1.16.0
+ + cryptography==43.0.0.dev1
+ + pycparser==2.21
+```
+
+---
+
+_Comment by @alex on 2024-02-18 15:41_
+
+Uhhh, I appologize, I think maybe we fucked up our PyPI release: https://pypi.org/project/cryptography/43.0.0.dev1/#files
+
+I don't know where this came from!
+
+---
+
+_Comment by @alex on 2024-02-18 15:46_
+
+Welp, that's mortifying.
+
+---
+
+_Closed by @alex on 2024-02-18 15:46_
+
+---

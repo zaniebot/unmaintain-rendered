@@ -1,0 +1,62 @@
+---
+number: 14975
+title: uv build in workspaces setup builds subpackage in root
+type: issue
+state: closed
+author: ion-elgreco
+labels:
+  - question
+assignees: []
+created_at: 2025-07-30T14:46:25Z
+updated_at: 2025-07-30T17:41:04Z
+url: https://github.com/astral-sh/uv/issues/14975
+synced_at: 2026-01-07T13:12:19-06:00
+---
+
+# uv build in workspaces setup builds subpackage in root
+
+---
+
+_Issue opened by @ion-elgreco on 2025-07-30 14:46_
+
+### Question
+
+I have a workspace with some member packages, then each member package I individually build by doing:
+
+```sh
+cd workspace/package_foo
+uv build .
+```
+
+This however outputs the files in the root of the workspace instead of in `package_foo`, this caught me
+ by surprise. It was easily solvable with `uv build --out-dir dist` to get actually in `workspace/package_foo/dist` but I was wondering whether this is the expected behavior and what the reasoning is?
+
+### Platform
+
+_No response_
+
+### Version
+
+0.8.3
+
+---
+
+_Label `question` added by @ion-elgreco on 2025-07-30 14:46_
+
+---
+
+_Comment by @zanieb on 2025-07-30 14:55_
+
+uv invocations in workspaces often function relative to the workspace root — I think this is expected.
+
+---
+
+_Comment by @ion-elgreco on 2025-07-30 17:40_
+
+@zanieb alright! Will close this then :)
+
+---
+
+_Closed by @ion-elgreco on 2025-07-30 17:41_
+
+---

@@ -1,0 +1,62 @@
+---
+number: 4060
+title: Consider adding a rule to enforce positional unpacking always precede keyword arguments
+type: issue
+state: closed
+author: NeilGirdhar
+labels:
+  - question
+assignees: []
+created_at: 2023-04-21T16:32:54Z
+updated_at: 2023-04-21T16:57:54Z
+url: https://github.com/astral-sh/ruff/issues/4060
+synced_at: 2026-01-07T13:12:14-06:00
+---
+
+# Consider adding a rule to enforce positional unpacking always precede keyword arguments
+
+---
+
+_Issue opened by @NeilGirdhar on 2023-04-21 16:32_
+
+```python
+def f(a, b, c):
+    return a + b + c
+
+args = 1, 2
+
+f(c=3, *args)  # Suggest f(*args, c=3)
+```
+Note that the following are already syntax errors:
+```python
+f(**kwargs, *args)
+f(c=3, 1, 2)
+```
+
+---
+
+_Comment by @charliermarsh on 2023-04-21 16:52_
+
+This might be the same as B026, do you mind checking?
+
+---
+
+_Label `question` added by @charliermarsh on 2023-04-21 16:52_
+
+---
+
+_Comment by @NeilGirdhar on 2023-04-21 16:55_
+
+It is!  Sorry, I tested this without all the errors enabled!
+
+---
+
+_Closed by @NeilGirdhar on 2023-04-21 16:55_
+
+---
+
+_Comment by @charliermarsh on 2023-04-21 16:57_
+
+No prob! I think we used to implement this as a custom RUF rule and then eventually it was either added to bugbear or we just noticed that it already existed.
+
+---

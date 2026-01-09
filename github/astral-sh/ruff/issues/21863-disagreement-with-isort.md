@@ -1,0 +1,79 @@
+---
+number: 21863
+title: Disagreement with isort
+type: issue
+state: open
+author: thmo
+labels:
+  - question
+  - isort
+assignees: []
+created_at: 2025-12-09T12:07:53Z
+updated_at: 2025-12-09T13:06:21Z
+url: https://github.com/astral-sh/ruff/issues/21863
+synced_at: 2026-01-07T13:12:16-06:00
+---
+
+# Disagreement with isort
+
+---
+
+_Issue opened by @thmo on 2025-12-09 12:07_
+
+### Summary
+
+This minimal example:
+```python
+from foo import a
+from foo import b as _b
+from foo import c
+```
+is accepted without fixes by isort:
+```bash
+$ isort --diff import-test.py
+```
+but `ruff` wants to change it like this:
+```bash
+$ ruff check --select I --diff import-test.py
+(... see below... )
+Would fix 1 error.
+```
+```diff
+--- import-test.py
++++ import-test.py
+@@ -1,3 +1,2 @@
+-from foo import a
++from foo import a, c
+ from foo import b as _b
+-from foo import c
+```
+
+This is with `isort 6.1.0` from Fedora (`python3-isort-6.1.0-1.fc42.noarch`) and `ruff 0.14.5` from Fedora (`ruff-0.14.5-1.fc42.x86_64`).
+
+---
+
+_Comment by @MichaReiser on 2025-12-09 12:22_
+
+I think this is the deviation called out in https://docs.astral.sh/ruff/faq/#can-i-write-my-own-linter-plugins-for-ruff
+
+---
+
+_Comment by @thmo on 2025-12-09 12:51_
+
+So, basically #1381? What is the best way to cope with this if some team members use `isort` while others use `ruff` (e.g., via zed)?
+
+---
+
+_Comment by @MichaReiser on 2025-12-09 13:06_
+
+We don't recommend using `isort` and `ruff` as there can be other, smaller differences. Use one or the other in your project. 
+
+---
+
+_Label `question` added by @MichaReiser on 2025-12-09 13:06_
+
+---
+
+_Label `isort` added by @MichaReiser on 2025-12-09 13:06_
+
+---

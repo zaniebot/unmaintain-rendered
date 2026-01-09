@@ -1,0 +1,49 @@
+---
+number: 619
+title: "N803 Argument name `_` should be lowercase - false positive?"
+type: issue
+state: closed
+author: LefterisJP
+labels:
+  - bug
+assignees: []
+created_at: 2022-11-06T10:45:13Z
+updated_at: 2022-11-06T19:19:03Z
+url: https://github.com/astral-sh/ruff/issues/619
+synced_at: 2026-01-07T13:12:14-06:00
+---
+
+# N803 Argument name `_` should be lowercase - false positive?
+
+---
+
+_Issue opened by @LefterisJP on 2022-11-06 10:45_
+
+I think that N803 is a false positive here. 
+```python
+        activate_premium=lambda _: None,
+```
+
+It's a common patttern to use `_` when there should be no argument name.
+
+---
+
+_Label `bug` added by @charliermarsh on 2022-11-06 11:33_
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2022-11-06 15:29_
+
+---
+
+_Referenced in [astral-sh/ruff#622](../../astral-sh/ruff/pulls/622.md) on 2022-11-06 19:18_
+
+---
+
+_Closed by @charliermarsh on 2022-11-06 19:19_
+
+---
+
+_Referenced in [astral-sh/ruff#18939](../../astral-sh/ruff/pulls/18939.md) on 2025-06-27 04:04_
+
+---

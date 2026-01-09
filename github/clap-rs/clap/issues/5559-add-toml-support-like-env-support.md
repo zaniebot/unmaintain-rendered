@@ -1,0 +1,69 @@
+---
+number: 5559
+title: add toml support, like env support
+type: issue
+state: closed
+author: RaphaelDarley
+labels:
+  - C-enhancement
+assignees: []
+created_at: 2024-06-29T20:22:28Z
+updated_at: 2024-06-29T22:33:03Z
+url: https://github.com/clap-rs/clap/issues/5559
+synced_at: 2026-01-07T13:12:20-06:00
+---
+
+# add toml support, like env support
+
+---
+
+_Issue opened by @RaphaelDarley on 2024-06-29 20:22_
+
+### Please complete the following tasks
+
+- [X] I have searched the [discussions](https://github.com/clap-rs/clap/discussions)
+- [X] I have searched the [open](https://github.com/clap-rs/clap/issues) and [rejected](https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed) issues
+
+### Clap Version
+
+4.5.8
+
+### Describe your use case
+
+creating a cli tool to run a server which could allow configuration via environment variables or toml
+
+### Describe the solution you'd like
+
+a toml features which allows a toml key to be specified in the arg macro:
+```rust
+#[derive(Parser)]
+pub struct Cli {
+    #[arg(env = "FOO", toml = "foo")]
+    foo: String
+}
+```
+I think by default the priority should be passed argument, env, toml, default. though this should be configureable 
+
+### Alternatives, if applicable
+
+the main alternative is to manually parse a toml file, the problem with this that that it is difficult to differentiate env or passed values from clap and the default
+
+### Additional Context
+
+If this is a feature that there is support for I'd love to implement it
+
+---
+
+_Label `C-enhancement` added by @RaphaelDarley on 2024-06-29 20:22_
+
+---
+
+_Comment by @epage on 2024-06-29 22:33_
+
+We're still trying to figure out what the needs are for layered config which is being discussed at https://github.com/clap-rs/clap/discussions/2763.  Closing in favor of that.
+
+---
+
+_Closed by @epage on 2024-06-29 22:33_
+
+---

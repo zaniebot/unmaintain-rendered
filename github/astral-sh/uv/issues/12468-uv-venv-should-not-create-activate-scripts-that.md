@@ -1,0 +1,70 @@
+---
+number: 12468
+title: uv venv should not create activate scripts that do not match current platform
+type: issue
+state: open
+author: gaborbernat
+labels:
+  - enhancement
+assignees: []
+created_at: 2025-03-25T18:15:47Z
+updated_at: 2025-03-25T18:56:59Z
+url: https://github.com/astral-sh/uv/issues/12468
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# uv venv should not create activate scripts that do not match current platform
+
+---
+
+_Issue opened by @gaborbernat on 2025-03-25 18:15_
+
+### Summary
+
+```
+jovyan@03704aa7d1a6 ~> uv venv name-3
+Using CPython 3.13.2
+Creating virtual environment at: name-3
+Activate with: source name-3/bin/activate.fish
+```
+
+```
+📂 name-3
+├── 📂 bin
+│   ├── 📄 activate
+│   ├── 📄 activate.bat
+│   ├── 📄 activate.csh
+│   ├── 📄 activate.fish
+│   ├── 📄 activate.nu
+│   ├── 📄 activate.ps1
+│   ├── 📄 activate_this.py
+│   ├── 📄 deactivate.bat
+│   ├── 📄 pydoc.bat
+│   ├── 🔖 python ⇒ /home/jovyan/.local/share/uv/python/cpython-3.13.2-linux-aarch64-gnu/bin/python3.13
+│   ├── 🔖 python3 ⇒ python
+│   └── 🔖 python3.13 ⇒ python
+├── 📄 CACHEDIR.TAG
+├── 📂 lib
+│   └── 📂 python3.13
+│       └── 📂 site-packages
+├── 🗂 lib64 ⇒ lib
+└── 📄 pyvenv.cfg
+```
+
+I think the bast and ps1 files should not be created for non Windows target.
+
+### Example
+
+_No response_
+
+---
+
+_Label `enhancement` added by @gaborbernat on 2025-03-25 18:15_
+
+---
+
+_Comment by @zanieb on 2025-03-25 18:56_
+
+PowerShell is usable on other platforms (i.e., I have it installed on macOS); I'm not sure about `.bat`.
+
+---

@@ -1,0 +1,168 @@
+---
+number: 9291
+title: uv run pytest not recognizing the project module
+type: issue
+state: closed
+author: EdmundsEcho
+labels:
+  - question
+assignees: []
+created_at: 2024-11-20T19:32:32Z
+updated_at: 2025-04-15T20:25:04Z
+url: https://github.com/astral-sh/uv/issues/9291
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# uv run pytest not recognizing the project module
+
+---
+
+_Issue opened by @EdmundsEcho on 2024-11-20 19:32_
+
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with uv.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
+* The current uv platform.
+* The current uv version (`uv --version`).
+-->
+
+My project structure is:
+```sh
+project_name/module_name/parser.py
+project_name/module_name/__init__.py
+project_name/tests/test_parser.py
+```
+
+The `test_parser.py` references the module:
+```py
+from module_name.parser import print_summaries
+```
+
+I can build and run the parser but I cannot seem to get `uv run pytest` to run without getting a module not found error.
+
+Apologies for the hyper newby question here. 
+
+
+---
+
+_Renamed from "pytest not recognizing the module" to "uv run pytest not recognizing the project module" by @EdmundsEcho on 2024-11-20 19:44_
+
+---
+
+_Comment by @zanieb on 2024-11-20 20:16_
+
+You'll probably need to define a [build system](https://docs.astral.sh/uv/concepts/projects/#build-systems) so your project is installed in the environment and discoverable by pytest.
+
+---
+
+_Comment by @EdmundsEcho on 2024-11-20 20:27_
+
+Thank you for the response. The link was helpful.  
+
+In the meantime, the following gets `pytest` to run from the project root:
+
+```
+set -x PYTHONPATH .; uv run pytest
+```
+
+Interestingly, `ruff` seems to resolve the dependency without the env setting.
+
+---
+
+_Comment by @bluss on 2024-11-20 20:31_
+
+It's possible that https://docs.pytest.org/en/stable/explanation/goodpractices.html could help here, they have a section for your case: *Tests as part of application code*
+
+---
+
+_Label `question` added by @zanieb on 2024-11-20 20:48_
+
+---
+
+_Comment by @zanieb on 2024-11-20 21:06_
+
+I did some more reading here, and your case should work with:
+
+```
+❯ uv run -m pytest
+```
+
+or 
+
+```
+❯ touch tests/__init__.py
+❯ uv run pytest --pyargs my_module
+```
+
+as described in the pytest documentation.
+
+---
+
+_Comment by @EdmundsEcho on 2024-11-21 15:57_
+
+@zanieb Thank you!!
+
+What you provided is definitely worth including in the documentation that describes setting up an application with `uv`.   
+
+Even better, it may be worthwhile to include a init command that includes the file structure for testing `hello.py` ("It works!").  This would require having an opinion on the file structure... which is good.  I believe the structure that I set-up is a solid, straightforward norm, but I actually don't care :-)) What I mean by that is that whatever `uv` chooses to go with, I would go with... I want to build and setup quickly, including tests (just like rust, which includes a unit test in the initialized app).  
+
+---
+
+_Comment by @zanieb on 2024-11-21 18:10_
+
+The problem is that, in Rust, there's a standardized test runner. In Python, there is not. We'd get complaints if we configured the project with pytest by default, though maybe we should anyway.
+
+---
+
+_Comment by @EdmundsEcho on 2024-11-21 18:48_
+
+@zanieb My take on this is that anyone with a POV has what they need (expertise) to make the change to how they like it.  The goal of `uv` is to get a person up and running.
+
+---
+
+_Comment by @medecau on 2024-11-21 21:50_
+
+had same issue where `pytest` couldn't find the package after converting from `poetry` to `uv`
+
+fixed by adding this to `pyproject.toml`:
+```python
+[build-system]
+requires = ['setuptools']
+build-backend = 'setuptools.build_meta'
+```
+
+---
+
+_Comment by @p13rr0m on 2024-12-11 20:42_
+
+This is a common issue with PyTest itself: https://stackoverflow.com/questions/10253826/path-issue-with-pytest-importerror-no-module-named. I will add two other options.
+
+You can either solve this by adding the following to your pyproject.toml file:
+
+```toml
+[tool.pytest.ini_options]
+addopts = [
+    "--import-mode=importlib",
+]
+pythonpath = [
+  "."
+]
+```
+
+Or adding the tests directly to your `project_name/module_name`. This is the method used in the FastAPI documentation:  https://fastapi.tiangolo.com/tutorial/testing/#testing-file
+
+---
+
+_Comment by @chamalgomes on 2025-04-14 05:24_
+
+In a mono repo (uv workspace), adding the above to the root pyproject.toml is definitely the solution. Thanks for the documentation links @p13rr0m.
+
+---
+
+_Closed by @zanieb on 2025-04-15 20:25_
+
+---

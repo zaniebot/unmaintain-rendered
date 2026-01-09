@@ -1,0 +1,134 @@
+---
+number: 10167
+title: "Using a dynamic version causes the `uv-lock` pre-commit CI to fail on GitHub but pass locally."
+type: issue
+state: closed
+author: vivodi
+labels: []
+assignees: []
+created_at: 2024-12-26T07:33:20Z
+updated_at: 2024-12-26T18:19:37Z
+url: https://github.com/astral-sh/uv/issues/10167
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# Using a dynamic version causes the `uv-lock` pre-commit CI to fail on GitHub but pass locally.
+
+---
+
+_Issue opened by @vivodi on 2024-12-26 07:33_
+
+Using a dynamic version causes the `uv-lock` pre-commit CI to fail on GitHub but pass locally.
+
+[Log](https://results.pre-commit.ci/run/github/908488856/1735199232.YKQmFkjZTOWIBNPp79iUKg):
+```
+uv-lock..................................................................Failed
+- hook id: uv-lock
+- exit code: 2
+
+warning: `VIRTUAL_ENV=/pc/clone/JLKubma3TtiMMhmWEG5Gxg/py_env-python3` does not match the project environment path `.venv` and will be ignored
+Using CPython 3.12.7 interpreter at: /usr/bin/python3.12
+error: Failed to generate package metadata for `myproject==1.0.0 @ editable+.`
+  Caused by: Failed to resolve requirements from `build-system.requires`
+  Caused by: No solution found when resolving: `hatchling`
+  Caused by: Failed to fetch: `https://pypi.org/simple/hatchling/`
+  Caused by: Could not connect, are you offline?
+  Caused by: Request failed after 3 retries
+  Caused by: error sending request for url (https://pypi.org/simple/hatchling/)
+  Caused by: client error (Connect)
+  Caused by: dns error: failed to lookup address information: Temporary failure in name resolution
+  Caused by: failed to lookup address information: Temporary failure in name resolution
+```
+
+pyproject.toml:
+```toml
+[project]
+name = "myproject"
+requires-python = ">=3.12"
+dynamic = ["version"]
+
+[tool.hatch.version]
+path = "myproject/version.py"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+```
+
+.pre-commit-config.yaml:
+```yaml
+repos:
+- repo: https://github.com/astral-sh/uv-pre-commit
+  rev: 0.5.11
+  hooks:
+    - id: uv-lock
+```
+
+Repo: https://github.com/vivodi/myproject
+
+---
+
+_Renamed from "Using a dynamic version causes the uv-lock pre-commit CI to fail on GitHub but pass locally." to "Using a dynamic version causes the `uv-lock` pre-commit CI to fail on GitHub but pass locally." by @vivodi on 2024-12-26 07:33_
+
+---
+
+_Comment by @charliermarsh on 2024-12-26 14:36_
+
+I think you're looking for #7533.
+
+---
+
+_Closed by @charliermarsh on 2024-12-26 14:36_
+
+---
+
+_Comment by @vivodi on 2024-12-26 15:05_
+
+> I think you're looking for [#7533](https://github.com/astral-sh/uv/issues/7533).
+
+I don't think this issue is a duplicate of #7533. My version number is stored in a file and doesn't change automatically. Additionally, the pre-commit CI runs uv-lock **without any issues locally**; the error **only** occurs when running on GitHub.
+
+---
+
+_Comment by @vivodi on 2024-12-26 15:07_
+
+I tried downgrading the version to 0.4.x as suggested in #7533, but it didn't help. Can this issue be reopened?
+
+---
+
+_Comment by @charliermarsh on 2024-12-26 15:10_
+
+Apologies, you're right that it's not a duplicate, but I don't know that there's anything for us to do here. It looks like the request client can't connect to `pypi.org` from your GitHub runner.
+
+---
+
+_Comment by @vivodi on 2024-12-26 15:16_
+
+I am not running it on a GitHub runner, but on the pre-commit CI server. And as long as I switch to **the static version**, `uv-lock` has no issues. There were no problems when using `poetry-lock` before, so I think it's an issue with `uv-lock`.
+
+And this issue has been persistent, it's not a temporary network problem with the server.
+
+---
+
+_Comment by @charliermarsh on 2024-12-26 15:27_
+
+It makes sense that it wouldn't fail when you had a static version, because there's no need to build your project. But now you have a dynamic version, so you're requiring uv to install your build dependencies and build your project. That in turn requires downloading hatchling.
+
+I just don't know that there's anything we can do here if DNS is failing on the machine? It sounds like pre-commit.ci doesn't allow network access on the free tier: https://github.com/pre-commit-ci/issues/issues/80 / https://github.com/pre-commit-ci/issues/issues/47#issuecomment-804481763.
+
+
+---
+
+_Referenced in [astral-sh/uv#10176](../../astral-sh/uv/issues/10176.md) on 2024-12-26 17:58_
+
+---
+
+_Comment by @vivodi on 2024-12-26 18:19_
+
+> It makes sense that it wouldn't fail when you had a static version, because there's no need to build your project. But now you have a dynamic version, so you're requiring uv to install your build dependencies and build your project. That in turn requires downloading hatchling.
+> 
+> I just don't know that there's anything we can do here if DNS is failing on the machine? It sounds like pre-commit.ci doesn't allow network access on the free tier: [pre-commit-ci/issues#80](https://github.com/pre-commit-ci/issues/issues/80) / [pre-commit-ci/issues#47 (comment)](https://github.com/pre-commit-ci/issues/issues/47#issuecomment-804481763).
+
+After some research, I realized that what I really want is for `uv lock --locked --offline` to check the consistency between `uv.lock` and `pyproject.toml`, but it doesn’t work for projects with dynamic versions either. See #10176
+
+---

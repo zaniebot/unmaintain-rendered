@@ -1,0 +1,57 @@
+---
+number: 21639
+title: Detecting CRAP code
+type: issue
+state: open
+author: ashrub-holvi
+labels:
+  - rule
+  - needs-decision
+assignees: []
+created_at: 2025-11-26T13:28:10Z
+updated_at: 2025-12-31T10:53:42Z
+url: https://github.com/astral-sh/ruff/issues/21639
+synced_at: 2026-01-07T13:12:16-06:00
+---
+
+# Detecting CRAP code
+
+---
+
+_Issue opened by @ashrub-holvi on 2025-11-26 13:28_
+
+### Summary
+
+Hi,
+
+[CRAP](https://testing.googleblog.com/2011/02/this-code-is-crap.html) looks like quite interesting metric:
+from https://helpthisbook.com/lou-franco/swimming-in-tech-debt
+> The riskiest code to change has a combination of high complexity and low coverage, which makes it harder to understand and harder to verify. To make both of these metrics more evident to me, I use the Coverage Gutters and CodeMetrics extensions in VSCode. Whenever I am editing a function that is risky to change, VSCode shows a lot of red indicators around it.
+
+also I found this [implementation](https://github.com/mattjmorrison/pycrap) but last update was 13 years ago.
+
+But for make it work coverage report is needed, so, it would be sort of conditional check which works only if coverage report is available.
+
+Of course it's nice to just highlight CRAP code in IDE/editor, but I don't know is it possible and make sense to implement it in LSP, but can be also rule with some threshold for fail if too much CRAP.
+
+---
+
+_Label `rule` added by @MichaReiser on 2025-11-27 07:35_
+
+---
+
+_Label `needs-decision` added by @MichaReiser on 2025-11-27 07:35_
+
+---
+
+_Comment by @MichaReiser on 2025-11-27 07:36_
+
+Related to https://github.com/astral-sh/ruff/issues/2418 as this is another measure of complexity
+
+---
+
+_Comment by @ashrub-holvi on 2025-12-31 10:53_
+
+looks like there is a better supported implementation https://github.com/ChristianMurphy/pytest-crap
+
+---

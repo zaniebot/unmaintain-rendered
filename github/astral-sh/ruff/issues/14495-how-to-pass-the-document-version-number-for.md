@@ -1,0 +1,182 @@
+---
+number: 14495
+title: "How to pass the document version number for `workspace/executeCommand` request in Neovim?"
+type: issue
+state: closed
+author: matt-gardner
+labels:
+  - question
+  - server
+assignees: []
+created_at: 2024-11-20T17:13:27Z
+updated_at: 2024-11-21T15:47:46Z
+url: https://github.com/astral-sh/ruff/issues/14495
+synced_at: 2026-01-07T13:12:16-06:00
+---
+
+# How to pass the document version number for `workspace/executeCommand` request in Neovim?
+
+---
+
+_Issue opened by @matt-gardner on 2024-11-20 17:13_
+
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* List of keywords you searched for before creating this issue. Write them down here so that others can find this issue more easily and help provide feedback.
+  e.g. "RUF001", "unused variable", "Jupyter notebook"
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+I just upgraded my LSP setup and packages, and I got a message that `ruff-lsp` was deprecated and I should use `ruff` instead.  After updated everything, a command that was previously working in my IDE is no longer working, and I can't figure out why not.  I suspect it might be something to do with my environment, but I've hit a wall trying to debug it.
+
+This is what I'm trying to do, taken from docs / github somewhere from `ruff-lsp` (I'm using neovim as my IDE):
+
+```
+map("n", "<leader>fa", "", {
+  callback = function()
+    vim.lsp.buf.execute_command {
+      command = 'ruff.applyAutofix',
+      arguments = {
+        { uri = vim.uri_from_bufnr(0) },
+      },
+    }
+  end,
+  desc = "Fix all (ruff-lsp, in python)"
+})
+```
+
+After updating, most functionality still works, but this command fails.  I see this in the logs:
+
+```
+[DEBUG][2024-11-20 08:53:25] ...m/lsp/client.lua:565	"LSP[ruff]"	"client.request"	3	"workspace/executeCommand"	{  arguments = { {      uri = "file:///some/path/to/a/file.py"    } },  command = "ruff.applyOrganizeImports"}	<function 1>	1
+[DEBUG][2024-11-20 08:53:25] .../vim/lsp/rpc.lua:282	"rpc.send"	{  id = 7,  jsonrpc = "2.0",  method = "workspace/executeCommand",  params = {    arguments = { {        uri = "file:///some/path/to/a/file.py"      } },    command = "ruff.applyOrganizeImports"  }}
+[DEBUG][2024-11-20 08:53:25] .../vim/lsp/rpc.lua:404	"rpc.receive"	{  jsonrpc = "2.0",  method = "window/showMessage",  params = {    message = "Ruff encountered a problem. Check the logs for more details.",    type = 1  }}
+[DEBUG][2024-11-20 08:53:25] .../vim/lsp/rpc.lua:404	"rpc.receive"	{  error = {    code = -32602,    message = "missing field `version`"  },  id = 7,  jsonrpc = "2.0"}
+```
+
+I can't figure out what thing is missing a `version` field.  Is this an issue with my `.toml` settings?  With how I'm calling the LSP command from within the IDE?  Something else?  I don't know what changed in the updated version to make the previously-working configuration no longer work.
+
+---
+
+_Label `fixes` added by @AlexWaygood on 2024-11-20 17:54_
+
+---
+
+_Label `server` added by @AlexWaygood on 2024-11-20 17:54_
+
+---
+
+_Label `fixes` removed by @MichaReiser on 2024-11-20 20:26_
+
+---
+
+_Comment by @MichaReiser on 2024-11-20 20:30_
+
+I suspect that the problem is that ruff server expects a `version` argument, which is the version of the document but I don't know how to configure this in neovim. I'm sure @dhruvmanila can help you tomorrow morning. He's our neovim expert. 
+
+---
+
+_Comment by @dhruvmanila on 2024-11-21 06:19_
+
+It's the table within the `arguments` table that's missing the `version` key:
+```lua
+map("n", "<leader>fa", "", {
+  callback = function()
+    vim.lsp.buf.execute_command {
+      command = 'ruff.applyAutofix',
+      arguments = {
+        { uri = vim.uri_from_bufnr(0), version = 0 },
+      },
+    }
+  end,
+  desc = "Fix all (ruff-lsp, in python)"
+})
+```
+
+You can just set it to 0 for now. I'm not exactly sure of the original intent for this argument because it's currently only being used for the formatting edits (not others):
+
+https://github.com/astral-sh/ruff/blob/f8c20258aec5148029da904fe1ea91c1c8f1be50/crates/ruff_server/src/server/api/requests/execute_command.rs#L79-L84
+
+---
+
+_Comment by @MichaReiser on 2024-11-21 07:13_
+
+> I'm not exactly sure of the original intent for this argument because it's currently only being used for the formatting edits (not others):
+
+The version allows clients to easily detect outdated server responses (unless they use another mechanism for it). We should use the version for organize imports and fixes too. For example:
+
+* The user makes edit, hits save (version = 1)
+* The LSP sends a format and organize import request to the LSP 
+* The format request finishes first and there are changes. The client applies the changes (version = 2) and it sends another organize import requests
+* The first organize import request finishes and there are changes. However, it's not safe to apply the edits now because the client is at version 2, but the edits sent by the server are for version 1. 
+
+
+
+---
+
+_Comment by @dhruvmanila on 2024-11-21 07:23_
+
+I see, thanks for the explanation.
+
+I did a quick search as to any reference for document version in the lsp client code in Neovim and I found this: https://github.com/neovim/neovim/blob/07db909eb5ae2a559771068be64439eba394cd61/runtime/lua/vim/lsp/util.lua#L2165-L2171 which is then being used in multiple places across the client code.
+
+I think that can be used to get the current version of the document on the client side which can then be passed to the server:
+```lua
+map("n", "<leader>fa", "", {
+  callback = function()
+	local bufnr = vim.api.nvim_get_current_buf()
+    vim.lsp.buf.execute_command {
+      command = 'ruff.applyAutofix',
+      arguments = {
+        { 
+		  uri = vim.uri_from_bufnr(bufnr),
+          version = vim.lsp.util.buf_versions[bufnr],
+		},
+      },
+    }
+  end,
+  desc = "Fix all (ruff-lsp, in python)"
+})
+```
+
+---
+
+_Comment by @dhruvmanila on 2024-11-21 07:25_
+
+You could also assert that Neovim always keeps track of the versions as it should do so:
+```lua
+        version = assert(
+          vim.lsp.util.buf_versions[bufnr],
+          ('No version found for buffer %d'):format(bufnr)
+        )
+```
+
+---
+
+_Renamed from "ruff server fails when calling `ruff.applyAutofix` from IDE" to "How to pass the document version number for `executeCommand` request in Neovim?" by @dhruvmanila on 2024-11-21 07:26_
+
+---
+
+_Label `question` added by @dhruvmanila on 2024-11-21 07:26_
+
+---
+
+_Renamed from "How to pass the document version number for `executeCommand` request in Neovim?" to "How to pass the document version number for `workspace/executeCommand` request in Neovim?" by @dhruvmanila on 2024-11-21 07:26_
+
+---
+
+_Comment by @matt-gardner on 2024-11-21 15:47_
+
+Thanks a lot for your help!  I can confirm that setting `version` as suggested solves the issue for me; querying `vim.lsp.util.buf_versions` as described above worked without issue.  Setting it to 0 also worked initially, which I tried before finishing reading the comments, though I didn't keep editing to see if it would have failed later.
+
+---
+
+_Closed by @matt-gardner on 2024-11-21 15:47_
+
+---

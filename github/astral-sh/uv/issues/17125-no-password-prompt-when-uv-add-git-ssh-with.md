@@ -1,0 +1,101 @@
+---
+number: 17125
+title: No password prompt when uv add git+ssh with password protected ssh key
+type: issue
+state: open
+author: d3vyce
+labels:
+  - bug
+assignees: []
+created_at: 2025-12-13T15:20:51Z
+updated_at: 2025-12-16T16:24:31Z
+url: https://github.com/astral-sh/uv/issues/17125
+synced_at: 2026-01-07T13:12:19-06:00
+---
+
+# No password prompt when uv add git+ssh with password protected ssh key
+
+---
+
+_Issue opened by @d3vyce on 2025-12-13 15:20_
+
+### Summary
+
+Hello,
+
+It's a display bug that occurs when I try to install a Python package from Git via SSH (and an SSH key protected by a password). The command I use is as follows:
+
+```bash
+(venv) user@fedora:~/$ uv pip install "git+ssh://git@git.XXXXX.XX/XXXXX/XXXXX.git"
+Using Python 3.13.9 environment at: venv
+   Updating ssh://git@git.XXXXX.XX/XXXXX/XXXXX.git (HEAD)
+⠙ Resolving dependencies...
+```
+
+The command remains stuck on “Resolving dependencies...”.
+
+If I now execute the same command but with “-v,” I am prompted for the ssh key password:
+```bash
+(venv) user@fedora:~/$ uv pip install "git+ssh://git@git.XXXXX.XX/XXXXX/XXXXX.git" -v
+DEBUG uv 0.9.17
+DEBUG Acquired shared lock for `/home/user/.cache/uv`
+DEBUG Searching for default Python interpreter in virtual environments
+DEBUG Found `cpython-3.13.9-linux-x86_64-gnu` at `/home/user/Documents/venv/bin/python3` (active virtual environment)
+Using Python 3.13.9 environment at: venv
+DEBUG Acquired exclusive lock for `venv`
+DEBUG At least one requirement is not satisfied: git+ssh://git@git.XXXXX.XX/XXXXX/XXXXX.git
+DEBUG Using request timeout of 30s
+DEBUG Attempting GitHub fast path for: git+ssh://git@git.XXXXX.XX/XXXXX/XXXXX.git
+DEBUG Fetching source distribution from Git: ssh://git@git.XXXXX.XX/XXXXX/XXXXX.git
+DEBUG Acquired exclusive lock for `ssh://git.XXXXX.XX/XXXXX/XXXXX`
+DEBUG Updating Git source `ssh://git@git.XXXXX.XX/XXXXX/XXXXX.git`
+   Updating ssh://git@git.XXXXX.XX/XXXXX/XXXXX.git (HEAD)
+DEBUG Performing a Git fetch for: ssh://git@git.XXXXX.XX/XXXXX/XXXXX.git
+Enter passphrase for key '/home/user/.ssh/id_ed25519':
+```
+
+With the first command (without the verbose option), it is possible to type the password despite the message “Resolving dependencies...” and press ENTER. This works and gives the following result:
+```bash
+(venv) user@fedora:~/$ uv pip install "git+ssh://git@git.XXXXX.XX/XXXXX/XXXXX.git"
+Using Python 3.13.9 environment at: venv
+   Updating ssh://git@git.XXXXX.XX/XXXXX/XXXXX.git (HEAD)
+    Updated ssh://git@git.XXXXX.XX/XXXXX/XXXXX.git (43f537dbfd214229ac0e0253b51c1b914928b1d6)
+Resolved 35 packages in 2.85s
+Audited 35 packages in 0.31ms
+```
+
+### Platform
+
+Fedora release 43 (Forty Three)
+
+### Version
+
+uv 0.9.17
+
+### Python version
+
+Python 3.13.9
+
+---
+
+_Label `bug` added by @d3vyce on 2025-12-13 15:20_
+
+---
+
+_Comment by @konstin on 2025-12-16 10:47_
+
+Is this a duplicate of https://github.com/astral-sh/uv/issues/12685?
+
+---
+
+_Comment by @lagamura on 2025-12-16 16:24_
+
+A workaround is using an ssh-agent and adding your key before executing `uv sync`.
+
+```shell
+eval $(ssh-agent -s)
+ssh-add ~/.ssh/<private_key>
+uv sync
+```
+
+---

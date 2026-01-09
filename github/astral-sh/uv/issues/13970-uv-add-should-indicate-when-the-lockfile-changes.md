@@ -1,0 +1,83 @@
+---
+number: 13970
+title: "`uv add` should indicate when the lockfile changes"
+type: issue
+state: open
+author: zanieb
+labels:
+  - enhancement
+assignees: []
+created_at: 2025-06-11T15:27:07Z
+updated_at: 2025-06-11T15:27:07Z
+url: https://github.com/astral-sh/uv/issues/13970
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# `uv add` should indicate when the lockfile changes
+
+---
+
+_Issue opened by @zanieb on 2025-06-11 15:27_
+
+### Summary
+
+Notice using `--upgrade-package` with `uv lock` shows a summary depending on if there are changes
+
+```
+❯ uv add --dev "ruff>0.11.11"
+Resolved 5 packages in 99ms
+Audited 4 packages in 0.04ms
+❯ uv lock --upgrade-package ruff==0.11.11
+Resolved 5 packages in 61ms
+Updated ruff v0.11.13 -> v0.11.11
+❯ uv lock --upgrade-package ruff==0.11.11
+Resolved 5 packages in 60ms
+```
+
+However, for `uv add`, the version of `ruff` changes but we do not indicate it, because the version in the environment does not change (it's synced from our initial install still)
+
+```
+❯ uv add --dev ruff --upgrade-package ruff
+Resolved 5 packages in 62ms
+Audited 4 packages in 0.01ms
+❯ uv tree | grep ruff
+Resolved 5 packages in 1ms
+└── ruff v0.11.13 (group: dev)
+```
+
+This is a bit confusing. We should consider showing lockfile changes somehow?
+
+Note, if you sync after the lock, we will show the version change:
+
+```
+❯ uv add --dev ruff --upgrade-package ruff
+Resolved 9 packages in 60ms
+Prepared 1 package in 0.13ms
+Uninstalled 1 package in 0.54ms
+Installed 1 package in 1ms
+ - ruff==0.11.11
+ + ruff==0.11.13
+```
+
+### Example
+
+Maybe we can re-use the environment change list?
+
+```
+❯ uv add --dev ruff --upgrade-package ruff
+Resolved 5 packages in 62ms
+Audited 4 packages in 0.01ms
+~ ruff==0.11.13
+```
+
+I think it'd be weird to use the `uv lock` style output mixed with the environment summary?
+
+---
+
+_Label `enhancement` added by @zanieb on 2025-06-11 15:27_
+
+---
+
+_Referenced in [astral-sh/uv#1419](../../astral-sh/uv/issues/1419.md) on 2025-06-11 15:28_
+
+---

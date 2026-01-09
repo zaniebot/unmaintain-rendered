@@ -1,0 +1,62 @@
+---
+number: 11993
+title: "`uv run python` in a project does not respect `.inputrc`"
+type: issue
+state: closed
+author: jasonkena
+labels:
+  - bug
+assignees: []
+created_at: 2025-03-06T00:14:39Z
+updated_at: 2025-03-08T03:24:07Z
+url: https://github.com/astral-sh/uv/issues/11993
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# `uv run python` in a project does not respect `.inputrc`
+
+---
+
+_Issue opened by @jasonkena on 2025-03-06 00:14_
+
+### Summary
+
+I am trying to get the VI keybindings to work (https://stackoverflow.com/questions/537522/standard-python-interpreter-has-a-vi-command-mode)
+
+### Platform
+
+Linux 4.18.0-477.27.1.el8_8.x86_64 x86_64 GNU/Linux
+
+### Version
+
+uv 0.6.4
+
+### Python version
+
+3.11.11
+
+---
+
+_Label `bug` added by @jasonkena on 2025-03-06 00:14_
+
+---
+
+_Comment by @zanieb on 2025-03-06 00:37_
+
+Are you using managed Python distributions or your system Python?
+
+We use libedit instead of readline (behind the scenes) which may not support this?
+
+---
+
+_Comment by @jasonkena on 2025-03-06 05:43_
+
+I used the managed Python distribution.
+
+Thanks for the pointer! From [Stack Overflow](https://stackoverflow.com/a/77292123/10702372) and the [libedit manpages](https://manpages.debian.org/jessie/libedit-dev/editrc.5.en.html), I learnt putting `bind -v` in `~/.editrc` solves the problem.
+
+---
+
+_Closed by @jasonkena on 2025-03-06 05:43_
+
+---

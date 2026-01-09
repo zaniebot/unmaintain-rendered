@@ -1,0 +1,62 @@
+---
+number: 17011
+title: "Rule Request: Do not return NotImplemented from regular methods/functions"
+type: issue
+state: open
+author: aardjon
+labels:
+  - rule
+assignees: []
+created_at: 2025-03-27T10:59:17Z
+updated_at: 2025-03-27T19:56:33Z
+url: https://github.com/astral-sh/ruff/issues/17011
+synced_at: 2026-01-07T13:12:16-06:00
+---
+
+# Rule Request: Do not return NotImplemented from regular methods/functions
+
+---
+
+_Issue opened by @aardjon on 2025-03-27 10:59_
+
+### Summary
+
+[According to the docs](https://docs.python.org/3/library/constants.html#NotImplemented), `NotImplemented` is supposed to be mainly (or exclusively?) returned by some special dunder methods like `__eq__()`, `__lt__()` or `__imul__()`. That's why I would like to get a warning when returning it from any other context, because this may not be intended (and I consider it a code smell).
+
+**Invalid Code:**
+
+```python
+def foo() -> bool:
+    return NotImplemented
+```
+
+```python
+class C:
+    def __foo(self) -> str:
+        return NotImplemented
+```
+
+**Valid Code:**
+```python
+class C:
+    def __eq__(self, other: object) -> bool:
+        return NotImplemented
+```
+
+I think in most cases one actually wants to raise instead, but I wouldn't fix it automatically because it changes behaviour.
+
+As far as I know, no other linters can check this explicitly. Pylint produces follow-up issues if the returned value is not handled properly, Mypy can only warn about "Returning Any". But these warnings can be misleading.
+
+There is [a similar feature request for Mypy](https://github.com/python/mypy/issues/363). I'm not sure which tool is the right one for this check, though.
+
+---
+
+_Label `rule` added by @ntBre on 2025-03-27 17:07_
+
+---
+
+_Comment by @MichaReiser on 2025-03-27 19:56_
+
+I think that makes sense to me, now that Python has abstract class (and method) support without needing `NotImplemented`. However, I don't think we should add this rule before we finish #1774 because I consider this a rule that intentionally restricts the allowed syntax.
+
+---

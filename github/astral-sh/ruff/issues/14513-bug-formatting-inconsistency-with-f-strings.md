@@ -1,0 +1,64 @@
+---
+number: 14513
+title: "Bug: Formatting inconsistency with f strings"
+type: issue
+state: closed
+author: jvacek
+labels:
+  - question
+  - formatter
+assignees: []
+created_at: 2024-11-21T12:43:48Z
+updated_at: 2024-11-21T12:50:25Z
+url: https://github.com/astral-sh/ruff/issues/14513
+synced_at: 2026-01-07T13:12:16-06:00
+---
+
+# Bug: Formatting inconsistency with f strings
+
+---
+
+_Issue opened by @jvacek on 2024-11-21 12:43_
+
+I would assume that the second version of `mystr` would be formatted, but it doesn't
+
+```py
+i = 2
+
+# This gets formatted
+sign = "+" if i > 0 else "-"
+sign = "+" if i>0 else "-" # gets spaces around '>'
+
+# This does not get formatted
+mystr = f"HI {'+' if i > 0 else '-'}{i}"
+mystr = f"HI {'+' if i>0 else '-'}{i}"
+
+```
+
+---
+
+_Comment by @MichaReiser on 2024-11-21 12:46_
+
+Ruff supports f-string formatting but only as a preview feature. We plan to release it early next year, once we figured out all edge cases :) You can give it a try by setting `format.preview = true`.
+
+See #13371 
+
+---
+
+_Label `question` added by @MichaReiser on 2024-11-21 12:46_
+
+---
+
+_Label `formatter` added by @MichaReiser on 2024-11-21 12:46_
+
+---
+
+_Comment by @jvacek on 2024-11-21 12:50_
+
+Tried that in the meantime, you beat me to it. Thanks!
+
+---
+
+_Closed by @jvacek on 2024-11-21 12:50_
+
+---

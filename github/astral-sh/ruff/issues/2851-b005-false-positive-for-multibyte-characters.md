@@ -1,0 +1,47 @@
+---
+number: 2851
+title: B005 false positive for multibyte characters
+type: issue
+state: closed
+author: S-aiueo32
+labels:
+  - bug
+assignees: []
+created_at: 2023-02-13T11:38:40Z
+updated_at: 2023-02-13T15:07:56Z
+url: https://github.com/astral-sh/ruff/issues/2851
+synced_at: 2026-01-07T13:12:14-06:00
+---
+
+# B005 false positive for multibyte characters
+
+---
+
+_Issue opened by @S-aiueo32 on 2023-02-13 11:38_
+
+```
+"".strip("a")  # negative
+"".strip("あ")  # positive
+```
+
+---
+
+_Label `bug` added by @charliermarsh on 2023-02-13 13:57_
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2023-02-13 14:40_
+
+---
+
+_Referenced in [astral-sh/ruff#2862](../../astral-sh/ruff/pulls/2862.md) on 2023-02-13 15:05_
+
+---
+
+_Closed by @charliermarsh on 2023-02-13 15:07_
+
+---
+
+_Referenced in [astral-sh/ruff#2958](../../astral-sh/ruff/issues/2958.md) on 2023-02-17 00:01_
+
+---

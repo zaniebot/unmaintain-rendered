@@ -1,0 +1,93 @@
+---
+number: 5944
+title: "chore(deps): Switch humantime to jiff"
+type: pull_request
+state: merged
+author: oherrala
+labels: []
+assignees: []
+merged: true
+base: master
+head: jiff
+created_at: 2025-03-08T15:55:29Z
+updated_at: 2025-03-10T16:54:35Z
+url: https://github.com/clap-rs/clap/pull/5944
+synced_at: 2026-01-07T13:12:20-06:00
+---
+
+# chore(deps): Switch humantime to jiff
+
+---
+
+_Pull request opened by @oherrala on 2025-03-08 15:55_
+
+[`humantime`](https://crates.io/crates/humantime) crate seems to be unmaintained and [`jiff`](https://crates.io/crates/jiff) is provides same functionality. According to crates.io's stats clap is the most downloaded user of `humantime`. 
+
+Since `humantime` crate is only used in one example code this shouldn't cause any bigger change to project.
+
+
+This is alternative to #5943 as proposed by @epage in https://github.com/clap-rs/clap/pull/5943#issuecomment-2708354291.
+
+Ref. https://github.com/rustsec/advisory-db/pull/2249
+
+<!--
+Thanks for helping out!
+
+Please link the appropriate issue from your PR.
+
+If you don't have an issue, we'd recommend starting with one first so the PR can focus on the
+implementation (unless its an obvious bug or documentation fix that will have
+little conversation).
+-->
+
+
+---
+
+_Review comment by @epage on `examples/typed-derive.rs`:22 on 2025-03-08 16:31_
+
+I've not checked, does this get the human-format parsing or does that require further opt-in? And is there an unsigned option?
+
+---
+
+_Review comment by @epage on `examples/typed-derive.rs`:22 on 2025-03-08 16:40_
+
+I've not checked, does this get the human-format parsing or does that require further opt-in?
+
+---
+
+_@epage reviewed on 2025-03-08 16:40_
+
+---
+
+_@oherrala reviewed on 2025-03-08 17:00_
+
+---
+
+_Review comment by @oherrala on `examples/typed-derive.rs`:22 on 2025-03-08 17:00_
+
+It seems to work:
+
+```console
+% cargo -q run --example typed-derive --features derive -- --sleep "2 hours 42 minutes 5 seconds" 
+Args { optimization: None, include: None, bind: None, sleep: Some(2h 42m 5s), defines: [], port: 22, log_level: Info }
+```
+
+AFAIK I can't find unsigned `Duration`. But there's [`Span`](https://docs.rs/jiff/latest/jiff/struct.Span.html) which seems more complex type. The differences between `SignedDuration` and `Span` can be found here: https://docs.rs/jiff/latest/jiff/struct.SignedDuration.html#when-should-i-use-signedduration-versus-span
+
+---
+
+_Review comment by @BurntSushi on `examples/typed-derive.rs`:22 on 2025-03-08 17:57_
+
+For parsing (via `FromStr` or `serde::Deserialize`), both `jiff::SignedDuration` and `jiff::Span` will automatically handle both the "friendly" format and the ISO 8601 duration format: https://docs.rs/jiff/latest/jiff/struct.SignedDuration.html#parsing-and-printing
+
+For _printing_, it defaults to ISO 8601 for interoperability reasons, but you can use `{:#}` to get the "alternate", which is the friendly format.
+
+For _serialization_, it also defaults to ISO 8601 for interopability reasons, but you can use the [`jiff::fmt::serde::duration::friendly::compact::optional`](https://docs.rs/jiff/latest/jiff/fmt/serde/duration/friendly/compact/fn.optional.html) Serde helper to opt into the friendly format.
+
+The main _behavioral_ change here is that `humantime` will happily parse something like `1month` into a `std::time::Duration` by giving it a fixed value of `30.44` days. Jiff will reject such things for `SignedDuration`. If you want to support that, you have to use `Span`, [which I believe would also "just work" here](https://docs.rs/jiff/latest/jiff/_documentation/changelog/index.html#0116-2024-12-26).
+
+---
+
+_@BurntSushi reviewed on 2025-03-08 17:57_
+
+---

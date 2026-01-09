@@ -1,0 +1,217 @@
+---
+number: 7736
+title: "Rule EM102 cause panic `assertion failed: self.start_locations.is_empty()`"
+type: issue
+state: closed
+author: qarmin
+labels:
+  - bug
+assignees: []
+created_at: 2023-10-01T07:48:32Z
+updated_at: 2023-11-09T05:22:17Z
+url: https://github.com/astral-sh/ruff/issues/7736
+synced_at: 2026-01-07T13:12:15-06:00
+---
+
+# Rule EM102 cause panic `assertion failed: self.start_locations.is_empty()`
+
+---
+
+_Issue opened by @qarmin on 2023-10-01 07:48_
+
+
+Ruff 0.0.291 (latest changes from main branch)
+```
+ruff  *.py --select EM102 --no-cache --fix --preview
+```
+
+file content:
+```
+class ModelMeta(DeclarativeMeta):
+                raise AttributeError(f"""Attribute(s) {", ".join([f"'{dupe}'" for dupe in intersection])} was/were provided twice.""")
+```
+
+error
+```
+
+error: Panicked while linting /home/rafal/test/tmp_folder/F_NAME_7596776546798357223.py: This indicates a bug in Ruff. If you could open an issue at:
+
+    https://github.com/astral-sh/ruff/issues/new?title=%5BLinter%20panic%5D
+
+...with the relevant file contents, the `pyproject.toml` settings, and the following stack trace, we'd be very appreciative!
+
+panicked at 'assertion failed: self.start_locations.is_empty()', crates/ruff_python_index/src/fstring_ranges.rs:92:9
+Backtrace:    0: ruff_cli::panic::catch_unwind::{{closure}}
+             at /home/rafal/test/ruff/crates/ruff_cli/src/panic.rs:31:25
+   1: <alloc::boxed::Box<F,A> as core::ops::function::Fn<Args>>::call
+             at /rustc/d5c2e9c342b358556da91d61ed4133f6f50fc0c3/library/alloc/src/boxed.rs:2007:9
+   2: std::panicking::rust_panic_with_hook
+             at /rustc/d5c2e9c342b358556da91d61ed4133f6f50fc0c3/library/std/src/panicking.rs:709:13
+   3: std::panicking::begin_panic_handler::{{closure}}
+             at /rustc/d5c2e9c342b358556da91d61ed4133f6f50fc0c3/library/std/src/panicking.rs:595:13
+   4: std::sys_common::backtrace::__rust_end_short_backtrace
+             at /rustc/d5c2e9c342b358556da91d61ed4133f6f50fc0c3/library/std/src/sys_common/backtrace.rs:151:18
+   5: rust_begin_unwind
+             at /rustc/d5c2e9c342b358556da91d61ed4133f6f50fc0c3/library/std/src/panicking.rs:593:5
+   6: core::panicking::panic_fmt
+             at /rustc/d5c2e9c342b358556da91d61ed4133f6f50fc0c3/library/core/src/panicking.rs:67:14
+   7: core::panicking::panic
+             at /rustc/d5c2e9c342b358556da91d61ed4133f6f50fc0c3/library/core/src/panicking.rs:117:5
+   8: ruff_python_index::fstring_ranges::FStringRangesBuilder::finish
+             at /home/rafal/test/ruff/crates/ruff_python_index/src/fstring_ranges.rs:92:9
+   9: ruff_python_index::indexer::Indexer::from_tokens
+             at /home/rafal/test/ruff/crates/ruff_python_index/src/indexer.rs:75:29
+  10: ruff_linter::linter::lint_fix
+             at /home/rafal/test/ruff/crates/ruff_linter/src/linter.rs:450:23
+  11: ruff_cli::diagnostics::lint_path
+             at /home/rafal/test/ruff/crates/ruff_cli/src/diagnostics.rs:228:14
+  12: ruff_cli::commands::check::lint_path::{{closure}}
+             at /home/rafal/test/ruff/crates/ruff_cli/src/commands/check.rs:204:9
+  13: std::panicking::try::do_call
+             at /rustc/d5c2e9c342b358556da91d61ed4133f6f50fc0c3/library/std/src/panicking.rs:500:40
+  14: std::panicking::try
+             at /rustc/d5c2e9c342b358556da91d61ed4133f6f50fc0c3/library/std/src/panicking.rs:464:19
+  15: std::panic::catch_unwind
+             at /rustc/d5c2e9c342b358556da91d61ed4133f6f50fc0c3/library/std/src/panic.rs:142:14
+  16: ruff_cli::panic::catch_unwind
+             at /home/rafal/test/ruff/crates/ruff_cli/src/panic.rs:40:18
+  17: ruff_cli::commands::check::lint_path
+             at /home/rafal/test/ruff/crates/ruff_cli/src/commands/check.rs:203:18
+  18: ruff_cli::commands::check::check::{{closure}}
+             at /home/rafal/test/ruff/crates/ruff_cli/src/commands/check.rs:122:21
+  19: core::ops::function::impls::<impl core::ops::function::FnMut<A> for &F>::call_mut
+             at /rustc/d5c2e9c342b358556da91d61ed4133f6f50fc0c3/library/core/src/ops/function.rs:272:13
+  20: core::iter::adapters::map::map_fold::{{closure}}
+             at /rustc/d5c2e9c342b358556da91d61ed4133f6f50fc0c3/library/core/src/iter/adapters/map.rs:84:28
+  21: <core::slice::iter::Iter<T> as core::iter::traits::iterator::Iterator>::fold
+             at /rustc/d5c2e9c342b358556da91d61ed4133f6f50fc0c3/library/core/src/slice/iter/macros.rs:215:27
+  22: <core::iter::adapters::map::Map<I,F> as core::iter::traits::iterator::Iterator>::fold
+             at /rustc/d5c2e9c342b358556da91d61ed4133f6f50fc0c3/library/core/src/iter/adapters/map.rs:124:9
+  23: <rayon::iter::reduce::ReduceFolder<R,T> as rayon::iter::plumbing::Folder<T>>::consume_iter
+             at /home/rafal/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rayon-1.8.0/src/iter/reduce.rs:105:19
+  24: <rayon::iter::map::MapFolder<C,F> as rayon::iter::plumbing::Folder<T>>::consume_iter
+             at /home/rafal/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rayon-1.8.0/src/iter/map.rs:248:21
+  25: rayon::iter::plumbing::Producer::fold_with
+             at /home/rafal/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rayon-1.8.0/src/iter/plumbing/mod.rs:110:9
+  26: rayon::iter::plumbing::bridge_producer_consumer::helper
+             at /home/rafal/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rayon-1.8.0/src/iter/plumbing/mod.rs:438:13
+  27: rayon::iter::plumbing::bridge_producer_consumer
+             at /home/rafal/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rayon-1.8.0/src/iter/plumbing/mod.rs:397:12
+  28: <rayon::iter::plumbing::bridge::Callback<C> as rayon::iter::plumbing::ProducerCallback<I>>::callback
+             at /home/rafal/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rayon-1.8.0/src/iter/plumbing/mod.rs:373:13
+  29: <rayon::slice::Iter<T> as rayon::iter::IndexedParallelIterator>::with_producer
+             at /home/rafal/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rayon-1.8.0/src/slice/mod.rs:732:9
+  30: rayon::iter::plumbing::bridge
+             at /home/rafal/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rayon-1.8.0/src/iter/plumbing/mod.rs:357:12
+  31: <rayon::slice::Iter<T> as rayon::iter::ParallelIterator>::drive_unindexed
+             at /home/rafal/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rayon-1.8.0/src/slice/mod.rs:708:9
+  32: <rayon::iter::map::Map<I,F> as rayon::iter::ParallelIterator>::drive_unindexed
+             at /home/rafal/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rayon-1.8.0/src/iter/map.rs:49:9
+  33: rayon::iter::reduce::reduce
+             at /home/rafal/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rayon-1.8.0/src/iter/reduce.rs:15:5
+  34: rayon::iter::ParallelIterator::reduce
+             at /home/rafal/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rayon-1.8.0/src/iter/mod.rs:991:9
+  35: ruff_cli::commands::check::check
+             at /home/rafal/test/ruff/crates/ruff_cli/src/commands/check.rs:173:10
+  36: ruff_cli::check
+             at /home/rafal/test/ruff/crates/ruff_cli/src/lib.rs:372:13
+  37: ruff_cli::run
+             at /home/rafal/test/ruff/crates/ruff_cli/src/lib.rs:163:33
+  38: ruff::main
+             at /home/rafal/test/ruff/crates/ruff_cli/src/bin/ruff.rs:49:11
+  39: core::ops::function::FnOnce::call_once
+             at /rustc/d5c2e9c342b358556da91d61ed4133f6f50fc0c3/library/core/src/ops/function.rs:250:5
+  40: std::sys_common::backtrace::__rust_begin_short_backtrace
+             at /rustc/d5c2e9c342b358556da91d61ed4133f6f50fc0c3/library/std/src/sys_common/backtrace.rs:135:18
+  41: main
+  42: __libc_start_call_main
+             at ./csu/../sysdeps/nptl/libc_start_call_main.h:58:16
+  43: __libc_start_main_impl
+             at ./csu/../csu/libc-start.c:360:3
+  44: _start
+
+
+```
+
+[python_compressed.zip](https://github.com/astral-sh/ruff/files/12776640/python_compressed.zip)
+
+
+---
+
+_Comment by @charliermarsh on 2023-10-01 15:34_
+
+@dhruvmanila - Do you mind taking a look at this one? It's f-string related (in the indexer, we have a lingering start that wasn't matched to an end).
+
+---
+
+_Assigned to @dhruvmanila by @charliermarsh on 2023-10-01 15:34_
+
+---
+
+_Label `bug` added by @charliermarsh on 2023-10-01 15:34_
+
+---
+
+_Comment by @dhruvmanila on 2023-10-01 16:02_
+
+> @dhruvmanila - Do you mind taking a look at this one? It's f-string related (in the indexer, we have a lingering start that wasn't matched to an end).
+
+Yes, will look at it in a bit
+
+---
+
+_Comment by @dhruvmanila on 2023-10-01 18:40_
+
+This is similar to #6988. The problem here is that the original string is a triple-quoted f-string but the generator doesn't generate that (triple quotes) and instead just gives a single quoted string:
+
+```diff
+-raise AttributeError(f"""Attribute(s) {", ".join([f"'{dupe}'" for dupe in intersection])} was/were provided twice.""")
++msg = f"Attribute(s) {', '.join([f\"'{dupe}'\" for dupe in intersection])} was/were provided twice."
+#                                  ^^        ^^
++raise AttributeError(msg)
+```
+
+The transformed code is the one which raises this error because it's actually invalid syntax (the nested f-string quote is being escaped here marked at `^`). The problem is that the AST doesn't contain the information whether the string is triple-quoted or not.
+
+This is a suggested fix so it could be solved once applicability changes are merged. I'm not sure we can do anything else here as the f-string code in the `Indexer` is correct.
+
+---
+
+_Comment by @charliermarsh on 2023-10-01 18:46_
+
+I mean, in this specific case, we could also move towards using the `Locator` rather than `Generator`... But need to figure out a better (general) solution here.
+
+---
+
+_Referenced in [astral-sh/ruff#7746](../../astral-sh/ruff/pulls/7746.md) on 2023-10-01 19:08_
+
+---
+
+_Comment by @dhruvmanila on 2023-10-01 19:10_
+
+> But need to figure out a better (general) solution here.
+
+By this, do you mean in terms of single vs triple-quoted string generation?
+
+---
+
+_Comment by @charliermarsh on 2023-10-01 19:11_
+
+Yeah, e.g., preserving quote styles in the generator.
+
+
+---
+
+_Comment by @dhruvmanila on 2023-10-01 19:13_
+
+I've updated the code to use `Locator` for now, will create a new tracking issue for that.
+
+---
+
+_Referenced in [astral-sh/ruff#7799](../../astral-sh/ruff/issues/7799.md) on 2023-10-04 04:54_
+
+---
+
+_Closed by @dhruvmanila on 2023-11-09 05:22_
+
+---

@@ -1,0 +1,88 @@
+---
+number: 9912
+title: "`cached-instance-method (B019)` gives false positive when decorated method belongs to `enum.Enum`"
+type: issue
+state: closed
+author: jakob-keller
+labels:
+  - rule
+assignees: []
+created_at: 2024-02-09T15:16:13Z
+updated_at: 2024-05-06T18:19:23Z
+url: https://github.com/astral-sh/ruff/issues/9912
+synced_at: 2026-01-07T13:12:15-06:00
+---
+
+# `cached-instance-method (B019)` gives false positive when decorated method belongs to `enum.Enum`
+
+---
+
+_Issue opened by @jakob-keller on 2024-02-09 15:16_
+
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+What do you think about the following edge case? I believe this should not be reported, since Enum members are typically low cardinality and are not garbage collected anyway.
+
+```python
+# test.py
+
+import enum
+import functools
+
+
+class Foo(enum.Enum):
+    ONE = enum.auto()
+    TWO = enum.auto()
+
+    @functools.cache
+    def bar(self, arg: str) -> str:
+        return f"{self} - {arg}"
+```
+
+```
+$ ruff --version
+ruff 0.2.1
+
+$ ruff check --isolated --select B test.py
+test.py:9:5: B019 Use of `functools.lru_cache` or `functools.cache` on methods can lead to memory leaks
+Found 1 error.
+```
+
+---
+
+_Label `rule` added by @AlexWaygood on 2024-02-09 15:43_
+
+---
+
+_Comment by @charliermarsh on 2024-02-10 23:57_
+
+I think I agree with this, though I'd love other opinions / confirmations that this is safe.
+
+---
+
+_Comment by @charliermarsh on 2024-05-06 17:43_
+
+Confirmed with Alex and Carl that this should be fine.
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2024-05-06 17:48_
+
+---
+
+_Referenced in [astral-sh/ruff#11312](../../astral-sh/ruff/pulls/11312.md) on 2024-05-06 17:58_
+
+---
+
+_Closed by @charliermarsh on 2024-05-06 18:19_
+
+---

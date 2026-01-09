@@ -1,0 +1,56 @@
+---
+number: 1022
+title: "Re-enable `zlib-ng` on PowerPC and S390x"
+type: issue
+state: closed
+author: charliermarsh
+labels:
+  - wish
+assignees: []
+created_at: 2024-01-19T22:30:36Z
+updated_at: 2024-11-20T15:50:27Z
+url: https://github.com/astral-sh/uv/issues/1022
+synced_at: 2026-01-07T13:12:16-06:00
+---
+
+# Re-enable `zlib-ng` on PowerPC and S390x
+
+---
+
+_Issue opened by @charliermarsh on 2024-01-19 22:30_
+
+Pretty low-priority.
+
+---
+
+_Label `wish` added by @charliermarsh on 2024-01-19 22:30_
+
+---
+
+_Label `internal` added by @charliermarsh on 2024-01-19 22:30_
+
+---
+
+_Label `internal` removed by @charliermarsh on 2024-01-19 22:30_
+
+---
+
+_Referenced in [astral-sh/uv#1017](../../astral-sh/uv/pulls/1017.md) on 2024-01-20 00:21_
+
+---
+
+_Comment by @charliermarsh on 2024-01-20 19:17_
+
+(Not really about the speedup -- mostly just annoying because we now compile with different features.)
+
+---
+
+_Comment by @musicinmybrain on 2024-11-20 15:50_
+
+I think this could be closed now that `uv` has switched to `zlib-rs` and the conditionals were removed in https://github.com/astral-sh/uv/pull/9264.
+
+---
+
+_Closed by @konstin on 2024-11-20 15:50_
+
+---

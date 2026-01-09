@@ -1,0 +1,113 @@
+---
+number: 12585
+title: "Incorrect behavior of dependency group created by `uvx migrate-to-uv`"
+type: issue
+state: closed
+author: dandavison
+labels:
+  - bug
+assignees: []
+created_at: 2025-03-31T14:01:47Z
+updated_at: 2025-03-31T14:51:29Z
+url: https://github.com/astral-sh/uv/issues/12585
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# Incorrect behavior of dependency group created by `uvx migrate-to-uv`
+
+---
+
+_Issue opened by @dandavison on 2025-03-31 14:01_
+
+### Summary
+
+The file https://github.com/temporalio/samples-python/blob/78dcff4023ae87d58ce6e4fb26353cb323f664c2/pyproject.toml was created by `uvx migrate-to-uv`.
+
+This interaction with uv appears wrong:
+1. It's telling me to try the command which I issued
+2. The error seems to contradict the hint
+
+```
+$ uv remove pyarrow --group cloud-export-to-parquet
+hint: `pyarrow` is in the `cloud-export-to-parquet` group (try: `uv remove pyarrow --group cloud-export-to-parquet`)
+error: The dependency `pyarrow` could not be found in `dependency-groups.cloud-export-to-parquet`
+```
+
+This occurs with `0.6.11` and current `main` (c1b49b9ab22b4cc4e98dd7e3bb2f7deab9b7e4e8). 
+
+On deleting `uv.lock` and manually removing `pyarrow`, another confusing interaction with `uv` resulted when I tried:
+
+```
+samples-python(uv) uv add pyarrow --group cloud_export_to_parquet
+error: Failed to parse `pyproject.toml`
+  Caused by: TOML parse error at line 17, column 1
+   |
+17 | [dependency-groups]
+   | ^^^^^^^^^^^^^^^^^^^
+duplicate dependency group: `cloud-export-to-parquet`
+```
+
+The change it made to `pyproject.toml` was
+
+```toml
+cloud_export_to_parquet = [
+    "pandas>=2.2.2,<3 ; python_version >= '3.9' and python_version < '4.0'",
+    "numpy>=1.26.0,<2 ; python_version >= '3.9' and python_version < '3.13'",
+    "boto3>=1.34.89,<2",
+]
+cloud-export-to-parquet = [
+    "pyarrow",
+]
+```
+
+(Same error whether one uses `--group cloud-export-to-parquet` or `--group cloud_export_to_parquet`)
+
+### Platform
+
+MacOS arm
+
+### Version
+
+`0.6.11` and current `main` (c1b49b9ab22b4cc4e98dd7e3bb2f7deab9b7e4e8)
+
+### Python version
+
+Python 3.13.2
+
+---
+
+_Label `bug` added by @dandavison on 2025-03-31 14:01_
+
+---
+
+_Comment by @charliermarsh on 2025-03-31 14:03_
+
+Probably the same bug, my guess is that the `pyproject.toml` code isn't normalizing the groups when comparing / searching / etc.
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2025-03-31 14:05_
+
+---
+
+_Comment by @dandavison on 2025-03-31 14:05_
+
+Yes, `uv add pyarrow --group cloud-export-to-parquet` works as expected if the group name uses dashes in `pyproject.toml`.
+
+---
+
+_Referenced in [astral-sh/uv#12586](../../astral-sh/uv/pulls/12586.md) on 2025-03-31 14:36_
+
+---
+
+_Closed by @charliermarsh on 2025-03-31 14:51_
+
+---
+
+_Referenced in [temporalio/samples-python#170](../../temporalio/samples-python/pulls/170.md) on 2025-04-02 10:28_
+
+---
+
+_Referenced in [astral-sh/uv#8591](../../astral-sh/uv/issues/8591.md) on 2025-04-16 00:33_
+
+---

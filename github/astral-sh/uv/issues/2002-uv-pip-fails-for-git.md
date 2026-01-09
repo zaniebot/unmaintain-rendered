@@ -1,0 +1,71 @@
+---
+number: 2002
+title: uv pip fails for git+
+type: issue
+state: closed
+author: arunpatro
+labels:
+  - duplicate
+assignees: []
+created_at: 2024-02-27T05:00:49Z
+updated_at: 2024-02-27T06:45:49Z
+url: https://github.com/astral-sh/uv/issues/2002
+synced_at: 2026-01-07T13:12:16-06:00
+---
+
+# uv pip fails for git+
+
+---
+
+_Issue opened by @arunpatro on 2024-02-27 05:00_
+
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with uv.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
+* The current uv platform.
+* The current uv version (`uv --version`).
+-->
+
+uv 0.1.11 for linux
+
+uv pip fails for this, which works with normal pip
+```
+uv pip install "git+https://github.com/stanford-futuredata/megablocks.git"
+```
+
+
+Results:
+```
+uv pip install git+https://github.com/stanford-futuredata/megablocks.git
+error: Failed to parse `git+https://github.com/stanford-futuredata/megablocks.git`
+  Caused by: URL requirement must be preceded by a package name. Add the name of the package before the URL (e.g., `package_name @ https://...`).
+git+https://github.com/stanford-futuredata/megablocks.git
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+```
+
+
+---
+
+_Comment by @charliermarsh on 2024-02-27 05:22_
+
+We support installing `git+` dependencies, but you have to prefix them with the package name:
+
+```
+uv pip install "megablocks @ git+https://github.com/stanford-futuredata/megablocks.git"
+```
+
+We'll likely lift this constraint in the future. You can track it here: https://github.com/astral-sh/uv/issues/313. There are a bunch of similar issues linked to that PR if you're interested.
+
+---
+
+_Closed by @charliermarsh on 2024-02-27 05:22_
+
+---
+
+_Label `duplicate` added by @zanieb on 2024-02-27 06:45_
+
+---

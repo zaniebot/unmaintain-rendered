@@ -1,0 +1,111 @@
+---
+number: 18409
+title: "[FURB] Path write"
+type: issue
+state: closed
+author: gbaian10
+labels:
+  - rule
+  - help wanted
+assignees: []
+created_at: 2025-06-01T07:22:38Z
+updated_at: 2025-12-17T14:18:15Z
+url: https://github.com/astral-sh/ruff/issues/18409
+synced_at: 2026-01-07T13:12:16-06:00
+---
+
+# [FURB] Path write
+
+---
+
+_Issue opened by @gbaian10 on 2025-06-01 07:22_
+
+### Summary
+
+## Case 1
+```py
+with open("hello.txt", "w", encoding="utf-8") as f:
+    f.write("Hello, world!")
+```
+
+run `ruff check`
+
+```console
+PTH123 `open()` should be replaced by `Path.open()`
+FURB103 `open` and `write` should be replaced by `Path("hello.txt").write_text("Hello, world!")`
+```
+
+## Case 2
+
+If I try to fix `FURB103` first
+
+```py
+from pathlib import Path
+
+Path("hello.txt").write_text("Hello, world!", encoding="utf-8")
+```
+
+run `ruff check`
+
+```console
+All checks passed!
+```
+
+## Case 3
+
+But if we fix `PTH123` first
+
+```py
+from pathlib import Path
+
+with Path("hello.txt").open("w", encoding="utf-8") as f:
+    f.write("Hello, world!")
+```
+
+run `ruff check`
+
+```console
+All checks passed!
+```
+
+---
+
+Are Case3 and Case2 completely equivalent programs?
+If they are, I would like to have a rule that can transform Case3 into Case2.
+
+Similar to [unspecified-encoding (PLW1514)](https://docs.astral.sh/ruff/rules/unspecified-encoding/), will raise warnings for both `with open` and `Path.open`.
+
+
+---
+
+_Comment by @MichaReiser on 2025-06-02 10:00_
+
+I think it would make sense to extend `PTH123` to also support `Path::open`
+
+---
+
+_Label `rule` added by @MichaReiser on 2025-06-02 10:00_
+
+---
+
+_Label `help wanted` added by @MichaReiser on 2025-06-02 10:00_
+
+---
+
+_Referenced in [astral-sh/ruff#21080](../../astral-sh/ruff/pulls/21080.md) on 2025-10-26 10:43_
+
+---
+
+_Comment by @11happy on 2025-10-26 10:44_
+
+@MichaReiser I have linked the PR, &  I assume you meant FURB103  as it more justifed to extend that rather than PTH123 ?
+
+> I think it would make sense to extend `PTH123` to also support `Path::open`
+
+
+
+---
+
+_Closed by @ntBre on 2025-12-17 14:18_
+
+---

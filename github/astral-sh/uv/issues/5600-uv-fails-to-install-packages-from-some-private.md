@@ -1,0 +1,199 @@
+---
+number: 5600
+title: UV fails to install packages from some private index hosted on artifactory since version 0.1.36
+type: issue
+state: closed
+author: ghost
+labels:
+  - bug
+assignees: []
+created_at: 2024-07-30T14:44:34Z
+updated_at: 2024-12-17T11:08:50Z
+url: https://github.com/astral-sh/uv/issues/5600
+synced_at: 2026-01-07T13:12:17-06:00
+---
+
+# UV fails to install packages from some private index hosted on artifactory since version 0.1.36
+
+---
+
+_Issue opened by @ghost on 2024-07-30 14:44_
+
+- Example command used: `uv pip install --native-tls --extra-index-url http://<User>:<API_KEY>@example.com/artifactory/api/pypi/<index>/simple `
+- Platform: Darwin arm64
+- versions:  any  > 0.1.36
+
+Issue was introduced in commit f98eca8843092a2c25ab19242f1d587d64867c6f
+
+When attempting to install a package from a private index with the credentials embedded in the url, the first request looks for the version with the correct credentials.
+When doing the actual download, the request does not contain the credentials anymore and only uses them after getting back a 401, 403 or 404 response. Here, our artifactory instance returns an internal server error for some reason, so uv does not attempt a download with authentication.
+This is also wrong behaviour from artifactory, but I would expect uv to keep the credentials for the index when it already uses them to find the package.
+
+Logs:
+```
+TRACE Updating cached credentials for https://example.com/artifactory/api/pypi/<INDEX>/simple/<PACKAGE>/ to Credentials { username: Username(Some("<USER>")), password: Some("<API_KEY>") }
+TRACE cached request https://example.com/artifactory/api/pypi/<INDEX>/simple/<PACKAGE>/ is storable because its response has an 'max-age' cache-control directive
+TRACE put; add idle connection for ("https", example.com)
+DEBUG pooling idle connection for ("https", example.com)
+TRACE Received package metadata for: <package>
+
+...
+
+TRACE Request for https://example.com/artifactory/api/pypi/<INDEX>/<PACKAGE>/<VERSION>/... is unauthenticated, checking cache
+TRACE No credentials in cache for URL https://example.com/artifactory/api/pypi/<INDEX>/<PACKAGE>/<VERSION>/...
+TRACE Attempting unauthenticated request for https://example.com/artifactory/api/pypi/<INDEX>/<PACKAGE>/<VERSION>/...
+...
+DEBUG Transient request failure for:  https://example.com/artifactory/api/pypi/<INDEX>/<PACKAGE>/<VERSION>/...
+error: Failed to download and build `<PACKAGE>==<VERSION>`
+  Caused by: HTTP status server error (500 Internal Server Error) for url (https://example.com/artifactory/api/pypi/<INDEX>/<PACKAGE>/<VERSION>/...)
+  ```
+
+---
+
+_Label `bug` added by @zanieb on 2024-07-30 16:30_
+
+---
+
+_Assigned to @zanieb by @zanieb on 2024-07-30 16:30_
+
+---
+
+_Comment by @zanieb on 2024-07-30 16:32_
+
+I think this might be resolved by #4583, but there's not much we can do until then — the index should not be returning a 500 and we cannot used the cached credentials because `https://example.com/artifactory/api/pypi/<INDEX>/<PACKAGE>/<VERSION>/` is not a child of `https://example.com/artifactory/api/pypi/<INDEX>/simple/<PACKAGE>/`.
+
+---
+
+_Comment by @samypr100 on 2024-07-31 02:46_
+
+I'm curious what particular artifactory configuration causes this 500 error 😅 
+
+---
+
+_Comment by @ghost on 2024-08-01 09:45_
+
+Thanks for the explanation zanieb. Didn't get quite understand that part before. Maybe I'll take a look at that issue in the future.
+
+
+> I'm curious what particular artifactory configuration causes this 500 error 😅
+
+You and me both 😄 . Currently trying to get some info about that from jfrog.
+
+---
+
+_Referenced in [astral-sh/uv#6610](../../astral-sh/uv/issues/6610.md) on 2024-08-25 15:09_
+
+---
+
+_Comment by @zanieb on 2024-10-04 21:27_
+
+@jka94 is this still an issue? Did you get more information?
+
+---
+
+_Comment by @ghost on 2024-10-07 10:35_
+
+The issue was caused by our older version of artifactory and is fixed with an update to 7.71.x
+
+---
+
+_Comment by @hcoohb on 2024-10-30 05:29_
+
+I have a similar issue, but we are using artifactory 7.90.xxx
+It seems once I have created a venv for one project, if I go to another directory after and try to add more packages or just sync the lock, I get this error 500...
+The weird thing is that if I click on the link, I can download the file from artifactory (after putting my auth in the browser).
+And even more weird, if I execute the same with `-n` flag, things install properly!! Same if I do a `uv cache clean` things gets downloaded after that
+Is this somewhat linked to the cache ??
+
+here is the log:
+```
+PS C:\Users\User\dev\test> uv sync -vv
+    0.000873s DEBUG uv uv 0.4.28 (debe67ffd 2024-10-28)
+    0.003107s DEBUG uv_workspace::workspace Found project root: `C:\Users\User\dev\test`
+    0.003867s DEBUG uv_workspace::workspace No workspace root found, using project root
+    0.004447s DEBUG uv_python::version_files Reading requests from `C:\Users\User\dev\test\.python-version`
+    0.005826s DEBUG uv::commands::project The virtual environment's Python version satisfies `Python 3.11`
+ uv_client::linehaul::linehaul
+    0.007858s DEBUG uv_client::base_client Using request timeout of 30s
+ uv_resolver::flat_index::from_entries
+ uv_distribution::distribution_database::get_or_build_wheel_metadata dist=test @ file:///C:/Users/User/dev/test
+    0.009465s   0ms DEBUG uv_distribution::source Found static `pyproject.toml` for: test @ file:///C:/Users/User/dev/test
+    0.010075s   1ms DEBUG uv_workspace::workspace No workspace root found, using project root
+    0.010446s DEBUG uv::commands::project::lock Existing `uv.lock` satisfies workspace requirements
+Resolved 2 packages in 3ms
+ uv_client::linehaul::linehaul
+    0.012256s DEBUG uv_client::base_client Using request timeout of 30s
+ uv_resolver::flat_index::from_entries
+    0.013413s DEBUG uv_installer::plan Identified uncached distribution: urllib3==2.2.3
+ uv_installer::preparer::prepare total=1
+   uv_installer::preparer::get_wheel name=urllib3==2.2.3, size=None, url="https://artifactory.mysite.com/artifactory/api/pypi/pypi/packages/packages/ce/d9/5f4c13cecde62396b0d3fe530a50ccea91e7dfc1ccf0e09c228841bb5ba8/urllib3-2.2.3-py3-none-any.whl"
+     uv_distribution::distribution_database::get_or_build_wheel dist=urllib3==2.2.3
+       uv_client::cached_client::get_serde
+         uv_client::cached_client::get_cacheable
+           uv_client::cached_client::read_and_parse_cache file=C:\Users\User\AppData\Local\uv\cache\wheels-v2\index\ae7cf2b9424d5646\urllib3\urllib3-2.2.3-py3-none-any.http
+ uv_client::cached_client::from_path_sync path="C:\\Users\\User\\AppData\\Local\\uv\\cache\\wheels-v2\\index\\ae7cf2b9424d5646\\urllib3\\urllib3-2.2.3-py3-none-any.http"
+            0.015890s   1ms DEBUG uv_client::cached_client Found stale response for: https://artifactory.mysite.com/artifactory/api/pypi/pypi/packages/packages/ce/d9/5f4c13cecde62396b0d3fe530a50ccea91e7dfc1ccf0e09c228841bb5ba8/urllib3-2.2.3-py3-none-any.whl
+            0.016104s   1ms DEBUG uv_client::cached_client Sending revalidation request for: https://artifactory.mysite.com/artifactory/api/pypi/pypi/packages/packages/ce/d9/5f4c13cecde62396b0d3fe530a50ccea91e7dfc1ccf0e09c228841bb5ba8/urllib3-2.2.3-py3-none-any.whl
+           uv_client::cached_client::revalidation_request url="https://artifactory.mysite.com/artifactory/api/pypi/pypi/packages/packages/ce/d9/5f4c13cecde62396b0d3fe530a50ccea91e7dfc1ccf0e09c228841bb5ba8/urllib3-2.2.3-py3-none-any.whl"
+              0.213494s 197ms DEBUG uv_client::base_client Transient request failure for: https://artifactory.mysite.com/artifactory/api/pypi/pypi/packages/packages/ce/d9/5f4c13cecde62396b0d3fe530a50ccea91e7dfc1ccf0e09c228841bb5ba8/urllib3-2.2.3-py3-none-any.whl
+              1.013682s 997ms DEBUG uv_client::base_client Transient request failure for: https://artifactory.mysite.com/artifactory/api/pypi/pypi/packages/packages/ce/d9/5f4c13cecde62396b0d3fe530a50ccea91e7dfc1ccf0e09c228841bb5ba8/urllib3-2.2.3-py3-none-any.whl
+              1.814879s   1s  DEBUG uv_client::base_client Transient request failure for: https://artifactory.mysite.com/artifactory/api/pypi/pypi/packages/packages/ce/d9/5f4c13cecde62396b0d3fe530a50ccea91e7dfc1ccf0e09c228841bb5ba8/urllib3-2.2.3-py3-none-any.whl
+              5.213859s   5s  DEBUG uv_client::base_client Transient request failure for: https://artifactory.mysite.com/artifactory/api/pypi/pypi/packages/packages/ce/d9/5f4c13cecde62396b0d3fe530a50ccea91e7dfc1ccf0e09c228841bb5ba8/urllib3-2.2.3-py3-none-any.whl
+error: Failed to prepare distributions
+  Caused by: Failed to download `urllib3==2.2.3`
+  Caused by: Failed to fetch: `https://artifactory.mysite.com/artifactory/api/pypi/pypi/packages/packages/ce/d9/5f4c13cecde62396b0d3fe530a50ccea91e7dfc1ccf0e09c228841bb5ba8/urllib3-2.2.3-py3-none-any.whl`
+  Caused by: HTTP status server error (500 Internal Server Error) for url (https://artifactory.mysite.com/artifactory/api/pypi/pypi/packages/packages/ce/d9/5f4c13cecde62396b0d3fe530a50ccea91e7dfc1ccf0e09c228841bb5ba8/urllib3-2.2.3-py3-none-any.whl)
+PS C:\Users\User\dev\test>
+```
+
+<details>
+<summary>And the log with no-cache flag:</summary>
+<br>
+
+```
+PS C:\Users\User\dev\test> uv sync -n -vv
+    0.000998s DEBUG uv uv 0.4.28 (debe67ffd 2024-10-28)
+    0.006621s DEBUG uv_workspace::workspace Found project root: `C:\Users\User\dev\test`
+    0.007428s DEBUG uv_workspace::workspace No workspace root found, using project root
+    0.018757s DEBUG uv_python::version_files Reading requests from `C:\Users\User\dev\test\.python-version`
+    0.435474s DEBUG uv::commands::project The virtual environment's Python version satisfies `Python 3.11`
+ uv_client::linehaul::linehaul
+    0.452063s DEBUG uv_client::base_client Using request timeout of 30s
+ uv_resolver::flat_index::from_entries
+ uv_distribution::distribution_database::get_or_build_wheel_metadata dist=test @ file:///C:/Users/User/dev/test
+    0.454797s   1ms DEBUG uv_distribution::source Found static `pyproject.toml` for: test @ file:///C:/Users/User/dev/test
+    0.455702s   2ms DEBUG uv_workspace::workspace No workspace root found, using project root
+    0.456294s DEBUG uv::commands::project::lock Existing `uv.lock` satisfies workspace requirements
+Resolved 2 packages in 5ms
+ uv_client::linehaul::linehaul
+    0.458409s DEBUG uv_client::base_client Using request timeout of 30s
+ uv_resolver::flat_index::from_entries
+    0.459314s DEBUG uv_installer::plan Identified uncached distribution: urllib3==2.2.3
+ uv_installer::preparer::prepare total=1
+   uv_installer::preparer::get_wheel name=urllib3==2.2.3, size=None, url="https://artifactory.mysite.com/artifactory/api/pypi/pypi/packages/packages/ce/d9/5f4c13cecde62396b0d3fe530a50ccea91e7dfc1ccf0e09c228841bb5ba8/urllib3-2.2.3-py3-none-any.whl"
+     uv_distribution::distribution_database::get_or_build_wheel dist=urllib3==2.2.3
+       uv_client::cached_client::get_serde
+         uv_client::cached_client::get_cacheable
+           uv_client::cached_client::read_and_parse_cache file=C:\Users\User\AppData\Local\Temp\.tmpCT81ui\wheels-v2\index\ae7cf2b9424d5646\urllib3\urllib3-2.2.3-py3-none-any.http
+ uv_client::cached_client::from_path_sync path="C:\\Users\\User\\AppData\\Local\\Temp\\.tmpCT81ui\\wheels-v2\\index\\ae7cf2b9424d5646\\urllib3\\urllib3-2.2.3-py3-none-any.http"
+            0.461706s   0ms DEBUG uv_client::cached_client No cache entry for: https://artifactory.mysite.com/artifactory/api/pypi/pypi/packages/packages/ce/d9/5f4c13cecde62396b0d3fe530a50ccea91e7dfc1ccf0e09c228841bb5ba8/urllib3-2.2.3-py3-none-any.whl
+           uv_client::cached_client::fresh_request url="https://artifactory.mysite.com/artifactory/api/pypi/pypi/packages/packages/ce/d9/5f4c13cecde62396b0d3fe530a50ccea91e7dfc1ccf0e09c228841bb5ba8/urllib3-2.2.3-py3-none-any.whl"
+           uv_client::cached_client::new_cache file=C:\Users\User\AppData\Local\Temp\.tmpCT81ui\wheels-v2\index\ae7cf2b9424d5646\urllib3\urllib3-2.2.3-py3-none-any.http
+           uv_distribution::distribution_database::wheel wheel=urllib3==2.2.3
+              0.931020s 189ms  WARN uv_fs Retrying rename from C:\Users\User\AppData\Local\Temp\.tmpCT81ui\.tmpNICclq to C:\Users\User\AppData\Local\Temp\.tmpCT81ui\archive-v0\dj9MYxhiGKQtXs8atYtfb due to transient error: failed to rename file from C:\Users\User\AppData\Local\Temp\.tmpCT81ui\.tmpNICclq to C:\Users\User\AppData\Local\Temp\.tmpCT81ui\archive-v0\dj9MYxhiGKQtXs8atYtfb
+              0.982851s 241ms  WARN uv_fs Retrying rename from C:\Users\User\AppData\Local\Temp\.tmpCT81ui\.tmpNICclq to C:\Users\User\AppData\Local\Temp\.tmpCT81ui\archive-v0\dj9MYxhiGKQtXs8atYtfb due to transient error: failed to rename file from C:\Users\User\AppData\Local\Temp\.tmpCT81ui\.tmpNICclq to C:\Users\User\AppData\Local\Temp\.tmpCT81ui\archive-v0\dj9MYxhiGKQtXs8atYtfb
+Prepared 1 package in 554ms
+ uv_installer::installer::install_blocking num_wheels=1
+   uv_installer::installer::install num_wheels=1
+     uv_install_wheel::linker::install_wheel wheel=urllib3-2.2.3-py3-none-any.whl
+       uv_install_wheel::linker::link_wheel_files
+Installed 1 package in 59ms
+ + urllib3==2.2.3
+```
+</details>
+
+---
+
+_Closed by @ghost on 2024-12-17 11:08_
+
+---

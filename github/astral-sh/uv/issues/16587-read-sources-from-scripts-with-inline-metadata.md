@@ -1,0 +1,253 @@
+---
+number: 16587
+title: "Read sources from scripts with inline metadata when using `--with-requirements script.py`"
+type: issue
+state: open
+author: disketten
+labels:
+  - enhancement
+assignees: []
+created_at: 2025-11-04T08:49:44Z
+updated_at: 2025-11-12T16:00:14Z
+url: https://github.com/astral-sh/uv/issues/16587
+synced_at: 2026-01-07T13:12:19-06:00
+---
+
+# Read sources from scripts with inline metadata when using `--with-requirements script.py`
+
+---
+
+_Issue opened by @disketten on 2025-11-04 08:49_
+
+### Summary
+
+Firstly, big thanks for your wonderful tool!
+
+I run my editor inside a virtual environment, where all the script's packages are available. So it would be nice if `uv run --with-requirements` would support reading requirements from an uv lock file or directly from the script.
+
+At the moment, I can run `uv run --with-requirements=requirements.txt nvim x.py`, but that forces me to keep two separate requirements files (the standard uv `x.py.lock` file and `requirements.txt`).
+
+### Example
+
+Current workflow
+```
+uv export --script x.py --format requirements-txt > requirements.txt
+uv run --with-requirements=requirements.txt nvim x.py
+```
+
+Desired workflow
+```
+uv run --with-requirements=x.py nvim x.py
+```
+
+or
+
+```
+uv run --with-requirements=x.py.lock nvim x.py
+```
+
+---
+
+_Label `enhancement` added by @disketten on 2025-11-04 08:49_
+
+---
+
+_Comment by @olivierdelree on 2025-11-04 10:34_
+
+The `--with-requirements` option works fine for reading metadata about requirements directly from the script for me.
+
+For example, this script (`foo.py`):
+
+```python
+# /// script
+# requires-python = ">=3.13"
+# dependencies = [
+#     "numpy",
+# ]
+# ///
+[...do stuff...]
+```
+
+can be used as a requirements file:
+
+```bash
+$ uv run --with-requirements foo.py python -c 'import numpy as np; print("All good here!")'
+All good here!
+```
+
+And using it with my editor gives me all the autocompletion features for the package.
+
+---
+
+_Comment by @disketten on 2025-11-04 11:00_
+
+I see. The problem is then that with non-PyPI dependencies added via `uv add --script`, it doesn't work
+
+```
+uv add "yyy @ git+http://path/to/yyy" --script=x.py
+```
+
+`x.py`:
+```python
+# /// script
+# requires-python = ">=3.13"
+# dependencies = [
+#     "yyy",
+# ]
+#
+# [tool.uv.sources]
+# yyy = { git = "http://path/to/yyy" }
+# ///
+...
+```
+
+```
+uv run --with-requirements=x.py python
+  × No solution found when resolving `--with` dependencies:
+  ╰─▶ Because yyy was not found in the package registry and you require yyy, we can conclude that your requirements
+      are unsatisfiable.
+```
+
+It works if I manually move the source to be included in the `dependencies` list, e.g. (`x.py`):
+
+```python
+# /// script
+# requires-python = ">=3.13"
+# dependencies = [
+#     "yyy @ git+http://path/to/yyy",
+# ]
+# ///
+...
+```
+Then it works:
+```
+uv run --with-requirements=x.py python -c 'import yyy; print("Hello, World!")'
+    Updated http://path/to/yyy (0123456789abcdef)
+Hello, World!
+```
+
+So, long story short. The `uv run --with-requirements` command does not read sources from `[tool.uv.sources]`.
+
+
+---
+
+_Comment by @olivierdelree on 2025-11-04 12:28_
+
+I can't reproduce the error. It seems that `uv` silently ignores a dependency it cannot find from `git+https` (or `git+http`) in my case.
+
+When using an existing dependency, the dependency is properly downloaded and added to the environment when using `--with-requirements` (one way to check dependencies when they are added to the script is to drop the `xyz @` and just keep the `git+https:...` and `uv` downloads it when it is being added to the script but that might be undesirable).
+
+```bash
+$ uv self version
+uv 0.8.24 (7d63ef114 2025-10-07)
+```
+
+(same behaviour with latest)
+
+## Markdown version
+
+```bash
+$ touch x.py
+
+$ uv add "yyy @ git+https://path/to/yyy" --script x.py
+Updated `x.py`
+
+$ cat x.py
+───────┬────────────────────────────────────────────────────────────
+       │ File: x.py
+───────┼────────────────────────────────────────────────────────────
+   1   │ # /// script
+   2   │ # requires-python = ">=3.13"
+   3   │ # dependencies = [
+   4   │ #     "yyy",
+   5   │ # ]
+   6   │ #
+   7   │ # [tool.uv.sources]
+   8   │ # yyy = { git = "https://path/to/yyy" }
+   9   │ # ///
+───────┴────────────────────────────────────────────────────────────
+
+$ uv run --with-requirements x.py python
+Python 3.13.7 (main, Sep 18 2025, 19:47:49) [Clang 20.1.4 ] on linux
+Type "help", "copyright", "credits" or "license" for more information.
+>>> import yyy
+Traceback (most recent call last):
+  File "<python-input-0>", line 1, in <module>
+    import yyy
+ModuleNotFoundError: No module named 'yyy'
+
+$ uv add "click @ git+https://github.com/pallets/click" --script x.py
+Updated `x.py`
+
+$ cat x.py
+───────┬────────────────────────────────────────────────────────────
+       │ File: x.py
+───────┼────────────────────────────────────────────────────────────
+   1   │ # /// script
+   2   │ # requires-python = ">=3.13"
+   3   │ # dependencies = [
+   4   │ #     "click",
+   5   │ #     "yyy",
+   6   │ # ]
+   7   │ #
+   8   │ # [tool.uv.sources]
+   9   │ # yyy = { git = "https://path/to/yyy" }
+  10   │ # click = { git = "https://github.com/pallets/click" }
+  11   │ # ///
+───────┴────────────────────────────────────────────────────────────
+
+$ uv run --with-requirements x.py python
+Python 3.13.7 (main, Sep 18 2025, 19:47:49) [Clang 20.1.4 ] on linux
+Type "help", "copyright", "credits" or "license" for more information.
+>>> import click
+>>>
+```
+
+## GIF version
+![Image](https://github.com/user-attachments/assets/2c3452eb-bb18-4125-be0a-fb0b130b7645)
+
+---
+
+_Comment by @disketten on 2025-11-12 10:06_
+
+I isolated the problem.
+
+When I tested it locally, I used another package name than "yyy", one with a "-" inside:
+
+```shell
+$ touch x.py
+
+$ uv add "y-yy @ git+https://path/to/yyy" --script x.py
+Updated `x.py`
+
+$ cat x.py
+───────┬────────────────────────────────────────────────────────────
+       │ File: x.py
+───────┼────────────────────────────────────────────────────────────
+   1   │ # /// script
+   2   │ # requires-python = ">=3.13"
+   3   │ # dependencies = [
+   4   │ #     "y-yy",
+   5   │ # ]
+   6   │ #
+   7   │ # [tool.uv.sources]
+   8   │ # y-yy = { git = "https://path/to/yyy" }
+   9   │ # ///
+───────┴────────────────────────────────────────────────────────────
+
+$ uv run --with-requirements x.py python
+  × No solution found when resolving `--with` dependencies:
+  ╰─▶ Because y-yy was not found in the package registry and you require y-yy, we can conclude that your requirements are unsatisfiable.
+```
+
+---
+
+_Comment by @zanieb on 2025-11-12 15:59_
+
+It sounds like we're not properly reading sources from the script?
+
+---
+
+_Renamed from "Add support for reading dependencies directly from the script or from .lock file in 'uv run' command" to "Read sources from scripts with inline metadata when using `--with-requirements script.py`" by @zanieb on 2025-11-12 16:00_
+
+---

@@ -1,0 +1,170 @@
+---
+number: 1345
+title: Differentiate between default_value and env in ArgMatches
+type: issue
+state: closed
+author: drystone
+labels:
+  - C-enhancement
+  - A-parsing
+  - E-help-wanted
+  - E-easy
+assignees: []
+created_at: 2018-09-25T09:05:21Z
+updated_at: 2022-02-08T21:22:57Z
+url: https://github.com/clap-rs/clap/issues/1345
+synced_at: 2026-01-07T13:12:19-06:00
+---
+
+# Differentiate between default_value and env in ArgMatches
+
+---
+
+_Issue opened by @drystone on 2018-09-25 09:05_
+
+Maintainer's notes:
+
+Proposed implementation: 
+1. Rename `ValueType` to `ArgSource`
+2. Add a function to look up the `ArgSource`
+---
+I've a situation where it would be nice to know whether a value has come from a default value or from an environment variable. The workaround is simple but involves rechecking the `ArgMatches::value_of` against the environment variable.
+
+---
+
+_Comment by @swfsql on 2018-11-21 12:43_
+
+While still an open issue, I think a viable alternative would be to load values from a configuration file using serde, where no args nor env vars would be involved.
+
+---
+
+_Comment by @drystone on 2018-11-21 15:29_
+
+I'd agree if the value from a configuration file is mandatory. Perhaps, though, it would be nice to have a default so it's not required in the configs?
+
+In order of decreasing precedence a value can come from command line, environment, configuration file, default. If a value is set in the configuration file, a clap match will only override it if it came from the environment, not if it was a default. So it would be nice to be able to differentiate.
+
+---
+
+_Comment by @swfsql on 2018-11-21 16:40_
+
+> I'd agree if the value from a configuration file is mandatory. Perhaps, though, it would be nice to have a default so it's not required in the configs?
+
+Serde does offer `#[serde(default)]` to use the `Default::default()` implementation as a fallback, but in this case you'd probably need to move all default values to functions that may be accessed by both `Default::default()` implementation and clap `default_value` binding.
+
+But I think this would prevent the avoidance of *the default as a fallback from being used*, which may be valuable during production, I think.
+
+---
+
+I agree it'd be nice to fine pick precedence between various inputs.  
+This crate has some merging operations of structopt/clap and deserialized information, may worth take a look: https://github.com/dalance/structopt-toml
+
+---
+
+_Label `C: args` added by @CreepySkeleton on 2020-02-02 05:29_
+
+---
+
+_Label `C: environment variable` added by @CreepySkeleton on 2020-02-02 05:29_
+
+---
+
+_Label `C: options` added by @CreepySkeleton on 2020-02-02 05:29_
+
+---
+
+_Label `help wanted` added by @CreepySkeleton on 2020-02-02 05:29_
+
+---
+
+_Label `P3: want to have` added by @CreepySkeleton on 2020-02-02 05:29_
+
+---
+
+_Label `T: new feature` added by @CreepySkeleton on 2020-02-02 05:29_
+
+---
+
+_Label `W: 3.x` added by @CreepySkeleton on 2020-02-02 05:29_
+
+---
+
+_Added to milestone `3.0` by @CreepySkeleton on 2020-02-02 05:29_
+
+---
+
+_Referenced in [clap-rs/clap#1833](../../clap-rs/clap/pulls/1833.md) on 2020-04-16 11:46_
+
+---
+
+_Label `W: 3.x` removed by @pksunkara on 2021-08-13 10:40_
+
+---
+
+_Removed from milestone `3.0` by @epage on 2021-10-16 18:11_
+
+---
+
+_Added to milestone `3.1` by @epage on 2021-10-16 18:11_
+
+---
+
+_Referenced in [clap-rs/clap#2897](../../clap-rs/clap/issues/2897.md) on 2021-10-16 19:48_
+
+---
+
+_Removed from milestone `3.1` by @pksunkara on 2021-10-16 19:49_
+
+---
+
+_Added to milestone `3.1` by @pksunkara on 2021-10-26 20:46_
+
+---
+
+_Referenced in [epage/clapng#103](../../epage/clapng/issues/103.md) on 2021-12-06 17:37_
+
+---
+
+_Label `C: args` removed by @epage on 2021-12-08 20:21_
+
+---
+
+_Label `C: options` removed by @epage on 2021-12-08 20:21_
+
+---
+
+_Label `C: environment variable` removed by @epage on 2021-12-08 20:21_
+
+---
+
+_Label `A-parsing` added by @epage on 2021-12-08 20:21_
+
+---
+
+_Label `T: new feature` removed by @epage on 2021-12-08 21:17_
+
+---
+
+_Label `C-enhancement` added by @epage on 2021-12-08 21:17_
+
+---
+
+_Label `P3: want to have` removed by @epage on 2021-12-09 18:38_
+
+---
+
+_Label `E-easy` added by @epage on 2021-12-09 18:38_
+
+---
+
+_Removed from milestone `3.1` by @epage on 2021-12-09 18:38_
+
+---
+
+_Referenced in [clap-rs/clap#3424](../../clap-rs/clap/pulls/3424.md) on 2022-02-08 21:06_
+
+---
+
+_Closed by @epage on 2022-02-08 21:22_
+
+---

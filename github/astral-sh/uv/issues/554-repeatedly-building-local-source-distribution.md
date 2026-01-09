@@ -1,0 +1,94 @@
+---
+number: 554
+title: Repeatedly building local source distribution fails
+type: issue
+state: closed
+author: charliermarsh
+labels:
+  - bug
+assignees: []
+created_at: 2023-12-04T22:17:30Z
+updated_at: 2023-12-06T02:36:13Z
+url: https://github.com/astral-sh/uv/issues/554
+synced_at: 2026-01-07T13:12:16-06:00
+---
+
+# Repeatedly building local source distribution fails
+
+---
+
+_Issue opened by @charliermarsh on 2023-12-04 22:17_
+
+I'm getting, e.g.:
+
+```text
+error: Failed to download distributions
+  Caused by: Failed to build: service @ file:///Users/crmarsh/workspace/path/service
+  Caused by: failed to rename file from /Users/crmarsh/Library/Caches/puffin/built-wheels-v0/c61d38458d575226/.tmpbMovkL/service-0.1.9-py3-none-any.whl to /Users/crmarsh/Library/Caches/puffin/built-wheels-v0/c61d38458d575226/service-0.1.9-py3-none-any.whl
+  Caused by: Is a directory (os error 21)
+```
+
+This is similar to https://github.com/astral-sh/puffin/pull/545, but the trace is different -- so I don't know that it's the same.
+
+
+---
+
+_Label `bug` added by @charliermarsh on 2023-12-04 22:17_
+
+---
+
+_Comment by @charliermarsh on 2023-12-04 22:23_
+
+I'm seeing this in a lot of places, where directories already exist, and/or we assume that directories are archives? For example:
+
+```rust
+error: Failed to unpack wheels
+  Caused by: Failed to unpack: package==0.19.1
+  Caused by: failed to read from file `/Users/crmarsh/Library/Caches/puffin/built-wheels-v0/pypi/package-0.19.1.tar.gz/package-0.19.1-cp310-cp310-macosx_12_0_arm64.whl`
+  Caused by: failed to read from file `/Users/crmarsh/Library/Caches/puffin/built-wheels-v0/pypi/package-0.19.1.tar.gz/package-0.19.1-cp310-cp310-macosx_12_0_arm64.whl`
+  Caused by: Is a directory (os error 21)
+```
+
+---
+
+_Comment by @charliermarsh on 2023-12-04 22:25_
+
+Here's another, different trace where we're seemingly building setuptools twice or something:
+
+```text
+error: Failed to download distributions
+  Caused by: Failed to build: service @ file:///Users/crmarsh/workspace/path/service-0.3.390.tar.gz
+  Caused by: Failed to install requirements from setup.py build (install)
+  Caused by: Failed to unpack build dependencies
+  Caused by: Failed to unpack: setuptools==69.0.2
+  Caused by: failed to rename file from /Users/crmarsh/Library/Caches/puffin/wheels-v0/pypi/.tmpkz0sbR to /Users/crmarsh/Library/Caches/puffin/wheels-v0/pypi/setuptools-69.0.2-py3-none-any.whl
+  Caused by: Directory not empty (os error 66)
+```
+
+---
+
+_Comment by @charliermarsh on 2023-12-04 22:44_
+
+It looks like https://github.com/astral-sh/puffin/pull/545 fixes some both not all of these. (It doesn't fix the first one.)
+
+---
+
+_Referenced in [astral-sh/uv#559](../../astral-sh/uv/pulls/559.md) on 2023-12-05 01:47_
+
+---
+
+_Referenced in [astral-sh/uv#570](../../astral-sh/uv/issues/570.md) on 2023-12-05 18:18_
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2023-12-05 21:29_
+
+---
+
+_Referenced in [astral-sh/uv#577](../../astral-sh/uv/pulls/577.md) on 2023-12-06 02:32_
+
+---
+
+_Closed by @charliermarsh on 2023-12-06 02:36_
+
+---

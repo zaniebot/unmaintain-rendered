@@ -1,0 +1,54 @@
+---
+number: 634
+title: Use docs.rs as official docs page
+type: issue
+state: closed
+author: kbknapp
+labels:
+  - C-enhancement
+  - A-docs
+assignees: []
+created_at: 2016-08-27T04:17:38Z
+updated_at: 2018-08-02T03:29:52Z
+url: https://github.com/clap-rs/clap/issues/634
+synced_at: 2026-01-07T13:12:19-06:00
+---
+
+# Use docs.rs as official docs page
+
+---
+
+_Issue opened by @kbknapp on 2016-08-27 04:17_
+
+See https://github.com/steveklabnik/semver/pull/91 as example for changes that should be made
+
+
+---
+
+_Label `T: enhancement` added by @kbknapp on 2016-08-27 04:17_
+
+---
+
+_Label `C: docs` added by @kbknapp on 2016-08-27 04:17_
+
+---
+
+_Label `D: easy` added by @kbknapp on 2016-08-27 04:17_
+
+---
+
+_Label `P3: want to have` added by @kbknapp on 2016-08-27 04:17_
+
+---
+
+_Label `W: 2.x` added by @kbknapp on 2016-08-27 04:17_
+
+---
+
+_Referenced in [clap-rs/clap#635](../../clap-rs/clap/pulls/635.md) on 2016-08-27 15:08_
+
+---
+
+_Closed by @homu on 2016-08-27 18:35_
+
+---

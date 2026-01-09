@@ -1,0 +1,81 @@
+---
+number: 4966
+title: "Support `manylinux_x_y` in `--python-platform`"
+type: issue
+state: closed
+author: charliermarsh
+labels:
+  - enhancement
+  - help wanted
+assignees: []
+created_at: 2024-07-10T16:23:36Z
+updated_at: 2024-11-19T19:37:51Z
+url: https://github.com/astral-sh/uv/issues/4966
+synced_at: 2026-01-07T13:12:17-06:00
+---
+
+# Support `manylinux_x_y` in `--python-platform`
+
+---
+
+_Issue opened by @charliermarsh on 2024-07-10 16:23_
+
+See: https://github.com/astral-sh/uv/pull/4965.
+
+This is a bit tricky because we still want great output in the `--help` menu and JSON schema, but it will no longer be static and I don't think we can use `ValueEnum` or other derives.
+
+---
+
+_Label `enhancement` added by @charliermarsh on 2024-07-10 16:23_
+
+---
+
+_Label `help wanted` added by @charliermarsh on 2024-07-10 16:23_
+
+---
+
+_Comment by @JonZeolla on 2024-07-24 16:40_
+
+I think this was fixed per 7925d255f7de18cc0e658955a71f9f50bee6b32d ?
+
+---
+
+_Comment by @charliermarsh on 2024-07-24 16:44_
+
+That added support for `manylinux_2_31` but not arbitrary `manylinux_x_y`.
+
+---
+
+_Comment by @filaretov on 2024-11-19 10:12_
+
+Would you accept a PR that adds enumerations for the `manylinux` policies in [this table](https://github.com/mayeut/pep600_compliance?tab=readme-ov-file#acceptable-distros-to-build-wheels) just like what was done in #4965?
+
+I understand it is not the general support for `manylinux_x_y` that this issue is about, but if you're okay with it, I'd be happy to make a PR.
+
+---
+
+_Comment by @charliermarsh on 2024-11-19 14:16_
+
+Yeah that's fine, PR welcome.
+
+---
+
+_Referenced in [astral-sh/uv#9234](../../astral-sh/uv/pulls/9234.md) on 2024-11-19 16:49_
+
+---
+
+_Comment by @filaretov on 2024-11-19 16:50_
+
+Here it is: #9234 
+
+---
+
+_Comment by @charliermarsh on 2024-11-19 19:37_
+
+Closed by https://github.com/astral-sh/uv/pull/9234.
+
+---
+
+_Closed by @charliermarsh on 2024-11-19 19:37_
+
+---

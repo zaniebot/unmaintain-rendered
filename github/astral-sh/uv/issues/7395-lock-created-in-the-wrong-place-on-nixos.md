@@ -1,0 +1,208 @@
+---
+number: 7395
+title: "`.lock` created in the wrong place on NixOS"
+type: issue
+state: open
+author: akaihola
+labels: []
+assignees: []
+created_at: 2024-09-14T15:37:02Z
+updated_at: 2025-03-25T16:03:47Z
+url: https://github.com/astral-sh/uv/issues/7395
+synced_at: 2026-01-07T13:12:17-06:00
+---
+
+# `.lock` created in the wrong place on NixOS
+
+---
+
+_Issue opened by @akaihola on 2024-09-14 15:37_
+
+On NixOS, installing packages in a virtualenv fails with `Read-only file system` if
+- **either** virtualenv was created using `uv venv`,
+- **or** package install is attempted using `uv pip install`.
+
+See also #4450, probably related but on macOS. [This comment](/astral-sh/uv/issues/4450#issuecomment-2211366244) is probably relevant:
+> The fact that python from nix store isn't treated as a system interpreter isn't really an issue imo, as we can easily set the UV_PYTHON env dynamically in a derivation.
+>
+>The real issue is the fact that uv wants to create a `.lock` file in there, but `/nix/store` is read-only, so that won't be possible.
+
+---
+
+### The four cases and their success/failure status:
+
+|                                   | `python -m venv .venv` | `uv venv`            |
+| --------------------------- | ------------------------------ | ---------------------- |
+| `pip install -U pip`      | :green_circle: success | :red_circle: FAIL |
+| `uv pip install -U pip` | :red_circle: FAIL           | :red_circle: FAIL |
+
+
+
+### Terminal output for the four cases:
+
+<details>
+<summary>:green_circle: python -m venv / pip:</summary>
+
+```shell
+$ python -m venv .venv
+$ source .venv/bin/activate
+$ pip install -U pip
+Requirement already satisfied: pip in ./.venv/lib/python3.12/site-packages (24.0)
+Collecting pip
+  Using cached pip-24.2-py3-none-any.whl.metadata (3.6 kB)
+Using cached pip-24.2-py3-none-any.whl (1.8 MB)
+Installing collected packages: pip
+  Attempting uninstall: pip
+    Found existing installation: pip 24.0
+    Uninstalling pip-24.0:
+      Successfully uninstalled pip-24.0
+Successfully installed pip-24.2
+```
+</details>
+
+<details>
+<summary>:red_circle: uv venv / pip:</summary>
+
+```shell
+Using Python 3.12.4 interpreter at: /nix/store/pnavhjx4pdya95nx2apl2yxz6x46snh2-python3-3.12.4-env/bin/python3.12
+Creating virtualenv at: .venv
+Activate with: source .venv/bin/activate
+$ source .venv/bin/activate
+$ pip install -U pip
+Requirement already satisfied: pip in /nix/store/pnavhjx4pdya95nx2apl2yxz6x46snh2-python3-3.12.4-env/lib/python3.12/site-packages (24.0)
+Collecting pip
+  Using cached pip-24.2-py3-none-any.whl.metadata (3.6 kB)
+Using cached pip-24.2-py3-none-any.whl (1.8 MB)
+Installing collected packages: pip
+  Attempting uninstall: pip
+    Found existing installation: pip 24.0
+    WARNING: Could not access 'pyvenv.cfg' despite a virtual environment being active. Assuming global site-packages is not accessible in this environment.
+    Uninstalling pip-24.0:
+ERROR: Could not install packages due to an OSError: [Errno 30] Read-only file system: '/nix/store/pnavhjx4pdya95nx2apl2yxz6x46snh2-python3-3.12.4-env/bin/pip'
+```
+</details>
+
+<details>
+<summary>:red_circle: python -m venv / uv pip:</summary>
+
+```shell
+$ python -m venv .venv
+$ source .venv/bin/activate
+$ uv pip install -U pip
+error: failed to create file `/nix/store/pnavhjx4pdya95nx2apl2yxz6x46snh2-python3-3.12.4-env/.lock`
+  Caused by: Read-only file system (os error 30)
+```
+</details>
+
+<details>
+<summary>:red_circle: uv venv / uv pip:</summary>
+
+```shell
+$ uv venv
+Using Python 3.12.4 interpreter at: /nix/store/pnavhjx4pdya95nx2apl2yxz6x46snh2-python3-3.12.4-env/bin/python3.12
+Creating virtualenv at: .venv
+Activate with: source .venv/bin/activate
+$ source .venv/bin/activate
+$ uv pip install -U pip
+error: failed to create file `/nix/store/pnavhjx4pdya95nx2apl2yxz6x46snh2-python3-3.12.4-env/.lock`
+  Caused by: Read-only file system (os error 30)
+```
+</details>
+
+---
+
+### Work-around using `UV_PYTHON=$VIRTUAL_ENV/bin/python`
+
+The work-around only fixes one of the cases:
+
+|                                   | `python -m venv .venv`                              | `uv venv`            |
+| --------------------------- | ------------------------------------------------------- | ---------------------- |
+| `pip install -U pip`      | :green_circle: success                               | :red_circle: FAIL |
+| `uv pip install -U pip` | :green_circle: success (with work-around) | :red_circle: FAIL |
+
+<details>
+<summary>:green_circle: python -m venv / uv pip:</summary>
+
+```shell
+$ python -m venv .venv
+$ source .venv/bin/activate
+$ export UV_PYTHON=$VIRTUAL_ENV/bin/python
+$ uv pip install -U pip
+Resolved 1 package in 100ms
+Prepared 1 package in 0.53ms
+Uninstalled 1 package in 39ms
+░░░░░░░░░░░░░░░░░░░░ [0/1] Installing wheels...                                                                                                                                Installed 1 package in 38ms
+ - pip==24.0
+ + pip==24.2
+```
+
+---
+
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with uv.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
+* The current uv platform.
+* The current uv version (`uv --version`).
+-->
+
+
+---
+
+_Referenced in [astral-sh/uv#4450](../../astral-sh/uv/issues/4450.md) on 2024-09-14 15:49_
+
+---
+
+_Comment by @charliermarsh on 2024-09-14 17:11_
+
+In the third example, what "is" `/nix/store/pnavhjx4pdya95nx2apl2yxz6x46snh2-python3-3.12.4-env`? Is that the path to the system Python? Or the virtual environment?
+
+---
+
+_Comment by @akaihola on 2024-09-14 18:26_
+
+>what "is" `/nix/store/pnavhjx4pdya95nx2apl2yxz6x46snh2-python3-3.12.4-env`
+
+It's what `pkgs.python3.withPackages` created.
+
+Reading #4450 more carefully, that seems to be at the heart of the issue: running `uv` with a "clean" `pkgs.python3` seems to work ok, but the "dirty" `pkgs.python3.withPackages` derivation confuses `uv`. See [this comment from @Rubikoid](/astral-sh/uv/issues/4450#issuecomment-2211766775).
+
+My use case for `withPackages` is to get binary dependencies for [Playwright](https://pypi.org/project/playwright/) into the environment. I do install a specific Playwright version with Pip once those are in place.
+
+It seems installing both `pkgs.python3` and `pkgs.python3.withPackages` and running `uv` with `pkgs.python3` may work just fine. I'll need to verify that Playwright actually works, too.
+
+---
+
+_Referenced in [jetify-com/devbox#2411](../../jetify-com/devbox/issues/2411.md) on 2024-12-16 04:27_
+
+---
+
+_Comment by @MarSoft on 2025-03-17 14:25_
+
+Here's a workaround I use in my `.bashrc`:
+```
+export UV_PYTHON_PREFERENCE=only-system 
+export PATH="$PATH:$(python -c 'import sys; print(sys.base_prefix)')/bin"
+```
+
+Here is an explanation:
+1. I have a `python.withPackages {...}` in my `environment.systemPackages`. This is a "wrapped" Python, and `uv` fails to treat it as a "system Python".
+2. I want to tell `uv` which is the path to system-wide Python. If I use `UV_PYTHON` though then `uv` will always try to use this Python directly, even if the venv is active — so the venv won't work.
+3. So I add the real Python to $PATH but put it after `/run/current-system/sw/bin` where there is a wrapped `python` binary.
+
+This seems to work for me, but I did not do thorough tests yet.
+
+Just installing both `python.withPackages` and `python` to `environment.systemPackages` like @akaihola suggests won't work, because `systemPackages` are symlinks from `/run/current-system/sw/bin` and we cannot have two symlinks named `python` from the single directory. But adding the desired python to somewhere in `$PATH` but after the directory with "main" Python seems to work.
+
+The correct fix for this bug would be to teach `uv` how to find the real system Python behind the "wrapped" one. Stock Python's `venv` module somehow manages to do this, unlike `uv` which complains about "no interpreter found in system path". Looks like it uses `sys._base_executable`?..
+
+---
+
+_Comment by @MarSoft on 2025-03-25 16:03_
+
+Related issues: #10711 and #4450
+
+---

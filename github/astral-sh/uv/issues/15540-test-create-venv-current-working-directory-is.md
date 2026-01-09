@@ -1,0 +1,70 @@
+---
+number: 15540
+title: "Test `create_venv_current_working_directory` is failing on Windows"
+type: issue
+state: closed
+author: zanieb
+labels:
+  - testing
+assignees: []
+created_at: 2025-08-26T20:41:49Z
+updated_at: 2025-08-27T03:14:14Z
+url: https://github.com/astral-sh/uv/issues/15540
+synced_at: 2026-01-07T13:12:19-06:00
+---
+
+# Test `create_venv_current_working_directory` is failing on Windows
+
+---
+
+_Issue opened by @zanieb on 2025-08-26 20:41_
+
+```
+    Snapshot: create_venv_current_working_directory-2
+    Source: V:\uv:1616
+    ───────────────────────────────────────────────────────────────────────────────
+    Expression: snapshot
+    ───────────────────────────────────────────────────────────────────────────────
+    -old snapshot
+    +new results
+    ────────────┬──────────────────────────────────────────────────────────────────
+        0       │-success: true
+        1       │-exit_code: 0
+              0 │+success: false
+              1 │+exit_code: 2
+        2     2 │ ----- stdout -----
+        3     3 │ 
+        4     4 │ ----- stderr -----
+        5     5 │ Using CPython 3.12.[X] interpreter at: [PYTHON-3.12]
+        6     6 │ Creating virtual environment at: .
+        7       │-Activate with: source bin/activate
+              7 │+error: Failed to create virtual environment
+              8 │+  Caused by: failed to remove directory `[VENV]/`: The process cannot access the file because it is being used by another process. (os error 32)
+    ────────────┴──────────────────────────────────────────────────────────────────
+```
+
+I find this confusing because we have handling for self removal there? https://github.com/astral-sh/uv/blob/9eb5fc240ca28d8222f1be6d62379fd795e2f09e/crates/uv-virtualenv/src/virtualenv.rs#L602-L613
+
+---
+
+_Label `testing` added by @zanieb on 2025-08-26 20:41_
+
+---
+
+_Comment by @zanieb on 2025-08-26 20:42_
+
+cc @charliermarsh (I will not get to this right away)
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2025-08-26 20:46_
+
+---
+
+_Referenced in [astral-sh/uv#15542](../../astral-sh/uv/pulls/15542.md) on 2025-08-27 01:42_
+
+---
+
+_Closed by @charliermarsh on 2025-08-27 03:14_
+
+---

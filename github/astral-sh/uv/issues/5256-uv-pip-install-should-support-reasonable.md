@@ -1,0 +1,58 @@
+---
+number: 5256
+title: "`uv pip install` should support reasonable variations on `pythonw.exe` e.g. `.pythonw.exe`"
+type: issue
+state: closed
+author: paveldikov
+labels:
+  - compatibility
+assignees: []
+created_at: 2024-07-21T12:26:15Z
+updated_at: 2024-07-22T14:28:21Z
+url: https://github.com/astral-sh/uv/issues/5256
+synced_at: 2026-01-07T13:12:17-06:00
+---
+
+# `uv pip install` should support reasonable variations on `pythonw.exe` e.g. `.pythonw.exe`
+
+---
+
+_Issue opened by @paveldikov on 2024-07-21 12:26_
+
+When generating GUI script executables on Windows, `uv` will take `python_executable` and [try to replace the filename with a constant `"pythonw.exe"`](https://github.com/astral-sh/uv/blob/12518a01a4a436ba4c8b8cfc51646a253bcc8c6c/crates/install-wheel-rs/src/wheel.rs#L236-L247).
+
+Whereas `pip` is slightly more subtle in this regard. It would [take the filename and replace the `python` component with `pythonw`](https://github.com/pypa/pip/blob/8eadcab329a765571c849efe370afd5d5bba425c/src/pip/_vendor/distlib/scripts.py#L121-L126). This allows for the executable name to be renamed (within reason) e.g. `.python.exe` and `.pythonw.exe` respectively.
+
+Our use case here is that we generate relocatable virtual environments, and we deliberately rename the interpreter executable so as to avoid shadowing existing Python interpreters on the `$PATH`.
+
+Happy to raise a PR, although I am new to Rust so you might have to bear with me futzing around a bit :-)
+
+---
+
+_Comment by @charliermarsh on 2024-07-21 12:34_
+
+It seems like a reasonable change to me. For stuff like this, pip is effectively a spec. Feel free to give it a try, thanks.
+
+---
+
+_Label `compatibility` added by @charliermarsh on 2024-07-21 12:34_
+
+---
+
+_Referenced in [astral-sh/uv#5259](../../astral-sh/uv/pulls/5259.md) on 2024-07-21 15:53_
+
+---
+
+_Comment by @paveldikov on 2024-07-21 15:55_
+
+Raised #5259 :-)
+
+---
+
+_Closed by @charliermarsh on 2024-07-22 14:28_
+
+---
+
+_Closed by @charliermarsh on 2024-07-22 14:28_
+
+---

@@ -1,0 +1,64 @@
+---
+number: 7181
+title: "Make `uv init` options more user-friendly"
+type: issue
+state: open
+author: dandavison
+labels:
+  - documentation
+assignees: []
+created_at: 2024-09-07T21:05:27Z
+updated_at: 2025-02-06T07:49:22Z
+url: https://github.com/astral-sh/uv/issues/7181
+synced_at: 2026-01-07T13:12:17-06:00
+---
+
+# Make `uv init` options more user-friendly
+
+---
+
+_Issue opened by @dandavison on 2024-09-07 21:05_
+
+Hi, thanks for `uv`, it's looking great.
+
+I think this should be made a bit more user-friendly, by indicating what the defaults are, and perhaps by making it clearer which subsets make sense to be used together.
+
+```
+Options:
+      --package        Set up the project to be built as a Python package
+      --no-package     Do not set up the project to be built as a Python package
+      --app            Create a project for an application
+      --lib            Create a project for a library
+```
+
+---
+
+_Comment by @zanieb on 2024-09-08 02:51_
+
+Sure we can add a bit more context to the CLI reference, it's a bit sparse since these options are new. I'd recommend using the long-form help (`uv help init`) to see the more details. 
+
+Also, the documentation on this should be relatively clear https://docs.astral.sh/uv/concepts/projects/#creating-projects
+
+---
+
+_Assigned to @zanieb by @zanieb on 2024-09-08 02:51_
+
+---
+
+_Label `documentation` added by @zanieb on 2024-09-08 02:51_
+
+---
+
+_Referenced in [astral-sh/uv#7199](../../astral-sh/uv/issues/7199.md) on 2024-09-08 20:53_
+
+---
+
+_Referenced in [astral-sh/uv#11192](../../astral-sh/uv/pulls/11192.md) on 2025-02-03 19:55_
+
+---
+
+_Comment by @astrojuanlu on 2025-02-06 07:49_
+
+Related: #8311
+
+---

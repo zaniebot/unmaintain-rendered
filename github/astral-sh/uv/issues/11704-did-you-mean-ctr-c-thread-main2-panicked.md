@@ -1,0 +1,82 @@
+---
+number: 11704
+title: "`Did you mean [...]?` + `ctr-c` => `thread 'main2' panicked`"
+type: issue
+state: closed
+author: TApplencourt
+labels:
+  - bug
+assignees: []
+created_at: 2025-02-22T02:55:07Z
+updated_at: 2025-02-26T10:10:05Z
+url: https://github.com/astral-sh/uv/issues/11704
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# `Did you mean [...]?` + `ctr-c` => `thread 'main2' panicked`
+
+---
+
+_Issue opened by @TApplencourt on 2025-02-22 02:55_
+
+### Summary
+
+Hi, 
+
+Nothing major, but  when the prompt ask for `are you sure?` if  you `ctr+c`  (I'm too lazy to type `n`)make the rust panick:
+
+```
+(h2yaml) adowa@pop-os:~/h2yaml$ uv pip install h2yaml pyproject.toml 
+? `pyproject.toml` looks like a local metadata file but was passed as a package name. Did you mean `-r pyproject.toml`? [y/n] › yesthread 'main2' panicked at crates/uv-requirements/src/sources.rs:115:78:
+called `Result::unwrap()` on an `Err` value: Custom { kind: Interrupted, error: "read interrupted" }
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+```
+
+Please feel free to close, nothing important,
+
+Thanks a lot for `uv`!
+
+Regards,
+Thomas
+
+### Platform
+
+Linux 6.9.3-76060903-generic x86_64 GNU/Linux
+
+### Version
+
+uv 0.5.27
+
+### Python version
+
+Python 3.10.12
+
+---
+
+_Label `bug` added by @TApplencourt on 2025-02-22 02:55_
+
+---
+
+_Renamed from "`Did you mean` + `ctr-c` => `thread 'main2' panicked`" to "`Did you mean [...]?` + `ctr-c` => `thread 'main2' panicked`" by @TApplencourt on 2025-02-22 02:55_
+
+---
+
+_Comment by @ericmarkmartin on 2025-02-22 07:16_
+
+I think what's going on here is that we call `console`'s `read_key` in `uv-console`'s `confirm` will, upon receiving Ctrl-C
+1. raise SIGINT
+2. return an `io::ErrorKind::Interrupted` error (this is actually just forwarded from console's read under-the-hood)
+
+At the beginning of `confirm` we register a Ctrl-C handler which calls `process::exit`, which runs in a background thread. Due to (1), this handler is run, which in turn calls `process::exit`. This forces the main thread to unwind, and hence the interrupted error gets returned and then `unwrap`d at crates/uv-requirements/src/sources.rs:115:78 (as given by the error message).
+
+I have a fix that looks like it works, so I'll PR it shortly
+
+---
+
+_Referenced in [astral-sh/uv#11706](../../astral-sh/uv/pulls/11706.md) on 2025-02-22 07:23_
+
+---
+
+_Closed by @konstin on 2025-02-26 10:10_
+
+---

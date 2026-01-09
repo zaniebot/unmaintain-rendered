@@ -1,0 +1,92 @@
+---
+number: 9973
+title: uv sync behavior (related to uv remove)
+type: issue
+state: closed
+author: inoa-jboliveira
+labels: []
+assignees: []
+created_at: 2024-12-17T14:35:07Z
+updated_at: 2024-12-17T15:05:06Z
+url: https://github.com/astral-sh/uv/issues/9973
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# uv sync behavior (related to uv remove)
+
+---
+
+_Issue opened by @inoa-jboliveira on 2024-12-17 14:35_
+
+Hi everyone,
+This might be expected behavior, but it is slightly inconvenient on the rare occasions I use `uv remove`. I in fact would like to learn more about the internal mechanism here (skip to end for TLDR).
+
+I have been using `uv sync --all-groups` for a while and it works great, but when doing `uv remove` it will force a different kind of sync than the other commands and remove all groups and extras:
+
+```
+$ uv sync --all-groups
+Resolved 8 packages in 1ms
+Audited 7 packages in 0.02ms
+
+$ cat pyproject.toml
+[project]
+name = "foo"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "requests>=2.32.3",
+]
+
+[dependency-groups]
+build = [
+    "pip"
+]
+dev = [
+    "ruff>=0.8.3",
+]
+
+$ uv add urllib3
+Resolved 8 packages in 15ms
+Audited 5 packages in 0.06ms
+
+$ uv remove urllib3
+Resolved 8 packages in 19ms
+Uninstalled 1 package in 32ms
+ - pip==24.3.1
+```
+
+pip was removed unexpectedly!
+
+
+My considerations:
+
+ - uv could remember how that particular installation as synced.
+ - I don't know how most commands perform a kind of soft sync where it is only additive and this issue isn't more apparent.
+ - I like the soft sync whenever I am playing with new libs via `uv pip install`. Lately I moved into `uv run --with foo -- foo` for these experiments but it is nice to not remove packages unless a hard sync is required
+ - It does not seem to me that `uv remove` would require a hard sync but it may have been the simplest way
+ - If a hard sync must be performed I wish it to be just like my previous (or configured) sync command.
+
+Are there any docs on these "hard" vs "soft" syncs as I described above and what to expect from each command?
+
+
+---
+
+_Comment by @inoa-jboliveira on 2024-12-17 14:36_
+
+I just found out: When using extras (i.e. `uv sync --all-extras --all-groups`)  uv will NOT uninstall the extras after a `uv remove thing` !?
+
+So is there a 3rd kind of sync? Or the removal of the group above is really a bug?
+
+---
+
+_Comment by @charliermarsh on 2024-12-17 15:04_
+
+I believe this is a dupe of #9012. The sync after `uv remove` is confusing.
+
+---
+
+_Closed by @charliermarsh on 2024-12-17 15:05_
+
+---

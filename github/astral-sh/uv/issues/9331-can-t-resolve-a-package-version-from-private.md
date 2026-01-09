@@ -1,0 +1,1860 @@
+---
+number: 9331
+title: "Can't resolve a package version from private gitlab package index"
+type: issue
+state: closed
+author: rafalkrupinski
+labels: []
+assignees: []
+created_at: 2024-11-21T17:25:45Z
+updated_at: 2025-03-12T00:34:56Z
+url: https://github.com/astral-sh/uv/issues/9331
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# Can't resolve a package version from private gitlab package index
+
+---
+
+_Issue opened by @rafalkrupinski on 2024-11-21 17:25_
+
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with uv.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
+* The current uv platform.
+* The current uv version (`uv --version`).
+-->
+
+I have a dependency managed with poetry, uploaded to a private gitlab package index.
+In a dependant uv project I try to add it:
+> $ uv add --index ${GITLAB_INDEX} livity-airtable
+> 
+>   × No solution found when resolving dependencies:
+>  ╰─▶ Because there are no versions of livity-airtable and your project depends on livity-airtable, we can conclude that your project's requirements are unsatisfiable.
+> 
+>  hint: `livity-airtable` was found on ${GITLAB_INDEX}, but not at the requested version (all versions of livity-airtable). A compatible version may be available on a
+
+The message doesn't make it easier (package found but couldn't match version, even though I didn't request any); running with `-v` doesn't give any useful information.
+Both projects are pure python and have exactly the same `Requires-Python: >=3.11,<3.12`
+
+> $ uv --version
+> uv 0.5.4
+
+
+---
+
+_Comment by @zanieb on 2024-11-21 17:29_
+
+Hm, I think we're just incorrectly displaying that hint. It sounds like your dependency isn't on the index though? Can you share the verbose output? Are you sure it's there?
+
+---
+
+_Referenced in [astral-sh/uv#9332](../../astral-sh/uv/pulls/9332.md) on 2024-11-21 17:38_
+
+---
+
+_Comment by @rafalkrupinski on 2024-11-21 17:41_
+
+It's there, I can see in it a browser and poetry can install it in another project
+
+```sh
+$ uv add --index https://gitlab.com/api/v4/groups/{ID}/-/packages/pypi/simple 'livity-airtable' -v
+DEBUG uv 0.5.0
+DEBUG Found project root: `$PROJECT`
+DEBUG No workspace root found, using project root
+DEBUG Using Python request `>=3.11` from `requires-python` metadata
+DEBUG The virtual environment's Python version satisfies `>=3.11`
+DEBUG Using request timeout of 30s
+DEBUG Using request timeout of 30s
+DEBUG Found static `pyproject.toml` for: enzo @ file:///${PROJECT}
+DEBUG No workspace root found, using project root
+DEBUG Ignoring existing lockfile due to mismatched `requires-dist` for: `enzo==1.2.2`
+  Expected: {Requirement { name: PackageName("apscheduler"), extras: [ExtraName("sqlalchemy")], marker: true, source: Registry { specifier: VersionSpecifiers([VersionSpecifier { operator: GreaterThanEqual, version: "3.10.4" }]), index: None }, origin: None }, Requirement { name: PackageName("asyncclick"), extras: [], marker: true, source: Registry { specifier: VersionSpecifiers([VersionSpecifier { operator: GreaterThanEqual, version: "8.1.7.2" }]), index: None }, origin: None }, Requirement { name: PackageName("hubspot-api-client"), extras: [], marker: true, source: Registry { specifier: VersionSpecifiers([VersionSpecifier { operator: GreaterThanEqual, version: "10.0.0" }]), index: None }, origin: None }, Requirement { name: PackageName("livity-airtable"), extras: [], marker: true, source: Registry { specifier: VersionSpecifiers([]), index: None }, origin: None }, Requirement { name: PackageName("phonenumbers"), extras: [], marker: true, source: Registry { specifier: VersionSpecifiers([VersionSpecifier { operator: GreaterThanEqual, version: "8.13.50" }]), index: None }, origin: None }, Requirement { name: PackageName("psycopg"), extras: [ExtraName("binary")], marker: true, source: Registry { specifier: VersionSpecifiers([VersionSpecifier { operator: GreaterThanEqual, version: "3.1.12" }]), index: None }, origin: None }, Requirement { name: PackageName("python-dotenv"), extras: [], marker: true, source: Registry { specifier: VersionSpecifiers([VersionSpecifier { operator: GreaterThanEqual, version: "1.0.1" }]), index: None }, origin: None }}
+  Actual: {Requirement { name: PackageName("apscheduler"), extras: [ExtraName("sqlalchemy")], marker: true, source: Registry { specifier: VersionSpecifiers([VersionSpecifier { operator: GreaterThanEqual, version: "3.10.4" }]), index: None }, origin: None }, Requirement { name: PackageName("asyncclick"), extras: [], marker: true, source: Registry { specifier: VersionSpecifiers([VersionSpecifier { operator: GreaterThanEqual, version: "8.1.7.2" }]), index: None }, origin: None }, Requirement { name: PackageName("hubspot-api-client"), extras: [], marker: true, source: Registry { specifier: VersionSpecifiers([VersionSpecifier { operator: GreaterThanEqual, version: "10.0.0" }]), index: None }, origin: None }, Requirement { name: PackageName("phonenumbers"), extras: [], marker: true, source: Registry { specifier: VersionSpecifiers([VersionSpecifier { operator: GreaterThanEqual, version: "8.13.50" }]), index: None }, origin: None }, Requirement { name: PackageName("psycopg"), extras: [ExtraName("binary")], marker: true, source: Registry { specifier: VersionSpecifiers([VersionSpecifier { operator: GreaterThanEqual, version: "3.1.12" }]), index: None }, origin: None }, Requirement { name: PackageName("python-dotenv"), extras: [], marker: true, source: Registry { specifier: VersionSpecifiers([VersionSpecifier { operator: GreaterThanEqual, version: "1.0.1" }]), index: None }, origin: None }}
+DEBUG Solving with installed Python version: 3.11.9
+DEBUG Solving with target Python version: >=3.11
+DEBUG Adding direct dependency: enzo*
+DEBUG Searching for a compatible version of enzo @ file://${PROJECT (*)
+DEBUG Adding transitive dependency for enzo==1.2.2: apscheduler>=3.10.4
+DEBUG Adding transitive dependency for enzo==1.2.2: apscheduler[sqlalchemy]>=3.10.4
+DEBUG Adding transitive dependency for enzo==1.2.2: asyncclick>=8.1.7.2
+DEBUG Adding transitive dependency for enzo==1.2.2: enzo:dev==1.2.2
+DEBUG Adding transitive dependency for enzo==1.2.2: hubspot-api-client>=10.0.0
+DEBUG Adding transitive dependency for enzo==1.2.2: livity-airtable*
+DEBUG Adding transitive dependency for enzo==1.2.2: phonenumbers>=8.13.50
+DEBUG Adding transitive dependency for enzo==1.2.2: psycopg>=3.1.12
+DEBUG Adding transitive dependency for enzo==1.2.2: psycopg[binary]>=3.1.12
+DEBUG Adding transitive dependency for enzo==1.2.2: python-dotenv>=1.0.1
+DEBUG Searching for a compatible version of enzo @ file://${PROJECT (==1.2.2)
+DEBUG Adding transitive dependency for enzo==1.2.2: enzo==1.2.2
+DEBUG Adding transitive dependency for enzo==1.2.2: enzo:dev==1.2.2
+DEBUG Searching for a compatible version of enzo @ file:///${PROJECT} (==1.2.2)
+DEBUG Adding transitive dependency for enzo==1.2.2: pytest>=8.3.3
+DEBUG Adding transitive dependency for enzo==1.2.2: pytest-asyncio>=0.24.0
+DEBUG Found stale response for: https://gitlab.com/api/v4/groups/{ID}/-/packages/pypi/simple/asyncclick/
+DEBUG Sending revalidation request for: https://gitlab.com/api/v4/groups/{ID}/-/packages/pypi/simple/asyncclick/
+DEBUG Found stale response for: https://gitlab.com/api/v4/groups/{ID}/-/packages/pypi/simple/livity-airtable/
+DEBUG Sending revalidation request for: https://gitlab.com/api/v4/groups/{ID}/-/packages/pypi/simple/livity-airtable/
+DEBUG Found stale response for: https://gitlab.com/api/v4/groups/{ID}/-/packages/pypi/simple/apscheduler/
+DEBUG Sending revalidation request for: https://gitlab.com/api/v4/groups/{ID}/-/packages/pypi/simple/apscheduler/
+DEBUG Found stale response for: https://gitlab.com/api/v4/groups/{ID}/-/packages/pypi/simple/python-dotenv/
+DEBUG Sending revalidation request for: https://gitlab.com/api/v4/groups/{ID}/-/packages/pypi/simple/python-dotenv/
+DEBUG Found stale response for: https://gitlab.com/api/v4/groups/{ID}/-/packages/pypi/simple/psycopg/
+DEBUG Sending revalidation request for: https://gitlab.com/api/v4/groups/{ID}/-/packages/pypi/simple/psycopg/
+DEBUG Found stale response for: https://gitlab.com/api/v4/groups/{ID}/-/packages/pypi/simple/hubspot-api-client/
+DEBUG Sending revalidation request for: https://gitlab.com/api/v4/groups/{ID}/-/packages/pypi/simple/hubspot-api-client/
+DEBUG Found stale response for: https://gitlab.com/api/v4/groups/{ID}/-/packages/pypi/simple/phonenumbers/
+DEBUG Sending revalidation request for: https://gitlab.com/api/v4/groups/{ID}/-/packages/pypi/simple/phonenumbers/
+DEBUG Found stale response for: https://gitlab.com/api/v4/groups/{ID}/-/packages/pypi/simple/pytest-asyncio/
+DEBUG Sending revalidation request for: https://gitlab.com/api/v4/groups/{ID}/-/packages/pypi/simple/pytest-asyncio/
+DEBUG Found stale response for: https://gitlab.com/api/v4/groups/{ID}/-/packages/pypi/simple/pytest/
+DEBUG Sending revalidation request for: https://gitlab.com/api/v4/groups/{ID}/-/packages/pypi/simple/pytest/
+DEBUG Found not-modified response for: https://gitlab.com/api/v4/groups/{ID}/-/packages/pypi/simple/python-dotenv/
+DEBUG Found not-modified response for: https://gitlab.com/api/v4/groups/{ID}/-/packages/pypi/simple/pytest/
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/6a/3e/b68c118422ec867fa7ab88444e1274aa40681c606d59ac27de5a5588f082/python_dotenv-1.0.1-py3-none-any.whl.metadata
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/6b/77/7440a06a8ead44c7757a64362dd22df5760f9b12dc5f11b6188cd2fc27a0/pytest-8.3.3-py3-none-any.whl.metadata
+DEBUG Found not-modified response for: https://gitlab.com/api/v4/groups/{ID}/-/packages/pypi/simple/hubspot-api-client/
+DEBUG Found not-modified response for: https://gitlab.com/api/v4/groups/{ID}/-/packages/pypi/simple/pytest-asyncio/
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/8a/30/7f33074243ea5123657cce58a8f91a0b68c127e95c13743fee23ecf431ab/hubspot_api_client-10.0.0-py3-none-any.whl.metadata
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/96/31/6607dab48616902f76885dfcf62c08d929796fc3b2d2318faf9fd54dbed9/pytest_asyncio-0.24.0-py3-none-any.whl.metadata
+DEBUG Found not-modified response for: https://gitlab.com/api/v4/groups/{ID}/-/packages/pypi/simple/psycopg/
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/ce/21/534b8f5bd9734b7a2fcd3a16b1ee82ef6cad81a4796e95ebf4e0c6a24119/psycopg-3.2.3-py3-none-any.whl.metadata
+DEBUG Found not-modified response for: https://gitlab.com/api/v4/groups/{ID}/-/packages/pypi/simple/asyncclick/
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/1e/6e/9acdbb25733e1de411663b59abe521bec738e72fe4e85843f6ff8b212832/asyncclick-8.1.7.2-py3-none-any.whl.metadata
+DEBUG Found not-modified response for: https://gitlab.com/api/v4/groups/{ID}/-/packages/pypi/simple/livity-airtable/
+DEBUG Found not-modified response for: https://gitlab.com/api/v4/groups/{ID}/-/packages/pypi/simple/apscheduler/
+DEBUG Searching for a compatible version of apscheduler[sqlalchemy] (>=3.10.4)
+DEBUG Selecting: apscheduler==3.10.4 [preference] (APScheduler-3.10.4-py3-none-any.whl)
+DEBUG Adding transitive dependency for apscheduler==3.10.4: apscheduler==3.10.4
+DEBUG Adding transitive dependency for apscheduler==3.10.4: apscheduler[sqlalchemy]==3.10.4
+DEBUG Searching for a compatible version of apscheduler (==3.10.4)
+DEBUG Selecting: apscheduler==3.10.4 [preference] (APScheduler-3.10.4-py3-none-any.whl)
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/13/b5/7af0cb920a476dccd612fbc9a21a3745fb29b1fcd74636078db8f7ba294c/APScheduler-3.10.4-py3-none-any.whl.metadata
+DEBUG Adding transitive dependency for apscheduler==3.10.4: pytz*
+DEBUG Adding transitive dependency for apscheduler==3.10.4: six>=1.4.0
+DEBUG Adding transitive dependency for apscheduler==3.10.4: tzlocal>=2.0, <3.dev0 | >=4.dev0
+DEBUG Searching for a compatible version of apscheduler[sqlalchemy] (==3.10.4)
+DEBUG Selecting: apscheduler==3.10.4 [preference] (APScheduler-3.10.4-py3-none-any.whl)
+DEBUG Adding transitive dependency for apscheduler==3.10.4: sqlalchemy>=1.4
+DEBUG Searching for a compatible version of asyncclick (>=8.1.7.2)
+DEBUG Selecting: asyncclick==8.1.7.2 [preference] (asyncclick-8.1.7.2-py3-none-any.whl)
+DEBUG Found not-modified response for: https://gitlab.com/api/v4/groups/{ID}/-/packages/pypi/simple/phonenumbers/
+DEBUG Adding transitive dependency for asyncclick==8.1.7.2: anyio*
+DEBUG Adding transitive dependency for asyncclick==8.1.7.2: colorama{platform_system == 'Windows'}*
+DEBUG Searching for a compatible version of hubspot-api-client (>=10.0.0)
+DEBUG Selecting: hubspot-api-client==10.0.0 [preference] (hubspot_api_client-10.0.0-py3-none-any.whl)
+DEBUG Adding transitive dependency for hubspot-api-client==10.0.0: certifi*
+DEBUG Adding transitive dependency for hubspot-api-client==10.0.0: python-dateutil*
+DEBUG Adding transitive dependency for hubspot-api-client==10.0.0: six>=1.10
+DEBUG Adding transitive dependency for hubspot-api-client==10.0.0: urllib3>=1.15
+DEBUG Searching for a compatible version of livity-airtable (*)
+DEBUG No compatible version found for: livity-airtable
+DEBUG Searching for a compatible version of enzo @ file:///${PROJECT} (<1.2.2 | >1.2.2)
+DEBUG No compatible version found for: enzo
+DEBUG Found stale response for: https://gitlab.com/api/v4/groups/{ID}/-/packages/pypi/simple/pytz/
+DEBUG Sending revalidation request for: https://gitlab.com/api/v4/groups/{ID}/-/packages/pypi/simple/pytz/
+DEBUG Found stale response for: https://gitlab.com/api/v4/groups/{ID}/-/packages/pypi/simple/six/
+DEBUG Sending revalidation request for: https://gitlab.com/api/v4/groups/{ID}/-/packages/pypi/simple/six/
+DEBUG Found stale response for: https://gitlab.com/api/v4/groups/{ID}/-/packages/pypi/simple/tzlocal/
+DEBUG Sending revalidation request for: https://gitlab.com/api/v4/groups/{ID}/-/packages/pypi/simple/tzlocal/
+DEBUG Found stale response for: https://gitlab.com/api/v4/groups/{ID}/-/packages/pypi/simple/colorama/
+DEBUG Sending revalidation request for: https://gitlab.com/api/v4/groups/{ID}/-/packages/pypi/simple/colorama/
+DEBUG Found stale response for: https://gitlab.com/api/v4/groups/{ID}/-/packages/pypi/simple/certifi/
+DEBUG Sending revalidation request for: https://gitlab.com/api/v4/groups/{ID}/-/packages/pypi/simple/certifi/
+DEBUG Found stale response for: https://gitlab.com/api/v4/groups/{ID}/-/packages/pypi/simple/anyio/
+DEBUG Sending revalidation request for: https://gitlab.com/api/v4/groups/{ID}/-/packages/pypi/simple/anyio/
+DEBUG Found stale response for: https://gitlab.com/api/v4/groups/{ID}/-/packages/pypi/simple/python-dateutil/
+DEBUG Sending revalidation request for: https://gitlab.com/api/v4/groups/{ID}/-/packages/pypi/simple/python-dateutil/
+DEBUG Found stale response for: https://gitlab.com/api/v4/groups/{ID}/-/packages/pypi/simple/urllib3/
+DEBUG Sending revalidation request for: https://gitlab.com/api/v4/groups/{ID}/-/packages/pypi/simple/urllib3/
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/eb/d4/2011babd77b9709dd80f89aa74611fdace859e0571cd9e79ba3f95902441/phonenumbers-8.13.50-py2.py3-none-any.whl.metadata
+DEBUG Found stale response for: https://gitlab.com/api/v4/groups/{ID}/-/packages/pypi/simple/sqlalchemy/
+DEBUG Sending revalidation request for: https://gitlab.com/api/v4/groups/{ID}/-/packages/pypi/simple/sqlalchemy/
+DEBUG Found not-modified response for: https://gitlab.com/api/v4/groups/{ID}/-/packages/pypi/simple/pytz/
+DEBUG Found not-modified response for: https://gitlab.com/api/v4/groups/{ID}/-/packages/pypi/simple/urllib3/
+DEBUG Found not-modified response for: https://gitlab.com/api/v4/groups/{ID}/-/packages/pypi/simple/certifi/
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/12/90/3c9ff0512038035f59d279fddeb79f5f1eccd8859f06d6163c58798b9487/certifi-2024.8.30-py3-none-any.whl.metadata
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/11/c3/005fcca25ce078d2cc29fd559379817424e94885510568bc1bc53d7d5846/pytz-2024.2-py2.py3-none-any.whl.metadata
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/ce/d9/5f4c13cecde62396b0d3fe530a50ccea91e7dfc1ccf0e09c228841bb5ba8/urllib3-2.2.3-py3-none-any.whl.metadata
+DEBUG Found not-modified response for: https://gitlab.com/api/v4/groups/{ID}/-/packages/pypi/simple/colorama/
+DEBUG Found not-modified response for: https://gitlab.com/api/v4/groups/{ID}/-/packages/pypi/simple/python-dateutil/
+DEBUG Found not-modified response for: https://gitlab.com/api/v4/groups/{ID}/-/packages/pypi/simple/sqlalchemy/
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/ec/57/56b9bcc3c9c6a792fcbaf139543cee77261f3651ca9da0c93f5c1221264b/python_dateutil-2.9.0.post0-py2.py3-none-any.whl.metadata
+DEBUG Found not-modified response for: https://gitlab.com/api/v4/groups/{ID}/-/packages/pypi/simple/tzlocal/
+DEBUG Found not-modified response for: https://gitlab.com/api/v4/groups/{ID}/-/packages/pypi/simple/anyio/
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/97/3f/c4c51c55ff8487f2e6d0e618dba917e3c3ee2caae6cf0fbb59c9b1876f2e/tzlocal-5.2-py3-none-any.whl.metadata
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/e4/f5/f2b75d2fc6f1a260f340f0e7c6a060f4dd2961cc16884ed851b0d18da06a/anyio-4.6.2.post1-py3-none-any.whl.metadata
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/00/4e/5a67963fd7cbc1beb8bd2152e907419f4c940ef04600b10151a751fe9e06/SQLAlchemy-2.0.36-cp311-cp311-macosx_10_9_x86_64.whl.metadata
+DEBUG Found not-modified response for: https://gitlab.com/api/v4/groups/{ID}/-/packages/pypi/simple/six/
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/d9/5a/e7c31adbe875f2abbb91bd84cf2dc52d792b5a01506781dbcf25c91daf11/six-1.16.0-py2.py3-none-any.whl.metadata
+  × No solution found when resolving dependencies:
+  ╰─▶ Because there are no versions of livity-airtable and your project depends on livity-airtable, we can conclude that your project's requirements are unsatisfiable.
+
+      hint: `livity-airtable` was found on https://gitlab.com/api/v4/groups/{ID}/-/packages/pypi/simple, but not at the requested version (all versions of livity-airtable). A compatible version may be available on a
+      subsequent index (e.g., https://pypi.org/simple). By default, uv will only consider versions that are published on the first index that contains a given package, to avoid dependency confusion attacks. If all indexes are
+      equally trusted, use `--index-strategy unsafe-best-match` to consider all versions from all indexes, regardless of the order in which they were defined.
+  help: If you want to add the package regardless of the failed resolution, provide the `--frozen` flag to skip locking and syncing.
+```
+
+---
+
+_Comment by @rafalkrupinski on 2024-11-21 17:42_
+
+I also tried with explicit source index
+
+---
+
+_Comment by @zanieb on 2024-11-21 17:54_
+
+Are you sure the credentials and index URL are configured correctly? e.g., I get this error with a dummy URL
+
+```
+❯ uv add --index https://gitlab.com/api/v4/groups/123242/-/packages/pypi/simple 'livity-airtable'
+Using CPython 3.12.7
+Creating virtual environment at: .venv
+  × No solution found when resolving dependencies:
+  ╰─▶ Because there are no versions of livity-airtable and your project depends on livity-airtable, we can conclude
+      that your project's requirements are unsatisfiable.
+  help: If you want to add the package regardless of the failed resolution, provide the `--frozen` flag to skip
+        locking and syncing.
+```
+
+---
+
+_Comment by @rafalkrupinski on 2024-11-21 18:06_
+
+I've put the credentials in ~/.netrc, but I couldn't tell if uv reads them or whether they're defined properly. 🤷
+
+---
+
+_Comment by @zanieb on 2024-11-21 18:13_
+
+If you set `RUST_LOG=uv=trace` there will be more verbose logs from our credential handler.
+
+---
+
+_Comment by @rafalkrupinski on 2024-11-21 18:27_
+
+```sh
+TRACE Request for https://gitlab.com/api/v4/groups/${ID}/-/packages/pypi/simple/livity-airtable/ is unauthenticated, checking cache
+TRACE No credentials in cache for URL https://gitlab.com/api/v4/groups/${ID}/-/packages/pypi/simple/livity-airtable/
+TRACE Attempting unauthenticated request for https://gitlab.com/api/v4/groups/${ID}/-/packages/pypi/simple/livity-airtable/
+T
+```
+.netrc:
+
+machine gitlab.com login ... password ...
+
+
+---
+
+_Comment by @zanieb on 2024-11-21 18:37_
+
+We attempt an unauthenticated request before the authenticated one, generally, are those all the logs?
+
+---
+
+_Comment by @rafalkrupinski on 2024-11-21 19:03_
+
+That's it from this server.
+
+```sh
+$ RUST_LOG=uv=trace uv  add --index https://gitlab.com/api/v4/groups/${ID}/-/packages/pypi/simple 'livity-airtable' -vn
+DEBUG uv 0.5.4
+DEBUG Found project root: `${PROJECT}`
+DEBUG No workspace root found, using project root
+DEBUG Using Python request `>=3.11` from `requires-python` metadata
+TRACE Querying interpreter executable at ${PROJECT}/.venv/bin/python3
+DEBUG The virtual environment's Python version satisfies `>=3.11`
+DEBUG Using request timeout of 30s
+DEBUG Using request timeout of 30s
+DEBUG Ignoring existing lockfile due to mismatched source: `enzo` (expected: `editable`)
+DEBUG Found static `pyproject.toml` for: enzo @ file://${PROJECT}
+DEBUG No workspace root found, using project root
+TRACE Performing lookahead for enzo @ file://${PROJECT}
+DEBUG Solving with installed Python version: 3.12.7
+DEBUG Solving with target Python version: >=3.11
+DEBUG Adding direct dependency: enzo*
+DEBUG Searching for a compatible version of enzo @ file://${PROJECT} (*)
+DEBUG Adding transitive dependency for enzo==1.2.2: livity-airtable*
+TRACE Fetching metadata for livity-airtable from https://gitlab.com/api/v4/groups/${ID}/-/packages/pypi/simple/livity-airtable/
+TRACE No cache entry exists for /tmp/.tmpJTHLJ1/simple-v14/index/4e9e82d5c88d0c17/livity-airtable.rkyv
+DEBUG No cache entry for: https://gitlab.com/api/v4/groups/${ID}/-/packages/pypi/simple/livity-airtable/
+TRACE Sending fresh GET request for https://gitlab.com/api/v4/groups/${ID}/-/packages/pypi/simple/livity-airtable/
+TRACE Handling request for https://gitlab.com/api/v4/groups/${ID}/-/packages/pypi/simple/livity-airtable/
+TRACE Request for https://gitlab.com/api/v4/groups/${ID}/-/packages/pypi/simple/livity-airtable/ is unauthenticated, checking cache
+TRACE No credentials in cache for URL https://gitlab.com/api/v4/groups/${ID}/-/packages/pypi/simple/livity-airtable/
+TRACE Attempting unauthenticated request for https://gitlab.com/api/v4/groups/${ID}/-/packages/pypi/simple/livity-airtable/
+TRACE cached request https://gitlab.com/api/v4/groups/${ID}/-/packages/pypi/simple/livity-airtable/ is storable because its response has a 'public' cache-control directive
+TRACE Received package metadata for: livity-airtable
+TRACE Selecting candidate for livity-airtable with range * with 0 remote versions
+TRACE Exhausted all candidates for package livity-airtable with range * after 0 steps
+DEBUG Searching for a compatible version of livity-airtable (*)
+TRACE Selecting candidate for livity-airtable with range * with 0 remote versions
+TRACE Exhausted all candidates for package livity-airtable with range * after 0 steps
+DEBUG No compatible version found for: livity-airtable
+DEBUG Searching for a compatible version of enzo @ file://${PROJECT} (<1.2.2 | >1.2.2)
+DEBUG No compatible version found for: enzo
+DEBUG Reverting changes to `pyproject.toml`
+DEBUG Reverting changes to `uv.lock`
+  × No solution found when resolving dependencies:
+TRACE Resolver derivation tree before reduction
+  root==0a0.dev0 depends on enzo*
+      enzo==1.2.2 depends on livity-airtable*
+      no versions of livity-airtable*
+    no versions of enzo<1.2.2 | >1.2.2
+TRACE Resolver derivation tree after reduction
+  enzo==1.2.2 depends on livity-airtable*
+  no versions of livity-airtable*
+  ╰─▶ Because there are no versions of livity-airtable and your project depends on livity-airtable, we can conclude that your project's requirements are unsatisfiable.
+
+      hint: `livity-airtable` was found on https://gitlab.com/api/v4/groups/${ID}/-/packages/pypi/simple, but not at the requested version (all versions of livity-airtable). A compatible version may be available on a
+      subsequent index (e.g., https://pypi.org/simple). By default, uv will only consider versions that are published on the first index that contains a given package, to avoid dependency confusion attacks. If all indexes are
+      equally trusted, use `--index-strategy unsafe-best-match` to consider all versions from all indexes, regardless of the order in which they were defined.
+  help: If you want to add the package regardless of the failed resolution, provide the `--frozen` flag to skip locking and syncing.
+```
+
+Perhaps I'll have a look at the .netrc code. I barely know rust, but maybe I get lucky ;)
+
+---
+
+_Comment by @zanieb on 2024-11-21 19:20_
+
+Oh, I think because the request returns a 404 instead of a 403 we don't look for credentials to retry the request with. If you include the username on the index URL, e.g. `https://<username>@gitlab.com/api/v4/groups/${ID}/-/packages/pypi/simple` that should force retrieval of the password.
+
+It's weird they return a 404 instead of a 403 (if that is indeed the case).
+
+Thanks for your patience working through this!
+
+---
+
+_Comment by @rafalkrupinski on 2024-11-21 21:30_
+
+That worked 👍 Thank you for your help!
+
+I agree 404 from gitlab is not perfect. I'll report it, but I guess that on purpose - security by obscurity.
+
+Any good reason for trying unauthenticated request first even when we provide credentials?
+
+---
+
+_Comment by @Real-Gecko on 2024-11-22 13:59_
+
+I've encountered same issue with self hosted `devpi`
+```log
+RUST_LOG=uv=trace uv pip install --trusted-host 192.168.210.24 --index-url htt
+p://192.168.210.24:3141/project/dev/ kcommon==3.0.49
+DEBUG uv 0.5.4 (c62c83c37 2024-11-20)
+DEBUG Searching for default Python interpreter in virtual environments
+TRACE Cached interpreter info for Python 3.9.20, skipping probing: .venv/bin/python3
+DEBUG Found `cpython-3.9.20-linux-x86_64-gnu` at `/path/to/project/.venv/bin/python3` (active virtual environment)
+DEBUG Using Python 3.9.20 environment at .venv
+TRACE Checking lock for `.venv` at `.venv/.lock`
+DEBUG Acquired lock for `.venv`
+DEBUG At least one requirement is not satisfied: kcommon==3.0.49
+DEBUG Using request timeout of 30s
+⠙ Resolving dependencies...                                                                                                     DEBUG Solving with installed Python version: 3.9.20
+DEBUG Solving with target Python version: >=3.9.20
+DEBUG Adding direct dependency: kcommon>=3.0.49, <3.0.49+
+TRACE Fetching metadata for kcommon from http://192.168.210.24:3141/project/dev/kcommon/
+TRACE cached request http://192.168.210.24:3141/project/dev/kcommon/ is storable because its response has a heuristically cacheable status code 200
+TRACE could not determine freshness lifetime, assuming none exists
+TRACE cached request http://192.168.210.24:3141/project/dev/kcommon/ has a cached response that does not allow staleness
+TRACE request http://192.168.210.24:3141/project/dev/kcommon/ does not have a fresh cache because its age is 16 seconds, it is greater than the freshness lifetime of 0 seconds and stale cached responses are not allowed
+DEBUG Found stale response for: http://192.168.210.24:3141/project/dev/kcommon/
+DEBUG Sending revalidation request for: http://192.168.210.24:3141/project/dev/kcommon/
+TRACE Handling request for http://192.168.210.24:3141/project/dev/kcommon/
+TRACE Request for http://192.168.210.24:3141/project/dev/kcommon/ is unauthenticated, checking cache
+TRACE No credentials in cache for URL http://192.168.210.24:3141/project/dev/kcommon/
+TRACE Attempting unauthenticated request for http://192.168.210.24:3141/project/dev/kcommon/
+⠹ Resolving dependencies...                                                                                                     TRACE is modified because status is 200 and not 304
+DEBUG Found modified response for: http://192.168.210.24:3141/project/dev/kcommon/
+TRACE cached request http://192.168.210.24:3141/project/dev/kcommon/ is storable because its response has a heuristically cacheable status code 200
+⠸ Resolving dependencies...                                                                                                     WARN Skipping file for kcommon: 
+WARN Skipping file for kcommon: 
+WARN Skipping file for kcommon: 
+WARN Skipping file for kcommon: +searchhelp
+WARN Skipping file for kcommon: +status
+WARN Skipping file for kcommon: 0.0.0
+WARN Skipping file for kcommon: 2.0.0
+WARN Skipping file for kcommon: 2.0.1
+WARN Skipping file for kcommon: 2.0.2
+WARN Skipping file for kcommon: 2.0.3
+WARN Skipping file for kcommon: 2.0.4
+WARN Skipping file for kcommon: 2.0.5
+WARN Skipping file for kcommon: 2.0.6
+WARN Skipping file for kcommon: 2.0.7
+WARN Skipping file for kcommon: 2.0.9
+WARN Skipping file for kcommon: 2.1.0
+WARN Skipping file for kcommon: 2.1.1
+WARN Skipping file for kcommon: 3.0.1
+WARN Skipping file for kcommon: 3.0.10
+WARN Skipping file for kcommon: 3.0.11
+WARN Skipping file for kcommon: 3.0.12
+WARN Skipping file for kcommon: 3.0.13
+WARN Skipping file for kcommon: 3.0.14
+WARN Skipping file for kcommon: 3.0.15
+WARN Skipping file for kcommon: 3.0.16
+WARN Skipping file for kcommon: 3.0.17
+WARN Skipping file for kcommon: 3.0.18
+WARN Skipping file for kcommon: 3.0.19
+WARN Skipping file for kcommon: 3.0.2
+WARN Skipping file for kcommon: 3.0.20
+WARN Skipping file for kcommon: 3.0.21
+WARN Skipping file for kcommon: 3.0.22
+WARN Skipping file for kcommon: 3.0.23
+WARN Skipping file for kcommon: 3.0.24
+WARN Skipping file for kcommon: 3.0.25
+WARN Skipping file for kcommon: 3.0.26
+WARN Skipping file for kcommon: 3.0.27
+WARN Skipping file for kcommon: 3.0.28
+WARN Skipping file for kcommon: 3.0.29
+WARN Skipping file for kcommon: 3.0.3
+WARN Skipping file for kcommon: 3.0.30
+WARN Skipping file for kcommon: 3.0.31
+WARN Skipping file for kcommon: 3.0.32
+WARN Skipping file for kcommon: 3.0.33
+WARN Skipping file for kcommon: 3.0.34
+WARN Skipping file for kcommon: 3.0.35
+WARN Skipping file for kcommon: 3.0.36
+WARN Skipping file for kcommon: 3.0.37
+WARN Skipping file for kcommon: 3.0.38
+WARN Skipping file for kcommon: 3.0.39
+WARN Skipping file for kcommon: 3.0.4
+WARN Skipping file for kcommon: 3.0.40
+WARN Skipping file for kcommon: 3.0.41
+WARN Skipping file for kcommon: 3.0.42
+WARN Skipping file for kcommon: 3.0.43
+WARN Skipping file for kcommon: 3.0.44
+WARN Skipping file for kcommon: 3.0.45
+WARN Skipping file for kcommon: 3.0.47
+WARN Skipping file for kcommon: 3.0.48
+WARN Skipping file for kcommon: 3.0.49
+WARN Skipping file for kcommon: 3.0.5
+WARN Skipping file for kcommon: 3.0.6
+WARN Skipping file for kcommon: 3.0.7
+WARN Skipping file for kcommon: 3.0.8
+WARN Skipping file for kcommon: 3.0.9
+WARN Skipping file for kcommon: dev
+WARN Skipping file for kcommon: dev
+WARN Skipping file for kcommon: dev
+WARN Skipping file for kcommon: dev
+WARN Skipping file for kcommon: dev
+WARN Skipping file for kcommon: dev
+WARN Skipping file for kcommon: dev
+WARN Skipping file for kcommon: dev
+WARN Skipping file for kcommon: dev
+WARN Skipping file for kcommon: dev
+WARN Skipping file for kcommon: dev
+WARN Skipping file for kcommon: dev
+WARN Skipping file for kcommon: dev
+WARN Skipping file for kcommon: dev
+WARN Skipping file for kcommon: dev
+WARN Skipping file for kcommon: dev
+WARN Skipping file for kcommon: dev
+WARN Skipping file for kcommon: dev
+WARN Skipping file for kcommon: dev
+WARN Skipping file for kcommon: dev
+WARN Skipping file for kcommon: dev
+WARN Skipping file for kcommon: dev
+WARN Skipping file for kcommon: dev
+WARN Skipping file for kcommon: dev
+WARN Skipping file for kcommon: dev
+WARN Skipping file for kcommon: dev
+WARN Skipping file for kcommon: dev
+WARN Skipping file for kcommon: dev
+WARN Skipping file for kcommon: dev
+WARN Skipping file for kcommon: dev
+WARN Skipping file for kcommon: dev
+WARN Skipping file for kcommon: dev
+WARN Skipping file for kcommon: dev
+WARN Skipping file for kcommon: dev
+WARN Skipping file for kcommon: dev
+WARN Skipping file for kcommon: dev
+WARN Skipping file for kcommon: dev
+WARN Skipping file for kcommon: dev
+WARN Skipping file for kcommon: dev
+WARN Skipping file for kcommon: dev
+WARN Skipping file for kcommon: dev
+WARN Skipping file for kcommon: dev
+WARN Skipping file for kcommon: dev
+WARN Skipping file for kcommon: dev
+WARN Skipping file for kcommon: dev
+WARN Skipping file for kcommon: dev
+WARN Skipping file for kcommon: dev
+WARN Skipping file for kcommon: dev
+WARN Skipping file for kcommon: dev
+WARN Skipping file for kcommon: dev
+WARN Skipping file for kcommon: dev
+WARN Skipping file for kcommon: dev
+WARN Skipping file for kcommon: dev
+WARN Skipping file for kcommon: dev
+WARN Skipping file for kcommon: dev
+WARN Skipping file for kcommon: dev
+WARN Skipping file for kcommon: dev
+WARN Skipping file for kcommon: dev
+WARN Skipping file for kcommon: dev
+WARN Skipping file for kcommon: dev
+WARN Skipping file for kcommon: dev
+WARN Skipping file for kcommon: kcommon
+WARN Skipping file for kcommon: project
+WARN Skipping file for kcommon: latest
+WARN Skipping file for kcommon: pypi
+TRACE Received package metadata for: kcommon
+TRACE Selecting candidate for kcommon with range >=3.0.49, <3.0.49+ with 0 remote versions
+TRACE Exhausted all candidates for package kcommon with range >=3.0.49, <3.0.49+ after 0 steps
+DEBUG Searching for a compatible version of kcommon (>=3.0.49, <3.0.49+)
+TRACE Selecting candidate for kcommon with range >=3.0.49, <3.0.49+ with 0 remote versions
+TRACE Exhausted all candidates for package kcommon with range >=3.0.49, <3.0.49+ after 0 steps
+DEBUG No compatible version found for: kcommon
+TRACE Resolver derivation tree before reduction
+  root==0a0.dev0 depends on kcommon==3.0.49
+  no versions of kcommon==3.0.49
+TRACE Resolver derivation tree after reduction
+  root==0a0.dev0 depends on kcommon==3.0.49
+  no versions of kcommon==3.0.49
+  × No solution found when resolving dependencies:
+  ╰─▶ Because there is no version of kcommon==3.0.49 and you require kcommon==3.0.49, we can conclude that your requirements
+      are unsatisfiable.
+
+      hint: `kcommon` was found on http://192.168.210.24:3141/project/dev/, but not at the requested
+      version (kcommon==3.0.49). A compatible version may be available on a subsequent index (e.g.,
+      http://192.168.210.24:3141/project/dev/). By default, uv will only consider versions that are published on the first
+      index that contains a given package, to avoid dependency confusion attacks. If all indexes are equally trusted, use
+      `--index-strategy unsafe-best-match` to consider all versions from all indexes, regardless of the order in which they
+      were defined.
+DEBUG Released lock at `/path/to/project/.venv/.lock`
+```
+As I can see from output it finds all versions of `kcommon` listed on `devpi` however for some reason it fails to install, both with `uv sync` and `uv pip install`
+Any other way to debug?
+
+---
+
+_Comment by @Real-Gecko on 2024-11-22 14:10_
+
+Ordinary `pip install` works
+```sh
+pip install --trusted-host 192.168.210.24 --index-url http://192.168.210.24:3141/project/dev/ kcommon==3.0.49
+Looking in indexes: http://192.168.210.24:3141/project/dev/
+Collecting kcommon==3.0.49
+  Using cached http://192.168.210.24:3141/project/dev/%2Bf/8eb/825ec003842aa/kcommon-3.0.49-py3-none-any.whl (68 kB)
+Installing collected packages: kcommon
+Successfully installed kcommon-3.0.49
+
+[notice] A new release of pip is available: 23.0.1 -> 24.3.1
+[notice] To update, run: pip install --upgrade pip
+```
+
+---
+
+_Comment by @zanieb on 2024-11-22 14:43_
+
+The hint at the end of that error tells you what's going on.
+
+See https://docs.astral.sh/uv/pip/compatibility/#packages-that-exist-on-multiple-indexes for more details.
+
+---
+
+_Comment by @Real-Gecko on 2024-11-22 14:50_
+
+But I'm intentionally setting only single index which is `http://192.168.210.24:3141/project/dev/`, and it's also written in `pyproject.toml`
+
+```toml
+[tool.uv]
+# index-strategy = "unsafe-best-match"
+# index-url = "https://pypi.org/simple/"
+extra-index-url = [
+    "http://192.168.210.24:3141/prjoect/dev/",
+]
+```
+As you can see I've commented out `pypi.org`.
+
+---
+
+_Comment by @zanieb on 2024-11-22 14:53_
+
+Oh I see, sorry I was mislead by the fact that you provided the same index twice? Once via the CLI and once via the config?
+
+Anyway.. it looks like all the `kcommon` files are invalid for some reason? I think you need to be using the `simple` API endpoint — the default devpi endpoint is not a compliant index that we support.
+
+---
+
+_Comment by @Real-Gecko on 2024-11-22 14:57_
+
+This might be out of the scope of the issue, but can you please advise on how do I check if `simple` index is available?
+
+---
+
+_Comment by @Real-Gecko on 2024-11-22 15:01_
+
+I've tried to open `http://192.168.210.24:3141/project/dev/+simple/` and looks like it works:
+![image](https://github.com/user-attachments/assets/323afd3a-ee5c-4e26-8b9d-bca506851a9d)
+
+
+---
+
+_Comment by @zanieb on 2024-11-22 15:12_
+
+Yeah that's the actual standard index API. 
+
+---
+
+_Comment by @Real-Gecko on 2024-11-22 15:16_
+
+So, simple index is available I guess, any other way to pinpoint the issue?
+
+---
+
+_Comment by @rafalkrupinski on 2024-11-22 15:23_
+
+it's `/simple`, not `/+simple`
+
+---
+
+_Comment by @rafalkrupinski on 2024-11-22 15:24_
+
+@zanieb can you tell me why uv tries to make unauthenticated requests to servers with configured credentials? It might help with the issue report to gitlab. Thanks!
+
+---
+
+_Comment by @zanieb on 2024-11-22 15:25_
+
+You need to include the `/simple` suffix in your index URL when you configure it.
+
+---
+
+_Comment by @zanieb on 2024-11-22 15:29_
+
+@rafalkrupinski working on tracking down the discussion about it. If I remember correctly, this is necessary to avoid sending credentials to servers that will fail without them. I think GitHub will return a 403 to a public repository if you attach credentials if you are setting up authentication some other repository, attaching credentials eagerly causes problems.
+
+---
+
+_Comment by @Real-Gecko on 2024-11-22 15:29_
+
+> it's `/simple`, not `/+simple`
+On simple I see this:
+
+![image](https://github.com/user-attachments/assets/e66588b3-ddb6-442f-934d-9ac85c853641)
+
+Is it how it's supposed to look?
+
+---
+
+_Comment by @zanieb on 2024-11-22 15:33_
+
+@rafalkrupinski The change was in https://github.com/astral-sh/uv/pull/3130
+
+
+---
+
+_Comment by @Real-Gecko on 2024-11-22 15:35_
+
+> You need to include the `/simple` suffix in your index URL when you configure it.
+
+Aha!
+```sh
+RUST_LOG=uv=trace uv pip install --trusted-host 192.168.210.24 --index-ur
+l http://192.168.210.24:3141/project/dev/+simple/ kcommon==3.0.49
+```
+OR `uv sync` with:
+```
+[tool.uv]
+extra-index-url = [
+    "http://192.168.210.24:3141/project/dev/+simple/",
+]
+```
+Works, thanks for your help!
+
+---
+
+_Comment by @rafalkrupinski on 2024-11-22 15:36_
+
+@zanieb 
+>  this is necessary to avoid sending credentials to servers that will fail without them. 
+
+You can't make everyone happy...
+You mean servers that will fail **with** them?
+
+---
+
+_Comment by @zanieb on 2024-11-22 15:40_
+
+Sorry yeah.. "that will fail with them".
+
+We have an awkward problem here where server behavior is inconsistent and it's very hard to have good behavior across all of them.
+
+---
+
+_Comment by @rafalkrupinski on 2024-11-22 15:41_
+
+So I understand this is a WONTFIX, because of how github handles authenticated requests, unless you want to add workarounds for quirks specific to servers (github, gitlab, etc).
+
+Another thing would be adding gitlab idiosyncrasies to the index section in the docs.
+
+---
+
+_Comment by @rafalkrupinski on 2024-11-22 15:42_
+
+I mean I'm happy that there's a workaround :)
+
+---
+
+_Renamed from "Can't resolve a package version [private gitlab index, poetry managed dependency]" to "Can't resolve a package version from private gitlab package index" by @rafalkrupinski on 2024-11-22 15:45_
+
+---
+
+_Comment by @zanieb on 2024-11-22 15:48_
+
+I'm happy to review a pull request adding a note to the documentation.
+
+I think it'd be nice if both GitHub and GitLab had better behavior here :)
+
+We could add a specific workaround for GitLab, it might not work in all cases (e.g., if there's a proxy that changes the domain) but it seems reasonable. It also might be bad for performance if we try to retrieve credentials whenever there's a missing package.
+
+---
+
+_Comment by @rafalkrupinski on 2024-11-22 15:56_
+
+> I'm happy to review a pull request adding a note to the documentation.
+
+This much I can do ;)
+
+The rest I'll leave for you to decide.
+
+---
+
+_Comment by @FishAlchemist on 2024-11-23 09:50_
+
+> We could add a specific workaround for GitLab
+
+Since GitLab supports self-managed instances, it's not possible to identify a GitLab instance solely based on its domain, except for the official ones.
+
+Therefore, unless we can determine if the other end is a GitLab instance during transmission, additional support may require informing the UV that the other end is indeed GitLab.
+
+---
+
+_Comment by @rafalkrupinski on 2024-11-25 14:52_
+
+one thing tho, gitlab CI enforces specific username, so everyone in the project would need personal access key named gitlab-ci-token. I'm no security expert but it smells to me, and at very least is a hindrance.
+
+If you consider quirks mode for package index servers, then perhaps a configuration option in the index section?
+```toml
+[[tool.poetry.source]]
+name = "myIndex"
+url = "https://mygitlab.example.com/api/v4/projects/.../packages/pypi/simple"
+priority = "explicit"
+index-mode='gitlab'
+```
+
+Another option would be retrying with authentication even after 404, but who knows what that breaks!
+Also, python tools already handle pypi, github and gitlab so it's "only" matter of copying their behaviour, isn't it?
+
+---
+
+_Referenced in [astral-sh/uv#9008](../../astral-sh/uv/issues/9008.md) on 2024-11-25 23:09_
+
+---
+
+_Comment by @zanieb on 2024-11-25 23:11_
+
+We could also have a bool "authenticated" which forces us to fetch authentication instead of trying an unauthenticated request first. Hm. This could be broadly helpful for erroring early when we can't find credentials.
+
+---
+
+_Comment by @rafalkrupinski on 2024-11-25 23:40_
+
+Sounds reasonable, but I would find the name confusing, since uv would still try authenticated request with "false". What we actually want to configure is trying unauthenticated request when credentials are present. "Prevent-unauthenticated" or "try-unauthenticated" or something along these lines.
+
+I find github's quirk more unreasonable than gitlab's, so that's the server that should need an extra option, IMO 
+
+---
+
+_Comment by @zanieb on 2024-11-25 23:48_
+
+> Sounds reasonable, but I would find the name confusing, since uv would still try authenticated request with "false". 
+
+I mean, we don't have to :) If you mark an index as unauthenticated I would say it's critical that we do _not_ send credentials to it. The default could be `None`, i.e., it's `Option<bool>` not `bool` with a default of `false`.
+
+---
+
+_Comment by @Sube-py on 2024-11-26 03:07_
+
+It's still not work for me, the package, utensils, I'm pretty sure it's in my private repository, I tried three strategies of uv and tried to specify the version of the package, but it still didn't work. Anyone give me some advice please 😭 
+```shell
+RUST_LOG=uv=trace uv add utensils==0.1.58 --index-url=https://pypi.org/simple --extra-index-url=https://username:password@100.64.0.1:8000/simple --allow-insecure-host=100.64.0.1 --index-strategy unsafe-best-match -vn
+
+TRACE Received package metadata for: greenlet
+TRACE Using preference greenlet 3.1.1
+TRACE No cache entry exists for /var/folders/zj/82cyd56j3t7cdf54m857wsgw0000gn/T/.tmpDV0OtY/wheels-v3/index/e367fd55faf540ee/greenlet/greenlet-3.1.1-cp312-cp312-macosx_11_0_universal2.msgpack
+DEBUG No cache entry for: https://pypi.org/simple/pypi/web/packages/7d/ec/bad1ac26764d26aa1353216fcbfa4670050f66d445448aafa227f8b16e80/greenlet-3.1.1-cp312-cp312-macosx_11_0_universal2.whl
+TRACE Sending fresh HEAD request for https://pypi.org/simple/pypi/web/packages/7d/ec/bad1ac26764d26aa1353216fcbfa4670050f66d445448aafa227f8b16e80/greenlet-3.1.1-cp312-cp312-macosx_11_0_universal2.whl
+TRACE Handling request for https://pypi.org/simple/pypi/web/packages/7d/ec/bad1ac26764d26aa1353216fcbfa4670050f66d445448aafa227f8b16e80/greenlet-3.1.1-cp312-cp312-macosx_11_0_universal2.whl
+TRACE Request for https://pypi.org/simple/pypi/web/packages/7d/ec/bad1ac26764d26aa1353216fcbfa4670050f66d445448aafa227f8b16e80/greenlet-3.1.1-cp312-cp312-macosx_11_0_universal2.whl is unauthenticated, checking cache
+TRACE No credentials in cache for URL https://pypi.org/simple/pypi/web/packages/7d/ec/bad1ac26764d26aa1353216fcbfa4670050f66d445448aafa227f8b16e80/greenlet-3.1.1-cp312-cp312-macosx_11_0_universal2.whl
+TRACE Attempting unauthenticated request for https://pypi.org/simple/pypi/web/packages/7d/ec/bad1ac26764d26aa1353216fcbfa4670050f66d445448aafa227f8b16e80/greenlet-3.1.1-cp312-cp312-macosx_11_0_universal2.whl
+TRACE cached request https://pypi.org/simple/pypi/web/packages/7d/ec/bad1ac26764d26aa1353216fcbfa4670050f66d445448aafa227f8b16e80/greenlet-3.1.1-cp312-cp312-macosx_11_0_universal2.whl is storable because its response has a heuristically cacheable status code 200
+TRACE Getting metadata for greenlet-3.1.1-cp312-cp312-macosx_11_0_universal2.whl by range request
+TRACE Handling request for https://pypi.org/simple/pypi/web/packages/7d/ec/bad1ac26764d26aa1353216fcbfa4670050f66d445448aafa227f8b16e80/greenlet-3.1.1-cp312-cp312-macosx_11_0_universal2.whl
+TRACE Request for https://pypi.org/simple/pypi/web/packages/7d/ec/bad1ac26764d26aa1353216fcbfa4670050f66d445448aafa227f8b16e80/greenlet-3.1.1-cp312-cp312-macosx_11_0_universal2.whl is unauthenticated, checking cache
+TRACE No credentials in cache for URL https://pypi.org/simple/pypi/web/packages/7d/ec/bad1ac26764d26aa1353216fcbfa4670050f66d445448aafa227f8b16e80/greenlet-3.1.1-cp312-cp312-macosx_11_0_universal2.whl
+TRACE Attempting unauthenticated request for https://pypi.org/simple/pypi/web/packages/7d/ec/bad1ac26764d26aa1353216fcbfa4670050f66d445448aafa227f8b16e80/greenlet-3.1.1-cp312-cp312-macosx_11_0_universal2.whl
+TRACE Received built distribution metadata for: greenlet==3.1.1
+  × No solution found when resolving dependencies for split (python_full_version == '3.12.*'):
+TRACE Resolver derivation tree before reduction
+  root==0a0.dev0 depends on shredder-demo*
+      shredder-demo==0.1.0 depends on utensils==0.1.58
+      no versions of utensils==0.1.58
+    no versions of shredder-demo<0.1.0 | >0.1.0
+TRACE Resolver derivation tree after reduction
+  shredder-demo==0.1.0 depends on utensils==0.1.58
+  no versions of utensils==0.1.58
+  ╰─▶ Because there is no version of utensils==0.1.58 and your project depends on utensils==0.1.58, we can conclude that your project's requirements are unsatisfiable.
+  help: If you want to add the package regardless of the failed resolution, provide the `--frozen` flag to skip locking and syncing.
+```
+
+---
+
+_Comment by @charliermarsh on 2024-11-26 03:09_
+
+Can you share the full verbose logs? Are you certain that your server is authenticating correctly?
+
+---
+
+_Comment by @Sube-py on 2024-11-26 03:31_
+
+> Can you share the full verbose logs? Are you certain that your server is authenticating correctly?
+sure, 
+```log
+TRACE Request for https://username:****@100.64.0.1:4874/simple/ruff/ is already fully authenticated
+TRACE Updating cached credentials for https://100.64.0.1:4874/simple/utensils/ to Credentials { username: Username(Some("username")), password: Some("password") }
+TRACE cached request https://100.64.0.1:4874/simple/utensils/ is storable because its response has a heuristically cacheable status code 200
+```
+
+```log
+DEBUG uv 0.5.0 (Homebrew 2024-11-07)
+warning: Indexes specified via `--index-url` will not be persisted to the `pyproject.toml` file; use `--default-index` instead.
+warning: Indexes specified via `--extra-index-url` will not be persisted to the `pyproject.toml` file; use `--index` instead.
+DEBUG Found project root: `/Users/sube/pd/shredder-demo`
+DEBUG No workspace root found, using project root
+DEBUG Reading Python requests from version file at `/Users/sube/pd/shredder-demo/.python-version`
+DEBUG Using Python request `3.12` from version file at `.python-version`
+TRACE Querying interpreter executable at /Users/sube/pd/shredder-demo/.venv/bin/python3
+DEBUG The virtual environment's Python version satisfies `3.12`
+TRACE Caching credentials for https://username:password@100.64.0.1:4874/simple
+DEBUG Using request timeout of 30s
+TRACE Caching credentials for https://username:password@100.64.0.1:4874/simple
+DEBUG Using request timeout of 30s
+DEBUG Found static `pyproject.toml` for: shredder-demo @ file:///Users/sube/pd/shredder-demo
+DEBUG No workspace root found, using project root
+DEBUG Ignoring existing lockfile due to mismatched `requires-dist` for: `shredder-demo==0.1.0`
+  Expected: {Requirement { name: PackageName("asyncpg"), extras: [], marker: true, source: Registry { specifier: VersionSpecifiers([VersionSpecifier { operator: GreaterThanEqual, version: "0.30.0" }]), index: None }, origin: None }, Requirement { name: PackageName("fastapi"), extras: [ExtraName("standard")], marker: true, source: Registry { specifier: VersionSpecifiers([VersionSpecifier { operator: GreaterThanEqual, version: "0.115.4" }]), index: None }, origin: None }, Requirement { name: PackageName("sqlalchemy"), extras: [ExtraName("asyncio")], marker: true, source: Registry { specifier: VersionSpecifiers([VersionSpecifier { operator: GreaterThanEqual, version: "2.0.36" }]), index: None }, origin: None }, Requirement { name: PackageName("utensils"), extras: [], marker: true, source: Registry { specifier: VersionSpecifiers([VersionSpecifier { operator: Equal, version: "0.1.58" }]), index: None }, origin: None }}
+  Actual: {Requirement { name: PackageName("asyncpg"), extras: [], marker: true, source: Registry { specifier: VersionSpecifiers([VersionSpecifier { operator: GreaterThanEqual, version: "0.30.0" }]), index: None }, origin: None }, Requirement { name: PackageName("fastapi"), extras: [ExtraName("standard")], marker: true, source: Registry { specifier: VersionSpecifiers([VersionSpecifier { operator: GreaterThanEqual, version: "0.115.4" }]), index: None }, origin: None }, Requirement { name: PackageName("sqlalchemy"), extras: [ExtraName("asyncio")], marker: true, source: Registry { specifier: VersionSpecifiers([VersionSpecifier { operator: GreaterThanEqual, version: "2.0.36" }]), index: None }, origin: None }}
+TRACE Performing lookahead for shredder-demo @ file:///Users/sube/pd/shredder-demo
+DEBUG Solving with installed Python version: 3.12.7
+DEBUG Solving with target Python version: >=3.12
+DEBUG Narrowed `requires-python` bound to: >=3.12
+DEBUG Narrowed `requires-python` bound to: >=3.12
+DEBUG Solving split (python_full_version == '3.12.*') (requires-python: RequiresPython { specifiers: VersionSpecifiers([VersionSpecifier { operator: GreaterThanEqual, version: "3.12" }]), range: RequiresPythonRange(LowerBound(Included("3.12")), UpperBound(Excluded("3.13"))) })
+DEBUG Adding direct dependency: shredder-demo*
+DEBUG Searching for a compatible version of shredder-demo @ file:///Users/sube/pd/shredder-demo (*)
+DEBUG Adding transitive dependency for shredder-demo==0.1.0: asyncpg>=0.30.0
+DEBUG Adding transitive dependency for shredder-demo==0.1.0: fastapi>=0.115.4
+DEBUG Adding transitive dependency for shredder-demo==0.1.0: fastapi[standard]>=0.115.4
+DEBUG Adding transitive dependency for shredder-demo==0.1.0: shredder-demo:dev==0.1.0
+DEBUG Adding transitive dependency for shredder-demo==0.1.0: sqlalchemy>=2.0.36
+DEBUG Adding transitive dependency for shredder-demo==0.1.0: sqlalchemy[asyncio]>=2.0.36
+DEBUG Adding transitive dependency for shredder-demo==0.1.0: utensils>=0.1.58, <0.1.58+
+DEBUG Searching for a compatible version of shredder-demo @ file:///Users/sube/pd/shredder-demo (==0.1.0)
+DEBUG Adding transitive dependency for shredder-demo==0.1.0: shredder-demo==0.1.0
+DEBUG Adding transitive dependency for shredder-demo==0.1.0: shredder-demo:dev==0.1.0
+DEBUG Searching for a compatible version of shredder-demo @ file:///Users/sube/pd/shredder-demo (==0.1.0)
+DEBUG Adding transitive dependency for shredder-demo==0.1.0: ruff>=0.7.3
+TRACE Fetching metadata for asyncpg from https://username:password@100.64.0.1:4874/simple/asyncpg/
+TRACE Fetching metadata for fastapi from https://username:password@100.64.0.1:4874/simple/fastapi/
+TRACE Fetching metadata for sqlalchemy from https://username:password@100.64.0.1:4874/simple/sqlalchemy/
+TRACE Fetching metadata for utensils from https://username:password@100.64.0.1:4874/simple/utensils/
+TRACE Fetching metadata for ruff from https://username:password@100.64.0.1:4874/simple/ruff/
+TRACE No cache entry exists for /var/folders/zj/82cyd56j3t7cdf54m857wsgw0000gn/T/.tmpDV0OtY/simple-v14/index/e28ca5b064495d49/asyncpg.rkyv
+DEBUG No cache entry for: https://100.64.0.1:4874/simple/asyncpg/
+TRACE Sending fresh GET request for https://100.64.0.1:4874/simple/asyncpg/
+TRACE Handling request for https://username:****@100.64.0.1:4874/simple/asyncpg/
+TRACE Request for https://username:****@100.64.0.1:4874/simple/asyncpg/ is already fully authenticated
+TRACE No cache entry exists for /var/folders/zj/82cyd56j3t7cdf54m857wsgw0000gn/T/.tmpDV0OtY/simple-v14/index/e28ca5b064495d49/fastapi.rkyv
+DEBUG No cache entry for: https://100.64.0.1:4874/simple/fastapi/
+TRACE Sending fresh GET request for https://100.64.0.1:4874/simple/fastapi/
+TRACE Handling request for https://username:****@100.64.0.1:4874/simple/fastapi/
+TRACE Request for https://username:****@100.64.0.1:4874/simple/fastapi/ is already fully authenticated
+TRACE No cache entry exists for /var/folders/zj/82cyd56j3t7cdf54m857wsgw0000gn/T/.tmpDV0OtY/simple-v14/index/e28ca5b064495d49/sqlalchemy.rkyv
+DEBUG No cache entry for: https://100.64.0.1:4874/simple/sqlalchemy/
+TRACE Sending fresh GET request for https://100.64.0.1:4874/simple/sqlalchemy/
+TRACE Handling request for https://username:****@100.64.0.1:4874/simple/sqlalchemy/
+TRACE Request for https://username:****@100.64.0.1:4874/simple/sqlalchemy/ is already fully authenticated
+TRACE No cache entry exists for /var/folders/zj/82cyd56j3t7cdf54m857wsgw0000gn/T/.tmpDV0OtY/simple-v14/index/e28ca5b064495d49/utensils.rkyv
+DEBUG No cache entry for: https://100.64.0.1:4874/simple/utensils/
+TRACE Sending fresh GET request for https://100.64.0.1:4874/simple/utensils/
+TRACE Handling request for https://username:****@100.64.0.1:4874/simple/utensils/
+TRACE Request for https://username:****@100.64.0.1:4874/simple/utensils/ is already fully authenticated
+TRACE No cache entry exists for /var/folders/zj/82cyd56j3t7cdf54m857wsgw0000gn/T/.tmpDV0OtY/simple-v14/index/e28ca5b064495d49/ruff.rkyv
+DEBUG No cache entry for: https://100.64.0.1:4874/simple/ruff/
+TRACE Sending fresh GET request for https://100.64.0.1:4874/simple/ruff/
+TRACE Handling request for https://username:****@100.64.0.1:4874/simple/ruff/
+TRACE Request for https://username:****@100.64.0.1:4874/simple/ruff/ is already fully authenticated
+TRACE Updating cached credentials for https://100.64.0.1:4874/simple/utensils/ to Credentials { username: Username(Some("username")), password: Some("password") }
+TRACE cached request https://100.64.0.1:4874/simple/utensils/ is storable because its response has a heuristically cacheable status code 200
+WARN Skipping file for utensils: 
+WARN Skipping file for utensils: 
+WARN Skipping file for utensils: 
+WARN Skipping file for utensils: +searchhelp
+WARN Skipping file for utensils: +status
+WARN Skipping file for utensils: 0.0.31
+WARN Skipping file for utensils: 0.0.42
+WARN Skipping file for utensils: 0.1.15
+WARN Skipping file for utensils: 0.1.25
+WARN Skipping file for utensils: 0.1.28
+WARN Skipping file for utensils: 0.1.29
+WARN Skipping file for utensils: 0.1.32
+WARN Skipping file for utensils: 0.1.33
+WARN Skipping file for utensils: 0.1.35
+WARN Skipping file for utensils: 0.1.36
+WARN Skipping file for utensils: 0.1.37
+WARN Skipping file for utensils: 0.1.39
+WARN Skipping file for utensils: 0.1.40
+WARN Skipping file for utensils: 0.1.41
+WARN Skipping file for utensils: 0.1.42
+WARN Skipping file for utensils: 0.1.43
+WARN Skipping file for utensils: 0.1.44
+WARN Skipping file for utensils: 0.1.45
+WARN Skipping file for utensils: 0.1.46
+WARN Skipping file for utensils: 0.1.47
+WARN Skipping file for utensils: 0.1.48
+WARN Skipping file for utensils: 0.1.49
+WARN Skipping file for utensils: 0.1.50
+WARN Skipping file for utensils: 0.1.53
+WARN Skipping file for utensils: 0.1.54
+WARN Skipping file for utensils: 0.1.55
+WARN Skipping file for utensils: 0.1.56
+WARN Skipping file for utensils: 0.1.57
+WARN Skipping file for utensils: 0.1.58
+WARN Skipping file for utensils: username
+WARN Skipping file for utensils: latest
+WARN Skipping file for utensils: pypi
+WARN Skipping file for utensils: pypi
+WARN Skipping file for utensils: pypi
+WARN Skipping file for utensils: pypi
+WARN Skipping file for utensils: pypi
+WARN Skipping file for utensils: pypi
+WARN Skipping file for utensils: pypi
+WARN Skipping file for utensils: pypi
+WARN Skipping file for utensils: pypi
+WARN Skipping file for utensils: pypi
+WARN Skipping file for utensils: pypi
+WARN Skipping file for utensils: pypi
+WARN Skipping file for utensils: pypi
+WARN Skipping file for utensils: pypi
+WARN Skipping file for utensils: pypi
+WARN Skipping file for utensils: pypi
+WARN Skipping file for utensils: pypi
+WARN Skipping file for utensils: pypi
+WARN Skipping file for utensils: pypi
+WARN Skipping file for utensils: pypi
+WARN Skipping file for utensils: pypi
+WARN Skipping file for utensils: pypi
+WARN Skipping file for utensils: pypi
+WARN Skipping file for utensils: pypi
+WARN Skipping file for utensils: pypi
+WARN Skipping file for utensils: pypi
+WARN Skipping file for utensils: pypi
+WARN Skipping file for utensils: pypi
+WARN Skipping file for utensils: pypi
+WARN Skipping file for utensils: pypi
+WARN Skipping file for utensils: pypi
+WARN Skipping file for utensils: utensils
+WARN Skipping file for utensils: utensils
+TRACE Fetching metadata for utensils from https://pypi.org/simple/pypi/web/simple/utensils/
+TRACE No cache entry exists for /var/folders/zj/82cyd56j3t7cdf54m857wsgw0000gn/T/.tmpDV0OtY/simple-v14/index/e367fd55faf540ee/utensils.rkyv
+DEBUG No cache entry for: https://pypi.org/simple/pypi/web/simple/utensils/
+TRACE Sending fresh GET request for https://pypi.org/simple/pypi/web/simple/utensils/
+TRACE Handling request for https://pypi.org/simple/pypi/web/simple/utensils/
+TRACE Request for https://pypi.org/simple/pypi/web/simple/utensils/ is unauthenticated, checking cache
+TRACE No credentials in cache for URL https://pypi.org/simple/pypi/web/simple/utensils/
+TRACE Attempting unauthenticated request for https://pypi.org/simple/pypi/web/simple/utensils/
+TRACE cached request https://pypi.org/simple/pypi/web/simple/utensils/ is storable because its response has a heuristically cacheable status code 200
+WARN Skipping file for utensils: utensils-0.1.macosx-10.9-intel.exe
+WARN Skipping file for utensils: utensils-0.2.macosx-10.9-intel.exe
+WARN Skipping file for utensils: utensils-0.3.macosx-10.9-intel.exe
+WARN Skipping file for utensils: utensils-0.4.macosx-10.9-intel.exe
+WARN Skipping file for utensils: utensils-0.41.macosx-10.9-intel.exe
+TRACE Received package metadata for: utensils
+TRACE Selecting candidate for utensils with range >=0.1.58, <0.1.58+ with 7 remote versions
+TRACE Exhausted all candidates for package utensils with range >=0.1.58, <0.1.58+ after 7 steps
+TRACE Updating cached credentials for https://100.64.0.1:4874/simple/fastapi/ to Credentials { username: Username(Some("username")), password: Some("password") }
+TRACE cached request https://100.64.0.1:4874/simple/fastapi/ is storable because its response has a heuristically cacheable status code 200
+WARN Skipping file for fastapi: pypi
+TRACE Fetching metadata for fastapi from https://pypi.org/simple/pypi/web/simple/fastapi/
+TRACE No cache entry exists for /var/folders/zj/82cyd56j3t7cdf54m857wsgw0000gn/T/.tmpDV0OtY/simple-v14/index/e367fd55faf540ee/fastapi.rkyv
+DEBUG No cache entry for: https://pypi.org/simple/pypi/web/simple/fastapi/
+TRACE Sending fresh GET request for https://pypi.org/simple/pypi/web/simple/fastapi/
+TRACE Handling request for https://pypi.org/simple/pypi/web/simple/fastapi/
+TRACE Request for https://pypi.org/simple/pypi/web/simple/fastapi/ is unauthenticated, checking cache
+TRACE No credentials in cache for URL https://pypi.org/simple/pypi/web/simple/fastapi/
+TRACE Attempting unauthenticated request for https://pypi.org/simple/pypi/web/simple/fastapi/
+TRACE Updating cached credentials for https://100.64.0.1:4874/simple/asyncpg/ to Credentials { username: Username(Some("username")), password: Some("password") }
+TRACE cached request https://100.64.0.1:4874/simple/asyncpg/ is storable because its response has a heuristically cacheable status code 200
+TRACE cached request https://pypi.org/simple/pypi/web/simple/fastapi/ is storable because its response has a heuristically cacheable status code 200
+WARN Skipping file for asyncpg: 
+WARN Skipping file for asyncpg: pypi
+TRACE Fetching metadata for asyncpg from https://pypi.org/simple/pypi/web/simple/asyncpg/
+TRACE No cache entry exists for /var/folders/zj/82cyd56j3t7cdf54m857wsgw0000gn/T/.tmpDV0OtY/simple-v14/index/e367fd55faf540ee/asyncpg.rkyv
+DEBUG No cache entry for: https://pypi.org/simple/pypi/web/simple/asyncpg/
+TRACE Sending fresh GET request for https://pypi.org/simple/pypi/web/simple/asyncpg/
+TRACE Handling request for https://pypi.org/simple/pypi/web/simple/asyncpg/
+TRACE Request for https://pypi.org/simple/pypi/web/simple/asyncpg/ is unauthenticated, checking cache
+TRACE No credentials in cache for URL https://pypi.org/simple/pypi/web/simple/asyncpg/
+TRACE Attempting unauthenticated request for https://pypi.org/simple/pypi/web/simple/asyncpg/
+TRACE cached request https://pypi.org/simple/pypi/web/simple/asyncpg/ is storable because its response has a heuristically cacheable status code 200
+TRACE Received package metadata for: fastapi
+TRACE Using preference fastapi 0.115.4
+TRACE No cache entry exists for /var/folders/zj/82cyd56j3t7cdf54m857wsgw0000gn/T/.tmpDV0OtY/wheels-v3/index/e367fd55faf540ee/fastapi/fastapi-0.115.4-py3-none-any.msgpack
+DEBUG No cache entry for: https://pypi.org/simple/pypi/web/packages/99/f6/af0d1f58f86002be0cf1e2665cdd6f7a4a71cdc8a7a9438cdc9e3b5375fe/fastapi-0.115.4-py3-none-any.whl
+TRACE Sending fresh HEAD request for https://pypi.org/simple/pypi/web/packages/99/f6/af0d1f58f86002be0cf1e2665cdd6f7a4a71cdc8a7a9438cdc9e3b5375fe/fastapi-0.115.4-py3-none-any.whl
+TRACE Handling request for https://pypi.org/simple/pypi/web/packages/99/f6/af0d1f58f86002be0cf1e2665cdd6f7a4a71cdc8a7a9438cdc9e3b5375fe/fastapi-0.115.4-py3-none-any.whl
+TRACE Request for https://pypi.org/simple/pypi/web/packages/99/f6/af0d1f58f86002be0cf1e2665cdd6f7a4a71cdc8a7a9438cdc9e3b5375fe/fastapi-0.115.4-py3-none-any.whl is unauthenticated, checking cache
+TRACE No credentials in cache for URL https://pypi.org/simple/pypi/web/packages/99/f6/af0d1f58f86002be0cf1e2665cdd6f7a4a71cdc8a7a9438cdc9e3b5375fe/fastapi-0.115.4-py3-none-any.whl
+TRACE Attempting unauthenticated request for https://pypi.org/simple/pypi/web/packages/99/f6/af0d1f58f86002be0cf1e2665cdd6f7a4a71cdc8a7a9438cdc9e3b5375fe/fastapi-0.115.4-py3-none-any.whl
+TRACE cached request https://pypi.org/simple/pypi/web/packages/99/f6/af0d1f58f86002be0cf1e2665cdd6f7a4a71cdc8a7a9438cdc9e3b5375fe/fastapi-0.115.4-py3-none-any.whl is storable because its response has a heuristically cacheable status code 200
+TRACE Getting metadata for fastapi-0.115.4-py3-none-any.whl by range request
+TRACE Handling request for https://pypi.org/simple/pypi/web/packages/99/f6/af0d1f58f86002be0cf1e2665cdd6f7a4a71cdc8a7a9438cdc9e3b5375fe/fastapi-0.115.4-py3-none-any.whl
+TRACE Request for https://pypi.org/simple/pypi/web/packages/99/f6/af0d1f58f86002be0cf1e2665cdd6f7a4a71cdc8a7a9438cdc9e3b5375fe/fastapi-0.115.4-py3-none-any.whl is unauthenticated, checking cache
+TRACE No credentials in cache for URL https://pypi.org/simple/pypi/web/packages/99/f6/af0d1f58f86002be0cf1e2665cdd6f7a4a71cdc8a7a9438cdc9e3b5375fe/fastapi-0.115.4-py3-none-any.whl
+TRACE Attempting unauthenticated request for https://pypi.org/simple/pypi/web/packages/99/f6/af0d1f58f86002be0cf1e2665cdd6f7a4a71cdc8a7a9438cdc9e3b5375fe/fastapi-0.115.4-py3-none-any.whl
+TRACE Received package metadata for: asyncpg
+DEBUG Searching for a compatible version of asyncpg (>=0.30.0)
+TRACE Using preference asyncpg 0.30.0
+TRACE Using preference asyncpg 0.30.0
+DEBUG Selecting: asyncpg==0.30.0 [preference] (asyncpg-0.30.0-cp312-cp312-macosx_10_13_x86_64.whl)
+TRACE No cache entry exists for /var/folders/zj/82cyd56j3t7cdf54m857wsgw0000gn/T/.tmpDV0OtY/wheels-v3/index/e367fd55faf540ee/asyncpg/asyncpg-0.30.0-cp312-cp312-macosx_10_13_x86_64.msgpack
+DEBUG No cache entry for: https://pypi.org/simple/pypi/web/packages/4b/64/9d3e887bb7b01535fdbc45fbd5f0a8447539833b97ee69ecdbb7a79d0cb4/asyncpg-0.30.0-cp312-cp312-macosx_10_13_x86_64.whl
+TRACE Sending fresh HEAD request for https://pypi.org/simple/pypi/web/packages/4b/64/9d3e887bb7b01535fdbc45fbd5f0a8447539833b97ee69ecdbb7a79d0cb4/asyncpg-0.30.0-cp312-cp312-macosx_10_13_x86_64.whl
+TRACE Handling request for https://pypi.org/simple/pypi/web/packages/4b/64/9d3e887bb7b01535fdbc45fbd5f0a8447539833b97ee69ecdbb7a79d0cb4/asyncpg-0.30.0-cp312-cp312-macosx_10_13_x86_64.whl
+TRACE Request for https://pypi.org/simple/pypi/web/packages/4b/64/9d3e887bb7b01535fdbc45fbd5f0a8447539833b97ee69ecdbb7a79d0cb4/asyncpg-0.30.0-cp312-cp312-macosx_10_13_x86_64.whl is unauthenticated, checking cache
+TRACE No credentials in cache for URL https://pypi.org/simple/pypi/web/packages/4b/64/9d3e887bb7b01535fdbc45fbd5f0a8447539833b97ee69ecdbb7a79d0cb4/asyncpg-0.30.0-cp312-cp312-macosx_10_13_x86_64.whl
+TRACE Attempting unauthenticated request for https://pypi.org/simple/pypi/web/packages/4b/64/9d3e887bb7b01535fdbc45fbd5f0a8447539833b97ee69ecdbb7a79d0cb4/asyncpg-0.30.0-cp312-cp312-macosx_10_13_x86_64.whl
+TRACE Handling request for https://pypi.org/simple/pypi/web/packages/99/f6/af0d1f58f86002be0cf1e2665cdd6f7a4a71cdc8a7a9438cdc9e3b5375fe/fastapi-0.115.4-py3-none-any.whl
+TRACE Request for https://pypi.org/simple/pypi/web/packages/99/f6/af0d1f58f86002be0cf1e2665cdd6f7a4a71cdc8a7a9438cdc9e3b5375fe/fastapi-0.115.4-py3-none-any.whl is unauthenticated, checking cache
+TRACE No credentials in cache for URL https://pypi.org/simple/pypi/web/packages/99/f6/af0d1f58f86002be0cf1e2665cdd6f7a4a71cdc8a7a9438cdc9e3b5375fe/fastapi-0.115.4-py3-none-any.whl
+TRACE Attempting unauthenticated request for https://pypi.org/simple/pypi/web/packages/99/f6/af0d1f58f86002be0cf1e2665cdd6f7a4a71cdc8a7a9438cdc9e3b5375fe/fastapi-0.115.4-py3-none-any.whl
+TRACE cached request https://pypi.org/simple/pypi/web/packages/4b/64/9d3e887bb7b01535fdbc45fbd5f0a8447539833b97ee69ecdbb7a79d0cb4/asyncpg-0.30.0-cp312-cp312-macosx_10_13_x86_64.whl is storable because its response has a heuristically cacheable status code 200
+TRACE Getting metadata for asyncpg-0.30.0-cp312-cp312-macosx_10_13_x86_64.whl by range request
+TRACE Handling request for https://pypi.org/simple/pypi/web/packages/4b/64/9d3e887bb7b01535fdbc45fbd5f0a8447539833b97ee69ecdbb7a79d0cb4/asyncpg-0.30.0-cp312-cp312-macosx_10_13_x86_64.whl
+TRACE Request for https://pypi.org/simple/pypi/web/packages/4b/64/9d3e887bb7b01535fdbc45fbd5f0a8447539833b97ee69ecdbb7a79d0cb4/asyncpg-0.30.0-cp312-cp312-macosx_10_13_x86_64.whl is unauthenticated, checking cache
+TRACE No credentials in cache for URL https://pypi.org/simple/pypi/web/packages/4b/64/9d3e887bb7b01535fdbc45fbd5f0a8447539833b97ee69ecdbb7a79d0cb4/asyncpg-0.30.0-cp312-cp312-macosx_10_13_x86_64.whl
+TRACE Attempting unauthenticated request for https://pypi.org/simple/pypi/web/packages/4b/64/9d3e887bb7b01535fdbc45fbd5f0a8447539833b97ee69ecdbb7a79d0cb4/asyncpg-0.30.0-cp312-cp312-macosx_10_13_x86_64.whl
+TRACE Handling request for https://pypi.org/simple/pypi/web/packages/99/f6/af0d1f58f86002be0cf1e2665cdd6f7a4a71cdc8a7a9438cdc9e3b5375fe/fastapi-0.115.4-py3-none-any.whl
+TRACE Request for https://pypi.org/simple/pypi/web/packages/99/f6/af0d1f58f86002be0cf1e2665cdd6f7a4a71cdc8a7a9438cdc9e3b5375fe/fastapi-0.115.4-py3-none-any.whl is unauthenticated, checking cache
+TRACE No credentials in cache for URL https://pypi.org/simple/pypi/web/packages/99/f6/af0d1f58f86002be0cf1e2665cdd6f7a4a71cdc8a7a9438cdc9e3b5375fe/fastapi-0.115.4-py3-none-any.whl
+TRACE Attempting unauthenticated request for https://pypi.org/simple/pypi/web/packages/99/f6/af0d1f58f86002be0cf1e2665cdd6f7a4a71cdc8a7a9438cdc9e3b5375fe/fastapi-0.115.4-py3-none-any.whl
+TRACE Received built distribution metadata for: asyncpg==0.30.0
+TRACE skipping async-timeout>=4.0.3 ; python_full_version < '3.11' because of Requires-Python: >=3.12
+DEBUG Searching for a compatible version of fastapi[standard] (>=0.115.4)
+TRACE Using preference fastapi 0.115.4
+DEBUG Selecting: fastapi==0.115.4 [preference] (fastapi-0.115.4-py3-none-any.whl)
+DEBUG Adding transitive dependency for fastapi==0.115.4: fastapi==0.115.4
+DEBUG Adding transitive dependency for fastapi==0.115.4: fastapi[standard]==0.115.4
+DEBUG Searching for a compatible version of fastapi (==0.115.4)
+TRACE Using preference fastapi 0.115.4
+DEBUG Selecting: fastapi==0.115.4 [preference] (fastapi-0.115.4-py3-none-any.whl)
+TRACE Received built distribution metadata for: fastapi==0.115.4
+TRACE Using preference fastapi 0.115.4
+DEBUG Adding transitive dependency for fastapi==0.115.4: pydantic>=1.7.4, <1.8 | >=1.8+, <1.8.1 | >=1.8.1+, <2.0.0 | >=2.0.0+, <2.0.1 | >=2.0.1+, <2.1.0 | >=2.1.0+, <3.0.0
+DEBUG Adding transitive dependency for fastapi==0.115.4: starlette>=0.40.0, <0.42.0
+DEBUG Adding transitive dependency for fastapi==0.115.4: typing-extensions>=4.8.0
+DEBUG Searching for a compatible version of fastapi[standard] (==0.115.4)
+TRACE Using preference fastapi 0.115.4
+DEBUG Selecting: fastapi==0.115.4 [preference] (fastapi-0.115.4-py3-none-any.whl)
+TRACE Fetching metadata for pydantic from https://username:password@100.64.0.1:4874/simple/pydantic/
+DEBUG Adding transitive dependency for fastapi==0.115.4: email-validator>=2.0.0
+DEBUG Adding transitive dependency for fastapi==0.115.4: fastapi-cli>=0.0.5
+DEBUG Adding transitive dependency for fastapi==0.115.4: fastapi-cli[standard]>=0.0.5
+DEBUG Adding transitive dependency for fastapi==0.115.4: httpx>=0.23.0
+DEBUG Adding transitive dependency for fastapi==0.115.4: jinja2>=2.11.2
+DEBUG Adding transitive dependency for fastapi==0.115.4: python-multipart>=0.0.7
+DEBUG Adding transitive dependency for fastapi==0.115.4: uvicorn>=0.12.0
+DEBUG Adding transitive dependency for fastapi==0.115.4: uvicorn[standard]>=0.12.0
+TRACE Fetching metadata for starlette from https://username:password@100.64.0.1:4874/simple/starlette/
+TRACE Fetching metadata for typing-extensions from https://username:password@100.64.0.1:4874/simple/typing-extensions/
+TRACE No cache entry exists for /var/folders/zj/82cyd56j3t7cdf54m857wsgw0000gn/T/.tmpDV0OtY/simple-v14/index/e28ca5b064495d49/pydantic.rkyv
+DEBUG No cache entry for: https://100.64.0.1:4874/simple/pydantic/
+TRACE Sending fresh GET request for https://100.64.0.1:4874/simple/pydantic/
+TRACE Handling request for https://username:****@100.64.0.1:4874/simple/pydantic/
+TRACE Request for https://username:****@100.64.0.1:4874/simple/pydantic/ is already fully authenticated
+TRACE No cache entry exists for /var/folders/zj/82cyd56j3t7cdf54m857wsgw0000gn/T/.tmpDV0OtY/simple-v14/index/e28ca5b064495d49/starlette.rkyv
+DEBUG No cache entry for: https://100.64.0.1:4874/simple/starlette/
+TRACE Sending fresh GET request for https://100.64.0.1:4874/simple/starlette/
+TRACE Handling request for https://username:****@100.64.0.1:4874/simple/starlette/
+TRACE Request for https://username:****@100.64.0.1:4874/simple/starlette/ is already fully authenticated
+TRACE No cache entry exists for /var/folders/zj/82cyd56j3t7cdf54m857wsgw0000gn/T/.tmpDV0OtY/simple-v14/index/e28ca5b064495d49/typing-extensions.rkyv
+DEBUG No cache entry for: https://100.64.0.1:4874/simple/typing-extensions/
+TRACE Sending fresh GET request for https://100.64.0.1:4874/simple/typing-extensions/
+TRACE Handling request for https://username:****@100.64.0.1:4874/simple/typing-extensions/
+TRACE Request for https://username:****@100.64.0.1:4874/simple/typing-extensions/ is already fully authenticated
+TRACE Fetching metadata for email-validator from https://username:password@100.64.0.1:4874/simple/email-validator/
+TRACE Fetching metadata for fastapi-cli from https://username:password@100.64.0.1:4874/simple/fastapi-cli/
+TRACE Fetching metadata for httpx from https://username:password@100.64.0.1:4874/simple/httpx/
+TRACE Fetching metadata for jinja2 from https://username:password@100.64.0.1:4874/simple/jinja2/
+TRACE Fetching metadata for python-multipart from https://username:password@100.64.0.1:4874/simple/python-multipart/
+TRACE Fetching metadata for uvicorn from https://username:password@100.64.0.1:4874/simple/uvicorn/
+TRACE No cache entry exists for /var/folders/zj/82cyd56j3t7cdf54m857wsgw0000gn/T/.tmpDV0OtY/simple-v14/index/e28ca5b064495d49/email-validator.rkyv
+DEBUG No cache entry for: https://100.64.0.1:4874/simple/email-validator/
+TRACE Sending fresh GET request for https://100.64.0.1:4874/simple/email-validator/
+TRACE Handling request for https://username:****@100.64.0.1:4874/simple/email-validator/
+TRACE Request for https://username:****@100.64.0.1:4874/simple/email-validator/ is already fully authenticated
+TRACE No cache entry exists for /var/folders/zj/82cyd56j3t7cdf54m857wsgw0000gn/T/.tmpDV0OtY/simple-v14/index/e28ca5b064495d49/fastapi-cli.rkyv
+DEBUG No cache entry for: https://100.64.0.1:4874/simple/fastapi-cli/
+TRACE Sending fresh GET request for https://100.64.0.1:4874/simple/fastapi-cli/
+TRACE Handling request for https://username:****@100.64.0.1:4874/simple/fastapi-cli/
+TRACE Request for https://username:****@100.64.0.1:4874/simple/fastapi-cli/ is already fully authenticated
+TRACE No cache entry exists for /var/folders/zj/82cyd56j3t7cdf54m857wsgw0000gn/T/.tmpDV0OtY/simple-v14/index/e28ca5b064495d49/httpx.rkyv
+DEBUG No cache entry for: https://100.64.0.1:4874/simple/httpx/
+TRACE Sending fresh GET request for https://100.64.0.1:4874/simple/httpx/
+TRACE Handling request for https://username:****@100.64.0.1:4874/simple/httpx/
+TRACE Request for https://username:****@100.64.0.1:4874/simple/httpx/ is already fully authenticated
+TRACE No cache entry exists for /var/folders/zj/82cyd56j3t7cdf54m857wsgw0000gn/T/.tmpDV0OtY/simple-v14/index/e28ca5b064495d49/python-multipart.rkyv
+DEBUG No cache entry for: https://100.64.0.1:4874/simple/python-multipart/
+TRACE Sending fresh GET request for https://100.64.0.1:4874/simple/python-multipart/
+TRACE Handling request for https://username:****@100.64.0.1:4874/simple/python-multipart/
+TRACE Request for https://username:****@100.64.0.1:4874/simple/python-multipart/ is already fully authenticated
+TRACE No cache entry exists for /var/folders/zj/82cyd56j3t7cdf54m857wsgw0000gn/T/.tmpDV0OtY/simple-v14/index/e28ca5b064495d49/jinja2.rkyv
+DEBUG No cache entry for: https://100.64.0.1:4874/simple/jinja2/
+TRACE Sending fresh GET request for https://100.64.0.1:4874/simple/jinja2/
+TRACE Handling request for https://username:****@100.64.0.1:4874/simple/jinja2/
+TRACE Request for https://username:****@100.64.0.1:4874/simple/jinja2/ is already fully authenticated
+TRACE No cache entry exists for /var/folders/zj/82cyd56j3t7cdf54m857wsgw0000gn/T/.tmpDV0OtY/simple-v14/index/e28ca5b064495d49/uvicorn.rkyv
+DEBUG No cache entry for: https://100.64.0.1:4874/simple/uvicorn/
+TRACE Sending fresh GET request for https://100.64.0.1:4874/simple/uvicorn/
+TRACE Handling request for https://username:****@100.64.0.1:4874/simple/uvicorn/
+TRACE Request for https://username:****@100.64.0.1:4874/simple/uvicorn/ is already fully authenticated
+TRACE Updating cached credentials for https://100.64.0.1:4874/simple/sqlalchemy/ to Credentials { username: Username(Some("username")), password: Some("password") }
+TRACE cached request https://100.64.0.1:4874/simple/sqlalchemy/ is storable because its response has a heuristically cacheable status code 200
+TRACE Updating cached credentials for https://100.64.0.1:4874/simple/ruff/ to Credentials { username: Username(Some("username")), password: Some("password") }
+TRACE cached request https://100.64.0.1:4874/simple/ruff/ is storable because its response has a heuristically cacheable status code 200
+WARN Skipping file for sqlalchemy: 
+WARN Skipping file for sqlalchemy: sqlalchemy
+WARN Skipping file for sqlalchemy: sqlalchemy
+TRACE Fetching metadata for sqlalchemy from https://pypi.org/simple/pypi/web/simple/sqlalchemy/
+TRACE No cache entry exists for /var/folders/zj/82cyd56j3t7cdf54m857wsgw0000gn/T/.tmpDV0OtY/simple-v14/index/e367fd55faf540ee/sqlalchemy.rkyv
+DEBUG No cache entry for: https://pypi.org/simple/pypi/web/simple/sqlalchemy/
+TRACE Sending fresh GET request for https://pypi.org/simple/pypi/web/simple/sqlalchemy/
+TRACE Handling request for https://pypi.org/simple/pypi/web/simple/sqlalchemy/
+TRACE Request for https://pypi.org/simple/pypi/web/simple/sqlalchemy/ is unauthenticated, checking cache
+TRACE No credentials in cache for URL https://pypi.org/simple/pypi/web/simple/sqlalchemy/
+TRACE Attempting unauthenticated request for https://pypi.org/simple/pypi/web/simple/sqlalchemy/
+TRACE cached request https://pypi.org/simple/pypi/web/simple/sqlalchemy/ is storable because its response has a heuristically cacheable status code 200
+WARN Skipping file for ruff: 
+WARN Skipping file for ruff: 
+WARN Skipping file for ruff: 
+WARN Skipping file for ruff: 
+WARN Skipping file for ruff: +searchhelp
+WARN Skipping file for ruff: +status
+WARN Skipping file for ruff: 0.0.100
+WARN Skipping file for ruff: ruff
+TRACE Fetching metadata for ruff from https://pypi.org/simple/pypi/web/simple/ruff/
+TRACE No cache entry exists for /var/folders/zj/82cyd56j3t7cdf54m857wsgw0000gn/T/.tmpDV0OtY/simple-v14/index/e367fd55faf540ee/ruff.rkyv
+DEBUG No cache entry for: https://pypi.org/simple/pypi/web/simple/ruff/
+TRACE Sending fresh GET request for https://pypi.org/simple/pypi/web/simple/ruff/
+TRACE Handling request for https://pypi.org/simple/pypi/web/simple/ruff/
+TRACE Request for https://pypi.org/simple/pypi/web/simple/ruff/ is unauthenticated, checking cache
+TRACE No credentials in cache for URL https://pypi.org/simple/pypi/web/simple/ruff/
+TRACE Attempting unauthenticated request for https://pypi.org/simple/pypi/web/simple/ruff/
+WARN Skipping file for sqlalchemy: SQLAlchemy-0.1.1-py2.4.egg
+WARN Skipping file for sqlalchemy: SQLAlchemy-0.1.2-py2.4.egg
+WARN Skipping file for sqlalchemy: SQLAlchemy-0.1.3-py2.4.egg
+WARN Skipping file for sqlalchemy: SQLAlchemy-0.1.4-py2.4.egg
+TRACE cached request https://pypi.org/simple/pypi/web/simple/ruff/ is storable because its response has a heuristically cacheable status code 200
+TRACE Received package metadata for: sqlalchemy
+DEBUG Searching for a compatible version of sqlalchemy[asyncio] (>=2.0.36)
+TRACE Using preference sqlalchemy 2.0.36
+TRACE Using preference sqlalchemy 2.0.36
+DEBUG Selecting: sqlalchemy==2.0.36 [preference] (SQLAlchemy-2.0.36-cp312-cp312-macosx_10_13_x86_64.whl)
+DEBUG Adding transitive dependency for sqlalchemy==2.0.36: sqlalchemy==2.0.36
+DEBUG Adding transitive dependency for sqlalchemy==2.0.36: sqlalchemy[asyncio]==2.0.36
+DEBUG Searching for a compatible version of sqlalchemy (==2.0.36)
+TRACE Using preference sqlalchemy 2.0.36
+DEBUG Selecting: sqlalchemy==2.0.36 [preference] (SQLAlchemy-2.0.36-cp312-cp312-macosx_10_13_x86_64.whl)
+TRACE Using preference sqlalchemy 2.0.36
+TRACE No cache entry exists for /var/folders/zj/82cyd56j3t7cdf54m857wsgw0000gn/T/.tmpDV0OtY/wheels-v3/index/e367fd55faf540ee/sqlalchemy/sqlalchemy-2.0.36-cp312-cp312-macosx_10_13_x86_64.msgpack
+DEBUG No cache entry for: https://pypi.org/simple/pypi/web/packages/b8/bf/005dc47f0e57556e14512d5542f3f183b94fde46e15ff1588ec58ca89555/SQLAlchemy-2.0.36-cp312-cp312-macosx_10_13_x86_64.whl
+TRACE Sending fresh HEAD request for https://pypi.org/simple/pypi/web/packages/b8/bf/005dc47f0e57556e14512d5542f3f183b94fde46e15ff1588ec58ca89555/SQLAlchemy-2.0.36-cp312-cp312-macosx_10_13_x86_64.whl
+TRACE Handling request for https://pypi.org/simple/pypi/web/packages/b8/bf/005dc47f0e57556e14512d5542f3f183b94fde46e15ff1588ec58ca89555/SQLAlchemy-2.0.36-cp312-cp312-macosx_10_13_x86_64.whl
+TRACE Request for https://pypi.org/simple/pypi/web/packages/b8/bf/005dc47f0e57556e14512d5542f3f183b94fde46e15ff1588ec58ca89555/SQLAlchemy-2.0.36-cp312-cp312-macosx_10_13_x86_64.whl is unauthenticated, checking cache
+TRACE No credentials in cache for URL https://pypi.org/simple/pypi/web/packages/b8/bf/005dc47f0e57556e14512d5542f3f183b94fde46e15ff1588ec58ca89555/SQLAlchemy-2.0.36-cp312-cp312-macosx_10_13_x86_64.whl
+TRACE Attempting unauthenticated request for https://pypi.org/simple/pypi/web/packages/b8/bf/005dc47f0e57556e14512d5542f3f183b94fde46e15ff1588ec58ca89555/SQLAlchemy-2.0.36-cp312-cp312-macosx_10_13_x86_64.whl
+TRACE cached request https://pypi.org/simple/pypi/web/packages/b8/bf/005dc47f0e57556e14512d5542f3f183b94fde46e15ff1588ec58ca89555/SQLAlchemy-2.0.36-cp312-cp312-macosx_10_13_x86_64.whl is storable because its response has a heuristically cacheable status code 200
+TRACE Getting metadata for sqlalchemy-2.0.36-cp312-cp312-macosx_10_13_x86_64.whl by range request
+TRACE Handling request for https://pypi.org/simple/pypi/web/packages/b8/bf/005dc47f0e57556e14512d5542f3f183b94fde46e15ff1588ec58ca89555/SQLAlchemy-2.0.36-cp312-cp312-macosx_10_13_x86_64.whl
+TRACE Request for https://pypi.org/simple/pypi/web/packages/b8/bf/005dc47f0e57556e14512d5542f3f183b94fde46e15ff1588ec58ca89555/SQLAlchemy-2.0.36-cp312-cp312-macosx_10_13_x86_64.whl is unauthenticated, checking cache
+TRACE No credentials in cache for URL https://pypi.org/simple/pypi/web/packages/b8/bf/005dc47f0e57556e14512d5542f3f183b94fde46e15ff1588ec58ca89555/SQLAlchemy-2.0.36-cp312-cp312-macosx_10_13_x86_64.whl
+TRACE Attempting unauthenticated request for https://pypi.org/simple/pypi/web/packages/b8/bf/005dc47f0e57556e14512d5542f3f183b94fde46e15ff1588ec58ca89555/SQLAlchemy-2.0.36-cp312-cp312-macosx_10_13_x86_64.whl
+TRACE Handling request for https://pypi.org/simple/pypi/web/packages/b8/bf/005dc47f0e57556e14512d5542f3f183b94fde46e15ff1588ec58ca89555/SQLAlchemy-2.0.36-cp312-cp312-macosx_10_13_x86_64.whl
+TRACE Request for https://pypi.org/simple/pypi/web/packages/b8/bf/005dc47f0e57556e14512d5542f3f183b94fde46e15ff1588ec58ca89555/SQLAlchemy-2.0.36-cp312-cp312-macosx_10_13_x86_64.whl is unauthenticated, checking cache
+TRACE No credentials in cache for URL https://pypi.org/simple/pypi/web/packages/b8/bf/005dc47f0e57556e14512d5542f3f183b94fde46e15ff1588ec58ca89555/SQLAlchemy-2.0.36-cp312-cp312-macosx_10_13_x86_64.whl
+TRACE Attempting unauthenticated request for https://pypi.org/simple/pypi/web/packages/b8/bf/005dc47f0e57556e14512d5542f3f183b94fde46e15ff1588ec58ca89555/SQLAlchemy-2.0.36-cp312-cp312-macosx_10_13_x86_64.whl
+TRACE Received package metadata for: ruff
+TRACE Using preference ruff 0.7.3
+TRACE No cache entry exists for /var/folders/zj/82cyd56j3t7cdf54m857wsgw0000gn/T/.tmpDV0OtY/wheels-v3/index/e367fd55faf540ee/ruff/ruff-0.7.3-py3-none-linux_armv6l.msgpack
+DEBUG No cache entry for: https://pypi.org/simple/pypi/web/packages/c0/56/933d433c2489e4642487b835f53dd9ff015fb3d8fa459b09bb2ce42d7c4b/ruff-0.7.3-py3-none-linux_armv6l.whl
+TRACE Sending fresh HEAD request for https://pypi.org/simple/pypi/web/packages/c0/56/933d433c2489e4642487b835f53dd9ff015fb3d8fa459b09bb2ce42d7c4b/ruff-0.7.3-py3-none-linux_armv6l.whl
+TRACE Handling request for https://pypi.org/simple/pypi/web/packages/c0/56/933d433c2489e4642487b835f53dd9ff015fb3d8fa459b09bb2ce42d7c4b/ruff-0.7.3-py3-none-linux_armv6l.whl
+TRACE Request for https://pypi.org/simple/pypi/web/packages/c0/56/933d433c2489e4642487b835f53dd9ff015fb3d8fa459b09bb2ce42d7c4b/ruff-0.7.3-py3-none-linux_armv6l.whl is unauthenticated, checking cache
+TRACE No credentials in cache for URL https://pypi.org/simple/pypi/web/packages/c0/56/933d433c2489e4642487b835f53dd9ff015fb3d8fa459b09bb2ce42d7c4b/ruff-0.7.3-py3-none-linux_armv6l.whl
+TRACE Attempting unauthenticated request for https://pypi.org/simple/pypi/web/packages/c0/56/933d433c2489e4642487b835f53dd9ff015fb3d8fa459b09bb2ce42d7c4b/ruff-0.7.3-py3-none-linux_armv6l.whl
+TRACE cached request https://pypi.org/simple/pypi/web/packages/c0/56/933d433c2489e4642487b835f53dd9ff015fb3d8fa459b09bb2ce42d7c4b/ruff-0.7.3-py3-none-linux_armv6l.whl is storable because its response has a heuristically cacheable status code 200
+TRACE Getting metadata for ruff-0.7.3-py3-none-linux_armv6l.whl by range request
+TRACE Handling request for https://pypi.org/simple/pypi/web/packages/c0/56/933d433c2489e4642487b835f53dd9ff015fb3d8fa459b09bb2ce42d7c4b/ruff-0.7.3-py3-none-linux_armv6l.whl
+TRACE Request for https://pypi.org/simple/pypi/web/packages/c0/56/933d433c2489e4642487b835f53dd9ff015fb3d8fa459b09bb2ce42d7c4b/ruff-0.7.3-py3-none-linux_armv6l.whl is unauthenticated, checking cache
+TRACE No credentials in cache for URL https://pypi.org/simple/pypi/web/packages/c0/56/933d433c2489e4642487b835f53dd9ff015fb3d8fa459b09bb2ce42d7c4b/ruff-0.7.3-py3-none-linux_armv6l.whl
+TRACE Attempting unauthenticated request for https://pypi.org/simple/pypi/web/packages/c0/56/933d433c2489e4642487b835f53dd9ff015fb3d8fa459b09bb2ce42d7c4b/ruff-0.7.3-py3-none-linux_armv6l.whl
+TRACE Handling request for https://pypi.org/simple/pypi/web/packages/b8/bf/005dc47f0e57556e14512d5542f3f183b94fde46e15ff1588ec58ca89555/SQLAlchemy-2.0.36-cp312-cp312-macosx_10_13_x86_64.whl
+TRACE Request for https://pypi.org/simple/pypi/web/packages/b8/bf/005dc47f0e57556e14512d5542f3f183b94fde46e15ff1588ec58ca89555/SQLAlchemy-2.0.36-cp312-cp312-macosx_10_13_x86_64.whl is unauthenticated, checking cache
+TRACE No credentials in cache for URL https://pypi.org/simple/pypi/web/packages/b8/bf/005dc47f0e57556e14512d5542f3f183b94fde46e15ff1588ec58ca89555/SQLAlchemy-2.0.36-cp312-cp312-macosx_10_13_x86_64.whl
+TRACE Attempting unauthenticated request for https://pypi.org/simple/pypi/web/packages/b8/bf/005dc47f0e57556e14512d5542f3f183b94fde46e15ff1588ec58ca89555/SQLAlchemy-2.0.36-cp312-cp312-macosx_10_13_x86_64.whl
+TRACE Handling request for https://pypi.org/simple/pypi/web/packages/c0/56/933d433c2489e4642487b835f53dd9ff015fb3d8fa459b09bb2ce42d7c4b/ruff-0.7.3-py3-none-linux_armv6l.whl
+TRACE Request for https://pypi.org/simple/pypi/web/packages/c0/56/933d433c2489e4642487b835f53dd9ff015fb3d8fa459b09bb2ce42d7c4b/ruff-0.7.3-py3-none-linux_armv6l.whl is unauthenticated, checking cache
+TRACE No credentials in cache for URL https://pypi.org/simple/pypi/web/packages/c0/56/933d433c2489e4642487b835f53dd9ff015fb3d8fa459b09bb2ce42d7c4b/ruff-0.7.3-py3-none-linux_armv6l.whl
+TRACE Attempting unauthenticated request for https://pypi.org/simple/pypi/web/packages/c0/56/933d433c2489e4642487b835f53dd9ff015fb3d8fa459b09bb2ce42d7c4b/ruff-0.7.3-py3-none-linux_armv6l.whl
+TRACE Received built distribution metadata for: sqlalchemy==2.0.36
+TRACE skipping importlib-metadata ; python_full_version < '3.8' because of Requires-Python: >=3.12
+DEBUG Adding transitive dependency for sqlalchemy==2.0.36: greenlet{(python_full_version < '3.13' and platform_machine == 'AMD64') or (python_full_version < '3.13' and platform_machine == 'WIN32') or (python_full_version < '3.13' and platform_machine == 'aarch64') or (python_full_version < '3.13' and platform_machine == 'amd64') or (python_full_version < '3.13' and platform_machine == 'ppc64le') or (python_full_version < '3.13' and platform_machine == 'win32') or (python_full_version < '3.13' and platform_machine == 'x86_64')}<0.4.17 | >=0.4.17+
+DEBUG Adding transitive dependency for sqlalchemy==2.0.36: typing-extensions>=4.6.0
+DEBUG Searching for a compatible version of sqlalchemy[asyncio] (==2.0.36)
+TRACE Fetching metadata for greenlet from https://username:password@100.64.0.1:4874/simple/greenlet/
+TRACE Using preference sqlalchemy 2.0.36
+DEBUG Selecting: sqlalchemy==2.0.36 [preference] (SQLAlchemy-2.0.36-cp312-cp312-macosx_10_13_x86_64.whl)
+TRACE No cache entry exists for /var/folders/zj/82cyd56j3t7cdf54m857wsgw0000gn/T/.tmpDV0OtY/simple-v14/index/e28ca5b064495d49/greenlet.rkyv
+DEBUG No cache entry for: https://100.64.0.1:4874/simple/greenlet/
+TRACE Sending fresh GET request for https://100.64.0.1:4874/simple/greenlet/
+TRACE Handling request for https://username:****@100.64.0.1:4874/simple/greenlet/
+TRACE Request for https://username:****@100.64.0.1:4874/simple/greenlet/ is already fully authenticated
+TRACE skipping importlib-metadata ; python_full_version < '3.8' because of Requires-Python: >=3.12
+DEBUG Adding transitive dependency for sqlalchemy==2.0.36: greenlet<0.4.17 | >=0.4.17+
+DEBUG Searching for a compatible version of utensils (>=0.1.58, <0.1.58+)
+TRACE Selecting candidate for utensils with range >=0.1.58, <0.1.58+ with 7 remote versions
+TRACE Exhausted all candidates for package utensils with range >=0.1.58, <0.1.58+ after 7 steps
+DEBUG No compatible version found for: utensils
+DEBUG Searching for a compatible version of shredder-demo @ file:///Users/sube/pd/shredder-demo (<0.1.0 | >0.1.0)
+DEBUG No compatible version found for: shredder-demo
+TRACE Handling request for https://pypi.org/simple/pypi/web/packages/c0/56/933d433c2489e4642487b835f53dd9ff015fb3d8fa459b09bb2ce42d7c4b/ruff-0.7.3-py3-none-linux_armv6l.whl
+TRACE Request for https://pypi.org/simple/pypi/web/packages/c0/56/933d433c2489e4642487b835f53dd9ff015fb3d8fa459b09bb2ce42d7c4b/ruff-0.7.3-py3-none-linux_armv6l.whl is unauthenticated, checking cache
+TRACE No credentials in cache for URL https://pypi.org/simple/pypi/web/packages/c0/56/933d433c2489e4642487b835f53dd9ff015fb3d8fa459b09bb2ce42d7c4b/ruff-0.7.3-py3-none-linux_armv6l.whl
+TRACE Attempting unauthenticated request for https://pypi.org/simple/pypi/web/packages/c0/56/933d433c2489e4642487b835f53dd9ff015fb3d8fa459b09bb2ce42d7c4b/ruff-0.7.3-py3-none-linux_armv6l.whl
+TRACE Received built distribution metadata for: ruff==0.7.3
+TRACE Updating cached credentials for https://100.64.0.1:4874/simple/email-validator/ to Credentials { username: Username(Some("username")), password: Some("password") }
+TRACE cached request https://100.64.0.1:4874/simple/email-validator/ is storable because its response has a heuristically cacheable status code 200
+WARN Skipping file for email-validator: 
+WARN Skipping file for email-validator: 
+WARN Skipping file for email-validator: 
+WARN Skipping file for email-validator: 
+WARN Skipping file for email-validator: +searchhelp
+WARN Skipping file for email-validator: pypi
+TRACE Fetching metadata for email-validator from https://pypi.org/simple/pypi/web/simple/email-validator/
+TRACE No cache entry exists for /var/folders/zj/82cyd56j3t7cdf54m857wsgw0000gn/T/.tmpDV0OtY/simple-v14/index/e367fd55faf540ee/email-validator.rkyv
+DEBUG No cache entry for: https://pypi.org/simple/pypi/web/simple/email-validator/
+TRACE Sending fresh GET request for https://pypi.org/simple/pypi/web/simple/email-validator/
+TRACE Handling request for https://pypi.org/simple/pypi/web/simple/email-validator/
+TRACE Request for https://pypi.org/simple/pypi/web/simple/email-validator/ is unauthenticated, checking cache
+TRACE No credentials in cache for URL https://pypi.org/simple/pypi/web/simple/email-validator/
+TRACE Attempting unauthenticated request for https://pypi.org/simple/pypi/web/simple/email-validator/
+TRACE cached request https://pypi.org/simple/pypi/web/simple/email-validator/ is storable because its response has a heuristically cacheable status code 200
+TRACE Received package metadata for: email-validator
+TRACE Using preference email-validator 2.2.0
+TRACE No cache entry exists for /var/folders/zj/82cyd56j3t7cdf54m857wsgw0000gn/T/.tmpDV0OtY/wheels-v3/index/e367fd55faf540ee/email-validator/email_validator-2.2.0-py3-none-any.msgpack
+DEBUG No cache entry for: https://pypi.org/simple/pypi/web/packages/d7/ee/bf0adb559ad3c786f12bcbc9296b3f5675f529199bef03e2df281fa1fadb/email_validator-2.2.0-py3-none-any.whl
+TRACE Sending fresh HEAD request for https://pypi.org/simple/pypi/web/packages/d7/ee/bf0adb559ad3c786f12bcbc9296b3f5675f529199bef03e2df281fa1fadb/email_validator-2.2.0-py3-none-any.whl
+TRACE Handling request for https://pypi.org/simple/pypi/web/packages/d7/ee/bf0adb559ad3c786f12bcbc9296b3f5675f529199bef03e2df281fa1fadb/email_validator-2.2.0-py3-none-any.whl
+TRACE Request for https://pypi.org/simple/pypi/web/packages/d7/ee/bf0adb559ad3c786f12bcbc9296b3f5675f529199bef03e2df281fa1fadb/email_validator-2.2.0-py3-none-any.whl is unauthenticated, checking cache
+TRACE No credentials in cache for URL https://pypi.org/simple/pypi/web/packages/d7/ee/bf0adb559ad3c786f12bcbc9296b3f5675f529199bef03e2df281fa1fadb/email_validator-2.2.0-py3-none-any.whl
+TRACE Attempting unauthenticated request for https://pypi.org/simple/pypi/web/packages/d7/ee/bf0adb559ad3c786f12bcbc9296b3f5675f529199bef03e2df281fa1fadb/email_validator-2.2.0-py3-none-any.whl
+TRACE cached request https://pypi.org/simple/pypi/web/packages/d7/ee/bf0adb559ad3c786f12bcbc9296b3f5675f529199bef03e2df281fa1fadb/email_validator-2.2.0-py3-none-any.whl is storable because its response has a heuristically cacheable status code 200
+TRACE Getting metadata for email_validator-2.2.0-py3-none-any.whl by range request
+TRACE Handling request for https://pypi.org/simple/pypi/web/packages/d7/ee/bf0adb559ad3c786f12bcbc9296b3f5675f529199bef03e2df281fa1fadb/email_validator-2.2.0-py3-none-any.whl
+TRACE Request for https://pypi.org/simple/pypi/web/packages/d7/ee/bf0adb559ad3c786f12bcbc9296b3f5675f529199bef03e2df281fa1fadb/email_validator-2.2.0-py3-none-any.whl is unauthenticated, checking cache
+TRACE No credentials in cache for URL https://pypi.org/simple/pypi/web/packages/d7/ee/bf0adb559ad3c786f12bcbc9296b3f5675f529199bef03e2df281fa1fadb/email_validator-2.2.0-py3-none-any.whl
+TRACE Attempting unauthenticated request for https://pypi.org/simple/pypi/web/packages/d7/ee/bf0adb559ad3c786f12bcbc9296b3f5675f529199bef03e2df281fa1fadb/email_validator-2.2.0-py3-none-any.whl
+TRACE Received built distribution metadata for: email-validator==2.2.0
+TRACE Updating cached credentials for https://100.64.0.1:4874/simple/httpx/ to Credentials { username: Username(Some("username")), password: Some("password") }
+TRACE cached request https://100.64.0.1:4874/simple/httpx/ is storable because its response has a heuristically cacheable status code 200
+TRACE Updating cached credentials for https://100.64.0.1:4874/simple/uvicorn/ to Credentials { username: Username(Some("username")), password: Some("password") }
+TRACE cached request https://100.64.0.1:4874/simple/uvicorn/ is storable because its response has a heuristically cacheable status code 200
+TRACE Updating cached credentials for https://100.64.0.1:4874/simple/jinja2/ to Credentials { username: Username(Some("username")), password: Some("password") }
+TRACE cached request https://100.64.0.1:4874/simple/jinja2/ is storable because its response has a heuristically cacheable status code 200
+TRACE Updating cached credentials for https://100.64.0.1:4874/simple/python-multipart/ to Credentials { username: Username(Some("username")), password: Some("password") }
+TRACE cached request https://100.64.0.1:4874/simple/python-multipart/ is storable because its response has a heuristically cacheable status code 200
+WARN Skipping file for python-multipart: 
+WARN Skipping file for python-multipart: 
+WARN Skipping file for python-multipart: 
+WARN Skipping file for python-multipart: 
+WARN Skipping file for python-multipart: +searchhelp
+WARN Skipping file for python-multipart: python-multipart
+TRACE Updating cached credentials for https://100.64.0.1:4874/simple/starlette/ to Credentials { username: Username(Some("username")), password: Some("password") }
+TRACE cached request https://100.64.0.1:4874/simple/starlette/ is storable because its response has a heuristically cacheable status code 200
+TRACE Fetching metadata for python-multipart from https://pypi.org/simple/pypi/web/simple/python-multipart/
+TRACE No cache entry exists for /var/folders/zj/82cyd56j3t7cdf54m857wsgw0000gn/T/.tmpDV0OtY/simple-v14/index/e367fd55faf540ee/python-multipart.rkyv
+DEBUG No cache entry for: https://pypi.org/simple/pypi/web/simple/python-multipart/
+TRACE Sending fresh GET request for https://pypi.org/simple/pypi/web/simple/python-multipart/
+TRACE Handling request for https://pypi.org/simple/pypi/web/simple/python-multipart/
+TRACE Request for https://pypi.org/simple/pypi/web/simple/python-multipart/ is unauthenticated, checking cache
+TRACE No credentials in cache for URL https://pypi.org/simple/pypi/web/simple/python-multipart/
+TRACE Attempting unauthenticated request for https://pypi.org/simple/pypi/web/simple/python-multipart/
+TRACE Updating cached credentials for https://100.64.0.1:4874/simple/typing-extensions/ to Credentials { username: Username(Some("username")), password: Some("password") }
+TRACE cached request https://100.64.0.1:4874/simple/typing-extensions/ is storable because its response has a heuristically cacheable status code 200
+TRACE Updating cached credentials for https://100.64.0.1:4874/simple/fastapi-cli/ to Credentials { username: Username(Some("username")), password: Some("password") }
+TRACE cached request https://100.64.0.1:4874/simple/fastapi-cli/ is storable because its response has a heuristically cacheable status code 200
+WARN Skipping file for fastapi-cli: 
+WARN Skipping file for fastapi-cli: pypi
+TRACE Fetching metadata for fastapi-cli from https://pypi.org/simple/pypi/web/simple/fastapi-cli/
+TRACE No cache entry exists for /var/folders/zj/82cyd56j3t7cdf54m857wsgw0000gn/T/.tmpDV0OtY/simple-v14/index/e367fd55faf540ee/fastapi-cli.rkyv
+DEBUG No cache entry for: https://pypi.org/simple/pypi/web/simple/fastapi-cli/
+TRACE Sending fresh GET request for https://pypi.org/simple/pypi/web/simple/fastapi-cli/
+TRACE Handling request for https://pypi.org/simple/pypi/web/simple/fastapi-cli/
+TRACE Request for https://pypi.org/simple/pypi/web/simple/fastapi-cli/ is unauthenticated, checking cache
+TRACE No credentials in cache for URL https://pypi.org/simple/pypi/web/simple/fastapi-cli/
+TRACE Attempting unauthenticated request for https://pypi.org/simple/pypi/web/simple/fastapi-cli/
+WARN Skipping file for typing-extensions: 
+WARN Skipping file for starlette: starlette
+TRACE Fetching metadata for typing-extensions from https://pypi.org/simple/pypi/web/simple/typing-extensions/
+TRACE Fetching metadata for starlette from https://pypi.org/simple/pypi/web/simple/starlette/
+TRACE No cache entry exists for /var/folders/zj/82cyd56j3t7cdf54m857wsgw0000gn/T/.tmpDV0OtY/simple-v14/index/e367fd55faf540ee/typing-extensions.rkyv
+DEBUG No cache entry for: https://pypi.org/simple/pypi/web/simple/typing-extensions/
+TRACE Sending fresh GET request for https://pypi.org/simple/pypi/web/simple/typing-extensions/
+TRACE Handling request for https://pypi.org/simple/pypi/web/simple/typing-extensions/
+TRACE Request for https://pypi.org/simple/pypi/web/simple/typing-extensions/ is unauthenticated, checking cache
+TRACE No credentials in cache for URL https://pypi.org/simple/pypi/web/simple/typing-extensions/
+TRACE Attempting unauthenticated request for https://pypi.org/simple/pypi/web/simple/typing-extensions/
+TRACE No cache entry exists for /var/folders/zj/82cyd56j3t7cdf54m857wsgw0000gn/T/.tmpDV0OtY/simple-v14/index/e367fd55faf540ee/starlette.rkyv
+DEBUG No cache entry for: https://pypi.org/simple/pypi/web/simple/starlette/
+TRACE Sending fresh GET request for https://pypi.org/simple/pypi/web/simple/starlette/
+TRACE Handling request for https://pypi.org/simple/pypi/web/simple/starlette/
+TRACE Request for https://pypi.org/simple/pypi/web/simple/starlette/ is unauthenticated, checking cache
+TRACE No credentials in cache for URL https://pypi.org/simple/pypi/web/simple/starlette/
+TRACE Attempting unauthenticated request for https://pypi.org/simple/pypi/web/simple/starlette/
+WARN Skipping file for httpx: 
+WARN Skipping file for httpx: 
+WARN Skipping file for httpx: 
+WARN Skipping file for httpx: 
+WARN Skipping file for httpx: +searchhelp
+WARN Skipping file for httpx: +status
+WARN Skipping file for httpx: pypi
+TRACE cached request https://pypi.org/simple/pypi/web/simple/python-multipart/ is storable because its response has a heuristically cacheable status code 200
+TRACE Fetching metadata for httpx from https://pypi.org/simple/pypi/web/simple/httpx/
+TRACE No cache entry exists for /var/folders/zj/82cyd56j3t7cdf54m857wsgw0000gn/T/.tmpDV0OtY/simple-v14/index/e367fd55faf540ee/httpx.rkyv
+DEBUG No cache entry for: https://pypi.org/simple/pypi/web/simple/httpx/
+TRACE Sending fresh GET request for https://pypi.org/simple/pypi/web/simple/httpx/
+TRACE Handling request for https://pypi.org/simple/pypi/web/simple/httpx/
+TRACE Request for https://pypi.org/simple/pypi/web/simple/httpx/ is unauthenticated, checking cache
+TRACE No credentials in cache for URL https://pypi.org/simple/pypi/web/simple/httpx/
+TRACE Attempting unauthenticated request for https://pypi.org/simple/pypi/web/simple/httpx/
+TRACE Received package metadata for: python-multipart
+TRACE Using preference python-multipart 0.0.17
+TRACE No cache entry exists for /var/folders/zj/82cyd56j3t7cdf54m857wsgw0000gn/T/.tmpDV0OtY/wheels-v3/index/e367fd55faf540ee/python-multipart/python_multipart-0.0.17-py3-none-any.msgpack
+DEBUG No cache entry for: https://pypi.org/simple/pypi/web/packages/b4/fb/275137a799169392f1fa88fff2be92f16eee38e982720a8aaadefc4a36b2/python_multipart-0.0.17-py3-none-any.whl
+TRACE Sending fresh HEAD request for https://pypi.org/simple/pypi/web/packages/b4/fb/275137a799169392f1fa88fff2be92f16eee38e982720a8aaadefc4a36b2/python_multipart-0.0.17-py3-none-any.whl
+TRACE Handling request for https://pypi.org/simple/pypi/web/packages/b4/fb/275137a799169392f1fa88fff2be92f16eee38e982720a8aaadefc4a36b2/python_multipart-0.0.17-py3-none-any.whl
+TRACE Request for https://pypi.org/simple/pypi/web/packages/b4/fb/275137a799169392f1fa88fff2be92f16eee38e982720a8aaadefc4a36b2/python_multipart-0.0.17-py3-none-any.whl is unauthenticated, checking cache
+TRACE No credentials in cache for URL https://pypi.org/simple/pypi/web/packages/b4/fb/275137a799169392f1fa88fff2be92f16eee38e982720a8aaadefc4a36b2/python_multipart-0.0.17-py3-none-any.whl
+TRACE Attempting unauthenticated request for https://pypi.org/simple/pypi/web/packages/b4/fb/275137a799169392f1fa88fff2be92f16eee38e982720a8aaadefc4a36b2/python_multipart-0.0.17-py3-none-any.whl
+WARN Skipping file for jinja2: 
+WARN Skipping file for jinja2: 
+WARN Skipping file for jinja2: 
+WARN Skipping file for jinja2: 
+WARN Skipping file for jinja2: +searchhelp
+WARN Skipping file for jinja2: +status
+WARN Skipping file for jinja2: 2.0
+WARN Skipping file for jinja2: 2.0rc1
+WARN Skipping file for jinja2: pypi
+TRACE Fetching metadata for jinja2 from https://pypi.org/simple/pypi/web/simple/jinja2/
+TRACE No cache entry exists for /var/folders/zj/82cyd56j3t7cdf54m857wsgw0000gn/T/.tmpDV0OtY/simple-v14/index/e367fd55faf540ee/jinja2.rkyv
+DEBUG No cache entry for: https://pypi.org/simple/pypi/web/simple/jinja2/
+TRACE Sending fresh GET request for https://pypi.org/simple/pypi/web/simple/jinja2/
+TRACE Handling request for https://pypi.org/simple/pypi/web/simple/jinja2/
+TRACE Request for https://pypi.org/simple/pypi/web/simple/jinja2/ is unauthenticated, checking cache
+TRACE No credentials in cache for URL https://pypi.org/simple/pypi/web/simple/jinja2/
+TRACE Attempting unauthenticated request for https://pypi.org/simple/pypi/web/simple/jinja2/
+WARN Skipping file for uvicorn: 
+WARN Skipping file for uvicorn: 
+WARN Skipping file for uvicorn: 
+WARN Skipping file for uvicorn: 
+WARN Skipping file for uvicorn: +searchhelp
+WARN Skipping file for uvicorn: +status
+WARN Skipping file for uvicorn: 0.0.1
+WARN Skipping file for uvicorn: uvicorn
+WARN Skipping file for uvicorn: uvicorn
+TRACE Fetching metadata for uvicorn from https://pypi.org/simple/pypi/web/simple/uvicorn/
+TRACE No cache entry exists for /var/folders/zj/82cyd56j3t7cdf54m857wsgw0000gn/T/.tmpDV0OtY/simple-v14/index/e367fd55faf540ee/uvicorn.rkyv
+DEBUG No cache entry for: https://pypi.org/simple/pypi/web/simple/uvicorn/
+TRACE Sending fresh GET request for https://pypi.org/simple/pypi/web/simple/uvicorn/
+TRACE Handling request for https://pypi.org/simple/pypi/web/simple/uvicorn/
+TRACE Request for https://pypi.org/simple/pypi/web/simple/uvicorn/ is unauthenticated, checking cache
+TRACE No credentials in cache for URL https://pypi.org/simple/pypi/web/simple/uvicorn/
+TRACE Attempting unauthenticated request for https://pypi.org/simple/pypi/web/simple/uvicorn/
+TRACE Updating cached credentials for https://100.64.0.1:4874/simple/pydantic/ to Credentials { username: Username(Some("username")), password: Some("password") }
+TRACE cached request https://100.64.0.1:4874/simple/pydantic/ is storable because its response has a heuristically cacheable status code 200
+TRACE cached request https://pypi.org/simple/pypi/web/simple/fastapi-cli/ is storable because its response has a heuristically cacheable status code 200
+TRACE cached request https://pypi.org/simple/pypi/web/simple/typing-extensions/ is storable because its response has a heuristically cacheable status code 200
+TRACE cached request https://pypi.org/simple/pypi/web/simple/starlette/ is storable because its response has a heuristically cacheable status code 200
+TRACE cached request https://pypi.org/simple/pypi/web/simple/httpx/ is storable because its response has a heuristically cacheable status code 200
+TRACE cached request https://pypi.org/simple/pypi/web/packages/b4/fb/275137a799169392f1fa88fff2be92f16eee38e982720a8aaadefc4a36b2/python_multipart-0.0.17-py3-none-any.whl is storable because its response has a heuristically cacheable status code 200
+TRACE Getting metadata for python_multipart-0.0.17-py3-none-any.whl by range request
+TRACE cached request https://pypi.org/simple/pypi/web/simple/jinja2/ is storable because its response has a heuristically cacheable status code 200
+WARN Skipping file for jinja2: Jinja2-2.0rc1-py2.4-linux-i686.egg
+WARN Skipping file for jinja2: Jinja2-2.0rc1-py2.4-linux-x86_64.egg
+WARN Skipping file for jinja2: Jinja2-2.0rc1-py2.4-macosx-10.3-i386.egg
+WARN Skipping file for jinja2: Jinja2-2.0rc1-py2.4-win32.egg
+WARN Skipping file for jinja2: Jinja2-2.0rc1-py2.5-linux-i686.egg
+WARN Skipping file for jinja2: Jinja2-2.0rc1-py2.5-linux-x86_64.egg
+WARN Skipping file for jinja2: Jinja2-2.0rc1-py2.5-macosx-10.3-i386.egg
+WARN Skipping file for jinja2: Jinja2-2.0rc1-py2.5-win32.egg
+WARN Skipping file for jinja2: Jinja2-2.1-py2.4-win32.egg
+WARN Skipping file for jinja2: Jinja2-2.1-py2.5-win32.egg
+WARN Skipping file for jinja2: Jinja2-2.1-py2.6-win32.egg
+WARN Skipping file for jinja2: Jinja2-2.1.1-py2.4-win32.egg
+WARN Skipping file for jinja2: Jinja2-2.1.1-py2.5-win32.egg
+WARN Skipping file for jinja2: Jinja2-2.1.1-py2.6-win32.egg
+TRACE Received package metadata for: fastapi-cli
+TRACE Received package metadata for: typing-extensions
+TRACE Received package metadata for: starlette
+TRACE Received package metadata for: httpx
+TRACE Received package metadata for: jinja2
+TRACE Using preference fastapi-cli 0.0.5
+TRACE Using preference typing-extensions 4.12.2
+TRACE Using preference starlette 0.41.2
+TRACE Using preference httpx 0.27.2
+TRACE Using preference jinja2 3.1.4
+TRACE No cache entry exists for /var/folders/zj/82cyd56j3t7cdf54m857wsgw0000gn/T/.tmpDV0OtY/wheels-v3/index/e367fd55faf540ee/fastapi-cli/fastapi_cli-0.0.5-py3-none-any.msgpack
+DEBUG No cache entry for: https://pypi.org/simple/pypi/web/packages/24/ea/4b5011012ac925fe2f83b19d0e09cee9d324141ec7bf5e78bb2817f96513/fastapi_cli-0.0.5-py3-none-any.whl
+TRACE Sending fresh HEAD request for https://pypi.org/simple/pypi/web/packages/24/ea/4b5011012ac925fe2f83b19d0e09cee9d324141ec7bf5e78bb2817f96513/fastapi_cli-0.0.5-py3-none-any.whl
+TRACE Handling request for https://pypi.org/simple/pypi/web/packages/24/ea/4b5011012ac925fe2f83b19d0e09cee9d324141ec7bf5e78bb2817f96513/fastapi_cli-0.0.5-py3-none-any.whl
+TRACE Request for https://pypi.org/simple/pypi/web/packages/24/ea/4b5011012ac925fe2f83b19d0e09cee9d324141ec7bf5e78bb2817f96513/fastapi_cli-0.0.5-py3-none-any.whl is unauthenticated, checking cache
+TRACE No credentials in cache for URL https://pypi.org/simple/pypi/web/packages/24/ea/4b5011012ac925fe2f83b19d0e09cee9d324141ec7bf5e78bb2817f96513/fastapi_cli-0.0.5-py3-none-any.whl
+TRACE Attempting unauthenticated request for https://pypi.org/simple/pypi/web/packages/24/ea/4b5011012ac925fe2f83b19d0e09cee9d324141ec7bf5e78bb2817f96513/fastapi_cli-0.0.5-py3-none-any.whl
+TRACE No cache entry exists for /var/folders/zj/82cyd56j3t7cdf54m857wsgw0000gn/T/.tmpDV0OtY/wheels-v3/index/e367fd55faf540ee/typing-extensions/typing_extensions-4.12.2-py3-none-any.msgpack
+DEBUG No cache entry for: https://pypi.org/simple/pypi/web/packages/26/9f/ad63fc0248c5379346306f8668cda6e2e2e9c95e01216d2b8ffd9ff037d0/typing_extensions-4.12.2-py3-none-any.whl
+TRACE Sending fresh HEAD request for https://pypi.org/simple/pypi/web/packages/26/9f/ad63fc0248c5379346306f8668cda6e2e2e9c95e01216d2b8ffd9ff037d0/typing_extensions-4.12.2-py3-none-any.whl
+TRACE Handling request for https://pypi.org/simple/pypi/web/packages/26/9f/ad63fc0248c5379346306f8668cda6e2e2e9c95e01216d2b8ffd9ff037d0/typing_extensions-4.12.2-py3-none-any.whl
+TRACE Request for https://pypi.org/simple/pypi/web/packages/26/9f/ad63fc0248c5379346306f8668cda6e2e2e9c95e01216d2b8ffd9ff037d0/typing_extensions-4.12.2-py3-none-any.whl is unauthenticated, checking cache
+TRACE No credentials in cache for URL https://pypi.org/simple/pypi/web/packages/26/9f/ad63fc0248c5379346306f8668cda6e2e2e9c95e01216d2b8ffd9ff037d0/typing_extensions-4.12.2-py3-none-any.whl
+TRACE Attempting unauthenticated request for https://pypi.org/simple/pypi/web/packages/26/9f/ad63fc0248c5379346306f8668cda6e2e2e9c95e01216d2b8ffd9ff037d0/typing_extensions-4.12.2-py3-none-any.whl
+TRACE No cache entry exists for /var/folders/zj/82cyd56j3t7cdf54m857wsgw0000gn/T/.tmpDV0OtY/wheels-v3/index/e367fd55faf540ee/starlette/starlette-0.41.2-py3-none-any.msgpack
+DEBUG No cache entry for: https://pypi.org/simple/pypi/web/packages/54/43/f185bfd0ca1d213beb4293bed51d92254df23d8ceaf6c0e17146d508a776/starlette-0.41.2-py3-none-any.whl
+TRACE Sending fresh HEAD request for https://pypi.org/simple/pypi/web/packages/54/43/f185bfd0ca1d213beb4293bed51d92254df23d8ceaf6c0e17146d508a776/starlette-0.41.2-py3-none-any.whl
+TRACE Handling request for https://pypi.org/simple/pypi/web/packages/54/43/f185bfd0ca1d213beb4293bed51d92254df23d8ceaf6c0e17146d508a776/starlette-0.41.2-py3-none-any.whl
+TRACE Request for https://pypi.org/simple/pypi/web/packages/54/43/f185bfd0ca1d213beb4293bed51d92254df23d8ceaf6c0e17146d508a776/starlette-0.41.2-py3-none-any.whl is unauthenticated, checking cache
+TRACE No credentials in cache for URL https://pypi.org/simple/pypi/web/packages/54/43/f185bfd0ca1d213beb4293bed51d92254df23d8ceaf6c0e17146d508a776/starlette-0.41.2-py3-none-any.whl
+TRACE Attempting unauthenticated request for https://pypi.org/simple/pypi/web/packages/54/43/f185bfd0ca1d213beb4293bed51d92254df23d8ceaf6c0e17146d508a776/starlette-0.41.2-py3-none-any.whl
+TRACE No cache entry exists for /var/folders/zj/82cyd56j3t7cdf54m857wsgw0000gn/T/.tmpDV0OtY/wheels-v3/index/e367fd55faf540ee/httpx/httpx-0.27.2-py3-none-any.msgpack
+DEBUG No cache entry for: https://pypi.org/simple/pypi/web/packages/56/95/9377bcb415797e44274b51d46e3249eba641711cf3348050f76ee7b15ffc/httpx-0.27.2-py3-none-any.whl
+TRACE Sending fresh HEAD request for https://pypi.org/simple/pypi/web/packages/56/95/9377bcb415797e44274b51d46e3249eba641711cf3348050f76ee7b15ffc/httpx-0.27.2-py3-none-any.whl
+TRACE Handling request for https://pypi.org/simple/pypi/web/packages/56/95/9377bcb415797e44274b51d46e3249eba641711cf3348050f76ee7b15ffc/httpx-0.27.2-py3-none-any.whl
+TRACE Request for https://pypi.org/simple/pypi/web/packages/56/95/9377bcb415797e44274b51d46e3249eba641711cf3348050f76ee7b15ffc/httpx-0.27.2-py3-none-any.whl is unauthenticated, checking cache
+TRACE No credentials in cache for URL https://pypi.org/simple/pypi/web/packages/56/95/9377bcb415797e44274b51d46e3249eba641711cf3348050f76ee7b15ffc/httpx-0.27.2-py3-none-any.whl
+TRACE Attempting unauthenticated request for https://pypi.org/simple/pypi/web/packages/56/95/9377bcb415797e44274b51d46e3249eba641711cf3348050f76ee7b15ffc/httpx-0.27.2-py3-none-any.whl
+TRACE No cache entry exists for /var/folders/zj/82cyd56j3t7cdf54m857wsgw0000gn/T/.tmpDV0OtY/wheels-v3/index/e367fd55faf540ee/jinja2/jinja2-3.1.4-py3-none-any.msgpack
+DEBUG No cache entry for: https://pypi.org/simple/pypi/web/packages/31/80/3a54838c3fb461f6fec263ebf3a3a41771bd05190238de3486aae8540c36/jinja2-3.1.4-py3-none-any.whl
+TRACE Sending fresh HEAD request for https://pypi.org/simple/pypi/web/packages/31/80/3a54838c3fb461f6fec263ebf3a3a41771bd05190238de3486aae8540c36/jinja2-3.1.4-py3-none-any.whl
+TRACE Handling request for https://pypi.org/simple/pypi/web/packages/31/80/3a54838c3fb461f6fec263ebf3a3a41771bd05190238de3486aae8540c36/jinja2-3.1.4-py3-none-any.whl
+TRACE Request for https://pypi.org/simple/pypi/web/packages/31/80/3a54838c3fb461f6fec263ebf3a3a41771bd05190238de3486aae8540c36/jinja2-3.1.4-py3-none-any.whl is unauthenticated, checking cache
+TRACE No credentials in cache for URL https://pypi.org/simple/pypi/web/packages/31/80/3a54838c3fb461f6fec263ebf3a3a41771bd05190238de3486aae8540c36/jinja2-3.1.4-py3-none-any.whl
+TRACE Attempting unauthenticated request for https://pypi.org/simple/pypi/web/packages/31/80/3a54838c3fb461f6fec263ebf3a3a41771bd05190238de3486aae8540c36/jinja2-3.1.4-py3-none-any.whl
+TRACE Handling request for https://pypi.org/simple/pypi/web/packages/b4/fb/275137a799169392f1fa88fff2be92f16eee38e982720a8aaadefc4a36b2/python_multipart-0.0.17-py3-none-any.whl
+TRACE Request for https://pypi.org/simple/pypi/web/packages/b4/fb/275137a799169392f1fa88fff2be92f16eee38e982720a8aaadefc4a36b2/python_multipart-0.0.17-py3-none-any.whl is unauthenticated, checking cache
+TRACE No credentials in cache for URL https://pypi.org/simple/pypi/web/packages/b4/fb/275137a799169392f1fa88fff2be92f16eee38e982720a8aaadefc4a36b2/python_multipart-0.0.17-py3-none-any.whl
+TRACE Attempting unauthenticated request for https://pypi.org/simple/pypi/web/packages/b4/fb/275137a799169392f1fa88fff2be92f16eee38e982720a8aaadefc4a36b2/python_multipart-0.0.17-py3-none-any.whl
+TRACE cached request https://pypi.org/simple/pypi/web/simple/uvicorn/ is storable because its response has a heuristically cacheable status code 200
+TRACE Received package metadata for: uvicorn
+TRACE Using preference uvicorn 0.32.0
+TRACE No cache entry exists for /var/folders/zj/82cyd56j3t7cdf54m857wsgw0000gn/T/.tmpDV0OtY/wheels-v3/index/e367fd55faf540ee/uvicorn/uvicorn-0.32.0-py3-none-any.msgpack
+DEBUG No cache entry for: https://pypi.org/simple/pypi/web/packages/eb/14/78bd0e95dd2444b6caacbca2b730671d4295ccb628ef58b81bee903629df/uvicorn-0.32.0-py3-none-any.whl
+TRACE Sending fresh HEAD request for https://pypi.org/simple/pypi/web/packages/eb/14/78bd0e95dd2444b6caacbca2b730671d4295ccb628ef58b81bee903629df/uvicorn-0.32.0-py3-none-any.whl
+TRACE Handling request for https://pypi.org/simple/pypi/web/packages/eb/14/78bd0e95dd2444b6caacbca2b730671d4295ccb628ef58b81bee903629df/uvicorn-0.32.0-py3-none-any.whl
+TRACE Request for https://pypi.org/simple/pypi/web/packages/eb/14/78bd0e95dd2444b6caacbca2b730671d4295ccb628ef58b81bee903629df/uvicorn-0.32.0-py3-none-any.whl is unauthenticated, checking cache
+TRACE No credentials in cache for URL https://pypi.org/simple/pypi/web/packages/eb/14/78bd0e95dd2444b6caacbca2b730671d4295ccb628ef58b81bee903629df/uvicorn-0.32.0-py3-none-any.whl
+TRACE Attempting unauthenticated request for https://pypi.org/simple/pypi/web/packages/eb/14/78bd0e95dd2444b6caacbca2b730671d4295ccb628ef58b81bee903629df/uvicorn-0.32.0-py3-none-any.whl
+TRACE cached request https://pypi.org/simple/pypi/web/packages/24/ea/4b5011012ac925fe2f83b19d0e09cee9d324141ec7bf5e78bb2817f96513/fastapi_cli-0.0.5-py3-none-any.whl is storable because its response has a heuristically cacheable status code 200
+TRACE Getting metadata for fastapi_cli-0.0.5-py3-none-any.whl by range request
+TRACE cached request https://pypi.org/simple/pypi/web/packages/26/9f/ad63fc0248c5379346306f8668cda6e2e2e9c95e01216d2b8ffd9ff037d0/typing_extensions-4.12.2-py3-none-any.whl is storable because its response has a heuristically cacheable status code 200
+TRACE Getting metadata for typing_extensions-4.12.2-py3-none-any.whl by range request
+TRACE Handling request for https://pypi.org/simple/pypi/web/packages/24/ea/4b5011012ac925fe2f83b19d0e09cee9d324141ec7bf5e78bb2817f96513/fastapi_cli-0.0.5-py3-none-any.whl
+TRACE Request for https://pypi.org/simple/pypi/web/packages/24/ea/4b5011012ac925fe2f83b19d0e09cee9d324141ec7bf5e78bb2817f96513/fastapi_cli-0.0.5-py3-none-any.whl is unauthenticated, checking cache
+TRACE No credentials in cache for URL https://pypi.org/simple/pypi/web/packages/24/ea/4b5011012ac925fe2f83b19d0e09cee9d324141ec7bf5e78bb2817f96513/fastapi_cli-0.0.5-py3-none-any.whl
+TRACE Attempting unauthenticated request for https://pypi.org/simple/pypi/web/packages/24/ea/4b5011012ac925fe2f83b19d0e09cee9d324141ec7bf5e78bb2817f96513/fastapi_cli-0.0.5-py3-none-any.whl
+TRACE Handling request for https://pypi.org/simple/pypi/web/packages/26/9f/ad63fc0248c5379346306f8668cda6e2e2e9c95e01216d2b8ffd9ff037d0/typing_extensions-4.12.2-py3-none-any.whl
+TRACE Request for https://pypi.org/simple/pypi/web/packages/26/9f/ad63fc0248c5379346306f8668cda6e2e2e9c95e01216d2b8ffd9ff037d0/typing_extensions-4.12.2-py3-none-any.whl is unauthenticated, checking cache
+TRACE No credentials in cache for URL https://pypi.org/simple/pypi/web/packages/26/9f/ad63fc0248c5379346306f8668cda6e2e2e9c95e01216d2b8ffd9ff037d0/typing_extensions-4.12.2-py3-none-any.whl
+TRACE Attempting unauthenticated request for https://pypi.org/simple/pypi/web/packages/26/9f/ad63fc0248c5379346306f8668cda6e2e2e9c95e01216d2b8ffd9ff037d0/typing_extensions-4.12.2-py3-none-any.whl
+TRACE cached request https://pypi.org/simple/pypi/web/packages/54/43/f185bfd0ca1d213beb4293bed51d92254df23d8ceaf6c0e17146d508a776/starlette-0.41.2-py3-none-any.whl is storable because its response has a heuristically cacheable status code 200
+TRACE Getting metadata for starlette-0.41.2-py3-none-any.whl by range request
+TRACE cached request https://pypi.org/simple/pypi/web/packages/56/95/9377bcb415797e44274b51d46e3249eba641711cf3348050f76ee7b15ffc/httpx-0.27.2-py3-none-any.whl is storable because its response has a heuristically cacheable status code 200
+TRACE Getting metadata for httpx-0.27.2-py3-none-any.whl by range request
+TRACE cached request https://pypi.org/simple/pypi/web/packages/31/80/3a54838c3fb461f6fec263ebf3a3a41771bd05190238de3486aae8540c36/jinja2-3.1.4-py3-none-any.whl is storable because its response has a heuristically cacheable status code 200
+TRACE Getting metadata for jinja2-3.1.4-py3-none-any.whl by range request
+TRACE Handling request for https://pypi.org/simple/pypi/web/packages/54/43/f185bfd0ca1d213beb4293bed51d92254df23d8ceaf6c0e17146d508a776/starlette-0.41.2-py3-none-any.whl
+TRACE Request for https://pypi.org/simple/pypi/web/packages/54/43/f185bfd0ca1d213beb4293bed51d92254df23d8ceaf6c0e17146d508a776/starlette-0.41.2-py3-none-any.whl is unauthenticated, checking cache
+TRACE No credentials in cache for URL https://pypi.org/simple/pypi/web/packages/54/43/f185bfd0ca1d213beb4293bed51d92254df23d8ceaf6c0e17146d508a776/starlette-0.41.2-py3-none-any.whl
+TRACE Attempting unauthenticated request for https://pypi.org/simple/pypi/web/packages/54/43/f185bfd0ca1d213beb4293bed51d92254df23d8ceaf6c0e17146d508a776/starlette-0.41.2-py3-none-any.whl
+TRACE Handling request for https://pypi.org/simple/pypi/web/packages/56/95/9377bcb415797e44274b51d46e3249eba641711cf3348050f76ee7b15ffc/httpx-0.27.2-py3-none-any.whl
+TRACE Request for https://pypi.org/simple/pypi/web/packages/56/95/9377bcb415797e44274b51d46e3249eba641711cf3348050f76ee7b15ffc/httpx-0.27.2-py3-none-any.whl is unauthenticated, checking cache
+TRACE No credentials in cache for URL https://pypi.org/simple/pypi/web/packages/56/95/9377bcb415797e44274b51d46e3249eba641711cf3348050f76ee7b15ffc/httpx-0.27.2-py3-none-any.whl
+TRACE Attempting unauthenticated request for https://pypi.org/simple/pypi/web/packages/56/95/9377bcb415797e44274b51d46e3249eba641711cf3348050f76ee7b15ffc/httpx-0.27.2-py3-none-any.whl
+TRACE Handling request for https://pypi.org/simple/pypi/web/packages/31/80/3a54838c3fb461f6fec263ebf3a3a41771bd05190238de3486aae8540c36/jinja2-3.1.4-py3-none-any.whl
+TRACE Request for https://pypi.org/simple/pypi/web/packages/31/80/3a54838c3fb461f6fec263ebf3a3a41771bd05190238de3486aae8540c36/jinja2-3.1.4-py3-none-any.whl is unauthenticated, checking cache
+TRACE No credentials in cache for URL https://pypi.org/simple/pypi/web/packages/31/80/3a54838c3fb461f6fec263ebf3a3a41771bd05190238de3486aae8540c36/jinja2-3.1.4-py3-none-any.whl
+TRACE Attempting unauthenticated request for https://pypi.org/simple/pypi/web/packages/31/80/3a54838c3fb461f6fec263ebf3a3a41771bd05190238de3486aae8540c36/jinja2-3.1.4-py3-none-any.whl
+TRACE cached request https://pypi.org/simple/pypi/web/packages/eb/14/78bd0e95dd2444b6caacbca2b730671d4295ccb628ef58b81bee903629df/uvicorn-0.32.0-py3-none-any.whl is storable because its response has a heuristically cacheable status code 200
+TRACE Getting metadata for uvicorn-0.32.0-py3-none-any.whl by range request
+TRACE Handling request for https://pypi.org/simple/pypi/web/packages/eb/14/78bd0e95dd2444b6caacbca2b730671d4295ccb628ef58b81bee903629df/uvicorn-0.32.0-py3-none-any.whl
+TRACE Request for https://pypi.org/simple/pypi/web/packages/eb/14/78bd0e95dd2444b6caacbca2b730671d4295ccb628ef58b81bee903629df/uvicorn-0.32.0-py3-none-any.whl is unauthenticated, checking cache
+TRACE No credentials in cache for URL https://pypi.org/simple/pypi/web/packages/eb/14/78bd0e95dd2444b6caacbca2b730671d4295ccb628ef58b81bee903629df/uvicorn-0.32.0-py3-none-any.whl
+TRACE Attempting unauthenticated request for https://pypi.org/simple/pypi/web/packages/eb/14/78bd0e95dd2444b6caacbca2b730671d4295ccb628ef58b81bee903629df/uvicorn-0.32.0-py3-none-any.whl
+TRACE Received built distribution metadata for: python-multipart==0.0.17
+WARN Skipping file for pydantic: 
+WARN Skipping file for pydantic: 
+WARN Skipping file for pydantic: 
+WARN Skipping file for pydantic: 
+WARN Skipping file for pydantic: +searchhelp
+WARN Skipping file for pydantic: +status
+WARN Skipping file for pydantic: pypi
+TRACE Fetching metadata for pydantic from https://pypi.org/simple/pypi/web/simple/pydantic/
+TRACE No cache entry exists for /var/folders/zj/82cyd56j3t7cdf54m857wsgw0000gn/T/.tmpDV0OtY/simple-v14/index/e367fd55faf540ee/pydantic.rkyv
+DEBUG No cache entry for: https://pypi.org/simple/pypi/web/simple/pydantic/
+TRACE Sending fresh GET request for https://pypi.org/simple/pypi/web/simple/pydantic/
+TRACE Handling request for https://pypi.org/simple/pypi/web/simple/pydantic/
+TRACE Request for https://pypi.org/simple/pypi/web/simple/pydantic/ is unauthenticated, checking cache
+TRACE No credentials in cache for URL https://pypi.org/simple/pypi/web/simple/pydantic/
+TRACE Attempting unauthenticated request for https://pypi.org/simple/pypi/web/simple/pydantic/
+TRACE Received built distribution metadata for: fastapi-cli==0.0.5
+TRACE Received built distribution metadata for: typing-extensions==4.12.2
+TRACE cached request https://pypi.org/simple/pypi/web/simple/pydantic/ is storable because its response has a heuristically cacheable status code 200
+TRACE Received built distribution metadata for: starlette==0.41.2
+TRACE Received built distribution metadata for: httpx==0.27.2
+TRACE Received built distribution metadata for: jinja2==3.1.4
+TRACE Received built distribution metadata for: uvicorn==0.32.0
+TRACE Received package metadata for: pydantic
+TRACE Using preference pydantic 2.9.2
+TRACE No cache entry exists for /var/folders/zj/82cyd56j3t7cdf54m857wsgw0000gn/T/.tmpDV0OtY/wheels-v3/index/e367fd55faf540ee/pydantic/pydantic-2.9.2-py3-none-any.msgpack
+DEBUG No cache entry for: https://pypi.org/simple/pypi/web/packages/df/e4/ba44652d562cbf0bf320e0f3810206149c8a4e99cdbf66da82e97ab53a15/pydantic-2.9.2-py3-none-any.whl
+TRACE Sending fresh HEAD request for https://pypi.org/simple/pypi/web/packages/df/e4/ba44652d562cbf0bf320e0f3810206149c8a4e99cdbf66da82e97ab53a15/pydantic-2.9.2-py3-none-any.whl
+TRACE Handling request for https://pypi.org/simple/pypi/web/packages/df/e4/ba44652d562cbf0bf320e0f3810206149c8a4e99cdbf66da82e97ab53a15/pydantic-2.9.2-py3-none-any.whl
+TRACE Request for https://pypi.org/simple/pypi/web/packages/df/e4/ba44652d562cbf0bf320e0f3810206149c8a4e99cdbf66da82e97ab53a15/pydantic-2.9.2-py3-none-any.whl is unauthenticated, checking cache
+TRACE No credentials in cache for URL https://pypi.org/simple/pypi/web/packages/df/e4/ba44652d562cbf0bf320e0f3810206149c8a4e99cdbf66da82e97ab53a15/pydantic-2.9.2-py3-none-any.whl
+TRACE Attempting unauthenticated request for https://pypi.org/simple/pypi/web/packages/df/e4/ba44652d562cbf0bf320e0f3810206149c8a4e99cdbf66da82e97ab53a15/pydantic-2.9.2-py3-none-any.whl
+TRACE cached request https://pypi.org/simple/pypi/web/packages/df/e4/ba44652d562cbf0bf320e0f3810206149c8a4e99cdbf66da82e97ab53a15/pydantic-2.9.2-py3-none-any.whl is storable because its response has a heuristically cacheable status code 200
+TRACE Getting metadata for pydantic-2.9.2-py3-none-any.whl by range request
+TRACE Handling request for https://pypi.org/simple/pypi/web/packages/df/e4/ba44652d562cbf0bf320e0f3810206149c8a4e99cdbf66da82e97ab53a15/pydantic-2.9.2-py3-none-any.whl
+TRACE Request for https://pypi.org/simple/pypi/web/packages/df/e4/ba44652d562cbf0bf320e0f3810206149c8a4e99cdbf66da82e97ab53a15/pydantic-2.9.2-py3-none-any.whl is unauthenticated, checking cache
+TRACE No credentials in cache for URL https://pypi.org/simple/pypi/web/packages/df/e4/ba44652d562cbf0bf320e0f3810206149c8a4e99cdbf66da82e97ab53a15/pydantic-2.9.2-py3-none-any.whl
+TRACE Attempting unauthenticated request for https://pypi.org/simple/pypi/web/packages/df/e4/ba44652d562cbf0bf320e0f3810206149c8a4e99cdbf66da82e97ab53a15/pydantic-2.9.2-py3-none-any.whl
+TRACE Handling request for https://pypi.org/simple/pypi/web/packages/df/e4/ba44652d562cbf0bf320e0f3810206149c8a4e99cdbf66da82e97ab53a15/pydantic-2.9.2-py3-none-any.whl
+TRACE Request for https://pypi.org/simple/pypi/web/packages/df/e4/ba44652d562cbf0bf320e0f3810206149c8a4e99cdbf66da82e97ab53a15/pydantic-2.9.2-py3-none-any.whl is unauthenticated, checking cache
+TRACE No credentials in cache for URL https://pypi.org/simple/pypi/web/packages/df/e4/ba44652d562cbf0bf320e0f3810206149c8a4e99cdbf66da82e97ab53a15/pydantic-2.9.2-py3-none-any.whl
+TRACE Attempting unauthenticated request for https://pypi.org/simple/pypi/web/packages/df/e4/ba44652d562cbf0bf320e0f3810206149c8a4e99cdbf66da82e97ab53a15/pydantic-2.9.2-py3-none-any.whl
+TRACE Received built distribution metadata for: pydantic==2.9.2
+TRACE Updating cached credentials for https://100.64.0.1:4874/simple/greenlet/ to Credentials { username: Username(Some("username")), password: Some("password") }
+TRACE cached request https://100.64.0.1:4874/simple/greenlet/ is storable because its response has a heuristically cacheable status code 200
+WARN Skipping file for greenlet: 
+WARN Skipping file for greenlet: pypi
+TRACE Fetching metadata for greenlet from https://pypi.org/simple/pypi/web/simple/greenlet/
+TRACE No cache entry exists for /var/folders/zj/82cyd56j3t7cdf54m857wsgw0000gn/T/.tmpDV0OtY/simple-v14/index/e367fd55faf540ee/greenlet.rkyv
+DEBUG No cache entry for: https://pypi.org/simple/pypi/web/simple/greenlet/
+TRACE Sending fresh GET request for https://pypi.org/simple/pypi/web/simple/greenlet/
+TRACE Handling request for https://pypi.org/simple/pypi/web/simple/greenlet/
+TRACE Request for https://pypi.org/simple/pypi/web/simple/greenlet/ is unauthenticated, checking cache
+TRACE No credentials in cache for URL https://pypi.org/simple/pypi/web/simple/greenlet/
+TRACE Attempting unauthenticated request for https://pypi.org/simple/pypi/web/simple/greenlet/
+TRACE cached request https://pypi.org/simple/pypi/web/simple/greenlet/ is storable because its response has a heuristically cacheable status code 200
+WARN Skipping file for greenlet: greenlet-0.1-py2.3-macosx-10.4-ppc.egg
+WARN Skipping file for greenlet: greenlet-0.4.9-py3.5-win32.egg
+TRACE Received package metadata for: greenlet
+TRACE Using preference greenlet 3.1.1
+TRACE No cache entry exists for /var/folders/zj/82cyd56j3t7cdf54m857wsgw0000gn/T/.tmpDV0OtY/wheels-v3/index/e367fd55faf540ee/greenlet/greenlet-3.1.1-cp312-cp312-macosx_11_0_universal2.msgpack
+DEBUG No cache entry for: https://pypi.org/simple/pypi/web/packages/7d/ec/bad1ac26764d26aa1353216fcbfa4670050f66d445448aafa227f8b16e80/greenlet-3.1.1-cp312-cp312-macosx_11_0_universal2.whl
+TRACE Sending fresh HEAD request for https://pypi.org/simple/pypi/web/packages/7d/ec/bad1ac26764d26aa1353216fcbfa4670050f66d445448aafa227f8b16e80/greenlet-3.1.1-cp312-cp312-macosx_11_0_universal2.whl
+TRACE Handling request for https://pypi.org/simple/pypi/web/packages/7d/ec/bad1ac26764d26aa1353216fcbfa4670050f66d445448aafa227f8b16e80/greenlet-3.1.1-cp312-cp312-macosx_11_0_universal2.whl
+TRACE Request for https://pypi.org/simple/pypi/web/packages/7d/ec/bad1ac26764d26aa1353216fcbfa4670050f66d445448aafa227f8b16e80/greenlet-3.1.1-cp312-cp312-macosx_11_0_universal2.whl is unauthenticated, checking cache
+TRACE No credentials in cache for URL https://pypi.org/simple/pypi/web/packages/7d/ec/bad1ac26764d26aa1353216fcbfa4670050f66d445448aafa227f8b16e80/greenlet-3.1.1-cp312-cp312-macosx_11_0_universal2.whl
+TRACE Attempting unauthenticated request for https://pypi.org/simple/pypi/web/packages/7d/ec/bad1ac26764d26aa1353216fcbfa4670050f66d445448aafa227f8b16e80/greenlet-3.1.1-cp312-cp312-macosx_11_0_universal2.whl
+TRACE cached request https://pypi.org/simple/pypi/web/packages/7d/ec/bad1ac26764d26aa1353216fcbfa4670050f66d445448aafa227f8b16e80/greenlet-3.1.1-cp312-cp312-macosx_11_0_universal2.whl is storable because its response has a heuristically cacheable status code 200
+TRACE Getting metadata for greenlet-3.1.1-cp312-cp312-macosx_11_0_universal2.whl by range request
+TRACE Handling request for https://pypi.org/simple/pypi/web/packages/7d/ec/bad1ac26764d26aa1353216fcbfa4670050f66d445448aafa227f8b16e80/greenlet-3.1.1-cp312-cp312-macosx_11_0_universal2.whl
+TRACE Request for https://pypi.org/simple/pypi/web/packages/7d/ec/bad1ac26764d26aa1353216fcbfa4670050f66d445448aafa227f8b16e80/greenlet-3.1.1-cp312-cp312-macosx_11_0_universal2.whl is unauthenticated, checking cache
+TRACE No credentials in cache for URL https://pypi.org/simple/pypi/web/packages/7d/ec/bad1ac26764d26aa1353216fcbfa4670050f66d445448aafa227f8b16e80/greenlet-3.1.1-cp312-cp312-macosx_11_0_universal2.whl
+TRACE Attempting unauthenticated request for https://pypi.org/simple/pypi/web/packages/7d/ec/bad1ac26764d26aa1353216fcbfa4670050f66d445448aafa227f8b16e80/greenlet-3.1.1-cp312-cp312-macosx_11_0_universal2.whl
+TRACE Received built distribution metadata for: greenlet==3.1.1
+  × No solution found when resolving dependencies for split (python_full_version == '3.12.*'):
+TRACE Resolver derivation tree before reduction
+  root==0a0.dev0 depends on shredder-demo*
+      shredder-demo==0.1.0 depends on utensils==0.1.58
+      no versions of utensils==0.1.58
+    no versions of shredder-demo<0.1.0 | >0.1.0
+TRACE Resolver derivation tree after reduction
+  shredder-demo==0.1.0 depends on utensils==0.1.58
+  no versions of utensils==0.1.58
+  ╰─▶ Because there is no version of utensils==0.1.58 and your project depends on utensils==0.1.58, we can conclude that your project's requirements are unsatisfiable.
+  help: If you want to add the package regardless of the failed resolution, provide the `--frozen` flag to skip locking and syncing.
+```
+
+---
+
+_Comment by @charliermarsh on 2024-11-26 03:32_
+
+What's going on with the files in your registry? They appear to be have strange names:
+
+```
+WARN Skipping file for utensils: 
+WARN Skipping file for utensils: 
+WARN Skipping file for utensils: 
+WARN Skipping file for utensils: +searchhelp
+WARN Skipping file for utensils: +status
+WARN Skipping file for utensils: 0.0.31
+WARN Skipping file for utensils: 0.0.42
+WARN Skipping file for utensils: 0.1.15
+WARN Skipping file for utensils: 0.1.25
+WARN Skipping file for utensils: 0.1.28
+WARN Skipping file for utensils: 0.1.29
+WARN Skipping file for utensils: 0.1.32
+WARN Skipping file for utensils: 0.1.33
+WARN Skipping file for utensils: 0.1.35
+WARN Skipping file for utensils: 0.1.36
+WARN Skipping file for utensils: 0.1.37
+WARN Skipping file for utensils: 0.1.39
+WARN Skipping file for utensils: 0.1.40
+WARN Skipping file for utensils: 0.1.41
+WARN Skipping file for utensils: 0.1.42
+WARN Skipping file for utensils: 0.1.43
+WARN Skipping file for utensils: 0.1.44
+WARN Skipping file for utensils: 0.1.45
+WARN Skipping file for utensils: 0.1.46
+WARN Skipping file for utensils: 0.1.47
+WARN Skipping file for utensils: 0.1.48
+WARN Skipping file for utensils: 0.1.49
+WARN Skipping file for utensils: 0.1.50
+WARN Skipping file for utensils: 0.1.53
+WARN Skipping file for utensils: 0.1.54
+WARN Skipping file for utensils: 0.1.55
+WARN Skipping file for utensils: 0.1.56
+WARN Skipping file for utensils: 0.1.57
+WARN Skipping file for utensils: 0.1.58
+WARN Skipping file for utensils: username
+WARN Skipping file for utensils: latest
+WARN Skipping file for utensils: pypi
+WARN Skipping file for utensils: pypi
+WARN Skipping file for utensils: pypi
+WARN Skipping file for utensils: pypi
+WARN Skipping file for utensils: pypi
+WARN Skipping file for utensils: pypi
+WARN Skipping file for utensils: pypi
+WARN Skipping file for utensils: pypi
+WARN Skipping file for utensils: pypi
+WARN Skipping file for utensils: pypi
+WARN Skipping file for utensils: pypi
+WARN Skipping file for utensils: pypi
+WARN Skipping file for utensils: pypi
+WARN Skipping file for utensils: pypi
+WARN Skipping file for utensils: pypi
+WARN Skipping file for utensils: pypi
+WARN Skipping file for utensils: pypi
+WARN Skipping file for utensils: pypi
+WARN Skipping file for utensils: pypi
+WARN Skipping file for utensils: pypi
+WARN Skipping file for utensils: pypi
+WARN Skipping file for utensils: pypi
+WARN Skipping file for utensils: pypi
+WARN Skipping file for utensils: pypi
+WARN Skipping file for utensils: pypi
+WARN Skipping file for utensils: pypi
+WARN Skipping file for utensils: pypi
+WARN Skipping file for utensils: pypi
+WARN Skipping file for utensils: pypi
+WARN Skipping file for utensils: pypi
+WARN Skipping file for utensils: pypi
+WARN Skipping file for utensils: utensils
+WARN Skipping file for utensils: utensils
+```
+
+---
+
+_Comment by @Sube-py on 2024-11-26 03:37_
+
+I don't understand what you mean. The private repo is built by our ops. I don't know much about it. This package name has the same name as the one in the pypi repo.
+
+---
+
+_Comment by @charliermarsh on 2024-11-26 03:43_
+
+Does `pip install utensils --index-url https://username:password@100.64.0.1:8000/simple` work for you? Those warning suggest that you have references to files in the repo named "pypi" and "+searchhelp" and such.
+
+---
+
+_Comment by @Sube-py on 2024-11-26 03:45_
+
+> pip install utensils --index-url https://username:password@100.64.0.1:8000/simple
+
+It's works for me, but I want to use uv instead of pip
+
+---
+
+_Comment by @Sube-py on 2024-11-26 03:46_
+
+> > pip install utensils --index-url https://username:password@100.64.0.1:8000/simple
+> 
+> It's works for me, but I want to use uv instead of pip
+
+uv pip install ... can also
+
+---
+
+_Comment by @charliermarsh on 2024-11-26 03:48_
+
+What version does `uv pip install` choose?
+
+---
+
+_Comment by @Sube-py on 2024-11-26 03:52_
+
+> What version does `uv pip install` choose?
+
+My bad, I remembered it wrong, uv pip doesn't work
+
+---
+
+_Comment by @Sube-py on 2024-11-26 03:53_
+
+uv pip install the package(1.0.1) from pypi repo
+
+---
+
+_Comment by @charliermarsh on 2024-11-26 03:54_
+
+It looks like you have dependencies in the project that end up requiring a different version of `utensils`. It looks like 1.0.1 would _not_ satisfy the dependencies in your project. That's the problem you're running into -- it's not about the index.
+
+---
+
+_Comment by @Sube-py on 2024-11-26 04:02_
+
+> It looks like you have dependencies in the project that end up requiring a different version of `utensils`. It looks like 1.0.1 would _not_ satisfy the dependencies in your project. That's the problem you're running into -- it's not about the index.
+
+Pip install works for me(prove that there are no dependency conflicts), and my project does not depend on utensils==1.0.1, OPS said that our private repo has no metadata, I don't know if it will have any impact
+
+---
+
+_Comment by @charliermarsh on 2024-11-26 04:05_
+
+Unfortunately I'm not fully following. Are you able to install 0.1.58 via pip install or uv pip install? That's the version you're requesting.
+
+---
+
+_Comment by @Sube-py on 2024-11-26 04:17_
+
+> Unfortunately I'm not fully following. Are you able to install 0.1.58 via pip install or uv pip install? That's the version you're requesting.
+
+just pip install
+
+---
+
+_Comment by @rafalkrupinski on 2024-11-26 11:51_
+
+> I mean, we don't have to :) If you mark an index as unauthenticated I would say it's critical that we do not send credentials to it. 
+
+how about
+`auth-mode = 'gitlab' | 'github' | true | false`
+
+> The default could be None, i.e., it's Option<bool> not bool with a default of false.
+
+A 3-value boolean? Please no ;D
+
+---
+
+_Comment by @zanieb on 2024-11-26 15:43_
+
+@rafalkrupinski I don't really want to special-case gitlab and github — these issues exist for other indexes too.
+
+It's very common for us to have a "default" automatic behavior that can be overridden to an explicit true or false.
+
+---
+
+_Comment by @rafalkrupinski on 2024-11-26 15:59_
+
+I'm just not sure these three values are all we'll ever need and I find such usage unintuitive.
+Doesn't need to be 'github'| 'gitlab', can be 'try-unauthenticated-first' or any descriptive value.
+
+Anyway, I should stop arguing, I don't commit or contribute in this project. I'll just drop [this](https://thedailywtf.com/articles/what_is_truth_0x3f_)
+
+Cheers
+
+edit: I don't commit or contribute, other than that documentation I intend to do
+
+---
+
+_Referenced in [astral-sh/uv#9583](../../astral-sh/uv/pulls/9583.md) on 2024-12-02 19:52_
+
+---
+
+_Comment by @rafalkrupinski on 2024-12-03 09:32_
+
+@zanieb @samypr100 
+I'm not sure about a recommended procedure here...
+
+1. add source to pyproject
+
+        [[tool.poetry.source]]
+        name = "gitlab"
+        url = "https://token@mygitlab.example.com/api/v4/projects/.../packages/pypi/simple"
+        priority = "explicit"
+
+4. add dependency
+
+        export UV_INDEX_GITLAB_USERNAME=token
+        export UV_INDEX_GITLAB_PASSWORD=secret
+        uv add --index=??? mydependency
+
+I guess I need a username variable, or do I?
+`--index` option takes url with optional name, so I'd be providing the URL twice - command line and pyproject? Does one take precedence or are they matched? 🤷
+I don't see `--source [index-name]` option to `uv add`, which I'd expect coming from poetry
+
+EDIT:
+Do I need to add dependency manually in pyproject and call `uv install` with credentials?
+
+---
+
+_Comment by @zanieb on 2024-12-03 14:21_
+
+I think we ought to support `--index <name>` there too. I'm not sure why we don't right now.
+
+---
+
+_Comment by @rafalkrupinski on 2024-12-03 14:26_
+
+@zanieb Sounds good, but what's the immediate solution? It's manual edit, isn't it?
+
+---
+
+_Comment by @charliermarsh on 2024-12-03 18:58_
+
+Yeah, either manual edit or repeat the URL.
+
+---
+
+_Referenced in [astral-sh/uv#11600](../../astral-sh/uv/issues/11600.md) on 2025-02-18 15:25_
+
+---
+
+_Comment by @zanieb on 2025-03-12 00:34_
+
+In 0.6.6, this can be solved by setting `authenticate = "always"` for your `[index]`.
+
+---
+
+_Closed by @zanieb on 2025-03-12 00:34_
+
+---

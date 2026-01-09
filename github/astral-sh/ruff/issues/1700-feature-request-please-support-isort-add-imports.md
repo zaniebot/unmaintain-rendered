@@ -1,0 +1,112 @@
+---
+number: 1700
+title: "Feature Request: Please support isort add_imports option"
+type: issue
+state: closed
+author: nefrob
+labels:
+  - isort
+assignees: []
+created_at: 2023-01-06T23:55:30Z
+updated_at: 2023-01-12T17:19:27Z
+url: https://github.com/astral-sh/ruff/issues/1700
+synced_at: 2026-01-07T13:12:14-06:00
+---
+
+# Feature Request: Please support isort add_imports option
+
+---
+
+_Issue opened by @nefrob on 2023-01-06 23:55_
+
+With `isort` you can auto import things, i.e. in the `pyproject.toml`:
+
+```toml
+[tool.isort]
+add_imports = "from __future__ import annotations"
+```
+
+This is a feature request for the same functionality in `ruff`
+
+```toml
+[tool.ruff.isort]
+add_imports = "from __future__ import annotations"
+
+---
+
+_Label `isort` added by @charliermarsh on 2023-01-06 23:56_
+
+---
+
+_Comment by @danieleades on 2023-01-07 08:58_
+
+see also https://pypi.org/project/flake8-future-annotations/
+
+---
+
+_Comment by @charliermarsh on 2023-01-07 12:16_
+
+Makes sense. Are there valid use-cases here beyond future imports? Most of the [examples](https://cs.github.com/?q=add_imports%20language%3ATOML&scopeName=All%20repos&scope=) I see are related to future imports.
+
+(I don't know if this question really affects implementation, but I figured it was worth asking.)
+
+---
+
+_Renamed from "Please support isort add_imports option" to "Feature Request: Please support isort add_imports option" by @nefrob on 2023-01-08 19:13_
+
+---
+
+_Comment by @nefrob on 2023-01-08 19:20_
+
+> Makes sense. Are there valid use-cases here beyond future imports? Most of the [examples](https://cs.github.com/?q=add_imports%20language%3ATOML&scopeName=All%20repos&scope=) I see are related to future imports.
+> 
+> (I don't know if this question really affects implementation, but I figured it was worth asking.)
+
+Future imports seems like the most common use case. If `ruff` supports the `flake` `--force-future-annotations` option @danieleades mentioned above that would likely be sufficient as an alternative.
+
+---
+
+_Comment by @charliermarsh on 2023-01-08 21:12_
+
+Cool. The only hard part here is figuring out where to put the import.
+
+
+---
+
+_Comment by @danieleades on 2023-01-08 21:23_
+
+> Cool. The only hard part here is figuring out where to put the import.
+
+Above all the other imports, but below any module-level docs. Right?
+
+---
+
+_Comment by @charliermarsh on 2023-01-08 21:31_
+
+Yes! (The rules are clear, I more meant, from the code perspective, ensuring we put them in a reasonable place even if you don't have import-sorting enabled.)
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2023-01-08 23:27_
+
+---
+
+_Referenced in [astral-sh/ruff#1762](../../astral-sh/ruff/pulls/1762.md) on 2023-01-10 04:21_
+
+---
+
+_Closed by @charliermarsh on 2023-01-10 23:12_
+
+---
+
+_Comment by @nefrob on 2023-01-12 17:18_
+
+Thanks for tackling this so quickly!
+
+---
+
+_Comment by @charliermarsh on 2023-01-12 17:19_
+
+Totally! Hope it's useful for you!
+
+---

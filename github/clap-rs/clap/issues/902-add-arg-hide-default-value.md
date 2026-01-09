@@ -1,0 +1,62 @@
+---
+number: 902
+title: "Add Arg::hide_default_value()"
+type: issue
+state: closed
+author: TimBednarzyk
+labels:
+  - A-help
+assignees: []
+created_at: 2017-03-14T20:52:07Z
+updated_at: 2018-08-02T03:30:04Z
+url: https://github.com/clap-rs/clap/issues/902
+synced_at: 2026-01-07T13:12:19-06:00
+---
+
+# Add Arg::hide_default_value()
+
+---
+
+_Issue opened by @TimBednarzyk on 2017-03-14 20:52_
+
+There should be a way to hide the output of `[default: x]` on an option that has a default value, just like how you can hide the output of `[values: x, y, z]` by calling `arg.hide_possible_values(true)` on an argument that has multiple possible values.
+
+---
+
+_Comment by @kbknapp on 2017-03-15 03:14_
+
+Thanks for the suggestion, I agree it's an inconsistency that's easy to fix!
+
+---
+
+_Label `C: args` added by @kbknapp on 2017-03-15 03:15_
+
+---
+
+_Label `C: help message` added by @kbknapp on 2017-03-15 03:15_
+
+---
+
+_Label `D: easy` added by @kbknapp on 2017-03-15 03:15_
+
+---
+
+_Label `P4: nice to have` added by @kbknapp on 2017-03-15 03:15_
+
+---
+
+_Label `T: new feature` added by @kbknapp on 2017-03-15 03:15_
+
+---
+
+_Label `W: 2.x` added by @kbknapp on 2017-03-15 03:15_
+
+---
+
+_Referenced in [clap-rs/clap#913](../../clap-rs/clap/pulls/913.md) on 2017-03-22 06:48_
+
+---
+
+_Closed by @kbknapp on 2017-03-22 17:31_
+
+---

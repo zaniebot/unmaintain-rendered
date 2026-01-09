@@ -1,0 +1,161 @@
+---
+number: 12199
+title: Simple pip aliasing
+type: issue
+state: closed
+author: vitalik
+labels:
+  - enhancement
+assignees: []
+created_at: 2025-03-16T09:31:21Z
+updated_at: 2025-04-01T17:56:43Z
+url: https://github.com/astral-sh/uv/issues/12199
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# Simple pip aliasing
+
+---
+
+_Issue opened by @vitalik on 2025-03-16 09:31_
+
+### Summary
+
+The more I suggest people to use uv the more I hear they accidentally installed package globally instead of virtualenv because they either copypasted some  "pip install foo" instruction or some super new ai library have `os.system("pip install foo")
+
+why can uv just put alias inside .venv  pip -> uv pip ?
+
+
+```
+$ uv venv --python 3.12
+```
+
+```
+Using CPython 3.12.7 interpreter at: /opt/homebrew/opt/python@3.12/bin/python3.12
+Creating virtual environment at: .venv
+Activate with: source .venv/bin/activate
+```
+
+```
+$ source .venv/bin/activate
+```
+
+```
+$ which pip
+/Users/user/.pyenv/shims/pip
+
+🫤
+```
+
+```
+$ echo '#!/bin/sh' > .venv/bin/pip
+echo 'uv pip "$@"' >> .venv/bin/pip
+chmod +x .venv/bin/pip
+```
+
+```
+$ which pip
+/private/tmp/myvenv1/.venv/bin/pip
+```
+```
+$ pip install requests
+Resolved 5 packages in 12ms
+Installed 5 packages in 7ms
+ + certifi==2025.1.31
+ + charset-normalizer==3.4.1
+ + idna==3.10
+ + requests==2.32.3
+ + urllib3==2.3.0
+
+😊
+```
+
+I see there lot of issues reported this - but I still cannot fully understand why approach above would break things ?
+
+### Example
+
+_No response_
+
+---
+
+_Label `enhancement` added by @vitalik on 2025-03-16 09:31_
+
+---
+
+_Comment by @FishAlchemist on 2025-03-16 11:47_
+
+If I remember correctly, this was an early discussion
+* https://github.com/astral-sh/uv/issues/1657
+
+From my personal perspective, I don't think it's a good idea for pip to be an alias for uv pip, because they are not fully compatible.
+https://docs.astral.sh/uv/pip/compatibility/
+
+Speaking of the latest version of uv, do you think any of the previous discussions are now outdated?
+
+
+---
+
+_Comment by @vitalik on 2025-03-16 14:10_
+
+> Speaking of the latest version of uv, do you think any of the previous discussions are now outdated?
+
+Does it solve the issue when some have ```os.system("pip install huggingface")``` inside python code?
+
+If uv wants to get rid of pip - maybe alias inside venv should throw an error like - "hey do not use pip - use uv pip/add)" (when -- seed was not used)
+
+That way people will slowly abandon the mussel memory of using pip
+
+
+
+---
+
+_Comment by @notatallshaw on 2025-03-17 18:47_
+
+> Does it solve the issue when some have `os.system("pip install huggingface")` inside python code?
+
+Should uv be trying to solve libraries which have bad code in them? That's not even a good way to call pip, and may result in random errors on different users machines.
+
+Personally, I would rather uv try to push standard dependency management, through pyproject.toml or scripts with in line metadata. Not preempting bad code.
+
+> If uv wants to get rid of pip
+
+I could be wrong, but I don't think that's an explicit goal of astral. Pip will likely remain the core bootstrapping library for the foreseeable future, and in many environments be the packaging installer available to use. 
+
+---
+
+_Comment by @vitalik on 2025-03-17 19:09_
+
+@notatallshaw 
+
+Sure - getting rid of pip should not be the goal
+
+What I see as a problem that uv venv does not seed pip by default 
+
+And once venv initialized there is no way to tell if pip was seeded or not
+
+--- 
+Now imagine you are a fresh python developer - some one suggested you to use uv - you initialized it and forgot about it
+
+Next day ChatGPT gives you instructions to run 'pip install foo' - and you got it in global python library (why would you care to read history of all 20 package installers and their behavior)
+
+Thats not good DX - and with LLMs it will keep suggesting pip the same for very long  time
+
+---
+
+_Referenced in [astral-sh/uv#12335](../../astral-sh/uv/issues/12335.md) on 2025-03-20 10:41_
+
+---
+
+_Referenced in [astral-sh/uv#12604](../../astral-sh/uv/issues/12604.md) on 2025-04-01 17:54_
+
+---
+
+_Comment by @zanieb on 2025-04-01 17:56_
+
+Let's move this to https://github.com/astral-sh/uv/issues/12604
+
+---
+
+_Closed by @zanieb on 2025-04-01 17:56_
+
+---

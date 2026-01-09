@@ -1,0 +1,54 @@
+---
+number: 20648
+title: "Move diff rendering into `annotate-snippets`"
+type: issue
+state: open
+author: ntBre
+labels:
+  - wish
+  - needs-design
+  - diagnostics
+assignees: []
+created_at: 2025-09-30T15:32:32Z
+updated_at: 2025-09-30T15:32:32Z
+url: https://github.com/astral-sh/ruff/issues/20648
+synced_at: 2026-01-07T13:12:16-06:00
+---
+
+# Move diff rendering into `annotate-snippets`
+
+---
+
+_Issue opened by @ntBre on 2025-09-30 15:32_
+
+Following https://github.com/astral-sh/ruff/pull/19919 and https://github.com/astral-sh/ruff/pull/20443, we now render fix diffs in the default output format for both the linter and formatter (in preview). For the snippet attached to the diagnostic, we use our fork of `annotate-snippets` to render the code but separate code for rendering the fix diff. We did our best to get the two to align well, and I think most cases are covered, but there are a few examples where it breaks down. For example, we render more context lines in the diff than in the snippet, so changes near a line width boundary (e.g. 9 -> 10, 99 -> 100) can result in a shift of the line number separator before and after the `help` message:
+
+https://github.com/astral-sh/ruff/blob/b483d3b0b90aefed29a078630f7791a166a64159/crates/ruff_db/src/diagnostic/render/full.rs#L944-L963
+
+This is somewhat more of an issue in the formatter because we don't want to render a snippet at all. We thus added a manual `header_offset` field in #20443, but it would be nice to reuse the same line width calculation in both steps.
+
+A more robust approach to diff rendering would be to incorporate it into `annotate-snippets` directly. The line number width is computed here:
+
+https://github.com/astral-sh/ruff/blob/bedfc6fd063e08f4d1e76ae8a780162404079298/crates/ruff_annotate_snippets/src/renderer/display_list.rs#L79-L84
+
+based on the maximum line number in the `DisplayLine::Source` variants. Without looking into it _too_ deeply, I think the ideal solution would be to add a new `DisplayLine::Diff` variant and incorporate our current [`Diff`](https://github.com/astral-sh/ruff/blob/bedfc6fd063e08f4d1e76ae8a780162404079298/crates/ruff_db/src/diagnostic/render/full.rs#L83) type's rendering code into `annotate-snippets`.
+
+I think this would probably rule out https://github.com/astral-sh/ruff/issues/20411, so we'd also need to commit to staying on our fork.
+
+---
+
+_Label `wish` added by @ntBre on 2025-09-30 15:32_
+
+---
+
+_Label `needs-design` added by @ntBre on 2025-09-30 15:32_
+
+---
+
+_Label `diagnostics` added by @ntBre on 2025-09-30 15:32_
+
+---
+
+_Referenced in [astral-sh/ruff#20649](../../astral-sh/ruff/issues/20649.md) on 2025-09-30 15:58_
+
+---

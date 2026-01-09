@@ -1,0 +1,63 @@
+---
+number: 11241
+title: "How to set the UV's python as default python binary?"
+type: issue
+state: closed
+author: gphg
+labels:
+  - question
+assignees: []
+created_at: 2025-02-05T12:17:57Z
+updated_at: 2025-02-08T19:41:55Z
+url: https://github.com/astral-sh/uv/issues/11241
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# How to set the UV's python as default python binary?
+
+---
+
+_Issue opened by @gphg on 2025-02-05 12:17_
+
+### Question
+
+The project is great. I want this as substitution for `python` as shell default, by following method:
+```sh
+# Normally this is on .bashrc or .zshrc
+alias python="uv run"
+```
+
+This is the user level: between project and root-ish.
+
+# The question is: Is that method approved?
+I can't think any better. Perhaps the developers or ones that has more experiences has way better solutions?
+
+### Platform
+
+MINGW64_NT-10.0-19045 3.5.4-395fda67.x86_64 x86_64 Msys
+
+### Version
+
+uv 0.5.28 (ee2bdc21f 2025-02-04)
+
+---
+
+_Label `question` added by @gphg on 2025-02-05 12:17_
+
+---
+
+_Comment by @zanieb on 2025-02-05 15:08_
+
+There's https://docs.astral.sh/uv/concepts/python-versions/#installing-python-executables but that's different, we don't have a `uv run` equivalent for `python`. We may someday, but it's controversial :)
+
+---
+
+_Comment by @gphg on 2025-02-08 19:41_
+
+Tested and it works on Windows too! All I have to do is add `~/.local/bin` or `%USERPROFILE%\.local\bin` into `%PATH`.
+
+---
+
+_Closed by @gphg on 2025-02-08 19:41_
+
+---

@@ -1,0 +1,119 @@
+---
+number: 527
+title: "Unable to install `ujson==5.7.0`"
+type: issue
+state: closed
+author: charliermarsh
+labels:
+  - bug
+assignees: []
+created_at: 2023-12-03T19:57:04Z
+updated_at: 2023-12-04T10:13:43Z
+url: https://github.com/astral-sh/uv/issues/527
+synced_at: 2026-01-07T13:12:16-06:00
+---
+
+# Unable to install `ujson==5.7.0`
+
+---
+
+_Issue opened by @charliermarsh on 2023-12-03 19:57_
+
+```text
+error: Failed to download distributions
+  Caused by: Failed to build ujson==5.7.0
+  Caused by: Failed building wheel through setup.py:
+--- stdout:
+
+--- stderr:
+/private/var/folders/nt/6gf2v7_s3k13zq_t3944rwz40000gn/T/.tmpoa8oBf/.venv/lib/python3.7/site-packages/setuptools/__init__.py:84: _DeprecatedInstaller: setuptools.installer and fetch_build_eggs are deprecated.
+!!
+
+        ********************************************************************************
+        Requirements should be satisfied by a PEP 517 installer.
+        If you are using pip, you can try `pip install --use-pep517`.
+        ********************************************************************************
+
+!!
+  dist.fetch_build_eggs(dist.setup_requires)
+WARNING: The wheel package is not available.
+usage: setup.py [global_opts] cmd1 [cmd1_opts] [cmd2 [cmd2_opts] ...]
+   or: setup.py --help [cmd1 cmd2 ...]
+   or: setup.py --help-commands
+   or: setup.py cmd --help
+
+error: invalid command 'bdist_wheel'
+---
+```
+
+---
+
+_Label `bug` added by @charliermarsh on 2023-12-03 19:57_
+
+---
+
+_Comment by @charliermarsh on 2023-12-03 19:59_
+
+@konstin - It looks like this package maybe assumes that `wheel` is included in the environment...? Because it says: `Installing build requirements: setuptools==68.0.0, packaging==23.2, setuptools-scm==7.1.0, typing-extensions==4.7.1, importlib-metadata==6.7.0, tomli==2.0.1, zipp==3.15.0`
+
+---
+
+_Comment by @charliermarsh on 2023-12-03 20:01_
+
+(You need to use Python 3.7, since there are no available wheels IIUC.)
+
+---
+
+_Comment by @charliermarsh on 2023-12-03 21:23_
+
+I guess this is about the package having a `[build-system]` but no `build-backend`.
+
+---
+
+_Comment by @charliermarsh on 2023-12-03 21:25_
+
+https://github.com/pypa/pip/blob/a15dd75d98884c94a77d349b800c7c755d8c34e4/src/pip/_internal/pyproject.py#L97
+
+---
+
+_Comment by @charliermarsh on 2023-12-03 21:29_
+
+I think that if the user has a `build-system` but no `build-backend`, then we're supposed to use PEP 517 with `setuptools.build_meta:__legacy__` rather than invoking setuptools directly... Unless those are the same?  E.g., we need to call `create_pep517_build_environment` with `setuptools.build_meta:__legacy__`.
+
+---
+
+_Comment by @charliermarsh on 2023-12-03 22:40_
+
+Ah okay, I see how to fix. We _do_ we need to use PEP 517 here, but preserve the `requires`.
+
+---
+
+_Comment by @charliermarsh on 2023-12-03 22:41_
+
+Example from build: https://github.com/pypa/build/blob/de5b44b0c28c598524832dff685a98d5a5148c44/src/build/__init__.py#L116
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2023-12-03 22:41_
+
+---
+
+_Referenced in [astral-sh/uv#530](../../astral-sh/uv/pulls/530.md) on 2023-12-04 01:18_
+
+---
+
+_Comment by @konstin on 2023-12-04 10:07_
+
+> I think that if the user has a build-system but no build-backend, then we're supposed to use PEP 517 with setuptools.build_meta:__legacy__ rather than invoking setuptools directly... Unless those are the same? E.g., we need to call create_pep517_build_environment with `setuptools.build_meta:__legacy__`.
+
+PEP 517 says either:
+
+> If the pyproject.toml file is absent, or the build-backend key is missing, the source tree is not using this specification, and tools should revert to the legacy behaviour of running setup.py (either directly, or by implicitly invoking the `setuptools.build_meta:__legacy__` backend).
+
+I.e. PEP 517 is wrong in the sense that in practice only `setuptools.build_meta:__legacy__` is allowed.
+
+---
+
+_Closed by @konstin on 2023-12-04 10:13_
+
+---

@@ -1,0 +1,100 @@
+---
+number: 13367
+title: 404 error for downloading wheel after finding package through private registry
+type: issue
+state: closed
+author: Capsar
+labels:
+  - question
+assignees: []
+created_at: 2025-05-09T17:55:51Z
+updated_at: 2025-05-14T07:20:52Z
+url: https://github.com/astral-sh/uv/issues/13367
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# 404 error for downloading wheel after finding package through private registry
+
+---
+
+_Issue opened by @Capsar on 2025-05-09 17:55_
+
+### Question
+
+# Setup
+
+```pyproject.toml
+[project]
+name = "project-deliverable"
+version = "0.1.0"
+requires-python = "==3.12.10"
+dependencies = [
+]
+
+[[tool.uv.index]]
+url = "https://__token__:<group_token>@on-premises-gitlab.com/api/v4/groups/<GROUP_ID>/-/packages/pypi/simple"
+```
+
+## What is not working:
+
+Running the command:
+```bash
+uv add package_name --index registry=https://__token__:<group_token>@on-premises-gitlab.com/api/v4/groups/<GROUP_ID>/-/packages/pypi/simple
+```
+or 
+```bash
+uv add package_name
+```
+
+Will both result in (same hash):
+```bash
+error: Failed to fetch: `https://on-premises-gitlab.com/api/v4/groups/<GROUP_ID>/-/packages/pypi/files/<some_hash>/package_name-0.1.0-py3-none-any.whl`
+  Caused by: HTTP status client error (404 Not Found) for url (https://on-premises-gitlab.com/api/v4/groups/<GROUP_ID>/-/packages/pypi/files/<some_hash>/package_name-0.1.0-py3-none-any.whl)
+```
+When clicking on the url, it lets me download the package. When I open the link in a new private browser window, it also raises a 404, unless I provide the token. 
+This seems to indicate that the process is not using the credentials provided in the pyproject.toml file OR from the CLI command.
+
+
+## What is working, but not desired
+
+Where as, using:
+```bash
+uv add package_name --extra-index-url https://__token__:<group_token>@on-premises-gitlab.com/api/v4/groups/<GROUP_ID>/-/packages/pypi/simple
+```
+
+Does install the package, but does not update the pyproject.toml file with additional sources & indexes.
+
+## Question
+How do I setup my Python project, such that after pulling the (private) repository, people can run `uv sync` or `uv pip install -e .` and it will download the dependencies from both the private registry and PyPI?
+
+I have also tried naming the index and running `export UV_INDEX_NAME_USERNAME=__token__` and `export UV_INDEX_PASSWORD_PASSWORD=<group_token>` but no success [as described here](https://docs.astral.sh/uv/configuration/indexes/#authentication).
+
+
+
+### Platform
+
+MacOS 15.4
+
+### Version
+
+0.7.2
+
+---
+
+_Label `question` added by @Capsar on 2025-05-09 17:55_
+
+---
+
+_Assigned to @jtfmumm by @konstin on 2025-05-09 18:37_
+
+---
+
+_Comment by @Capsar on 2025-05-14 07:20_
+
+Original error no longer occurs, it seemed to have resolved itself.
+
+---
+
+_Closed by @Capsar on 2025-05-14 07:20_
+
+---

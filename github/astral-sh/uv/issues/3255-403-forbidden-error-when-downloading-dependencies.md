@@ -1,0 +1,289 @@
+---
+number: 3255
+title: 403 Forbidden Error when downloading dependencies from AWS/Gemfury with uv pip compile
+type: issue
+state: closed
+author: fernando-freitas-alves
+labels:
+  - duplicate
+assignees: []
+created_at: 2024-04-24T21:00:07Z
+updated_at: 2024-05-08T14:54:10Z
+url: https://github.com/astral-sh/uv/issues/3255
+synced_at: 2026-01-07T13:12:17-06:00
+---
+
+# 403 Forbidden Error when downloading dependencies from AWS/Gemfury with uv pip compile
+
+---
+
+_Issue opened by @fernando-freitas-alves on 2024-04-24 21:00_
+
+I'm trying to use uv to compile a list of requirements, but it's resulting in the following 403 error:
+
+```shell
+> uv pip compile --generate-hashes --no-header --no-emit-index-url --output-file ./requirements-uv.txt ./requirements.in
+
+error: Failed to download `mode-optimizer-service-client==1.0.4`
+  Caused by: Failed to unzip wheel: mode_optimizer_service_client-1.0.4-py2.py3-none-any.whl
+  Caused by: an upstream reader returned an error: io error occurred: Request error: HTTP status client error (403 Forbidden) for url (https://s3.amazonaws.com/gemfury/gems/REDACTED/mode_optimizer_service_client_1_0_4_py2_py3_none_any_whl?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=REDACTED%2F20240424%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20240424T205048Z&X-Amz-Expires=900&X-Amz-SignedHeaders=host&X-Amz-Signature=REDACTED)
+  Caused by: io error occurred: Request error: HTTP status client error (403 Forbidden) for url (https://s3.amazonaws.com/gemfury/gems/REDACTED/mode_optimizer_service_client_1_0_4_py2_py3_none_any_whl?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=REDACTED%2F20240424%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20240424T205048Z&X-Amz-Expires=900&X-Amz-SignedHeaders=host&X-Amz-Signature=REDACTED)
+  Caused by: Request error: HTTP status client error (403 Forbidden) for url (https://s3.amazonaws.com/gemfury/gems/REDACTED/mode_optimizer_service_client_1_0_4_py2_py3_none_any_whl?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=REDACTED%2F20240424%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20240424T205048Z&X-Amz-Expires=900&X-Amz-SignedHeaders=host&X-Amz-Signature=REDACTED)
+  Caused by: HTTP status client error (403 Forbidden) for url (https://s3.amazonaws.com/gemfury/gems/REDACTED/mode_optimizer_service_client_1_0_4_py2_py3_none_any_whl?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=REDACTED%2F20240424%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20240424T205048Z&X-Amz-Expires=900&X-Amz-SignedHeaders=host&X-Amz-Signature=REDACTED)
+```
+
+<img width="1442" alt="image" src="https://github.com/astral-sh/uv/assets/6806898/592d2fc3-fbdb-4a9d-9fcb-5da79ff77743">
+
+With `--verbose`:
+
+```shell
+> uv pip compile --verbose --generate-hashes --no-header --no-emit-index-url --output-file ./requirements-uv.txt ./requirements.in
+
+DEBUG Starting interpreter discovery for active Python
+INFO Found a virtualenv through VIRTUAL_ENV at: /Users/fernando/loadsmart/phoenix/procurement-ai-streamlit/.venv
+DEBUG Cached interpreter info for Python 3.12.3, skipping probing: .venv/bin/python
+DEBUG Using Python 3.12.3 interpreter at .venv/bin/python for builds
+DEBUG Using registry request timeout of 30s
+DEBUG Solving with target Python version 3.12.3
+DEBUG Adding direct dependency: arch>=7.0.0, <7.1.dev0
+DEBUG Adding direct dependency: boto3>=1.34.91, <1.35.dev0
+DEBUG Adding direct dependency: click>=8.1.7, <8.2.dev0
+DEBUG Adding direct dependency: ddtrace>=2.8.2, <2.9.dev0
+DEBUG Adding direct dependency: fuzzywuzzy>=0.18.0, <0.19.dev0
+DEBUG Adding direct dependency: python-levenshtein>=0.25.1, <0.26.dev0
+DEBUG Adding direct dependency: geopandas>=0.14.3, <0.15.dev0
+DEBUG Adding direct dependency: geopy>=2.4.1, <2.5.dev0
+DEBUG Adding direct dependency: requests-cache>=1.2.0, <1.3.dev0
+DEBUG Adding direct dependency: shapely>=2.0.4, <2.1.dev0
+DEBUG Adding direct dependency: jinja2>=3.1.3, <3.2.dev0
+DEBUG Adding direct dependency: langchain>=0.1.16, <0.2.dev0
+DEBUG Adding direct dependency: beautifulsoup4>=4.12.3, <4.13.dev0
+DEBUG Adding direct dependency: chromadb>=0.5.0, <0.6.dev0
+DEBUG Adding direct dependency: openai==0.28
+DEBUG Adding direct dependency: tiktoken>=0.6.0, <0.7.dev0
+DEBUG Adding direct dependency: libpacker>=0.12.2, <0.13.dev0
+DEBUG Adding direct dependency: loadlog>=0.8.0, <0.9.dev0
+DEBUG Adding direct dependency: loadsmart-jwt-authenticator>=1.1, <2.dev0
+DEBUG Adding direct dependency: mode-optimizer-service-client==1.0.4
+DEBUG Adding direct dependency: pandas>=2.2.2, <2.3.dev0
+DEBUG Adding direct dependency: numpy>=1.26.4, <1.27.dev0
+DEBUG Adding direct dependency: pandera>=0.18.3, <0.19.dev0
+DEBUG Adding direct dependency: pandera[mypy]>=0.18.3, <0.19.dev0
+DEBUG Adding direct dependency: pyarrow>=16.0.0
+DEBUG Adding direct dependency: python-dotenv>=1.0.0, <1.1.dev0
+DEBUG Adding direct dependency: python-decouple>=3.8, <4.dev0
+DEBUG Adding direct dependency: requests>=2.31.0, <2.32.dev0
+DEBUG Adding direct dependency: routingpy>=1.3.0, <1.4.dev0
+DEBUG Adding direct dependency: sentry-sdk>=1.45.0, <1.46.dev0
+DEBUG Adding direct dependency: scipy>=1.13.0, <1.14.dev0
+DEBUG Adding direct dependency: streamlit>=1.33.0, <1.34.dev0
+DEBUG Adding direct dependency: stringcase>=1.2.0, <1.3.dev0
+DEBUG Adding direct dependency: trino>=0.328.0, <0.329.dev0
+DEBUG Adding direct dependency: xlsxwriter>=3.2.0, <3.3.dev0
+DEBUG No cache entry for: https://repo.fury.io/loadsmart/arch/
+DEBUG No cache entry for: https://repo.fury.io/loadsmart/boto3/
+DEBUG No cache entry for: https://repo.fury.io/loadsmart/click/
+DEBUG No cache entry for: https://repo.fury.io/loadsmart/ddtrace/
+DEBUG No cache entry for: https://repo.fury.io/loadsmart/python-levenshtein/
+DEBUG No cache entry for: https://repo.fury.io/loadsmart/geopandas/
+DEBUG No cache entry for: https://repo.fury.io/loadsmart/fuzzywuzzy/
+DEBUG No cache entry for: https://repo.fury.io/loadsmart/geopy/
+DEBUG No cache entry for: https://repo.fury.io/loadsmart/requests-cache/
+DEBUG No cache entry for: https://repo.fury.io/loadsmart/jinja2/
+DEBUG No cache entry for: https://repo.fury.io/loadsmart/langchain/
+DEBUG No cache entry for: https://repo.fury.io/loadsmart/beautifulsoup4/
+DEBUG No cache entry for: https://repo.fury.io/loadsmart/shapely/
+DEBUG No cache entry for: https://repo.fury.io/loadsmart/openai/
+DEBUG No cache entry for: https://repo.fury.io/loadsmart/tiktoken/
+DEBUG No cache entry for: https://repo.fury.io/loadsmart/chromadb/
+DEBUG No cache entry for: https://repo.fury.io/loadsmart/pandas/
+DEBUG No cache entry for: https://repo.fury.io/loadsmart/numpy/
+DEBUG No cache entry for: https://repo.fury.io/loadsmart/pandera/
+DEBUG No cache entry for: https://repo.fury.io/loadsmart/pyarrow/
+DEBUG No cache entry for: https://repo.fury.io/loadsmart/python-dotenv/
+DEBUG No cache entry for: https://repo.fury.io/loadsmart/python-decouple/
+DEBUG No cache entry for: https://repo.fury.io/loadsmart/requests/
+DEBUG No cache entry for: https://repo.fury.io/loadsmart/routingpy/
+DEBUG No cache entry for: https://repo.fury.io/loadsmart/sentry-sdk/
+DEBUG No cache entry for: https://repo.fury.io/loadsmart/streamlit/
+DEBUG No cache entry for: https://repo.fury.io/loadsmart/scipy/
+DEBUG No cache entry for: https://repo.fury.io/loadsmart/trino/
+DEBUG No cache entry for: https://repo.fury.io/loadsmart/xlsxwriter/
+DEBUG No cache entry for: https://repo.fury.io/loadsmart/stringcase/
+DEBUG Found fresh response for: https://repo.fury.io/loadsmart/libpacker/
+DEBUG Found fresh response for: https://repo.fury.io/loadsmart/loadlog/
+DEBUG Found fresh response for: https://repo.fury.io/loadsmart/loadsmart-jwt-authenticator/
+DEBUG Found fresh response for: https://repo.fury.io/loadsmart/mode-optimizer-service-client/
+DEBUG Found fresh response for: https://repo.fury.io/loadsmart/-/ver_24u1I4/loadlog-0.8.0-py2.py3-none-any.whl#md5=8d8bb92b27ca012eff4247f65520ff6e
+DEBUG Found fresh response for: https://repo.fury.io/loadsmart/-/ver_13iERU/libpacker-0.12.3-py2.py3-none-any.whl#md5=251bc74ac6c60f7b41cd3ecd0e702909
+DEBUG Found fresh response for: https://repo.fury.io/loadsmart/-/ver_nO03m/loadsmart_jwt_authenticator-1.1.0-py2.py3-none-any.whl#md5=43dc4091cdeddaf52f15f6de47b9204f
+DEBUG No cache entry for: https://repo.fury.io/loadsmart/-/ver_1fyBD6/mode_optimizer_service_client-1.0.4-py2.py3-none-any.whl#md5=79a4ccc6f53e3c16d1c96d69c22384b5
+DEBUG No cache entry for: https://repo.fury.io/loadsmart/click/
+DEBUG No cache entry for: https://repo.fury.io/loadsmart/geopandas/
+DEBUG No cache entry for: https://repo.fury.io/loadsmart/numpy/
+DEBUG No cache entry for: https://repo.fury.io/loadsmart/boto3/
+DEBUG No cache entry for: https://repo.fury.io/loadsmart/arch/
+DEBUG No cache entry for: https://repo.fury.io/loadsmart/fuzzywuzzy/
+DEBUG No cache entry for: https://repo.fury.io/loadsmart/shapely/
+DEBUG No cache entry for: https://repo.fury.io/loadsmart/trino/
+DEBUG No cache entry for: https://repo.fury.io/loadsmart/python-dotenv/
+DEBUG No cache entry for: https://repo.fury.io/loadsmart/requests/
+DEBUG No cache entry for: https://repo.fury.io/loadsmart/streamlit/
+DEBUG No cache entry for: https://repo.fury.io/loadsmart/jinja2/
+DEBUG No cache entry for: https://repo.fury.io/loadsmart/beautifulsoup4/
+DEBUG No cache entry for: https://repo.fury.io/loadsmart/geopy/
+DEBUG No cache entry for: https://repo.fury.io/loadsmart/langchain/
+DEBUG No cache entry for: https://repo.fury.io/loadsmart/python-levenshtein/
+DEBUG No cache entry for: https://repo.fury.io/loadsmart/pandera/
+DEBUG No cache entry for: https://repo.fury.io/loadsmart/pandas/
+DEBUG No cache entry for: https://repo.fury.io/loadsmart/openai/
+DEBUG No cache entry for: https://repo.fury.io/loadsmart/chromadb/
+DEBUG No cache entry for: https://repo.fury.io/loadsmart/sentry-sdk/
+DEBUG No cache entry for: https://repo.fury.io/loadsmart/pyarrow/
+DEBUG No cache entry for: https://repo.fury.io/loadsmart/requests-cache/
+DEBUG No cache entry for: https://repo.fury.io/loadsmart/tiktoken/
+DEBUG No cache entry for: https://repo.fury.io/loadsmart/python-decouple/
+DEBUG No cache entry for: https://repo.fury.io/loadsmart/xlsxwriter/
+DEBUG No cache entry for: https://repo.fury.io/loadsmart/stringcase/
+DEBUG No cache entry for: https://repo.fury.io/loadsmart/ddtrace/
+DEBUG Found fresh response for: https://pypi.org/simple/geopandas/
+DEBUG Found fresh response for: https://pypi.org/simple/beautifulsoup4/
+DEBUG Found fresh response for: https://pypi.org/simple/fuzzywuzzy/
+DEBUG Found fresh response for: https://pypi.org/simple/trino/
+DEBUG Found fresh response for: https://pypi.org/simple/click/
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/b1/fe/e8c672695b37eecc5cbf43e1d0638d88d66ba3a44c4d321c796f4e59167f/beautifulsoup4-4.12.3-py3-none-any.whl.metadata
+DEBUG Found fresh response for: https://pypi.org/simple/python-dotenv/
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/85/52/bd70865476381599097ccc99b74e1b90fbd0b5430a39be2620fdc5b4b37c/trino-0.328.0-py3-none-any.whl.metadata
+DEBUG Found fresh response for: https://pypi.org/simple/jinja2/
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/90/37/08e416c9915dcf7d53deb0fbdb702266902c584617dfa6e6c84fb2fc6ee3/geopandas-0.14.3-py3-none-any.whl.metadata
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/6a/3e/b68c118422ec867fa7ab88444e1274aa40681c606d59ac27de5a5588f082/python_dotenv-1.0.1-py3-none-any.whl.metadata
+DEBUG Found fresh response for: https://pypi.org/simple/geopy/
+DEBUG Found fresh response for: https://pypi.org/simple/requests/
+DEBUG Found fresh response for: https://pypi.org/simple/arch/
+DEBUG Found fresh response for: https://pypi.org/simple/streamlit/
+DEBUG Found fresh response for: https://pypi.org/simple/shapely/
+DEBUG Found fresh response for: https://pypi.org/simple/langchain/
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/43/ff/74f23998ad2f93b945c0309f825be92e04e0348e062026998b5eefef4c33/fuzzywuzzy-0.18.0-py2.py3-none-any.whl.metadata
+DEBUG Found fresh response for: https://pypi.org/simple/boto3/
+DEBUG Found fresh response for: https://pypi.org/simple/python-levenshtein/
+DEBUG Found fresh response for: https://pypi.org/simple/numpy/
+DEBUG Found fresh response for: https://pypi.org/simple/pandera/
+DEBUG No cache entry for: https://repo.fury.io/loadsmart/scipy/
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/00/2e/d53fa4befbf2cfa713304affc7ca780ce4fc1fd8710527771b58311a3229/click-8.1.7-py3-none-any.whl.metadata
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/30/6d/6de6be2d02603ab56e72997708809e8a5b0fbfee080735109b40a3564843/Jinja2-3.1.3-py3-none-any.whl.metadata
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/bd/88/c9b88c62a7caf4b3d376d95589245808e385f7aea068cb44db02c3bbca75/arch-7.0.0-cp312-cp312-macosx_10_9_x86_64.whl.metadata
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/70/8e/0e2d847013cb52cd35b38c009bb167a1a26b2ce6cd6965bf26b47bc0bf44/requests-2.31.0-py3-none-any.whl.metadata
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/e5/15/cf2a69ade4b194aa524ac75112d5caac37414b20a3a03e6865dfe0bd1539/geopy-2.4.1-py3-none-any.whl.metadata
+DEBUG Found fresh response for: https://pypi.org/simple/chromadb/
+DEBUG Found fresh response for: https://pypi.org/simple/openai/
+DEBUG Found fresh response for: https://pypi.org/simple/pandas/
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/b7/f9/9ad1e6e33e4ae149aead1ee8062e536d060b50d650df710899805562910a/streamlit-1.33.0-py2.py3-none-any.whl.metadata
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/b2/7f/2479812b618c61d72676749ae644671317af86683eb561183c4f7188cc1a/shapely-2.0.4-cp312-cp312-macosx_10_9_x86_64.whl.metadata
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/ed/3e/93045d37eba24e0b5eb05312e30cd9e12805ea5f1ae9ba51ec8a7d2f5372/langchain-0.1.16-py3-none-any.whl.metadata
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/03/04/07a172499600f7d1630bb66568449506467ea61260a2aabd4bce95459483/boto3-1.34.91-py3-none-any.whl.metadata
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/72/8e/559c539e76bc0b1defec3da39a047fe151258efc9b215bf41db41e2c7922/python_Levenshtein-0.25.1-py3-none-any.whl.metadata
+DEBUG Found fresh response for: https://pypi.org/simple/sentry-sdk/
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/95/12/8f2020a8e8b8383ac0177dc9570aad031a3beb12e38847f7129bacd96228/numpy-1.26.4-cp312-cp312-macosx_10_9_x86_64.whl.metadata
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/8a/8c/f9b264751778afda2d5f9fb977560c2646747efdcbef72c002abae5d80ab/pandera-0.18.3-py3-none-any.whl.metadata
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/a4/e1/ce276f553811bd6c684cfe5f637a33ae6444750746f974a8f73d5dc92004/chromadb-0.5.0-py3-none-any.whl.metadata
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/ae/59/911d6e5f1d7514d79c527067643376cddcf4cb8d1728e599b3b03ab51c69/openai-0.28.0-py3-none-any.whl.metadata
+DEBUG Searching for a compatible version of openai (==0.28)
+DEBUG Selecting: openai==0.28.0 (openai-0.28.0-py3-none-any.whl)
+DEBUG Adding transitive dependency for openai==0.28.0: requests>=2.20
+DEBUG Adding transitive dependency for openai==0.28.0: tqdm*
+DEBUG Adding transitive dependency for openai==0.28.0: aiohttp*
+DEBUG Searching for a compatible version of mode-optimizer-service-client (==1.0.4)
+DEBUG Selecting: mode-optimizer-service-client==1.0.4 (mode_optimizer_service_client-1.0.4-py2.py3-none-any.whl)
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/dd/49/de869130028fb8d90e25da3b7d8fb13e40f5afa4c4af1781583eb1ff3839/pandas-2.2.2-cp312-cp312-macosx_10_9_x86_64.whl.metadata
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/b7/26/cf87e98fb7fa5781c40474970a76d40b04289b949c0a327b719336aa5bca/sentry_sdk-1.45.0-py2.py3-none-any.whl.metadata
+DEBUG Found fresh response for: https://pypi.org/simple/pyarrow/
+DEBUG No cache entry for: https://repo.fury.io/loadsmart/aiohttp/
+DEBUG No cache entry for: https://repo.fury.io/loadsmart/tqdm/
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/0f/64/7a94bec6658873c7d82f743a92653bcc961eda95480827bd46d2d33003be/pyarrow-16.0.0-cp312-cp312-macosx_10_15_x86_64.whl.metadata
+DEBUG Found fresh response for: https://pypi.org/simple/requests-cache/
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/cc/23/863f517b5d74e297e669c88093ecd92e13a06c488e90acbd5507819049ac/requests_cache-1.2.0-py3-none-any.whl.metadata
+DEBUG No cache entry for: https://repo.fury.io/loadsmart/routingpy/
+DEBUG Found fresh response for: https://pypi.org/simple/xlsxwriter/
+DEBUG Found fresh response for: https://pypi.org/simple/tiktoken/
+DEBUG Found fresh response for: https://pypi.org/simple/python-decouple/
+DEBUG Found fresh response for: https://pypi.org/simple/stringcase/
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/a7/ea/53d1fe468e63e092cf16e2c18d16f50c29851242f9dd12d6a66e0d7f0d02/XlsxWriter-3.2.0-py3-none-any.whl.metadata
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/55/57/8028b05cd47db34ea8d9f6ff7720018c523b507df702789b56e36f4c3cf6/tiktoken-0.6.0-cp312-cp312-macosx_10_9_x86_64.whl.metadata
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/a2/d4/9193206c4563ec771faf2ccf54815ca7918529fe81f6adb22ee6d0e06622/python_decouple-3.8-py3-none-any.whl.metadata
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/f3/1f/1241aa3d66e8dc1612427b17885f5fcd9c9ee3079fc0d28e9a3aeeb36fa3/stringcase-1.2.0.tar.gz
+DEBUG Preparing metadata for: stringcase==1.2.0
+DEBUG No static `PKG-INFO` available for: stringcase==1.2.0 (DynamicPkgInfo(UnsupportedMetadataVersion("1.0")))
+DEBUG No static `pyproject.toml` available for: stringcase==1.2.0 (MissingPyprojectToml)
+DEBUG Solving with target Python version 3.12.3
+DEBUG Adding direct dependency: setuptools>=40.8.0
+DEBUG No cache entry for: https://repo.fury.io/loadsmart/aiohttp/
+DEBUG No cache entry for: https://repo.fury.io/loadsmart/tqdm/
+DEBUG No cache entry for: https://repo.fury.io/loadsmart/setuptools/
+DEBUG Found fresh response for: https://pypi.org/simple/routingpy/
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/ce/01/72f3ed477b8bbf0774c95e11c6eaabdc1ac7e9bf9417b1c9bc3741a126f9/routingpy-1.3.0-py3-none-any.whl.metadata
+DEBUG Found fresh response for: https://pypi.org/simple/scipy/
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/fc/4e/67541c3d681bb6fb96acbc3581fb155c881a0d993d0aa3e8708493b70e79/scipy-1.13.0-cp312-cp312-macosx_10_9_x86_64.whl.metadata
+DEBUG Found fresh response for: https://pypi.org/simple/ddtrace/
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/d0/ba/57236b1018c4e10f4aacdbba9585cac13bad5244f49b6a51622d0aa77733/ddtrace-2.8.2-cp312-cp312-macosx_11_0_x86_64.whl.metadata
+DEBUG No cache entry for: https://repo.fury.io/loadsmart/setuptools/
+DEBUG Found fresh response for: https://pypi.org/simple/tqdm/
+DEBUG Found fresh response for: https://pypi.org/simple/aiohttp/
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/2a/14/e75e52d521442e2fcc9f1df3c5e456aead034203d4797867980de558ab34/tqdm-4.66.2-py3-none-any.whl.metadata
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/18/5f/f6428eb55244d44e1c674c8c823ae1567136ac1d2f8b128e194dd4febbe1/aiohttp-3.9.5-cp312-cp312-macosx_10_9_x86_64.whl.metadata
+DEBUG Found stale response for: https://pypi.org/simple/setuptools/
+DEBUG Sending revalidation request for: https://pypi.org/simple/setuptools/
+DEBUG Found not-modified response for: https://pypi.org/simple/setuptools/
+DEBUG Searching for a compatible version of setuptools (>=40.8.0)
+DEBUG Selecting: setuptools==69.5.1 (setuptools-69.5.1-py3-none-any.whl)
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/f7/29/13965af254e3373bceae8fb9a0e6ea0d0e571171b80d6646932131d6439b/setuptools-69.5.1-py3-none-any.whl.metadata
+DEBUG Tried 2 versions: root 1, setuptools 1
+DEBUG Installing in setuptools==69.5.1 in /Users/fernando/Library/Caches/uv/.tmpajmOr6/.venv
+DEBUG Identified uncached requirement: setuptools==69.5.1
+DEBUG Downloading and building requirement for build: setuptools==69.5.1
+DEBUG No cache entry for: https://files.pythonhosted.org/packages/f7/29/13965af254e3373bceae8fb9a0e6ea0d0e571171b80d6646932131d6439b/setuptools-69.5.1-py3-none-any.whl
+error: Failed to download `mode-optimizer-service-client==1.0.4`
+  Caused by: Failed to unzip wheel: mode_optimizer_service_client-1.0.4-py2.py3-none-any.whl
+  Caused by: an upstream reader returned an error: io error occurred: Request error: HTTP status client error (403 Forbidden) for url (https://s3.amazonaws.com/gemfury/gems/REDACTED/mode_optimizer_service_client_1_0_4_py2_py3_none_any_whl?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=REDACTED%2F20240424%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20240424T205354Z&X-Amz-Expires=900&X-Amz-SignedHeaders=host&X-Amz-Signature=REDACTED)
+  Caused by: io error occurred: Request error: HTTP status client error (403 Forbidden) for url (https://s3.amazonaws.com/gemfury/gems/REDACTED/mode_optimizer_service_client_1_0_4_py2_py3_none_any_whl?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=REDACTED%2F20240424%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20240424T205354Z&X-Amz-Expires=900&X-Amz-SignedHeaders=host&X-Amz-Signature=REDACTED)
+  Caused by: Request error: HTTP status client error (403 Forbidden) for url (https://s3.amazonaws.com/gemfury/gems/REDACTED/mode_optimizer_service_client_1_0_4_py2_py3_none_any_whl?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=REDACTED%2F20240424%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20240424T205354Z&X-Amz-Expires=900&X-Amz-SignedHeaders=host&X-Amz-Signature=REDACTED)
+  Caused by: HTTP status client error (403 Forbidden) for url (https://s3.amazonaws.com/gemfury/gems/REDACTED/mode_optimizer_service_client_1_0_4_py2_py3_none_any_whl?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=REDACTED%2F20240424%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20240424T205354Z&X-Amz-Expires=900&X-Amz-SignedHeaders=host&X-Amz-Signature=REDACTED)
+```
+
+Context:
+* uv version: 0.1.38
+* Platform: macOS Monterey 12.7.3, MacBook Pro (Retina, 15-inch, Mid 2015)
+
+Any idea how to fix it?
+
+PS 1: I do have the pair `UV_EXTRA_INDEX_URL` = `PIP_EXTRA_INDEX_URL` variables correctly set.
+PS 2: using `pip compile` works fine. The issue exists only when using `uv`
+
+---
+
+_Comment by @zanieb on 2024-04-24 21:05_
+
+Hi! Thanks for the thorough report. This is a duplicate of https://github.com/astral-sh/uv/issues/2025 which will be resolved by something like https://github.com/astral-sh/uv/pull/2843 or https://github.com/prefix-dev/async_http_range_reader/pull/11
+
+---
+
+_Closed by @zanieb on 2024-04-24 21:05_
+
+---
+
+_Label `duplicate` added by @zanieb on 2024-04-24 21:05_
+
+---
+
+_Comment by @charliermarsh on 2024-05-08 14:45_
+
+Should be fixed by https://github.com/astral-sh/uv/pull/3460.
+
+---
+
+_Referenced in [astral-sh/uv#3460](../../astral-sh/uv/pulls/3460.md) on 2024-05-08 14:45_
+
+---
+
+_Closed by @charliermarsh on 2024-05-08 14:54_
+
+---

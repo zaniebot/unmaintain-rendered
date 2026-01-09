@@ -1,0 +1,436 @@
+---
+number: 7938
+title: Format instability with 22 python files
+type: issue
+state: closed
+author: qarmin
+labels:
+  - bug
+  - formatter
+assignees: []
+created_at: 2023-10-13T09:40:55Z
+updated_at: 2023-10-25T19:27:08Z
+url: https://github.com/astral-sh/ruff/issues/7938
+synced_at: 2026-01-07T13:12:15-06:00
+---
+
+# Format instability with 22 python files
+
+---
+
+_Issue opened by @qarmin on 2023-10-13 09:40_
+
+Ruff 0.0.292 48b256bd943ae7c95d27c8251fd33bb429b59bb0
+
+[BROKEN_FILES.zip](https://github.com/astral-sh/ruff/files/12892081/BROKEN_FILES.zip)
+
+Second ruff format change
+```
+--- /opt/BROKEN_FILES/BD2/A_18156933735258470382.py	2023-10-12 22:51:05.106261245 +0000
++++ /opt/BROKEN_FILES/BD3/A_18156933735258470382.py	2023-10-12 22:51:05.118261377 +0000
+@@ -20,9 +20,9 @@
+     return (
+         '"'
+         + (
+-            string.encode(
+-                "unicode-escape"
+-            ).decode(encoding)  # Perform the actual octal-escaping encode
++            string.encode("unicode-escape").decode(
++                encoding
++            )  # Perform the actual octal-escaping encode
+         ).replace('"', '\\"')
+         + '"'
+     )  # Decode original encoding
+
+
+
+//////////////////////////////////////////////////////
+
+--- /opt/BROKEN_FILES/BD2/A_7336379587463235129.py	2023-10-12 22:51:06.964307522 +0000
++++ /opt/BROKEN_FILES/BD3/A_7336379587463235129.py	2023-10-12 22:51:06.984307789 +0000
+@@ -845,7 +845,7 @@
+                         to_date=tune_to_date,
+                     )
+                 )
+-                  # noqa: E501
++                # noqa: E501
+                 .mask(
+                     cond=_y_true.isnull(),
+                     other=False,
+
+
+
+//////////////////////////////////////////////////////
+--- /opt/BROKEN_FILES/BD2/A_7787031332877693400.py	2023-10-12 22:51:06.964307522 +0000
++++ /opt/BROKEN_FILES/BD3/A_7787031332877693400.py	2023-10-12 22:51:06.984307789 +0000
+@@ -236,7 +236,7 @@
+             raise Exception("t must have at most 2 dimensions")
+         idx = (
+             (torch.floor(tt * num_edges).clamp(min=0, max=num_edges - 1).long())
+-              # Bx|t|
++            # Bx|t|
+             .unsqueeze(2)
+             .repeat(1, 1, D)
+         ).to(self.device)  # Bx|t|xD, this assumes that nodes are equi-distant
+
+
+
+//////////////////////////////////////////////////////
+
+--- /opt/BROKEN_FILES/BD2/A_4322223575259480311.py	2023-10-12 22:45:25.034520555 +0000
++++ /opt/BROKEN_FILES/BD3/A_4322223575259480311.py	2023-10-12 22:45:25.058520404 +0000
+@@ -46,6 +46,8 @@
+ # fmt: off
+ 
+ 
++
++
+ # fmt: on
+ 
+ setup(
+
+
+
+//////////////////////////////////////////////////////
+--- /opt/BROKEN_FILES/BD2/A_17340330109226497559.py	2023-10-12 22:45:25.034520555 +0000
++++ /opt/BROKEN_FILES/BD3/A_17340330109226497559.py	2023-10-12 22:45:25.058520404 +0000
+@@ -79,9 +79,9 @@
+             1
+         )
+     else:
+-        dataset = dataset.batch(
+-            config["batch_size"], drop_remainder=True
+-        ).prefetch(1)  # drop_remainder needed by TPU
++        dataset = dataset.batch(config["batch_size"], drop_remainder=True).prefetch(
++            1
++        )  # drop_remainder needed by TPU
+ 
+     return dataset
+ 
+
+
+
+//////////////////////////////////////////////////////
+--- /opt/BROKEN_FILES/BD2/A_13304754489062272979.py	2023-10-12 22:45:25.034520555 +0000
++++ /opt/BROKEN_FILES/BD3/A_13304754489062272979.py	2023-10-12 22:45:25.058520404 +0000
+@@ -296,7 +296,7 @@
+             context_outputscales = self.outputscale_list * self.context_weight
+         context_covar = (
+             (context_outputscales.unsqueeze(-2))
+-              # (ns) x 1 x num_contexts
++            # (ns) x 1 x num_contexts
+             .mul(context_covar)
+             .mul(context_outputscales.unsqueeze(-1))  # (ns) x num_contexts x 1
+         )
+
+
+
+//////////////////////////////////////////////////////
+--- /opt/BROKEN_FILES/BD2/A_6853474249176226658.py	2023-10-12 22:45:25.030520580 +0000
++++ /opt/BROKEN_FILES/BD3/A_6853474249176226658.py	2023-10-12 22:45:25.054520429 +0000
+@@ -99,8 +99,7 @@
+             hists[eff_name] = hists[name].copy()
+             hists[eff_name].metadata = {"name": eff_name}
+             hists[eff_name].view().value = (
+-                hists[name].values(flow=False)
+-                / hists["total"].values(flow=False)  # type: ignore # noqa
++                hists[name].values(flow=False) / hists["total"].values(flow=False)  # type: ignore # noqa
+             )
+             hists[eff_name].view().variance = np.square(  # type: ignore
+                 binomial_uncertainty(
+
+
+
+//////////////////////////////////////////////////////
+--- /opt/BROKEN_FILES/BD2/A_7249352958230701781.py	2023-10-12 22:45:25.034520555 +0000
++++ /opt/BROKEN_FILES/BD3/A_7249352958230701781.py	2023-10-12 22:45:25.058520404 +0000
+@@ -135,8 +135,7 @@
+ 
+         if method_name in self.router.routes:  # noqa
+             raise RuntimeError(
+-                "Method name already used for %r"
+-                % self.router.routes[method_name,],  # noqa
++                "Method name already used for %r" % self.router.routes[method_name,],  # noqa
+             )
+         kwargs.pop("timeout")
+         self._channel.queue_declare(method_name, **kwargs)
+
+
+
+//////////////////////////////////////////////////////
+--- /opt/BROKEN_FILES/BD2/A_6764998734292538575.py	2023-10-12 22:45:25.034520555 +0000
++++ /opt/BROKEN_FILES/BD3/A_6764998734292538575.py	2023-10-12 22:45:25.054520429 +0000
+@@ -221,7 +221,7 @@
+ 
+         backtrack_controller_steps = actions[
+             0 : action_length - backtrack_steps + 1 :
+-              # noqa: E203
++            # noqa: E203
+         ][::-1]
+         counter = 0
+ 
+
+
+
+//////////////////////////////////////////////////////
+--- /opt/BROKEN_FILES/BD2/A_11049069136842829695.py	2023-10-12 22:45:25.030520580 +0000
++++ /opt/BROKEN_FILES/BD3/A_11049069136842829695.py	2023-10-12 22:45:25.054520429 +0000
+@@ -303,7 +303,7 @@
+ 
+         labels = (
+             (img_patch.long().flatten(start_dim=2, end_dim=4))
+-              # [B, C, ph*pw*pd]
++            # [B, C, ph*pw*pd]
+             .permute(0, 2, 1)
+             .contiguous()
+         )  # [B, ph*pw*pd, C]
+
+
+
+//////////////////////////////////////////////////////
+
+--- /opt/BROKEN_FILES/BD2/A_12001296520079131083.py	2023-10-12 22:59:48.663054750 +0000
++++ /opt/BROKEN_FILES/BD3/A_12001296520079131083.py	2023-10-12 22:59:48.699054952 +0000
+@@ -337,7 +337,7 @@
+     )
+     after_min_ix = (
+         (~df.isnull().iloc[::-1])
+-          # This reverses the dataframe for us
++        # This reverses the dataframe for us
+         .expanding()
+         .sum()
+         .where(lambda x: x > 0)
+
+
+
+//////////////////////////////////////////////////////
+--- /opt/BROKEN_FILES/BD2/A_17933101041011502604.py	2023-10-12 22:59:48.659054727 +0000
++++ /opt/BROKEN_FILES/BD3/A_17933101041011502604.py	2023-10-12 22:59:48.691054907 +0000
+@@ -296,7 +296,7 @@
+ jinja_name = (
+     P.letter
+     + (P.letter | P.decimal_digit | P.string("_"))
+-      # type: ignore
++    # type: ignore
+     .many()
+     .concat()
+ )
+
+
+
+//////////////////////////////////////////////////////
+--- /opt/BROKEN_FILES/BD2/A_4305304105095496038.py	2023-10-12 22:59:48.655054705 +0000
++++ /opt/BROKEN_FILES/BD3/A_4305304105095496038.py	2023-10-12 22:59:48.687054884 +0000
+@@ -88,9 +88,11 @@
+     """
+     preset = Preset(json_data=bottle.request.body.read())
+     if preset.times != FOREVER and preset.times <= 0:
+-        msg = "Preset has {0} times. Must be greater than " "zero.".format(
+-            preset.times
+-        ).encode()
++        msg = (
++            "Preset has {0} times. Must be greater than " "zero.".format(
++                preset.times
++            ).encode()
++        )
+         raise HTTPResponse(msg, status=400)
+     try:
+         pretender = get_pretenders("http")[uid]
+
+
+
+//////////////////////////////////////////////////////
+--- /opt/BROKEN_FILES/BD2/A_11416377307966075852.py	2023-10-12 22:59:48.659054727 +0000
++++ /opt/BROKEN_FILES/BD3/A_11416377307966075852.py	2023-10-12 22:59:48.695054929 +0000
+@@ -169,7 +169,7 @@
+     SmartyPants configuration:
+      - language=de: Gänsefüßchen ‚‘ and „“
+      - language=fr: Guillemets ‹› and «»
+-     - any other language: quotes '' and """""
++     - any other language: quotes '' and """ ""
+ 
+     DCT_LANG_CFG_SMARTY = {
+         "de": {
+
+
+
+//////////////////////////////////////////////////////
+--- /opt/BROKEN_FILES/BD2/A_9313446503711191296.py	2023-10-12 22:59:48.659054727 +0000
++++ /opt/BROKEN_FILES/BD3/A_9313446503711191296.py	2023-10-12 22:59:48.695054929 +0000
+@@ -24,11 +24,9 @@
+             "当前目录下存在pidfile，请确保server没有启动，" "并删除pidfile后再试"
+         )
+         sys.exit(-1)
+-    args = (
+-        "uwsgi --ini {}:distsuperd " "--mule=distsuper.main.diff:diff".format(
+-            CONFIG.config_file_path
+-        ).split()
+-    )
++    args = "uwsgi --ini {}:distsuperd " "--mule=distsuper.main.diff:diff".format(
++        CONFIG.config_file_path
++    ).split()
+     env = os.environ
+     env.update({"DISTSUPER_MODULE_NAME": "server"})
+     ret = subprocess.Popen(args, env=env).wait()
+
+
+
+//////////////////////////////////////////////////////
+--- /opt/BROKEN_FILES/BD2/A_16870730645052753573.py	2023-10-12 22:59:48.659054727 +0000
++++ /opt/BROKEN_FILES/BD3/A_16870730645052753573.py	2023-10-12 22:59:48.695054929 +0000
+@@ -35,8 +35,7 @@
+     s = e.object[e.start : e.end]
+     return "".join(
+         [
+-            r"\%s "
+-            % str(hex(ord(x)))[2:].upper()  # remove 0x from hex
++            r"\%s " % str(hex(ord(x)))[2:].upper()  # remove 0x from hex
+             for x in s
+         ]
+     ), e.end
+
+
+
+//////////////////////////////////////////////////////
+
+--- /opt/BROKEN_FILES/BD2/A_5181321279765616378.py	2023-10-12 22:47:13.381931539 +0000
++++ /opt/BROKEN_FILES/BD3/A_5181321279765616378.py	2023-10-12 22:47:13.405931613 +0000
+@@ -284,9 +284,9 @@
+ 
+         else:
+             labels_pie_sorted = list(
+-                data.sort_values(
+-                    by=i, ascending=False
+-                )[i]  # Las variables con números las ordenamos según
++                data.sort_values(by=i, ascending=False)[
++                    i
++                ]  # Las variables con números las ordenamos según
+                 .value_counts(sort=False)
+                 .index
+             )  # sus etiquetas.
+
+
+
+//////////////////////////////////////////////////////
+--- /opt/BROKEN_FILES/BD2/A_9229878460739965631.py	2023-10-12 22:47:13.381931539 +0000
++++ /opt/BROKEN_FILES/BD3/A_9229878460739965631.py	2023-10-12 22:47:13.405931613 +0000
+@@ -146,7 +146,8 @@
+                 (
+                     x[leng_final]
+                     for x in l_dic_trads
+-                    if (  # El diccionario de la unidad traducida
++                    if
++                    (  # El diccionario de la unidad traducida
+                         leng_orig in x  # Si la lengua original existe para esta unidad
+                         and (
+                             u == x[leng_orig]["pr"] or u in x[leng_orig]["sn"]
+
+
+
+//////////////////////////////////////////////////////
+--- /opt/BROKEN_FILES/BD2/A_16926200810497433518.py	2023-10-12 22:47:13.377931527 +0000
++++ /opt/BROKEN_FILES/BD3/A_16926200810497433518.py	2023-10-12 22:47:13.401931601 +0000
+@@ -78,7 +78,7 @@
+         *_DISK_META_MAGIC,
+         *memoryview(
+             (image_name.encode("utf-8") + b"\x00" * _DISK_META_IMAGE_NAME_SIZE)[
+-                  # type: ignore
++                # type: ignore
+                 :_DISK_META_IMAGE_NAME_SIZE
+             ]
+         ).cast("c"),
+
+
+
+//////////////////////////////////////////////////////
+--- /opt/BROKEN_FILES/BD2/A_14865560629242782953.py	2023-10-12 22:47:13.381931539 +0000
++++ /opt/BROKEN_FILES/BD3/A_14865560629242782953.py	2023-10-12 22:47:13.405931613 +0000
+@@ -57,9 +57,9 @@
+     # 请用户按需执行对空格制表符等的预处理，只有你最清楚自己的文本中都有些什么奇怪的东西
+     print(
+         analyzer.analyze(
+-            "空格 \t\n\r\f&nbsp;统统都不要".replace(
+-                "\\s+", ""
+-            ).replace("&nbsp;", "")  # 去除所有空白符  # 如果一些文本中含有html控制符
++            "空格 \t\n\r\f&nbsp;统统都不要".replace("\\s+", "").replace(
++                "&nbsp;", ""
++            )  # 去除所有空白符  # 如果一些文本中含有html控制符
+         )
+     )
+ 
+
+
+
+//////////////////////////////////////////////////////
+--- /opt/BROKEN_FILES/BD2/A_13780655196900598910.py	2023-10-12 22:47:13.381931539 +0000
++++ /opt/BROKEN_FILES/BD3/A_13780655196900598910.py	2023-10-12 22:47:13.405931613 +0000
+@@ -237,7 +237,7 @@
+     Y[l - m, l - m] = sqrt_half * (-1j)
+     return (
+         (Y @ C)
+-          # transform Clebsh-Gordon to apply for real harmonics
++        # transform Clebsh-Gordon to apply for real harmonics
+         .swapaxes(0, 1)
+         .reshape(n_m * 2, n_m * 2)
+     )  # s, m -> combined (m, s)
+
+
+
+//////////////////////////////////////////////////////
+--- /opt/BROKEN_FILES/BD2/A_12402179817577100921.py	2023-10-12 22:47:13.377931527 +0000
++++ /opt/BROKEN_FILES/BD3/A_12402179817577100921.py	2023-10-12 22:47:13.401931601 +0000
+@@ -210,8 +210,7 @@
+     input_shapes = [get_shape(v) for v in inputs]
+     assert len(input_shapes) == 2, input_shapes
+     assert (
+-        input_shapes[0][-1]
+-        == input_shapes[1][-2]  # type: ignore
++        input_shapes[0][-1] == input_shapes[1][-2]  # type: ignore
+     ), input_shapes  # type: ignore
+     flop = prod(input_shapes[0]) * input_shapes[-1][-1]  # type: ignore
+     return flop
+
+
+
+//////////////////////////////////////////////////////
+
+```
+
+---
+
+_Label `bug` added by @konstin on 2023-10-13 09:42_
+
+---
+
+_Label `formatter` added by @konstin on 2023-10-13 09:42_
+
+---
+
+_Added to milestone `Formatter: Stable` by @MichaReiser on 2023-10-16 07:45_
+
+---
+
+_Referenced in [astral-sh/ruff#8184](../../astral-sh/ruff/issues/8184.md) on 2023-10-25 16:34_
+
+---
+
+_Comment by @T-256 on 2023-10-25 19:19_
+
+It seems all of them fixed
+
+```shell
+BD>ruff format .
+22 files reformatted
+
+BD>ruff format .
+22 files left unchanged
+
+BD>ruff --version
+ruff 0.1.2
+```
+
+---
+
+_Closed by @qarmin on 2023-10-25 19:27_
+
+---

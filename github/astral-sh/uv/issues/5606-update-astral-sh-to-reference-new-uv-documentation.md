@@ -1,0 +1,52 @@
+---
+number: 5606
+title: "Update `astral.sh` to reference new uv documentation"
+type: issue
+state: closed
+author: zanieb
+labels:
+  - documentation
+assignees: []
+created_at: 2024-07-30T16:37:03Z
+updated_at: 2024-08-20T20:08:38Z
+url: https://github.com/astral-sh/uv/issues/5606
+synced_at: 2026-01-07T13:12:17-06:00
+---
+
+# Update `astral.sh` to reference new uv documentation
+
+---
+
+_Issue opened by @zanieb on 2024-07-30 16:37_
+
+_No description provided._
+
+---
+
+_Label `documentation` added by @zanieb on 2024-07-30 16:37_
+
+---
+
+_Assigned to @charliermarsh by @zanieb on 2024-07-30 16:37_
+
+---
+
+_Referenced in [astral-sh/uv#5973](../../astral-sh/uv/issues/5973.md) on 2024-08-09 18:21_
+
+---
+
+_Comment by @nikhilweee on 2024-08-09 18:34_
+
+There's `rye.astral.sh`, there's `astral.sh/ruff`, and then there's `astral.sh/uv` which points to this github repo. Any plans for standardization? I'd love to see landing pages at `astral.sh/<tool>`, and the corresponding docs at `docs.astral.sh/<tool>`
+
+---
+
+_Comment by @zanieb on 2024-08-09 18:44_
+
+Yes. we'll need a landing page for uv (created https://github.com/astral-sh/uv/issues/5974). I don't know if we'll add Rye to the Astral website — we've taken over stewardship of the project but I'm not sure it's a "product under our brand".
+
+---
+
+_Closed by @charliermarsh on 2024-08-20 20:08_
+
+---

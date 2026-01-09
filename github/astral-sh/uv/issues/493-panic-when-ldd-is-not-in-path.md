@@ -1,0 +1,69 @@
+---
+number: 493
+title: Panic when ldd is not in path
+type: issue
+state: closed
+author: konstin
+labels:
+  - bug
+assignees: []
+created_at: 2023-11-23T09:48:42Z
+updated_at: 2023-11-28T05:55:06Z
+url: https://github.com/astral-sh/uv/issues/493
+synced_at: 2026-01-07T13:12:16-06:00
+---
+
+# Panic when ldd is not in path
+
+---
+
+_Issue opened by @konstin on 2023-11-23 09:48_
+
+Granted, this one is exotic. Paths are for ubuntu 23.10.
+
+```console
+$ PATH=$HOME/.cargo/bin:/usr/sbin cargo run --bin puffin -q -- pip-compile -v --cache-dir cache-mst scripts/benchmarks/requirements/black.in
+thread 'main' panicked at crates/platform-host/src/linux.rs:19:10:
+failed to execute ldd: Os { code: 2, kind: NotFound, message: "No such file or directory" }
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+```
+
+---
+
+_Label `bug` added by @charliermarsh on 2023-11-25 17:26_
+
+---
+
+_Comment by @charliermarsh on 2023-11-25 17:26_
+
+Can you expand on what the issue is here?
+
+---
+
+_Comment by @konstin on 2023-11-25 19:03_
+
+We expect that `ldd` is in `PATH` at
+
+https://github.com/astral-sh/puffin/blob/9d35128840908020416d42e504c6fe256a1d82db/crates/platform-host/src/linux.rs#L16-L19
+
+which is a reasonable assumption to make, but we should error instead of panicking when `ldd` isn't there.
+
+---
+
+_Comment by @charliermarsh on 2023-11-25 23:29_
+
+Thanks :)
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2023-11-25 23:35_
+
+---
+
+_Referenced in [astral-sh/uv#506](../../astral-sh/uv/pulls/506.md) on 2023-11-28 05:51_
+
+---
+
+_Closed by @charliermarsh on 2023-11-28 05:55_
+
+---

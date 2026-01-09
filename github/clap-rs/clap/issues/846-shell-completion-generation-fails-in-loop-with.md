@@ -1,0 +1,105 @@
+---
+number: 846
+title: Shell completion generation fails in loop with global flags/options
+type: issue
+state: closed
+author: Fleshgrinder
+labels:
+  - C-bug
+  - A-completion
+assignees: []
+created_at: 2017-02-08T22:06:06Z
+updated_at: 2018-08-02T03:30:01Z
+url: https://github.com/clap-rs/clap/issues/846
+synced_at: 2026-01-07T13:12:19-06:00
+---
+
+# Shell completion generation fails in loop with global flags/options
+
+---
+
+_Issue opened by @Fleshgrinder on 2017-02-08 22:06_
+
+### Rust Version
+`N/A`
+
+### Affected Version of clap
+Probably all but 2.20.3 was the one where the bug was encountered.
+
+### Expected Behavior Summary
+Build and compilation should succeed.
+
+### Actual Behavior Summary
+Build fails with the following output:
+
+```
+$ cargo build
+   Compiling mwe v0.1.0 (file:///D:/GitHub/rust-phpup)
+error: failed to run custom build command for `mwe v0.1.0 (file:///D:/GitHub/rust-phpup)`
+process didn't exit successfully: `D:\GitHub\rust-phpup\target\debug\build\mwe-563482c66f20550f\build-script-build` (exit code: 101)
+--- stderr
+thread 'main' panicked at 'Non-unique argument name: quiet is already in use', C:\Users\Fleshgrinder\.cargo\registry\src\github.com-1ecc6299db9ec823\clap-2.20.3\src\app\parser.rs:147
+note: Run with `RUST_BACKTRACE=1` for a backtrace.
+```
+
+### Steps to Reproduce the issue
+`cargo build` the code linked in the Gist
+
+### Sample Code or Link to Sample Code
+https://gist.github.com/Fleshgrinder/3b562bb6c91deb49635543e68f720651
+
+### Reason
+The problem occurs due to `gen_completion` and `build.rs` where [the _app_ is reused in the loop](https://gist.github.com/Fleshgrinder/3b562bb6c91deb49635543e68f720651#file-build-rs-L8-L15) as you discovered already in a short Gitter chat.
+
+---
+
+_Comment by @kbknapp on 2017-02-09 16:00_
+
+Thanks, as per our discussion on gitter, I shuold have this fixed soon 😄 
+
+---
+
+_Comment by @kbknapp on 2017-02-09 16:04_
+
+Also, incase anyone else is running into this calling the `gen_completions` causes all global `Arg`s to be propogated, on second and further iterations of the loop, this causes duplicate `Arg`s to be built which is an error.
+
+This is a bug, and those duplicate `Arg`s should be ignored in this case.
+
+The temporary fix is to rebuild the `App` struct with each iteration of the loop (which takes nanoseconds, so isn't a big deal).
+
+```rust
+for shell in &[Shell::Bash, Shell::PowerShell] {
+    let mut app = build_cli();
+    app.gen_completions(env!("CARGO_PKG_NAME"), *shell, env!("OUT_DIR"));
+}
+```
+
+---
+
+_Label `C: completion gen` added by @kbknapp on 2017-02-09 16:04_
+
+---
+
+_Label `D: easy` added by @kbknapp on 2017-02-09 16:04_
+
+---
+
+_Label `P3: want to have` added by @kbknapp on 2017-02-09 16:04_
+
+---
+
+_Label `T: bug` added by @kbknapp on 2017-02-09 16:04_
+
+---
+
+_Label `W: 2.x` added by @kbknapp on 2017-02-09 16:04_
+
+---
+
+_Added to milestone `2.20.4` by @kbknapp on 2017-02-09 16:04_
+
+---
+
+_Closed by @homu on 2017-02-15 18:24_
+
+---

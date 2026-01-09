@@ -1,0 +1,117 @@
+---
+number: 5988
+title: "Add native type literals to `UP018`"
+type: issue
+state: closed
+author: dosisod
+labels:
+  - rule
+assignees: []
+created_at: 2023-07-22T21:08:40Z
+updated_at: 2023-07-24T01:39:44Z
+url: https://github.com/astral-sh/ruff/issues/5988
+synced_at: 2026-01-07T13:12:15-06:00
+---
+
+# Add native type literals to `UP018`
+
+---
+
+_Issue opened by @dosisod on 2023-07-22 21:08_
+
+See https://github.com/astral-sh/ruff/issues/1348#issuecomment-1646520368.
+
+`UP018`/`C408` detects some, but not all of the same errors as Refurb:
+
+```python
+# detected by Ruff and Refurb
+l = list()
+d = dict()
+t = tuple()
+
+# only detected by Refurb
+i = int()
+f = float()
+c = complex()
+b = bool()
+
+# missleading error message in Ruff, see below
+by = bytes()
+s = str()
+```
+
+Running in Ruff:
+
+```
+$ ruff x.py
+x.py:1:1: E741 Ambiguous variable name: `l`
+x.py:1:5: C408 [*] Unnecessary `list` call (rewrite as a literal)
+x.py:2:5: C408 [*] Unnecessary `dict` call (rewrite as a literal)
+x.py:3:5: C408 [*] Unnecessary `tuple` call (rewrite as a literal)
+x.py:10:6: UP018 [*] Unnecessary call to `bytes`
+x.py:11:5: UP018 [*] Unnecessary call to `str`
+```
+
+Running in Refurb:
+
+```
+$ refurb x.py
+x.py:1:5 [FURB112]: Replace `list()` with `[]`
+x.py:2:5 [FURB112]: Replace `dict()` with `{}`
+x.py:3:5 [FURB112]: Replace `tuple()` with `()`
+x.py:5:5 [FURB112]: Replace `int()` with `0`
+x.py:6:5 [FURB112]: Replace `float()` with `0.0`
+x.py:7:5 [FURB112]: Replace `complex()` with `0j`
+x.py:8:5 [FURB112]: Replace `bool()` with `False`
+x.py:10:6 [FURB112]: Replace `bytes()` with `b""`
+x.py:11:5 [FURB112]: Replace `str()` with `""`
+```
+
+The "Unnecessary call to `bytes`/`str`" message is also misleading because there are no arguments to `str()`/`bytes()`.
+
+Very few projects according to [grep.app](https://grep.app/search?q=%5B%5Ea-zA-Z_.0-9%5D%28int%7Cfloat%7Cstr%7Cbytes%7Cbool%7Ccomplex%29%5C%28%5C%29&regexp=true&case=true&filter[lang][0]=Python) are using the `int()`, `str()`, etc. form, but still worth adding IMO.
+
+---
+
+_Label `rule` added by @charliermarsh on 2023-07-23 03:08_
+
+---
+
+_Assigned to @dhruvmanila by @dhruvmanila on 2023-07-23 08:32_
+
+---
+
+_Referenced in [astral-sh/ruff#6013](../../astral-sh/ruff/pulls/6013.md) on 2023-07-23 09:37_
+
+---
+
+_Comment by @dhruvmanila on 2023-07-23 09:39_
+
+Complex seems a bit difficult (no pun intended) as it can accept 0, 1 or 2 arguments and it can accept them as keyword arguments as well:
+
+```python
+complex()
+# 0j
+
+complex(1)
+# (1+0j)
+
+complex(1, 2)
+# (1+2j)
+
+complex(real=1, imag=2)
+# (1+2j)
+
+complex(1, imag=2)
+# (1+2j)
+```
+
+---
+
+_Closed by @charliermarsh on 2023-07-24 01:39_
+
+---
+
+_Referenced in [astral-sh/ruff#19864](../../astral-sh/ruff/issues/19864.md) on 2025-12-08 18:11_
+
+---

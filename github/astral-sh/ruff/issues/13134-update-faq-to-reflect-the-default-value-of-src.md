@@ -1,0 +1,59 @@
+---
+number: 13134
+title: "Update FAQ to reflect the default value of `src`"
+type: issue
+state: closed
+author: dhruvmanila
+labels:
+  - documentation
+  - good first issue
+assignees: []
+created_at: 2024-08-28T06:07:26Z
+updated_at: 2024-08-29T11:57:54Z
+url: https://github.com/astral-sh/ruff/issues/13134
+synced_at: 2026-01-07T13:12:15-06:00
+---
+
+# Update FAQ to reflect the default value of `src`
+
+---
+
+_Issue opened by @dhruvmanila on 2024-08-28 06:07_
+
+Update to FAQ.md at https://github.com/astral-sh/ruff/blob/main/docs/faq.md is merited as a result of this change I think.
+
+Specifically, the following bullet can be removed:
+> Depending on your project structure, Ruff and isort can differ in their detection of first-party code. (This is often solved by modifying the src property, e.g., to src = ["src"], if your code is nested in a src directory.)
+
+_Originally posted by @NasaGeek in https://github.com/astral-sh/ruff/issues/12848#issuecomment-2310740279_
+            
+
+---
+
+_Label `documentation` added by @dhruvmanila on 2024-08-28 06:07_
+
+---
+
+_Label `good first issue` added by @dhruvmanila on 2024-08-28 06:07_
+
+---
+
+_Comment by @dhruvmanila on 2024-08-28 06:07_
+
+I think we should instead highlight the fact that this was changed in 0.6 instead of removing the bullet point.
+
+---
+
+_Referenced in [astral-sh/ruff#13145](../../astral-sh/ruff/pulls/13145.md) on 2024-08-29 03:57_
+
+---
+
+_Comment by @PalAditya on 2024-08-29 04:02_
+
+Hi @dhruvmanila - I love Ruff and wanted to contribute to it for some time, so just made a PR for this: https://github.com/astral-sh/ruff/pull/13145 . I didn't see anything in the contributing guidelines about prior assignment, but please let me know if it needs changes/I should have completed some pre-requisite first if you get a chance to review this.
+
+---
+
+_Closed by @dhruvmanila on 2024-08-29 11:57_
+
+---

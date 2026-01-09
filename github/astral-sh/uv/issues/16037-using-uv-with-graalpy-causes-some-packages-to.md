@@ -1,0 +1,113 @@
+---
+number: 16037
+title: Using uv with GraalPy causes some packages to fail to install
+type: issue
+state: open
+author: AmaseCocoa
+labels:
+  - bug
+assignees: []
+created_at: 2025-09-26T09:21:14Z
+updated_at: 2025-09-27T12:33:48Z
+url: https://github.com/astral-sh/uv/issues/16037
+synced_at: 2026-01-07T13:12:19-06:00
+---
+
+# Using uv with GraalPy causes some packages to fail to install
+
+---
+
+_Issue opened by @AmaseCocoa on 2025-09-26 09:21_
+
+### Summary
+
+GraalPy appears to [apply its own patches to pip](https://github.com/oracle/graalpython/blob/736336c7a609a137fe054d5e2421852aa6b34459/graalpython/lib-graalpython/patches/pip-24.3.1.patch) to ensure compatibility with certain libraries. As a result, when attempting to install some libraries with uv, they may not install correctly.
+
+logs:
+
+[patched pip log (for example)](https://github.com/user-attachments/files/22557069/logs_pip.txt)
+[logs by uv](https://github.com/user-attachments/files/22557068/logs_uv.txt)
+
+## How to Reproduce
+Here we use the cffi library. 
+
+- `uv add cffi`
+   - Returned compile error
+- `pip install cffi`  (in GraalPy environment)
+   - Installed correctly
+
+Git Repository: https://github.com/AmaseCocoa/uv-mre-001
+
+files (can't updated lockfile and pyproject because, not installed correctly.)
+
+pyproject.toml:
+
+```toml
+[project]
+name = "mre"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = []
+```
+
+uv.lock
+```
+version = 1
+revision = 3
+requires-python = ">=3.11"
+
+[[package]]
+name = "mre"
+version = "0.1.0"
+source = { virtual = "." }
+```
+
+.python-version
+```
+graalpy-3.11-any-any-any
+```
+
+### Platform
+
+Fedora 42 (Linux 6.16.3-200.fc42.x86_64 x86_64 GNU/Linux)
+
+### Version
+
+uv 0.8.22
+
+### Python version
+
+GraalPy 3.11.7 (Oracle GraalVM Native 24.2.2)
+
+---
+
+_Label `bug` added by @AmaseCocoa on 2025-09-26 09:21_
+
+---
+
+_Comment by @konstin on 2025-09-26 09:28_
+
+While we like to increase compatibility with GraalPy, we can't add external indexes besides PyPI by default in the same way that GraalPy does as it's a third party resource. Can you use `--extra-index-url https://www.graalvm.org/python/wheels/` as workaround?
+
+---
+
+_Comment by @AmaseCocoa on 2025-09-26 09:53_
+
+> While we like to increase compatibility with GraalPy, we can't add external indexes besides PyPI by default in the same way that GraalPy does as it's a third party resource. Can you use `--extra-index-url https://www.graalvm.org/python/wheels/` as workaround?
+
+It appears GraalPy wheel repository isn't includes cffi... I still have same errors...
+
+Upon reviewing the patch applied to the aforementioned pip package, it was confirmed that GraalPy not only retrieves and uses the modified Wheel from the index, but also fetches the patch from the graalpython GitHub repository and uses it to modify the files.
+
+To address this issue, if you are using GraalPy, you may need a solution that involves applying patches downloaded from GitHub as needed, similar to pip for GraalPy. However, I am not sure if this is the best approach for uv.
+
+
+---
+
+_Comment by @timfel on 2025-09-27 12:33_
+
+we are actively upstreaming any patches for graalpy compatibility that we can and are asking packages to publish graalpy wheels. unfortunately, this is a process that just takes a while. we are also going to publish more packages to our own index in the meanwhile, so that there's at least the workaround with the extra index
+
+---

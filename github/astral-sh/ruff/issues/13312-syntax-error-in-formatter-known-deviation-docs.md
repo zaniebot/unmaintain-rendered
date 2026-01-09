@@ -1,0 +1,42 @@
+---
+number: 13312
+title: Syntax error in formatter known deviation docs
+type: issue
+state: closed
+author: ulope
+labels: []
+assignees: []
+created_at: 2024-09-10T17:26:33Z
+updated_at: 2024-09-10T17:47:13Z
+url: https://github.com/astral-sh/ruff/issues/13312
+synced_at: 2026-01-07T13:12:15-06:00
+---
+
+# Syntax error in formatter known deviation docs
+
+---
+
+_Issue opened by @ulope on 2024-09-10 17:26_
+
+The second example in the `Tuples are parenthesized when expanded` section of the known deviations docs contain a syntax error:
+
+https://github.com/astral-sh/ruff/blob/210a9e606807c56e0c38b14e21cf500432e79709/docs/formatter/black.md?plain=1#L460-L462
+
+`for a, f(b,) in c:` is invalid syntax (`SyntaxError: cannot assign to function call`).
+
+
+---
+
+_Referenced in [astral-sh/ruff#13313](../../astral-sh/ruff/pulls/13313.md) on 2024-09-10 17:44_
+
+---
+
+_Comment by @MichaReiser on 2024-09-10 17:44_
+
+Thanks!
+
+---
+
+_Closed by @MichaReiser on 2024-09-10 17:47_
+
+---

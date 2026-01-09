@@ -1,0 +1,67 @@
+---
+number: 6962
+title: Allow suggested manual fixes for unfixable rules
+type: issue
+state: open
+author: tylerlaprade
+labels:
+  - cli
+assignees: []
+created_at: 2023-08-29T02:36:49Z
+updated_at: 2023-08-29T06:29:18Z
+url: https://github.com/astral-sh/ruff/issues/6962
+synced_at: 2026-01-07T13:12:15-06:00
+---
+
+# Allow suggested manual fixes for unfixable rules
+
+---
+
+_Issue opened by @tylerlaprade on 2023-08-29 02:36_
+
+My `unfixable` list is the set of rules that I don't want _automatically_ fixed because I might need to make a judgement call. For example, do I really want to delete my `# noqa` flagged by `RUF100`, or did I accidentally change something in the code so that the directive wasn't applied?
+
+However, this does not mean I don't want to fix it. Once I make a decision, I'd like to use the contextual auto-suggested fix menu in my IDE to quickly fix the issue, should I so choose.
+
+---
+
+_Comment by @charliermarsh on 2023-08-29 04:04_
+
+This should be fixed by a proposal that @zanieb is working on (consider this a cc :))
+
+---
+
+_Label `cli` added by @charliermarsh on 2023-08-29 04:04_
+
+---
+
+_Comment by @MichaReiser on 2023-08-29 06:29_
+
+> This should be fixed by a proposal that @zanieb is working on (consider this a cc :))
+
+I guess it depends and this use case brings up an important question: How should applicability work in the IDE context? Especially in combination with `codeActionsOnSave` (`source.fixAll`). My initial thinking is:
+
+* manual fixes (and fixes demoted to manual): Ruff shows diagnostics but no code actions
+* suggested fixes: Ruff shows the diagnostic and the code action. 
+* automatic fixes: Ruff shows the diagnostic and the code action, runs as part of `source.fixAll`
+
+I'm uncertain whether suggested fixes should run as part of `source.fixAll`. Maybe? But it's what we so far recommended in the VS Code extension README and blindly accepting suggested fixes is probably not what we want. That's why I'm leaning towards
+
+* `source.fixAll`: Fixes automatic fixes
+* `ruff.fixSuggested` Fixes suggested fixes
+
+Users can add both to their `codeActionsOnSave` if they want to run all fixes at save (not recommended).
+
+The distinction of suggested fixes in the IDE would allow for the use case described by @tylerlaprade, but it may require them to promote some suggested fixes to automatic fixes if they want to run all fixes by default **except** the fixes on the denylist. 
+
+For context: The concept of applicability is outlined in https://github.com/astral-sh/ruff/issues/4181
+
+---
+
+_Referenced in [astral-sh/ruff#7769](../../astral-sh/ruff/pulls/7769.md) on 2023-10-03 17:27_
+
+---
+
+_Referenced in [astral-sh/ruff#4186](../../astral-sh/ruff/issues/4186.md) on 2023-10-07 00:32_
+
+---

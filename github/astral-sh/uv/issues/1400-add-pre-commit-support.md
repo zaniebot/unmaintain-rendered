@@ -1,0 +1,63 @@
+---
+number: 1400
+title: Add pre-commit support
+type: issue
+state: closed
+author: neumann-nico
+labels:
+  - enhancement
+assignees: []
+created_at: 2024-02-16T00:15:31Z
+updated_at: 2024-03-22T21:37:12Z
+url: https://github.com/astral-sh/uv/issues/1400
+synced_at: 2026-01-07T13:12:16-06:00
+---
+
+# Add pre-commit support
+
+---
+
+_Issue opened by @neumann-nico on 2024-02-16 00:15_
+
+Thanks for the great tool, `uv pip compile` is blazing fast 🚀 
+I would like to suggest to add pre-commit support for `uv` to make it more useable.
+
+You probably want to add a new repository similar to ruff-pre-commit?
+https://github.com/astral-sh/ruff-pre-commit
+
+Currently I use this pip-tools pre-commit hook
+https://github.com/jazzband/pip-tools/blob/main/.pre-commit-hooks.yaml
+
+---
+
+_Label `enhancement` added by @zanieb on 2024-02-16 00:21_
+
+---
+
+_Comment by @sbrugman on 2024-02-16 09:05_
+
+In addition to locking the dependencies for replicating the exact environment, we like to use `pip compile` in our CI pipelines to ensure satisfiability on all target platforms and Python versions compatible packages exist (e.g. to prevent Windows users to run into this after updates have shipped). It would be great if this hook or a second hook can be used to that (failure if not compatible, success if compatible).
+
+---
+
+_Comment by @neumann-nico on 2024-02-26 15:32_
+
+There is a PR for it: https://github.com/astral-sh/ruff-pre-commit/pull/68
+
+---
+
+_Referenced in [edgarrmondragon/citric#1115](../../edgarrmondragon/citric/pulls/1115.md) on 2024-03-08 00:11_
+
+---
+
+_Comment by @edgarrmondragon on 2024-03-22 21:36_
+
+I guess this can be closed now?
+
+https://github.com/astral-sh/uv-pre-commit
+
+---
+
+_Closed by @neumann-nico on 2024-03-22 21:37_
+
+---

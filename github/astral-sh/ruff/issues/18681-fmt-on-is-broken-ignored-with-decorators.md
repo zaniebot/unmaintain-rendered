@@ -1,0 +1,84 @@
+---
+number: 18681
+title: "`fmt: on` is broken/ignored with decorators"
+type: issue
+state: closed
+author: user27182
+labels:
+  - question
+  - suppression
+  - formatter
+assignees: []
+created_at: 2025-06-15T07:38:59Z
+updated_at: 2025-06-15T07:45:44Z
+url: https://github.com/astral-sh/ruff/issues/18681
+synced_at: 2026-01-07T13:12:16-06:00
+---
+
+# `fmt: on` is broken/ignored with decorators
+
+---
+
+_Issue opened by @user27182 on 2025-06-15 07:38_
+
+### Summary
+
+Trying to disable formatting for a decorator like this doesn't work:
+
+``` python
+# fmt: off
+@decorator()
+# fmt: on
+def foo(): ...
+
+x = [0,0,0]
+```
+
+In this case, `# fmt: off` works and properly disables the formatting as expected, but `# fmt: on` is not recognized, and hence formatting is still off thereafter, and `x = [0,0,0]` will _not_ be formatted. But, since formatting is enabled after the decorator, I would expect `x = [0,0,0]` to be formatted  as `x = [0, 0, 0]`
+
+### Version
+
+v0.11.13 (ruff playground)
+
+---
+
+_Label `question` added by @MichaReiser on 2025-06-15 07:40_
+
+---
+
+_Label `suppression` added by @MichaReiser on 2025-06-15 07:40_
+
+---
+
+_Label `formatter` added by @MichaReiser on 2025-06-15 07:40_
+
+---
+
+_Comment by @MichaReiser on 2025-06-15 07:43_
+
+Hi.
+
+This is expected because Ruff only supports `fmt:off` and `fmt:on` between statements but a `decorator` isn't a statement. You can use `RUF028` to be warned about invalid uses of formatter suppression comments ([playground](https://play.ruff.rs/7eb655e5-efda-48fe-8a0d-a3dbc416dfa1)). See also the [documentation](https://docs.astral.sh/ruff/formatter/#format-suppression) that goes into more depth where suppression comments are allowed.
+
+To only suppress the decorator, I recommend using `fmt: skip` like so:
+
+```py
+@decorator() # fmt: skip
+def foo(): ...
+
+x = [0,0,0]
+```
+
+
+
+---
+
+_Comment by @user27182 on 2025-06-15 07:45_
+
+Makes sense, thanks for the info!
+
+---
+
+_Closed by @user27182 on 2025-06-15 07:45_
+
+---

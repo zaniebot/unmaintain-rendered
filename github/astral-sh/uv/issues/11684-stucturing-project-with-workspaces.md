@@ -1,0 +1,68 @@
+---
+number: 11684
+title: Stucturing project with workspaces
+type: issue
+state: closed
+author: haarisr
+labels:
+  - question
+assignees: []
+created_at: 2025-02-21T03:04:04Z
+updated_at: 2025-02-26T18:21:53Z
+url: https://github.com/astral-sh/uv/issues/11684
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# Stucturing project with workspaces
+
+---
+
+_Issue opened by @haarisr on 2025-02-21 03:04_
+
+### Question
+
+Hi
+
+I would like to a structure a project with uv. Lets say I have top level project `foo` defined in the pyproject toml.
+
+I would like to have subpackages and/or libraries  such as `cloud` and `app` each in its own workspace that defines its own set of requirements
+
+But from `app` I would like to import `foo.cloud` instead of just `cloud`. Is this possible to do?
+
+The altenative is to name the package `foo_app` and `foo_cloud`. I wiould like to know if the former is possible.
+
+Thanks!
+
+### Platform
+
+Ubuntu 24.04
+
+### Version
+
+Latest UV
+
+---
+
+_Label `question` added by @haarisr on 2025-02-21 03:04_
+
+---
+
+_Comment by @haarisr on 2025-02-26 02:38_
+
+The answer is PEP 420 namespace packages.
+
+Closing this in favor of #11787 
+
+---
+
+_Closed by @haarisr on 2025-02-26 02:38_
+
+---
+
+_Comment by @konstin on 2025-02-26 18:21_
+
+I usually recommend using `foo_cloud` over namespace packages with `foo.cloud` to avoid issues with the shared `foo/__init__.py` and `foo` package name, even though it is indeed the less pretty version.
+
+The package layout and namespace package supports needs to be in the build backend, such as hatchling, uv only installs what the build backend decides.
+
+---

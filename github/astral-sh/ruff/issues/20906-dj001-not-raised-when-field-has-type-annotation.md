@@ -1,0 +1,78 @@
+---
+number: 20906
+title: DJ001 not raised when field has type annotation
+type: issue
+state: closed
+author: majutsushi
+labels:
+  - bug
+  - good first issue
+assignees: []
+created_at: 2025-10-15T22:32:39Z
+updated_at: 2025-10-27T08:19:16Z
+url: https://github.com/astral-sh/ruff/issues/20906
+synced_at: 2026-01-07T13:12:16-06:00
+---
+
+# DJ001 not raised when field has type annotation
+
+---
+
+_Issue opened by @majutsushi on 2025-10-15 22:32_
+
+### Summary
+
+```python
+from django.db import models
+
+
+class TestModel(models.Model):
+    charfield1 = models.CharField(null=True) # Raises DJ001
+    charfield2: models.CharField[str, str] = models.CharField(null=True) # No error
+```
+
+```
+$ ruff check --select=DJ001 test.py
+DJ001 Avoid using `null=True` on string-based fields such as `CharField`
+ --> test.py:5:18
+  |
+4 | class TestModel(models.Model):
+5 |     charfield1 = models.CharField(null=True)
+  |                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+6 |     charfield2: models.CharField[str, str] = models.CharField(null=True)
+  |
+
+Found 1 error.
+```
+
+I discovered this when using https://github.com/typeddjango/django-stubs with pyright, which doesn't detect the types correctly without explicit annotations.
+
+### Version
+
+ruff 0.14.0
+
+---
+
+_Comment by @ntBre on 2025-10-15 22:38_
+
+Ah yep, looks like we skip over annotated assignments:
+
+https://github.com/astral-sh/ruff/blob/73520e4acd9cb259f41a60b0b6396c66ea32950a/crates/ruff_linter/src/rules/flake8_django/rules/nullable_model_string_field.rs#L63-L65
+
+---
+
+_Label `bug` added by @ntBre on 2025-10-15 22:38_
+
+---
+
+_Label `good first issue` added by @ntBre on 2025-10-15 22:38_
+
+---
+
+_Referenced in [astral-sh/ruff#20907](../../astral-sh/ruff/pulls/20907.md) on 2025-10-16 00:19_
+
+---
+
+_Closed by @MichaReiser on 2025-10-27 08:19_
+
+---

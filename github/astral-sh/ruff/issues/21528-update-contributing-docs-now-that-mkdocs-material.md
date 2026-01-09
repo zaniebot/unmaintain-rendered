@@ -1,0 +1,60 @@
+---
+number: 21528
+title: "update contributing docs now that mkdocs-material-insiders is free for everyone :)"
+type: issue
+state: closed
+author: tsvikas
+labels:
+  - documentation
+assignees: []
+created_at: 2025-11-19T18:16:55Z
+updated_at: 2025-12-05T07:53:10Z
+url: https://github.com/astral-sh/ruff/issues/21528
+synced_at: 2026-01-07T13:12:16-06:00
+---
+
+# update contributing docs now that mkdocs-material-insiders is free for everyone :)
+
+---
+
+_Issue opened by @tsvikas on 2025-11-19 18:16_
+
+Material for MkDocs Insiders is now free for everyone
+https://squidfunk.github.io/mkdocs-material/blog/2025/11/11/insiders-now-free-for-everyone/
+
+You might want to update the docs:
+https://docs.astral.sh/ruff/contributing/#mkdocs
+
+and also might want to update relevant build tasks, if any.
+
+---
+
+_Label `documentation` added by @ntBre on 2025-11-19 19:29_
+
+---
+
+_Comment by @mahiro72 on 2025-11-21 08:13_
+
+Hi @tsvikas , I'd like to work on this.
+
+---
+
+_Assigned to @mahiro72 by @MichaReiser on 2025-11-21 08:16_
+
+---
+
+_Comment by @tsvikas on 2025-11-21 17:48_
+
+> Hi [@tsvikas](https://github.com/tsvikas) , I'd like to work on this.
+
+Great, thanks!
+
+---
+
+_Referenced in [astral-sh/ruff#21797](../../astral-sh/ruff/pulls/21797.md) on 2025-12-04 19:30_
+
+---
+
+_Closed by @MichaReiser on 2025-12-05 07:53_
+
+---

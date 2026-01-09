@@ -1,0 +1,153 @@
+---
+number: 5083
+title: "custom {all-args} help output - first line wrong indent"
+type: issue
+state: closed
+author: onlythisnamewasfree
+labels:
+  - C-bug
+assignees: []
+created_at: 2023-08-22T20:18:18Z
+updated_at: 2023-08-23T14:20:13Z
+url: https://github.com/clap-rs/clap/issues/5083
+synced_at: 2026-01-07T13:12:20-06:00
+---
+
+# custom {all-args} help output - first line wrong indent
+
+---
+
+_Issue opened by @onlythisnamewasfree on 2023-08-22 20:18_
+
+### Please complete the following tasks
+
+- [X] I have searched the [discussions](https://github.com/clap-rs/clap/discussions)
+- [X] I have searched the [open](https://github.com/clap-rs/clap/issues) and [rejected](https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed) issues
+
+### Rust Version
+
+rustc 1.71.1 (eb26296b5 2023-08-03)
+
+### Clap Version
+
+4.3.23
+
+### Minimal reproducible code
+
+```rust
+use clap::{Parser, Subcommand, Args};
+
+#[derive(Debug, Args)]
+#[command(help_template = "{all-args}")]
+pub struct Param {  }
+
+#[derive(Debug, Subcommand)]
+#[command(help_template = "{all-args}", disable_help_subcommand=true)]
+enum SubCommands {
+    #[command(name = "test1", alias = "t1", about = "command1")]
+    Test1(Param),
+    #[command(name = "test2", alias = "t2", about = "command2")]
+    Test2(Param),
+    #[command(name = "test3", alias = "t3", about = "command3")]
+    Test3(Param),
+}
+
+#[derive(Debug, Parser)]
+#[command(help_template = "{subcommands}")]
+struct Cmd {
+    #[command(subcommand)]
+    command: SubCommands,
+}
+
+fn main() {
+    let parsed = Cmd::parse();
+    println!("{parsed:#?}");
+}
+```
+
+
+### Steps to reproduce the bug with the above code
+
+cargo run
+
+### Actual Behaviour
+
+```
+test1  command1
+  test2  command2
+  test3  command3
+```
+
+### Expected Behaviour
+
+```
+  test1  command1
+  test2  command2
+  test3  command3
+```
+
+### Additional Context
+
+_No response_
+
+### Debug Output
+
+```
+[clap_builder::builder::command]Command::_do_parse
+[clap_builder::builder::command]Command::_build: name="testcode"
+[clap_builder::builder::command]Command::_propagate:testcode
+[clap_builder::builder::command]Command::_check_help_and_version:testcode expand_help_tree=false
+[clap_builder::builder::command]Command::long_help_exists
+[clap_builder::builder::command]Command::_check_help_and_version: Building default --help
+[clap_builder::builder::command]Command::_propagate_global_args:testcode
+[clap_builder::builder::debug_asserts]Command::_debug_asserts
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:help
+[clap_builder::builder::debug_asserts]Command::_verify_positionals
+[clap_builder::parser::parser]Parser::get_matches_with
+[clap_builder::parser::parser]Parser::add_defaults
+[clap_builder::parser::parser]Parser::add_defaults:iter:help:
+[clap_builder::parser::parser]Parser::add_default_value: doesn't have conditional defaults
+[clap_builder::parser::parser]Parser::add_default_value:iter:help: doesn't have default vals
+[clap_builder::parser::validator]Validator::validate
+[clap_builder::builder::command]Command::write_help_err: testcode, use_long=false
+[  clap_builder::output::help]write_help
+[clap_builder::output::help_template]HelpTemplate::new cmd=testcode, use_long=false
+[clap_builder::output::help_template]HelpTemplate::write_templated_help
+[clap_builder::output::help_template]HelpTemplate::write_subcommands
+[clap_builder::output::help_template]HelpTemplate::write_subcommands longest = 5
+[clap_builder::output::help_template]HelpTemplate::sc_spec_vals: a=test1
+[clap_builder::output::help_template]HelpTemplate::sc_spec_vals: a=test2
+[clap_builder::output::help_template]HelpTemplate::sc_spec_vals: a=test3
+[clap_builder::output::help_template]HelpTemplate::write_subcommand
+[clap_builder::output::help_template]HelpTemplate::sc_spec_vals: a=test1
+[clap_builder::output::help_template]HelpTemplate::help
+[clap_builder::output::help_template]HelpTemplate::help: help_width=13, spaces=8, avail=87
+[clap_builder::output::help_template]HelpTemplate::write_subcommand
+[clap_builder::output::help_template]HelpTemplate::sc_spec_vals: a=test2
+[clap_builder::output::help_template]HelpTemplate::help
+[clap_builder::output::help_template]HelpTemplate::help: help_width=13, spaces=8, avail=87
+[clap_builder::output::help_template]HelpTemplate::write_subcommand
+[clap_builder::output::help_template]HelpTemplate::sc_spec_vals: a=test3
+[clap_builder::output::help_template]HelpTemplate::help
+[clap_builder::output::help_template]HelpTemplate::help: help_width=13, spaces=8, avail=87
+[clap_builder::builder::command]Command::color: Color setting...
+[clap_builder::builder::command]Command::color: Color setting...
+test1  command1
+  test2  command2
+  test3  command3
+
+```
+
+---
+
+_Label `C-bug` added by @onlythisnamewasfree on 2023-08-22 20:18_
+
+---
+
+_Referenced in [clap-rs/clap#5084](../../clap-rs/clap/pulls/5084.md) on 2023-08-22 21:03_
+
+---
+
+_Closed by @epage on 2023-08-23 14:20_
+
+---

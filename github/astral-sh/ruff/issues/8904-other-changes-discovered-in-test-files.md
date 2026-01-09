@@ -1,0 +1,76 @@
+---
+number: 8904
+title: Other changes (discovered in test files)
+type: issue
+state: closed
+author: MichaReiser
+labels:
+  - formatter
+  - preview
+assignees: []
+created_at: 2023-11-29T06:56:54Z
+updated_at: 2023-12-22T05:53:46Z
+url: https://github.com/astral-sh/ruff/issues/8904
+synced_at: 2026-01-07T13:12:15-06:00
+---
+
+# Other changes (discovered in test files)
+
+---
+
+_Issue opened by @MichaReiser on 2023-11-29 06:56_
+
+Changes to Black's formatting that seem to change but have no explicit preview feature?
+
+* [x] [`preview_percent_precedence.py`](https://github.com/psf/black/blob/a0e270d0f246387202e676b25abbf7a02ddcbc71/tests/data/cases/preview_percent_precedence.py)
+* [x] `FIXME` in [`ignore_pyi`](https://github.com/psf/black/blob/a0e270d0f246387202e676b25abbf7a02ddcbc71/tests/data/cases/ignore_pyi.py) https://github.com/astral-sh/ruff/pull/8984
+
+---
+
+_Referenced in [astral-sh/ruff#8678](../../astral-sh/ruff/issues/8678.md) on 2023-11-29 06:56_
+
+---
+
+_Label `formatter` added by @MichaReiser on 2023-11-29 07:03_
+
+---
+
+_Label `preview` added by @MichaReiser on 2023-11-29 07:03_
+
+---
+
+_Added to milestone `Formatter: Stable` by @MichaReiser on 2023-11-29 07:04_
+
+---
+
+_Comment by @dhruvmanila on 2023-11-30 22:06_
+
+(Updated the description to link the files from the Black repository.)
+
+---
+
+_Comment by @charliermarsh on 2023-12-01 03:06_
+
+This is relevant: https://github.com/psf/black/pull/3942
+
+---
+
+_Comment by @MichaReiser on 2023-12-01 03:27_
+
+> This is relevant: [psf/black#3942](https://github.com/psf/black/pull/3942)
+
+Nice find. I assumed we implemented this correctly. I opened https://github.com/astral-sh/ruff/issues/8938 
+
+---
+
+_Comment by @MichaReiser on 2023-12-22 05:53_
+
+`preview_percent_precedence` seems to be about Black removing parentheses for `%` operations in some case. This feels surprising because it would be the only place where black removes parentheses in sub-expressions (and what if the `__mod__` operator is overloaded?). 
+
+I don't think we should implement this change to avoid potentially changing the AST.
+
+---
+
+_Closed by @MichaReiser on 2023-12-22 05:53_
+
+---

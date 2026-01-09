@@ -1,0 +1,270 @@
+---
+number: 4865
+title: Possible bug with enum fields
+type: issue
+state: closed
+author: nerdo
+labels:
+  - C-bug
+assignees: []
+created_at: 2023-04-27T19:32:37Z
+updated_at: 2023-04-28T13:36:42Z
+url: https://github.com/clap-rs/clap/issues/4865
+synced_at: 2026-01-07T13:12:20-06:00
+---
+
+# Possible bug with enum fields
+
+---
+
+_Issue opened by @nerdo on 2023-04-27 19:32_
+
+### Please complete the following tasks
+
+- [X] I have searched the [discussions](https://github.com/clap-rs/clap/discussions)
+- [X] I have searched the [open](https://github.com/clap-rs/clap/issues) and [rejected](https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed) issues
+
+### Rust Version
+
+1.6.9
+
+### Clap Version
+
+4.2.1
+
+### Minimal reproducible code
+
+```rust
+// https://play.rust-lang.org/?version=stable&mode=debug&edition=2021&gist=0ba3a366598032fb8252f66cc8b11851
+// This could probably be more concise, but I pulled it out of a real-world example and kept the fields in
+// because I think it has something to do with dependencies between fields. Demo on the rust playground link above.
+
+use clap::{Parser, ValueEnum}; // 4.2.3
+
+fn main() -> Result<(), anyhow::Error> {
+    // This prints out the help as expected because not enough args.
+    // let ok1 = ["--dry-run", "--save-config"];
+    // let a1 = EtlConfig::parse_from(ok1.iter());
+    // dbg!("a1 = {?:}", a1);
+    
+    // This prints out the help as expected because not enough args.
+    // let ok2 = ["--dry-run", "--save-config", "--mysql-host", "localhost"];
+    // let a2 = EtlConfig::parse_from(ok2.iter());
+    // dbg!("a2 = {?:}", a2);
+    
+    // This panics! --target is required, and is missing here, 
+    // but rather than print the help, it panics.
+    let panicking_args = ["--dry-run", "--save-config", "--mysql-host", "127.0.0.1", "--mongo-host", "127.0.0.1"];
+    EtlConfig::parse_from(panicking_args.iter());
+    
+    Ok(())
+}
+
+#[derive(Debug, Copy, Clone, PartialEq, Eq, PartialOrd, Ord, ValueEnum)]
+enum TargetDatabase {
+    /// MongoDB
+    MongoDB,
+
+    /// SurrealDB
+    SurrealDB,
+}
+
+/// Configuration.
+#[derive(Debug, Parser, Clone)]
+struct EtlConfig {
+    /// Save the configuration.
+    ///
+    /// If the --config-file option is not set, it will output to STDOUT.
+    #[arg(long)]
+    save_config: bool,
+
+    /// Load configuration from file.
+    ///
+    /// If the --config-file option is not set, it will read from STDIN.
+    #[arg(long)]
+    load_config: bool,
+
+    /// Configuration file to save to or load from.
+    #[arg(long)]
+    config_file: Option<String>,
+
+    /// Start by resetting the new database and starting from scratch.
+    #[arg(long)]
+    reset: bool,
+
+    /// Do a dry-run: Don't write to the new database, but do everything else (as much as possible).
+    #[arg(long)]
+    dry_run: bool,
+
+    /// Target database system.
+    #[arg(long, value_enum)]
+    target: TargetDatabase,
+
+    /// MySQL (Chili) connection configuration.
+    #[command(flatten)]
+    mysql: MySqlConfig,
+
+    /// MongoDB connection configuration.
+    #[command(flatten)]
+    mongo: Option<MongoDbConfig>,
+
+    /// SurrealDB connection configuration.
+    #[command(flatten)]
+    surreal: Option<SurrealDbConfig>,
+}
+
+
+/// MySql (Chili) Configuration.
+#[derive(Debug, Parser,  Clone)]
+#[group(multiple = false)]
+struct MySqlConfig {
+    /// MySQL username.
+    #[arg(long, default_value_t = String::from("chili"))]
+    mysql_username: String,
+
+    /// MySQL password.
+    #[arg(long, default_value_t = String::from("chili"))]
+    mysql_password: String,
+
+    /// MySQL server host name.
+    #[arg(long, default_value_t = String::from("localhost"))]
+    mysql_host: String,
+
+    /// MySQL port.
+    #[arg(long, default_value_t = 3306, value_parser = clap::value_parser!(u16).range(1..))]
+    mysql_port: u16,
+
+    /// MySQL database.
+    #[arg(long, default_value_t = String::from("chili"))]
+    mysql_database: String,
+}
+
+/// MongoDB Configuration.
+#[derive(Debug, Parser,  Clone)]
+#[group(multiple = false, requires("mongo-db"))]
+struct MongoDbConfig {
+    /// MongoDB username.
+    #[arg(long, default_value_t = String::from("root"))]
+    mongo_username: String,
+
+    /// MongoDB password.
+    #[arg(long, default_value_t = String::from("root"))]
+    #[arg(requires_if("mongo-db", "target"))]
+    mongo_password: String,
+
+    /// MongoDB server host name.
+    #[arg(long, default_value_t = String::from("localhost"))]
+    #[arg(requires_if("mongo-db", "target"))]
+    mongo_host: String,
+
+    /// MongoDB port.
+    #[arg(long, default_value_t = 27017, value_parser = clap::value_parser!(u16).range(1..))]
+    #[arg(requires_if("mongo-db", "target"))]
+    mongo_port: u16,
+
+    /// MongoDB database.
+    #[arg(long, default_value_t = String::from("reaper"))]
+    #[arg(requires_if("mongo-db", "target"))]
+
+    mongo_database: String,
+}
+
+/// SurrealDB Configuration.
+#[derive(Debug, Parser,  Clone)]
+#[group(multiple = false, requires("surreal-db"))]
+struct SurrealDbConfig {
+    /// SurrealDB username.
+    #[arg(long, default_value_t = String::from("root"))]
+
+    surreal_username: String,
+
+    /// SurrealDB password.
+    #[arg(long, default_value_t = String::from("root"))]
+    #[arg(requires_if("surreal-db", "target"))]
+
+    surreal_password: String,
+
+    /// SurrealDB server host name.
+    #[arg(long, default_value_t = String::from("localhost"))]
+    #[arg(requires_if("surreal-db", "target"))]
+
+    surreal_host: String,
+
+    /// SurrealDB port.
+    #[arg(long, default_value_t = 8000, value_parser = clap::value_parser!(u16).range(1..))]
+    #[arg(requires_if("surreal-db", "target"))]
+
+    surreal_port: u16,
+
+    /// SurrealDB namespace.
+    #[arg(long, default_value_t = String::from("reaper"))]
+    #[arg(requires_if("surreal-db", "target"))]
+
+    surreal_namespace: String,
+
+    /// SurrealDB database.
+    #[arg(long, default_value_t = String::from("reaper"))]
+    #[arg(requires_if("surreal-db", "target"))]
+
+    surreal_database: String,
+}
+```
+
+
+### Steps to reproduce the bug with the above code
+
+Run the code in the playground.
+
+There are some commented out sections of code, with descriptions to illustrate other behavior. This ticket documents the code as it currently stands, though.
+
+### Actual Behaviour
+
+Code panics and crashes during parsing.
+
+### Expected Behaviour
+
+I expected to see the help screen saying that --target is a required field.
+
+### Additional Context
+
+_No response_
+
+### Debug Output
+
+_No response_
+
+---
+
+_Label `C-bug` added by @nerdo on 2023-04-27 19:32_
+
+---
+
+_Referenced in [clap-rs/clap#4867](../../clap-rs/clap/pulls/4867.md) on 2023-04-27 23:45_
+
+---
+
+_Comment by @epage on 2023-04-27 23:49_
+
+The application bug is the following two lines:
+```rust
+#[group(multiple = false, requires("mongo-db"))]
+// ...
+#[group(multiple = false, requires("surreal-db"))]
+// ...
+```
+
+The `MongoDbConfig` is requiring that a group or argument named `mongo-db` to be present but nothing exists with that ID.  The same with `surreal-db`.
+
+I have a PR up for improving the error messages for this
+
+---
+
+_Closed by @epage on 2023-04-27 23:57_
+
+---
+
+_Comment by @nerdo on 2023-04-28 13:36_
+
+Ah, I think I wrote that in attempt to make those fields required if surreal or mongo were selected as the target respectively, but I obviously did it wrong - and honestly, forgot I even had that there. Thanks for the feedback. And thanks for adding the PR improving the error message. I had no idea what the issue was.
+
+---

@@ -1,0 +1,83 @@
+---
+number: 11306
+title: ruff removes valid noqa blocks
+type: issue
+state: closed
+author: sandeshhardikar
+labels:
+  - question
+assignees: []
+created_at: 2024-05-06T10:38:50Z
+updated_at: 2024-05-07T09:06:21Z
+url: https://github.com/astral-sh/ruff/issues/11306
+synced_at: 2026-01-07T13:12:15-06:00
+---
+
+# ruff removes valid noqa blocks
+
+---
+
+_Issue opened by @sandeshhardikar on 2024-05-06 10:38_
+
+Hello ,
+
+I am working my way to replace `yesqa` with `ruff` . When i run `ruff` on a sample python code , I have a feeling it removes all the `# noqa` blocks , even the valid ones .  
+
+- ruff version used : 0.4.3
+- code block
+- `print("uuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuu")  # noqa: E501`
+- command used : `ruff check --select RUF100 test.py --fix`
+- Output :  `Found 1 error (1 fixed, 0 remaining).`
+
+Ideally there should be nothing to fix , as the line length exceeds , but `ruff` removes the `# noqa` block . Please let me know if i am not using this functionality in a intended manner
+
+---
+
+_Comment by @MichaReiser on 2024-05-06 10:42_
+
+The noqa suppression here is not necessary because Ruff doesn't flag any lines that contain no whitespace, because it often indicates that there are no good split points for that line. 
+
+> Ignores lines that consist of a single "word" (i.e., without any whitespace between its characters). [source](https://docs.astral.sh/ruff/rules/line-too-long/#why-is-this-bad)
+
+I see the argument here that the line could be split after the `(`. I think that's something we can start doing once we have a way to cheaply get access to the parsed tokens (CC: @dhruvmanila)
+
+---
+
+_Closed by @MichaReiser on 2024-05-06 10:43_
+
+---
+
+_Comment by @sandeshhardikar on 2024-05-06 12:14_
+
+Thanks for the quick reply @MichaReiser 
+
+I have a use case where `ruff` flags line too ling and it `suppresses` the `noqa` as well
+
+### code snippet test.py
+
+```
+def my_function(parameter1, parameter2, parameter3, parameter4, parameter5, parameter6):
+    result = parameter1 * (parameter2 + parameter3) - parameter4 / parameter5 + parameter6  # noqa: E501
+    return result
+```
+
+Run `ruff check test.py --select RUF100 --fix` and get the new code snippet without `# noqa: E501`
+
+now run `ruff check test.py --select E` 
+test.py:2:89: E501 Line too long (90 > 88)
+Found 1 error.
+It complains of line too long at the place where `# noqa: E501` was removed by `--fix`
+
+---
+
+_Comment by @MichaReiser on 2024-05-06 13:16_
+
+Ruff removes the `E501` violation when running it with `ruff check test.py—-select RUF100 --fix` because the rule `E501` isn't enabled. However, the suppression of the `E501` isn't needed when the rule isn't enabled. 
+
+I recommend you to run `--fix` with all enabled rules rather than selecting individual rules. You can use [`external`](https://docs.astral.sh/ruff/settings/#lint_external) if you want to prevent Ruff from removing noqa comments for rules it doesn't support. 
+
+---
+
+_Label `question` added by @dhruvmanila on 2024-05-07 09:06_
+
+---

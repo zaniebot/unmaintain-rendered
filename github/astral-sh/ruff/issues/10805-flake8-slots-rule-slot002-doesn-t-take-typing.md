@@ -1,0 +1,95 @@
+---
+number: 10805
+title: "[`flake8-slots`] Rule `SLOT002` doesn't take `typing.NamedTuple` into account"
+type: issue
+state: closed
+author: autinerd
+labels: []
+assignees: []
+created_at: 2024-04-06T17:07:15Z
+updated_at: 2024-04-06T23:16:07Z
+url: https://github.com/astral-sh/ruff/issues/10805
+synced_at: 2026-01-07T13:12:15-06:00
+---
+
+# [`flake8-slots`] Rule `SLOT002` doesn't take `typing.NamedTuple` into account
+
+---
+
+_Issue opened by @autinerd on 2024-04-06 17:07_
+
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* List of keywords you searched for before creating this issue. Write them down here so that others can find this issue more easily and help provide feedback.
+  e.g. "RUF001", "unused variable", "Jupyter notebook"
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+Hello :blush: 
+
+While adding the `SLOT` rules to Home Assistant, I found that the `SLOT002` doesn't take subclasses of `typing.NamedTuple` in account, although they are the typed version of `collections.namedtuple`.
+
+Thanks in advance!
+
+---
+
+_Comment by @AlexWaygood on 2024-04-06 17:55_
+
+Hi, thanks for opening the issue! Can you give a minimal code snippet as an example of where you think this rule should be emitting an error but isn't currently?
+
+---
+
+_Comment by @AlexWaygood on 2024-04-06 18:11_
+
+Ah, do you mean something like this?
+
+```py
+from typing import NamedTuple
+
+class Foo(NamedTuple("Foo", [("x", int)])):
+    pass
+```
+
+It's unusual to inherit from a call-based `typing.NamedTuple` rather than to do something like
+
+```py
+from typing import NamedTuple
+
+class Foo(NamedTuple):
+    x: int
+```
+
+And if you create a class-based `typing.NamedTuple` (the second way), it will create the `__slots__` for you. But I suppose if you _do_ inherit from a call-based `typing.NamedTuple`, we probably _should_ emit the diagnostic the same as if it were a `collections.namedtuple` (and we currently don't).
+
+---
+
+_Comment by @autinerd on 2024-04-06 18:27_
+
+Oh, I didn't know that this example:
+
+```python
+from typing import NamedTuple
+
+class Foo(NamedTuple):
+    x: int
+```
+
+will have the `__slots__` automatically created, then it is not needed of course, thanks.
+
+And I didn't know about the call-based NamedTuple as well :sweat_smile: (it is not used in the Home Assistant codebase), but that would be a good idea to add.
+
+---
+
+_Referenced in [astral-sh/ruff#10808](../../astral-sh/ruff/pulls/10808.md) on 2024-04-06 22:06_
+
+---
+
+_Closed by @AlexWaygood on 2024-04-06 23:16_
+
+---

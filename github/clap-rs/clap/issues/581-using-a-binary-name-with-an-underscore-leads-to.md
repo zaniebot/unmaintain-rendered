@@ -1,0 +1,259 @@
+---
+number: 581
+title: Using a binary name with an underscore leads to panic on completion generation
+type: issue
+state: closed
+author: ruabmbua
+labels:
+  - C-bug
+  - A-completion
+assignees: []
+created_at: 2016-07-14T15:07:11Z
+updated_at: 2017-02-03T22:43:50Z
+url: https://github.com/clap-rs/clap/issues/581
+synced_at: 2026-01-07T13:12:19-06:00
+---
+
+# Using a binary name with an underscore leads to panic on completion generation
+
+---
+
+_Issue opened by @ruabmbua on 2016-07-14 15:07_
+
+I tried to upgrade clap-rs on my command line utility and include the new awesome bash completion generation in my build.rs file. I followed the recommendation to how do things in the docs, but my build.rs files panics at execution.
+
+[Error backtrace](https://gist.github.com/ruabmbua/9dfea00a9781d61897ab92e644c57746)
+
+I think the error is sub command related becaue of this line of code, where the nasty unwrap lies: [Bad Code](https://github.com/kbknapp/clap-rs/blob/master/src/completions.rs#L154)
+
+The code used for clap::App generation looks like this: [The Code](https://gist.github.com/ruabmbua/d3cf1cad6ece0fc07dfda43b5c2d6562)
+
+
+---
+
+_Renamed from "Unwrap panics on completions generation" to "Unwrap panic on completions generation" by @ruabmbua on 2016-07-14 15:07_
+
+---
+
+_Comment by @guiniol on 2016-07-21 20:12_
+
+Hello,
+
+I think I have the same error, but I'm using the standard way of declaring subcommands and args.
+I tried removing the subcommands and in that case it works. I'm pretty new to Rust and it's my first time using clap, so I may be doing some things wrong.
+
+For a small test case, see https://github.com/guiniol/dnsmole . It doesn't do anything except handle subcommands and args for now. Trying to run `dnsmole serve target` gives the same `thread '<main>' panicked at 'called`Option::unwrap()`on a`None`value', src/libcore/option.rs:325`
+
+Cheers,
+
+
+---
+
+_Comment by @ruabmbua on 2016-07-21 20:14_
+
+I do not use subcommands at all, but it still crashes.
+
+
+---
+
+_Comment by @guiniol on 2016-07-23 15:29_
+
+So. I did a bit more testing and the problem seems to positional arguments in subcommands
+We should maybe close this one and open a new issue.
+EDIT: opened #592 
+
+
+---
+
+_Comment by @kbknapp on 2016-07-23 17:30_
+
+Thanks for filing this! I'm going through all the issues and PRs that accumulated while I was traveling. I should be able to get to this shortly. I'll post back with any questions or findings :wink:
+
+
+---
+
+_Assigned to @kbknapp by @kbknapp on 2016-07-23 17:32_
+
+---
+
+_Label `T: bug` added by @kbknapp on 2016-07-23 17:32_
+
+---
+
+_Label `P2: need to have` added by @kbknapp on 2016-07-23 17:32_
+
+---
+
+_Label `C: subcommands` added by @kbknapp on 2016-07-23 17:32_
+
+---
+
+_Label `W: 2.x` added by @kbknapp on 2016-07-23 17:32_
+
+---
+
+_Label `C: completion gen` added by @kbknapp on 2016-07-23 17:32_
+
+---
+
+_Label `P1: urgent` added by @kbknapp on 2016-08-20 21:57_
+
+---
+
+_Label `P2: need to have` removed by @kbknapp on 2016-08-20 21:57_
+
+---
+
+_Added to milestone `2.10.1` by @kbknapp on 2016-08-20 22:13_
+
+---
+
+_Comment by @kbknapp on 2016-08-20 22:32_
+
+@ruabmbua I'm finally back from all my travels. Can you give me some more details on this error? I'm not quite clear on what code is making it panic.
+Could you give a static-reference to the line of code that you think is causing the error? Press 'y' on the github page, then link to the line. 
+
+If we can't figure it out that way, you can compile clap with the `debug` feature which will spit out all kinds of debugging info that can be helpful. Just change your `Cargo.toml` to
+
+``` toml
+[dependencies]
+clap = {version = "2.10.0", features = ["debug"] }
+```
+
+
+---
+
+_Removed from milestone `2.10.1` by @kbknapp on 2016-08-20 22:38_
+
+---
+
+_Comment by @ruabmbua on 2016-08-21 05:25_
+
+@kbknapp sadly I am going on a travel for a week starting today ^^. I already noticed, that my line markings in the github links are wrong, but you could try finding the line by checking out the HEAD from the issues creation date.
+
+
+---
+
+_Comment by @kbknapp on 2016-08-21 19:54_
+
+Ah ok, I see now. I'll do some testing and see what I can find.
+
+
+---
+
+_Added to milestone `2.10.5` by @kbknapp on 2016-08-26 15:52_
+
+---
+
+_Removed from milestone `2.10.5` by @kbknapp on 2016-08-27 23:24_
+
+---
+
+_Comment by @lukaspustina on 2016-11-08 10:31_
+
+Just pinging: Any updates on this issue? I'm observing the same for 'bash' and 'zsh' in clap 2.18.0.
+
+
+---
+
+_Comment by @kbknapp on 2016-11-08 20:31_
+
+@lukaspustina can you give me a minimal example that's causing the panic?
+
+Also, if you compile clap with the `debug` cargo feature it'll spit out tons of data you could paste into a gist or here that'll help track down the issue.
+
+
+---
+
+_Comment by @lukaspustina on 2016-11-09 08:07_
+
+@kbknapp sorry, I should have presented more information. I'll be quite busy today, but might be able to prepare what you're asking for tmr. Meanwhile, if you're interested, I created a branch of my project in which the problem occurs; cf. https://github.com/lukaspustina/bosun_emitter/tree/shell_completions.
+
+
+---
+
+_Comment by @kbknapp on 2016-11-09 15:28_
+
+Thanks, I'll try to do the testing tonight after work on that branch. Once I check the `debug` output, I should be able to  see where the problem lies and won't need the minimal test case :wink:
+
+
+---
+
+_Comment by @lukaspustina on 2016-11-09 16:01_
+
+Alright. Please let me know, if I can be of any assistance. 
+
+
+---
+
+_Comment by @kbknapp on 2016-11-10 01:09_
+
+@ruabmbua @lukaspustina 
+
+I found the issue. This is caused by having a binary name that includes an underscore (`_`). The reasoning behind this is the bash completions use the underscore character to handle subcommands.
+
+The quick fix is to use a binary name that doesn't include an underscore. I'll work on a solution to work around this in clap but it may be complicated. At the very least, this should be documented in the completion documentations.
+
+
+---
+
+_Renamed from "Unwrap panic on completions generation" to "Using a binary name with an underscore leads to panic on completion generation" by @kbknapp on 2016-11-10 01:09_
+
+---
+
+_Comment by @lukaspustina on 2016-11-15 10:45_
+
+Hi @kbknapp,
+
+thanks for looking into the issue and finding the reason. Unfortunately, renaming the binary is not an option since we use it in a many scripts. But I'm patient and wait until you'll find time to fix the underlying problems.
+
+Thanks again. 
+
+
+---
+
+_Comment by @ruabmbua on 2016-11-15 11:02_
+
+@kbknapp thanks for looking into it.
+
+Now I can use auto completion too :-).
+
+
+---
+
+_Referenced in [clap-rs/clap#754](../../clap-rs/clap/issues/754.md) on 2016-11-20 19:54_
+
+---
+
+_Added to milestone `2.20.2` by @kbknapp on 2017-01-30 04:39_
+
+---
+
+_Added to milestone `2.20.3` by @kbknapp on 2017-02-03 16:13_
+
+---
+
+_Removed from milestone `2.20.2` by @kbknapp on 2017-02-03 16:13_
+
+---
+
+_Referenced in [clap-rs/clap#841](../../clap-rs/clap/issues/841.md) on 2017-02-03 16:15_
+
+---
+
+_Comment by @kbknapp on 2017-02-03 18:43_
+
+@lukaspustina once #843 merges I'll put out v2.20.3 on crates.io at which point completion works even with underscores in the names. Apologies for the wait!
+
+---
+
+_Comment by @lukaspustina on 2017-02-03 18:44_
+
+@kbknapp Don't you worry. I'm happy you found time to fix this :)
+Please ping me once the crate is updates. TIA.
+
+---
+
+_Closed by @kbknapp on 2017-02-03 22:43_
+
+---

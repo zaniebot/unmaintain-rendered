@@ -1,0 +1,110 @@
+---
+number: 9472
+title: Lone unused import in if-statement should not get autofixed, or the if-statement should removed
+type: issue
+state: open
+author: jakkdl
+labels:
+  - rule
+assignees: []
+created_at: 2024-01-11T16:34:54Z
+updated_at: 2024-10-25T07:03:35Z
+url: https://github.com/astral-sh/ruff/issues/9472
+synced_at: 2026-01-07T13:12:15-06:00
+---
+
+# Lone unused import in if-statement should not get autofixed, or the if-statement should removed
+
+---
+
+_Issue opened by @jakkdl on 2024-01-11 16:34_
+
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+## input
+```python
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from types import TracebackType
+
+if sys.version_info < (3, 11):
+    from exceptiongroup import ExceptionGroup
+```
+## `ruff --fix`
+```python
+from typing import TYPE_CHECKING
+import sys
+
+if TYPE_CHECKING:
+    pass
+
+if sys.version_info < (3, 11):
+    pass
+```
+## problem
+The latter is clearly awful code with fully redundant if statements, and the `sys` and `TYPE_CHECKING` imports are in fact unused. There seems to be some custom logic for inserting the `pass` statement, which I think should be removed and this case should not be treated as an auto-fix - since currently you need to manually fix it anyway (except currently you aren't warned about it, and have to check the diff).
+Other solutions include warning and/or autofixing* `if [...]: pass` statements. If they exist, they should be included by default.
+
+This is running a new, clean, venv with no config. Version 0.1.11
+
+
+* probably only autofix if the condition solely contains checks against `typing.TYPE_CHECKING`, `sys.platform`, `sys.version_info` and maybe a few more.
+
+---
+
+_Renamed from "Lone unused import in if-statement should not get autofixed, or the if-statement removed" to "Lone unused import in if-statement should not get autofixed, or the if-statement should removed" by @jakkdl on 2024-01-11 16:35_
+
+---
+
+_Label `rule` added by @charliermarsh on 2024-01-11 17:42_
+
+---
+
+_Comment by @charliermarsh on 2024-01-11 17:43_
+
+I think we have a rule for detecting and deleting empty type-checking blocks specifically, but we could make this part of the fix for the general "delete statement" logic.
+
+---
+
+_Comment by @jakkdl on 2024-01-12 15:21_
+
+> I think we have a rule for detecting and deleting empty type-checking blocks specifically, but we could make this part of the fix for the general "delete statement" logic.
+
+Ah you're right, `TCH005`. So a partial fix would be enabling that by default.
+
+Searching through the rules, I'm not seeing a rule for "empty/unnecessary if-statement" - even in cases where an if statement does have side-effects and removing it outright is dangerous, `if <condition>: pass` should probably have a rule.
+
+---
+
+_Comment by @gpauloski on 2024-10-24 20:37_
+
+Is there interest in a PR for an "empty-if-statement" rule (potentially with an unsafe autofix)? I'd really love a way to catch empty `if sys.version_info` statements when unused imports are removed.
+
+Alternatively, RUF034 (#13218) could be expanded to check statements rather than just expressions to cover this case. This might also depend on if there should be an unsafe autofix (re: #13852).
+
+cc @AlexWaygood @MichaReiser 
+
+---
+
+_Comment by @MichaReiser on 2024-10-25 07:03_
+
+@gpauloski I could see such a rule to be useful, but we should think about its scope. E.g what about empty `else` branches (in `for`, `try` etc statements)? And we have to be careful about typing stubs. It's probably best to discuss such a rule in a new issue
+
+---
+
+_Referenced in [astral-sh/ruff#13929](../../astral-sh/ruff/issues/13929.md) on 2024-10-25 16:11_
+
+---
+
+_Referenced in [astral-sh/ruff#14763](../../astral-sh/ruff/pulls/14763.md) on 2024-12-04 16:49_
+
+---

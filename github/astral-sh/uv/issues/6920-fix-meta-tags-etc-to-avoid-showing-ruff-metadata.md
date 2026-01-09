@@ -1,0 +1,75 @@
+---
+number: 6920
+title: Fix meta tags etc. to avoid showing Ruff metadata in SERPs
+type: issue
+state: closed
+author: charliermarsh
+labels:
+  - bug
+  - documentation
+assignees: []
+created_at: 2024-09-01T18:22:44Z
+updated_at: 2024-09-28T20:04:28Z
+url: https://github.com/astral-sh/uv/issues/6920
+synced_at: 2026-01-07T13:12:17-06:00
+---
+
+# Fix meta tags etc. to avoid showing Ruff metadata in SERPs
+
+---
+
+_Issue opened by @charliermarsh on 2024-09-01 18:22_
+
+![Screenshot 2024-09-01 at 2 21 43 PM](https://github.com/user-attachments/assets/8731cac6-260b-4c81-afde-1c5aa0bdae68)
+
+
+---
+
+_Label `bug` added by @charliermarsh on 2024-09-01 18:22_
+
+---
+
+_Comment by @charliermarsh on 2024-09-01 18:35_
+
+I think we need to set meta titles for every page, like:
+
+```yaml
+---
+title: "Docker | uv"
+description: "Using uv in Docker."
+---
+```
+
+---
+
+_Label `documentation` added by @charliermarsh on 2024-09-01 18:35_
+
+---
+
+_Comment by @charliermarsh on 2024-09-01 18:39_
+
+And maybe something like this at the bottom?
+
+https://mrkeo.github.io/reference/meta-tags/#customization
+
+---
+
+_Comment by @charliermarsh on 2024-09-01 18:40_
+
+Separately we need to change the favicon to Astral since IIRC it has to be shared between Ruff and uv.
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2024-09-03 00:15_
+
+---
+
+_Comment by @charliermarsh on 2024-09-03 00:15_
+
+I changed the favicon. I don't know if the site titles will also get corrected based on my changes.
+
+---
+
+_Closed by @charliermarsh on 2024-09-28 20:04_
+
+---

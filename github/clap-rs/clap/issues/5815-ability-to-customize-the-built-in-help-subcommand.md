@@ -1,0 +1,183 @@
+---
+number: 5815
+title: "Ability to customize the built-in `help` subcommand"
+type: issue
+state: open
+author: mr-briggs
+labels:
+  - C-enhancement
+  - A-builder
+  - S-waiting-on-design
+assignees: []
+created_at: 2024-11-13T21:50:47Z
+updated_at: 2024-11-14T15:06:29Z
+url: https://github.com/clap-rs/clap/issues/5815
+synced_at: 2026-01-07T13:12:20-06:00
+---
+
+# Ability to customize the built-in `help` subcommand
+
+---
+
+_Issue opened by @mr-briggs on 2024-11-13 21:50_
+
+### Please complete the following tasks
+
+- [X] I have searched the [discussions](https://github.com/clap-rs/clap/discussions)
+- [X] I have searched the [open](https://github.com/clap-rs/clap/issues) and [rejected](https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed) issues
+
+### Clap Version
+
+4.5.20
+
+### Describe your use case
+
+It's currently fairly cumbersome to alter the `about` message for auto-generated help subcommands when using `clap-derive`. Consider the following example scenario:
+```rust
+use clap::{command, CommandFactory, FromArgMatches, Parser, Subcommand};
+
+#[derive(Parser)]
+pub struct Cli {
+    #[command(subcommand)]
+    pub command: Option<Commands>,
+}
+
+#[derive(Subcommand)]
+pub enum Commands {
+    Subcmd,
+}
+```
+To use the parser as-is, we can run something like:
+```rust
+fn main() {
+    let cli = Cli::parse();
+    match &cli.command { /* ... */ }
+}
+```
+But if we'd like to customize the `about` message for the generated help subcommand, we can no longer use the nice `parse` methods on `Cli`, and instead need to do something like:
+```rust
+fn main() -> Result<(), clap::Error> {
+    let mut cmd = Cli::command();
+    cmd.build(); // Need to build `cmd` to generate the `help` subcommand
+
+    let cmd = cmd.mut_subcommand("help", |help_cmd| {
+        help_cmd.about("A custom help message")
+    });
+
+    // Now we need to manually do what the `parse()` method would do, since we have a modified `Command`:
+    let mut matches = cmd.get_matches();
+    let cli = Cli::from_arg_matches(&mut matches)?;
+
+    match &cli.command { /* ... */ }
+
+    Ok(())
+}
+```
+And for the sake of completeness, if we now run this with `cargo run -- help`, we'd get:
+```
+Usage: clap_example [COMMAND]
+
+Commands:
+  subcmd  
+  help    A custom help message
+
+Options:
+  -h, --help  Print help
+```
+
+### Describe the solution you'd like
+
+One way to streamline this would be to provide a `build()` method on `Command` which returns `self`, so that we can directly call `mut_subcommand` in the `#[command()]` macro. For example, if `Command` had something like:
+```rust
+#[cfg(feature = "derive")]
+pub fn build_for_derive(mut self) -> Self {
+    self.build();
+    self
+}
+```
+Then we could do the following:
+```rust
+#[derive(Parser)]
+#[command(
+    build_for_derive(),
+    mut_subcommand("help", |subcmd| subcmd.about("A custom help message"),
+)]
+pub struct Cli {
+    #[command(subcommand)]
+    pub command: Option<Commands>,
+}
+
+// ... `enum Commands` elided
+
+fn main() {
+    // And now we can go back the straightforward setup:
+    let cli = Cli::parse();
+    match &cli.command { /* ... */ }
+}
+```
+Note that trying to use `build()` in place of the `build_for_derive()` above doesn't work, as `build()` mutates the `Command` in-place and doesn't return anything, which breaks the `Parser` derive macro.
+
+### Alternatives, if applicable
+
+_No response_
+
+### Additional Context
+
+_No response_
+
+---
+
+_Label `C-enhancement` added by @mr-briggs on 2024-11-13 21:50_
+
+---
+
+_Renamed from "Add a build method to Command which returns `self`" to "Add a build method to `Command` which returns `self`" by @mr-briggs on 2024-11-13 21:53_
+
+---
+
+_Comment by @epage on 2024-11-13 22:23_
+
+Note that changing things after a `build` is undefined from the APIs perspective.  This isn't directly called out in #2911 but is related to that.
+
+What we need is a way for users to get the built-in `help` behavior when they provide their own help.  Help  flags started by us auto-detecting a help flag being present (without us being told it shouldn't exist) and then keying off of that.  We then switched to the ArgAction system so you could attach a Help action to any flag.  Huh, I thought I had done some exploring on this idea but can only find #3773 which alludes to commands not being supported but thats it.
+
+This could also be helpful for #1553.
+
+Potentially related
+- #5770
+
+---
+
+_Renamed from "Add a build method to `Command` which returns `self`" to "Ability to customize the built-in `help` subcommand" by @epage on 2024-11-13 22:24_
+
+---
+
+_Label `A-builder` added by @epage on 2024-11-13 22:24_
+
+---
+
+_Label `S-waiting-on-design` added by @epage on 2024-11-13 22:24_
+
+---
+
+_Comment by @mr-briggs on 2024-11-14 15:06_
+
+Oh interesting, thank you for the insight about `build`.
+
+I had initially began this issue as "add `help_about` and `version_about` to `Command`" but after some digging, found that [they did actually briefly exist](https://github.com/clap-rs/clap/pull/2143) back when it was called `App`. They [were removed](https://github.com/clap-rs/clap/pull/2211) a few months later in favour of using `mut_arg` to modify them after building the `App` (see [this comment](https://github.com/clap-rs/clap/pull/2211#issuecomment-767740131)), but I'm not sure how things have changed since then.
+
+> What we need is a way for users to get the built-in `help` behavior when they provide their own help.
+
+Huh, that's probably more understandable for users, rather than modifying an auto-gen'd command that they might not even know about. One downside of specifying your own `help` command though is that it becomes a possible `match` arm (at least when deriving `Subcommand` on an `enum`) even though it's not a valid option under most circumstances (assuming the user-defined `help` would have the same behaviour of returning `Err(ErrorKind::DisplayHelp ...)`.
+
+That's possibly not a major concern though, compared to the upside of being able to customize the `help` message.
+
+---
+
+_Referenced in [clap-rs/clap#5935](../../clap-rs/clap/issues/5935.md) on 2025-03-03 15:38_
+
+---
+
+_Referenced in [autobib/autobib#232](../../autobib/autobib/issues/232.md) on 2025-10-07 10:32_
+
+---

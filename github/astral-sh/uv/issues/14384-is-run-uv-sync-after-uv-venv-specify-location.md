@@ -1,0 +1,106 @@
+---
+number: 14384
+title: "is run uv sync after uv venv [specify_location] should sync packages on .venv (default environemntt)"
+type: issue
+state: closed
+author: hamzeh-pm
+labels:
+  - question
+assignees: []
+created_at: 2025-07-01T03:32:32Z
+updated_at: 2025-07-04T07:49:42Z
+url: https://github.com/astral-sh/uv/issues/14384
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# is run uv sync after uv venv [specify_location] should sync packages on .venv (default environemntt)
+
+---
+
+_Issue opened by @hamzeh-pm on 2025-07-01 03:32_
+
+### Question
+
+hello 
+i run 
+```bash
+uv venv /opt/venv
+uv sync 
+```
+but **uv** create .venv in current directory and install all packages of this environment. is this expected behavior? 
+is there specific option for ***uv sync** to specify the venv location?
+
+
+### Platform
+
+_No response_
+
+### Version
+
+_No response_
+
+---
+
+_Label `question` added by @hamzeh-pm on 2025-07-01 03:32_
+
+---
+
+_Comment by @jtfmumm on 2025-07-01 12:02_
+
+You could activate with `source /opt/venv/bin/activate` and then run `uv sync --active`. Or you could also run:
+
+```
+VIRTUAL_ENV="opt/venv" uv sync --active
+```
+
+---
+
+_Comment by @zanieb on 2025-07-01 12:58_
+
+Or you could set `UV_PROJECT_ENVIRONMENT` to your target directory, but yeah this behavior is intentional — uv is stateless and `uv venv` does not effect the project environment location.
+
+---
+
+_Closed by @charliermarsh on 2025-07-02 00:52_
+
+---
+
+_Comment by @hamzeh-pm on 2025-07-02 03:05_
+
+tnx for answering, the stateless answer is very convincing keep up the good work. in the context of my docker 2 stage build, i use to build package with pip to get ride of test and docs for security reasons. is there anything in uv to help me simulate that process ?
+
+---
+
+_Comment by @zanieb on 2025-07-02 03:12_
+
+https://github.com/astral-sh/uv-docker-example/blob/main/multistage.Dockerfile is our multistage example. You can also do `uv sync --no-dev` to exclude your development dependencies. If you're trying to exclude additional content that's in your source tree, you'd want something like `uv build && uv pip install dist/<your-project>.whl`? I'm not sure what your pip workflow looked like. If you give more details, I can probably give a clearer answer.
+
+---
+
+_Comment by @hamzeh-pm on 2025-07-02 03:21_
+
+this is my first time switching to uv, before it i use to build python packages using
+```
+RUN pip wheel --wheel-dir /usr/src/app/wheels \
+    -r requirements.txt```
+in build stage and then 
+```COPY --from=python-build-stage /usr/src/app/wheels /wheels/
+
+RUN pip install --no-cache-dir --no-index --find-links=/wheels/ /wheels/* \
+  && rm -rf /wheels/
+```
+copy the wheel content in to my run stage and install them this way i don't have to be concern of test and docs for security and size reasons.
+
+---
+
+_Comment by @zanieb on 2025-07-02 13:06_
+
+We don't support `pip wheel` (https://github.com/astral-sh/uv/issues/1681) but you could do something like `UV_PROJECT_ENVIRONMENT=/usr/src/app/.venv uv sync --no-editable --no-dev` then copy that directory over as long as the Python interpreter used matches.
+
+---
+
+_Comment by @hamzeh-pm on 2025-07-04 07:49_
+
+tnx for answering. you are very helpful to me. i don't know rust but if any python project to contribute i happily will do it. have good one
+
+---

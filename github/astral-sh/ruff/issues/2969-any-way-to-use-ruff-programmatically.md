@@ -1,0 +1,39 @@
+---
+number: 2969
+title: Any way to use Ruff programmatically?
+type: issue
+state: closed
+author: ghazpar
+labels:
+  - question
+assignees: []
+created_at: 2023-02-16T20:05:01Z
+updated_at: 2023-02-16T20:15:01Z
+url: https://github.com/astral-sh/ruff/issues/2969
+synced_at: 2026-01-07T13:12:14-06:00
+---
+
+# Any way to use Ruff programmatically?
+
+---
+
+_Issue opened by @ghazpar on 2023-02-16 20:05_
+
+That is to be able to import ruff in Python and use it to lint the content of a string?
+
+
+---
+
+_Comment by @charliermarsh on 2023-02-16 20:14_
+
+Not right now. The issue to watch is #659, but it will probably not happen in the immediate future as we want to make some changes to the API before it's ready to be versioned etc. and released publicly.
+
+---
+
+_Closed by @charliermarsh on 2023-02-16 20:14_
+
+---
+
+_Label `question` added by @charliermarsh on 2023-02-16 20:15_
+
+---

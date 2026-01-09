@@ -1,0 +1,38 @@
+---
+number: 5908
+title: "fix(parser): Dont report missing flags as present "
+type: pull_request
+state: merged
+author: epage
+labels: []
+assignees: []
+merged: true
+base: master
+head: present
+created_at: 2025-02-11T19:31:48Z
+updated_at: 2025-02-11T19:39:35Z
+url: https://github.com/clap-rs/clap/pull/5908
+synced_at: 2026-01-07T13:12:20-06:00
+---
+
+# fix(parser): Dont report missing flags as present 
+
+---
+
+_Pull request opened by @epage on 2025-02-11 19:31_
+
+When we switched flags to `ArgAction::SetTrue`,
+we overlooked updating `args_present`.
+Because of the default value for `ArgAction::SetTrue`,
+`args_present` will always report true when a flag is defined.
+
+I went with the trivial implementation for now.  We could proactively
+track this but was unsure about correctness vs overhead and so I thought
+I'd have those using it pay for it.
+
+Looking over uses on github, this will fix a couple bugs but should
+otherwise be unnoticeable.
+
+Fixes #5860
+
+---

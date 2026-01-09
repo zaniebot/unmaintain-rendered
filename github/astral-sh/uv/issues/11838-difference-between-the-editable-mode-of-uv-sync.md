@@ -1,0 +1,127 @@
+---
+number: 11838
+title: Difference between the Editable Mode of uv sync and uv pip install -e .
+type: issue
+state: closed
+author: lmanc
+labels:
+  - question
+assignees: []
+created_at: 2025-02-27T19:43:42Z
+updated_at: 2025-02-28T07:40:22Z
+url: https://github.com/astral-sh/uv/issues/11838
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# Difference between the Editable Mode of uv sync and uv pip install -e .
+
+---
+
+_Issue opened by @lmanc on 2025-02-27 19:43_
+
+### Question
+
+I assume I might have a fundamental misconception, but according to the [uv documentation](https://docs.astral.sh/uv/concepts/projects/config/#editable-mode), `uv sync` always installs in editable mode. However, when using `uv sync`, I don’t see the project installed locally as I do with `uv pip install -e .`.
+
+If I run `uv pip install -e .` in a `.venv` where the project's package is not yet in editable mode:
+
+```
+uv pip install -e .
+Resolved 37 packages in 309ms
+Installed 1 package in 15ms
+ + <project_name>==0.1.0 (from <project_path>)
+```
+
+Then, if I execute `uv sync` afterward:
+
+```
+uv sync
+Resolved 45 packages in 1ms
+Uninstalled 1 package in 1ms
+ - <project_name>==0.1.0 (from <project_path>)
+```
+
+Looking at the help documentation for `uv sync`, I see:
+
+```
+      --no-editable                              Install any editable dependencies, including the project and any workspace members, as non-editable
+```
+
+For `uv pip install`, it states:
+
+```
+  -e, --editable <EDITABLE>                    Install the editable package based on the provided local file path
+```
+
+So, it seems that they refer to two different concepts.
+
+1, Yet I don’t understand why they share the same name.
+2.. Also, is there an equivalent of `uv pip install -e .` within `uv sync`?
+
+### Platform
+
+_No response_
+
+### Version
+
+uv 0.6.3 (a0b9f22a2 2025-02-24)
+
+---
+
+_Label `question` added by @lmanc on 2025-02-27 19:43_
+
+---
+
+_Comment by @charliermarsh on 2025-02-27 19:44_
+
+Can you make sure you have a `build-system` defined in the project? We omit the project itself in `uv sync` if it lacks a `build-system`.
+
+---
+
+_Comment by @charliermarsh on 2025-02-27 19:44_
+
+See: https://docs.astral.sh/uv/concepts/projects/config/#build-systems
+
+---
+
+_Comment by @lmanc on 2025-02-27 20:05_
+
+Thank you, I didn't know that, that makes sense.
+
+I was just playing around with `uv` as a way to improve my understanding of some packaging related concepts, and really couldn't wrap my head around this.
+
+In the paragraph you linked there's this note
+
+> While `uv` will not build and install the current project without a build system definition, the presence of a `[build-system]` table is not required in other packages. For legacy reasons, if a build system is not defined, then `setuptools.build_meta:__legacy__` is used to build the package. Packages you depend on may not explicitly declare their build system but are still installable. Similarly, if you add a dependency on a local package or install it with `uv pip`, `uv` will always attempt to build and install it.
+
+Here I understand that `uv` needs a `[build-system]` in order to install the project, but it can still build dependency packages using the legacy `setuptools.build_meta:__legacy__`, even if dependency packages doesn't declare a `[build-system]`.
+
+But why `uv pip install -e` . doesn't require a `build-system` to be specified?
+
+---
+
+_Comment by @charliermarsh on 2025-02-28 00:19_
+
+Yeah, you can build and install a project without a build system by falling back to setuptools. It's just a decision we made _not_ to do that in the "project APIs" (`uv run`, `uv sync`, `uv lock`, etc.), whereas in the `uv pip` APIs, we follow pip's behavior.
+
+---
+
+_Comment by @charliermarsh on 2025-02-28 01:55_
+
+(Hopefully that helps; happy to answer questions.)
+
+---
+
+_Closed by @charliermarsh on 2025-02-28 01:55_
+
+---
+
+_Comment by @lmanc on 2025-02-28 07:40_
+
+Yes, thanks a lot!
+
+---
+
+_Referenced in [trailofbits/cookiecutter-python#47](../../trailofbits/cookiecutter-python/pulls/47.md) on 2025-04-02 16:39_
+
+---

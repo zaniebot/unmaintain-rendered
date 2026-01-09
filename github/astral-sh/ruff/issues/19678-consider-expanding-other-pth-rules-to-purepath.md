@@ -1,0 +1,77 @@
+---
+number: 19678
+title: "Consider expanding other `PTH` rules to `PurePath` subclasses"
+type: issue
+state: open
+author: ntBre
+labels:
+  - rule
+  - needs-decision
+assignees: []
+created_at: 2025-08-01T02:21:18Z
+updated_at: 2025-08-01T16:47:52Z
+url: https://github.com/astral-sh/ruff/issues/19678
+synced_at: 2026-01-07T13:12:16-06:00
+---
+
+# Consider expanding other `PTH` rules to `PurePath` subclasses
+
+---
+
+_Issue opened by @ntBre on 2025-08-01 02:21_
+
+We noticed this in #19440, which expanded `PTH201` to check `PurePath` subclasses. I don't think every `PurePath` subclass is applicable for every `PTH` rule, but I think some of the rules also differ in whether or not they try to resolve bindings to a `Path`.
+
+> It seems we have a couple of different existing checks that are similar to this:
+> 
+> https://github.com/astral-sh/ruff/blob/e867830848f6cc996186ecaf6570c43a56c0cf2c/crates/ruff_python_semantic/src/analyze/typing.rs#L1091-L1093
+> 
+> which will check `Binding`s and includes all of these except `PackagePath`, and
+> 
+> https://github.com/astral-sh/ruff/blob/e867830848f6cc996186ecaf6570c43a56c0cf2c/crates/ruff_linter/src/rules/flake8_use_pathlib/helpers.rs#L14-L21
+> 
+> which only checks for `pathlib.Path`. I don't think we can switch all of the current calls to one or the other, but we might at least want to factor this code into a helper function (`is_pure_path_subclass` maybe) so that we can use it in the other PTH rules, if appropriate.
+
+And we added a third one in #19440:
+
+https://github.com/astral-sh/ruff/blob/b3a26a50ad2cfdac1a91f28ed105343d65681a63/crates/ruff_linter/src/rules/flake8_use_pathlib/helpers.rs#L26
+
+Originally from https://github.com/astral-sh/ruff/pull/19440#discussion_r2237704407
+
+---
+
+_Renamed from "Consider checking other `PTH` rules for `PurePath` subclasses" to "Consider expanding other `PTH` rules to `PurePath` subclasses" by @ntBre on 2025-08-01 02:22_
+
+---
+
+_Label `rule` added by @ntBre on 2025-08-01 02:24_
+
+---
+
+_Label `needs-design` added by @ntBre on 2025-08-01 02:24_
+
+---
+
+_Label `needs-design` removed by @ntBre on 2025-08-01 02:25_
+
+---
+
+_Label `needs-decision` added by @ntBre on 2025-08-01 02:25_
+
+---
+
+_Comment by @chirizxc on 2025-08-01 16:32_
+
+I think for autofixes I made we can use `is_pure_path_subclass_with_preview`
+
+---
+
+_Comment by @ntBre on 2025-08-01 16:47_
+
+Yeah I think we can too. We just need to double check each method. From the [docs](https://docs.python.org/3/library/pathlib.html#pure-paths):
+
+> Pure path objects provide path-handling operations which don’t actually access a filesystem.
+
+so this doesn't include methods like `mkdir` or `cwd`, for example. Those _are_ only available on `Path`, from what I can tell.
+
+---

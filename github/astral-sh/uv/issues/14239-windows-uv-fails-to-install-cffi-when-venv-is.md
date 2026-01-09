@@ -1,0 +1,117 @@
+---
+number: 14239
+title: "windows: uv fails to install cffi when venv is using pypy interpreter (pip does succeed on the same)"
+type: issue
+state: closed
+author: ssbarnea
+labels:
+  - bug
+assignees: []
+created_at: 2025-06-24T13:23:42Z
+updated_at: 2025-09-05T12:55:45Z
+url: https://github.com/astral-sh/uv/issues/14239
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# windows: uv fails to install cffi when venv is using pypy interpreter (pip does succeed on the same)
+
+---
+
+_Issue opened by @ssbarnea on 2025-06-24 13:23_
+
+### Summary
+
+On Windows, when python interpreter is `pypy`, uv fails to install cffi because it tries to compile it and fails to compile. 
+
+To reproduce:
+
+```command
+# Windows command
+> uv venv --python pypy .venv
+> . .venv/Scripts/activate
+> python --version                   
+Python 3.11.11 (0253c85bf5f8, Feb 26 2025, 10:43:25)
+[PyPy 7.3.19 with MSC v.1941 64 bit (AMD64)]
+
+> uv pip install cffi
+Using Python 3.11.11 environment at: .venv-pypy
+Resolved 2 packages in 49ms
+  × Failed to build `cffi==1.17.1`
+  ├─▶ The build backend returned an error                                                                                                                                                
+  ╰─▶ Call to `setuptools.build_meta.build_wheel` failed (exit code: 1)
+
+      [stderr]
+      Traceback (most recent call last):
+        File "<string>", line 14, in <module>
+        File "C:\Users\runner\AppData\Local\uv\cache\builds-v0\.tmpANoLh2\Lib\site-packages\setuptools\build_meta.py", line 331, in get_requires_for_build_wheel
+          return self._get_build_requires(config_settings, requirements=[])
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        File "C:\Users\runner\AppData\Local\uv\cache\builds-v0\.tmpANoLh2\Lib\site-packages\setuptools\build_meta.py", line 301, in _get_build_requires
+          self.run_setup()
+        File "C:\Users\runner\AppData\Local\uv\cache\builds-v0\.tmpANoLh2\Lib\site-packages\setuptools\build_meta.py", line 317, in run_setup
+          exec(code, locals())
+        File "<string>", line 126, in <module>
+        File "<string>", line 105, in uses_msvc
+        File "C:\Users\runner\AppData\Local\uv\cache\builds-v0\.tmpANoLh2\Lib\site-packages\setuptools\_distutils\command\config.py", line 213, in try_compile
+          self._compile(body, headers, include_dirs, lang)
+        File "C:\Users\runner\AppData\Local\uv\cache\builds-v0\.tmpANoLh2\Lib\site-packages\setuptools\_distutils\command\config.py", line 129, in _compile
+          self.compiler.compile([src], include_dirs=include_dirs)
+        File "C:\Users\runner\AppData\Local\uv\cache\builds-v0\.tmpANoLh2\Lib\site-packages\setuptools\_distutils\compilers\C\msvc.py", line 384, in compile
+          self.initialize()
+        File "C:\Users\runner\AppData\Local\uv\cache\builds-v0\.tmpANoLh2\Lib\site-packages\setuptools\_distutils\compilers\C\msvc.py", line 294, in initialize
+          vc_env = _get_vc_env(plat_spec)
+                   ^^^^^^^^^^^^^^^^^^^^^^
+        File "C:\Users\runner\AppData\Local\uv\cache\builds-v0\.tmpANoLh2\Lib\site-packages\setuptools\_distutils\compilers\C\msvc.py", line 155, in _get_vc_env
+          raise DistutilsPlatformError(
+      distutils.errors.DistutilsPlatformError: Microsoft Visual C++ 14.0 or greater is required. Get it with "Microsoft C++ Build Tools":
+      https://visualstudio.microsoft.com/visual-cpp-build-tools/
+
+      hint: This usually indicates a problem with the package or the build environment.
+
+> uv pip install pip
+Using Python 3.11.11 environment at: .venv-pypy
+Audited 1 package in 1ms
+
+pip install pip cffi
+Requirement already satisfied: pip in c:\users\runner\code\os\tox-uv\.venv-pypy\lib\site-packages (25.1.1)
+Requirement already satisfied: cffi in c:\users\runner\appdata\roaming\uv\python\pypy-3.11.11-windows-x86_64-none\lib (1.18.0.dev0)
+Requirement already satisfied: pycparser in c:\users\runner\code\os\tox-uv\.venv-pypy\lib\site-packages (from cffi) (2.22)
+```
+
+This does not happen with non-pypy python interpreters. Still, because pip is able to correctly install cffi package, I suspect that the bug is uv specific.
+
+### Platform
+
+win32
+
+### Version
+
+uv 0.7.13 (62ed17b23 2025-06-12)
+
+### Python version
+
+Python 3.11.11 (0253c85bf5f8, Feb 26 2025, 10:43:25) [PyPy 7.3.19 with MSC v.1941 64 bit (AMD64)]
+
+---
+
+_Label `bug` added by @ssbarnea on 2025-06-24 13:23_
+
+---
+
+_Referenced in [tox-dev/tox-uv#193](../../tox-dev/tox-uv/issues/193.md) on 2025-06-24 13:25_
+
+---
+
+_Referenced in [tox-dev/tox-uv#215](../../tox-dev/tox-uv/pulls/215.md) on 2025-06-24 15:09_
+
+---
+
+_Comment by @konstin on 2025-09-05 12:55_
+
+This is another instance of https://github.com/astral-sh/uv/pull/9849: cffi is shipped with pypy, which uv currently can't detect.
+
+---
+
+_Closed by @konstin on 2025-09-05 12:55_
+
+---

@@ -1,0 +1,55 @@
+---
+number: 21006
+title: Improve error recovery for illegal use of keywords in parameter positions
+type: issue
+state: open
+author: samwgoldman
+labels:
+  - parser
+assignees: []
+created_at: 2025-10-20T22:14:23Z
+updated_at: 2025-10-20T23:10:00Z
+url: https://github.com/astral-sh/ruff/issues/21006
+synced_at: 2026-01-07T13:12:16-06:00
+---
+
+# Improve error recovery for illegal use of keywords in parameter positions
+
+---
+
+_Issue opened by @samwgoldman on 2025-10-20 22:14_
+
+### Summary
+
+Ruff's is quite good at recovering from invalid inputs and producing an AST. I recently encountered an example where I think the parser error recovery could be better, and could make it easier to flag a helpful error to users: using a reserved keyword as a function parameter name.
+
+For example:
+
+```
+def f(global: int, region: str):
+    pass
+```
+
+parses as:
+
+```
+def f():
+  global int, region, str
+  pass
+```
+
+I can get similar results using other keywords like `await` and `not`.
+
+If Ruff instead parsed the invalid keyword as a parameter, we could provide a very targeted error message guiding the user to avoid the keyword.
+
+Thanks!
+
+### Version
+
+_No response_
+
+---
+
+_Label `parser` added by @AlexWaygood on 2025-10-20 23:10_
+
+---

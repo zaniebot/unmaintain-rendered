@@ -1,0 +1,57 @@
+---
+number: 6116
+title: "Update `F481` autofix for Jupyter line magic expr"
+type: issue
+state: closed
+author: dhruvmanila
+labels:
+  - rule
+assignees: []
+created_at: 2023-07-27T05:15:47Z
+updated_at: 2023-08-05T00:45:03Z
+url: https://github.com/astral-sh/ruff/issues/6116
+synced_at: 2026-01-07T13:12:15-06:00
+---
+
+# Update `F481` autofix for Jupyter line magic expr
+
+---
+
+_Issue opened by @dhruvmanila on 2023-07-27 05:15_
+
+If the assignment value is a line magic expression, the statement shouldn't be removed entirely i.e., the assignment statement should be refactored to a line magic statement:
+
+```diff
+- dir = !pwd
++ !pwd
+```
+
+---
+
+_Referenced in [astral-sh/ruff#5188](../../astral-sh/ruff/issues/5188.md) on 2023-07-27 05:15_
+
+---
+
+_Assigned to @dhruvmanila by @dhruvmanila on 2023-07-27 05:16_
+
+---
+
+_Label `rule` added by @dhruvmanila on 2023-07-27 05:16_
+
+---
+
+_Referenced in [astral-sh/ruff#6117](../../astral-sh/ruff/pulls/6117.md) on 2023-07-27 05:16_
+
+---
+
+_Referenced in [astral-sh/ruff#6138](../../astral-sh/ruff/pulls/6138.md) on 2023-07-28 01:10_
+
+---
+
+_Referenced in [astral-sh/ruff#6141](../../astral-sh/ruff/pulls/6141.md) on 2023-07-28 01:35_
+
+---
+
+_Closed by @dhruvmanila on 2023-08-05 00:45_
+
+---

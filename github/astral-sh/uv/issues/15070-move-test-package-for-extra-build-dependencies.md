@@ -1,0 +1,28 @@
+---
+number: 15070
+title: Move test package for extra build dependencies into source tree
+type: issue
+state: open
+author: zanieb
+labels:
+  - internal
+assignees: []
+created_at: 2025-08-04T23:47:23Z
+updated_at: 2025-08-04T23:47:27Z
+url: https://github.com/astral-sh/uv/issues/15070
+synced_at: 2026-01-07T13:12:19-06:00
+---
+
+# Move test package for extra build dependencies into source tree
+
+---
+
+_Issue opened by @zanieb on 2025-08-04 23:47_
+
+Instead of declaring this weird package structure in each test (see "Write a test package that arbitrarily requires `anyio` at build time"), we should just put a package alongside our other test packages in `scripts/packages`
+
+---
+
+_Label `internal` added by @zanieb on 2025-08-04 23:47_
+
+---

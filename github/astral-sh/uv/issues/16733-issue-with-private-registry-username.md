@@ -1,0 +1,109 @@
+---
+number: 16733
+title: Issue with private registry username
+type: issue
+state: open
+author: MarthinusBosman
+labels: []
+assignees: []
+created_at: 2025-11-14T06:20:09Z
+updated_at: 2025-12-03T09:31:37Z
+url: https://github.com/astral-sh/uv/issues/16733
+synced_at: 2026-01-07T13:12:19-06:00
+---
+
+# Issue with private registry username
+
+---
+
+_Issue opened by @MarthinusBosman on 2025-11-14 06:20_
+
+### Summary
+
+I'm trying to set up a repo that uses an Azure Artifacts Feed private registry.
+
+The current documentation gives a good example of how to do this securely for both interactive user environment, and in my case, an Azure DevOps Pipeline.
+
+For users, run `uv tool install keyring --with artifacts-keyring` and set the following in pyproject.toml:
+```toml
+[tool.uv]
+keyring-provider = "subprocess"
+
+[[tool.uv.index]]
+name = "private-registry"
+url = "https://VssSessionToken@pkgs.dev.azure.com/<ORGANIZATION>/<PROJECT>/_packaging/<FEED>/pypi/simple/"
+```
+This avoids having to try and set any permanent environment variables.
+
+## The problem:
+For Azure DevOps, setting `UV_INDEX_PRIVATE_REGISTRY_USERNAME=whatever`, `UV_INDEX_PRIVATE_REGISTRY_PASSWORD=$(System.AccessToken)`, and `UV_KEYRING_PROVIDER=disabled` should work, but it only works if `VssSessionToken@` is removed from the index-url in pyproject.toml.
+
+## Proposed Solution
+
+It would be great if  `UV_INDEX_PRIVATE_REGISTRY_USERNAME` would override any username set in the url, as that would allow me to not have to try and set the correct env variable in user environments each time.
+
+Or maybe I'm overlooking something that allows me to do the same?
+
+### Version
+
+0.9.8
+
+---
+
+_Referenced in [astral-sh/uv#16739](../../astral-sh/uv/pulls/16739.md) on 2025-11-14 16:55_
+
+---
+
+_Referenced in [astral-sh/uv#16748](../../astral-sh/uv/pulls/16748.md) on 2025-11-15 17:06_
+
+---
+
+_Comment by @MarthinusBosman on 2025-11-15 17:47_
+
+Ok, created what I believe to be a valid PR for this #16748 
+
+---
+
+_Comment by @woodruffw on 2025-11-17 18:34_
+
+Hi @MarthinusBosman, thanks for filing an issue.
+
+> For Azure DevOps, setting `UV_INDEX_PRIVATE_REGISTRY_USERNAME=whatever`, `UV_INDEX_PRIVATE_REGISTRY_PASSWORD=$(System.AccessToken)`, and `UV_KEYRING_PROVIDER=disabled` should work, but it only works if `VssSessionToken@` is removed from the index-url in pyproject.toml.
+
+Curious: why are you setting `VssSessionToken` as the username, if you want the keyring/user environment to subsequently override it? Is there a reason why you need that to be present, instead of uniformly omitting it?
+
+---
+
+_Comment by @MarthinusBosman on 2025-11-17 18:45_
+
+@woodruffw I'm setting it for development environment, aka when users/devs are developing in the repo. In that case I want to use the keyring, and it's difficult (and messy) to enforce an env variable across all possible dev machine types & IDEs. So in this case it doesn't get overridden.
+
+Then in the CICD pipeline (aka Azure DevOps Pipelines), I don't want to use VssSessionToken, and it's quite easy to enforce consistent env variables.
+
+In general I'd also just say this is the usual behaviour I expect, that env variables should override anything specified in pyproject.toml when present.
+
+---
+
+_Comment by @my1e5 on 2025-12-02 09:31_
+
+I seem to recall that this might have used to work? For example, this blog post from earlier this year (https://blog.nathanv.me/posts/azure-artifacts-uv/) says you can set up your pyproject.toml with `VssSessionToken` and `keyring-provider = "subprocess"` and then in CI/CD the appropriately named environment variables will override them. 
+
+My use case is the same, it's very complicated to enforce env variables across all dev machines. Using `VssSessionToken` and `keyring-provider = "subprocess"` means everything 'just works' locally for my devs. And the only time we need a token is in CI/CD, so that can be set up as a separate environment.
+
+---
+
+_Comment by @my1e5 on 2025-12-03 09:31_
+
+@MarthinusBosman - I just tried this again on my company Azure Artifacts registry and it seems to work as expected. I hardcode `VssSessionToken@` and `keyring-provider = "subprocess"` in my pyproject.toml and then in my GitHub Actions workflow I set
+```
+    env:
+      UV_INDEX_FOO_USERNAME: none
+      UV_INDEX_FOO_PASSWORD: ${{ secrets.AZURE_ARTIFACTS_TOKEN }}
+      UV_KEYRING_PROVIDER: disabled
+```
+and it overrides the pyproject.toml configuration.
+
+Also, I came across this comment from a previous issue where someone else got a similar setup to work - https://github.com/astral-sh/uv/issues/3542#issuecomment-2227222162
+
+
+---

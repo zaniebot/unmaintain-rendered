@@ -1,0 +1,81 @@
+---
+number: 16374
+title: Do not match-case against np.nan
+type: issue
+state: closed
+author: RolandSaur
+labels:
+  - rule
+assignees: []
+created_at: 2025-02-25T16:18:18Z
+updated_at: 2025-02-26T18:50:22Z
+url: https://github.com/astral-sh/ruff/issues/16374
+synced_at: 2026-01-07T13:12:16-06:00
+---
+
+# Do not match-case against np.nan
+
+---
+
+_Issue opened by @RolandSaur on 2025-02-25 16:18_
+
+### Summary
+
+numpy's not-a-number  (`np.nan`) will never be matched in a match-case statement. But neither `ruff` nor `mypy` complain.
+
+The following prints out `Found a number: nan`, because `np.nan` does not match with `np.nan`.
+```
+import numpy as np
+
+
+def my_func(number: float) -> None:
+    match number:
+        case np.nan:
+            print("Found np.nan")
+        case float(number):
+            print(f"Found a number: {number}")
+
+
+my_func(np.nan)
+```
+
+I believe using `np.nan` in a match-case statement should be considered a mistake and it would be cool to have a rule as part of the [numpy-specific-rules](https://docs.astral.sh/ruff/rules/#numpy-specific-rules-npy)
+
+---
+
+_Comment by @AlexWaygood on 2025-02-25 16:32_
+
+I think this would be a reasonable extension to our existing [`nan-comparison`](https://docs.astral.sh/ruff/rules/nan-comparison/) rule (`PLW0177`). We currently flag the first of these `match` clauses with `PLW0177`, but not the second, which seems a bit silly as they do the same thing:
+
+```py
+import numpy as np
+
+
+def my_func(number: float) -> None:
+    match number:
+        case number if number == np.nan:  # PLW0177 emitted here
+            print('foo')
+        case np.nan:
+            print("Found np.nan")  # but not emitted here
+        case float(number):
+            print(f"Found a number: {number}")
+
+
+my_func(np.nan)
+```
+
+[Playground](https://play.ruff.rs/a116e5f5-341a-4a3d-b297-56e46c5cf57e)
+
+---
+
+_Label `rule` added by @AlexWaygood on 2025-02-25 16:32_
+
+---
+
+_Referenced in [astral-sh/ruff#16378](../../astral-sh/ruff/pulls/16378.md) on 2025-02-25 17:54_
+
+---
+
+_Closed by @ntBre on 2025-02-26 18:50_
+
+---

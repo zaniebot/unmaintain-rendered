@@ -1,0 +1,40 @@
+---
+number: 4962
+title: "Formatter: `BoolOp`"
+type: issue
+state: closed
+author: MichaReiser
+labels:
+  - formatter
+assignees: []
+created_at: 2023-06-08T14:22:51Z
+updated_at: 2023-06-21T09:27:59Z
+url: https://github.com/astral-sh/ruff/issues/4962
+synced_at: 2026-01-07T13:12:15-06:00
+---
+
+# Formatter: `BoolOp`
+
+---
+
+_Issue opened by @MichaReiser on 2023-06-08 14:22_
+
+_No description provided._
+
+---
+
+_Referenced in [astral-sh/ruff#4798](../../astral-sh/ruff/issues/4798.md) on 2023-06-08 14:22_
+
+---
+
+_Assigned to @MichaReiser by @MichaReiser on 2023-06-08 14:22_
+
+---
+
+_Label `autoformatter` added by @charliermarsh on 2023-06-08 19:56_
+
+---
+
+_Closed by @MichaReiser on 2023-06-21 09:27_
+
+---

@@ -1,0 +1,84 @@
+---
+number: 5295
+title: "chore: add VSCode DevContainer specification file"
+type: issue
+state: closed
+author: ccap2
+labels:
+  - C-enhancement
+assignees: []
+created_at: 2024-01-10T04:32:06Z
+updated_at: 2024-01-13T01:29:44Z
+url: https://github.com/clap-rs/clap/issues/5295
+synced_at: 2026-01-07T13:12:20-06:00
+---
+
+# chore: add VSCode DevContainer specification file
+
+---
+
+_Issue opened by @ccap2 on 2024-01-10 04:32_
+
+### Please complete the following tasks
+
+- [X] I have searched the [discussions](https://github.com/clap-rs/clap/discussions)
+- [X] I have searched the [open](https://github.com/clap-rs/clap/issues) and [rejected](https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed) issues
+
+### Clap Version
+
+master
+
+### Describe your use case
+
+Single click environment setup. 
+This can be used to speed up the setting up of development environments for new contributors along with not having to install dependences directly on machines. 
+
+### Describe the solution you'd like
+
+It would be nice to have a devcontainer manifest file that describes a working environment. 
+More information can be found on the link below:
+https://code.visualstudio.com/docs/devcontainers/create-dev-container
+
+### Alternatives, if applicable
+
+VM Images could be a substitute, but they are more complicated to deploy and are much more resource heavy than containers. 
+
+### Additional Context
+
+This would make the project slightly more beginner friendly resulting in the possibility of a wider set of contributors. This increase would result in the growth the community and an increase in the number of community contributions.
+
+---
+
+_Label `C-enhancement` added by @ccap2 on 2024-01-10 04:32_
+
+---
+
+_Referenced in [clap-rs/clap#5296](../../clap-rs/clap/pulls/5296.md) on 2024-01-10 04:39_
+
+---
+
+_Renamed from "build: add VSCode dev container specification file" to "build: add VSCode DevContainer specification file" by @ccap2 on 2024-01-10 04:45_
+
+---
+
+_Renamed from "build: add VSCode DevContainer specification file" to "chore: add VSCode DevContainer specification file" by @ccap2 on 2024-01-10 04:48_
+
+---
+
+_Comment by @epage on 2024-01-10 14:43_
+
+I'm not normally a fan of tying repos to specific editors.  For instance, I generally recommend user-wide ignores for stray editor files, rather than per-project ignores.
+
+In particular, this sets specific policies of what tools are for use by the user.
+
+---
+
+_Comment by @ccap2 on 2024-01-12 22:50_
+
+Got it, I totally understand the philosophy there. Sorry for the confusion and thanks for the clarification!
+
+---
+
+_Closed by @epage on 2024-01-13 01:29_
+
+---

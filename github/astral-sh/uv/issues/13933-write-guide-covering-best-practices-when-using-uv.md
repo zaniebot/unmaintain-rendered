@@ -1,0 +1,70 @@
+---
+number: 13933
+title: Write guide covering best practices when using uv with LLM-based tooling
+type: issue
+state: open
+author: zanieb
+labels: []
+assignees: []
+created_at: 2025-06-09T19:50:35Z
+updated_at: 2025-06-24T21:46:01Z
+url: https://github.com/astral-sh/uv/issues/13933
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# Write guide covering best practices when using uv with LLM-based tooling
+
+---
+
+_Issue opened by @zanieb on 2025-06-09 19:50_
+
+We should add an integration guide, i.e., "Using uv with AI tooling", that covers best practices for using uv with tools like Cursor and Claude Code.
+
+We're still learning what best practices are, but this may include things like an example Cursor rule file for using uv in a  project (e.g., as done in Bun at https://github.com/oven-sh/bun/pull/19926).
+
+Related
+
+- #13929 
+- https://github.com/astral-sh/uv/pull/14044
+
+---
+
+_Comment by @zanieb on 2025-06-09 19:50_
+
+We're happy to field more recommendations here about what topics to cover.
+
+---
+
+_Comment by @Peiffap on 2025-06-10 13:32_
+
+Perhaps something to allow AI tools to more easily help migrate from `pip` to `uv` in CI/CD?
+
+---
+
+_Comment by @IsaacGemal on 2025-06-17 02:02_
+
+I'm not familiar with rust at all, but I did my best to mimic what bun was doing with UV.
+My thinking is that AI isn't going to be writing all our code in the future quite that soon, but right they very very good at installing packages, testing them, updating a dependency, etc. Claude 4 will go to almost excessive lengths with tool calling to solve whatever it's been tasked with. I think this is because those are easy, quick, and verifiable problems.
+The issue is of course, UV is brand new, and for AIs to know their syntax we're going to have to wait for the next generation of models to be trained.
+Currently what I do is I have to copy paste the docs and in an md file and throw it in my root directory so the AIs and I are on the same page.
+
+---
+
+_Comment by @IsaacGemal on 2025-06-18 02:26_
+
+Here's another example.
+https://x.com/jarredsumner/status/1934822081591681353
+
+---
+
+_Renamed from "Write guide covering best practices when using uv with AI tooling" to "Write guide covering best practices when using uv with LLM-based tooling" by @charliermarsh on 2025-06-23 14:27_
+
+---
+
+_Comment by @IsaacGemal on 2025-06-24 21:46_
+
+Big step in the right direction! Thanks Charlie
+https://x.com/charliermarsh/status/1937502689400881309
+
+
+---

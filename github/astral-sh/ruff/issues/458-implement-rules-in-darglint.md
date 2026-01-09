@@ -1,0 +1,757 @@
+---
+number: 458
+title: "Implement rules in `darglint`"
+type: issue
+state: open
+author: edgarrmondragon
+labels:
+  - docstring
+  - plugin
+assignees: []
+created_at: 2022-10-21T01:21:21Z
+updated_at: 2025-04-02T22:11:51Z
+url: https://github.com/astral-sh/ruff/issues/458
+synced_at: 2026-01-07T13:12:14-06:00
+---
+
+# Implement rules in `darglint`
+
+---
+
+_Issue opened by @edgarrmondragon on 2022-10-21 01:21_
+
+This might be superseded by https://github.com/astral-sh/ruff/issues/12434
+
+---
+
+https://pypi.org/project/darglint/
+
+> Darglint's primary focus is to identify incorrect and missing documentationd
+of a function's signature. Checking style is a stretch goal, and is supported
+on a best-effort basis.  Darglint does not check stylistic preferences expressed
+by tools in the Python Code Quality Authority (through tools such as <code>pydocstyle</code>).
+So when using Darglint, it may be a good idea to also use <code>pydocstyle</code>, if you
+want to enforce style.  (For example, <code>pydocstyle</code> requires the short summary
+to be separated from other sections by a line break.  Darglint makes no such check.)
+
+<h3>Error Codes</h3>
+
+<ul>
+<li><em>DAR001</em>: The docstring was not parsed correctly due to a syntax error.</li>
+<li><em>DAR002</em>: An argument/exception lacks a description</li>
+<li><em>DAR003</em>: A line is under-indented or over-indented.</li>
+<li><em>DAR004</em>: The docstring contains an extra newline where it shouldn't.</li>
+<li><em>DAR005</em>: The item contains a type section (parentheses), but no type.</li>
+<li><em>DAR101</em>: The docstring is missing a parameter in the definition.</li>
+<li><em>DAR102</em>: The docstring contains a parameter not in function.</li>
+<li><em>DAR103</em>: The docstring parameter type doesn't match function.</li>
+<li><em>DAR104</em>: (disabled) The docstring parameter has no type specified</li>
+<li><em>DAR105</em>: The docstring parameter type is malformed.</li>
+<li><em>DAR201</em>: The docstring is missing a return from definition.</li>
+<li><em>DAR202</em>: The docstring has a return not in definition.</li>
+<li><em>DAR203</em>: The docstring parameter type doesn't match function.</li>
+<li><em>DAR301</em>: The docstring is missing a yield present in definition.</li>
+<li><em>DAR302</em>: The docstring has a yield not in definition.</li>
+<li><em>DAR401</em>: The docstring is missing an exception raised.</li>
+<li><em>DAR402</em>: The docstring describes an exception not explicitly raised.</li>
+<li><em>DAR501</em>: The docstring describes a variable which is not defined.</li>
+</ul>
+
+---
+
+_Label `rule` added by @charliermarsh on 2022-10-21 01:42_
+
+---
+
+_Comment by @charliermarsh on 2022-10-29 22:55_
+
+Cool, I've never used but looks useful. Would this be an impactful plugin for you? Would it unblock any Ruff adoption? :)
+
+---
+
+_Comment by @edgarrmondragon on 2022-11-01 00:00_
+
+Hey @charliermarsh, yeah. I maintain a few packages with public APIs that would benefit from contributors being informed about documentation for arguments or exceptions raised being missing.
+
+A number of features would make Ruff a nice replacement for flake8: speed, compatibility with the rest of the Python ecosystem, pyproject.toml support.
+
+---
+
+_Comment by @lsorber on 2022-11-18 14:32_
+
+FWIW, `darglint` is the main blocker [1] for us to migrate Poetry Cookiecutter [2] from `flake8` to `ruff`.
+
+[1] https://github.com/radix-ai/poetry-cookiecutter/issues/125
+[2] https://github.com/radix-ai/poetry-cookiecutter
+
+---
+
+_Comment by @charliermarsh on 2022-11-18 15:07_
+
+👍 Helpful to hear! `darglint` is probably the most popular unimplemented plugin. I'd like to get around to it soon. If there's a subset of rules that are most impactful, that'd be helpful to know too for prioritization.
+
+
+---
+
+_Comment by @edgarrmondragon on 2022-11-19 00:03_
+
+> If there's a subset of rules that are most impactful, that'd be helpful to know too for prioritization.
+
+For me personally, they're probably DAR101, DAR102, DAR201, DAR202 and to a lesser extent DAR301, DAR302, DAR401 and DAR402
+
+---
+
+_Referenced in [astral-sh/ruff#909](../../astral-sh/ruff/pulls/909.md) on 2022-11-26 22:06_
+
+---
+
+_Referenced in [superlinear-ai/substrate#144](../../superlinear-ai/substrate/pulls/144.md) on 2022-12-19 12:08_
+
+---
+
+_Label `docstring` added by @charliermarsh on 2022-12-31 18:10_
+
+---
+
+_Label `rule` removed by @charliermarsh on 2022-12-31 18:10_
+
+---
+
+_Label `plugin` added by @charliermarsh on 2022-12-31 18:10_
+
+---
+
+_Comment by @strickvl on 2023-01-04 09:52_
+
+For me, I use `darglint` together with `pydocstyle` since they don't do quite the same thing. Having `darglint` absorbed into the ruff world would be really great.
+
+---
+
+_Referenced in [superlinear-ai/substrate#151](../../superlinear-ai/substrate/issues/151.md) on 2023-01-07 08:44_
+
+---
+
+_Comment by @erwann-met on 2023-01-10 10:08_
+
+We just discovered ruff in my team. It's amazing, and I'd like to thank you for all the great work!
+
+We used to run flake8 along with darglint. Unfortunately since ruff does not yet implement darglint rules we still have to keep darglint alongside ruff which is a shame given how slow darglint is.
+
+Reimplementing darglint within ruff is definitely the feature we are most looking forward to!
+
+For us the most important rules are probably those related to the parameters (and returns) and their types: `DAR101`, `DAR102`, `DAR103`, `DAR201`, `DAR202`, `DAR203` and `DAR501`. I hope this helps!
+
+We understand that maintaining an open-source project can be a lot of work and we want to express our appreciation for all the effort that goes into it. We were wondering if there's any update on when this issue might be addressed? Any information would be greatly appreciated. Thank you!
+
+---
+
+_Comment by @charliermarsh on 2023-01-10 13:05_
+
+Very helpful, thank you! It's not something I've started working on actively (and would make for a good contribution if there are any eager contributors reading this :)), but that set of rules at least is probably not too much work to support, and this issue has a lot of thumbs-up votes so I'll try to get to it soon-ish. I'll post here when I'm able to take it on.
+
+
+---
+
+_Comment by @charliermarsh on 2023-01-11 04:05_
+
+Looking into starting on this. `darglint` has a lot of code because it defines entire grammars for the docstrings, and then lexes and parses according to those grammars. `pydocstyle`, on the other hand, does it all with regular expressions. Wondering if we could get away with the latter.
+
+
+---
+
+_Comment by @anthonyburdi on 2023-01-25 19:26_
+
+Super exciting to hear that this is in the works. We just switched to ruff instead of `pydocstyle` and are eager to replace `darglint` as well. Here are the error codes we are most interested (least overlap with `pydocstyle`):
+ 
+
+- DAR102: The docstring contains a parameter not in function.
+- DAR201: The docstring is missing a return from definition.
+- DAR202: The docstring has a return not in definition.
+- DAR301: The docstring is missing a yield present in definition.
+- DAR302: The docstring has a yield not in definition.
+- DAR401: The docstring is missing an exception raised.
+- DAR402: The docstring describes an exception not explicitly raised.
+- DAR501: The docstring describes a variable which is not defined.
+
+---
+
+_Referenced in [pyjanitor-devs/pyjanitor#1236](../../pyjanitor-devs/pyjanitor/issues/1236.md) on 2023-01-30 15:03_
+
+---
+
+_Referenced in [astral-sh/ruff#2310](../../astral-sh/ruff/issues/2310.md) on 2023-01-30 17:33_
+
+---
+
+_Referenced in [astral-sh/ruff#2459](../../astral-sh/ruff/issues/2459.md) on 2023-02-02 00:14_
+
+---
+
+_Comment by @rbebb on 2023-02-02 00:30_
+
+It would be great if it could add darglint’s feature that checks if docstrings match a particular style (whether it be Sphinx, Google, or something else)
+
+---
+
+_Referenced in [mindee/tawazi#85](../../mindee/tawazi/issues/85.md) on 2023-02-27 14:31_
+
+---
+
+_Referenced in [meltano/sdk#1462](../../meltano/sdk/pulls/1462.md) on 2023-02-27 20:23_
+
+---
+
+_Comment by @baggiponte on 2023-03-07 17:41_
+
+Implementing darglint could handle some flake8 exceptions, as well as part of docformatter I guess?
+
+---
+
+_Comment by @rbebb on 2023-03-27 13:58_
+
+@charliermarsh Is there an update on implementing darglint features in ruff? Thank you for all of your work on this project!
+
+---
+
+_Comment by @finswimmer on 2023-04-06 06:50_
+
+Hey,
+
+unfortunately `darglint` is unmaintained since December 2022. So I would be very happy to see something similar in `ruff`.
+
+Thanks a lot for all your very good work!
+
+fin swimmer
+
+---
+
+_Comment by @charliermarsh on 2023-04-06 17:46_
+
+I'm currently considering taking this on as a project over the next few weeks, but it's competing with some other priorities so not a firm commitment yet :) I definitely hear that this something users want, and it's something I want Ruff to support too -- just a question of when, will post here when I have a clear decision.
+
+---
+
+_Comment by @leandro-lucarella-frequenz on 2023-04-12 18:24_
+
+Great to hear work is close to being started. We also rely a lot on `darglint` and are concerned about is current abandoned state, and were also looking to start using `ruff`, so it would be very good news if it can be a replacement for `darglint`. The rules that most often catch error in the documentation for us are:
+
+- DAR101: The docstring is missing a parameter in the definition.
+- DAR102: The docstring contains a parameter not in function.
+- DAR201: The docstring is missing a return from definition.
+- DAR202: The docstring has a return not in definition.
+- DAR301: The docstring is missing a yield present in definition.
+- DAR302: The docstring has a yield not in definition.
+- DAR401: The docstring is missing an exception raised.
+- DAR402: The docstring describes an exception not explicitly raised.
+
+---
+
+_Referenced in [frequenz-floss/frequenz-repo-config-python#18](../../frequenz-floss/frequenz-repo-config-python/issues/18.md) on 2023-04-12 18:31_
+
+---
+
+_Referenced in [ansible-community/antsichaut#22](../../ansible-community/antsichaut/pulls/22.md) on 2023-04-24 15:59_
+
+---
+
+_Referenced in [astral-sh/ruff#4362](../../astral-sh/ruff/issues/4362.md) on 2023-05-11 02:20_
+
+---
+
+_Comment by @jsh9 on 2023-05-16 08:47_
+
+Hi @charliermarsh , after I raised this issue (https://github.com/charliermarsh/ruff/issues/4362), I looked into Darglint myself.  It was extremely slow, and it can actually be unusable for large projects.
+
+Therefore I spent a few days writing a new tool, **_pydoclint_**, from scratch: https://github.com/jsh9/pydoclint
+
+I did some benchmarking using pydoclint vs Darglint, and here's the result on linting these 2 famous Python projects:
+
+|                                                              | pydoclint | darglint                          |
+| ------------------------------------------------------------ | --------- | --------------------------------- |
+| [numpy](https://github.com/numpy/numpy)                      | 2.0 sec   | 49 min 9 sec (1,475x slower)      |
+| [scikit-learn](https://github.com/scikit-learn/scikit-learn) | 2.4 sec   | 3 hr 5 min 33 sec (4,639x slower) |
+
+So if you and/or your team is going to port the same functionality to ruff, I'd recommend that you either write things from the ground up in Rust, or check out how I implemented it in Python.
+
+
+---
+
+_Comment by @akaihola on 2023-05-28 18:31_
+
+Since [darglint](https://pypi.org/project/darglint/) is archived, I've forked it as [darglint2](https://pypi.org/project/darglint2/). The purpose of that project is to maintain a drop-in replacement for `darglint` with any minimal bugfixes needed to keep it usable for old users who can't spend the effort to migrate to a faster alternative.
+
+---
+
+_Comment by @Kludex on 2023-06-19 13:25_
+
+It would be cool to have `DAR102: The docstring contains a parameter not in function.` 👀 
+
+
+---
+
+_Comment by @charliermarsh on 2023-06-19 13:32_
+
+We could probably support that without implementing all of Darglint. We already check that the docstring contains all function parameters -- that's basically the inverse?
+
+---
+
+_Comment by @Kludex on 2023-06-19 13:36_
+
+> We could probably support that without implementing all of Darglint. We already check that the docstring contains all function parameters -- that's basically the inverse?
+
+Yes. That would be great. 👍 
+
+---
+
+_Comment by @erwann-met on 2023-06-26 12:08_
+
+> Hi @charliermarsh , after I raised this issue (#4362), I looked into Darglint myself. It was extremely slow, and it can actually be unusable for large projects.
+> 
+> Therefore I spent a few days writing a new tool, **_pydoclint_**, from scratch: https://github.com/jsh9/pydoclint
+> 
+> I did some benchmarking using pydoclint vs Darglint, and here's the result on linting these 2 famous Python projects:
+> 	pydoclint 	darglint
+> [numpy](https://github.com/numpy/numpy) 	2.0 sec 	49 min 9 sec (1,475x slower)
+> [scikit-learn](https://github.com/scikit-learn/scikit-learn) 	2.4 sec 	3 hr 5 min 33 sec (4,639x slower)
+> 
+> So if you and/or your team is going to port the same functionality to ruff, I'd recommend that you either write things from the ground up in Rust, or check out how I implemented it in Python.
+
+Thank you so much @jsh9 for tackling this issue!
+We've tried your tool along with `Ruff` in my team and it's very promising so far. We are very impressed that you managed to put it together so fast. For us the replacement of `darglint` and `flake8` is crucial as they currently represent about 60% of our CI costs.
+
+Having said that, I would like to provide some feedback based on our experience using `pydoclint`. While it has demonstrated great potential, we have encountered a few issues that prevent us from fully adopting it. One particular area that requires attention is the clarity of the error messages. In certain cases, the messages provided are not as informative or explicit as we would like them to be, making it difficult for us to identify the root cause of the issues. Another issue is the lack of ability to ignore some rules either project-wise or directly in the code.
+
+Sadly we prefer waiting a bit for either `pydoclint` to be mature enough or for `Ruff` to implement darglint rules.
+
+---
+
+_Comment by @jsh9 on 2023-06-27 02:48_
+
+Hi @erwann-met , please feel free to submit new issues over at pydoclint, and I'll take a look.
+
+---
+
+_Referenced in [jsh9/pydoclint#38](../../jsh9/pydoclint/issues/38.md) on 2023-06-30 06:06_
+
+---
+
+_Comment by @rbebb on 2023-07-25 20:09_
+
+Hi @charliermarsh! Just figured I check to see if there's an update on the darglint effort. Thank you again for all of your work!
+
+---
+
+_Referenced in [astral-sh/ruff#6887](../../astral-sh/ruff/issues/6887.md) on 2023-08-26 18:42_
+
+---
+
+_Comment by @joelberkeley on 2023-08-26 18:51_
+
+> ... We already check that the docstring contains all function parameters ...
+
+This appears to be true only for Google style docstrings (see [D417](https://beta.ruff.rs/docs/rules/undocumented-param/)). I'd love for that to be available for sphinx rest style
+
+---
+
+_Referenced in [jrjsmrtn/cookiecutter-hypermodern-python#2](../../jrjsmrtn/cookiecutter-hypermodern-python/issues/2.md) on 2023-09-01 16:17_
+
+---
+
+_Comment by @rbebb on 2023-09-08 14:53_
+
+Hi @charliermarsh! I figured I'd circle back on this feature request to see if there are any updates on the effort!
+
+---
+
+_Comment by @zanieb on 2023-09-08 15:06_
+
+We will report back here if there is progress on this; we have not begun work on this — we have a lot of priorities as we grow!
+
+I'm happy to review contributions of individual rules here.
+
+---
+
+_Referenced in [pyjanitor-devs/pyjanitor#1294](../../pyjanitor-devs/pyjanitor/pulls/1294.md) on 2023-10-08 01:55_
+
+---
+
+_Comment by @ddelange on 2023-10-17 07:45_
+
+fwiw, our setup for consistent [google style docstrings](https://sphinxcontrib-napoleon.readthedocs.io/en/latest/) using darglint and flake8-docstrings:
+
+
+`setup.cfg`
+```ini
+[flake8]
+ignore = B902,D10,E203,E501,W503
+max-line-length = 88
+inline-quotes = double
+docstring-convention = google
+max-cognitive-complexity = 10
+
+[darglint]
+strictness = short
+```
+
+`.pre-commit-config.yaml`
+```yaml
+repos:
+-   repo: https://github.com/psf/black
+    # when updating this version, also update blacken-docs hook below
+    rev: 23.1.0
+    hooks:
+    -   id: black
+
+-   repo: https://github.com/asottile/blacken-docs
+    rev: 1.13.0
+    hooks:
+    -   id: blacken-docs
+        additional_dependencies: ['black==23.1.0']
+
+-   repo: https://github.com/timothycrosley/isort
+    rev: 5.12.0
+    hooks:
+    -   id: isort
+
+-   repo: https://github.com/PyCQA/flake8
+    rev: 6.0.0
+    hooks:
+    -   id: flake8
+        additional_dependencies: [
+            'darglint~=1.8.1',
+            'flake8-absolute-import~=1.0',
+            'flake8-blind-except~=0.2.0',
+            'flake8-builtins~=2.1',
+            'flake8-cognitive-complexity==0.1.0',
+            'flake8-comprehensions~=3.2',
+            'flake8-docstrings~=1.5',
+            'flake8-logging-format~=0.9',
+            'flake8-mutable~=1.2.0',
+            'flake8-print~=5.0',
+            'flake8-printf-formatting~=1.1.0',
+            'flake8-pytest-style~=1.7',
+            'flake8-quotes~=3.2',
+            'flake8-tuple~=0.4.1',
+            'pep8-naming~=0.11'
+        ]
+```
+
+---
+
+_Comment by @ddelange on 2023-10-25 05:29_
+
+Switched from flake8 + black + darglint to ruff + pydoclint.
+
+Note that for [google style docstrings](https://sphinxcontrib-napoleon.readthedocs.io/en/latest/):
+- pydoclint needs additional config beyond style=google (below, see also [discussion](https://github.com/jsh9/pydoclint/discussions/88#discussioncomment-7312021)) if your code is already type annotated (which doesnt need duplication into the docstrings)
+- [D407](https://docs.astral.sh/ruff/rules/dashed-underline-after-section/) needs to be disabled.
+
+`pyproject.toml`
+```toml
+[tool.pydoclint]
+style = "google"
+arg-type-hints-in-docstring = false
+check-return-types = false
+check-yield-types = false
+
+[tool.ruff]
+select = ["ALL"]
+ignore = ["D407", "E501", "ANN", "TRY003", "D203", "D213", "D100", "D104", "D106", "FIX002", "ERA001", "RUF012"] # ignores: D407 (we have google style docstrings), E501 (we have black), ANN (we have mypy), TRY003 (there is EM102), D203 (there is D211), D213 (there is D212), D100,D104 (we don't publish publick readthedocs), D106 (we have Django Meta class that doesn't need a docstring), FIX002 (we have TD002,TD003), ERA001 (we sometimes leave code for reference), RUF012 (django is full of class vars that are lists or dicts)
+target-version = "py311" # not needed if your pyproject.toml has `project.requires-python`
+
+[tool.ruff.extend-per-file-ignores]
+"__init__.py" = ["E401", "E402"]
+"**/tests/**/*.py" = ["S101", "PT009"] # ignores: S101 (assert is fine in tests), PT009 (we use django unittest framework)
+"**/migrations/*.py" = ["D101"]
+```
+
+`.pre-commit-config.yaml`
+```yaml
+repos:
+- repo: https://github.com/astral-sh/ruff-pre-commit
+  rev: v0.1.0
+  hooks:
+  - id: ruff
+    args: [--fix, --exit-non-zero-on-fix]
+  - id: ruff-format
+
+# should be replaced in the future ref https://github.com/astral-sh/ruff/issues/458
+- repo: https://github.com/jsh9/pydoclint
+  rev: 0.3.4
+  hooks:
+  - id: pydoclint
+
+# should be replaced in the future ref https://github.com/astral-sh/ruff/issues/3792
+- repo: https://github.com/asottile/blacken-docs
+  rev: 1.13.0
+  hooks:
+  - id: blacken-docs
+    additional_dependencies: ['black==23.10.0']
+```
+
+---
+
+_Referenced in [opentargets/gentropy#212](../../opentargets/gentropy/pulls/212.md) on 2023-10-31 14:17_
+
+---
+
+_Referenced in [astral-sh/ruff#9070](../../astral-sh/ruff/issues/9070.md) on 2023-12-10 20:55_
+
+---
+
+_Comment by @BigForLy on 2023-12-20 07:08_
+
+Hello @charliermarsh! I manage to convert almost all checks to ruff, except for Darling, do you have any idea whether this will be done?
+
+---
+
+_Referenced in [zenml-io/zenml#2305](../../zenml-io/zenml/pulls/2305.md) on 2024-01-17 09:10_
+
+---
+
+_Comment by @strickvl on 2024-02-27 12:55_
+
+As mentioned in Discord, registering my interest in taking a stab at this.
+
+---
+
+_Referenced in [pandas-dev/pandas#57578](../../pandas-dev/pandas/issues/57578.md) on 2024-02-29 18:48_
+
+---
+
+_Comment by @Spenhouet on 2024-04-16 11:44_
+
+Using pydocstyle we are using the google style with typing. We strictly use typing in python, so repeating the types in the Doc string serves no purpose and is just redundant. Having rules like _DAR103: The docstring parameter type doesn't match function._ or _DAR105: The docstring parameter type is malformed._ certainly would help to keep Doc string and parameter declaration aligned, it's still redundant and we'd rather enforce that no types are specified in the Doc string. Seems darglint doesn't provide such a rule.
+
+Edit: Just found this issue which raises the same wish: https://github.com/astral-sh/ruff/issues/9070
+
+---
+
+_Comment by @AloizioMacedo on 2024-04-16 14:41_
+
+Hoping to see this as well! Ruff already encompasses most of my CI linting checks, this would be a great addition.
+
+Meanwhile, in case it is useful for other people, I decided to take a stab and implement a version that is sufficient for my needs: https://github.com/AloizioMacedo/pystaleds.
+
+It intends primarily to check for mismatches of the parameters in the function signature and the arguments in the docstring. It is very experimental, but I can already use it in my projects while ruff doesn't support a similar feature : )
+
+---
+
+_Comment by @ddelange on 2024-04-16 15:15_
+
+> we'd rather enforce that no types are specified in the Doc string
+
+@Spenhouet fwiw pydoclint has an `--arg-type-hints-in-signature` flag ref https://jsh9.github.io/pydoclint/violation_codes.html
+
+see also my config [above](https://github.com/astral-sh/ruff/issues/458#issuecomment-1778541467)
+
+---
+
+_Comment by @Spenhouet on 2024-04-17 06:16_
+
+@ddelange Thanks for sharing, that would introduce a new tool just for this small requirement. Would much more prefer if this would be covered by a linting rule within ruff. 
+
+---
+
+_Comment by @aeturrell on 2024-05-15 07:21_
+
+Just wanted to add my voice to those saying that this would be a really useful feature. Thanks for all the amazing work on Ruff!
+
+---
+
+_Referenced in [astral-sh/ruff#11435](../../astral-sh/ruff/issues/11435.md) on 2024-05-18 00:16_
+
+---
+
+_Referenced in [astral-sh/ruff#11471](../../astral-sh/ruff/pulls/11471.md) on 2024-05-19 20:43_
+
+---
+
+_Comment by @tmke8 on 2024-05-21 14:30_
+
+I wonder if at this point, it would be better to implement [pydoclint](https://github.com/jsh9/pydoclint) in ruff instead of darglint? (This is prompted by the recent PR #11471.)
+
+Pydoclint has
+
+* [more error codes](https://jsh9.github.io/pydoclint/violation_codes.html) (e.g., `DOC104` in pydoclint checks for the order of the parameters; darglint doesn't have that AFAICT),
+* [more config options](https://jsh9.github.io/pydoclint/config_options.html) (like `arg-type-hints-in-signature` which lets you decide whether you want to include types in the docstring),
+* and the config options of pydoclint also seem more well-thought-out to me than darglint's. (E.g., pydoclint has `skip-checking-short-docstrings` which makes sense to me, but darglint's `strictness=short` vs `strictness=long` is a bit confusing)
+
+---
+
+_Referenced in [ansible/ansible-dev-environment#161](../../ansible/ansible-dev-environment/pulls/161.md) on 2024-05-23 04:48_
+
+---
+
+_Referenced in [ansible/ansible-dev-environment#165](../../ansible/ansible-dev-environment/pulls/165.md) on 2024-05-23 15:27_
+
+---
+
+_Referenced in [cjolowicz/cookiecutter-hypermodern-python#1282](../../cjolowicz/cookiecutter-hypermodern-python/issues/1282.md) on 2024-05-28 18:37_
+
+---
+
+_Referenced in [ansible/molecule#4236](../../ansible/molecule/pulls/4236.md) on 2024-06-26 12:12_
+
+---
+
+_Comment by @Goldziher on 2024-07-15 15:40_
+
+> I wonder if at this point, it would be better to implement [pydoclint](https://github.com/jsh9/pydoclint) in ruff instead of darglint? (This is prompted by the recent PR #11471.)
+> 
+> Pydoclint has
+> 
+> * [more error codes](https://jsh9.github.io/pydoclint/violation_codes.html) (e.g., `DOC104` in pydoclint checks for the order of the parameters; darglint doesn't have that AFAICT),
+> * [more config options](https://jsh9.github.io/pydoclint/config_options.html) (like `arg-type-hints-in-signature` which lets you decide whether you want to include types in the docstring),
+> * and the config options of pydoclint also seem more well-thought-out to me than darglint's. (E.g., pydoclint has `skip-checking-short-docstrings` which makes sense to me, but darglint's `strictness=short` vs `strictness=long` is a bit confusing)
+
+Strong +1 for this. pydoclint is really great and pretty fast already, but ruff could improve on this and extend it further. Also some issues might be autofixable. 
+
+---
+
+_Comment by @charliermarsh on 2024-07-17 16:50_
+
+Are there rules that are present in `darglint` but not `pydoclint`?
+
+---
+
+_Comment by @Apakottur on 2024-07-17 16:54_
+
+> Are there rules that are present in `darglint` but not `pydoclint`?
+
+I know of at least two:
+1. `DAR401: The docstring is missing an exception raised.`
+2. `DAR402: The docstring describes an exception not explicitly raised.`
+
+These two rules are the only reason we use darglint, everything else that we want is covered by pydoclint.
+
+---
+
+_Comment by @charliermarsh on 2024-07-17 16:55_
+
+Interesting, ok. Those are the exact rules added in https://github.com/astral-sh/ruff/pull/11471.
+
+---
+
+_Comment by @jsh9 on 2024-07-17 17:03_
+
+> > Are there rules that are present in `darglint` but not `pydoclint`?
+> 
+> I know of at least two:
+> 
+> 1. `DAR401: The docstring is missing an exception raised.`
+> 2. `DAR402: The docstring describes an exception not explicitly raised.`
+> 
+> These two rules are the only reason we use darglint, everything else that we want is covered by pydoclint.
+
+I'm the author of pydoclint.
+
+I think [these two pydoclint violation codes](https://jsh9.github.io/pydoclint/violation_codes.html#5-doc5xx-violations-about-raise-statements) cover DAR401 and 402:
+
+| Code | Explanation
+-- | --
+DOC501 | Function/method has “raise” statements, but the docstring does not have a “Raises” section
+DOC502 | Function/method has a “Raises” section in the docstring, but there are not “raise” statements in the body
+
+If they don't cover what you want, please feel free to open an issue.
+
+---
+
+_Comment by @AndydeCleyre on 2024-07-18 15:53_
+
+@jsh9 I don't think those check the exception types. For example, if I have a function like this, which sometimes raises a `ValueError`, but incorrectly document that it raises a `ZeroDivisionError`, darglint will report the problem while pydoclint won't:
+
+```python
+def _str_to_bool(informal_bool: str) -> bool:
+    """
+    Translate a commonly used boolean ``str`` into a real ``bool``.
+
+    Args:
+        informal_bool: A boolean represented as ``str``, like ``"true"``, ``"no"``, ``"off"``, etc.
+
+    Returns:
+        ``True`` or ``False`` to match the intent of ``informal_bool``.
+
+    Raises:
+        ZeroDivisionError: This doesn't look like enough like a ``bool`` to translate.
+    """
+    if informal_bool.lower() in ('true', 't', 'yes', 'y', 'on', '1'):
+        return True
+    if informal_bool.lower() in ('false', 'f', 'no', 'n', 'off', '0'):
+        return False
+    raise ValueError(f"{informal_bool} doesn't look like a boolean")  # pragma: no cover
+```
+
+```console
+$ darglint nt2
+nt2/casters.py:_str_to_bool:29: DAR401: -r ValueError
+nt2/casters.py:_str_to_bool:39: DAR402: +r ZeroDivisionError
+
+$ pydoclint nt2
+Loading config from user-specified .toml file: pyproject.toml
+No config found in pyproject.toml.
+Skipping files that match this pattern: \.git|\.tox
+nt2/__init__.py
+nt2/casters.py
+nt2/converters.py
+nt2/dumpers.py
+nt2/ui.py
+nt2/yamlpath_tools.py
+🎉 No violations 🎉
+```
+
+---
+
+_Referenced in [jsh9/pydoclint#158](../../jsh9/pydoclint/issues/158.md) on 2024-07-18 20:47_
+
+---
+
+_Comment by @jsh9 on 2024-07-18 20:48_
+
+Thanks @AndydeCleyre !
+
+I've opened a new issue (https://github.com/jsh9/pydoclint/issues/158) on pydoclint to add this feature.
+
+---
+
+_Referenced in [astral-sh/ruff#12434](../../astral-sh/ruff/issues/12434.md) on 2024-07-21 16:30_
+
+---
+
+_Referenced in [zenml-io/zenml#3012](../../zenml-io/zenml/pulls/3012.md) on 2024-09-13 15:31_
+
+---
+
+_Referenced in [AndydeCleyre/nestedtextto#9](../../AndydeCleyre/nestedtextto/issues/9.md) on 2024-10-25 15:49_
+
+---
+
+_Comment by @matmair on 2025-03-31 19:35_
+
+Is there a way to achieve results similar to DAR101 right now? The existing D* rules only seem to trigger if "Args" or similar is detected.
+
+---
+
+_Comment by @ntBre on 2025-03-31 21:13_
+
+@matmair it sounds like you might be looking for the in-progress rule here: https://github.com/astral-sh/ruff/pull/13280. So there's no way currently but should be once that's resolved.
+
+---
+
+_Comment by @matmair on 2025-04-02 22:11_
+
+Great!
+
+---
+
+_Referenced in [bis-med-it/pysdmx#254](../../bis-med-it/pysdmx/pulls/254.md) on 2025-04-03 13:00_
+
+---
+
+_Referenced in [narwhals-dev/narwhals#2424](../../narwhals-dev/narwhals/issues/2424.md) on 2025-04-23 14:19_
+
+---
+
+_Referenced in [cherrypy/cheroot#779](../../cherrypy/cheroot/pulls/779.md) on 2025-10-21 01:04_
+
+---

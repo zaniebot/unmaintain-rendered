@@ -1,0 +1,139 @@
+---
+number: 1705
+title: uv should install packages without requiring a venv
+type: issue
+state: closed
+author: radupotop
+labels:
+  - duplicate
+assignees: []
+created_at: 2024-02-19T16:36:03Z
+updated_at: 2025-04-16T13:45:00Z
+url: https://github.com/astral-sh/uv/issues/1705
+synced_at: 2026-01-07T13:12:16-06:00
+---
+
+# uv should install packages without requiring a venv
+
+---
+
+_Issue opened by @radupotop on 2024-02-19 16:36_
+
+I'm installing packages inside a Docker container (via a Dockerfile) and wish to install them globally so that they're always available. This should be similar to running `pip` with root privileges. Unfortunately `uv pip install` doesn't let me install packages without an existing `venv` created via `uv venv`.
+
+```
+error: Failed to locate a virtualenv or Conda environment (checked: `VIRTUAL_ENV`, `CONDA_PREFIX`, and `.venv`). Run `uv venv` to create a virtualenv.      
+```
+
+This prevents the subsequent Python commands from running correctly. I have to source `.venv/bin/activate` for every docker `RUN` command.
+
+```
+RUN . $VIRTUAL_ENV/bin/activate \
+    && python manage.py ...
+```
+
+Ideally `uv` would let me install packages globally.
+
+Is there anything I can do to enable the `venv` globally? I've already set the `VIRTUAL_ENV` and the `PATH` env vars inside the Dockerfile.
+
+Thanks.
+
+---
+
+_Comment by @AlexWaygood on 2024-02-19 16:53_
+
+Thanks for opening the issue and explaining the use case! Closing as a duplicate of #1526 / #1374
+
+---
+
+_Closed by @AlexWaygood on 2024-02-19 16:53_
+
+---
+
+_Label `duplicate` added by @zanieb on 2024-02-19 17:00_
+
+---
+
+_Comment by @kleinicke on 2024-05-02 16:30_
+
+You can add a `--system` flag so it does not require a virtual environment.
+
+---
+
+_Comment by @pablo-silva-acin on 2025-04-16 13:16_
+
+> You can add a `--system` flag so it does not require a virtual environment.
+
+I've seen this flag on a lot of responses, but it doesn't actually solve it, since 
+```
+uv pip install <any-package> --system
+Using Python 3.12.3 environment at: /usr
+error: The interpreter at /usr is externally managed, and indicates the following:
+
+  To install Python packages system-wide, try apt install
+  python3-xyz, where xyz is the package you are trying to
+  install.
+
+  If you wish to install a non-Debian-packaged Python package,
+  create a virtual environment using python3 -m venv path/to/venv.
+  Then use path/to/venv/bin/python and path/to/venv/bin/pip. Make
+  sure you have python3-full installed.
+
+  If you wish to install a non-Debian packaged Python application,
+  it may be easiest to use pipx install xyz, which will manage a
+  virtual environment for you. Make sure you have pipx installed.
+
+  See /usr/share/doc/python3.12/README.venv for more information.
+
+Consider creating a virtual environment with `uv venv`.
+```
+
+And it won't install anything, because it is managed by the system.
+
+---
+
+_Comment by @charliermarsh on 2025-04-16 13:19_
+
+It depends. Python introduced a standard in 2021 ([PEP 668](https://peps.python.org/pep-0668/)) that allows system interpreters to mark themselves as "externally-managed", in which case, it's completely correct for uv to show that warning if the "system Python" marks it as such (it's bundled with the "system Python" that you're trying to install into -- that's not our text). You can override it with `--break-system-packages`, but as the name suggests, you're really not supposed to do that.
+
+---
+
+_Comment by @pablo-silva-acin on 2025-04-16 13:26_
+
+For docker containers, as stated in the main issue, it isn't a problem to do that. I actually thought that the "--system" flag was a shorthand way to use "--break-system-packages" with UV. 
+
+I'm still trying to find a way to create a docker image with no default python as a start, install a specified "system" python version with UV and use it as default, with --break-system-packages if needed. Without needing the need for venvs or activating the venv with every docker command
+
+---
+
+_Comment by @pablo-silva-acin on 2025-04-16 13:44_
+
+I made a quick dockerfile example, using also a preview feature explained [here](https://pydevtools.com/handbook/how-to/how-to-add-python-to-your-system-path-with-uv/):
+```
+FROM ubuntu:24.04
+
+COPY --from=ghcr.io/astral-sh/uv:0.6.14 /uv /uvx /bin/
+
+ENV PYTHON_VERSION=3.13.3
+RUN uv python install --default --preview $PYTHON_VERSION
+ENV PATH="/root/.local/share/uv/python/cpython-${PYTHON_VERSION}-linux-x86_64-gnu/bin/:$PATH"
+
+RUN uv pip install flask --system
+```
+
+Even in a UV managed python, its not possible to install with the --system flag:
+
+```
+0.421 Using Python 3.13.3 environment at: /root/.local/share/uv/python/cpython-3.13.3-linux-x86_64-gnu
+0.422 error: The interpreter at /root/.local/share/uv/python/cpython-3.13.3-linux-x86_64-gnu is externally managed, and indicates the following:
+0.422 
+0.422   This Python installation is managed by uv and should not be modified.
+0.422 
+0.422 Consider creating a virtual environment with `uv venv`.
+```
+
+---
+
+_Referenced in [agentuity/examples#11](../../agentuity/examples/pulls/11.md) on 2025-05-26 19:20_
+
+---

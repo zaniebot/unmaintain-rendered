@@ -1,0 +1,89 @@
+---
+number: 333
+title: v1.4.6 has a silent breaking change
+type: issue
+state: closed
+author: Diggsey
+labels:
+  - C-bug
+assignees: []
+created_at: 2015-10-31T16:33:40Z
+updated_at: 2015-11-03T08:44:01Z
+url: https://github.com/clap-rs/clap/issues/333
+synced_at: 2026-01-07T13:12:19-06:00
+---
+
+# v1.4.6 has a silent breaking change
+
+---
+
+_Issue opened by @Diggsey on 2015-10-31 16:33_
+
+Starting with v1.4.6, `--version` and `--help` cause the process to exit with a non-zero exit code. This sort of change shouldn't happen on a minor release.
+
+
+---
+
+_Comment by @kbknapp on 2015-11-03 07:38_
+
+Ah, thanks for reporting this! We'll yank 1.4.6 and put out 1.4.7 :+1: 
+
+
+---
+
+_Label `T: bug` added by @kbknapp on 2015-11-03 07:38_
+
+---
+
+_Label `P1: urgent` added by @kbknapp on 2015-11-03 07:38_
+
+---
+
+_Label `D: easy` added by @kbknapp on 2015-11-03 07:38_
+
+---
+
+_Label `W: 1.x` added by @kbknapp on 2015-11-03 07:38_
+
+---
+
+_Referenced in [clap-rs/clap#335](../../clap-rs/clap/issues/335.md) on 2015-11-03 08:00_
+
+---
+
+_Comment by @kbknapp on 2015-11-03 08:01_
+
+@Diggsey once #336 merges I'll yank 1.4.6 and post 1.4.7 to crates.io, this was a bug and shouldn't have happened. Thanks again for point this out :+1: 
+
+
+---
+
+_Referenced in [clap-rs/clap#336](../../clap-rs/clap/pulls/336.md) on 2015-11-03 08:02_
+
+---
+
+_Added to milestone `1.4.7` by @kbknapp on 2015-11-03 08:07_
+
+---
+
+_Assigned to @kbknapp by @kbknapp on 2015-11-03 08:07_
+
+---
+
+_Closed by @homu on 2015-11-03 08:11_
+
+---
+
+_Comment by @kbknapp on 2015-11-03 08:22_
+
+1.4.7 is on crates.io which resolves this issue.
+
+
+---
+
+_Comment by @Diggsey on 2015-11-03 08:44_
+
+:+1:
+
+
+---

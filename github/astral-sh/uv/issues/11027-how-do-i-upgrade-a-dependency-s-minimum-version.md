@@ -1,0 +1,65 @@
+---
+number: 11027
+title: "How do I upgrade a dependency's minimum version in my pyproject.toml?"
+type: issue
+state: closed
+author: LukeGT
+labels:
+  - question
+assignees: []
+created_at: 2025-01-28T17:47:49Z
+updated_at: 2025-01-28T19:02:44Z
+url: https://github.com/astral-sh/uv/issues/11027
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# How do I upgrade a dependency's minimum version in my pyproject.toml?
+
+---
+
+_Issue opened by @LukeGT on 2025-01-28 17:47_
+
+### Question
+
+Imagine that I added a package with `uv add <package>` some time ago, which introduced this version constraint in `pyproject.toml` based on the latest version:
+
+```
+[project]
+...
+dependencies [
+  "package>=1.2.3",
+  ...
+]
+```
+
+Now I want to update this constraint to the latest version of this package, maybe to make use of some performance improvement, bugfix, or new feature. While it might be more prudent for me to research the exact version I need, I just want to get on with things. Let's say it's a privately developed package and we generally want to stay as up-to-date as possible anyway.
+
+Is there a `uv` one-liner to do this?
+
+The best I could come up with was `uv remove <package> && uv add <package>`, which works but is more clunky than I'd like.
+
+If there's not a one-liner, could we have a flag like `uv add <package> --update-version-constraint`?
+
+### Platform
+
+_No response_
+
+### Version
+
+_No response_
+
+---
+
+_Label `question` added by @LukeGT on 2025-01-28 17:47_
+
+---
+
+_Comment by @zanieb on 2025-01-28 19:02_
+
+We're tracking this in https://github.com/astral-sh/uv/issues/6794
+
+---
+
+_Closed by @zanieb on 2025-01-28 19:02_
+
+---

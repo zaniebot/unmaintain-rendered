@@ -1,0 +1,253 @@
+---
+number: 12584
+title: Add support for PEP 751 lockfiles
+type: issue
+state: closed
+author: charliermarsh
+labels:
+  - enhancement
+assignees: []
+created_at: 2025-03-31T13:48:05Z
+updated_at: 2025-12-02T17:10:34Z
+url: https://github.com/astral-sh/uv/issues/12584
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# Add support for PEP 751 lockfiles
+
+---
+
+_Issue opened by @charliermarsh on 2025-03-31 13:48_
+
+[PEP 751](https://discuss.python.org/t/pep-751-one-last-time/77293/150) is officially accepted.
+
+Today, the PEP 751-style `pylock.toml` files are not sufficient to replace `uv.lock`. The biggest limitation is that there's no support for arbitrary entrypoints to the graph, because `pylock.toml` includes a fixed marker for each package entry rather than recording a graph of dependencies. Specifically, this means `uv run -p` could not be supported (i.e., we couldn't support installing a specific subset of the graph) within the standard.
+
+Notably, though, unlike `requirements.txt`, `pylock.toml` also supports extras and dependency groups by extending the PEP 508 marker syntax. So markers can now express things like "this extra was enabled" or "this dependency group was enabled". As such, we _could_ potentially use PEP 751-style `pylock.toml` files for single-member workspaces. I don't think this is worth the complexity right now, but it is possible.
+
+So for now, from uv's perspective, we can think of PEP 751-style `pylock.toml` files as a more modern `requirements.txt`. A `pylock.toml` file captures a set of packages to install, along with the source of those packages. Unlike `requirements.txt`, the format is fully standardized, and it can also model certain pieces of information that `requirements.txt` cannot (e.g., you can specify a package as coming from a specific registry).
+
+As a first step, we want to support PEP 751-style `pylock.toml` files as an export format in `uv export`, and as an installable format in `uv pip install`. Like `uv pip install --group`, we may want to see how pip chooses to support these files before implementing `uv pip install` support. This requires:
+
+- Adding code to translate `uv.lock` to `pylock.toml` in `uv export`.
+- Supporting `pylock.toml` as a dependency source for `uv pip install`, or maybe _just_ `uv pip sync`?
+- Extending our PEP 508 implementation to understand the new `extras` and `dependency-groups` markers.
+
+
+---
+
+_Label `enhancement` added by @charliermarsh on 2025-03-31 13:48_
+
+---
+
+_Comment by @Gankra on 2025-03-31 13:58_
+
+* [PEP 751 – A file format to record Python dependencies for installation reproducibility](https://peps.python.org/pep-0751/)
+  * [Additions to Marker Expression Syntax](https://peps.python.org/pep-0751/#additions-to-marker-expression-syntax)
+* [PEP 508 - Dependency specification for Python Software Packages](https://peps.python.org/pep-0508/)
+
+
+---
+
+_Referenced in [astral-sh/uv#5477](../../astral-sh/uv/issues/5477.md) on 2025-03-31 18:50_
+
+---
+
+_Comment by @BenediktMaag on 2025-04-01 10:23_
+
+Since this PEP contains packages.index may i propose to add functionality for uv add (--script) for the lockfile to solve #11053
+
+---
+
+_Comment by @charliermarsh on 2025-04-01 12:53_
+
+Yes, exporting to PEP 751 would solve that issue.
+
+---
+
+_Comment by @gaborbernat on 2025-04-01 14:46_
+
+> The biggest limitation is that there's no support for arbitrary entrypoints to the graph, because `pylock.toml` includes a fixed marker for each package entry rather than recording a graph of dependencies.
+
+Any insight why this limitation was deemed out of the scope for that PEP? 
+
+---
+
+_Comment by @charliermarsh on 2025-04-01 14:48_
+
+Yeah, it was discussed at length but it was ultimately decided that it was adding too much complexity for a first draft / version of the spec. uv is also the only tool that supports this IIUC which made it hard to motivate standardizing around it right now.
+
+
+---
+
+_Comment by @gaborbernat on 2025-04-01 14:51_
+
+Is there an effort to work on a version 2 that would add support for it?😅
+
+Do you have some plans on how to select when both lock files are present or what would UV lock generate by default? In the long term obviously, as this ticket says that we'll only support it via export.
+
+---
+
+_Comment by @charliermarsh on 2025-04-01 14:54_
+
+There isn't yet, but there should be eventually. It was made fairly clear in the DPO discussion that if there _is_ a Version 2 with support for these kinds of features, the expectation is that the PEP would need to be authored and driven by tooling authors (uv, Poetry, PDM, etc.).
+
+
+---
+
+_Referenced in [prefix-dev/pixi#3474](../../prefix-dev/pixi/issues/3474.md) on 2025-04-02 04:23_
+
+---
+
+_Referenced in [astral-sh/uv#12641](../../astral-sh/uv/issues/12641.md) on 2025-04-03 03:02_
+
+---
+
+_Comment by @polothy on 2025-04-04 15:39_
+
+> Supporting pylock.toml as a dependency source for uv pip install, or maybe just uv pip sync?
+
+Please support `uv pip install` to support the [Lambda zip bundling workflow](https://docs.astral.sh/uv/guides/integration/aws-lambda/#deploying-a-zip-archive). Thanks!
+
+---
+
+_Assigned to @Gankra by @Gankra on 2025-04-04 17:41_
+
+---
+
+_Referenced in [astral-sh/uv#6518](../../astral-sh/uv/issues/6518.md) on 2025-04-05 07:44_
+
+---
+
+_Referenced in [copier-org/copier#2079](../../copier-org/copier/pulls/2079.md) on 2025-04-09 11:41_
+
+---
+
+_Comment by @benwebber on 2025-04-10 17:13_
+
+We use `uv pip compile` to compile `requirements.txt` files instead of using `uv` lock files. Will it be possible to compile `pylock.toml` files directly from `pyproject.toml`, without generating a `uv` lock file and exporting it?
+
+---
+
+_Comment by @charliermarsh on 2025-04-10 17:15_
+
+Yeah I think so. I expect `uv pip compile` and `uv export` to both support it as an output format.
+
+---
+
+_Renamed from "Add support for PEP 751" to "Add support for PEP 751 lockfiles" by @Gankra on 2025-04-11 13:32_
+
+---
+
+_Referenced in [pantsbuild/pants#22201](../../pantsbuild/pants/issues/22201.md) on 2025-04-16 13:31_
+
+---
+
+_Referenced in [bazel-contrib/rules_python#2787](../../bazel-contrib/rules_python/issues/2787.md) on 2025-04-18 08:56_
+
+---
+
+_Comment by @charliermarsh on 2025-04-18 13:05_
+
+The initial `uv export` support is here: https://github.com/astral-sh/uv/pull/12955
+
+---
+
+_Referenced in [EuroPython/discord#138](../../EuroPython/discord/issues/138.md) on 2025-04-18 15:41_
+
+---
+
+_Comment by @charliermarsh on 2025-04-21 23:10_
+
+`uv export`, `uv pip compile`, `uv pip sync`, and `uv pip install` will support `pylock.toml` in the next release:
+
+- https://github.com/astral-sh/uv/pull/12955
+- https://github.com/astral-sh/uv/pull/12992
+- https://github.com/astral-sh/uv/pull/13019
+
+
+---
+
+_Closed by @charliermarsh on 2025-04-21 23:10_
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2025-04-21 23:10_
+
+---
+
+_Unassigned @Gankra by @charliermarsh on 2025-04-21 23:10_
+
+---
+
+_Referenced in [cg-tuwien/ppsurf_modeling#2](../../cg-tuwien/ppsurf_modeling/issues/2.md) on 2025-04-28 16:28_
+
+---
+
+_Referenced in [agape-1/pyminispeaker#8](../../agape-1/pyminispeaker/pulls/8.md) on 2025-06-11 00:31_
+
+---
+
+_Referenced in [pdm-project/pdm#3574](../../pdm-project/pdm/issues/3574.md) on 2025-07-19 09:31_
+
+---
+
+_Referenced in [openzim/_python-bootstrap#54](../../openzim/_python-bootstrap/issues/54.md) on 2025-07-23 14:00_
+
+---
+
+_Referenced in [pebble-dev/pebble-firmware#255](../../pebble-dev/pebble-firmware/pulls/255.md) on 2025-07-28 09:49_
+
+---
+
+_Referenced in [python-telegram-bot/python-telegram-bot#4899](../../python-telegram-bot/python-telegram-bot/issues/4899.md) on 2025-08-04 03:14_
+
+---
+
+_Referenced in [Hirundo-io/llm-behavior-eval#21](../../Hirundo-io/llm-behavior-eval/pulls/21.md) on 2025-08-24 12:49_
+
+---
+
+_Referenced in [Bravos-Power/pyoframe#163](../../Bravos-Power/pyoframe/issues/163.md) on 2025-08-31 16:32_
+
+---
+
+_Comment by @LecrisUT on 2025-11-24 16:21_
+
+Sorry for the random comment on this closed issue, but what is the workflow with `PEP751`? It seems that `uv.lock` is still generated, but then what should we add to the git repo? Is/Can we make the `pylock.toml` be prioritized over any local `uv.lock` file?
+
+---
+
+_Comment by @konstin on 2025-11-24 16:44_
+
+`uv.lock` is a lot more powerful than `pylock.toml`, and carries a lot of required metadata required by uv. We support `pylock.toml` as output format of a resolution and as input for installation, but uv can't make reliable incremental changes to it, for which we need `uv.lock`.
+
+---
+
+_Comment by @LecrisUT on 2025-11-24 16:52_
+
+So for the time being do we have to checkout both `uv.lock` and `pylock.toml`, or is `pylock.toml` enough and we can gitignore `uv.lock`. The most important part though, if the repository updates `pylock.toml` through something like renovate, is that picked up by uv (and maybe depending on IDE support) and a re-sync is done to update the user's `uv.lock`?
+
+---
+
+_Comment by @Fak3 on 2025-12-02 16:45_
+
+Is there any detailed info on what is missing from pylock.toml that prevents using it instead of uv.lock?
+
+---
+
+_Comment by @neutrinoceros on 2025-12-02 16:51_
+
+AFAIK workspaces is the main thing that's not standardised yet and supported by uv.lock
+
+---
+
+_Comment by @konstin on 2025-12-02 17:10_
+
+There's a lot of resolver details that need to be preserved for being able to incrementally change an existing lockfile, this isn't about a specific field, it's about the resolver strategies (https://docs.astral.sh/uv/reference/internals/resolver/). We'd need to specify how a universal resolver works, including the marker forks that uv uses, the aforementioned workspaces, exclude-newer, freshness checks, the fork strategy, prerelease handling and required environments. Some that can be carried in a tool specific table, but if tools don't have the same understanding about how resolvers work, having them edit the same `pylock.toml` leads to a lot of churn with different resolution strategies as well as conflicts over unsupported features, ultimately leading to a worse user experience than with `uv.lock`.
+
+---
+
+_Referenced in [bitcoindevkit/bdk-python#29](../../bitcoindevkit/bdk-python/pulls/29.md) on 2025-12-09 03:45_
+
+---

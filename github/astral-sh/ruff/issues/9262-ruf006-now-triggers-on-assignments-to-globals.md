@@ -1,0 +1,69 @@
+---
+number: 9262
+title: RUF006 now triggers on assignments to globals
+type: issue
+state: closed
+author: hauntsaninja
+labels:
+  - bug
+assignees: []
+created_at: 2023-12-23T19:04:27Z
+updated_at: 2023-12-23T21:33:52Z
+url: https://github.com/astral-sh/ruff/issues/9262
+synced_at: 2026-01-07T13:12:15-06:00
+---
+
+# RUF006 now triggers on assignments to globals
+
+---
+
+_Issue opened by @hauntsaninja on 2023-12-23 19:04_
+
+Since https://github.com/astral-sh/ruff/pull/9060, ruff now complains about:
+```
+import asyncio
+
+consumer_task: asyncio.Task
+
+class Something:
+    @classmethod
+    async def start_async(cls, something):
+        global consumer_task
+        consumer_task = asyncio.create_task(something.consume_messages())
+        return something
+```
+Similar issue applies to assignments to nonlocal
+
+Filing as per https://github.com/astral-sh/ruff/pull/9060#issuecomment-1868345123
+
+---
+
+_Referenced in [astral-sh/ruff#9060](../../astral-sh/ruff/pulls/9060.md) on 2023-12-23 19:04_
+
+---
+
+_Comment by @charliermarsh on 2023-12-23 19:09_
+
+Thanks! Will fix.
+
+---
+
+_Label `bug` added by @charliermarsh on 2023-12-23 19:09_
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2023-12-23 19:09_
+
+---
+
+_Referenced in [astral-sh/ruff#9263](../../astral-sh/ruff/pulls/9263.md) on 2023-12-23 21:11_
+
+---
+
+_Closed by @charliermarsh on 2023-12-23 21:33_
+
+---
+
+_Referenced in [astral-sh/ruff#18012](../../astral-sh/ruff/issues/18012.md) on 2025-05-12 08:08_
+
+---

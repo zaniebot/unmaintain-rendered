@@ -1,0 +1,211 @@
+---
+number: 11493
+title: uv 0.5.25 and later fail on Windows arm64 because they do not install Python
+type: issue
+state: closed
+author: JayBazuzi
+labels:
+  - bug
+  - windows
+assignees: []
+created_at: 2025-02-13T21:59:23Z
+updated_at: 2025-02-19T18:01:47Z
+url: https://github.com/astral-sh/uv/issues/11493
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# uv 0.5.25 and later fail on Windows arm64 because they do not install Python
+
+---
+
+_Issue opened by @JayBazuzi on 2025-02-13 21:59_
+
+### Summary
+
+We really love uv and the fact that it solves so many Python bootstrapping and module management problems, regardless of environment. We were surprised to discover this problem.
+
+**Note** This problem still occurs with the latest version of uv, 0.5.31.
+
+# Problem
+
+uv stops working as of version 0.5.25+ on Windows Arm64.
+
+# Machine setup
+
+- Mac with Apple silicon
+- Parallels
+- Windows 11 (Arm)
+
+# Steps to reproduce
+
+On a Windows arm64 machine, cleaned with:
+
+## Clean the machine
+```bat
+del /s/q %USERPROFILE%\.local\
+del /s/q %USERPROFILE%\AppData\Roaming\uv\
+del /s/q %USERPROFILE%\AppData\Local\uv\
+```
+
+**Note** It's odd that we have to clean both `AppData\Roaming` and `AppData\Local`. Is that intentional?
+
+## Works on 0.5.24
+
+```bat
+powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/0.5.24/install.ps1 | iex"
+uv run python --version
+```
+
+Gives:
+
+```
+Python 3.13.1
+```
+
+## Does not work on 0.5.25+
+
+```bat
+powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/0.5.25/install.ps1 | iex"
+uv run python --version
+```
+
+Gives:
+
+```
+error: No interpreter found in virtual environments, managed installations, search path, or registry
+```
+
+Also,
+
+```bat
+uv python install
+```
+
+Gives
+
+```
+error: No download found for request: cpython-any-windows-aarch64-none
+```
+
+# Recommendations
+
+If you cannot find an arm64 Python for Windows, it should probably default back to the x64 Python for Windows.
+
+# Extras
+
+This is a related bug, but we do not believe ours is a duplicate: https://github.com/astral-sh/python-build-standalone/issues/386 because this used to work and now it doesn't.
+
+# Followup
+
+P.S. We would be happy to do a Zoom call about this, if that would be helpful.
+
+- Jay Bazuzi, Llewellyn Falco, Scott Wierschem
+
+
+
+### Platform
+
+Windows 11 arm64
+
+### Version
+
+uv 0.5.25 (9c07c3fc5 2025-01-28)
+
+### Python version
+
+_No response_
+
+---
+
+_Label `bug` added by @JayBazuzi on 2025-02-13 21:59_
+
+---
+
+_Comment by @charliermarsh on 2025-02-13 22:02_
+
+Hmm, this is interesting. I thought we only started publishing ARM Windows binaries in 0.5.25, with https://github.com/astral-sh/uv/pull/10885. Is it the case that on 0.5.24, `powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/0.5.24/install.ps1 | iex"` installs the x86 uv binary?
+
+---
+
+_Label `windows` added by @charliermarsh on 2025-02-13 22:02_
+
+---
+
+_Comment by @mattieb on 2025-02-15 21:10_
+
+@charliermarsh I just ran into the same problem with 0.6.0. It does indeed look like 0.5.24 is installing an x86-64 binary:
+
+```powershell
+PS C:\Users\mattie\.local\bin> wsl file uv.exe
+uv.exe: PE32+ executable (console) x86-64, for MS Windows, 6 sections
+```
+
+---
+
+_Comment by @charliermarsh on 2025-02-15 23:19_
+
+To confirm: I assume the uv installed by 0.6.0 (or any recent version) _does_ work if you already have Python installed on the machine? And the issue is just that we can't find a Python to install?
+
+It seems like, at minimum, we should accept an x86 Python download here, since Windows ARM has emulation enabled by default.
+
+---
+
+_Comment by @charliermarsh on 2025-02-15 23:19_
+
+\cc @Gankra who taught me this
+
+---
+
+_Comment by @charliermarsh on 2025-02-16 02:34_
+
+There are a bunch of places that this fallback could go... I guess a special case in `PythonDownloadRequest::satisfied_by_key` is sort of the "obvious" one. But we might want to explicitly prefer ARM versions over x86 versions, which may require putting this somewhere else?
+
+---
+
+_Comment by @zanieb on 2025-02-16 04:05_
+
+I implemented something similar for https://github.com/astral-sh/uv/pull/9788 — it was kind of awkward.
+
+I don't think we should just do it for download requests, because we'd also want to accept discovered x86-64 interpreters, right? I can probably look into this unless you're particularly interested.
+
+
+---
+
+_Comment by @charliermarsh on 2025-02-16 15:58_
+
+Feel free to take it, I was just looking to do it if it was easy. But yeah, I believe it has to be reflected in at least two places.
+
+---
+
+_Assigned to @zanieb by @zanieb on 2025-02-16 16:04_
+
+---
+
+_Comment by @mattieb on 2025-02-16 16:16_
+
+> To confirm: I assume the uv installed by 0.6.0 (or any recent version) does work if you already have Python installed on the machine? And the issue is just that we can't find a Python to install?
+
+It looks like y'all might have this in hand but just in case it's useful, this is what I ran into yesterday—
+
+1. New ARM Windows 11, never had Python or uv.
+2. Installed uv 0.6.0 to run a project.
+3. "uv sync" showed "error: No download found for request: cpython-any-windows-aarch64-none" which led me here.
+4. Installed 0.5.24 via the one-liner. "uv sync" et al. started working as it was pulling the AMD64 python build (and that's when I posted that my uv.exe was an x86-64 version.)
+
+Since then, I did update—both with the 0.5.25 one-liner and with "uv self update"—and the AMD64 Python is indeed still working with no fuss.
+
+---
+
+_Comment by @zanieb on 2025-02-16 16:43_
+
+Yeah the difference is now we have ARM64 Windows binaries of uv but only AMD64 Windows Python downloads — so you're getting the "better" uv binary for your platform but it can't find Python downloads. You could install the AMD64 uv 0.6.0 (i.e., from GitHub Releases) and it'd work as before. 
+
+---
+
+_Referenced in [astral-sh/uv#11625](../../astral-sh/uv/pulls/11625.md) on 2025-02-19 16:55_
+
+---
+
+_Closed by @zanieb on 2025-02-19 18:01_
+
+---

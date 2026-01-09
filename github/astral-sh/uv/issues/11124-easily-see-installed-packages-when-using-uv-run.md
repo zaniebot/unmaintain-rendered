@@ -1,0 +1,47 @@
+---
+number: 11124
+title: Easily see installed packages when using uv run
+type: issue
+state: open
+author: jayqi
+labels:
+  - enhancement
+assignees: []
+created_at: 2025-01-31T02:51:24Z
+updated_at: 2025-01-31T18:28:22Z
+url: https://github.com/astral-sh/uv/issues/11124
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# Easily see installed packages when using uv run
+
+---
+
+_Issue opened by @jayqi on 2025-01-31 02:51_
+
+### Summary
+
+I am using `uv run --isolated` to run my library's tests in an isolated environment (as discussed [here](https://github.com/astral-sh/uv/issues/9906#issuecomment-2544557551)). Sometimes, the cause of test failures is related to the version of a dependency, so I want to see what uv installs when creating my environment. Unfortunately, in the standard invocation, nothing gets printed out.
+
+When I use the `--verbose` flag, it does print out the packages that get installed, but I also get 8000+ lines of DEBUG statements. 
+
+I would like either a flag or more granular control on `--verbose` to be able to see what packages are installed without all of the DEBUG statements about resolution. 
+
+uv 0.5.24
+
+For reference, this is what I'm running (the templating comes from using Just):
+
+```bash
+    uv run --python {{python}} --no-editable --all-extras --no-dev --group test --isolated \
+        python -I -m pytest {{args}}
+```
+
+### Example
+
+_No response_
+
+---
+
+_Label `enhancement` added by @jayqi on 2025-01-31 02:51_
+
+---

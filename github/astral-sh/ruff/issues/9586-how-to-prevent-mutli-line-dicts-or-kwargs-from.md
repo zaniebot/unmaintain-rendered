@@ -1,0 +1,72 @@
+---
+number: 9586
+title: How to prevent mutli-line dicts or kwargs from being collapsed into single line?
+type: issue
+state: closed
+author: whalesalad
+labels:
+  - question
+assignees: []
+created_at: 2024-01-19T23:46:00Z
+updated_at: 2024-01-20T00:57:40Z
+url: https://github.com/astral-sh/ruff/issues/9586
+synced_at: 2026-01-07T13:12:15-06:00
+---
+
+# How to prevent mutli-line dicts or kwargs from being collapsed into single line?
+
+---
+
+_Issue opened by @whalesalad on 2024-01-19 23:46_
+
+Here are a few examples:
+
+```
+-    return {
+-        'backups_by_type': backups_by_type,
+-        'all_backup_types': all_backup_types
+-    }
++    return {'backups_by_type': backups_by_type, 'all_backup_types': all_backup_types}
+```
+
+```
+     if admin_users.remove(email):
+-        return {
+-            'status': 'success',
+-            'message': f'{email} was removed from the administrators list.'
+-        }
++        return {'status': 'success', 'message': f'{email} was removed from the administrators list.'}
+ 
+-    return {
+-        'status': 'error',
+-        'message': f'{email} is not an administrator.'
+-    }
++    return {'status': 'error', 'message': f'{email} is not an administrator.'}
+```
+
+```
+-    op = CreateJobOperation(
+-        payload=payload,
+-        current_user=g.current_user,
+-        input_source=input_source
+-    )
++    op = CreateJobOperation(payload=payload, current_user=g.current_user, input_source=input_source)
+ ```
+
+Is there a way to turn this off? I prefer having these line breaks retained as it aids in readability.
+
+---
+
+_Comment by @charliermarsh on 2024-01-20 00:57_
+
+Like Black, we'll avoid collapsing lines if you include a trailing comma. Here's an example: https://play.ruff.rs/89d3c7c8-8c18-46bc-91aa-a7739e51639b?secondary=Format.
+
+---
+
+_Closed by @charliermarsh on 2024-01-20 00:57_
+
+---
+
+_Label `question` added by @charliermarsh on 2024-01-20 00:57_
+
+---

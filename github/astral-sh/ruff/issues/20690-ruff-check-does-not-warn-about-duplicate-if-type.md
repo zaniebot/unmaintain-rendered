@@ -1,0 +1,89 @@
+---
+number: 20690
+title: "ruff check does not warn about duplicate if TYPE_CHECKING: import clauses"
+type: issue
+state: open
+author: ktns
+labels:
+  - rule
+  - needs-decision
+assignees: []
+created_at: 2025-10-03T02:49:18Z
+updated_at: 2025-11-11T06:47:56Z
+url: https://github.com/astral-sh/ruff/issues/20690
+synced_at: 2026-01-07T13:12:16-06:00
+---
+
+# ruff check does not warn about duplicate if TYPE_CHECKING: import clauses
+
+---
+
+_Issue opened by @ktns on 2025-10-03 02:49_
+
+### Summary
+
+Hi.
+
+When I was poking around GitHub Copilot Agent, it emitted code like below and `ruff check` does not warn anything.
+
+```python
+if TYPE_CHECKING:
+    from collections.abc import Iterable
+
+
+if TYPE_CHECKING:
+    from ase import Atoms
+```
+
+I think superfluous `if TYPE_CHECKING:` should be warned. What do you think? 
+
+### Version
+
+0.11.11
+
+---
+
+_Comment by @njhearp on 2025-10-03 14:27_
+
+If this is implemented I would suggest expanding it to another case. The same logic could also apply to duplicate `if __debug__`. Perhaps this could apply to version/platform (`sys.version_info >= (3, 13)`, etc.) checking as well.
+
+---
+
+_Label `rule` added by @ntBre on 2025-10-03 14:28_
+
+---
+
+_Label `needs-decision` added by @ntBre on 2025-10-03 14:28_
+
+---
+
+_Comment by @maltevesper on 2025-10-17 07:56_
+
+The general case would be
+
+```
+if static_condition:
+   dosomething()
+
+if static_condition:
+   dosomething2()
+```
+
+but I think it would be tricky to infer that `dosomething()` does not change `static_condition`.
+Personally there are other rules which are higher priority to me, but it sounds like a nice addition.
+
+---
+
+_Comment by @ktns on 2025-10-17 10:48_
+
+I think defining a general rule that covers all static conditions is too difficult.
+
+My original rationale was that ruff already has TC00N which generates/modifies `if TYPE_CHECKING` clause when fixing, so it's already a special case.
+
+---
+
+_Comment by @njhearp on 2025-10-17 13:03_
+
+Yes, I agree the cases I mentioned would not make sense.
+
+---

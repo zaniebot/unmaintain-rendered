@@ -1,0 +1,57 @@
+---
+number: 13484
+title: uv always tries to install x86_64 version of python ranther than arm64 version on macOS/M2 chip
+type: issue
+state: closed
+author: qhtian
+labels:
+  - bug
+assignees: []
+created_at: 2025-05-16T07:15:30Z
+updated_at: 2025-05-16T08:16:51Z
+url: https://github.com/astral-sh/uv/issues/13484
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# uv always tries to install x86_64 version of python ranther than arm64 version on macOS/M2 chip
+
+---
+
+_Issue opened by @qhtian on 2025-05-16 07:15_
+
+### Summary
+
+% uv init --app --python=3.12.9
+% uv venv
+cpython-3.12.9-windows-x86_64-none (download) ------------------------------ xxx MiB/xxx MiB   
+
+It should get arm64 binary instead.
+
+### Platform
+
+macOS 15.4.1, M2 Max, Darwin 24.4.0 arm64
+
+### Version
+
+uv 0.7.4 (Homebrew 2025-05-15)
+
+### Python version
+
+Python 3.12.9
+
+---
+
+_Label `bug` added by @qhtian on 2025-05-16 07:15_
+
+---
+
+_Comment by @qhtian on 2025-05-16 08:16_
+
+Now it is clear. Homebrew says the system was macos_x86_64, which is wrong.
+I have reinstalled the brew, and everything is working perfectly.
+
+---
+
+_Closed by @qhtian on 2025-05-16 08:16_
+
+---

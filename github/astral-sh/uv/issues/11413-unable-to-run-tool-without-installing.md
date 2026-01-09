@@ -1,0 +1,327 @@
+---
+number: 11413
+title: "Unable to run tool without \"installing\""
+type: issue
+state: closed
+author: ecpost
+labels:
+  - bug
+assignees: []
+created_at: 2025-02-11T05:18:09Z
+updated_at: 2025-08-19T16:22:29Z
+url: https://github.com/astral-sh/uv/issues/11413
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# Unable to run tool without "installing"
+
+---
+
+_Issue opened by @ecpost on 2025-02-11 05:18_
+
+### Summary
+
+I recently found out you could run a tool with `uvx` without "installing" the tool.  So I gave it a try and it didn't work.  So I tried the `pycowsay` example [here](https://docs.astral.sh/uv/guides/tools/#running-tools), and had the same problem.  It works fine though if I do a regular install of the tool.
+
+If this is a bug, I can try to help track it down.  But I want to make sure I'm not just misundertstanding this feature or making a mistake somewhere.
+
+This is what happens (verbose output further down):
+
+```
+$ cd /private/var/tmp ; mkdir empty ; cd empty
+$ uvx pycowsay hello from uv
+/Users/ecpost/.cache/uv/archive-v0/axtle42DcQM1MtsnlU4uq/bin/pycowsay: line 2: /private/var/tmp/empty/--
+/Users/ecpost/.cache/uv/archive-v0/axtle42DcQM1MtsnlU4uq/bin/python: No such file or directory
+/Users/ecpost/.cache/uv/archive-v0/axtle42DcQM1MtsnlU4uq/bin/pycowsay: line 2: exec: /private/var/tmp/empty/--
+/Users/ecpost/.cache/uv/archive-v0/axtle42DcQM1MtsnlU4uq/bin/python: cannot execute: No such file or directory
+```
+
+The `uvx pycowsay hello from uv` line is the example from the docs.
+
+But a regular install, and then using that same command, is fine:
+
+```
+$ uv tool install pycowsay                              
+Resolved 1 package in 1ms
+Installed 1 package in 9ms
+ + pycowsay==0.0.0.2
+Installed 1 executable: pycowsay
+$ uvx pycowsay hello from uv
+/Users/ecpost/.local/share/uv/tools/pycowsay/lib/python3.13/site-packages/pycowsay/main.py:23: SyntaxWarning: invalid escape sequence '\ '
+  """
+
+  -------------
+< hello from uv >
+  -------------
+   \   ^__^
+    \  (oo)\_______
+       (__)\       )\/\
+           ||----w |
+           ||     ||
+
+```
+
+And uninstalling reverts back to the original problem:
+
+```
+$ uv tool uninstall pycowsay
+Uninstalled 1 executable: pycowsay
+$ uvx pycowsay hello from uv
+/Users/ecpost/.cache/uv/archive-v0/axtle42DcQM1MtsnlU4uq/bin/pycowsay: line 2: /private/var/tmp/empty/--
+/Users/ecpost/.cache/uv/archive-v0/axtle42DcQM1MtsnlU4uq/bin/python: No such file or directory
+/Users/ecpost/.cache/uv/archive-v0/axtle42DcQM1MtsnlU4uq/bin/pycowsay: line 2: exec: /private/var/tmp/empty/--
+/Users/ecpost/.cache/uv/archive-v0/axtle42DcQM1MtsnlU4uq/bin/python: cannot execute: No such file or directory
+```
+
+I've re-installed uv/uvx, following the instructions [here](https://docs.astral.sh/uv/getting-started/installation/#uninstallation), and then installed fresh using the first curl command in the install instructions.
+
+I did have a pre 0.5.0 version before (0.4.26), if that matters.  But I removed uv/uvx from `~/.cargo/bin`, as instructed before reinstalling.
+
+Verbose output:
+
+```
+$ uvx --verbose pycowsay hello from uv
+DEBUG uv 0.5.30 (ddbc6e315 2025-02-10)
+DEBUG Searching for default Python interpreter in managed installations or search path
+DEBUG Searching for managed installations at `/Users/ecpost/.local/share/uv/python`
+DEBUG Found `cpython-3.13.1-macos-x86_64-none` at `/usr/local/bin/python3` (first executable in the search path)
+DEBUG Acquired lock for `/Users/ecpost/.local/share/uv/tools`
+DEBUG Checking for Python environment at `/Users/ecpost/.local/share/uv/tools/pycowsay`
+DEBUG Released lock at `/Users/ecpost/.local/share/uv/tools/.lock`
+DEBUG Assessing Python executable as base candidate: /usr/local/opt/python@3.13/bin/python3.13
+DEBUG Assessing Python executable as base candidate: /usr/local/opt/python@3.13/Frameworks/Python.framework/Versions/3.13/bin/python3.13
+DEBUG Caching via base interpreter: `/usr/local/opt/python@3.13/bin/python3.13`
+DEBUG Using request timeout of 30s
+DEBUG Solving with installed Python version: 3.13.1
+DEBUG Solving with target Python version: >=3.13.1
+DEBUG Adding direct dependency: pycowsay*
+DEBUG Found fresh response for: https://pypi.org/simple/pycowsay/
+DEBUG Searching for a compatible version of pycowsay (*)
+DEBUG Selecting: pycowsay==0.0.0.2 [compatible] (pycowsay-0.0.0.2-py3-none-any.whl)
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/eb/bd/17f894b13037499e615048a6daeb9cae28142ee85ce6eb8d24d10504860b/pycowsay-0.0.0.2-py3-none-any.whl.metadata
+DEBUG Tried 1 versions: pycowsay 1
+DEBUG marker environment resolution took 0.002s
+Resolved 1 package in 2ms
+DEBUG Checking for Python environment at `/Users/ecpost/.cache/uv/archive-v0/axtle42DcQM1MtsnlU4uq`
+DEBUG Running `pycowsay hello from uv`
+DEBUG Looking at `.dist-info` at: /Users/ecpost/.cache/uv/archive-v0/axtle42DcQM1MtsnlU4uq/lib/python3.13/site-packages/pycowsay-0.0.0.2.dist-info
+DEBUG Spawned child 24642 in process group 24641
+/Users/ecpost/.cache/uv/archive-v0/axtle42DcQM1MtsnlU4uq/bin/pycowsay: line 2: /private/var/tmp/empty/--
+/Users/ecpost/.cache/uv/archive-v0/axtle42DcQM1MtsnlU4uq/bin/python: No such file or directory
+/Users/ecpost/.cache/uv/archive-v0/axtle42DcQM1MtsnlU4uq/bin/pycowsay: line 2: exec: /private/var/tmp/empty/--
+/Users/ecpost/.cache/uv/archive-v0/axtle42DcQM1MtsnlU4uq/bin/python: cannot execute: No such file or directory
+DEBUG Command exited with code: 126
+```
+
+### Platform
+
+macOS Sequoia 15.3, Intel (Darwin 24.3.0 x86_64)
+
+### Version
+
+uv 0.5.30 (installed via curl)
+
+### Python version
+
+Python 3.13.1 (installed via brew)
+
+---
+
+_Label `bug` added by @ecpost on 2025-02-11 05:18_
+
+---
+
+_Comment by @konstin on 2025-02-11 10:56_
+
+Can you try `uv cache clean`?
+
+Otherwise, can you share
+
+```
+cat /Users/ecpost/.cache/uv/archive-v0/axtle42DcQM1MtsnlU4uq/bin/pycowsay
+ls -lah /Users/ecpost/.cache/uv/archive-v0/axtle42DcQM1MtsnlU4uq/bin/python
+```
+
+and check whether the file `/Users/ecpost/.cache/uv/archive-v0/axtle42DcQM1MtsnlU4uq/bin/python` points to exists?
+
+---
+
+_Comment by @ecpost on 2025-02-11 19:19_
+
+Ah, I see what's making it fail it, at least.  That script has some "--" arguments that look like they shoudn't be there.  I went in and deleted them to see what would happen, and it worked.  Do you know anything about those?  Anyway, to answer your questions...
+
+Yeah, I tried `uv cache clean` before, but I just tried it again, same result.
+
+Here's the output of the cat/ls you asked for (I updated the paths since the cache was cleared).  Notice the "--" arguments for dirname (which just ignores it) and realpath (which adds an extra filename to the output, for a file named "--" in the current directory").
+
+```
+$ cat /Users/ecpost/.cache/uv/archive-v0/1fsTANBwCeEPKeelIL-te/bin/pycowsay
+#!/bin/sh
+'''exec' "$(dirname -- "$(realpath -- "$0")")"/'python' "$0" "$@"
+' '''
+# -*- coding: utf-8 -*-
+import sys
+from pycowsay.main import main
+if __name__ == "__main__":
+    if sys.argv[0].endswith("-script.pyw"):
+        sys.argv[0] = sys.argv[0][:-11]
+    elif sys.argv[0].endswith(".exe"):
+        sys.argv[0] = sys.argv[0][:-4]
+    sys.exit(main())
+$ ls -lah /Users/ecpost/.cache/uv/archive-v0/1fsTANBwCeEPKeelIL-te/bin/python
+lrwxr-xr-x  1 ecpost  staff    41B Feb 11 10:28 /Users/ecpost/.cache/uv/archive-v0/1fsTANBwCeEPKeelIL-te/bin/python -> /usr/local/opt/python@3.13/bin/python3.13
+```
+
+And then here's what the python link points to:
+
+```
+$ ls -lah /usr/local/opt/python@3.13/bin/python3.13
+lrwxr-xr-x  1 ecpost  admin    59B Dec  3 09:59 /usr/local/opt/python@3.13/bin/python3.13 -> ../Frameworks/Python.framework/Versions/3.13/bin/python3.13
+```
+
+And what that points to:
+
+```
+$ ls -lah /usr/local/opt/python@3.13/Frameworks/Python.framework/Versions/3.13/bin/python3.13 
+-rwxr-xr-x  1 ecpost  admin    13K Dec 27 15:22 /usr/local/opt/python@3.13/Frameworks/Python.framework/Versions/3.13/bin/python3.13
+```
+
+---
+
+_Comment by @charliermarsh on 2025-02-11 19:26_
+
+I think the shebang there is... correct? The `--` parts are intentional.
+
+---
+
+_Comment by @ecpost on 2025-02-11 19:39_
+
+The shebang makes sense.  But what's the purpose of the `--` args, though?  I just did a quick search for `realpath` in the code, and it looks like there's several places scripts like this are generated (with dirname and realpath), and some have the `--`, and some don't.
+
+Are there systems where `--` is a valid/meaningful arg for dirname and/or realpath?
+
+---
+
+_Comment by @ecpost on 2025-02-11 19:44_
+
+From MacOS (bash or zsh or csh):
+```
+$ realpath something
+/private/var/tmp/empty/something
+$ realpath -- something
+/private/var/tmp/empty/--
+/private/var/tmp/empty/something
+```
+
+---
+
+_Comment by @charliermarsh on 2025-02-11 19:45_
+
+I'm also on macOS:
+
+```
+❯ realpath -- something
+/Users/crmarsh/workspace/uv/something
+```
+
+---
+
+_Comment by @charliermarsh on 2025-02-11 19:45_
+
+`--` is used to ensure that the following argument is a positional argument, in the event that it starts with a dash.
+
+---
+
+_Comment by @ecpost on 2025-02-11 19:57_
+
+Interesting.  Are you on a very recent MacOS version?  (I updated a few days ago.)  I'm going to try this in some other places...
+
+I know `--` can mean that for some programs, but I didn't think it was a universal thing, like by the shell.  BTW, if ultimately it turns out that this needs to be removed, I think a possible workaround, if there's a legit concern for a filename starting with a dash, would be to do something like `realpath ./"$0"` instead of `realpath -- "$0"`.
+
+And maybe I'm missing something, but if realpath always returns an absolute path, does dirname need `--`.  (Funnily enough, after taking a closer look at dirname, it's actually working as intended there, for me.  `dirname --something` gives me an error, `dirname -- --something` works.)
+
+---
+
+_Comment by @Gankra on 2025-02-11 20:06_
+
+I also get Charlie's behaviour on an apple silicon mac with macOS 15.3 (24D60).
+
+My ancient intel macbook stuck on 11.7.10 (20G1427) also has Charlie's realpath behaviour.
+
+Mysterious...
+
+---
+
+_Comment by @charliermarsh on 2025-02-11 20:10_
+
+I'm not sure what's up, but I really think this would've come up before if it was a pervasive or standard behavior on macOS. We've had this behavior for a long time.
+
+---
+
+_Comment by @ecpost on 2025-02-11 20:15_
+
+Yeah, I'm trying to search for any recent comments online about realpath losing `--` support.  I do see it working on other systems, in linux, etc.  Although I haven't seen it explicitly documented in any man pages.  It's tough to search for "--" 😀
+
+I'm going to try updating a macbook I haven't touched lately...
+
+---
+
+_Comment by @geofft on 2025-02-11 20:18_
+
+What is the output of `which realpath` or `type realpath`? (Like do you have an unusual one from Homebrew or something that's first on $PATH?)
+
+---
+
+_Comment by @ecpost on 2025-02-11 20:27_
+
+I was just thinking the same thing.  On the macbook I'm updating right now (and it works), it's in /bin.  The mac with the problem is getting it from `/usr/local/bin`, and is dated 2019.  I have another realpath on the same mac in /bin that works fine with `--`.
+
+Sorry if I'm wasting people's time here, obviously something's screwed up with my system.  I'll try to track down the source.  (Might be brew.)  Maybe it's not a total waste if anyone else out there has the same issue.
+
+---
+
+_Comment by @Gankra on 2025-02-11 20:36_
+
+My sincerest condolences for getting Package Managered.
+
+---
+
+_Comment by @ecpost on 2025-02-11 20:37_
+
+Considering how old the file is, I doubt this is a common/real problem worth worrying about or someone else would have hit it by now.  Something's messed up on my system that I need to clean up.  Sorry for wasting your time!!
+
+---
+
+_Closed by @ecpost on 2025-02-11 20:37_
+
+---
+
+_Comment by @jasongorski on 2025-07-04 13:52_
+
+`uvx run https://…/foo.git` in the uv alpine container runs afoul of `realpath -- …`
+
+`apk add coreutils` as a workaround.
+
+---
+
+_Comment by @aswild on 2025-08-19 16:22_
+
+As jasongorski mentioned, this is seen issue on standard Alpine Linux containers (including the Alpine-based `uv` containers)
+
+```
+/ # cd /usr/local/bin
+/usr/local/bin # realpath ..
+/usr/local
+/usr/local/bin # realpath -- ..
+realpath: --: No such file or directory
+/usr/local
+/usr/local/bin # dirname -- $PWD
+/usr/local
+/usr/local/bin #
+```
+
+Commands like `dirname` appear to accept `--` as an argument separator, but busybox's `realpath` doesn't.
+
+It's only a cosmetic issue because the error is just printed to stderr and then the subsequent actual argument gets processed normally. Perhaps a strategically placed `2>/dev/null` in the generated launcher scripts could help?
+
+---

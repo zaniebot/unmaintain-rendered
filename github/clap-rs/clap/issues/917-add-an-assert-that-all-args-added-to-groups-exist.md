@@ -1,0 +1,466 @@
+---
+number: 917
+title: Add an assert that all args added to groups exist
+type: issue
+state: closed
+author: bruceadams
+labels:
+  - C-enhancement
+  - E-medium
+assignees: []
+created_at: 2017-03-25T22:07:23Z
+updated_at: 2017-05-16T11:23:25Z
+url: https://github.com/clap-rs/clap/issues/917
+synced_at: 2026-01-07T13:12:19-06:00
+---
+
+# Add an assert that all args added to groups exist
+
+---
+
+_Issue opened by @bruceadams on 2017-03-25 22:07_
+
+Please use the following template to assist with creating an issue, and getting a speedy resolution. If an area is not aplicable, feel free to delete the area, or mark with `N/A`
+
+### Rust Version
+
+`rustc 1.16.0 (30cf806ef 2017-03-10)`
+
+### Affected Version of clap
+
+`clap v2.21.2` and `clap v2.22.1`
+
+(I tried a `cargo update` in hopes of hitting an existing fix.)
+
+This works fine with `clap v2.20.5`
+
+### Expected Behavior Summary
+
+My code, https://github.com/bruceadams/wdscli, built using `clap v2.20.5`
+
+```
+$ RUST_BACKTRACE=1 wdscli help delete-configuration
+wdscli-delete-configuration
+Delete a configuration.
+
+USAGE:
+    wdscli delete-configuration [OPTIONS] <--newest|--named <name>|--with-id <id>>
+
+FLAGS:
+    -h, --help       Prints help information
+    -n, --newest     Delete the most recently created configuration
+    -V, --version    Prints version information
+
+OPTIONS:
+    -i, --with-id <id>    Delete the configuration with this id
+    -m, --named <name>    Delete the configuration with a name matching this
+```
+
+### Actual Behavior Summary
+
+My code (exactly the same as above) built using `clap v2.22.1`
+
+```
+$ RUST_BACKTRACE=1 wdscli help delete-configuration
+thread 'main' panicked at 'Fatal internal error. Please consider filing a bug report at https://github.com/kbknapp/clap-rs/issues', /Users/rustbuild/src/rust-buildbot/slave/stable-dist-rustc-mac/build/src/libcore/option.rs:715
+stack backtrace:
+   1:        0x1096e7a0c - std::sys::imp::backtrace::tracing::imp::write::h21ca2762819c7ae8
+   2:        0x1096e9b7e - std::panicking::default_hook::{{closure}}::h38f99a37d00bb19b
+   3:        0x1096e9820 - std::panicking::default_hook::ha2186ee24b50729c
+   4:        0x1096ea037 - std::panicking::rust_panic_with_hook::h979db19ee91d2a53
+   5:        0x1096e9ee4 - std::panicking::begin_panic::h6a69f5b54391c64d
+   6:        0x1096e9e02 - std::panicking::begin_panic_fmt::h9de2343580b3c2c4
+   7:        0x1096e9d67 - rust_begin_unwind
+   8:        0x109712160 - core::panicking::panic_fmt::haa2997386017a96f
+   9:        0x1097121ed - core::option::expect_failed::h6cd7e4444435a838
+  10:        0x109617017 - clap::app::parser::Parser::args_in_group::h7fb57bf16b983f77
+  11:        0x109616d32 - clap::app::parser::Parser::args_in_group::h7fb57bf16b983f77
+  12:        0x109661d99 - clap::app::usage::get_required_usage_from::h20a3e571e6e9f1cc
+  13:        0x10965cf4f - clap::app::usage::create_help_usage::h9b45a1280f0d7880
+  14:        0x1096433a3 - clap::app::help::Help::_write_parser_help::h250fe84be1895606
+  15:        0x109612c18 - clap::app::parser::Parser::get_matches_with::h6e6be939305a5bb9
+  16:        0x109664011 - clap::app::App::get_matches_from_safe_borrow::h09b8016ec588f690
+  17:        0x109663114 - clap::app::App::get_matches::hfa0b79d4e5885c72
+  18:        0x1094f1318 - wdscli::main::h264de35720660956
+  19:        0x1096eaefa - __rust_maybe_catch_panic
+  20:        0x1096ea406 - std::rt::lang_start::hfc9882558f9403bf
+```
+
+### Steps to Reproduce the issue
+
+```sh
+git clone git@github.com:bruceadams/wdscli.git
+cd wdscli
+cargo build
+target/debug/wdscli help delete-configuration
+```
+
+### Sample Code or Link to Sample Code
+
+I have not attempted to narrow down a sample for this failure. The relevant part of my code is here: https://github.com/bruceadams/wdscli/blob/master/src/cli.rs
+
+### Debug output
+
+```
+DEBUG:clap:Parser::add_subcommand: term_w=None, name=generate-completions
+DEBUG:clap:Parser::add_subcommand: term_w=None, name=crawler-configuration
+DEBUG:clap:Parser::add_subcommand: term_w=None, name=create-collection
+DEBUG:clap:Parser::add_subcommand: term_w=None, name=create-configuration
+DEBUG:clap:Parser::add_subcommand: term_w=None, name=create-environment
+DEBUG:clap:Parser::add_subcommand: term_w=None, name=delete-collection
+DEBUG:clap:Parser::add_subcommand: term_w=None, name=delete-configuration
+DEBUG:clap:Parser::add_subcommand: term_w=None, name=delete-environment
+DEBUG:clap:Parser::add_subcommand: term_w=None, name=overview
+DEBUG:clap:Parser::add_subcommand: term_w=None, name=query
+DEBUG:clap:Parser::add_subcommand: term_w=None, name=show-environment
+DEBUG:clap:Parser::add_subcommand: term_w=None, name=show-collection
+DEBUG:clap:Parser::add_subcommand: term_w=None, name=show-document
+DEBUG:clap:Parser::add_subcommand: term_w=None, name=add-document
+DEBUG:clap:Parser::add_subcommand: term_w=None, name=show-configuration
+DEBUG:clap:Parser::propogate_settings: self=wdscli, g_settings=AppFlags(
+    NEEDS_LONG_HELP | NEEDS_LONG_VERSION | NEEDS_SC_HELP | UTF8_NONE | COLOR_AUTO
+)
+DEBUG:clap:Parser::propogate_settings: sc=generate-completions, settings=AppFlags(
+    NEEDS_LONG_HELP | NEEDS_LONG_VERSION | NEEDS_SC_HELP | UTF8_NONE | COLOR_AUTO
+), g_settings=AppFlags(
+    NEEDS_LONG_HELP | NEEDS_LONG_VERSION | NEEDS_SC_HELP | UTF8_NONE | COLOR_AUTO
+)
+DEBUG:clap:Parser::propogate_settings: self=generate-completions, g_settings=AppFlags(
+    NEEDS_LONG_HELP | NEEDS_LONG_VERSION | NEEDS_SC_HELP | UTF8_NONE | COLOR_AUTO
+)
+DEBUG:clap:Parser::propogate_settings: sc=crawler-configuration, settings=AppFlags(
+    NEEDS_LONG_HELP | NEEDS_LONG_VERSION | NEEDS_SC_HELP | UTF8_NONE | COLOR_AUTO
+), g_settings=AppFlags(
+    NEEDS_LONG_HELP | NEEDS_LONG_VERSION | NEEDS_SC_HELP | UTF8_NONE | COLOR_AUTO
+)
+DEBUG:clap:Parser::propogate_settings: self=crawler-configuration, g_settings=AppFlags(
+    NEEDS_LONG_HELP | NEEDS_LONG_VERSION | NEEDS_SC_HELP | UTF8_NONE | COLOR_AUTO
+)
+DEBUG:clap:Parser::propogate_settings: sc=create-collection, settings=AppFlags(
+    NEEDS_LONG_HELP | NEEDS_LONG_VERSION | NEEDS_SC_HELP | UTF8_NONE | COLOR_AUTO
+), g_settings=AppFlags(
+    NEEDS_LONG_HELP | NEEDS_LONG_VERSION | NEEDS_SC_HELP | UTF8_NONE | COLOR_AUTO
+)
+DEBUG:clap:Parser::propogate_settings: self=create-collection, g_settings=AppFlags(
+    NEEDS_LONG_HELP | NEEDS_LONG_VERSION | NEEDS_SC_HELP | UTF8_NONE | COLOR_AUTO
+)
+DEBUG:clap:Parser::propogate_settings: sc=create-configuration, settings=AppFlags(
+    NEEDS_LONG_HELP | NEEDS_LONG_VERSION | NEEDS_SC_HELP | UTF8_NONE | COLOR_AUTO
+), g_settings=AppFlags(
+    NEEDS_LONG_HELP | NEEDS_LONG_VERSION | NEEDS_SC_HELP | UTF8_NONE | COLOR_AUTO
+)
+DEBUG:clap:Parser::propogate_settings: self=create-configuration, g_settings=AppFlags(
+    NEEDS_LONG_HELP | NEEDS_LONG_VERSION | NEEDS_SC_HELP | UTF8_NONE | COLOR_AUTO
+)
+DEBUG:clap:Parser::propogate_settings: sc=create-environment, settings=AppFlags(
+    NEEDS_LONG_HELP | NEEDS_LONG_VERSION | NEEDS_SC_HELP | UTF8_NONE | COLOR_AUTO
+), g_settings=AppFlags(
+    NEEDS_LONG_HELP | NEEDS_LONG_VERSION | NEEDS_SC_HELP | UTF8_NONE | COLOR_AUTO
+)
+DEBUG:clap:Parser::propogate_settings: self=create-environment, g_settings=AppFlags(
+    NEEDS_LONG_HELP | NEEDS_LONG_VERSION | NEEDS_SC_HELP | UTF8_NONE | COLOR_AUTO
+)
+DEBUG:clap:Parser::propogate_settings: sc=delete-collection, settings=AppFlags(
+    NEEDS_LONG_HELP | NEEDS_LONG_VERSION | NEEDS_SC_HELP | UTF8_NONE | COLOR_AUTO
+), g_settings=AppFlags(
+    NEEDS_LONG_HELP | NEEDS_LONG_VERSION | NEEDS_SC_HELP | UTF8_NONE | COLOR_AUTO
+)
+DEBUG:clap:Parser::propogate_settings: self=delete-collection, g_settings=AppFlags(
+    NEEDS_LONG_HELP | NEEDS_LONG_VERSION | NEEDS_SC_HELP | UTF8_NONE | COLOR_AUTO
+)
+DEBUG:clap:Parser::propogate_settings: sc=delete-configuration, settings=AppFlags(
+    NEEDS_LONG_HELP | NEEDS_LONG_VERSION | NEEDS_SC_HELP | UTF8_NONE | COLOR_AUTO
+), g_settings=AppFlags(
+    NEEDS_LONG_HELP | NEEDS_LONG_VERSION | NEEDS_SC_HELP | UTF8_NONE | COLOR_AUTO
+)
+DEBUG:clap:Parser::propogate_settings: self=delete-configuration, g_settings=AppFlags(
+    NEEDS_LONG_HELP | NEEDS_LONG_VERSION | NEEDS_SC_HELP | UTF8_NONE | COLOR_AUTO
+)
+DEBUG:clap:Parser::propogate_settings: sc=delete-environment, settings=AppFlags(
+    NEEDS_LONG_HELP | NEEDS_LONG_VERSION | NEEDS_SC_HELP | UTF8_NONE | COLOR_AUTO
+), g_settings=AppFlags(
+    NEEDS_LONG_HELP | NEEDS_LONG_VERSION | NEEDS_SC_HELP | UTF8_NONE | COLOR_AUTO
+)
+DEBUG:clap:Parser::propogate_settings: self=delete-environment, g_settings=AppFlags(
+    NEEDS_LONG_HELP | NEEDS_LONG_VERSION | NEEDS_SC_HELP | UTF8_NONE | COLOR_AUTO
+)
+DEBUG:clap:Parser::propogate_settings: sc=overview, settings=AppFlags(
+    NEEDS_LONG_HELP | NEEDS_LONG_VERSION | NEEDS_SC_HELP | UTF8_NONE | COLOR_AUTO
+), g_settings=AppFlags(
+    NEEDS_LONG_HELP | NEEDS_LONG_VERSION | NEEDS_SC_HELP | UTF8_NONE | COLOR_AUTO
+)
+DEBUG:clap:Parser::propogate_settings: self=overview, g_settings=AppFlags(
+    NEEDS_LONG_HELP | NEEDS_LONG_VERSION | NEEDS_SC_HELP | UTF8_NONE | COLOR_AUTO
+)
+DEBUG:clap:Parser::propogate_settings: sc=query, settings=AppFlags(
+    NEEDS_LONG_HELP | NEEDS_LONG_VERSION | NEEDS_SC_HELP | UTF8_NONE | COLOR_AUTO
+), g_settings=AppFlags(
+    NEEDS_LONG_HELP | NEEDS_LONG_VERSION | NEEDS_SC_HELP | UTF8_NONE | COLOR_AUTO
+)
+DEBUG:clap:Parser::propogate_settings: self=query, g_settings=AppFlags(
+    NEEDS_LONG_HELP | NEEDS_LONG_VERSION | NEEDS_SC_HELP | UTF8_NONE | COLOR_AUTO
+)
+DEBUG:clap:Parser::propogate_settings: sc=show-environment, settings=AppFlags(
+    NEEDS_LONG_HELP | NEEDS_LONG_VERSION | NEEDS_SC_HELP | UTF8_NONE | COLOR_AUTO
+), g_settings=AppFlags(
+    NEEDS_LONG_HELP | NEEDS_LONG_VERSION | NEEDS_SC_HELP | UTF8_NONE | COLOR_AUTO
+)
+DEBUG:clap:Parser::propogate_settings: self=show-environment, g_settings=AppFlags(
+    NEEDS_LONG_HELP | NEEDS_LONG_VERSION | NEEDS_SC_HELP | UTF8_NONE | COLOR_AUTO
+)
+DEBUG:clap:Parser::propogate_settings: sc=show-collection, settings=AppFlags(
+    NEEDS_LONG_HELP | NEEDS_LONG_VERSION | NEEDS_SC_HELP | UTF8_NONE | COLOR_AUTO
+), g_settings=AppFlags(
+    NEEDS_LONG_HELP | NEEDS_LONG_VERSION | NEEDS_SC_HELP | UTF8_NONE | COLOR_AUTO
+)
+DEBUG:clap:Parser::propogate_settings: self=show-collection, g_settings=AppFlags(
+    NEEDS_LONG_HELP | NEEDS_LONG_VERSION | NEEDS_SC_HELP | UTF8_NONE | COLOR_AUTO
+)
+DEBUG:clap:Parser::propogate_settings: sc=show-document, settings=AppFlags(
+    NEEDS_LONG_HELP | NEEDS_LONG_VERSION | NEEDS_SC_HELP | UTF8_NONE | COLOR_AUTO
+), g_settings=AppFlags(
+    NEEDS_LONG_HELP | NEEDS_LONG_VERSION | NEEDS_SC_HELP | UTF8_NONE | COLOR_AUTO
+)
+DEBUG:clap:Parser::propogate_settings: self=show-document, g_settings=AppFlags(
+    NEEDS_LONG_HELP | NEEDS_LONG_VERSION | NEEDS_SC_HELP | UTF8_NONE | COLOR_AUTO
+)
+DEBUG:clap:Parser::propogate_settings: sc=add-document, settings=AppFlags(
+    NEEDS_LONG_HELP | NEEDS_LONG_VERSION | NEEDS_SC_HELP | UTF8_NONE | COLOR_AUTO
+), g_settings=AppFlags(
+    NEEDS_LONG_HELP | NEEDS_LONG_VERSION | NEEDS_SC_HELP | UTF8_NONE | COLOR_AUTO
+)
+DEBUG:clap:Parser::propogate_settings: self=add-document, g_settings=AppFlags(
+    NEEDS_LONG_HELP | NEEDS_LONG_VERSION | NEEDS_SC_HELP | UTF8_NONE | COLOR_AUTO
+)
+DEBUG:clap:Parser::propogate_settings: sc=show-configuration, settings=AppFlags(
+    NEEDS_LONG_HELP | NEEDS_LONG_VERSION | NEEDS_SC_HELP | UTF8_NONE | COLOR_AUTO
+), g_settings=AppFlags(
+    NEEDS_LONG_HELP | NEEDS_LONG_VERSION | NEEDS_SC_HELP | UTF8_NONE | COLOR_AUTO
+)
+DEBUG:clap:Parser::propogate_settings: self=show-configuration, g_settings=AppFlags(
+    NEEDS_LONG_HELP | NEEDS_LONG_VERSION | NEEDS_SC_HELP | UTF8_NONE | COLOR_AUTO
+)
+DEBUG:clap:Parser::get_matches_with;
+DEBUG:clap:Parser::create_help_and_version;
+DEBUG:clap:Parser::create_help_and_version: Building --help
+DEBUG:clap:Parser::create_help_and_version: Building --version
+DEBUG:clap:Parser::create_help_and_version: Building help
+DEBUG:clap:Parser::get_matches_with: Begin parsing '"help"' ([104, 101, 108, 112])
+DEBUG:clap:Parser::is_new_arg: arg="help", Needs Val of=None
+DEBUG:clap:Parser::is_new_arg: Arg::allow_leading_hyphen(false)
+DEBUG:clap:Parser::is_new_arg: probably value
+DEBUG:clap:Parser::is_new_arg: starts_new_arg=false
+DEBUG:clap:Parser::possible_subcommand: arg="help"
+DEBUG:clap:Parser::get_matches_with: possible_sc=true, sc=Some("help")
+DEBUG:clap:Parser::parse_help_subcommand;
+DEBUG:clap:Parser::create_help_and_version;
+DEBUG:clap:Parser::create_help_and_version: Building --help
+DEBUG:clap:Parser::create_help_and_version: Building --version
+DEBUG:clap:Help::write_parser_help;
+DEBUG:clap:Help::write_parser_help;
+DEBUG:clap:Parser::color;
+DEBUG:clap:Parser::color: Color setting...Auto
+DEBUG:clap:Help::new;
+DEBUG:clap:Help::write_help;
+DEBUG:clap:Help::write_default_help;
+DEBUG:clap:Help::write_bin_name;
+DEBUG:clap:Help::write_version;
+DEBUG:clap:Help::wrap_help: longest_w=14, avail_chars=120
+DEBUG:clap:Help::wrap_help: Enough space to wrap...Yes
+DEBUG:clap:Help::wrap_help:iter: idx=0, g=D
+DEBUG:clap:Help::wrap_help:iter: idx=1, g=e
+DEBUG:clap:Help::wrap_help:iter: idx=2, g=l
+DEBUG:clap:Help::wrap_help:iter: idx=3, g=e
+DEBUG:clap:Help::wrap_help:iter: idx=4, g=t
+DEBUG:clap:Help::wrap_help:iter: idx=5, g=e
+DEBUG:clap:Help::wrap_help:iter: idx=6, g= 
+DEBUG:clap:Help::wrap_help:iter: Space found with room...
+DEBUG:clap:Help::wrap_help:iter: idx=7, g=a
+DEBUG:clap:Help::wrap_help:iter: idx=8, g= 
+DEBUG:clap:Help::wrap_help:iter: Space found with room...
+DEBUG:clap:Help::wrap_help:iter: idx=9, g=c
+DEBUG:clap:Help::wrap_help:iter: idx=10, g=o
+DEBUG:clap:Help::wrap_help:iter: idx=11, g=n
+DEBUG:clap:Help::wrap_help:iter: idx=12, g=f
+DEBUG:clap:Help::wrap_help:iter: idx=13, g=i
+DEBUG:clap:Help::wrap_help:iter: idx=14, g=g
+DEBUG:clap:Help::wrap_help:iter: idx=15, g=u
+DEBUG:clap:Help::wrap_help:iter: idx=16, g=r
+DEBUG:clap:Help::wrap_help:iter: idx=17, g=a
+DEBUG:clap:Help::wrap_help:iter: idx=18, g=t
+DEBUG:clap:Help::wrap_help:iter: idx=19, g=i
+DEBUG:clap:Help::wrap_help:iter: idx=20, g=o
+DEBUG:clap:Help::wrap_help:iter: idx=21, g=n
+DEBUG:clap:Help::wrap_help:iter: idx=22, g=.
+DEBUG:clap:usage::create_usage_no_title;
+DEBUG:clap:usage::get_required_usage_from: reqs=["selector"], extra=None
+DEBUG:clap:usage::get_required_usage_from: after init desc_reqs=[]
+DEBUG:clap:usage::get_required_usage_from: no more children
+DEBUG:clap:usage::get_required_usage_from: final desc_reqs=["selector"]
+DEBUG:clap:usage::get_required_usage_from: args_in_groups=["all", "newest", "oldest", "name", "id"]
+DEBUG:clap:OptBuilder::fmt
+DEBUG:clap:OptBuilder::fmt
+```
+
+
+---
+
+_Comment by @kbknapp on 2017-03-26 15:03_
+
+Thanks for reporting this! Was this run in debug mode or release? Because in 2.21 we switched to turning off several asserts in release mode only. So I'm curious if this issue would have been caught in one of those.
+
+I'll start checking out a fix for this either way though.
+
+---
+
+_Label `C: arg groups` added by @kbknapp on 2017-03-26 15:03_
+
+---
+
+_Label `D: intermediate` added by @kbknapp on 2017-03-26 15:03_
+
+---
+
+_Label `P1: urgent` added by @kbknapp on 2017-03-26 15:03_
+
+---
+
+_Label `Regression` added by @kbknapp on 2017-03-26 15:03_
+
+---
+
+_Label `T: bug` added by @kbknapp on 2017-03-26 15:03_
+
+---
+
+_Label `W: 2.x` added by @kbknapp on 2017-03-26 15:03_
+
+---
+
+_Assigned to @kbknapp by @kbknapp on 2017-03-26 15:03_
+
+---
+
+_Comment by @bruceadams on 2017-03-26 17:38_
+
+The _Actual Behavior Summary_ was in a release build (which is what I am in the habit of running). The _Debug output_ was a debug build.
+
+I have four 1.* releases of `wdscli`, each are release builds, built on Travis-CI. The older two, 1.0.0 and 1.1.0 are fine. The newer two 1.1.1 and 1.2.0 exhibit this issue. It's pretty clear that my doing a `cargo update`, upgrading `clap` is what brought in this issue. (This commit: https://github.com/bruceadams/wdscli/commit/e637db6be55329260e74cae2622ea0f72a288064 )
+
+I'm willing to do a _bisect_ kind of thing to figure out exactly which release of `clap` introduced the issue. (That is: I would do a series of builds of my code pulling in different versions of `clap` until i find the minimal upgrade that goes from working to not working.)
+
+---
+
+_Comment by @kbknapp on 2017-03-26 17:41_
+
+Thanks! No need to do the bisect, I'm about 99% sure what caused the issue ~~and it was a change I made to how group requirements get parsed in order to deduplicate work being done~~. It should actually be an easy fix.
+
+The part I'm more curious about is how the tests didn't catch this, so I'm interested to dig in once I get home :wink:
+
+---
+
+_Comment by @kbknapp on 2017-03-26 19:04_
+
+@bruceadams it appears the issue is actually there are two args/groups that have been added to the group `selector` that doesn't actually exist.
+
+See the arg/group `all` and `oldest` (which don't exist) on [this line](https://github.com/bruceadams/wdscli/blob/f3d46b9721dd90c9993cdbba55a1bdc061711f96/src/cli.rs#L133). Is this intended?
+
+---
+
+_Comment by @kbknapp on 2017-03-26 19:08_
+
+This could have been failing silently in older versions of clap.
+
+---
+
+_Label `T: RFC / question` added by @kbknapp on 2017-03-26 19:24_
+
+---
+
+_Label `C: arg groups` removed by @kbknapp on 2017-03-26 19:24_
+
+---
+
+_Label `D: intermediate` removed by @kbknapp on 2017-03-26 19:24_
+
+---
+
+_Label `P1: urgent` removed by @kbknapp on 2017-03-26 19:24_
+
+---
+
+_Label `Regression` removed by @kbknapp on 2017-03-26 19:24_
+
+---
+
+_Label `T: bug` removed by @kbknapp on 2017-03-26 19:24_
+
+---
+
+_Label `W: 2.x` removed by @kbknapp on 2017-03-26 19:24_
+
+---
+
+_Comment by @bruceadams on 2017-03-26 19:41_
+
+Ah! Good point. My arguments and subcommands are complex enough that I lose track of things. Yes. Fixing that mistake in my code avoid this crash. Nice!
+
+---
+
+_Comment by @bruceadams on 2017-03-26 19:42_
+
+From my point-of-view, this issue can be closed :tada: I'll leave it to you to decide if you want to close it now or keep it around. Thanks or you quick help! Debugging my code!
+
+---
+
+_Comment by @kbknapp on 2017-03-26 20:16_
+
+I think the error message could be better, and I could have an assert in debug mode that ensures all args added to groups actually exist, so I'll leave this open for those changes.
+
+- [ ] Add a `debug_assert!` to ensure all groups/args added to a group exist
+
+---
+
+_Renamed from "thread 'main' panicked at 'Fatal internal error…" to "Add an assert that all args added to groups exist" by @kbknapp on 2017-03-26 20:17_
+
+---
+
+_Label `C: arg groups` added by @kbknapp on 2017-03-26 20:18_
+
+---
+
+_Label `C: asserts` added by @kbknapp on 2017-03-26 20:18_
+
+---
+
+_Label `D: easy` added by @kbknapp on 2017-03-26 20:18_
+
+---
+
+_Label `M: mentored` added by @kbknapp on 2017-03-26 20:18_
+
+---
+
+_Label `P4: nice to have` added by @kbknapp on 2017-03-26 20:18_
+
+---
+
+_Label `T: enhancement` added by @kbknapp on 2017-03-26 20:18_
+
+---
+
+_Label `W: 2.x` added by @kbknapp on 2017-03-26 20:18_
+
+---
+
+_Label `T: RFC / question` removed by @kbknapp on 2017-03-26 20:18_
+
+---
+
+_Added to milestone `2.24.2` by @kbknapp on 2017-05-09 19:00_
+
+---
+
+_Closed by @kbknapp on 2017-05-16 11:23_
+
+---

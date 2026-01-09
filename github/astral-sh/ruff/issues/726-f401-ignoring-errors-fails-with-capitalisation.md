@@ -1,0 +1,101 @@
+---
+number: 726
+title: "F401: Ignoring errors fails with capitalisation"
+type: issue
+state: closed
+author: AA-Turner
+labels:
+  - bug
+assignees: []
+created_at: 2022-11-13T20:01:59Z
+updated_at: 2022-11-14T01:34:42Z
+url: https://github.com/astral-sh/ruff/issues/726
+synced_at: 2026-01-07T13:12:14-06:00
+---
+
+# F401: Ignoring errors fails with capitalisation
+
+---
+
+_Issue opened by @AA-Turner on 2022-11-13 20:01_
+
+Ignoring errors on a line-by-line basis should work with any capitalisation of `#noqa`, in my projects I tend to use `#NoQA`.
+
+This failure was introduced in Ruff 111, see below:
+
+```doscon
+I:\Development>type bug.py
+import this  # NoQA: F401
+import antigravity  # noqa: F401
+
+I:\Development>ruff -V     
+ruff 0.0.110
+
+I:\Development>ruff bug.py
+
+A new version of ruff is available: v0.0.110 -> v0.0.116
+Run to update: pip3 install --upgrade ruff
+
+I:\Development>pip install "ruff==0.0.111"
+...
+Successfully installed ruff-0.0.111
+
+I:\Development>ruff -V     
+ruff 0.0.111
+
+I:\Development>ruff bug.py 
+Found 1 error(s).
+bug.py:1:1: F401 `this` imported but unused
+1 potentially fixable with the --fix option.
+
+A new version of ruff is available: v0.0.111 -> v0.0.116
+Run to update: pip3 install --upgrade ruff
+
+I:\Development>
+```
+
+A
+
+---
+
+_Label `bug` added by @charliermarsh on 2022-11-13 20:19_
+
+---
+
+_Comment by @charliermarsh on 2022-11-13 20:20_
+
+My bad! Will fix today.
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2022-11-13 21:02_
+
+---
+
+_Referenced in [astral-sh/ruff#728](../../astral-sh/ruff/pulls/728.md) on 2022-11-13 21:09_
+
+---
+
+_Closed by @charliermarsh on 2022-11-13 21:09_
+
+---
+
+_Comment by @charliermarsh on 2022-11-13 21:11_
+
+Going out in https://github.com/charliermarsh/ruff/releases/tag/v0.0.117 (building now).
+
+---
+
+_Comment by @AA-Turner on 2022-11-13 22:47_
+
+Thanks for the quick fix!
+
+A
+
+---
+
+_Comment by @charliermarsh on 2022-11-14 01:34_
+
+Any time :) 
+
+---

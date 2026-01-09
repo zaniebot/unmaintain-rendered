@@ -1,0 +1,84 @@
+---
+number: 12728
+title: "Install yields `failed to download`"
+type: issue
+state: closed
+author: LarsKue
+labels:
+  - bug
+assignees: []
+created_at: 2025-04-07T19:59:34Z
+updated_at: 2025-04-27T03:48:07Z
+url: https://github.com/astral-sh/uv/issues/12728
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# Install yields `failed to download`
+
+---
+
+_Issue opened by @LarsKue on 2025-04-07 19:59_
+
+### Summary
+
+Running the standard install command that fetches the install shell script fails for me with:
+
+```bash
+$> curl -LsSf https://astral.sh/uv/install.sh | sh
+downloading uv 0.6.12 x86_64-unknown-linux-gnu
+curl: (23) client returned ERROR on write of 16375 bytes
+failed to download https://github.com/astral-sh/uv/releases/download/0.6.12/uv-x86_64-unknown-linux-gnu.tar.gz
+this may be a standard network error, but it may also indicate
+that uv's release process is not working. When in doubt
+please feel free to open an issue
+```
+
+I could not discover an issue on my side. Downloading the archive manually works fine. I worked around the issue now by reassigning the `$_file` variable in the shell script at the appropriate location to my manually downloaded version, so this seems like an issue in the release process as suggested by the error message.
+
+I searched this error in the issues but could not find an existing issue. If this is a duplicate, I'd be happy to close it.
+
+### Platform
+
+Ubuntu 24.04
+
+### Version
+
+0.6.12
+
+### Python version
+
+3.12.3
+
+---
+
+_Label `bug` added by @LarsKue on 2025-04-07 19:59_
+
+---
+
+_Comment by @zanieb on 2025-04-07 20:02_
+
+Thanks for the report!
+
+I've never seen this before.
+
+cc @Gankra 
+
+---
+
+_Comment by @stevenoh2003 on 2025-04-27 03:17_
+
+Hi! I have experienced similar problems recently as I tried installing uv after upgrading my Ubuntu to 24.04 (also using Python 12). I was able to install using `curl` after reinstalling the `curl` tool according to #11849 and this [solution](https://github.com/astral-sh/uv/issues/11849#issuecomment-2691088757)
+
+Basically just doing:
+`sudo snap remove curl`
+`sudo apt install curl`
+
+---
+
+_Closed by @LarsKue on 2025-04-27 03:48_
+
+---
+
+_Referenced in [boukendesho/curl-snap#1](../../boukendesho/curl-snap/issues/1.md) on 2025-04-29 08:25_
+
+---

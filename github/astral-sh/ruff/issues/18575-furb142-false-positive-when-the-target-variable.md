@@ -1,0 +1,70 @@
+---
+number: 18575
+title: "FURB142 false positive when the target variable is used beyond the `add` or `discard` call"
+type: issue
+state: open
+author: dscorbett
+labels:
+  - bug
+  - fixes
+assignees: []
+created_at: 2025-06-09T00:10:44Z
+updated_at: 2025-06-09T14:14:33Z
+url: https://github.com/astral-sh/ruff/issues/18575
+synced_at: 2026-01-07T13:12:16-06:00
+---
+
+# FURB142 false positive when the target variable is used beyond the `add` or `discard` call
+
+---
+
+_Issue opened by @dscorbett on 2025-06-09 00:10_
+
+### Summary
+
+The fix for [`for-loop-set-mutations` (FURB142)](https://docs.astral.sh/ruff/rules/for-loop-set-mutations/) changes behavior when the target variable is used after the loop.
+
+```console
+$ cat >furb142.py <<'# EOF'
+s = {1, 2}
+for x in (2, 3):
+    s.add(x)
+print(x)
+# EOF
+
+$ python furb142.py
+3
+
+$ ruff --isolated check furb142.py --select FURB142 --preview --fix
+Found 1 error (1 fixed, 0 remaining).
+
+$ cat furb142.py
+s = {1, 2}
+s.update((2, 3))
+print(x)
+
+$ python furb142.py 2>&1 | tail -n 1
+NameError: name 'x' is not defined
+```
+
+### Version
+
+ruff 0.11.13 (5faf72a4d 2025-06-05)
+
+---
+
+_Label `bug` added by @ntBre on 2025-06-09 00:12_
+
+---
+
+_Label `fixes` added by @ntBre on 2025-06-09 00:12_
+
+---
+
+_Referenced in [astral-sh/ruff#18557](../../astral-sh/ruff/pulls/18557.md) on 2025-06-09 00:14_
+
+---
+
+_Assigned to @dylwil3 by @dylwil3 on 2025-06-09 14:14_
+
+---

@@ -1,0 +1,98 @@
+---
+number: 12088
+title: "UP006 Do not work if `requires-python = \"== 3.11\"` in pyproject.toml"
+type: issue
+state: closed
+author: artefactop
+labels:
+  - bug
+assignees: []
+created_at: 2024-06-28T10:47:41Z
+updated_at: 2024-06-28T13:38:18Z
+url: https://github.com/astral-sh/ruff/issues/12088
+synced_at: 2026-01-07T13:12:15-06:00
+---
+
+# UP006 Do not work if `requires-python = "== 3.11"` in pyproject.toml
+
+---
+
+_Issue opened by @artefactop on 2024-06-28 10:47_
+
+```
+ruff version
+ruff 0.4.10 (b54922fd7 2024-06-20)
+```
+
+According to https://docs.astral.sh/ruff/rules/non-pep585-annotation/ the rule is enabled when targeting Python 3.9 or later
+
+Example file:
+```python
+from typing import List
+
+
+def passing_list(mylist: List[int]) -> None:
+    pass
+
+```
+
+pyproject.toml
+```toml
+[project]
+# Support Python 3.11.
+requires-python = "== 3.11"
+```
+That version config is compliant with https://peps.python.org/pep-0508/
+
+```sh
+ruff test.py --select UP006 --config pyproject.toml
+All checks passed!
+```
+
+pyproject.toml, but if I set `">=3.11"`
+```toml
+[project]
+# Support Python 3.11.
+requires-python = ">= 3.11"
+```
+
+```sh
+ruff check test.py --select UP006 --config pyproject.toml
+test.py:4:26: UP006 [*] Use `list` instead of `List` for type annotation
+Found 1 error.
+[*] 1 fixable with the `--fix` option.
+```
+
+
+
+
+
+
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2024-06-28 11:35_
+
+---
+
+_Comment by @charliermarsh on 2024-06-28 11:36_
+
+Thanks, I'm surprised that doesn't work -- will take a look...
+
+---
+
+_Referenced in [astral-sh/ruff#12091](../../astral-sh/ruff/pulls/12091.md) on 2024-06-28 12:08_
+
+---
+
+_Label `bug` added by @charliermarsh on 2024-06-28 12:08_
+
+---
+
+_Closed by @charliermarsh on 2024-06-28 13:38_
+
+---
+
+_Closed by @charliermarsh on 2024-06-28 13:38_
+
+---

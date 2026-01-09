@@ -1,0 +1,87 @@
+---
+number: 3948
+title: uv venv
+type: issue
+state: closed
+author: DRKolev-code
+labels:
+  - question
+assignees: []
+created_at: 2024-05-31T20:24:03Z
+updated_at: 2024-06-02T20:34:52Z
+url: https://github.com/astral-sh/uv/issues/3948
+synced_at: 2026-01-07T13:12:17-06:00
+---
+
+# uv venv
+
+---
+
+_Issue opened by @DRKolev-code on 2024-05-31 20:24_
+
+Hi. I am thinking of switching to uv from poetry. I never used virtualenv. What is the benefit of providing `uv venv` compared to `python -m venv .venv`?
+
+---
+
+_Comment by @charliermarsh on 2024-05-31 21:00_
+
+The main benefit is that it's much faster than `python -m venv .venv`, and you can just use uv for creating the environment as well as installing into it without having to learn multiple tools:
+
+```sh
+uv venv
+uv pip install flask
+...
+```
+
+---
+
+_Comment by @charliermarsh on 2024-05-31 21:01_
+
+But if you use `python -m venv .venv`, `uv` will still cooperate with it just fine -- it can install into `python -m venv` environments without an issue.
+
+---
+
+_Label `question` added by @charliermarsh on 2024-05-31 21:01_
+
+---
+
+_Comment by @chrisrodrigue on 2024-06-01 18:46_
+
+Another benefit is that `uv venv` seems to produce a virtual environment that is compatible with `virtualenv`. 
+
+I use a piece of software that only works with virtual environments created by `virtualenv`, and the one produced by `uv venv` seems to work with it as well. This tool is not compatible with virtual environments produced with `python -m venv`. I think in general, many more tools support `virtualenv` over `venv`.
+
+---
+
+_Closed by @charliermarsh on 2024-06-01 20:16_
+
+---
+
+_Comment by @DRKolev-code on 2024-06-02 14:46_
+
+Thanks for the answers!
+
+The reason I am asking is because we are debating switching to uv from poetry in our production but my reservation is in the scope of uv. Currently, we have `venv|conda` + `pyenv` + `poetry` with preference for `venv`.
+
+I want to have this situation: `venv` + `pyenv` + `uv`. Would such a scenario continue to be supported?
+
+This is what I want to avoid.
+> I use a piece of software that only works with virtual environments created by `virtualenv`
+
+![image](https://github.com/astral-sh/uv/assets/83947853/c0898731-7e30-47bb-a601-63e67e856168)
+
+
+
+---
+
+_Comment by @charliermarsh on 2024-06-02 17:57_
+
+Yeah, you can certainly use `uv` with virtual environments created by `python -m venv` or `virtualenv`. In each case, the environment itself follows the same standardized structure, so there's no issue with it.
+
+---
+
+_Comment by @DRKolev-code on 2024-06-02 20:34_
+
+Thanks! Looking forward to testing and hopefully replacing poetry. :)
+
+---

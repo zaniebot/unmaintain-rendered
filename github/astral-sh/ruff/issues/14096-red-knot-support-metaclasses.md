@@ -1,0 +1,97 @@
+---
+number: 14096
+title: "[red-knot] Support metaclasses"
+type: issue
+state: closed
+author: AlexWaygood
+labels:
+  - ty
+assignees: []
+created_at: 2024-11-04T17:49:07Z
+updated_at: 2024-11-06T20:41:37Z
+url: https://github.com/astral-sh/ruff/issues/14096
+synced_at: 2026-01-07T13:12:16-06:00
+---
+
+# [red-knot] Support metaclasses
+
+---
+
+_Issue opened by @AlexWaygood on 2024-11-04 17:49_
+
+Currently we infer that all class objects are instances of `builtins.type`:
+
+https://github.com/astral-sh/ruff/blob/b7e32b0a18487e8c9813e0d189d7a5d625ff5c3f/crates/red_knot_python_semantic/src/types.rs#L1211-L1212
+
+Contrary to the TODO comment there ([not sure who wrote that](https://github.com/astral-sh/ruff/commit/46a457318d8d259376a2b458b3f814b9b795fe69)), this _is_ accurate -- all classes are indeed instances of `builtins.type`. However, it could be a lot more precise, since some classes have a custom metaclass!
+
+```pycon
+>>> class Meta(type): pass
+... 
+>>> class Foo(metaclass=Meta): pass
+... 
+>>> type(Foo)
+<class '__main__.Meta'>
+>>> isinstance(Foo, Meta)
+True
+```
+
+For the `Foo` class here, `Type::to_meta_type` should return a type representing the class object `Meta` rather than a type representing the class object `builtins.type`.
+
+---
+
+### Miscellaneous details on semantics
+
+If a class is a subclass of a class with a custom metaclass, then the subclass will also have that metaclass:
+
+```pycon
+>>> class Bar(Foo): pass
+... 
+>>> type(Bar)
+<class '__main__.Meta'>
+```
+
+And if the metaclasses of the bases conflict, then this can happen (we'll need to detect this and emit a diagnostic):
+
+```pycon
+>>> class A(type): ...
+... 
+>>> class B(type): ...
+... 
+>>> class C(metaclass=A): ...
+... 
+>>> class D(metaclass=B): ...
+... 
+>>> class E(C, D): ...
+... 
+Traceback (most recent call last):
+  File "<python-input-4>", line 1, in <module>
+    class E(C, D): ...
+TypeError: metaclass conflict: the metaclass of a derived class must be a (non-strict) subclass of the metaclasses of all its bases
+```
+
+We'll probably need to add a method to `ClassType` to retrieve the type of the metaclass. It will probably be best to wait until https://github.com/astral-sh/ruff/pull/14087 has landed before working on this.
+
+---
+
+_Label `red-knot` added by @AlexWaygood on 2024-11-04 17:49_
+
+---
+
+_Comment by @AlexWaygood on 2024-11-05 16:17_
+
+Could be a good @charliermarsh -sized task!
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2024-11-05 16:18_
+
+---
+
+_Referenced in [astral-sh/ruff#14120](../../astral-sh/ruff/pulls/14120.md) on 2024-11-06 02:38_
+
+---
+
+_Closed by @charliermarsh on 2024-11-06 20:41_
+
+---

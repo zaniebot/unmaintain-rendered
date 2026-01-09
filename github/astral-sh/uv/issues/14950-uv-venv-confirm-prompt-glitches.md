@@ -1,0 +1,129 @@
+---
+number: 14950
+title: "`uv venv` confirm prompt glitches"
+type: issue
+state: closed
+author: Viicos
+labels:
+  - bug
+assignees: []
+created_at: 2025-07-29T09:33:09Z
+updated_at: 2025-07-30T07:00:54Z
+url: https://github.com/astral-sh/uv/issues/14950
+synced_at: 2026-01-07T13:12:19-06:00
+---
+
+# `uv venv` confirm prompt glitches
+
+---
+
+_Issue opened by @Viicos on 2025-07-29 09:33_
+
+### Summary
+
+The confirm prompt to replace any existing venv glitches on my end.
+
+Looks like a similar issue was reported before this confirm prompt was release in v0.8: https://github.com/astral-sh/uv/issues/14688, but I still have the issue on my end:
+
+```sh
+printenv | grep UV  # Nothing
+echo $0
+bash
+```
+
+https://github.com/user-attachments/assets/eb947577-9341-4d75-a2e2-c0c4b55bf40d
+
+
+### Platform
+
+Ubuntu 24.04 (Linux 6.11.0-26-generic x86_64 GNU/Linux)
+
+### Version
+
+uv 0.8.3
+
+### Python version
+
+_No response_
+
+---
+
+_Label `bug` added by @Viicos on 2025-07-29 09:33_
+
+---
+
+_Comment by @zanieb on 2025-07-29 12:21_
+
+The glitch here is the extra prompt display after the command finishes? 
+
+---
+
+_Comment by @zanieb on 2025-07-29 12:24_
+
+What's your bash version? What kind of setup do you have for your shell?
+
+---
+
+_Comment by @Viicos on 2025-07-29 13:26_
+
+> The glitch here is the extra prompt display after the command finishes?
+
+When I run the command, I don't have the ability to provide `y/n` for the confirm prompt (and it seems that it filled `yes` by itself). I just pressed <kbd>Enter</kbd> to end up in the final state.
+
+> What's your bash version?
+
+5.2.21(1)-release
+
+> What kind of setup do you have for your shell?
+
+Not sure what you are referring to, but I don't have any particular setup. If helpful, I can ask colleagues to try it out on a different setup.
+
+---
+
+_Comment by @zanieb on 2025-07-29 16:23_
+
+I can't reproduce this with
+
+```
+❯ bash
+bash-5.2$ uv self version
+uv 0.8.3 (7e78f54e7 2025-07-24)
+bash-5.2$ uv venv
+Using CPython 3.12.9
+Creating virtual environment at: .venv
+Activate with: source .venv/bin/activate
+bash-5.2$ uv venv
+Using CPython 3.12.9
+Creating virtual environment at: .venv
+✔ A virtual environment already exists at `.venv`. Do you want to replace it? · yes
+Activate with: source .venv/bin/activate
+bash-5.2$ 
+```
+
+so there must be more going on? I have nothing in my bash config.
+
+Can you reproduce with
+
+```
+❯ bash --noprofile --norc
+bash-5.2$ env -i $(which uv) venv
+Using CPython 3.12.9
+Creating virtual environment at: .venv
+✔ A virtual environment already exists at `.venv`. Do you want to replace it? · yes
+```
+
+---
+
+_Comment by @Viicos on 2025-07-30 07:00_
+
+Ok actually it seems to work, I am mostly used to the input prompts where the user input (y/n) appears when typed, and can be confirmed by pressing <kbd>Enter</kbd>:
+
+https://github.com/user-attachments/assets/6caaf7fa-e3e4-4c34-8a45-58c0b97df56a
+
+Not having the cursor after the confirm prompt (especially as the hint was written below it) got me confused. Sorry for that, I'll close unless you want to make this clearer in some way!
+
+---
+
+_Closed by @Viicos on 2025-07-30 07:00_
+
+---

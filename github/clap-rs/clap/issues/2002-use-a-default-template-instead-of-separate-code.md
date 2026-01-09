@@ -1,0 +1,88 @@
+---
+number: 2002
+title: "Use a default template instead of separate code path in Help::write_help"
+type: issue
+state: closed
+author: CreepySkeleton
+labels:
+  - A-help
+  - E-medium
+  - E-help-wanted
+assignees: []
+created_at: 2020-07-06T11:06:46Z
+updated_at: 2020-08-15T00:05:55Z
+url: https://github.com/clap-rs/clap/issues/2002
+synced_at: 2026-01-07T13:12:19-06:00
+---
+
+# Use a default template instead of separate code path in Help::write_help
+
+---
+
+_Issue opened by @CreepySkeleton on 2020-07-06 11:06_
+
+As @kitlith noticed in https://github.com/clap-rs/clap/pull/1986#issuecomment-653928929,:
+
+> Using a template vs not using a template go through two somewhat different code-paths, right? You don't internally use a template unless the user provides one.
+
+In other words, instead of using some sort of hardcoded template, we use a separate function that acts like a hardcoded template.
+
+I think that it worth exploring simply using a hardcoded template instead of a separate code path. We may also export this template as `pub static: &str DEFAULT_TEMPLATE`, but I'm opposed to considering _precise contents_ of the default template as an API contract as we may (and probably will) tweak it here and there.
+
+Related code:
+https://github.com/clap-rs/clap/blob/9fc8ec965e42db926ef6aa894810c23600dac49d/src/output/help.rs#L110-L115
+
+The function in question:
+https://github.com/clap-rs/clap/blob/9fc8ec965e42db926ef6aa894810c23600dac49d/src/output/help.rs#L821
+
+---
+
+_Label `P2: need to have` added by @CreepySkeleton on 2020-07-06 11:06_
+
+---
+
+_Label `C: help message` added by @CreepySkeleton on 2020-07-06 11:06_
+
+---
+
+_Label `D: medium` added by @CreepySkeleton on 2020-07-06 11:06_
+
+---
+
+_Label `Z: mentored` added by @CreepySkeleton on 2020-07-06 11:06_
+
+---
+
+_Label `T: refactor` added by @CreepySkeleton on 2020-07-06 11:06_
+
+---
+
+_Label `help wanted` added by @CreepySkeleton on 2020-07-06 11:06_
+
+---
+
+_Added to milestone `3.1` by @CreepySkeleton on 2020-07-06 11:06_
+
+---
+
+_Referenced in [clap-rs/clap#1986](../../clap-rs/clap/pulls/1986.md) on 2020-07-06 11:11_
+
+---
+
+_Comment by @kitlith on 2020-07-06 18:14_
+
+I agree. The precise contents of that template should be able to change. The guarantee I was going for is not "this is the template that will *always* produce the default output" but "this is the template that produces the default output for this version".
+
+---
+
+_Referenced in [clap-rs/clap#2067](../../clap-rs/clap/pulls/2067.md) on 2020-08-14 01:00_
+
+---
+
+_Closed by @bors[bot] on 2020-08-15 00:05_
+
+---
+
+_Referenced in [clap-rs/clap#3413](../../clap-rs/clap/issues/3413.md) on 2022-02-07 21:21_
+
+---

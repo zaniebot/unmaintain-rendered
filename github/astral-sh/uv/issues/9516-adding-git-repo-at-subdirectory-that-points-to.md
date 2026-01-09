@@ -1,0 +1,217 @@
+---
+number: 9516
+title: Adding Git repo at subdirectory that points to source in same repo does not work
+type: issue
+state: closed
+author: Lauszus
+labels:
+  - bug
+assignees: []
+created_at: 2024-11-29T09:01:02Z
+updated_at: 2024-12-03T09:23:09Z
+url: https://github.com/astral-sh/uv/issues/9516
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# Adding Git repo at subdirectory that points to source in same repo does not work
+
+---
+
+_Issue opened by @Lauszus on 2024-11-29 09:01_
+
+I have a mono repo with two Python packages:
+
+```
+.
+├── package1
+│   ├── pyproject.toml
+│   ├── README.md
+│   ├── src
+│   │   └── package1
+│   │       └── __init__.py
+│   └── uv.lock
+├── package2
+│   ├── pyproject.toml
+│   ├── README.md
+│   ├── src
+│   │   └── package2
+│   │       └── __init__.py
+│   └── uv.lock
+└── README.md
+```
+
+`package2` has `package1` as a dependency:
+
+```toml
+dependencies = [
+    "package1",
+]
+
+[tool.uv.sources]
+package1 = { path = "../package1" }
+```
+
+Now create an application that has `package2` as a dependency:
+
+```bash
+mkdir uv-bug
+cd uv-bug
+uv init
+uv add "package2 @ git+https://git@github.com/Lauszus/uv-test.git@main#egg=package2&subdirectory=package2"
+```
+
+This will create a dependency that looks like this:
+
+```bash
+dependencies = [
+    "package2",
+]
+
+[tool.uv.sources]
+package2 = { git = "https://github.com/Lauszus/uv-test.git", subdirectory = "package2", rev = "main" }
+```
+
+The `uv.lock` entry for `package2` looks fine, as it is pointing to the Git repo:
+
+```toml
+[[package]]
+name = "package2"
+version = "0.1.0"
+source = { git = "https://github.com/Lauszus/uv-test.git?subdirectory=package2&rev=main#36276098fbaacadf88275f492a457c51c9dffe66" }
+dependencies = [
+    { name = "package1" },
+]
+```
+
+But the `source` entry for `package1` is pointing to the local cache:
+
+```toml
+[[package]]
+name = "package1"
+version = "0.1.0"
+source = { directory = "../.cache/uv/git-v0/checkouts/64fbda8353baefb8/3627609/package1" }
+```
+
+This means that the CI can not run `uv sync` it and will fail with something like:
+
+```bash
+Using CPython 3.13.0
+Creating virtual environment at: .venv
+Resolved 3 packages in 0.64ms
+error: Failed to determine installation plan
+  Caused by: Distribution not found at: file:///home/runner/work/uv-bug/.cache/uv/git-v0/checkouts/08056d894a84e676/0ff3eff/package1
+Error: Process completed with exit code 2.
+```
+
+Verbose outputs:
+
+```bash
+DEBUG uv 0.5.5
+DEBUG Found project root: `/home/runner/work/uv-bug/uv-bug`
+DEBUG No workspace root found, using project root
+DEBUG Reading Python requests from version file at `/home/runner/work/uv-bug/uv-bug/.python-version`
+DEBUG Using Python request `3.13` from version file at `.python-version`
+DEBUG Searching for Python 3.13 in managed installations or search path
+DEBUG Searching for managed installations at `/home/runner/.local/share/uv/python`
+DEBUG Found `cpython-3.10.12-linux-x86_64-gnu` at `/usr/bin/python3` (search path)
+DEBUG Skipping interpreter at `/usr/bin/python3` from search path: does not satisfy request `3.13`
+DEBUG Found `cpython-3.10.12-linux-x86_64-gnu` at `/usr/bin/python` (search path)
+DEBUG Skipping interpreter at `/usr/bin/python` from search path: does not satisfy request `3.13`
+DEBUG Found `cpython-3.10.12-linux-x86_64-gnu` at `/bin/python3` (search path)
+DEBUG Skipping interpreter at `/bin/python3` from search path: does not satisfy request `3.13`
+DEBUG Found `cpython-3.10.12-linux-x86_64-gnu` at `/bin/python` (search path)
+DEBUG Skipping interpreter at `/bin/python` from search path: does not satisfy request `3.13`
+DEBUG Requested Python not found, checking for available download...
+DEBUG Acquired lock for `/home/runner/.local/share/uv/python`
+DEBUG Using request timeout of 30s
+INFO Fetching requested Python...
+DEBUG Downloading https://github.com/indygreg/python-build-standalone/releases/download/20241016/cpython-3.13.0%2B20241016-x86_64-unknown-linux-gnu-install_only_stripped.tar.gz to temporary location: /home/runner/.local/share/uv/python/.cache/.tmpR2lh12
+DEBUG Extracting cpython-3.13.0%2B20241016-x86_64-unknown-linux-gnu-install_only_stripped.tar.gz
+DEBUG Moving /home/runner/.local/share/uv/python/.cache/.tmpR2lh12/python to /home/runner/.local/share/uv/python/cpython-3.13.0-linux-x86_64-gnu
+DEBUG Released lock at `/home/runner/.local/share/uv/python/.lock`
+Using CPython 3.13.0
+Creating virtual environment at: .venv
+DEBUG Using request timeout of 30s
+DEBUG Found static `pyproject.toml` for: uv-bug @ file:///home/runner/work/uv-bug/uv-bug
+DEBUG No workspace root found, using project root
+DEBUG Existing `uv.lock` satisfies workspace requirements
+Resolved 3 packages in 0.86ms
+DEBUG Using request timeout of 30s
+DEBUG Identified uncached distribution: package2 @ git+ssh://git@github.com/Lauszus/uv-test.git@0ff3eff109f3eaf816164217b6acf6183b6ac4bc#subdirectory=package2
+error: Failed to determine installation plan
+  Caused by: Distribution not found at: file:///home/runner/work/uv-bug/.cache/uv/git-v0/checkouts/08056d894a84e676/0ff3eff/package1
+Error: Process completed with exit code 2.
+```
+
+I would expect that it should look something like this:
+
+```toml
+source = { git = "https://github.com/Lauszus/uv-test.git?subdirectory=package1&rev=main#36276098fbaacadf88275f492a457c51c9dffe66" }
+```
+
+In fact manually changing `uv.lock` to that makes it work!
+
+A minimal example can be found at:
+
+* https://github.com/Lauszus/uv-test
+* https://github.com/Lauszus/uv-bug
+
+Link to the failing CI run with the unmodified `uv.lock`: https://github.com/Lauszus/uv-bug/actions/runs/12084665895/job/33700321974
+
+Link to successful CI with manually modified `uv.lock`: https://github.com/Lauszus/uv-bug/actions/runs/12084725612/job/33700499893
+
+Diff between the two runs: https://github.com/Lauszus/uv-bug/commit/b67f534deca86a794b6726071589a5a07d80a210
+
+---
+
+_Label `bug` added by @charliermarsh on 2024-11-29 16:52_
+
+---
+
+_Comment by @charliermarsh on 2024-11-29 16:55_
+
+My guess is that this is solved by https://github.com/astral-sh/uv/pull/9388 and is equivalent to https://github.com/astral-sh/uv/issues/8887?
+
+---
+
+_Assigned to @konstin by @konstin on 2024-11-29 19:09_
+
+---
+
+_Comment by @Lauszus on 2024-12-01 17:00_
+
+> My guess is that this is solved by [#9388](https://github.com/astral-sh/uv/pull/9388) and is equivalent to [#8887](https://github.com/astral-sh/uv/issues/8887)?
+
+Yes looks like it. I can test and verify it once #9388 is merged and in a release.
+
+---
+
+_Comment by @charliermarsh on 2024-12-03 03:26_
+
+It turns out this is a separate bug, but I'll fix it. Thanks for the clear repro.
+
+---
+
+_Referenced in [astral-sh/uv#9594](../../astral-sh/uv/pulls/9594.md) on 2024-12-03 03:40_
+
+---
+
+_Referenced in [astral-sh/uv#9595](../../astral-sh/uv/pulls/9595.md) on 2024-12-03 04:59_
+
+---
+
+_Closed by @charliermarsh on 2024-12-03 05:13_
+
+---
+
+_Closed by @charliermarsh on 2024-12-03 05:13_
+
+---
+
+_Comment by @Lauszus on 2024-12-03 09:23_
+
+> It turns out this is a separate bug, but I'll fix it. Thanks for the clear repro.
+
+Thanks for the quick fix and thanks for uv. It's awesome! :)
+
+---

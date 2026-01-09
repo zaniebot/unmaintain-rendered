@@ -1,0 +1,65 @@
+---
+number: 11183
+title: "Remember enabled groups for `uv sync`"
+type: issue
+state: closed
+author: noamraph
+labels:
+  - enhancement
+assignees: []
+created_at: 2025-02-03T14:39:02Z
+updated_at: 2025-03-20T22:46:49Z
+url: https://github.com/astral-sh/uv/issues/11183
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# Remember enabled groups for `uv sync`
+
+---
+
+_Issue opened by @noamraph on 2025-02-03 14:39_
+
+### Summary
+
+Currently, I need to specify the enabled groups for each `uv sync` run. If I run `uv sync` without specifying the groups, the groups reset to the default groups. This is especially strange if I add a package to a group and then run `uv sync`. When I add the package, by running `uv add --group mygroup package`, then it gets installed, but then if I run `uv sync`, it gets removed!
+
+I know that it's possible to specify default groups. However, this is committed to the repository, and might not be what I want. In my use case, I added a dependency group called `jupyter` which adds `ipykernel`, `pandas` and a few others like that, so I could use the venv with Jupyter. If I make it a default group, then whenever someone runs `uv sync` he'll get all of that, even though he's not using Jupyter at all. OTOH, if I don't add it as a default group, then I have to type `uv sync --group jupyter` each time.
+
+I suggest to keep the list of enabled groups somewhere in the directory or venv, so running `uv sync` without mentioning groups will keep the currently active groups.
+
+Thanks for UV!
+Noam
+
+### Example
+
+_No response_
+
+---
+
+_Label `enhancement` added by @noamraph on 2025-02-03 14:39_
+
+---
+
+_Comment by @zanieb on 2025-02-03 15:29_
+
+Perhaps you're just looking for `uv sync --inexact`?
+
+I don't think it's great for the synced groups to become a stateful, additive operation by default — it sounds confusing.
+
+---
+
+_Referenced in [astral-sh/uv#11958](../../astral-sh/uv/issues/11958.md) on 2025-03-04 18:34_
+
+---
+
+_Comment by @zanieb on 2025-03-20 22:46_
+
+Related https://github.com/astral-sh/uv/issues/4730
+
+I don't think we'll do this for now.
+
+---
+
+_Closed by @zanieb on 2025-03-20 22:46_
+
+---

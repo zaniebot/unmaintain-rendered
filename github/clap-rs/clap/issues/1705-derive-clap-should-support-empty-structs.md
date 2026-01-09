@@ -1,0 +1,129 @@
+---
+number: 1705
+title: "#[derive(Clap)] should support empty structs"
+type: issue
+state: closed
+author: emilazy
+labels: []
+assignees: []
+created_at: 2020-02-25T16:42:21Z
+updated_at: 2020-03-02T16:55:07Z
+url: https://github.com/clap-rs/clap/issues/1705
+synced_at: 2026-01-07T13:12:19-06:00
+---
+
+# #[derive(Clap)] should support empty structs
+
+---
+
+_Issue opened by @emilazy on 2020-02-25 16:42_
+
+### Describe your use case
+
+This is obviously trivial compared to just doing `struct Args {}`, but it would be nice to maintain Rust's general consistency in allowing the same things for all three forms.
+
+### Describe the solution you'd like
+
+```
+#[derive(Clap)]
+struct UnitLikeStruct;
+
+#[derive(Clap)]
+struct EmptyTupleStruct();
+```
+
+### Additional context
+
+```
+error: `#[derive(Clap)]` only supports non-tuple structs and enums
+   |
+   | #[derive(Clap)]
+   |          ^^^^
+   |
+```
+
+
+---
+
+_Label `T: new feature` added by @emilazy on 2020-02-25 16:42_
+
+---
+
+_Comment by @emilazy on 2020-02-25 16:43_
+
+Arguably newtypes (single-element tuple structs) could be supported too, but that's less clear-cut.
+
+---
+
+_Comment by @pksunkara on 2020-02-25 16:47_
+
+There was already some discussion on this, https://github.com/clap-rs/clap_derive/pull/19
+
+> I don't really see why this is useful. There's no real difference between struct Foo and struct Foo {}, the second works already. We may also want to give some special meaning to unit structs in future, so let's leave it as is for now.
+
+Empty tuple structs would fall into the same category.
+
+But, single tuple struct could be a different issue. Do we support any tuple structs at all in the derive library?
+
+---
+
+_Comment by @emilazy on 2020-02-25 16:52_
+
+I don't think it would be a good idea to give them a different meaning; in general Rust tries to make them all behave as similarly as possible, and there's been a consistent pattern of RFCs unifying functionality and behaviour between all three so that everything works between them (`.0` etc.).
+
+I tend to make all empty structs unit-like structs by default, for general style reasons, and it does have one slight "advantage" (you get a free `const` for it); I found it surprising to be unable to derive Clap for them.
+
+---
+
+_Comment by @CreepySkeleton on 2020-02-27 15:36_
+
+@emilazy I'm not very excited of "general style reasons" argument because, you know, so many man, so many minds. Everybody tends to push their own way of making things roll; some people (myself included) like "different types of items - different behavior", some adore "similar enough - same behavior". It's merely a matter of taste, and whenever you start arguing about personal taste it becomes "it must change just because I think it's beautiful" thing real quick. So I'm going to be tenacious here and just stubbornly say that unless I hear very strong voice for the unification (something like a dozen of "I want it too" comments here) I'm not changing my mind.
+
+> in general Rust tries to make them all behave as similarly as possible, and there's been a consistent pattern of RFCs unifying functionality and behaviour between all three so that everything works between them (.0 etc.).
+
+_This_ is pretty good argument but only if __some of those RFCs were accepted__. Unfortunately, I haven't been able to find one of those; could you please share a link or two with us?
+
+---
+
+_Comment by @Dylan-DPC-zz on 2020-03-02 09:27_
+
+I agree with @emilazy here. If in rust `struct Foo {}` and `struct Foo;`are the same, then the corresponding derive behaviour should also be equivalent. 
+
+---
+
+_Comment by @CreepySkeleton on 2020-03-02 09:36_
+
+Hmm, according to the [Rust reference](https://doc.rust-lang.org/stable/reference/items/structs.html), they are the same-ish `StructStruct` entity, indeed:
+```
+Struct :
+      StructStruct
+   | TupleStruct
+
+StructStruct :
+   struct IDENTIFIER  Generics? WhereClause? ( { StructFields? } | ; )
+
+TupleStruct :
+   struct IDENTIFIER  Generics? ( TupleFields? ) WhereClause? ;
+```
+
+So *maybe* it really worth the candle, but tuple structs differ from the others even at the syntax level.
+
+I think that, if the other members think unit structs should be supported, than we can do that, but I'm not OK with tuple structs, empty or not, unless somebody comes up with a real world use case.
+
+---
+
+_Comment by @TeXitoi on 2020-03-02 09:49_
+
+Empty struct with braces was added quite later, thus there is no really difference between `struct Foo {}` and `struct Foo;`
+
+https://github.com/rust-lang/rfcs/blob/master/text/0218-empty-struct-with-braces.md (edited with the official repository)
+
+---
+
+_Referenced in [clap-rs/clap#1716](../../clap-rs/clap/pulls/1716.md) on 2020-03-02 10:47_
+
+---
+
+_Closed by @bors[bot] on 2020-03-02 16:55_
+
+---

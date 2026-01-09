@@ -1,0 +1,112 @@
+---
+number: 17032
+title: "[red-knot] Implicit type aliases in typeshed are widened as `Unknown | T`"
+type: issue
+state: closed
+author: cake-monotone
+labels:
+  - ty
+assignees: []
+created_at: 2025-03-28T08:49:02Z
+updated_at: 2025-04-23T17:31:16Z
+url: https://github.com/astral-sh/ruff/issues/17032
+synced_at: 2026-01-07T13:12:16-06:00
+---
+
+# [red-knot] Implicit type aliases in typeshed are widened as `Unknown | T`
+
+---
+
+_Issue opened by @cake-monotone on 2025-03-28 08:49_
+
+Some implicit type aliases in `typeshed` are not annotated using `TypeAlias`, such as:
+
+```python
+# types.pyi
+LambdaType = FunctionType
+NotImplementedType = _NotImplementedType
+```
+
+```python
+# ctypes/wintypes.pyi
+BYTE = c_byte
+WORD = c_ushort
+...
+BOOLEAN = BYTE
+```
+
+Since these aliases lack explicit type annotations, Red-knot currently widens them as `Unknown | T`:
+
+```python
+from types import LambdaType
+
+reveal_type(LambdaType)  # revealed: Unknown | Literal[FunctionType]
+```
+
+
+---
+
+_Comment by @cake-monotone on 2025-03-28 08:50_
+
+I’d like to get a sense of how this issue might be resolved in the future.
+
+My guess is:
+
+- Once `TypeAlias` support is fully implemented in Red-knot,
+- These kinds of aliases (like `LambdaType`) will be treated as `TypeAlias` instances, not as just `Literal[Class]`.
+- TypeAlias instances are `KnownInstance`, and currently, the widening step is skipped for them.
+- So the widening problem would no longer occur.
+
+Is this understanding correct? Or is there something else going on that I might have missed?
+
+
+---
+
+_Label `red-knot` added by @MichaReiser on 2025-03-28 11:47_
+
+---
+
+_Referenced in [astral-sh/ruff#17034](../../astral-sh/ruff/pulls/17034.md) on 2025-03-28 14:19_
+
+---
+
+_Comment by @carljm on 2025-03-28 15:10_
+
+The simplest short-term solution here is to extend our current special case for KnownInstance to also apply to KnownClass. I think it's hard to justify this on principled grounds, though, so we probsbly need to think through a more comprehensive solution. It may be that avoiding the widening for anything we identify as a potential type alias is workable.
+
+---
+
+_Comment by @AlexWaygood on 2025-03-28 19:08_
+
+I think a lot of these aliases-that-are-not-type-aliases should really be annotated with `Final` in typeshed. If we made this change in typeshed, it would probably benefit users of other type checkers as well as users of red-knot. Once we've implemented support for `Final`, it should mean that we use the inferred type as the public type directly for aliases like these, rather than using `<inferred_type> | Unknown` as the public type.
+
+---
+
+_Comment by @carljm on 2025-03-28 19:11_
+
+Maybe the right rule will be "assume all module-level assignments in typeshed are `Final`", pending a hopeful future where they are actually annotated that way.
+
+I could also see some justification for always considering all module-level assignments in stub files to be implicitly `Final`? Since a stub file is more like a declaration of a typed module surface, rather than just being some Python code whose intention is less clear.
+
+---
+
+_Comment by @Avasam on 2025-04-11 06:03_
+
+> I could also see some justification for always considering all module-level assignments in stub files to be implicitly Final? Since a stub file is more like a declaration of a typed module surface, rather than just being some Python code whose intention is less clear.
+
+That makes sense to me. Just jumping in to say that in typeshed, such assignments are usually because it's simpler to replicate what the implementation does. Such aliases amount to saying "these two symbols will be the same".
+If we expect it can be changed, then it would (should) be explicitly annotated with a type. 
+
+---
+
+_Referenced in [astral-sh/ruff#17577](../../astral-sh/ruff/pulls/17577.md) on 2025-04-23 08:42_
+
+---
+
+_Closed by @sharkdp on 2025-04-23 17:31_
+
+---
+
+_Closed by @sharkdp on 2025-04-23 17:31_
+
+---

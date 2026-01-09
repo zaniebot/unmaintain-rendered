@@ -1,0 +1,145 @@
+---
+number: 10587
+title: uv run with a prefixed command
+type: issue
+state: open
+author: codefromthecrypt
+labels:
+  - question
+assignees: []
+created_at: 2025-01-14T09:01:39Z
+updated_at: 2025-01-15T05:47:25Z
+url: https://github.com/astral-sh/uv/issues/10587
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# uv run with a prefixed command
+
+---
+
+_Issue opened by @codefromthecrypt on 2025-01-14 09:01_
+
+I have a script like below, and I run it like this `uv run -q --env-file .env chat.py`
+
+```python
+# /// script
+# dependencies = ["openai"]
+# ///
+
+import os
+
+import openai
+
+CHAT_MODEL = os.environ["CHAT_MODEL"]
+
+
+def main():
+    client = openai.Client()
+
+    messages = [
+        {
+            "role": "user",
+            "content": "Answer in up to 3 words: Which ocean contains Bouvet Island?",
+        }
+    ]
+
+    chat_completion = client.chat.completions.create(model=CHAT_MODEL, messages=messages)
+    print(chat_completion.choices[0].message.content)
+
+
+if __name__ == "__main__":
+    main()
+```
+
+I would like to use comment syntax to run it via `opentelemetry-instrument`, which is installed as a part of the dependency [elastic-opentelemetry](https://pypi.org/project/elastic-opentelemetry/). I would prefer to handle that inside the `/// script` stanza instead of making a separate file to configure it. Basically I want `uv` to manage the env and installing the dep, then invoke `opentelemetry-instrument python chat.py` somehow.
+
+---
+
+_Label `question` added by @charliermarsh on 2025-01-14 13:44_
+
+---
+
+_Comment by @charliermarsh on 2025-01-14 13:44_
+
+I think this is a bit specific to `opentelemetry-instrument`, so I don't know that we'll be able to solve it here. Do they offer an API to use it as a library, rather than via the CLI?
+
+---
+
+_Comment by @codefromthecrypt on 2025-01-15 03:52_
+
+Thanks, @charliermarsh. Indeed it would be similar to dotenv etc that have a lib alternative (though I don't need dotenv as uv has the features; )
+
+
+I tried to run it as a library and so far no good (vs requirements.txt)
+
+```python
+# /// script
+# dependencies = [
+#   "openai",
+#   "elastic-opentelemetry",
+#   "elastic-opentelemetry-instrumentation-openai"
+# ]
+# ///
+
+from opentelemetry.instrumentation.auto_instrumentation.sitecustomize import initialize
+
+initialize()
+
+import os
+
+import openai
+
+CHAT_MODEL = os.environ["CHAT_MODEL"]
+
+
+def main():
+    client = openai.Client()
+
+    messages = [
+        {
+            "role": "user",
+            "content": "Answer in up to 3 words: Which ocean contains Bouvet Island?",
+        }
+    ]
+
+    chat_completion = client.chat.completions.create(model=CHAT_MODEL, messages=messages)
+    print(chat_completion.choices[0].message.content)
+
+
+if __name__ == "__main__":
+    main()
+```
+
+Then, try to run this way..
+```bash
+$ uv run -q --env-file .env ../chat.py
+Traceback (most recent call last):
+  File "/Users/adriancole/oss/otel-ollama/examples/platform/vllm/../chat.py", line 9, in <module>
+    from opentelemetry.instrumentation.auto_instrumentation.sitecustomize import initialize
+  File "/Users/adriancole/.cache/uv/archive-v0/TgKyz8U0Fs6gFbZqueytY/lib/python3.12/site-packages/opentelemetry/instrumentation/auto_instrumentation/sitecustomize.py", line 44, in <module>
+    initialize()
+  File "/Users/adriancole/.cache/uv/archive-v0/TgKyz8U0Fs6gFbZqueytY/lib/python3.12/site-packages/opentelemetry/instrumentation/auto_instrumentation/sitecustomize.py", line 32, in initialize
+    environ["PYTHONPATH"], dirname(abspath(__file__)), pathsep
+    ~~~~~~~^^^^^^^^^^^^^^
+  File "<frozen os>", line 714, in __getitem__
+KeyError: 'PYTHONPATH'
+```
+
+---
+
+_Comment by @codefromthecrypt on 2025-01-15 05:41_
+
+@charliermarsh I notice that uv sets `VIRTUAL_ENV` when running scripts. Any chance it can materialize a `PYTHONPATH` var?
+
+Right now, I can get it to work, but I have to materialize it manually like this:
+```python
+virtual_env = os.environ.get('VIRTUAL_ENV')
+
+site_packages_path = os.path.join(virtual_env, 'lib', f'python{os.sys.version_info.major}.{os.sys.version_info.minor}',
+                                  'site-packages')
+
+# Set the PYTHONPATH environment variable
+os.environ['PYTHONPATH'] = site_packages_path
+```
+
+---

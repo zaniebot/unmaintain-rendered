@@ -1,0 +1,85 @@
+---
+number: 4014
+title: N815 (mixed-case-variable-in-class-scope) probably should not check TypedDict
+type: issue
+state: closed
+author: sirrus233
+labels:
+  - question
+assignees: []
+created_at: 2023-04-19T02:47:34Z
+updated_at: 2023-04-22T22:17:16Z
+url: https://github.com/astral-sh/ruff/issues/4014
+synced_at: 2026-01-07T13:12:14-06:00
+---
+
+# N815 (mixed-case-variable-in-class-scope) probably should not check TypedDict
+
+---
+
+_Issue opened by @sirrus233 on 2023-04-19 02:47_
+
+Hey, thanks for writing ruff!! The following example illustrates two violations of N815, on the mixed-case variable `myOtherVar`. The first violation is of course appropriate. **However, I think the second is misleading, and this rule should not apply to `TypedDict`.** 
+
+```
+from typing import TypedDict
+
+class Foo:
+    my_var: int
+    myOtherVar: str  # Violation! Makes sense.
+
+class Bar(TypedDict):
+    my_var: int
+    myOtherVar: str  # Violation! But shouldn't be.
+```
+
+
+A `TypedDict` is less of a real class, and more syntactic sugar to add typing to the keys of a dictionary. The argument here would be that if `{"my_var": 0, "myOtherVar": "xyz"}` would be appropriate, then the TypedDict form should be too. It may also be worth noting that the equivalent example:
+
+```
+Bar = TypedDict("Bar", {"my_var": int, "myOtherVar": str})
+```
+
+does not flag this check (although it does flag UP013, as it should).
+
+There is a practical reason to relax the rule here: a `TypedDict` is a useful and lightweight way to deal with adding static typing to an untyped blob of JSON with known structure sent over the wire (say, the body of an HTTP request). The writer of the TypedDict may not have control over the structure of the untyped dict, so it becomes awkward to comply with N815 without:
+* Writing an awkward camel_to_snake parser
+* Using a functional `TypedDict` definition (and falling afoul of UP013)
+* Dropping a `noqa` on every camelCased field
+* Disabling N815
+* Using a heavier ser/de library
+
+All of which are undesirable.
+
+I want to point out that the current behavior of N815 *does* conform to the behavior of the rule upstream in pep8-naming. I'm not sure about Ruff's overall stance on modifying how rules behave, so if enforcing exact parity is important, then there probably isn't anything to be done here.
+
+---
+
+_Label `question` added by @charliermarsh on 2023-04-19 19:16_
+
+---
+
+_Comment by @charliermarsh on 2023-04-19 19:16_
+
+Torn on this one although I tend to agree.
+
+---
+
+_Referenced in [astral-sh/ruff#4066](../../astral-sh/ruff/pulls/4066.md) on 2023-04-22 15:59_
+
+---
+
+_Comment by @JonathanPlasse on 2023-04-22 16:32_
+
+Here is a non-exhaustive list of projects that would benefit from this rule.
+https://grep.app/search?q=TypedDict.%2A%5C%29%3A%5Cn%20%20%20%20%5Ba-zA-Z%5D%2B%28%5Cd%5Cw%29%2A%5BA-Z%5D&regexp=true&case=true
+
+---
+
+_Closed by @charliermarsh on 2023-04-22 22:17_
+
+---
+
+_Referenced in [py-mine/mcstatus#578](../../py-mine/mcstatus/pulls/578.md) on 2023-10-01 09:42_
+
+---

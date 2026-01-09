@@ -1,0 +1,45 @@
+---
+number: 16349
+title: "Ruff rule suggestion: keep dict keys sorted"
+type: issue
+state: closed
+author: kwist-sgr
+labels: []
+assignees: []
+created_at: 2025-02-24T16:34:50Z
+updated_at: 2025-02-24T16:54:38Z
+url: https://github.com/astral-sh/ruff/issues/16349
+synced_at: 2026-01-07T13:12:16-06:00
+---
+
+# Ruff rule suggestion: keep dict keys sorted
+
+---
+
+_Issue opened by @kwist-sgr on 2025-02-24 16:34_
+
+### Description
+
+```python
+SAMPLE = {
+    'b': 2,
+    'c': 3,
+    'a': 1,
+}
+```
+
+```
+$ flake8
+sample.py:23:5: S001 Sort keys. 'a' should be before 'c'.
+    'a': 1,
+     ^
+1     S001 Sort keys. 'a' should be before 'c'.
+```
+
+https://github.com/yevhen-m/flake8-sorted-keys
+
+---
+
+_Closed by @MichaReiser on 2025-02-24 16:54_
+
+---

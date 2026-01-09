@@ -1,0 +1,116 @@
+---
+number: 16325
+title: "`uv python install --no-bin` arg description is vague"
+type: issue
+state: open
+author: polarathene
+labels:
+  - question
+assignees: []
+created_at: 2025-10-15T23:47:11Z
+updated_at: 2025-10-19T04:29:52Z
+url: https://github.com/astral-sh/uv/issues/16325
+synced_at: 2026-01-07T13:12:19-06:00
+---
+
+# `uv python install --no-bin` arg description is vague
+
+---
+
+_Issue opened by @polarathene on 2025-10-15 23:47_
+
+### Summary
+
+**UPDATE:** See next comment posted. This was a misunderstanding from the CLI description of `--no-bin`.
+
+The `--no-bin` option doesn't appear functional? It would presumably install without the executable (_making it 25% lighter in weight_).
+
+```console
+$ docker run --rm -it ghcr.io/astral-sh/uv:0.9.3-alpine ash
+$ uv python install --help | grep 'no-bin'
+      --no-bin                                                 Do not install a Python executable into the `bin` directory
+
+$ uv python install --no-bin --install-dir /opt/python3/x86_64 3.13.6
+$ ls -l /opt/python3/x86_64/cpython-3.13.6-linux-x86_64-musl/bin/python*
+
+lrwxrwxrwx    1 root     root            10 Oct 15 23:34 /opt/python3/x86_64/cpython-3.13.6-linux-x86_64-musl/bin/python -> python3.13
+lrwxrwxrwx    1 root     root            10 Oct 15 23:34 /opt/python3/x86_64/cpython-3.13.6-linux-x86_64-musl/bin/python3 -> python3.13
+lrwxrwxrwx    1 root     root            17 Oct 15 23:34 /opt/python3/x86_64/cpython-3.13.6-linux-x86_64-musl/bin/python3-config -> python3.13-config
+-rwxr-xr-x    1 root     root      20260152 Oct 15 23:34 /opt/python3/x86_64/cpython-3.13.6-linux-x86_64-musl/bin/python3.13
+-rwxr-xr-x    1 root     root          3141 Oct 15 23:34 /opt/python3/x86_64/cpython-3.13.6-linux-x86_64-musl/bin/python3.13-config
+
+$ du -shx /opt/python3/x86_64/cpython-3.13.6-linux-x86_64-musl
+81.0M   /opt/python3/x86_64/cpython-3.13.6-linux-x86_64-musl
+
+$ du -shx /opt/python3/x86_64/cpython-3.13.6-linux-x86_64-musl/bin
+19.4M   /opt/python3/x86_64/cpython-3.13.6-linux-x86_64-musl/bin
+```
+
+### Platform
+
+Linux 6.8.0-60-generic x86_64 Linux
+
+### Version
+
+uv 0.9.3
+
+### Python version
+
+Python 3.14.0
+
+---
+
+_Label `bug` added by @polarathene on 2025-10-15 23:47_
+
+---
+
+_Comment by @polarathene on 2025-10-15 23:57_
+
+`--no-bin` was referring to `~/.local/bin` as a symlink to the actual install executable. So perhaps a better CLI description would be more suitable? (executable is kept regardless, only a symlink is "installed")
+
+```console
+$ docker run --rm -it ghcr.io/astral-sh/uv:0.9-alpine ash
+$ uv python install --no-bin 3.11
+$ uv python install 3.12
+warning: `/root/.local/bin` is not on your PATH. To use installed Python executables, add the directory to your PATH.
+
+# Only 3.12 is linked (3.11 skipped due to `--no-bin`):
+$ ls -l ~/.local/bin
+
+lrwxrwxrwx    1 root     root            77 Oct 15 23:52 python3.12 -> /root/.local/share/uv/python/cpython-3.12.12-linux-x86_64-musl/bin/python3.12
+```
+
+---
+
+In my case I was only interested in foreign arch installs for cross-compilation with Nuitka which needs `libpython*.so.*` + Python headers.
+
+This is another area that could maybe be improved as I don't think I saw in the CLI or UV docs that you could do `uv python install 3.11-aarch64-gnu` for example.
+- I had seen that I could list foreign archs via `uv python list --all-arches --only-downloads | grep aarch64 | grep 3.11` and use `uv python install cpython-3.11.14-linux-aarch64-musl`, so the shorter match syntax is helpful information :)
+- There is a `x86_64-musl` variant by default, but no `-musl` equivalent for `aarch64`, so specifying libc alongside that is useful.
+  **EDIT:** There is `-musl` aarch64 available for newer UV releases (since Aug 29 2025) supporting [`python-build-standalone` tag `20250828` or newer](https://github.com/astral-sh/python-build-standalone/releases/tag/20250828) [UV `0.8.14`](https://github.com/astral-sh/uv/releases/tag/0.8.14):
+  ```console
+  $ docker run --rm -it ghcr.io/astral-sh/uv:0.9-alpine ash
+  $ apk add patchelf
+
+  # `uv python list --all-arches | grep aarch64-musl`
+  $ uv python install --install-dir /opt/python cpython-3.14.0-linux-aarch64-musl
+
+  # Dynamic link requiring musl `libc` to support `dlopen()`:
+  $ patchelf --print-needed /opt/python/cpython-3.14.0-linux-aarch64-musl/lib/libpython3.14.so.1.0
+  libc.so
+  ```
+- `--no-bin` is a bit more important here for when installing foreign archs that shouldn't be added to `~/.local/bin` (_unless it's a foreign arch root like via `dnf --forcearch=aarch64 --installroot /sysroot/aarch64 ...`_).
+
+---
+
+_Label `bug` removed by @zanieb on 2025-10-16 02:21_
+
+---
+
+_Label `question` added by @zanieb on 2025-10-16 02:21_
+
+---
+
+_Renamed from "`uv python install --no-bin` doesn't exclude the binary" to "`uv python install --no-bin` arg description is vague" by @polarathene on 2025-10-16 07:38_
+
+---

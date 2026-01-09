@@ -1,0 +1,133 @@
+---
+number: 2718
+title: "uv pip install a wheel with extra index url doesn't resolve, normal pip works in fresh env"
+type: issue
+state: closed
+author: rbavery
+labels:
+  - question
+assignees: []
+created_at: 2024-03-28T19:08:39Z
+updated_at: 2024-04-07T00:10:29Z
+url: https://github.com/astral-sh/uv/issues/2718
+synced_at: 2026-01-07T13:12:17-06:00
+---
+
+# uv pip install a wheel with extra index url doesn't resolve, normal pip works in fresh env
+
+---
+
+_Issue opened by @rbavery on 2024-03-28 19:08_
+
+* A minimal code snippet that reproduces the bug.
+
+I've attached a .zip containing the cpu wheel I'm trying to install with uv.
+
+this works find in a fresh conda env with python 3.10
+
+```bash
+pip install sedonaai_cpu-0.1.1-py3-none-any.whl --extra-index-url https://download.pytorch.org/whl/cpu
+```
+
+But uv fails to resolve in a fresh venv with python 3.10
+
+```bash
+→ uv pip install ./sedonaai_cpu-0.1.1-py3-none-any.whl --extra-index-url https://download.pytorch.org/whl/cpu --prerelease=allow
+  × No solution found when resolving dependencies:
+  ╰─▶ Because torch==2.2.0 is unusable because no wheels are available with a matching Python implementation and torch==2.2.1 is unusable because no wheels are available with a matching
+      Python implementation, we can conclude that any of:
+          torch==2.2.0
+          torch==2.2.1
+       cannot be used.
+      And because torch==2.2.2 is unusable because no wheels are available with a matching Python implementation, we can conclude that any of:
+          torch==2.2.0
+          torch==2.2.1
+          torch==2.2.2
+       cannot be used. (1)
+
+      Because only the following versions of torchvision are available:
+          torchvision<=0.17.0
+          torchvision==0.17.0+cpu
+          torchvision==0.17.1
+          torchvision==0.17.1+cpu
+          torchvision==0.17.2
+          torchvision==0.17.2+cpu
+          torchvision>=0.18.0
+      and torchvision==0.17.0 is unusable because no wheels are available with a matching Python implementation, we can conclude that torchvision>=0.17.0,<0.17.0+cpu cannot be used.
+      And because torchvision==0.17.0+cpu depends on torch==2.2.0, we can conclude that torchvision>=0.17.0,<0.17.1 depends on torch==2.2.0.
+      And because torchvision==0.17.1 is unusable because no wheels are available with a matching Python implementation and torchvision==0.17.1+cpu depends on torch==2.2.1, we can
+      conclude that torchvision>=0.17.0,<0.17.2 depends on one of:
+          torch==2.2.0
+          torch==2.2.1
+
+      And because torchvision==0.17.2 is unusable because no wheels are available with a matching Python implementation and torchvision==0.17.2+cpu depends on torch==2.2.2, we can
+      conclude that torchvision>=0.17.0 depends on one of:
+          torch==2.2.0
+          torch==2.2.1
+          torch==2.2.2
+
+      And because we know from (1) that any of:
+          torch==2.2.0
+          torch==2.2.1
+          torch==2.2.2
+       cannot be used, we can conclude that torchvision>=0.17.0 cannot be used.
+      And because sedonaai-cpu==0.1.1 depends on torchvision>=0.17.0, we can conclude that sedonaai-cpu==0.1.1 cannot be used.
+      And because only sedonaai-cpu==0.1.1 is available and you require sedonaai-cpu, we can conclude that the requirements are unsatisfiable.
+
+```
+
+* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
+
+the logs wth verbose are attached
+[logs.txt](https://github.com/astral-sh/uv/files/14794357/logs.txt)
+
+
+[artifact.zip](https://github.com/astral-sh/uv/files/14794334/artifact.zip)
+
+
+---
+
+_Comment by @zanieb on 2024-03-28 19:19_
+
+Could you check if this is related to a [known incompatibility with pip](https://github.com/astral-sh/uv/blob/main/PIP_COMPATIBILITY.md#packages-that-exist-on-multiple-indexes)?
+
+There are a lot of discussions about behaviors with extra index URLs:
+
+- #2542
+- #2310
+- https://github.com/astral-sh/uv/issues/171
+- https://github.com/astral-sh/uv/issues/1377
+- https://github.com/astral-sh/uv/issues/1451
+- https://github.com/astral-sh/uv/issues/1600
+
+---
+
+_Comment by @charliermarsh on 2024-03-28 20:19_
+
+My guess is that this is related to our limitations around local version identifiers: https://github.com/astral-sh/uv/blob/main/PIP_COMPATIBILITY.md#local-version-identifiers.
+
+Can you look at the versions of Torch and Torchvision that pip is installing, and add them as direct dependencies? Like:
+
+```
+pip install sedonaai_cpu-0.1.1-py3-none-any.whl torchvision==0.17.0+cpu torch==2.0.0+cpu --extra-index-url https://download.pytorch.org/whl/cpu
+```
+
+---
+
+_Label `question` added by @charliermarsh on 2024-03-28 20:19_
+
+---
+
+_Referenced in [astral-sh/uv#2812](../../astral-sh/uv/issues/2812.md) on 2024-04-03 16:08_
+
+---
+
+_Comment by @charliermarsh on 2024-04-07 00:10_
+
+Closing for now in the absence of more info, but let me know if you have other questions.
+
+---
+
+_Closed by @charliermarsh on 2024-04-07 00:10_
+
+---

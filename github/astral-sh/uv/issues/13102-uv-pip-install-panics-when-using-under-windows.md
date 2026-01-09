@@ -1,0 +1,81 @@
+---
+number: 13102
+title: "`uv pip install` panics when using `*` under windows powershell"
+type: issue
+state: closed
+author: stefanhoelzl
+labels:
+  - bug
+assignees: []
+created_at: 2025-04-25T08:05:28Z
+updated_at: 2025-04-25T12:56:47Z
+url: https://github.com/astral-sh/uv/issues/13102
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# `uv pip install` panics when using `*` under windows powershell
+
+---
+
+_Issue opened by @stefanhoelzl on 2025-04-25 08:05_
+
+### Summary
+
+When I run the following command under `powershell`
+```uv pip install wheel-*.whl```
+
+uv panics with the following message
+```
+thread 'main2' panicked at C:\a\uv\uv\crates\uv-pep508\src\lib.rs:464:71:
+called `Result::unwrap()` on an `Err` value: InvalidNameError("wheel-")
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+thread 'main' panicked at C:\a\uv\uv\crates\uv\src\lib.rs:2065:10:
+Tokio executor failed, was there a panic?: Any { .. }
+```
+
+When using `bash` this works. 
+
+Powershell [supports wildcards](https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_wildcards?view=powershell-7.4).
+
+But at least I would expect a proper error message instead of a Rust panic.
+
+### Platform
+
+Windows 11 x86_64
+
+### Version
+
+uv 0.6.10
+
+### Python version
+
+Python 3.13.2
+
+---
+
+_Label `bug` added by @stefanhoelzl on 2025-04-25 08:05_
+
+---
+
+_Assigned to @konstin by @konstin on 2025-04-25 11:17_
+
+---
+
+_Referenced in [astral-sh/uv#13105](../../astral-sh/uv/pulls/13105.md) on 2025-04-25 11:24_
+
+---
+
+_Comment by @konstin on 2025-04-25 11:26_
+
+We're fixing the panic in #13105, but it doesn't seem PowerShell is expanding the glob like bash does.
+
+---
+
+_Closed by @konstin on 2025-04-25 12:56_
+
+---
+
+_Closed by @konstin on 2025-04-25 12:56_
+
+---

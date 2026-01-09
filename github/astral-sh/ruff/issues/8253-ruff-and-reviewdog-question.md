@@ -1,0 +1,77 @@
+---
+number: 8253
+title: Ruff and reviewdog question
+type: issue
+state: closed
+author: eremeevfd
+labels:
+  - question
+assignees: []
+created_at: 2023-10-26T15:01:21Z
+updated_at: 2023-11-14T19:01:25Z
+url: https://github.com/astral-sh/ruff/issues/8253
+synced_at: 2026-01-07T13:12:15-06:00
+---
+
+# Ruff and reviewdog question
+
+---
+
+_Issue opened by @eremeevfd on 2023-10-26 15:01_
+
+Guys, I'd appreciate a little help here, has anybody integrated reviewdog with ruff yet?  
+Which `--output-format` value did you use?
+
+
+---
+
+_Renamed from "Ruff and reviewdog" to "Ruff and reviewdog question" by @eremeevfd on 2023-10-26 15:01_
+
+---
+
+_Label `question` added by @zanieb on 2023-10-26 15:31_
+
+---
+
+_Comment by @keramblock on 2023-10-27 10:12_
+
+@VianneyMI I saw you mentioned it here: https://github.com/astral-sh/ruff/discussions/4982#discussioncomment-6140413 could you please share your config?
+
+---
+
+_Comment by @charliermarsh on 2023-11-13 21:56_
+
+I'm gonna merge this into #8655 which is an explicit request to support the reviewdog format as a first-class `--output-format`.
+
+---
+
+_Closed by @charliermarsh on 2023-11-13 21:56_
+
+---
+
+_Reopened by @charliermarsh on 2023-11-13 21:56_
+
+---
+
+_Closed by @charliermarsh on 2023-11-13 21:57_
+
+---
+
+_Comment by @ryaminal on 2023-11-14 17:43_
+
+Just so I understand, this was marked closed "not planned" because it's been merged with #8655 , not because we aren't going to have `ruff` + `reviewdog` support, right?
+
+---
+
+_Comment by @charliermarsh on 2023-11-14 17:47_
+
+@ryaminal - That's correct, "Not planned" is confusing because it includes "issue is a duplicate" (if you hover over the description).
+
+---
+
+_Comment by @ryaminal on 2023-11-14 19:01_
+
+Ah, it does say "duplicate" but i totally missed that. doh.
+Thanks for the response.
+
+---

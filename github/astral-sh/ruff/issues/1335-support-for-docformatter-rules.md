@@ -1,0 +1,200 @@
+---
+number: 1335
+title: Support for docformatter rules
+type: issue
+state: closed
+author: cpcloud
+labels:
+  - question
+assignees: []
+created_at: 2022-12-22T15:19:15Z
+updated_at: 2022-12-23T03:55:23Z
+url: https://github.com/astral-sh/ruff/issues/1335
+synced_at: 2026-01-07T13:12:14-06:00
+---
+
+# Support for docformatter rules
+
+---
+
+_Issue opened by @cpcloud on 2022-12-22 15:19_
+
+We [just moved our linting setup over to ruff](https://github.com/ibis-project/ibis/pull/5057) and it's great!
+
+It would be amazing if we could remove our [`docformatter`](https://github.com/PyCQA/docformatter) dependency as well in favor of `ruff`.
+
+---
+
+_Comment by @cpcloud on 2022-12-22 15:20_
+
+It's possible we can use the ruff `pydocstyle` support for this too, which may obviate the need for docformatter support.
+
+---
+
+_Comment by @charliermarsh on 2022-12-22 15:32_
+
+Awesome :)
+
+Yeah I've used `docformatter` in the past, it's great! I wonder how much of its functionality is covered by our `pydocstyle` support with autofix enabled. I'd need to do a full audit... But I'd definitely _like_ Ruff to be a full replacement for `docformatter` in that sense.
+
+
+---
+
+_Label `enhancement` added by @charliermarsh on 2022-12-22 15:32_
+
+---
+
+_Label `question` added by @charliermarsh on 2022-12-22 15:32_
+
+---
+
+_Comment by @charliermarsh on 2022-12-22 15:32_
+
+(Labeling as `question`, to figure out what Ruff is missing here, but it's not necessarily aimed at you.)
+
+---
+
+_Comment by @cpcloud on 2022-12-22 15:37_
+
+In the meantime, I've flipped on the `D` switch and it appears to cover what we're currently using `docformatter` for, which was effectively a less-strict `pydocstyle` with the ability to actually fix things instead of only reporting them.
+
+Since `ruff` covers both linting and fixing I think at least for ibis we no longer need `docformatter` support.
+
+---
+
+_Comment by @charliermarsh on 2022-12-22 15:43_
+
+Okay cool! (Note that some of the `D` rules are conflicting, like "No blank line before class" vs. "One blank line before class", since we support a couple different docstring conventions: https://github.com/charliermarsh/ruff#does-ruff-support-numpy--or-google-style-docstrings)
+
+---
+
+_Comment by @cpcloud on 2022-12-22 15:43_
+
+Yeah, the list of ignores I'm using for that category of lints is ... long.
+
+---
+
+_Comment by @charliermarsh on 2022-12-22 16:22_
+
+It might be easier to explicitly enable via `--select` if you want? I can post the list here if you post your ignores (and I could add it to the docs).
+
+---
+
+_Comment by @cpcloud on 2022-12-22 16:28_
+
+It's actually not too bad:
+
+```
+ignore = [
+  "E501",
+  "PGH003",
+  "RET504",
+  "RET505",
+  "RET506",
+  "RET507",
+  "RET508",
+  "D100", # public module
+  "D101", # public class
+  "D102", # public method
+  "D103", # public function
+  "D105", # magic methods
+  "D107", # init
+  "D202", # blank lines after function docstring
+  "D203", # blank line before class docstring
+  "D205", # blank line between summary line and description
+  "D213", # Multi-line docstring summary should start at the second line
+  "D402", # First line should not be the function's signature
+  "D417", # Missing argument descriptions
+]
+```
+
+---
+
+_Comment by @cpcloud on 2022-12-22 16:29_
+
+And then of course this bit:
+
+```
+[tool.ruff.per-file-ignores]
+"*test*.py" = ["D"] # ignore all docstring lints in tests
+```
+
+---
+
+_Comment by @charliermarsh on 2022-12-22 16:31_
+
+Ah okay yeah, in that case it's more concise to specify the ignores than the selects, which would be like:
+
+```toml
+select = [
+  "D104",
+  "D106",
+  "D200",
+  "D201",
+  "D204",
+  "D206",
+  "D207",
+  "D208",
+  "D209",
+  "D210",
+  "D211",
+  "D212",
+  "D214",
+  "D215",
+  "D300",
+  "D301",
+  "D400",
+  "D403",
+  "D404",
+  "D405",
+  "D406",
+  "D407",
+  "D408",
+  "D409",
+  "D410",
+  "D411",
+  "D412",
+  "D413",
+  "D414",
+  "D415",
+  "D416",
+  "D418",
+  "D419",
+]
+```
+
+---
+
+_Comment by @charliermarsh on 2022-12-23 03:55_
+
+Closing for now since I think we actually have good coverage here.
+
+---
+
+_Closed by @charliermarsh on 2022-12-23 03:55_
+
+---
+
+_Referenced in [astral-sh/ruff#4112](../../astral-sh/ruff/issues/4112.md) on 2023-04-26 06:30_
+
+---
+
+_Referenced in [GenericMappingTools/pygmt#2747](../../GenericMappingTools/pygmt/pulls/2747.md) on 2023-10-15 11:21_
+
+---
+
+_Referenced in [GenericMappingTools/pygmt#962](../../GenericMappingTools/pygmt/issues/962.md) on 2023-12-25 07:41_
+
+---
+
+_Referenced in [astropy/astropy#17319](../../astropy/astropy/pulls/17319.md) on 2024-11-04 17:01_
+
+---
+
+_Referenced in [PyCQA/docformatter#293](../../PyCQA/docformatter/issues/293.md) on 2025-04-22 13:22_
+
+---
+
+_Referenced in [saritasa-nest/pytest-qaseio#108](../../saritasa-nest/pytest-qaseio/pulls/108.md) on 2025-07-16 09:32_
+
+---

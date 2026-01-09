@@ -1,0 +1,73 @@
+---
+number: 7276
+title: Docs build succeeds but is not published
+type: issue
+state: closed
+author: zanieb
+labels:
+  - internal
+assignees: []
+created_at: 2023-09-11T17:54:49Z
+updated_at: 2023-09-12T15:34:06Z
+url: https://github.com/astral-sh/ruff/issues/7276
+synced_at: 2026-01-07T13:12:15-06:00
+---
+
+# Docs build succeeds but is not published
+
+---
+
+_Issue opened by @zanieb on 2023-09-11 17:54_
+
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+The build for release v0.0.288 succeeded at https://github.com/astral-sh/ruff/actions/runs/6149505080 but the live documentation does not appear to be updated e.g. `extend-ignore-names` is not present at https://beta.ruff.rs/docs/settings/#flake8-self from #7018 
+
+@charliermarsh noticed this on the last few releases as well and has followed with a manual trigger of the job which builds from `main` instead of the tag and appears to resolve the issue. However, since v0.0.288 I've merged #7195 which includes documentation changes that should not be published yet.
+
+
+---
+
+_Comment by @zanieb on 2023-09-11 18:11_
+
+Suspicious of the deprecation warning for `wrangler pages publish` which is not present on prior builds e.g. https://github.com/astral-sh/ruff/actions/runs/5813122794 — They may have accidentally changed behavior, perhaps notably with the branch name in  `pages publish site --project-name=ruff-docs --branch ${GITHUB_HEAD_REF}?`
+
+---
+
+_Referenced in [astral-sh/ruff#7277](../../astral-sh/ruff/pulls/7277.md) on 2023-09-11 18:14_
+
+---
+
+_Referenced in [astral-sh/ruff#7278](../../astral-sh/ruff/pulls/7278.md) on 2023-09-11 18:22_
+
+---
+
+_Label `internal` added by @zanieb on 2023-09-11 18:44_
+
+---
+
+_Comment by @zanieb on 2023-09-11 18:53_
+
+Attempting a manual run with the SHA instead of the tag at https://github.com/astral-sh/ruff/actions/runs/6150539738/job/16688722576
+
+---
+
+_Referenced in [astral-sh/ruff#7304](../../astral-sh/ruff/pulls/7304.md) on 2023-09-12 14:58_
+
+---
+
+_Closed by @zanieb on 2023-09-12 15:34_
+
+---
+
+_Referenced in [astral-sh/ruff#7779](../../astral-sh/ruff/issues/7779.md) on 2023-10-03 13:42_
+
+---

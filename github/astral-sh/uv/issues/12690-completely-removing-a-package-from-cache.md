@@ -1,0 +1,99 @@
+---
+number: 12690
+title: Completely removing a package from cache
+type: issue
+state: closed
+author: ArseniyKorobenko
+labels:
+  - question
+assignees: []
+created_at: 2025-04-06T08:23:33Z
+updated_at: 2025-04-06T09:19:59Z
+url: https://github.com/astral-sh/uv/issues/12690
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# Completely removing a package from cache
+
+---
+
+_Issue opened by @ArseniyKorobenko on 2025-04-06 08:23_
+
+### Question
+
+Let's say that I want to completely uninstall a package I got with uv from my PC - maybe I found out the installation was broken or compromised, maybe I just want to clean up disk space, or any other reason, really - how can I completely wipe a given package off of my computer?
+
+here's what I tried:
+```sh
+$ uv init test
+Initialized project `test` at `C:\code\python\test`
+$ cd test
+$ uv add numpy
+Using CPython 3.12.8
+Creating virtual environment at: .venv
+Resolved 2 packages in 331ms
+Prepared 1 package in 9.20s                  # Note the 9.2 seconds it takes to download the package
+Installed 1 package in 934ms
+ + numpy==2.2.4
+
+$ uv remove numpy
+Resolved 1 package in 9ms
+Uninstalled 1 package in 157ms
+ - numpy==2.2.4
+$ uv add numpy
+Resolved 2 packages in 17ms
+Installed 1 package in 958ms                 # Cached installation
+ + numpy==2.2.4
+
+$ uv pip uninstall numpy
+Uninstalled 1 package in 320ms
+ - numpy==2.2.4
+$ uv add numpy
+Resolved 2 packages in 1ms
+Installed 1 package in 924ms                 # Cached installation
+ + numpy==2.2.4
+
+$ uv pip uninstall numpy --system
+Using Python 3.12.8 environment at: C:\Users\Arseniy\AppData\Roaming\uv\python\cpython-3.12.8-windows-x86_64-none
+error: The interpreter at C:\Users\Arseniy\AppData\Roaming\uv\python\cpython-3.12.8-windows-x86_64-none is externally managed, and indicates the following:
+
+  This Python installation is managed by uv and should not be modified.
+
+Consider creating a virtual environment with `uv venv`.
+
+$ uv remove numpy --system
+error: unexpected argument '--system' found
+
+  tip: to pass '--system' as a value, use '-- --system'
+
+Usage: uv.exe remove <PACKAGES>...
+
+For more information, try '--help'.
+
+$ uv --version
+uv 0.6.12 (e4e03833f 2025-04-02)
+```
+
+### Platform
+
+Windows 10 x86_64
+
+### Version
+
+uv 0.6.12 (e4e03833f 2025-04-02)
+
+---
+
+_Label `question` added by @ArseniyKorobenko on 2025-04-06 08:23_
+
+---
+
+_Comment by @ArseniyKorobenko on 2025-04-06 09:19_
+
+Okay, it turns out I needed to run both `uv cache clean numpy` AND `uv remove numpy` for it to work.
+
+---
+
+_Closed by @ArseniyKorobenko on 2025-04-06 09:19_
+
+---

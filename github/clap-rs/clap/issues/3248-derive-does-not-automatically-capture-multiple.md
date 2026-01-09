@@ -1,0 +1,134 @@
+---
+number: 3248
+title: Derive does not automatically capture multiple parameters
+type: issue
+state: closed
+author: chrisduerr
+labels:
+  - C-enhancement
+  - A-derive
+  - S-wont-fix
+assignees: []
+created_at: 2022-01-03T19:05:35Z
+updated_at: 2022-01-12T00:20:52Z
+url: https://github.com/clap-rs/clap/issues/3248
+synced_at: 2026-01-07T13:12:19-06:00
+---
+
+# Derive does not automatically capture multiple parameters
+
+---
+
+_Issue opened by @chrisduerr on 2022-01-03 19:05_
+
+### Please complete the following tasks
+
+- [X] I have searched the [discussions](https://github.com/clap-rs/clap/discussions)
+- [X] I have searched the existing issues
+
+### Clap Version
+
+3
+
+### Describe your use case
+
+With structopt when defining a type as a `Vec<T>`, it would automatically capture multiple values. Generally I'd say this makes sense because rarely would one want to specify an array differently on the command line. However the new clap derive does not do this, which I'd assume might also cause some regressions for people migrating that aren't careful about their CLI.
+
+While it is currently possible to just specify `multiple_values = true`, it seems unnecessary.
+
+### Describe the solution you'd like
+
+A field annotated with `#[clap(...)]` of the type `Vec<T>` for automatic derive should imply `multiple_values = true`.
+
+### Alternatives, if applicable
+
+_No response_
+
+### Additional Context
+
+_No response_
+
+---
+
+_Label `C-enhancement` added by @chrisduerr on 2022-01-03 19:05_
+
+---
+
+_Comment by @chrisduerr on 2022-01-03 19:12_
+
+Looking at what seems to be the relevant code (https://github.com/clap-rs/clap/blob/master/clap_derive/src/derives/args.rs#L311-L320), it might be intentional that a vec only implies `multiple_occurences`, not necessarily `multiple_values`?
+
+I'd still really like to see this because I think only having `multiple_occurences` mostly makes sense for flags, but for a `Vec<T>` which actually takes a string as an argument it should pretty much always be convenient to the user to not have to specify `--option` again just to pass another thing when `--option x y z` would come at probably no disadvantage?
+
+---
+
+_Referenced in [alacritty/alacritty#5744](../../alacritty/alacritty/pulls/5744.md) on 2022-01-03 22:20_
+
+---
+
+_Comment by @epage on 2022-01-04 00:38_
+
+It was intentional that we deviated from structopt.   See https://github.com/clap-rs/clap/issues/1772
+
+Most applications either take
+- Multiple occurrences (`cargo build --package foo --package bar`)
+- Multiple delimited values (`cargo build --features "derive wrap_help"`)
+- Or both (`cargo build --features "derive wrap_help" --features suggestions`)
+
+Making multiple occurrences by default
+- Is a solid base to then build up other behavior (usually if you do delimited values, you also do multiple occurrences)
+- Is less surprising since it is what most developers are expecting (personal anecdote: I wrote many applications with `Vec` in structopt thinking I was getting multiple occurrences only but I was also getting multiple values)
+- Has fewer gotchas (see [Arg::multiple_values](https://docs.rs/clap/latest/clap/struct.Arg.html#method.multiple_values))
+
+For the cases when users want the older / structopt experience, they can still easily get it by opting in with `multiple_values(true)`.
+
+---
+
+_Closed by @epage on 2022-01-04 00:38_
+
+---
+
+_Comment by @epage on 2022-01-04 00:51_
+
+btw this was called out in the breaking changes from structopt: https://github.com/clap-rs/clap/blob/master/CHANGELOG.md#breaking-changes
+
+---
+
+_Comment by @chrisduerr on 2022-01-04 02:20_
+
+I can't say I agree with that choice, but I suppose `multiple_values` can still be specified manually.
+
+---
+
+_Label `A-derive` added by @epage on 2022-01-11 18:22_
+
+---
+
+_Label `S-wont-fix` added by @epage on 2022-01-11 18:22_
+
+---
+
+_Referenced in [clap-rs/clap#3283](../../clap-rs/clap/issues/3283.md) on 2022-01-11 22:23_
+
+---
+
+_Comment by @tdudz on 2022-01-11 22:45_
+
+@chrisduerr is there a way i can use derive to get clap v3 to capture multiple values?
+
+---
+
+_Comment by @chrisduerr on 2022-01-11 23:41_
+
+I'm a bit confused because this issue has multiple comments outlining how to do this already.
+
+But just to make it 100% clear: https://github.com/alacritty/alacritty/blob/master/alacritty/src/cli.rs#L61
+
+---
+
+_Comment by @epage on 2022-01-12 00:20_
+
+You can also look at our tests for ideas of what can be done
+https://github.com/clap-rs/clap/blob/master/tests/derive/options.rs#L297
+
+---

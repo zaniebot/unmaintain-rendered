@@ -1,0 +1,114 @@
+---
+number: 14680
+title: "[`ruff`] Expand `unnecessary-regular-expression` with `re.compile` (RUF055)"
+type: issue
+state: open
+author: sbrugman
+labels:
+  - rule
+assignees: []
+created_at: 2024-11-29T15:14:27Z
+updated_at: 2024-11-29T19:28:28Z
+url: https://github.com/astral-sh/ruff/issues/14680
+synced_at: 2026-01-07T13:12:16-06:00
+---
+
+# [`ruff`] Expand `unnecessary-regular-expression` with `re.compile` (RUF055)
+
+---
+
+_Issue opened by @sbrugman on 2024-11-29 15:14_
+
+Often users use [`re.compile`](https://docs.python.org/3/library/re.html#re.compile
+) to compile a regex pattern. The returned regular expression object can be then used for the methods already caught by this rule. This is more efficient when the same pattern is reused.
+
+Detecting these cases can be done with the same logic as in RUF055. Providing a fix involves more work, as the compiled pattern can be dynamically passed. Having the detection without the fix is already valuable. Alternatively, this could be a separate rule.
+
+```python
+ re.compile(r"^tinyint", re.IGNORECASE)
+```
+
+without regex:
+
+```python
+def tinyint(s: str) -> bool:
+    return s.lower().startswith("tinyint")
+```
+
+Examples:
+- https://github.com/apache/superset/blob/master/superset/db_engine_specs/starrocks.py#L102
+- https://github.com/home-assistant/core/blob/dev/pylint/plugins/hass_imports.py#L25
+
+cc: @ntBre 
+
+---
+
+_Label `rule` added by @AlexWaygood on 2024-11-29 15:59_
+
+---
+
+_Comment by @MichaReiser on 2024-11-29 16:34_
+
+I'm not sure if I fully understand the proposal. Is it to detect any usage of ` re.compile(r"^tinyint", re.IGNORECASE)` or only usages in boolean positions?
+
+I'm asking because I'm not sure if the regex patterns can easily be replaced in the examples you linked because the compiled expressions are passed to some generic testing function. 
+
+---
+
+_Comment by @ntBre on 2024-11-29 17:13_
+
+Hmm, I thought this sounded straightforward at first (just catch `re.compile` with a literal non-meta-character pattern), but I think you really have to know where it's used to see if this is a problem. If any of the `Match` APIs are used, for example, the results will still be different from any plain `str` version.
+
+For example, this could trigger the rule:
+```python
+pat = re.compile("xyz")
+if pat.match(s):
+    pass
+```
+
+but we'd want something like this not to:
+```python
+pat = re.compile("xyz")
+m = pat.match(s)
+# use m ...
+```
+
+Basically I think we'd need to extend #14679 to resolve string literals through a `re.compile` call.
+
+---
+
+_Comment by @sbrugman on 2024-11-29 17:28_
+
+Indeed, the examples above are not as clear.
+
+A true positive example that would be great to be able to catch: https://github.com/great-expectations/great_expectations/blob/develop/ci/checks/check_only_name_tag_snippets.py#L48
+
+
+---
+
+_Comment by @AlexWaygood on 2024-11-29 17:56_
+
+> A true positive example that would be great to be able to catch: [great-expectations/great_expectations@`develop`/ci/checks/check_only_name_tag_snippets.py#L48](https://github.com/great-expectations/great_expectations/blob/develop/ci/checks/check_only_name_tag_snippets.py#L48)
+
+I would say even that is not entirely clear-cut: because it's a global variable, it could be read from another module, and you don't know how that other module might use the `re.Pattern` object
+
+---
+
+_Comment by @sbrugman on 2024-11-29 19:28_
+
+Good point. Even though this example should use string operations instead of regexes, we can't be sure without analysing the other files.
+An example where the compiled regex is in the function scope:
+https://github.com/mit-biomimetics/Cheetah-Software/blob/master/scripts/lcm-log2smat/python/lcmlog2smat/scan_for_lcmtypes.py#L12
+ 
+Some obvious cases:
+
+https://github.com/EmpireProject/Empire/blob/master/data/agent/agent.py#L927
+https://github.com/johnlane/abcde/blob/master/examples/abcde.py#L96
+
+After looking at more examples, I'm inclined to think that a dedicated rule with warning severity (#1256) that only considers the `re.compile` with a literal non-meta-character pattern would better suit this proposal, rather than extending RUF055. 
+
+---
+
+_Referenced in [astral-sh/ruff#14691](../../astral-sh/ruff/issues/14691.md) on 2024-11-30 16:48_
+
+---

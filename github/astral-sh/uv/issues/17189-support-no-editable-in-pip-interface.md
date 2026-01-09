@@ -1,0 +1,64 @@
+---
+number: 17189
+title: "Support `--no-editable` in pip interface"
+type: issue
+state: open
+author: pstrzelczak
+labels:
+  - enhancement
+assignees: []
+created_at: 2025-12-19T13:02:41Z
+updated_at: 2025-12-30T14:56:39Z
+url: https://github.com/astral-sh/uv/issues/17189
+synced_at: 2026-01-07T13:12:19-06:00
+---
+
+# Support `--no-editable` in pip interface
+
+---
+
+_Issue opened by @pstrzelczak on 2025-12-19 13:02_
+
+### Summary
+
+`--no-editable` is great as it allows to define a tree of editable local projects in monorepo but make a non-editable install for production environment. It would be great to have it available in `uv pip` interface.
+
+### Example
+
+_No response_
+
+---
+
+_Label `enhancement` added by @pstrzelczak on 2025-12-19 13:02_
+
+---
+
+_Referenced in [astral-sh/uv#17155](../../astral-sh/uv/issues/17155.md) on 2025-12-19 13:03_
+
+---
+
+_Comment by @zanieb on 2025-12-19 23:15_
+
+What would this look like? e.g.,
+
+```
+uv pip install -e ./foo --no-editable
+```
+
+is pretty weird?
+
+but I think that's the approximate expectation here?
+
+---
+
+_Comment by @pstrzelczak on 2025-12-23 16:01_
+
+@zanieb actually my intention is same as https://github.com/astral-sh/uv/issues/17155 i.e. be able to install all path dependencies as editable in development mode and non-editable for production. It could be achieved either via (1) specifying all path dependencies as editable (`editable = true`) in pyproject.toml and have `--no-editable` in pip interface or (2) have path dependencies defined WITHOUT `editable = true` but have `--editable` option to make all (including transitive) path dependencies installed as editable. I slightly lean towards (2) alone or both options to be available in uv pip interface but I leave it to uv maintainers to decide.
+
+---
+
+_Comment by @pstrzelczak on 2025-12-30 14:56_
+
+@zanieb when do you plan to integrate attached commits to main branch?
+
+---

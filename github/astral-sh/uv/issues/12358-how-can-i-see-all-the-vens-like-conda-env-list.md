@@ -1,0 +1,50 @@
+---
+number: 12358
+title: how can i see all the vens like conda env list?
+type: issue
+state: open
+author: DDD71
+labels:
+  - question
+assignees: []
+created_at: 2025-03-21T08:22:53Z
+updated_at: 2025-03-21T08:33:33Z
+url: https://github.com/astral-sh/uv/issues/12358
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# how can i see all the vens like conda env list?
+
+---
+
+_Issue opened by @DDD71 on 2025-03-21 08:22_
+
+### Question
+
+To display all virtual environments, Conda  `conda env list` can show all the venv. how uv achieve this？
+
+
+### Platform
+
+_No response_
+
+### Version
+
+_No response_
+
+---
+
+_Label `question` added by @DDD71 on 2025-03-21 08:22_
+
+---
+
+_Comment by @FishAlchemist on 2025-03-21 08:33_
+
+ From what I recall, uv doesn't track virtual environment locations.
+
+As for centrally putting virtual environments, uv doesn't have that feature yet either.
+* https://github.com/astral-sh/uv/issues/1495
+By the way, that issue mentioned above has been placed in #9452.
+
+
+---

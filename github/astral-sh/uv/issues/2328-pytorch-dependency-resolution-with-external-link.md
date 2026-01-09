@@ -1,0 +1,104 @@
+---
+number: 2328
+title: Pytorch dependency resolution with external link
+type: issue
+state: closed
+author: SiviP-Glossai
+labels:
+  - bug
+assignees: []
+created_at: 2024-03-10T07:17:12Z
+updated_at: 2024-03-16T14:26:01Z
+url: https://github.com/astral-sh/uv/issues/2328
+synced_at: 2026-01-07T13:12:17-06:00
+---
+
+# Pytorch dependency resolution with external link
+
+---
+
+_Issue opened by @SiviP-Glossai on 2024-03-10 07:17_
+
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with uv.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
+* The current uv platform.
+* The current uv version (`uv --version`).
+-->
+I am having a resolution issue for torch packages with an external link.
+This same setup is being resolved in pip.
+
+cmd: ` uv pip install -r requirements.txt`
+platform: `windows 11`
+uv version: `uv 0.1.16 (9f1452cb7 2024-03-07)`
+requirements file:
+```
+-f https://download.pytorch.org/whl/torch_stable.html
+torch==1.13.1+cu117
+torchaudio==0.13.1
+torchvision==0.14.1+cu117
+```
+terminal output:
+```
+  × No solution found when resolving dependencies:
+  ╰─▶ Because torchaudio==0.13.1 depends on torch==1.13.1 and you require
+      torch==1.13.1+cu117, we can conclude that you require==0a0.dev0 and
+      torchaudio==0.13.1 are incompatible.
+      And because you require torchaudio==0.13.1, we can conclude that the
+      requirements are unsatisfiable.
+```
+
+
+So I was also trying to add `+cu117` to `torchaudio` but I get a similar result:
+
+requirements file:
+```
+-f https://download.pytorch.org/whl/torch_stable.html
+torch==1.13.1+cu117
+torchaudio==0.13.1+cu117
+torchvision==0.14.1+cu117
+```
+
+termianl output:
+```
+  × No solution found when resolving dependencies:
+  ╰─▶ Because torchaudio==0.13.1+cu117 depends on torch==1.13.1 and you
+      require torch==1.13.1+cu117, we can conclude that you require==0a0.dev0
+      and torchaudio==0.13.1+cu117 are incompatible.
+      And because you require torchaudio==0.13.1+cu117, we can conclude that
+      the requirements are unsatisfiable.
+```
+
+---
+
+_Comment by @charliermarsh on 2024-03-10 12:48_
+
+Thanks, please see: https://github.com/astral-sh/uv/issues/1855 (https://github.com/astral-sh/uv/blob/main/PIP_COMPATIBILITY.md#local-version-identifiers). We don't yet handle local version specifiers properly which causes problems with PyTorch. Can track the linked issue!
+
+---
+
+_Closed by @charliermarsh on 2024-03-10 12:48_
+
+---
+
+_Label `bug` added by @charliermarsh on 2024-03-10 12:49_
+
+---
+
+_Referenced in [astral-sh/uv#2430](../../astral-sh/uv/pulls/2430.md) on 2024-03-13 20:58_
+
+---
+
+_Closed by @charliermarsh on 2024-03-16 14:24_
+
+---
+
+_Comment by @charliermarsh on 2024-03-16 14:26_
+
+This will be supported in the next release via https://github.com/astral-sh/uv/pull/2430.
+
+---

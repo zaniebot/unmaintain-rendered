@@ -1,0 +1,75 @@
+---
+number: 12271
+title: Sync --frozen does not install python version
+type: issue
+state: closed
+author: eruvanos
+labels:
+  - question
+  - needs-mre
+assignees: []
+created_at: 2025-03-18T10:37:04Z
+updated_at: 2025-04-15T13:42:31Z
+url: https://github.com/astral-sh/uv/issues/12271
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# Sync --frozen does not install python version
+
+---
+
+_Issue opened by @eruvanos on 2025-03-18 10:37_
+
+### Question
+
+The following command is executed by our GitHub action before running the tests.
+
+`uv sync --all-packages --quiet --frozen`
+
+The command fails with:
+```
+error: The current Python version (3.[12](...).3) is not compatible with the locked Python requirement: `==3.13.*``
+```
+
+I expected that uv downloads the right Python version if necessary.
+
+### Platform
+
+runs-on: github-arm
+
+### Version
+
+0.6.7
+
+---
+
+_Label `question` added by @eruvanos on 2025-03-18 10:37_
+
+---
+
+_Comment by @ezerk on 2025-03-18 10:47_
+
+try with env var `UV_PYTHON_DOWNLOADS: 1`
+
+---
+
+_Comment by @konstin on 2025-04-11 11:20_
+
+Are you activating a Python environment by other means in a previous step? Can you share a minimal workflow that reproduces the problem?
+
+---
+
+_Label `needs-mre` added by @konstin on 2025-04-11 11:20_
+
+---
+
+_Comment by @eruvanos on 2025-04-15 13:42_
+
+I removed the install command in my workflow and it just works now.
+I am not able to reproduce it again. I am sorry.
+
+---
+
+_Closed by @eruvanos on 2025-04-15 13:42_
+
+---

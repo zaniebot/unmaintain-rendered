@@ -1,0 +1,48 @@
+---
+number: 3464
+title: Mention that env needs feature in dervie reference
+type: issue
+state: closed
+author: pksunkara
+labels:
+  - A-docs
+assignees: []
+created_at: 2022-02-14T16:01:46Z
+updated_at: 2022-03-05T19:16:25Z
+url: https://github.com/clap-rs/clap/issues/3464
+synced_at: 2026-01-07T13:12:19-06:00
+---
+
+# Mention that env needs feature in dervie reference
+
+---
+
+_Issue opened by @pksunkara on 2022-02-14 16:01_
+
+https://github.com/clap-rs/clap/blob/v3.0.14/examples/derive_ref/README.md#arg-attributes
+
+From: https://github.com/clap-rs/clap/discussions/3463
+
+---
+
+_Label `A-docs` added by @pksunkara on 2022-02-14 16:01_
+
+---
+
+_Comment by @epage on 2022-02-14 17:30_
+
+There is a cost to each feature flag we create (e.g. code complexity; bloating of documentation, making it harder to find relevant information).
+
+I wonder if we are getting the desired value out of having an `env` feature flag and if we should deprecate it.
+
+---
+
+_Comment by @pksunkara on 2022-02-14 22:14_
+
+I think we would probably need to decide how exactly we are going to make clap modular before deprecating this. We don't want to increase the churn by redoing this later.
+
+---
+
+_Closed by @epage on 2022-03-05 19:16_
+
+---

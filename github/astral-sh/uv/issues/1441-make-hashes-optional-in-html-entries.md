@@ -1,0 +1,51 @@
+---
+number: 1441
+title: Make hashes optional in HTML entries
+type: issue
+state: closed
+author: charliermarsh
+labels:
+  - bug
+assignees: []
+created_at: 2024-02-16T06:15:17Z
+updated_at: 2024-02-16T06:42:23Z
+url: https://github.com/astral-sh/uv/issues/1441
+synced_at: 2026-01-07T13:12:16-06:00
+---
+
+# Make hashes optional in HTML entries
+
+---
+
+_Issue opened by @charliermarsh on 2024-02-16 06:15_
+
+i'm running devpi and don't have fragments at all which results in
+
+```
+ uv pip install --extra-index-url <devpi> <package>
+error: Received some unexpected HTML from <devpi>/<package>
+  Caused by: Unexpected fragment (expected `#sha256=...`) on URL:
+```
+
+(not truncated, there is nothing after `URL:`)
+
+_Originally posted by @davidszotten in https://github.com/astral-sh/uv/issues/1338#issuecomment-1947435048_
+            
+
+---
+
+_Label `bug` added by @charliermarsh on 2024-02-16 06:15_
+
+---
+
+_Referenced in [astral-sh/uv#1338](../../astral-sh/uv/issues/1338.md) on 2024-02-16 06:15_
+
+---
+
+_Referenced in [astral-sh/uv#1443](../../astral-sh/uv/pulls/1443.md) on 2024-02-16 06:38_
+
+---
+
+_Closed by @charliermarsh on 2024-02-16 06:42_
+
+---

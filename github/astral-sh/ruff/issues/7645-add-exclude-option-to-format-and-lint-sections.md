@@ -1,0 +1,78 @@
+---
+number: 7645
+title: "Add `exclude` option to `format` and `lint` sections"
+type: issue
+state: closed
+author: MichaReiser
+labels:
+  - configuration
+assignees: []
+created_at: 2023-09-25T09:07:41Z
+updated_at: 2023-10-18T01:15:27Z
+url: https://github.com/astral-sh/ruff/issues/7645
+synced_at: 2026-01-07T13:12:15-06:00
+---
+
+# Add `exclude` option to `format` and `lint` sections
+
+---
+
+_Issue opened by @MichaReiser on 2023-09-25 09:07_
+
+Add the new `exclude` option to the `format` and `lint` section to exclude a set of files for a specific tool only. Respect the new option in the `check`, `fix`, and `format` commands.
+
+---
+
+_Referenced in [astral-sh/ruff#7642](../../astral-sh/ruff/issues/7642.md) on 2023-09-25 09:10_
+
+---
+
+_Label `configuration` added by @MichaReiser on 2023-09-25 09:38_
+
+---
+
+_Added to milestone `Formatter: Beta` by @MichaReiser on 2023-09-25 09:39_
+
+---
+
+_Comment by @MichaReiser on 2023-09-28 13:44_
+
+@charliermarsh any advice on how to implement this? It seems that `python_files_in_path` is doing all the exclusions now. Should we just add an early check in one of the `lint` commands that returns immediately if the file is excluded?
+
+---
+
+_Comment by @charliermarsh on 2023-09-28 14:52_
+
+@MichaReiser - Yeah, that would be my suggestion: `python_files_in_path` applies the top-level filters, then we apply any further filters in `lint`. It's kind of similar to `per-file-ignores`: we filter down the global rule set based on the `ignore` setting, but we then apply any `per-file-ignores` after collecting diagnostics, on a per-file basis.
+
+---
+
+_Comment by @MichaReiser on 2023-09-29 08:38_
+
+We may also want to make sure that these files don't get formatted on save in the IDE. @charliermarsh does ruff lint files in the IDE that are not part of `include` or `exclude`? 
+
+---
+
+_Comment by @MichaReiser on 2023-09-29 11:11_
+
+Adding `exclude` to lint will be somewhat challenging because we use serde's `flatten` to expose the same options top-level and under the `lint` keyword. This works perfectly but imposes a challenge now because `exclude` (and, in the future, the `preview` flag) conflicts with the top-level `exclude` setting. 
+
+I think what we can try is to have a few more structs 😆 
+
+* `CommonLintOptions`: The lint options without `exclude` (and eventually `preview`).
+* `LintOptions`: Defines the `preview` option and flattens the `CommonLintOptions` 
+* `Options` flattens the `CommonLintOptions` (instead of `LintOptions` as of today)
+
+---
+
+_Assigned to @MichaReiser by @MichaReiser on 2023-10-16 09:04_
+
+---
+
+_Referenced in [astral-sh/ruff#8000](../../astral-sh/ruff/pulls/8000.md) on 2023-10-17 03:01_
+
+---
+
+_Closed by @MichaReiser on 2023-10-18 01:15_
+
+---

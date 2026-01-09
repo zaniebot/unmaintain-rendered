@@ -1,0 +1,196 @@
+---
+number: 1158
+title: requires_all does not display all missing requirements
+type: issue
+state: closed
+author: smcmurray
+labels:
+  - C-bug
+assignees: []
+created_at: 2018-02-01T00:25:35Z
+updated_at: 2018-08-02T03:30:17Z
+url: https://github.com/clap-rs/clap/issues/1158
+synced_at: 2026-01-07T13:12:19-06:00
+---
+
+# requires_all does not display all missing requirements
+
+---
+
+_Issue opened by @smcmurray on 2018-02-01 00:25_
+
+<!--
+Please use the following template to assist with creating an issue and to ensure a speedy resolution. If an area is not applicable, feel free to delete the area or mark with `N/A`
+-->
+
+### Rust Version
+
+1.23
+
+### Affected Version of clap
+
+2.29.2
+
+### Expected Behavior Summary
+
+When an agument has a requires_all list, and that argument is present but multiple of its required arguments are missing, clap should print an error message that includes all missing required arguments.
+
+### Actual Behavior Summary
+
+clap will print out just one of the missing arguments. The user has to repeat the command over and over, adding one missing argument at a time.
+
+
+
+---
+
+_Comment by @smcmurray on 2018-02-01 00:49_
+
+To clarify, this is ArgGroup.requires_all
+
+---
+
+_Comment by @smcmurray on 2018-02-01 18:54_
+
+I'm trying to set up a command line something like:
+``
+    example --conf <FILE>...|<<ID> --x <X>... --y <Y> --z <Z>>
+``
+
+but I get:
+````
+  $ example -h
+  example [OPTIONS] <ID> --conf <FILE>... --x <X>... --y <Y> --z <Z>
+````
+and
+````
+$ example test
+error: The following required arguments were not provided:
+    --conf <FILE>...
+    --x <X>...
+    --y <Y>
+    --z <Z>
+````
+In this case, --conf <FILE> is not required or missing. In fact, including it would cause a conflict.
+I understand that \'example -h\' will put [OPTIONS] in there even though there are no other options. I can live with that. But it needs to get the | right, and the grouping right.
+
+Here's my code:
+````
+extern crate clap;
+use clap::{Arg, App};
+
+fn main(){
+  let matches = App::new("example")
+                        .version("1.0")
+                        .about("clap example")
+                        .arg(Arg::with_name("config")
+                             .short("c")
+                             .long("conf")
+                             .value_name("FILE")
+                             .help("Custom config file.")
+                             .takes_value(true)
+                             .multiple(true)
+                             .required_unless("ID")
+                             .conflicts_with("ID")
+                        )
+                        .arg(Arg::with_name("ID")
+                             .index(1)
+                             .help("ID")
+                             .required_unless("config")
+                             .conflicts_with("config")
+                             .requires_all(&["x", "y", "z"])
+                        )
+                        .arg(Arg::with_name("x")
+                             .short("x")
+                             .long("x")
+                             .value_name("X")
+                             .help("x")
+                             .multiple(true)
+                             .takes_value(true)
+                        )
+                        .arg(Arg::with_name("y")
+                             .short("y")
+                             .long("y")
+                             .value_name("Y")
+                             .help("y")
+                             .takes_value(true)
+                        )
+                        .arg(Arg::with_name("z")
+                             .short("z")
+                             .long("z")
+                             .value_name("Z")
+                             .help("z")
+                             .takes_value(true)
+                        )
+                        .get_matches();
+}
+````
+
+---
+
+_Comment by @kbknapp on 2018-02-02 01:48_
+
+Apologies, I've confirmed this bug. I'm in a heated battle with getting v3 out the door (which will include this bug fix) but I might be able to squeeze the part of this bug fix that will at least remove `--conf` from the required list when `id` (or another of it's conflicts) is used. The deeper fix to fix all arg group related conflicts will have to wait until v3. This initial fix should be able to come out in 2.29.3 since I think it'll be easy enough to forward port to v3.
+
+---
+
+_Label `T: bug` added by @kbknapp on 2018-02-02 01:49_
+
+---
+
+_Label `P2: need to have` added by @kbknapp on 2018-02-02 01:49_
+
+---
+
+_Label `D: intermediate` added by @kbknapp on 2018-02-02 01:49_
+
+---
+
+_Label `W: 2.x` added by @kbknapp on 2018-02-02 01:49_
+
+---
+
+_Label `C: errors` added by @kbknapp on 2018-02-02 01:49_
+
+---
+
+_Added to milestone `2.29.3` by @kbknapp on 2018-02-02 01:50_
+
+---
+
+_Referenced in [clap-rs/clap#1164](../../clap-rs/clap/pulls/1164.md) on 2018-02-05 01:07_
+
+---
+
+_Comment by @kbknapp on 2018-02-05 01:10_
+
+This is fixed in #1164 however, the usage string isn't exactly what you want. So I would recommend using a custom usage string. The behaviour is correct though.
+
+```rust
+    let matches = App::new("example")
+        .usage("example <--config [FILE] | -x [X] -y [Y] -z [Z]>")
+        .arg(Arg::from_usage("-c, --config [FILE] 'Custom config file.'")
+             .required_unless("ID")
+             .conflicts_with("ID"))
+        .arg(Arg::from_usage("[ID] 'ID'")
+             .required_unless("config")
+             .conflicts_with("config")
+             .requires_all(&["x", "y", "z"]))
+        .arg(Arg::from_usage("-x [X] 'X'"))
+        .arg(Arg::from_usage("-y [Y] 'Y'"))
+        .arg(Arg::from_usage("-z [Z] 'Z'"))
+        .get_matches();
+```
+
+---
+
+_Closed by @kbknapp on 2018-02-05 03:27_
+
+---
+
+_Referenced in [clap-rs/clap#1037](../../clap-rs/clap/issues/1037.md) on 2018-02-05 03:30_
+
+---
+
+_Referenced in [clap-rs/clap#3197](../../clap-rs/clap/issues/3197.md) on 2021-12-22 17:58_
+
+---

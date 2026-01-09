@@ -1,0 +1,106 @@
+---
+number: 4519
+title: Docs for 4.0.28 failed to build
+type: issue
+state: closed
+author: jaskij
+labels:
+  - C-bug
+assignees: []
+created_at: 2022-11-29T08:39:57Z
+updated_at: 2022-11-29T12:54:42Z
+url: https://github.com/clap-rs/clap/issues/4519
+synced_at: 2026-01-07T13:12:20-06:00
+---
+
+# Docs for 4.0.28 failed to build
+
+---
+
+_Issue opened by @jaskij on 2022-11-29 08:39_
+
+### Please complete the following tasks
+
+- [X] I have searched the [discussions](https://github.com/clap-rs/clap/discussions)
+- [X] I have searched the [open](https://github.com/clap-rs/clap/issues) and [rejected](https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed) issues
+
+### Rust Version
+
+n/a
+
+### Clap Version
+
+4.0.28
+
+### Minimal reproducible code
+
+n/a
+
+### Steps to reproduce the bug with the above code
+
+Visit https://docs.rs/crate/clap/4.0.28
+
+### Actual Behaviour
+
+Documentation failed to build message is displayed
+
+### Expected Behaviour
+
+Normal documentation available
+
+### Additional Context
+
+n/a
+
+### Debug Output
+
+n/a
+
+---
+
+_Label `C-bug` added by @jaskij on 2022-11-29 08:39_
+
+---
+
+_Comment by @mwgamble on 2022-11-29 11:51_
+
+It seems like this has broken the ability to view documentation for all versions, not just the latest.
+
+---
+
+_Comment by @jaskij on 2022-11-29 11:53_
+
+@mwgamble it needs some manual playing around with the URL, but you can see 4.0.27 at https://docs.rs/clap/4.0.27/clap/
+
+---
+
+_Comment by @Misza13 on 2022-11-29 12:33_
+
+Not sure if related, but it is impossible to install any 4.x version right now:
+
+```
+error: failed to select a version for the requirement `clap = "^4"`
+candidate versions found which didn't match: 3.2.23, 3.2.22, 3.2.21, ...
+location searched: crates.io index
+
+```
+
+---
+
+_Closed by @epage on 2022-11-29 12:45_
+
+---
+
+_Comment by @epage on 2022-11-29 12:49_
+
+@jaskij Thanks for reporting this!  We are using a nightly feature on docs.rs (example scraping) and they just changed a part of the feature.  Once the new build is complete, we should be good to go.
+
+@Misza13 that is unrelated.  I'm assuming that is from using too old of a version of rustc.  Our MSRV is 1.60.  If not, please open a dedicated issue.
+
+---
+
+_Comment by @Misza13 on 2022-11-29 12:54_
+
+@epage Thanks, you were correct. I didn't realize I haven't run `rustup update` in a while on this particular machine.
+
+---

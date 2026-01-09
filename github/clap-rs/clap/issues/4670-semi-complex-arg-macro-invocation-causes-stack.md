@@ -1,0 +1,120 @@
+---
+number: 4670
+title: "Semi-complex arg! macro invocation causes stack overflow and huge slowdown with build, check, or clippy"
+type: issue
+state: closed
+author: TED-996
+labels:
+  - C-bug
+assignees: []
+created_at: 2023-01-24T19:40:32Z
+updated_at: 2023-01-31T22:04:58Z
+url: https://github.com/clap-rs/clap/issues/4670
+synced_at: 2026-01-07T13:12:20-06:00
+---
+
+# Semi-complex arg! macro invocation causes stack overflow and huge slowdown with build, check, or clippy
+
+---
+
+_Issue opened by @TED-996 on 2023-01-24 19:40_
+
+### Please complete the following tasks
+
+- [X] I have searched the [discussions](https://github.com/clap-rs/clap/discussions)
+- [X] I have searched the [open](https://github.com/clap-rs/clap/issues) and [rejected](https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed) issues
+
+### Rust Version
+
+rustc 1.66.1 (90743e729 2023-01-10)
+
+### Clap Version
+
+4.1.3
+
+### Minimal reproducible code
+
+```rust
+fn main() {
+    let _ = clap::arg!(--add-b-alias <ALIAS> <NAME> ...);
+}
+```
+
+
+### Steps to reproduce the bug with the above code
+
+cargo check
+
+### Actual Behaviour
+
+The check command takes an unreasonably long amount of time to complete (around 10 seconds on my machine for the repro code alone). `cargo build` and `cargo clippy` similarly take an unreasonably long time to complete.
+
+When running, the program overflows the stack.
+
+### Expected Behaviour
+
+The check command should complete in a very short amount of time (less than one second). `cargo build` and `cargo clippy` should take a relatively short time as well.
+
+When running, the program should execute to completion.
+
+### Additional Context
+
+It seems like the combination of a three-word option name, num_args/value_names and multiple values (`...`) is relevant. The following examples all take a more reasonable amount of time:
+
+```rust
+    let _ = clap::arg!(--add-alias <ALIAS> <NAME> ...);  // this is better (~1s on my machine)
+    let _ = clap::arg!(--add-b-alias <ALIAS> <NAME>);    // this is much better (.7s on my machine)
+    let _ = clap::arg!(--add-b-alias ...);               // this is also much better (.5s on my machine)
+```
+
+I have worked around the problem by building the Arg struct manually. However this makes the `arg!` macro unusable for me - the editor experience is destroyed because with checking slowed down so much, even syntax higlighting is broken.
+
+### Debug Output
+
+thread 'main' has overflowed its stack
+
+---
+
+_Label `C-bug` added by @TED-996 on 2023-01-24 19:40_
+
+---
+
+_Renamed from "Semi-complex arg! macro invocation causes huge slowdown with build, check, or clippy" to "Semi-complex arg! macro invocation causes stack overflow and huge slowdown with build, check, or clippy" by @TED-996 on 2023-01-24 19:42_
+
+---
+
+_Comment by @TED-996 on 2023-01-24 19:43_
+
+Updated title, the repro code causes a stack overflow without the debug feature as well, at least on Windows.
+
+---
+
+_Referenced in [clap-rs/clap#4673](../../clap-rs/clap/pulls/4673.md) on 2023-01-24 22:25_
+
+---
+
+_Comment by @epage on 2023-01-24 22:26_
+
+#4673 should hopefully speed up compilation,.
+
+#3524 is our main stack overflow issue for `arg!`
+
+One thing to note is that `--add-b-alias` is actually parsed as `--add -b -alias` by the macro machinery.  You need to do `--"add-b-alias"` to make the macro machinery understand it correctly.
+
+---
+
+_Comment by @TED-996 on 2023-01-25 06:27_
+
+Thank you! I've missed that part of the documentation, sorry! The quotes do indeed fix the stack overflow and compile time issues.
+
+---
+
+_Comment by @epage on 2023-01-31 22:04_
+
+As we have other issues for stack overfows, I'm going to close this out
+
+---
+
+_Closed by @epage on 2023-01-31 22:04_
+
+---

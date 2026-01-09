@@ -1,0 +1,115 @@
+---
+number: 11207
+title: ruff server not closing with neovim instances
+type: issue
+state: closed
+author: akthe-at
+labels:
+  - bug
+  - server
+assignees: []
+created_at: 2024-04-29T19:01:00Z
+updated_at: 2024-05-24T14:57:47Z
+url: https://github.com/astral-sh/ruff/issues/11207
+synced_at: 2026-01-07T13:12:15-06:00
+---
+
+# ruff server not closing with neovim instances
+
+---
+
+_Issue opened by @akthe-at on 2024-04-29 19:01_
+
+Ruff: 0.4.2
+OS: Windows 10
+Terminal: Wezterm - Latest Nightly
+Shell: Powershell Core 7.4.2
+Neovim Build - Latest nightly  (and each nightly over the past 3-4 days I've noticed this)
+
+Hello All...I feel like this is going to be kind of a barebones bug report and I am sorry about that. 
+
+I have been using the new ruff server in lieu of ruff_lsp with neovim and noticed that there might be an issue with ruff.exe not always being terminated when you close a neovim instance. I have tried to consistently reproduce the bug and I have failed but I noticed that every once in a while I can check my processes and there will be a plethora of ruff.exe running even though I might only have 1 or 2 neovim instances or buffers open. 
+
+![image](https://github.com/astral-sh/ruff/assets/105152139/26938a06-3ed6-4f89-bd02-2809088466a9)
+
+I don't think I ever noticed this during my time using ruff_lsp.
+
+Love what you all do, just wanted to try and keep you aware since ruff server is in alpha.
+
+---
+
+_Assigned to @snowsignal by @MichaReiser on 2024-04-29 19:28_
+
+---
+
+_Label `server` added by @MichaReiser on 2024-04-29 19:28_
+
+---
+
+_Comment by @dhruvmanila on 2024-04-30 08:13_
+
+Good catch! Thanks for opening this issue. It's happening on macOS as well. And it isn't specific to Neovim, I'm seeing it in VS Code as well.
+
+https://github.com/astral-sh/ruff/assets/67177269/aff1c493-9b22-4168-a332-4a03724ed945
+
+
+
+---
+
+_Label `bug` added by @dhruvmanila on 2024-04-30 08:14_
+
+---
+
+_Referenced in [astral-sh/ruff#11222](../../astral-sh/ruff/pulls/11222.md) on 2024-04-30 23:07_
+
+---
+
+_Referenced in [LazyVim/LazyVim#3057](../../LazyVim/LazyVim/pulls/3057.md) on 2024-05-02 19:44_
+
+---
+
+_Closed by @snowsignal on 2024-05-03 01:09_
+
+---
+
+_Comment by @ShIRannx on 2024-05-05 14:08_
+
+The problem persists in neovim after ruff 0.4.3.
+
+---
+
+_Comment by @snowsignal on 2024-05-05 17:09_
+
+@ShIRannx I've found the cause for that and opened a follow-up fix: https://github.com/astral-sh/ruff/pull/11291.
+
+---
+
+_Comment by @danielhollas on 2024-05-24 02:16_
+
+Hi @snowsignal I am still seeing this problem with ruff 0.4.5 and neovim 0.9.5 on Linux Fedora 39.
+
+---
+
+_Comment by @dhruvmanila on 2024-05-24 06:39_
+
+@danielhollas Hi, can you open a new issue with the logs? I tried it on macOS with Ruff 0.4.5 and Nvim 0.10.0 and it works as expected. Can you also try it with Nvim 0.10.0?
+
+---
+
+_Comment by @danielhollas on 2024-05-24 11:35_
+
+Hi @dhruvmanila 👋 
+
+happy to do more investigation, but would you mind explaining how to get the logs? (Sorry, I am new to neovim, and LSP in general).
+
+---
+
+_Comment by @dhruvmanila on 2024-05-24 14:57_
+
+No worries. You can find the file path using `vim.lsp.get_log_path()` function. You can then copy paste the relevant lines (usually would be at the end of the file) related to `ruff`.
+
+---
+
+_Referenced in [astral-sh/ruff#11545](../../astral-sh/ruff/issues/11545.md) on 2024-05-26 16:13_
+
+---

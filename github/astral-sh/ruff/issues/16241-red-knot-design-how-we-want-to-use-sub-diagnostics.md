@@ -1,0 +1,67 @@
+---
+number: 16241
+title: "[red-knot] design how we want to use sub-diagnostics"
+type: issue
+state: closed
+author: carljm
+labels:
+  - ty
+  - diagnostics
+assignees: []
+created_at: 2025-02-18T20:47:00Z
+updated_at: 2025-03-04T19:47:04Z
+url: https://github.com/astral-sh/ruff/issues/16241
+synced_at: 2026-01-07T13:12:16-06:00
+---
+
+# [red-knot] design how we want to use sub-diagnostics
+
+---
+
+_Issue opened by @carljm on 2025-02-18 20:47_
+
+### Description
+
+In some cases, an operation can fail because some sub-operation failed, and this can be somewhat arbitrarily recursive (though usually not too deep). For example, we tried to call a union, which failed because one element of the union was not callable, because it is an instance of a type which has a `__call__` method which may not be bound.
+
+Currently we have to choose between either giving the details of the "inner" failure or giving useful "outer" context. In some of these cases, we may want to use "sub-diagnostics" where we can give an outer failure (e.g. with the full union type) as well as "inner" details on the root cause. Both pyright and mypy do this to some extent.
+
+We'll need to figure out some principles around when and where to do this, how we can render it, and at what level of nesting we need to cut it off.
+
+See https://github.com/astral-sh/ruff/pull/16161#discussion_r1960499406 for some more detailed discussion.
+
+---
+
+_Label `red-knot` added by @carljm on 2025-02-18 20:47_
+
+---
+
+_Referenced in [astral-sh/ruff#16161](../../astral-sh/ruff/pulls/16161.md) on 2025-02-18 20:47_
+
+---
+
+_Label `diagnostics` added by @MichaReiser on 2025-02-18 20:53_
+
+---
+
+_Comment by @MichaReiser on 2025-02-18 20:54_
+
+CC: @BurntSushi 
+
+---
+
+_Assigned to @BurntSushi by @BurntSushi on 2025-02-26 14:29_
+
+---
+
+_Comment by @BurntSushi on 2025-03-04 18:10_
+
+In terms of _design_, I think we have a pretty good idea of how to approach this at this point. I've added the data model in #16504.
+
+I _think_ the next step here will be to actually try and use the sub-diagnostic API and see where it breaks. But I think the initial design work is probably done here?
+
+---
+
+_Closed by @carljm on 2025-03-04 19:47_
+
+---

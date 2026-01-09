@@ -1,0 +1,157 @@
+---
+number: 13392
+title: ruff 0.6.5 occasionally panics when used as LSP inside Emacs
+type: issue
+state: closed
+author: offby1
+labels:
+  - server
+assignees: []
+created_at: 2024-09-18T13:18:19Z
+updated_at: 2024-10-04T09:00:24Z
+url: https://github.com/astral-sh/ruff/issues/13392
+synced_at: 2026-01-07T13:12:15-06:00
+---
+
+# ruff 0.6.5 occasionally panics when used as LSP inside Emacs
+
+---
+
+_Issue opened by @offby1 on 2024-09-18 13:18_
+
+- I searched for `in:title ruff in:title panic`
+- I have no idea how to reproduce the bug; it seems to happen at random
+- Unfortunately I cannot provide a precise description of how I invoked ruff; it's starting as part of my absurdly complex Emacs setup. I have the emacs packages `lsp-mode`, `lsp-ui`, and `ruff-format` installed (among many others)
+- `~/config/ruff/pyproject.toml` contains
+```
+[tool.ruff]
+fix-only = true
+line-length = 100
+
+[tool.ruff.lint]
+select = ["ALL"]
+ignore = ["ANN", "COM812", "D", "ISC001", "TD"]
+```
+- the version is `ruff 0.6.5`
+
+Here's the output I see:
+
+```
+panicked at crates/ruff_source_file/src/line_index.rs:176:13:
+index out of bounds: the len is 448 but the index is 450
+   0: std::backtrace::Backtrace::create
+   1: ruff_server::server::Server::run::{{closure}}
+   2: std::panicking::rust_panic_with_hook
+   3: std::panicking::begin_panic_handler::{{closure}}
+   4: std::sys::backtrace::__rust_end_short_backtrace
+   5: _rust_begin_unwind
+   6: core::panicking::panic_fmt
+   7: core::panicking::panic_bounds_check
+   8: ruff_source_file::line_index::LineIndex::line_range
+   9: <lsp_types::Range as ruff_server::edit::range::RangeExt>::to_text_range
+  10: ruff_server::edit::text_document::TextDocument::apply_changes
+  11: <ruff_server::server::api::notifications::did_change::DidChange as ruff_server::server::api::traits::SyncNotificationHandler>::run
+  12: core::ops::function::FnOnce::call_once{{vtable.shim}}
+  13: std::sys::backtrace::__rust_begin_short_backtrace
+  14: core::ops::function::FnOnce::call_once{{vtable.shim}}
+  15: std::sys::pal::unix::thread::Thread::new::thread_start
+  16: __pthread_deallocate
+
+panicked at /Users/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/lsp-server-0.7.6/src/stdio.rs:28:37:
+receiver was dropped, failed to send a message: "SendError(..)"
+   0: std::backtrace::Backtrace::create
+   1: ruff_server::server::Server::run::{{closure}}
+   2: std::panicking::rust_panic_with_hook
+   3: std::panicking::begin_panic_handler::{{closure}}
+   4: std::sys::backtrace::__rust_end_short_backtrace
+   5: _rust_begin_unwind
+   6: core::panicking::panic_fmt
+   7: core::result::unwrap_failed
+   8: std::sys::backtrace::__rust_begin_short_backtrace
+   9: core::ops::function::FnOnce::call_once{{vtable.shim}}
+  10: std::sys::pal::unix::thread::Thread::new::thread_start
+  11: __pthread_deallocate
+
+panicked at /Users/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/jod-thread-0.1.2/src/lib.rs:33:22:
+called `Result::unwrap()` on an `Err` value: Any { .. }
+   0: std::backtrace::Backtrace::create
+   1: ruff_server::server::Server::run::{{closure}}
+   2: std::panicking::rust_panic_with_hook
+   3: std::panicking::begin_panic_handler::{{closure}}
+   4: std::sys::backtrace::__rust_end_short_backtrace
+   5: _rust_begin_unwind
+   6: core::panicking::panic_fmt
+   7: core::result::unwrap_failed
+   8: ruff_server::server::Server::run
+   9: ruff::run
+  10: ruff::main
+  11: std::sys::backtrace::__rust_begin_short_backtrace
+  12: std::rt::lang_start::{{closure}}
+  13: std::rt::lang_start_internal
+  14: _main
+```
+
+---
+
+_Label `server` added by @MichaReiser on 2024-09-18 15:21_
+
+---
+
+_Comment by @MichaReiser on 2024-09-18 15:21_
+
+I wonder if this is related to https://github.com/emacs-lsp/lsp-mode/issues/4547
+
+---
+
+_Referenced in [astral-sh/ruff#13407](../../astral-sh/ruff/pulls/13407.md) on 2024-09-19 11:11_
+
+---
+
+_Comment by @MichaReiser on 2024-09-20 08:28_
+
+@offby1 We released a new ruff version yesterday that might fix your issue. Could you give it a try
+
+Lol... what a coincidence. The bug was an off by one error, and your handle is `offby1`
+
+---
+
+_Comment by @dhruvmanila on 2024-10-04 04:51_
+
+@offby1 Can you try upgrading Ruff to the latest version and see if the panic still persists?
+
+---
+
+_Comment by @offby1 on 2024-10-04 07:46_
+
+I upgraded as soon as the new version was available, and haven't noticed a
+problem since.  However, the original problem didn't occur all that often
+to begin with.
+
+On Thu, Oct 3, 2024 at 9:52 PM Dhruv Manilawala ***@***.***>
+wrote:
+
+> @offby1 <https://github.com/offby1> Can you try upgrading Ruff to the
+> latest version and see if the panic still persists?
+>
+> —
+> Reply to this email directly, view it on GitHub
+> <https://github.com/astral-sh/ruff/issues/13392#issuecomment-2392817973>,
+> or unsubscribe
+> <https://github.com/notifications/unsubscribe-auth/AAAAYSLWD2CXTXXKLSTJ2ODZZYNIBAVCNFSM6AAAAABONVZTTKVHI2DSMVQWIX3LMV43OSLTON2WKQ3PNVWWK3TUHMZDGOJSHAYTOOJXGM>
+> .
+> You are receiving this because you were mentioned.Message ID:
+> ***@***.***>
+>
+
+
+---
+
+_Comment by @dhruvmanila on 2024-10-04 09:00_
+
+Thanks for the update. I'll mark this as resolved for now to keep the issue tracker actionable but feel free to ping me if you face the issue again, we can re-open the issue then.
+
+---
+
+_Closed by @dhruvmanila on 2024-10-04 09:00_
+
+---

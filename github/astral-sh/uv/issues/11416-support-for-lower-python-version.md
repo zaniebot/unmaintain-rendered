@@ -1,0 +1,55 @@
+---
+number: 11416
+title: Support for Lower Python version
+type: issue
+state: closed
+author: learnwithsomya
+labels:
+  - question
+assignees: []
+created_at: 2025-02-11T09:37:00Z
+updated_at: 2025-03-17T11:14:19Z
+url: https://github.com/astral-sh/uv/issues/11416
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# Support for Lower Python version
+
+---
+
+_Issue opened by @learnwithsomya on 2025-02-11 09:37_
+
+### Question
+
+As per the docs, it has been tested against Python 3.8, 3.9, 3.10, 3.11, 3.12, and 3.13. So, does it means that it cannot be used with the environment with Python version lower than that. Like Python 3.6?
+Refer : https://docs.astral.sh/uv/reference/policies/platforms/
+
+### Platform
+
+Ubuntu 20.04
+
+### Version
+
+Latest
+
+---
+
+_Label `question` added by @learnwithsomya on 2025-02-11 09:37_
+
+---
+
+_Comment by @charliermarsh on 2025-02-11 13:30_
+
+It means that we don't guarantee support for those versions and they may not work at all. I believe 3.7 mostly works. 3.6 might work too. We just don't guarantee it, or test against it, or commit to fixing issues affecting those versions.
+
+---
+
+_Closed by @charliermarsh on 2025-02-11 13:30_
+
+---
+
+_Comment by @AnirudhG07 on 2025-03-17 11:14_
+
+Is there no way I can create an environment with python 3.7 with uv? I need to reproduce results from some old repo, which uses that version. `uv python list` starts from python>=3.8. @charliermarsh 
+
+---

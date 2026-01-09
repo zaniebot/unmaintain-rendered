@@ -1,0 +1,56 @@
+---
+number: 140
+title: Add option to wait for user confirmation after displaying help
+type: issue
+state: closed
+author: sirideain
+labels: []
+assignees: []
+created_at: 2015-06-26T16:36:58Z
+updated_at: 2015-06-30T02:34:47Z
+url: https://github.com/clap-rs/clap/issues/140
+synced_at: 2026-01-07T13:12:19-06:00
+---
+
+# Add option to wait for user confirmation after displaying help
+
+---
+
+_Issue opened by @sirideain on 2015-06-26 16:36_
+
+On Windows a user is most likely going to double-click the executable to run it. That causes the help to display and the program to close before the user is able to read it. Providing an option to wait for confirmation would keep the cmd prompt open for the user.
+
+
+---
+
+_Comment by @kbknapp on 2015-06-27 13:11_
+
+That's a good idea. I think I'm going to do this by adding a more general `.wait_on_err()` since you can also "hard code" command line arguments into windows shortcuts and there may be times one if them causes an error the user needs to see (missing file, etc).
+
+I'm on vacation for the next few days but I'll implement this as soon as I get back. Thanks! :+1:
+
+
+---
+
+_Assigned to @kbknapp by @kbknapp on 2015-06-27 13:13_
+
+---
+
+_Added to milestone `1.0 Release` by @kbknapp on 2015-06-27 13:13_
+
+---
+
+_Label `feature request` added by @kbknapp on 2015-06-27 13:13_
+
+---
+
+_Closed by @kbknapp on 2015-06-30 02:27_
+
+---
+
+_Comment by @kbknapp on 2015-06-30 02:34_
+
+This has been added in 1.0.0-beta on crates.io or master here on github :)
+
+
+---

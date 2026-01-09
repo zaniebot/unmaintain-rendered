@@ -1,0 +1,187 @@
+---
+number: 7622
+title: ModuleNotFoundError immediately after initializing a project
+type: issue
+state: open
+author: 5183nischal
+labels:
+  - needs-mre
+assignees: []
+created_at: 2024-09-22T16:39:08Z
+updated_at: 2025-01-11T14:30:08Z
+url: https://github.com/astral-sh/uv/issues/7622
+synced_at: 2026-01-07T13:12:17-06:00
+---
+
+# ModuleNotFoundError immediately after initializing a project
+
+---
+
+_Issue opened by @5183nischal on 2024-09-22 16:39_
+
+The following error occurs when I initialize a project under `~/Documents` but not say under `~/Downloads` (in macos).
+1. **Initialize a new project using `uv`**:
+   I initialized a new project named `trials` using the `uv` command.
+
+   ```bash
+   uv init --lib trials
+   ```
+
+   Output:
+   ```bash
+   Initialized project `trials` at `/Users/nisch/Documents/trials`
+   ```
+
+2. **Navigate to the project directory**:
+   I changed the directory to the newly created `trials` project.
+
+   ```bash
+   cd trials
+   ```
+
+3. **Run Python command to import the `trials` module**:
+   I attempted to run a Python command to import the `trials` module using `uv`.
+
+   ```bash
+   uv run python -c "import trials"
+   ```
+
+   Output:
+   ```bash
+   Using Python 3.10.15
+   Creating virtual environment at: .venv
+       Built trials @ file:///Users/nisch/Documents/trials
+   Installed 1 package in 1ms
+   ```
+
+4. **Run the same command again**:
+   I ran the same command again to import the `trials` module.
+
+   ```bash
+   uv run python -c "import trials"
+   ```
+
+   Output:
+   ```bash
+   Traceback (most recent call last):
+     File "<string>", line 1, in <module>
+   ModuleNotFoundError: No module named 'trials'
+   ```
+
+### Issue
+
+After initializing the project and running the command to import the `trials` module, I encountered a `ModuleNotFoundError`. It seems that the `trials` module is not being recognized, even though the project was initialized successfully.
+
+### Expected Behavior
+
+The `trials` module should be importable after initializing the project and running the command.
+
+### Actual Behavior
+
+The `trials` module is not found, resulting in a `ModuleNotFoundError`.
+
+### Verbose Output
+
+I ran the command with the `-v` (verbose) flag to get more detailed output:
+
+```bash
+uv run -v python -c "import trials"
+```
+
+Verbose Output:
+
+```
+DEBUG uv 0.4.15
+DEBUG Found project root: `/Users/nisch/Documents/trials`
+DEBUG No workspace root found, using project root
+DEBUG Discovered project `trials` at: `/Users/nisch/Documents/trials`
+DEBUG Reading requests from `/Users/nisch/Documents/trials/.python-version`
+DEBUG The virtual environment's Python version satisfies `Python 3.10`
+DEBUG Using request timeout of 30s
+DEBUG Found static `pyproject.toml` for: trials @ file:///Users/nisch/Documents/trials
+DEBUG No workspace root found, using project root
+DEBUG Existing `uv.lock` satisfies workspace requirements
+Resolved 1 package in 4ms
+DEBUG Using request timeout of 30s
+WARN  Failed to read metadata for file: No such file or directory (os error 2)
+WARN  Failed to read metadata for file: No such file or directory (os error 2)
+DEBUG Requirement already installed: trials==0.1.0 (from file:///Users/nisch/Documents/trials)
+Audited 1 package in 0.39ms
+DEBUG Using Python 3.10.15 interpreter at: /Users/nisch/Documents/trials/.venv/bin/python3
+DEBUG Running `python -c import trials`
+Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+ModuleNotFoundError: No module named 'trials'
+DEBUG Command exited with code: 1
+```
+Thanks in advance!
+
+
+---
+
+_Comment by @choucavalier on 2024-09-22 17:53_
+
+:+1: I got this problem often as well
+
+---
+
+_Comment by @charliermarsh on 2024-09-22 17:54_
+
+If you want the template project to be created with an importable directory like that you, consider using `uv init trials --lib`. By default, we create an `--app`, which just contains runnable scripts as opposed to a buildable project. \cc @zaneib
+
+---
+
+_Label `question` added by @charliermarsh on 2024-09-22 17:54_
+
+---
+
+_Comment by @5183nischal on 2024-09-22 18:59_
+
+> If you want the template project to be created with an importable directory like that you, consider using `uv init trials --lib`. By default, we create an `--app`, which just contains runnable scripts as opposed to a buildable project. \cc @zaneib
+
+But I do initialize it with the `--lib`!
+
+---
+
+_Comment by @charliermarsh on 2024-09-22 19:02_
+
+Oh sorry -- I missed that. I can't reproduce this though.
+
+---
+
+_Label `question` removed by @charliermarsh on 2024-09-22 19:02_
+
+---
+
+_Label `needs-mre` added by @charliermarsh on 2024-09-22 19:02_
+
+---
+
+_Comment by @5183nischal on 2024-09-23 10:22_
+
+> Oh sorry -- I missed that. I can't reproduce this though.
+
+Yes, I can't reproduce this everywhere in my own computer either. Only when I'm under `~/Documents` in my computer I get this error. Want to understand if you guys would have an idea why that might be happening.
+
+---
+
+_Comment by @cyberNKYX on 2024-11-20 09:40_
+
+I'm experiencing the same issue on windows, a different folder with an existing project migrated from pdm. It looks like the local package was not installed under some condition before running the command. 
+
+I also tried do it manually by running `uv add --dev --editable .` at first, then manually enter the virtual environment `./.venv/Scripts/activate`, still the local module was not found.
+
+But when I deleted `pyproject.toml` and reinitialized the project `uv init --lib` and ran `uv sync` before copying the existing dependencies list to `pyproject.toml`, it started working. And afterwards, I copied the existing dependencies and it worked as usual.
+
+
+---
+
+_Comment by @Anselmoo on 2025-01-11 14:30_
+
+I tried to change from poetry to uv. Formally, with [`tool.poetry.scripts`](https://github.com/Anselmoo/TanabeSugano/blob/c769fcc47f5b3df43b6b31829b703cc057a60996/pyproject.toml#L69-L70) it is working fine; via [`project.scripts`](https://github.com/Anselmoo/TanabeSugano/blob/46d06e4398edbfe56df58600a82b7501469b28b4/pyproject.toml#L52-L53), I got also _ModuleNotFoundError: No module named 'tanabesugano'_
+
+However, I used `uvx migrate-to-uv` for the migration. 
+
+https://github.com/Anselmoo/TanabeSugano/pull/131
+
+---

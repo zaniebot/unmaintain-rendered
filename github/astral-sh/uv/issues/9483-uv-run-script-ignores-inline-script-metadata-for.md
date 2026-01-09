@@ -1,0 +1,71 @@
+---
+number: 9483
+title: "`uv run <script>` ignores inline script metadata for scripts with no file extension"
+type: issue
+state: closed
+author: Julian
+labels:
+  - question
+assignees: []
+created_at: 2024-11-27T19:45:28Z
+updated_at: 2024-11-27T19:53:06Z
+url: https://github.com/astral-sh/uv/issues/9483
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# `uv run <script>` ignores inline script metadata for scripts with no file extension
+
+---
+
+_Issue opened by @Julian on 2024-11-27 19:45_
+
+PEP 722 inline script metadata seems like it's ignored if the script does not have a `.py` file extension. Here's a short reproduction, showing it doesn't work :
+
+```
+⊙  chmod +x; cat foo
+#!/usr/bin/env python3
+# /// script
+# requires-python = ">=3.11"
+# dependencies = [
+#   "jsonschema",
+# ]
+# ///
+import jsonschema
+
+~/Desktop 
+⊙  uv run ./foo
+Traceback (most recent call last):
+  File "/Users/julian/Desktop/./foo", line 8, in <module>
+    import jsonschema
+ModuleNotFoundError: No module named 'jsonschema'
+
+~/Desktop 
+⊙  mv foo foo.py
+
+~/Desktop 
+⊙  uv run ./foo.py
+Reading inline script metadata from `./foo.py`
+Installed 5 packages in 16ms
+```
+
+---
+
+_Comment by @konstin on 2024-11-27 19:48_
+
+`uv run --script` should cover this, see https://github.com/astral-sh/uv/issues/7396.
+
+---
+
+_Label `question` added by @zanieb on 2024-11-27 19:50_
+
+---
+
+_Comment by @Julian on 2024-11-27 19:53_
+
+Aha. Thanks for the link, that does seem to do it. Though I guess it seems a bit confusing to me at first glance (specifically I'd have expected separate commands for `uv run <command>` and `uv run <somefile>` so that it's never ambiguous which is meant, and the extra argument then wouldn't be needed. But closing, as indeed that works.
+
+---
+
+_Closed by @Julian on 2024-11-27 19:53_
+
+---

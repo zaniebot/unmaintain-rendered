@@ -1,0 +1,135 @@
+---
+number: 5716
+title: "uv tree: disconnected packages (not selected for current platform)"
+type: issue
+state: closed
+author: bluss
+labels:
+  - bug
+  - preview
+assignees: []
+created_at: 2024-08-01T23:20:55Z
+updated_at: 2024-08-04T18:33:14Z
+url: https://github.com/astral-sh/uv/issues/5716
+synced_at: 2026-01-07T13:12:17-06:00
+---
+
+# uv tree: disconnected packages (not selected for current platform)
+
+---
+
+_Issue opened by @bluss on 2024-08-01 23:20_
+
+In some cases `uv tree` shows packages outside of the tree (not descendants of the root).
+
+<details>
+<summary>
+Like this, the root is `uvtree1` but there's a bunch of packages listed first.
+</summary>
+
+```
+> uv tree
+appnope v0.1.4
+cffi v1.16.0
+└── pycparser v2.22
+colorama v0.4.6
+exceptiongroup v1.2.2
+pywin32 v306
+typing-extensions v4.12.2
+uvtree1 v0.1.0
+├── ipykernel v6.29.5
+│   ├── comm v0.2.2
+│   │   └── traitlets v5.14.3
+│   ├── debugpy v1.8.2
+│   ├── ipython v8.26.0
+│   │   ├── decorator v5.1.1
+│   │   ├── jedi v0.19.1
+│   │   │   └── parso v0.8.4
+│   │   ├── matplotlib-inline v0.1.7
+│   │   │   └── traitlets v5.14.3
+│   │   ├── pexpect v4.9.0
+│   │   │   └── ptyprocess v0.7.0
+│   │   ├── prompt-toolkit v3.0.47
+│   │   │   └── wcwidth v0.2.13
+│   │   ├── pygments v2.18.0
+│   │   ├── stack-data v0.6.3
+│   │   │   ├── asttokens v2.4.1
+│   │   │   │   └── six v1.16.0
+│   │   │   ├── executing v2.0.1
+│   │   │   └── pure-eval v0.2.3
+│   │   └── traitlets v5.14.3
+│   ├── jupyter-client v8.6.2
+│   │   ├── jupyter-core v5.7.2
+│   │   │   ├── platformdirs v4.2.2
+│   │   │   └── traitlets v5.14.3
+│   │   ├── python-dateutil v2.9.0.post0
+│   │   │   └── six v1.16.0
+│   │   ├── pyzmq v26.0.3
+│   │   ├── tornado v6.4.1
+│   │   └── traitlets v5.14.3
+│   ├── jupyter-core v5.7.2 (*)
+│   ├── matplotlib-inline v0.1.7 (*)
+│   ├── nest-asyncio v1.6.0
+│   ├── packaging v24.1
+│   ├── psutil v6.0.0
+│   ├── pyzmq v26.0.3
+│   ├── tornado v6.4.1
+│   └── traitlets v5.14.3
+└── numpy v2.0.1
+(*) Package tree already displayed
+```
+
+</details>
+
+The extra packages are those that come from universal locking and are not picked for this platform.
+
+```shell
+uv init uvtree1 -p 3.10
+cd uvtree1
+uv add 'ipykernel>=6.29.3' "numpy>=1.26.4"
+uv tree
+```
+
+One can confirm that the packages that bunched up at the start have inactive markers.
+
+```requirements.txt
+> uv pip compile pyproject.toml  --universal
+appnope==0.1.4 ; platform_system == 'Darwin'
+    # via ipykernel
+asttokens==2.4.1
+    # via stack-data
+cffi==1.16.0 ; implementation_name == 'pypy'
+    # via pyzmq
+colorama==0.4.6 ; sys_platform == 'win32'
+    # via ipython
+...
+```
+
+
+---
+
+_Comment by @zanieb on 2024-08-01 23:28_
+
+Thanks for the report!
+
+---
+
+_Label `bug` added by @zanieb on 2024-08-01 23:28_
+
+---
+
+_Label `preview` added by @zanieb on 2024-08-01 23:28_
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2024-08-02 14:58_
+
+---
+
+_Referenced in [astral-sh/uv#5761](../../astral-sh/uv/pulls/5761.md) on 2024-08-04 18:15_
+
+---
+
+_Closed by @charliermarsh on 2024-08-04 18:33_
+
+---

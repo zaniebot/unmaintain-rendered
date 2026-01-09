@@ -1,0 +1,93 @@
+---
+number: 15303
+title: torch wheel from CPU index is not cached
+type: issue
+state: closed
+author: tpgillam
+labels: []
+assignees: []
+created_at: 2025-08-15T11:36:52Z
+updated_at: 2025-08-15T13:41:33Z
+url: https://github.com/astral-sh/uv/issues/15303
+synced_at: 2026-01-07T13:12:19-06:00
+---
+
+# torch wheel from CPU index is not cached
+
+---
+
+_Issue opened by @tpgillam on 2025-08-15 11:36_
+
+uv 0.8.11 .
+
+Suppose I am in the directory `moo` which is empty except for the following pyproject.toml
+
+```toml
+[project]
+name = "moo"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = ["torch"]
+
+
+[tool.uv]
+python-preference = "only-managed"
+
+[tool.uv.sources]
+torch = [{ index = "pytorch-cpu" }]
+
+[[tool.uv.index]]
+name = "pytorch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
+explicit = true
+```
+
+This is using the approach described [in the docs](https://docs.astral.sh/uv/guides/integration/pytorch/#using-a-pytorch-index) for installing the CPU-only build of torch.
+
+Curiously, when synchronising this environment, the torch wheel is _always_ downloaded, and is never found in the cache. Is this intended behaviour, or a bug?
+
+```console
+$ rm -rf .venv/ && uv sync --verbose
+<...snip...>
+DEBUG No cache entry for: https://download.pytorch.org/whl/cpu/torch-2.8.0%2Bcpu-cp313-cp313-manylinux_2_28_x86_64.whl
+Downloading torch (175.4MiB)
+
+$ rm -rf .venv/ && uv sync --verbose
+<...snip...>
+DEBUG No cache entry for: https://download.pytorch.org/whl/cpu/torch-2.8.0%2Bcpu-cp313-cp313-manylinux_2_28_x86_64.whl
+Downloading torch (175.4MiB)
+```
+
+---
+
+_Renamed from "torch from CPU index is not cached" to "torch wheel from CPU index is not cached" by @tpgillam on 2025-08-15 11:37_
+
+---
+
+_Comment by @charliermarsh on 2025-08-15 12:46_
+
+I think that's because the PyTorch index sets `cache-control: 'no-cache,no-store,must-revalidate'`. You can customize the cache control headers yourself with: https://docs.astral.sh/uv/concepts/indexes/#customizing-cache-control-headers
+
+---
+
+_Comment by @tpgillam on 2025-08-15 13:41_
+
+Thanks for the explanation! Hadn't realised indices had this concept; great to know, thank you.
+
+---
+
+_Closed by @tpgillam on 2025-08-15 13:41_
+
+---
+
+_Comment by @charliermarsh on 2025-08-15 13:41_
+
+I'm also chatting with the PyTorch team to see if we can get those headers changed :)
+
+---
+
+_Referenced in [astral-sh/uv#15425](../../astral-sh/uv/issues/15425.md) on 2025-08-21 18:30_
+
+---

@@ -1,0 +1,54 @@
+---
+number: 9883
+title: Duplicate uv --app message improvement
+type: issue
+state: closed
+author: stefanofusai
+labels: []
+assignees: []
+created_at: 2024-12-13T20:57:49Z
+updated_at: 2024-12-17T16:33:35Z
+url: https://github.com/astral-sh/uv/issues/9883
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# Duplicate uv --app message improvement
+
+---
+
+_Issue opened by @stefanofusai on 2024-12-13 20:57_
+
+I've noticed (OCD...) that when doing `uv --app <project>`, when `<project>` already exists, the error message could be improved.
+
+Currently, this is what is output:
+![image](https://github.com/user-attachments/assets/2275b12c-6d41-40bf-89ef-fba70953bbbf)
+
+This could be changed to `error: App is already initialized in ...`
+
+Unfortunately I'm not well versed in Rust so I can't submit a PR, but the relevant code is here: https://github.com/astral-sh/uv/blob/main/crates/uv/src/commands/project/init.rs#L105
+
+Let me know your thoughts!
+
+---
+
+_Comment by @zanieb on 2024-12-13 21:07_
+
+I actually think this should remain "Project" — it's a general error message. `--app` is just a template for the project. The same error would apply for `--lib`.
+
+---
+
+_Comment by @stefanofusai on 2024-12-13 21:10_
+
+You're right in that the `Initialized project` message should also be changed, and probably n other references
+
+---
+
+_Comment by @zanieb on 2024-12-13 21:13_
+
+What is gained by switching from "Initialized project" to "Initialized application" and "Initialized library"?
+
+---
+
+_Closed by @stefanofusai on 2024-12-17 16:33_
+
+---

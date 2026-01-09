@@ -1,0 +1,91 @@
+---
+number: 2007
+title: "Editable '-e.' w/o space works in pip, fails in uv"
+type: issue
+state: closed
+author: jensens
+labels:
+  - compatibility
+assignees: []
+created_at: 2024-02-27T09:14:23Z
+updated_at: 2024-02-27T20:47:53Z
+url: https://github.com/astral-sh/uv/issues/2007
+synced_at: 2026-01-07T13:12:16-06:00
+---
+
+# Editable '-e.' w/o space works in pip, fails in uv
+
+---
+
+_Issue opened by @jensens on 2024-02-27 09:14_
+
+I have a `requirement.txt` like so
+```
+-c constraints.txt
+-e.[test]
+``` 
+which works with  `pip install -r requirements.txt`, but `uv pip install -r requirements.txt` fails with `error: Expected '=' or whitespace, found Some('.') in `requirements-mxdev.txt` at position 282`
+(side quest: why in 282, does it concat the constraints and forgets about the real line number?)
+
+if I change the `requirements.txt` to contain a space after the dot it works
+```
+-c constraints.txt
+-e .[test]
+``` 
+
+Versions
+- Linux 6.5.0-18-generic 18~22.04.1-Ubuntu SMP PREEMPT_DYNAMIC Wed Feb  7 11:40:03 UTC 2 x86_64 x86_64 x86_64 GNU/Linux
+- uv 0.1.10
+- Python 3.12.2
+
+---
+
+_Label `compatibility` added by @konstin on 2024-02-27 12:28_
+
+---
+
+_Comment by @konstin on 2024-02-27 12:33_
+
+>  (side quest: why in 282, does it concat the constraints and forgets about the real line number?)
+
+The parser doesn't have the mapping back to line numbers implemented: https://github.com/astral-sh/uv/issues/2012
+
+---
+
+_Comment by @charliermarsh on 2024-02-27 15:34_
+
+@konstin - Is this allowed in the grammar, or it "just works"? It seems strange to me.
+
+---
+
+_Comment by @konstin on 2024-02-27 15:48_
+
+The requirements.txt doesn't have a grammar, it is effectively pip cli arguments written to a file; The most comprehensive docs we have is https://pip.pypa.io/en/stable/reference/requirements-file-format/. At least all official examples i've seen use a space. I would prefer enforcing the space after `-e` for clarity.
+
+---
+
+_Comment by @charliermarsh on 2024-02-27 15:56_
+
+Yeah, I agree.
+
+---
+
+_Comment by @jensens on 2024-02-27 16:23_
+
+I just stumbled over it and since it works in pip I reported this. I have no idea how close you plan to have compatibility with pip. It is good to have a clear syntax, so enforcing a space makes sense. 
+
+Anyway, I would at least add a short section to the docs with those things that are meant to possibly break.
+
+---
+
+_Comment by @konstin on 2024-02-27 20:47_
+
+Yes, we definitely want to track those differences.
+
+Closing in favor of #2023.
+
+---
+
+_Closed by @konstin on 2024-02-27 20:47_
+
+---

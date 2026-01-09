@@ -1,0 +1,101 @@
+---
+number: 16541
+title: "B905 not being raised when \"B\" rules enabled"
+type: issue
+state: closed
+author: jackdent
+labels:
+  - question
+assignees: []
+created_at: 2025-03-06T18:26:40Z
+updated_at: 2025-03-07T11:13:01Z
+url: https://github.com/astral-sh/ruff/issues/16541
+synced_at: 2026-01-07T13:12:16-06:00
+---
+
+# B905 not being raised when "B" rules enabled
+
+---
+
+_Issue opened by @jackdent on 2025-03-06 18:26_
+
+### Summary
+
+Example code to reproduce:
+```
+some_list = [1, 2, 3]
+for first_second in zip(some_list, some_list[1:]):
+    print(first_second)
+```
+What I've tried:
+- Adding both `B` and `B905` to my `extend-select` lint config (this _doesn't_ work)
+- Disabling `B` and adding `B905` to my `extend-select` lint config (this _does_ work)
+
+Is there a way to enable `B905` but leave the default `B` rules on by default? I noticed that opinionated `B9xx` rules are disabled by default (see [this thread](https://github.com/astral-sh/ruff/issues/4054#issuecomment-1539338629)), but I can't figure out how to turn them on. The suggestions in [this thread](https://github.com/astral-sh/ruff/issues/4102) didn't work unfortunately.
+
+### Version
+
+0.9.3
+
+---
+
+_Label `question` added by @MichaReiser on 2025-03-06 18:28_
+
+---
+
+_Comment by @MichaReiser on 2025-03-06 18:29_
+
+Would you be able to share your entire configuration? Using `extend-select=["B"]` on its own should be sufficient. So there must be something else going on. You can also try `ruff check --show-settings` to see what settings Ruff resolves to (and `ruff check -v --show-settings`)
+
+---
+
+_Comment by @jackdent on 2025-03-06 18:37_
+
+- Lint configuration: https://gist.github.com/jackdent/090d3b4aa4419592f1df96de89c6eb67
+- `ruff check --show-settings`: https://gist.github.com/jackdent/bad0809a5ff715c36ab656a0931560b4
+
+
+---
+
+_Comment by @dylwil3 on 2025-03-07 01:54_
+
+It looks like your target version is being defaulted to 3.9 so the rule is not being applied. I don't understand why this magically changes things:
+
+> Disabling B and adding B905 to my extend-select lint config (this does work)
+
+Could you help us reproduce with some minimal setup instructions?
+
+In the meantime you could try specifying your `target-version` in your `ruff` configuration and see if that solves the immediate concern.
+
+---
+
+_Comment by @jackdent on 2025-03-07 02:29_
+
+Setting `target-version = "py311"` in my ruff.toml does work, thank you! (We have `requires-python = ">=3.11"` in our `pyproject.toml`)
+
+Would a reproduction still be helpful or does that give you all the info you need?
+
+---
+
+_Comment by @dylwil3 on 2025-03-07 03:35_
+
+Great to hear!
+
+> We have requires-python = ">=3.11" in our pyproject.toml
+
+does your `pyrpoject.toml` have a `[tool.ruff]` section? If not, then this is a known issue that should be resolved by https://github.com/astral-sh/ruff/pull/16319
+
+If so, then I'd be interested in reproducing the problem so it'd be helpful to learn more
+
+
+---
+
+_Comment by @jackdent on 2025-03-07 06:54_
+
+Our `pyproject.toml` does not have a `[tool.ruff]` section.
+
+---
+
+_Closed by @dylwil3 on 2025-03-07 11:13_
+
+---

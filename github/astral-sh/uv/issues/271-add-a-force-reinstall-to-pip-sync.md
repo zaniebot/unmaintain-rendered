@@ -1,0 +1,54 @@
+---
+number: 271
+title: "Add a `--force-reinstall` to `pip-sync`"
+type: issue
+state: closed
+author: charliermarsh
+labels:
+  - enhancement
+assignees: []
+created_at: 2023-11-01T13:37:31Z
+updated_at: 2023-12-08T19:58:45Z
+url: https://github.com/astral-sh/uv/issues/271
+synced_at: 2026-01-07T13:12:16-06:00
+---
+
+# Add a `--force-reinstall` to `pip-sync`
+
+---
+
+_Issue opened by @charliermarsh on 2023-11-01 13:37_
+
+I had this at some point but removed it, I think we should re-add it.
+
+---
+
+_Label `enhancement` added by @charliermarsh on 2023-11-01 13:37_
+
+---
+
+_Added to milestone `Feature complete` by @charliermarsh on 2023-11-01 13:37_
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2023-11-02 20:13_
+
+---
+
+_Unassigned @charliermarsh by @charliermarsh on 2023-11-02 20:13_
+
+---
+
+_Comment by @konstin on 2023-11-21 16:21_
+
+We might be able to be smarter here and only undo modifications, e.g. by using the record file, modification timestamp or by looking at the reflink status, at least for cases where we trust our cache (which should be most to all cases)
+
+---
+
+_Referenced in [astral-sh/uv#590](../../astral-sh/uv/pulls/590.md) on 2023-12-08 14:56_
+
+---
+
+_Closed by @charliermarsh on 2023-12-08 19:58_
+
+---

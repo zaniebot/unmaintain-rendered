@@ -1,0 +1,63 @@
+---
+number: 14295
+title: "False positible ANN001 Missing type annotation for function argument `self`"
+type: issue
+state: closed
+author: ssbarnea
+labels: []
+assignees: []
+created_at: 2024-11-12T10:46:44Z
+updated_at: 2024-11-12T11:54:44Z
+url: https://github.com/astral-sh/ruff/issues/14295
+synced_at: 2026-01-07T13:12:16-06:00
+---
+
+# False positible ANN001 Missing type annotation for function argument `self`
+
+---
+
+_Issue opened by @ssbarnea on 2024-11-12 10:46_
+
+Current version of ruff (0.7.3) does provide a false-positive message about types for `self`.
+
+Config reproduce
+```toml
+[tool.ruff.lint]
+select = ["ALL"]
+```
+
+While [ANN101 was removed more than a year ago](https://github.com/astral-sh/ruff/issues/4396) and its issue closed as done, we missed to spot that `ANN001` will trigger the same problem.
+
+That is forcing us to disable entire `ANN001` rule until this is sorted as adding type to self does create a huge amount of boilerplate that is only making function signatures harder to read.
+
+---
+
+_Referenced in [astral-sh/ruff#4396](../../astral-sh/ruff/issues/4396.md) on 2024-11-12 10:47_
+
+---
+
+_Comment by @MichaReiser on 2024-11-12 11:10_
+
+@AlexWaygood I'm a bit at a loss here. Would you mind taking a look?
+
+---
+
+_Comment by @dhruvmanila on 2024-11-12 11:38_
+
+Can you provide a code to reproduce this? I believe it shouldn't flag the `self` argument: https://play.ruff.rs/df6e79ac-202b-454e-b85e-120619b96645
+
+Looking at the implementation, it does skip `self` or `cls` for non-static methods:
+
+https://github.com/astral-sh/ruff/blob/be69f61b3ec42f5cda2490ff64c1efb9814f98f0/crates/ruff_linter/src/rules/flake8_annotations/rules/definition.rs#L605-L612
+
+---
+
+_Comment by @ssbarnea on 2024-11-12 11:54_
+
+Oops, sorry my mistake. It proved to be a nested function with the very unfortunate (incorrect) use of self.
+
+---
+
+_Closed by @ssbarnea on 2024-11-12 11:54_
+
+---

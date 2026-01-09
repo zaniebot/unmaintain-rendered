@@ -1,0 +1,152 @@
+---
+number: 11425
+title: "Reject `git+file` paths in requirement definitions"
+type: issue
+state: open
+author: T-256
+labels:
+  - error messages
+assignees: []
+created_at: 2025-02-11T17:40:54Z
+updated_at: 2025-04-04T14:17:14Z
+url: https://github.com/astral-sh/uv/issues/11425
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# Reject `git+file` paths in requirement definitions
+
+---
+
+_Issue opened by @T-256 on 2025-02-11 17:40_
+
+### Summary
+
+- `uv add C:\path\to\repo`
+```
+[tool.uv.sources]
+repo = { path = "../../../to/repo" }
+```
+- `uv add git+C:\path\to\repo --rev xxxxx`
+```
+[tool.uv.sources]
+repo = { git = 'c:\path\to\repo', rev = "xxxxx" }
+```
+
+### Platform
+
+Win11 24H2
+
+### Version
+
+0.5.30
+
+### Python version
+
+3.7
+
+---
+
+_Label `bug` added by @T-256 on 2025-02-11 17:40_
+
+---
+
+_Comment by @charliermarsh on 2025-02-11 17:46_
+
+We don't support "local" Git dependencies like this. Does that even work?
+
+---
+
+_Comment by @T-256 on 2025-02-11 17:54_
+
+Yes, I can verify it works well...
+
+---
+
+_Comment by @T-256 on 2025-02-11 17:59_
+
+When I try to explicitly pass "relative" path:
+```sh
+>uv add --dev git+file:///..\..\..\to\repo --rev xxxxxxx
+
+   Updating file:///to/repo (ad575d7b7d4176fbc6017cf0fb6560eda0ea2480)
+error: Git operation failed
+  Caused by: failed to clone into: C:\Users\User\AppData\Local\uv\cache\git-v0\db\5332d8279ede0cc1
+  Caused by: failed to fetch branch, tag, or commit `xxxxxxx`
+  Caused by: process didn't exit successfully: `C:\Program Files\Git\cmd\git.exe fetch --tags --force --update-head-ok file:///to/repo +refs/heads/*:refs/remotes/origin/* +HEAD:refs/remotes/origin/HEAD` (exit code: 128)
+--- stderr
+fatal: 'C:/Program Files/Git/to/repo' does not appear to be a git repository
+fatal: Could not read from remote repository.
+
+Please make sure you have the correct access rights and the repository exists.
+```
+it seems relative paths resolves to `git.exe` executable path.
+
+---
+
+_Comment by @charliermarsh on 2025-02-11 18:25_
+
+Hmm, we should may need to explicitly reject `git+file` (I thought we did?), I don't think it's supported, e.g.: https://github.com/astral-sh/uv/issues/3121
+
+---
+
+_Comment by @charliermarsh on 2025-02-11 18:25_
+
+We could add support, but that would be a different issue.
+
+---
+
+_Comment by @T-256 on 2025-02-11 18:53_
+
+> (I thought we did?)
+
+see c22c7cad4c3e9b6464173df51fc154df6e88a156 which removed rejection.
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2025-02-13 01:44_
+
+---
+
+_Renamed from "Exposed absolute path when add local repository" to "Reject `git+file` paths in requirement definitions" by @charliermarsh on 2025-02-13 16:40_
+
+---
+
+_Label `bug` removed by @charliermarsh on 2025-02-13 16:40_
+
+---
+
+_Label `error messages` added by @charliermarsh on 2025-02-13 16:40_
+
+---
+
+_Unassigned @charliermarsh by @charliermarsh on 2025-02-13 16:40_
+
+---
+
+_Referenced in [astral-sh/uv#11514](../../astral-sh/uv/pulls/11514.md) on 2025-02-14 16:40_
+
+---
+
+_Comment by @konstin on 2025-02-18 20:08_
+
+We should handle this through #11514 now. It's not exactly as described above, as we still require `git` to be a URL. That means `git = 'c:\path\to\repo'` gets rejected (with the error that `c:` is not a supported protocol - not ideal but we hint towards `file:`), but you can instead use the `file://` protocol with an absolute path. This does however not include relative file support.
+
+
+---
+
+_Comment by @nickolay on 2025-04-04 14:17_
+
+https://github.com/astral-sh/uv/pull/11514 was merged, keeping git `file://` support (but only absolute), so this should probably be renamed back to be about relative paths support in git dependencies.
+
+My use-case for this is low-friction way to deploy scripts along with a versioned (private) library: I'm deploying the scripts via `git pull` and if I were able to specify the library version via `rev` in the same clone:
+
+```
+# [tool.uv.sources]
+# commonlib = { git = "file://../..", subdirectory="libs/commonlib", rev = "526451a" }
+```
+
+...I wouldn't need any additional deployment steps when making changes to the common code. `uv run --script` would magically pick up the correct version.
+
+Currently I either have to build and put the wheel alongside the repo (or commit it to git), or rely on relative source `path`s meaning all scripts must always be compatible with the latest version of the library.
+
+---

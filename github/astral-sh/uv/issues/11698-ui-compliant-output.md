@@ -1,0 +1,68 @@
+---
+number: 11698
+title: "\"UI compliant\" output?"
+type: issue
+state: closed
+author: vangelem
+labels:
+  - question
+assignees: []
+created_at: 2025-02-21T15:04:45Z
+updated_at: 2025-07-16T13:50:56Z
+url: https://github.com/astral-sh/uv/issues/11698
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# "UI compliant" output?
+
+---
+
+_Issue opened by @vangelem on 2025-02-21 15:04_
+
+### Question
+
+Hello astral team!
+We're designing a UI that dynamically creates venvs, installs packages and runs subprocesses. For the venv creation and package installation bit, we're using uv (of course!) in the backgroud because of its speed.
+Now even if uv is super fast, our users still have to wait for a few minutes sometimes and would like to get some information on the current venv creation / package installation status. Of course, we could simply redirect stdout to a console somewhere in the UI but I'd like to get something a little bit more UX friendly, like displaying a progress bar from our UI front end framework (PyQt to name it).
+So, I don't know if it is/would be possible to have an option on the two commands we're using here (`uv venv` and `uv pip install`) to replace the standard output by something rather simple e.g. `0/10`, `1/10`, ... that we could easily send through a regex and integrate in the UI?
+Cheers,
+Matt
+
+
+### Platform
+
+Windows
+
+### Version
+
+0.5.30
+
+---
+
+_Label `question` added by @vangelem on 2025-02-21 15:04_
+
+---
+
+_Comment by @Gankra on 2025-02-21 17:30_
+
+It's an interesting idea... but I'm a bit inclined to have this kind negotiated with json(-lines) output, similar to [how cargo/rustc does it](https://doc.rust-lang.org/cargo/reference/external-tools.html#json-messages). Potentially related:
+
+* #411 
+* https://github.com/astral-sh/uv/issues/10431
+* https://github.com/astral-sh/uv/issues/1569
+
+---
+
+_Referenced in [janhq/cortex.cpp#2052](../../janhq/cortex.cpp/issues/2052.md) on 2025-02-28 06:29_
+
+---
+
+_Comment by @charliermarsh on 2025-07-16 13:50_
+
+I think this is best tracked via #411.
+
+---
+
+_Closed by @charliermarsh on 2025-07-16 13:50_
+
+---

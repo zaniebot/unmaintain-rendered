@@ -1,0 +1,166 @@
+---
+number: 990
+title: Fatal internal error when misusing requires/conflicting rules
+type: issue
+state: closed
+author: chriscoomber
+labels: []
+assignees: []
+created_at: 2017-06-20T15:30:39Z
+updated_at: 2018-08-02T03:30:08Z
+url: https://github.com/clap-rs/clap/issues/990
+synced_at: 2026-01-07T13:12:19-06:00
+---
+
+# Fatal internal error when misusing requires/conflicting rules
+
+---
+
+_Issue opened by @chriscoomber on 2017-06-20 15:30_
+
+I provided the following misconfigured matches:
+
+```rust
+    let matches = clap::App::new("test")
+        .arg(clap::Arg::with_name("viv")
+            .short("v")
+            .requires_all(&["w"]))
+        .arg(clap::Arg::with_name("walter")
+            .short("w")
+            .requires_all(&["v"]))
+        .arg(clap::Arg::with_name("andy")
+            .short("a")
+            .conflicts_with_all(&["v", "w"]))
+        .get_matches();
+```
+
+and got a fatal internal error (suggesting I raise here), rather than a well handled error.
+
+I should have put as my matches:
+
+```rust
+    let matches = clap::App::new("test")
+        .arg(clap::Arg::with_name("viv")
+            .short("v")
+            .requires_all(&["walter"]))
+        .arg(clap::Arg::with_name("walter")
+            .short("w")
+            .requires_all(&["viv"]))
+        .arg(clap::Arg::with_name("andy")
+            .short("a")
+            .conflicts_with_all(&["viv", "walter"]))
+        .get_matches();
+```
+
+### Rust Version
+
+rustc 1.18.0 (03fc9d622 2017-06-06)
+
+### Affected Version of clap
+
+2.24.2
+
+### Expected Behavior Summary
+
+A graceful error, possibly explaining my mistake.
+
+### Actual Behavior Summary
+
+```
+thread 'main' panicked at 'Fatal internal error. Please consider filing a bug report at https://github.com/kbknapp/clap-rs/issues', /checkout/src/libcore/option.rs:794
+```
+
+### Steps to Reproduce the issue
+
+Put the above matches in a binary. Run `cargo run -- -v`.
+
+### Output
+
+```
+$ RUST_BACKTRACE=1 cargo run -- -v
+     Running `<snip>/my_app -v`
+thread 'main' panicked at 'Fatal internal error. Please consider filing a bug report at https://github.com/kbknapp/clap-rs/issues', /checkout/src/libcore/option.rs:794
+stack backtrace:
+   0: std::sys::imp::backtrace::tracing::imp::unwind_backtrace
+             at /checkout/src/libstd/sys/unix/backtrace/tracing/gcc_s.rs:49
+   1: std::sys_common::backtrace::_print
+             at /checkout/src/libstd/sys_common/backtrace.rs:71
+   2: std::panicking::default_hook::{{closure}}
+             at /checkout/src/libstd/sys_common/backtrace.rs:60
+             at /checkout/src/libstd/panicking.rs:355
+   3: std::panicking::default_hook
+             at /checkout/src/libstd/panicking.rs:371
+   4: std::panicking::rust_panic_with_hook
+             at /checkout/src/libstd/panicking.rs:549
+   5: std::panicking::begin_panic
+             at /checkout/src/libstd/panicking.rs:511
+   6: std::panicking::begin_panic_fmt
+             at /checkout/src/libstd/panicking.rs:495
+   7: rust_begin_unwind
+             at /checkout/src/libstd/panicking.rs:471
+   8: core::panicking::panic_fmt
+             at /checkout/src/libcore/panicking.rs:69
+   9: core::option::expect_failed
+             at /checkout/src/libcore/option.rs:794
+  10: <core::option::Option<T>>::expect
+             at /checkout/src/libcore/option.rs:297
+  11: clap::app::usage::get_required_usage_from::{{closure}}
+             at /data/cc3/.cargo/registry/src/github.com-1ecc6299db9ec823/clap-2.24.2/src/app/usage.rs:420
+  12: <core::option::Option<T>>::unwrap_or_else
+             at /checkout/src/libcore/option.rs:364
+  13: clap::app::usage::get_required_usage_from
+             at /data/cc3/.cargo/registry/src/github.com-1ecc6299db9ec823/clap-2.24.2/src/app/usage.rs:417
+  14: clap::app::validator::Validator::missing_required_error
+             at /data/cc3/.cargo/registry/src/github.com-1ecc6299db9ec823/clap-2.24.2/src/app/validator.rs:436
+  15: clap::app::validator::Validator::validate_required
+             at /data/cc3/.cargo/registry/src/github.com-1ecc6299db9ec823/clap-2.24.2/src/app/validator.rs:360
+  16: clap::app::validator::Validator::validate
+             at /data/cc3/.cargo/registry/src/github.com-1ecc6299db9ec823/clap-2.24.2/src/app/validator.rs:65
+  17: clap::app::parser::Parser::get_matches_with
+             at /data/cc3/.cargo/registry/src/github.com-1ecc6299db9ec823/clap-2.24.2/src/app/parser.rs:1084
+  18: clap::app::App::get_matches_from_safe_borrow
+             at /data/cc3/.cargo/registry/src/github.com-1ecc6299db9ec823/clap-2.24.2/src/app/mod.rs:1618
+  19: clap::app::App::get_matches_from
+             at /data/cc3/.cargo/registry/src/github.com-1ecc6299db9ec823/clap-2.24.2/src/app/mod.rs:1503
+  20: clap::app::App::get_matches
+             at /data/cc3/.cargo/registry/src/github.com-1ecc6299db9ec823/clap-2.24.2/src/app/mod.rs:1446
+  21: my_app::main
+             at ./src/main.rs:54
+  22: __rust_maybe_catch_panic
+             at /checkout/src/libpanic_unwind/lib.rs:98
+  23: std::rt::lang_start
+             at /checkout/src/libstd/panicking.rs:433
+             at /checkout/src/libstd/panic.rs:361
+             at /checkout/src/libstd/rt.rs:57
+  24: main
+  25: __libc_start_main
+  26: <unknown>
+```
+
+---
+
+_Comment by @kbknapp on 2017-08-21 22:22_
+
+Thanks for the heads up and sorry it's taken me so long to reply, I'm trying to blind myself to get 3.x released which should actually take care of this issue. I'm going to leave it open though to verify that it's fixed before finishing 3.x
+
+---
+
+_Label `C: errors` added by @kbknapp on 2017-08-21 22:22_
+
+---
+
+_Label `W: 3.x` added by @kbknapp on 2017-08-21 22:22_
+
+---
+
+_Closed by @kbknapp on 2018-07-22 02:30_
+
+---
+
+_Referenced in [clap-rs/clap#1479](../../clap-rs/clap/issues/1479.md) on 2019-05-26 13:43_
+
+---
+
+_Referenced in [clap-rs/clap#1644](../../clap-rs/clap/issues/1644.md) on 2020-02-01 22:36_
+
+---

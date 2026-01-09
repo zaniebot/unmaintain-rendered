@@ -1,0 +1,118 @@
+---
+number: 2541
+title: "Don't generate completions for args with AppSettings::Hidden"
+type: issue
+state: closed
+author: jonner
+labels:
+  - C-bug
+  - A-completion
+  - E-easy
+  - S-duplicate
+assignees: []
+created_at: 2021-06-16T16:23:02Z
+updated_at: 2022-01-11T18:46:29Z
+url: https://github.com/clap-rs/clap/issues/2541
+synced_at: 2026-01-07T13:12:19-06:00
+---
+
+# Don't generate completions for args with AppSettings::Hidden
+
+---
+
+_Issue opened by @jonner on 2021-06-16 16:23_
+
+### Please complete the following tasks
+
+- [X] I have searched the [discussions](https://github.com/clap-rs/clap/discussions)
+- [X] I have searched the existing issues
+
+### Describe your use case
+
+I have an "internal" subcommand for my application that is hidden from help output using clap::AppSettings::Hidden. But when generating bash completions, this hidden command is included.
+
+### Describe the solution you'd like
+
+Don't generate completion for the hidden subcommand.
+
+### Alternatives, if applicable
+
+_No response_
+
+### Additional Context
+
+_No response_
+
+---
+
+_Label `T: new feature` added by @jonner on 2021-06-16 16:23_
+
+---
+
+_Referenced in [mdevctl/mdevctl#36](../../mdevctl/mdevctl/pulls/36.md) on 2021-06-16 16:24_
+
+---
+
+_Comment by @pksunkara on 2021-06-17 11:11_
+
+Need the version you are looking at because this is fixed in master.
+
+---
+
+_Closed by @pksunkara on 2021-06-17 11:11_
+
+---
+
+_Referenced in [clap-rs/clap#1335](../../clap-rs/clap/issues/1335.md) on 2021-12-08 20:14_
+
+---
+
+_Referenced in [gleam-lang/gleam#1374](../../gleam-lang/gleam/pulls/1374.md) on 2021-12-09 20:02_
+
+---
+
+_Comment by @tranzystorekk on 2021-12-10 16:09_
+
+@pksunkara Could you point to the fix commit? I tried this out on clap 3.0.0-rc.3 and completions are still generated for hidden apps
+
+---
+
+_Reopened by @epage on 2021-12-10 16:26_
+
+---
+
+_Label `A-completion` added by @epage on 2021-12-10 16:26_
+
+---
+
+_Label `C-bug` added by @epage on 2021-12-10 16:26_
+
+---
+
+_Label `E-easy` added by @epage on 2021-12-10 16:26_
+
+---
+
+_Comment by @epage on 2021-12-10 16:28_
+
+Going to re-close this but because it is also covered in #1335 
+
+---
+
+_Closed by @epage on 2021-12-10 16:28_
+
+---
+
+_Comment by @pksunkara on 2021-12-10 16:29_
+
+I think we went back on the decision regarding this and are currently generating hidden subcommands too.
+
+---
+
+_Label `S-duplicate` added by @epage on 2022-01-11 18:46_
+
+---
+
+_Referenced in [clap-rs/clap#4265](../../clap-rs/clap/issues/4265.md) on 2022-09-26 22:02_
+
+---

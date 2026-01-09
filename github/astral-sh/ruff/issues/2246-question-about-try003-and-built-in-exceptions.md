@@ -1,0 +1,161 @@
+---
+number: 2246
+title: Question about TRY003 and built-in exceptions
+type: issue
+state: closed
+author: divaltor
+labels:
+  - question
+assignees: []
+created_at: 2023-01-27T10:09:03Z
+updated_at: 2023-03-07T17:29:13Z
+url: https://github.com/astral-sh/ruff/issues/2246
+synced_at: 2026-01-07T13:12:14-06:00
+---
+
+# Question about TRY003 and built-in exceptions
+
+---
+
+_Issue opened by @divaltor on 2023-01-27 10:09_
+
+Hello, thank you for great plugin! ❤️ 
+
+I have a question about TRY003 rule, because now it raise an error on built-in exceptions.
+
+```python
+len_str = 129
+
+if len_str > 128:
+  raise ValueError("String must be lower than 128 chars")
+```
+
+Ruff output:
+```bash
+TRY003 Avoid specifying long messages outside the exception class
+```
+
+Should it be like this? If don't, should we add some optional rule in settings for ignoring built-in exceptions for this rule or not? 
+
+Ruff version: 0.0.236
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+- A minimal code snippet that reproduces the bug.
+- The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+- The current Ruff settings (any relevant sections from your `pyproject.toml`).
+- The current Ruff version (`ruff --version`).
+-->
+
+
+---
+
+_Label `question` added by @charliermarsh on 2023-01-27 12:27_
+
+---
+
+_Comment by @charliermarsh on 2023-01-27 13:00_
+
+I think this is "working as intended", although I find the rule to be a little strict. If you compare to [`tryceratops`](https://github.com/guilatrova/tryceratops), they have the same behavior:
+
+```
+❯ flake8 bar.py --select TC
+bar.py:4:3: TC003 Avoid specifying long messages outside the exception class
+```
+
+I think what they want you to do is something like:
+
+```py
+class LongStringException(Exception):
+  def __init__(self, max_length: int) -> None:
+    super().__init__(f"String must be less than {max_length} characters")
+
+len_str = 129
+
+if len_str > 128:
+  raise LongStringException(128)
+```
+
+
+---
+
+_Closed by @charliermarsh on 2023-01-27 13:00_
+
+---
+
+_Comment by @divaltor on 2023-01-27 20:43_
+
+Okay, thank you for response!
+
+---
+
+_Comment by @martinhoyer on 2023-03-07 14:56_
+
+> If you compare to [tryceratops](https://github.com/guilatrova/tryceratops), they have the same behavior:
+
+@charliermarsh are you sure you tested it on built-in exceptions?
+
+```
+$ tryceratops iscsi.py 
+Done processing!
+Processed 1 files
+Everything clean!
+
+$ flake8 iscsi.py --select TC
+
+$ ruff iscsi.py 
+iscsi.py:74:19: TRY003 Avoid specifying long messages outside the exception class
+iscsi.py:81:23: TRY003 Avoid specifying long messages outside the exception class
+Found 2 errors.
+```
+```
+$ ruff -V
+ruff 0.0.254
+```
+
+ruff is complaining even when I have something as short as:  
+`raise ValueError("Invalid mode")`
+
+Sorry if I'm missing something ;)
+
+---
+
+_Comment by @charliermarsh on 2023-03-07 14:59_
+
+@martinhoyer - Lemme take a look... I actually thought that _would_ error in both Ruff and Tryceratops.
+
+---
+
+_Comment by @charliermarsh on 2023-03-07 15:03_
+
+Yeah I think Ruff and Tryceratops _are_ consistent here:
+
+```
+❯ flake8 foo.py --select TC
+foo.py:1:1: TC003 Avoid specifying long messages outside the exception class
+```
+
+The idea is that it wants you to define a custom exception class, e.g., something that takes `mode` as an argument, and formats the message within the exception class, rather than defining the message inline as part of `ValueError` -- so it is "correct", from that perspective.
+
+That being said, the tryceratops rules tend to be quite strict, not always appropriate to enforce that IMO.
+
+
+
+---
+
+_Comment by @martinhoyer on 2023-03-07 17:29_
+
+Thanks a lot for checking @charliermarsh !  
+I'm still puzzled why there is no error when I run flake8 or tryceratops directly, but I guess it's not worth spending time on this particular mystery :) 
+
+---
+
+_Referenced in [shap/shap#3356](../../shap/shap/pulls/3356.md) on 2023-10-23 20:45_
+
+---
+
+_Referenced in [astral-sh/ruff#14398](../../astral-sh/ruff/issues/14398.md) on 2024-11-17 13:19_
+
+---

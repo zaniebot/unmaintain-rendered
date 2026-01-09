@@ -1,0 +1,279 @@
+---
+number: 4421
+title: "Rules/Request:  Airflow DAGs checks"
+type: issue
+state: open
+author: brucearctor
+labels:
+  - plugin
+  - accepted
+assignees: []
+created_at: 2023-05-13T20:09:14Z
+updated_at: 2024-08-24T10:00:14Z
+url: https://github.com/astral-sh/ruff/issues/4421
+synced_at: 2026-01-07T13:12:14-06:00
+---
+
+# Rules/Request:  Airflow DAGs checks
+
+---
+
+_Issue opened by @brucearctor on 2023-05-13 20:09_
+
+There are numerous problems that could go wrong with an Airflow DAG, ex:
+
+
+* Duplicate DAG name
+* Duplicate Task ID
+* Duplicate Task Dependency
+* Task without DAG
+* No Cycles [ DAG should be acyclic ]
+* etc ...
+
+
+Seems like we might want new rules that could be used to detect these things.  
+
+
+---
+
+_Comment by @qdegraaf on 2023-05-17 09:50_
+
+The rules defined in https://github.com/BasPH/pylint-airflow seem to cover all those cases plus a bit more. Would a port of that Pylint plugin be a good start?
+
+---
+
+_Comment by @charliermarsh on 2023-05-17 15:06_
+
+I'd had some discussion with @jlaneve on Twitter about this! I'd like to support Airflow-specific rules, but we need guidance on what those rules should contain.
+
+@jlaneve -- any further thoughts here? Is the pylint-airflow plugin a good starting point?
+
+
+---
+
+_Label `plugin` added by @charliermarsh on 2023-05-17 15:06_
+
+---
+
+_Comment by @jlaneve on 2023-05-17 15:25_
+
+Bas' pylint-airflow is definitely a good start, but worth noting it was designed for Airflow 1.x and we should aim to get ruff supporting Airflow 2.x, so there are likely a few changes we'll want to make. Maybe I can open a draft PR with a few of the easy rules (no duplicate DAG names, no empty DAGs, etc) to get _something_ going, and then we can open issues for specific rules afterwards?
+
+@charliermarsh - what do you think?
+
+---
+
+_Comment by @charliermarsh on 2023-05-17 15:29_
+
+@jlaneve - Yeah, that's perfect.
+
+---
+
+_Comment by @brucearctor on 2023-05-17 15:34_
+
+Exactly - I had seen `pylint-airflow`, that covers lots of the ideal rules.  V2 Airflow is the thing to target, and imagine even ignoring V1 [ for ruff ] is OK.  
+
+
+
+---
+
+_Referenced in [astral-sh/ruff#4687](../../astral-sh/ruff/pulls/4687.md) on 2023-05-27 23:18_
+
+---
+
+_Label `accepted` added by @charliermarsh on 2023-07-10 01:26_
+
+---
+
+_Comment by @fritz-astronomer on 2023-08-04 21:52_
+
+https://docs.astronomer.io/learn/dag-best-practices
+https://airflow.apache.org/docs/apache-airflow/stable/faq.html
+https://airflow.apache.org/docs/apache-airflow/stable/best-practices.html
+
+Some opinionated options (which could certainly be contentious):
+
+- not mixing `with DAG` and `@dag` in the same repo 
+- DAGs having `owners` 
+- remove `DAG as dag` if airflow>X.Y
+- remove `globals()[dag_id] = dag` if airflow>x.y
+- Some way to check for top level code? That'd probably be really tricky
+    - avoid top-level variable.get
+- `dag_id` is the same as the filename
+- `start_date` is a static datetime
+
+
+---
+
+_Comment by @fritz-astronomer on 2023-08-04 21:53_
+
+Some Astronomer folks might be able to help development :) 
+
+---
+
+_Comment by @daniel-bartley on 2024-01-19 06:06_
+
+Is there a roadmap timeline for this?
+
+---
+
+_Comment by @usethia on 2024-04-03 19:32_
+
+what essentially makes the difference between ruff check vs ruff lint 
+lint gives out this error which doesn't seem to get resolved. 
+lint:1:1: E902 No such file or directory (os error 2)
+any reason? 
+
+
+---
+
+_Comment by @MichaReiser on 2024-04-04 07:56_
+
+@usethia your question seems unrelated to this issue. I'll reply anyway but please open a new issue if you need more help to avoid sidetracking this issue.
+
+`ruff lint` isn't a Ruff command. Today `ruff <path>` is an alias for `ruff check <path>`. So the command `ruff lint` is the same as `ruff check lint` but you don't have a file or directory called `lint` in your project. We're about to remove the alias in the next minor version of Ruff because it can be confusing (as in your case).
+
+To lint your project, run `ruff check`. 
+
+
+---
+
+_Comment by @yehoshuadimarsky on 2024-08-11 23:36_
+
+Hi, I'm a longtime user (and contributor) of Airflow, and brand new to Rust, I'd love to get my feet wet in Rust. I thought a great place to start would be to implement some rules for Airflow for Ruff. I'd love to give at least one of these a shot. Did a quick search of "airflow" in the Issues and found this.
+
+I'll try to open my first PR soon-ish for a simple Airflow rule - I'm thinking of the following:
+
+If using Taskflow `@dag` or `@task` decorators, then make sure to also actually invoke the function afterwards. Personally I've done this way too many times, where I've written a Dag/Task and wondered why it isn't showing up in the UI, only to realized I never called it.
+
+Bad:
+```python
+# file.py
+from airflow.decorators import dag, task
+
+@dag
+def my_dag():
+    ....
+```
+
+Good:
+```python
+# file.py
+from airflow.decorators import dag, task
+
+@dag
+def my_dag():
+    ....
+
+my_dag()
+```
+
+Let me know if anyone objects, thanks
+
+---
+
+_Comment by @brucearctor on 2024-08-12 01:24_
+
+@yehoshuadimarsky -- sounds great!  
+
+---
+
+_Comment by @jlaneve on 2024-08-12 03:00_
+
+We do have this that you can extend on - I started building it out but unfortunately don't have much free time!
+
+https://github.com/astral-sh/ruff/tree/main/crates/ruff_linter/src/rules/airflow
+
+---
+
+_Comment by @dbrtly on 2024-08-13 12:16_
+
+👏 👏 
+Airflow has so many stylistic variations. Do you do mostly dynamic dags?  The teams I've been on do a different pattern so I wouldn't benefit from that particular rule but any progress is good. An dag loader lint rule would be very cool. 
+
+`from airflow import DAG
+
+with DAG(...):
+
+    my_task = SomeOperator(...)
+`
+
+The prior art links:
+
+https://pypi.org/project/pylint-airflow/
+https://github.com/feluelle/airflint
+all the Marc Lamberti blog posts where he says "migrate from pattern x to pattern y"
+
+Code | Symbol | Description
+-- | -- | --
+C8300 | different-operator-varname-taskid | For consistency assign the same variable name and task_id to operators.
+C8301 | match-callable-taskid | For consistency name the callable function ‘_[task_id]’, e.g. PythonOperator(task_id=’mytask’, python_callable=_mytask).
+C8302 | mixed-dependency-directions | For consistency don’t mix directions in a single statement, instead split over multiple statements.
+C8303 | task-no-dependencies | Sometimes a task without any dependency is desired, however often it is the result of a forgotten dependency.
+C8304 | task-context-argname | Indicate you expect Airflow task context variables in the **kwargs argument by renaming to **context.
+C8305 | task-context-separate-arg | To avoid unpacking kwargs from the Airflow task context in a function, you can set the needed variables as arguments in the function.
+C8306 | match-dagid-filename | For consistency match the DAG filename with the dag_id.
+R8300 | unused-xcom | Return values from a python_callable function or execute() method are automatically pushed as XCom.
+W8300 | basehook-top-level | Airflow executes DAG scripts periodically and anything at the top level of a script is executed. Therefore, move BaseHook calls into functions/hooks/operators.
+E8300 | duplicate-dag-name | DAG name should be unique.
+E8301 | duplicate-task-name | Task name within a DAG should be unique.
+E8302 | duplicate-dependency | Task dependencies can be defined only once.
+E8303 | dag-with-cycles | A DAG is acyclic and cannot contain cycles.
+E8304 | task-no-dag | A task must know a DAG instance to run.
+
+Use function-level imports instead of top-level imports[1](https://github.com/feluelle/airflint#user-content-fn-1-4997c1131936f3fbe41f5cf4bbf268cd)[2](https://github.com/feluelle/airflint#user-content-fn-2-4997c1131936f3fbe41f5cf4bbf268cd) (see [Top level Python Code](https://airflow.apache.org/docs/apache-airflow/stable/best-practices.html#top-level-python-code))
+
+ Use jinja template syntax instead of Variable.get (see [Airflow Variables](https://airflow.apache.org/docs/apache-airflow/stable/best-practices.html#airflow-variables))
+ 
+other ideas:
+ 
+add `constants.py` to define DEFAULT_ARGS and other constants for reusability in the dags.
+ 
+The jinja json variable syntax. I've seen numerous people give up and fetch multiple secrets with multiple calls instead. Not me oc.
+ 
+Detect code that reimplements the "connections" feature and/or using custom secrets libraries in dags that could leverage the airflow secrets backend. "This looks like it could be refactored to use the connections/secrets backend" with a code snippet and links to the docs.
+ 
+throw warnings about deprecated providers: https://airflow.apache.org/docs/apache-airflow-providers/core-extensions/deprecations.html
+
+I usually see low-formality, custom libraries in the dags directory. Maybe we should be using `$ uv pip install "git+https://github.com/my-org/my-library"` to install libraries. 🤷 
+
+All progress here is good. 👏 
+
+
+---
+
+_Comment by @yehoshuadimarsky on 2024-08-18 05:02_
+
+Anyone know where in the Ruff codebase I would check for unused functions? Not sure exactly where in `crates/ruff_linter/src/checkers/ast/analyze/` I would hook into, I originally thought in [statement.rs](https://github.com/astral-sh/ruff/blob/main/crates/ruff_linter/src/checkers/ast/analyze/statement.rs) 
+but then it seems like all that actually happens in [deferred_scopes.rs](https://github.com/astral-sh/ruff/blob/main/crates/ruff_linter/src/checkers/ast/analyze/deferred_scopes.rs).
+
+Getting kind of lost in what exactly all the terms mean like Bindings, Scopes, etc, any pointers where to look? I think these are Python terms but not 100% sure
+
+
+
+---
+
+_Comment by @MichaReiser on 2024-08-19 13:24_
+
+> Anyone know where in the Ruff codebase I would check for unused functions? Not sure exactly where in `crates/ruff_linter/src/checkers/ast/analyze/` I would hook into, I originally thought in [statement.rs](https://github.com/astral-sh/ruff/blob/main/crates/ruff_linter/src/checkers/ast/analyze/statement.rs?rgh-link-date=2024-08-18T05%3A02%3A46Z) but then it seems like all that actually happens in [deferred_scopes.rs](https://github.com/astral-sh/ruff/blob/main/crates/ruff_linter/src/checkers/ast/analyze/deferred_scopes.rs?rgh-link-date=2024-08-18T05%3A02%3A46Z).
+> 
+> Getting kind of lost in what exactly all the terms mean like Bindings, Scopes, etc, any pointers where to look? I think these are Python terms but not 100% sure
+
+I'm not sure what you're trying to do and how it is relevant to this rule. Could you open a new issue/discussion with an explanation of what you're trying to accomplish. I might then be able to help
+
+---
+
+_Comment by @dbrtly on 2024-08-24 10:00_
+
+Does the 
+
+> Anyone know where in the Ruff codebase I would check for unused functions? Not sure exactly where in `crates/ruff_linter/src/checkers/ast/analyze/` I would hook into, I originally thought in [statement.rs](https://github.com/astral-sh/ruff/blob/main/crates/ruff_linter/src/checkers/ast/analyze/statement.rs) but then it seems like all that actually happens in [deferred_scopes.rs](https://github.com/astral-sh/ruff/blob/main/crates/ruff_linter/src/checkers/ast/analyze/deferred_scopes.rs).
+> 
+> Getting kind of lost in what exactly all the terms mean like Bindings, Scopes, etc, any pointers where to look? I think these are Python terms but not 100% sure
+
+Does your use case align with this issue?
+https://github.com/astral-sh/ruff/issues/872
+
+Looks like identifying classes and functions that exist but are not used and recommending deletion of them might not be in the ruff feature-set yet. 
+
+---

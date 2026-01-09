@@ -1,0 +1,95 @@
+---
+number: 16390
+title: "VsCode extension: Dublicates lines on save"
+type: issue
+state: closed
+author: jzr-supove
+labels:
+  - question
+assignees: []
+created_at: 2025-02-26T11:03:22Z
+updated_at: 2025-03-03T19:52:12Z
+url: https://github.com/astral-sh/ruff/issues/16390
+synced_at: 2026-01-07T13:12:16-06:00
+---
+
+# VsCode extension: Dublicates lines on save
+
+---
+
+_Issue opened by @jzr-supove on 2025-02-26 11:03_
+
+### Summary
+
+https://github.com/user-attachments/assets/e4179996-0936-4537-9b72-693847df1db9
+
+Ruff is hallucinating when trying to format on save (Ctrl+S)
+
+
+VsCode settings:
+```json
+{
+    ...
+    "editor.defaultFormatter": "charliermarsh.ruff",
+    "[python]": {
+        "diffEditor.ignoreTrimWhitespace": false,
+        "editor.codeActionsOnSave": {
+            "source.fixAll.ruff": "explicit",
+            "source.organizeImports": "explicit"
+        }
+    },
+    "python.linting.enabled": true,
+    "ruff.nativeServer": true,
+    "editor.formatOnSave": true,
+    ...
+}
+```
+
+
+
+VsCode:
+```
+Version: 1.97.2
+Commit: e54c774e0add60467559eb0d1e229c6452cf8447
+Date: 2025-02-12T23:20:35.343Z
+Electron: 32.2.7
+ElectronBuildId: 10982180
+Chromium: 128.0.6613.186
+Node.js: 20.18.1
+V8: 12.8.374.38-electron.0
+OS: Linux x64 6.12.13-200.fc41.x86_64
+```
+
+
+
+### Version
+
+ruff 0.9.7
+
+---
+
+_Comment by @dhruvmanila on 2025-02-26 11:20_
+
+Can you try using `source.organizeImports.ruff` instead? There must be another extension that can organize imports in Python like the isort extension.
+
+---
+
+_Label `question` added by @dhruvmanila on 2025-02-26 11:20_
+
+---
+
+_Renamed from "VsCode Ruff extension is hallucinating: Dublicates lines on save" to "VsCode extension: Dublicates lines on save" by @MichaReiser on 2025-02-26 11:27_
+
+---
+
+_Comment by @jzr-supove on 2025-02-27 05:26_
+
+Seems like, it resolved the issue! 
+Will test it for few days, and come back here to report any issues or close the ticket if everything goes well
+Thanks!
+
+---
+
+_Closed by @jzr-supove on 2025-03-03 19:52_
+
+---

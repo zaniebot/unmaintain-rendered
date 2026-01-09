@@ -1,0 +1,133 @@
+---
+number: 16973
+title: "Request: Autofix for `stub-body-multiple-statements (PYI048)` with elipsis / pass"
+type: issue
+state: open
+author: Avasam
+labels:
+  - fixes
+assignees: []
+created_at: 2025-03-26T01:00:37Z
+updated_at: 2025-05-03T01:17:01Z
+url: https://github.com/astral-sh/ruff/issues/16973
+synced_at: 2026-01-07T13:12:16-06:00
+---
+
+# Request: Autofix for `stub-body-multiple-statements (PYI048)` with elipsis / pass
+
+---
+
+_Issue opened by @Avasam on 2025-03-26 01:00_
+
+### Summary
+
+My specific use-case is for docstrings + elipsis.
+
+Example taken from https://github.com/microsoft/python-type-stubs/blob/main/stubs/sklearn/utils/sparsefuncs_fast.pyi
+![Image](https://github.com/user-attachments/assets/5bb54d41-7210-4db3-860d-30b2d07adf2e)
+
+Simplified example:
+```py
+# From
+def foo() -> None:
+    """docstring"""
+    ...
+
+# To
+def foo() -> None:
+    """docstring"""
+```
+
+But I think this may be generalized to any case where the extra statements are all `...` or `pass`.
+
+More simplified example:
+```py
+# From
+def foo() -> None:
+    """docstring"""
+    pass
+
+def foo() -> None:
+    """docstring"""
+    ...
+    pass
+
+# To
+def foo() -> None:
+    """docstring"""
+```
+
+```py
+# From
+def foo() -> None:
+    print("bar")
+    pass
+
+# To
+def foo() -> None:
+    print("bar")  # Note: This rule isn't about whether a call is valid in stub
+```
+
+```py
+# From
+def foo() -> None:
+    ...
+    ...
+
+def foo() -> None:
+    pass
+    ...
+
+# To
+def foo() -> None: ...
+```
+
+And unfixable (more than 1 non no-op statement)
+```py
+# From
+def foo() -> None:
+    print("bar")
+    print("bar2")
+    pass
+```
+
+---
+
+Ruff: 0.11.2
+
+---
+
+_Label `fixes` added by @dylwil3 on 2025-03-26 07:29_
+
+---
+
+_Comment by @MichaReiser on 2025-03-27 20:00_
+
+This sounds reasonable. Do you know how common some of those cases are? I'd expect that the docstring + dummy statement is the most common and I'd prioritize adding a fix for this. I'm not sure if we need to support the other cases.
+
+---
+
+_Comment by @Avasam on 2025-03-27 20:11_
+
+The docstring + dummy statement is the only case I remember coming across. And it's valid in stubs, just extraneous. I think pyright generates stubs like that.
+
+The rest are hypothetical generalisation.
+There may be a valid use-case in automatically removing functions' content if trying to generate a stub file from the source one using Ruff. But that's already mostly handled by [non-empty-stub-body (PYI010)](https://docs.astral.sh/ruff/rules/non-empty-stub-body/#non-empty-stub-body-pyi010)
+
+---
+
+_Comment by @Avasam on 2025-03-31 19:12_
+
+I just realized, this heavily overlaps with [unnecessary-placeholder (PIE790)](https://docs.astral.sh/ruff/rules/unnecessary-placeholder/#unnecessary-placeholder-pie790)
+
+---
+
+_Referenced in [microsoft/python-type-stubs#362](../../microsoft/python-type-stubs/pulls/362.md) on 2025-05-03 01:16_
+
+---
+
+_Comment by @Avasam on 2025-05-03 01:17_
+
+In https://github.com/astral-sh/ruff/issues/16973 I enabled `PIE790` and got all but 1 instances fixed (which is out of scope of this request anyway). I think the same autofix can simply be applied.
+
+---

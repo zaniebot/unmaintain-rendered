@@ -1,0 +1,71 @@
+---
+number: 15890
+title: "Documentation: Incorrect definition of “module” as “directory with __init__.py” — should be “package”"
+type: issue
+state: closed
+author: VioletsOleander
+labels:
+  - question
+assignees: []
+created_at: 2025-09-16T12:21:07Z
+updated_at: 2025-09-16T13:07:28Z
+url: https://github.com/astral-sh/uv/issues/15890
+synced_at: 2026-01-07T13:12:19-06:00
+---
+
+# Documentation: Incorrect definition of “module” as “directory with __init__.py” — should be “package”
+
+---
+
+_Issue opened by @VioletsOleander on 2025-09-16 12:21_
+
+### Question
+
+I noticed a terminology inaccuracy in the [documentation: Concepts/Build Backend/Modules](https://docs.astral.sh/uv/concepts/build-backend/#modules).
+
+Current wording:
+
+> “Python packages are expected to contain one or more Python modules, which are directories containing an `__init__.py`.”
+
+This is technically incorrect according to Python’s language specification. According to [Python Docs - Modules](https://docs.python.org/3/tutorial/modules.html):
+
+> “A module is a file containing Python definitions and statements.”
+
+And [Packages](https://docs.python.org/3/tutorial/modules.html#packages):
+
+> “Packages are a way of structuring Python’s module namespace by using ‘dotted module names’... The `__init__.py` files are required to make Python treat directories containing the file as packages.”
+
+So saying “modules, which are directories...” misrepresents the fundamental Python concept.
+
+
+### Platform
+
+_No response_
+
+### Version
+
+0.8.17
+
+---
+
+_Label `question` added by @VioletsOleander on 2025-09-16 12:21_
+
+---
+
+_Comment by @konstin on 2025-09-16 12:26_
+
+The term "package" is overloaded in Python: We're using it both for something with an `__init__.py` and for packages that you can install. This is hugely confusing to users, referring to those to different but close concepts (a distribution usually contains `__init.py__` files) by the same name. Instead, we use the terminology that's used in other programming languages and that is also popular within the Python community: A package is something you install, a module is a part of a package. For the build backend, we're being overly specific with modules, as we require an `__init__.py[i]`, currently neither single file projects nor shared libraries are supported.
+
+---
+
+_Comment by @VioletsOleander on 2025-09-16 12:55_
+
+Thanks for the clarification! I appreciate the reasoning behind the terminology choice. All clear on my end.
+
+
+
+---
+
+_Closed by @konstin on 2025-09-16 13:07_
+
+---

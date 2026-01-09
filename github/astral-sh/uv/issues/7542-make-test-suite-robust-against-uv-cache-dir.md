@@ -1,0 +1,50 @@
+---
+number: 7542
+title: "Make test suite robust against `UV_CACHE_DIR`"
+type: issue
+state: closed
+author: konstin
+labels:
+  - good first issue
+  - help wanted
+  - internal
+assignees: []
+created_at: 2024-09-19T11:26:57Z
+updated_at: 2024-10-04T14:41:26Z
+url: https://github.com/astral-sh/uv/issues/7542
+synced_at: 2026-01-07T13:12:17-06:00
+---
+
+# Make test suite robust against `UV_CACHE_DIR`
+
+---
+
+_Issue opened by @konstin on 2024-09-19 11:26_
+
+Currently, the help tests fail when `UV_CACHE_DIR` is set (https://github.com/astral-sh/uv/actions/runs/10939768235/job/30370759126?pr=7540). We should unset `UV_CACHE_DIR` for the commands those tests run (other tests override the value). Then we can migrate the two remaining usage of `curl -LsSf https://astral.sh/uv/install.sh | sh` in `ci.yml` to https://github.com/astral-sh/setup-uv.
+
+---
+
+_Label `good first issue` added by @konstin on 2024-09-19 11:26_
+
+---
+
+_Label `help wanted` added by @konstin on 2024-09-19 11:26_
+
+---
+
+_Label `internal` added by @konstin on 2024-09-19 11:26_
+
+---
+
+_Referenced in [astral-sh/uv#7540](../../astral-sh/uv/pulls/7540.md) on 2024-09-19 11:27_
+
+---
+
+_Referenced in [astral-sh/uv#7895](../../astral-sh/uv/pulls/7895.md) on 2024-10-03 13:02_
+
+---
+
+_Closed by @zanieb on 2024-10-04 14:41_
+
+---

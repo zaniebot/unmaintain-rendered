@@ -1,0 +1,58 @@
+---
+number: 869
+title: "Consider supportting (\"some-string\") in subcommands in clap_app!"
+type: issue
+state: closed
+author: malbarbo
+labels:
+  - C-enhancement
+assignees: []
+created_at: 2017-02-22T14:12:07Z
+updated_at: 2018-08-02T03:30:02Z
+url: https://github.com/clap-rs/clap/issues/869
+synced_at: 2026-01-07T13:12:19-06:00
+---
+
+# Consider supportting ("some-string") in subcommands in clap_app!
+
+---
+
+_Issue opened by @malbarbo on 2017-02-22 14:12_
+
+This would be a complement to https://github.com/kbknapp/clap-rs/pull/776
+
+---
+
+_Comment by @kbknapp on 2017-02-22 20:37_
+
+I agree! Thanks for filling this!
+
+---
+
+_Label `C: macros` added by @kbknapp on 2017-02-22 21:40_
+
+---
+
+_Label `D: easy` added by @kbknapp on 2017-02-22 21:40_
+
+---
+
+_Label `P3: want to have` added by @kbknapp on 2017-02-22 21:40_
+
+---
+
+_Label `T: enhancement` added by @kbknapp on 2017-02-22 21:40_
+
+---
+
+_Label `W: 2.x` added by @kbknapp on 2017-02-22 21:40_
+
+---
+
+_Added to milestone `2.21.0` by @kbknapp on 2017-02-22 21:40_
+
+---
+
+_Closed by @homu on 2017-04-05 12:58_
+
+---

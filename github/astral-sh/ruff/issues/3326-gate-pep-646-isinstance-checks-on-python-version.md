@@ -1,0 +1,40 @@
+---
+number: 3326
+title: "Gate PEP 646 `isinstance` checks on Python version"
+type: issue
+state: closed
+author: charliermarsh
+labels:
+  - bug
+assignees: []
+created_at: 2023-03-03T21:53:07Z
+updated_at: 2023-03-03T22:22:16Z
+url: https://github.com/astral-sh/ruff/issues/3326
+synced_at: 2026-01-07T13:12:14-06:00
+---
+
+# Gate PEP 646 `isinstance` checks on Python version
+
+---
+
+_Issue opened by @charliermarsh on 2023-03-03 21:53_
+
+See: https://github.com/charliermarsh/ruff/pull/3280#issuecomment-1454171687.
+
+---
+
+_Label `bug` added by @charliermarsh on 2023-03-03 21:53_
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2023-03-03 21:53_
+
+---
+
+_Referenced in [astral-sh/ruff#3327](../../astral-sh/ruff/pulls/3327.md) on 2023-03-03 22:08_
+
+---
+
+_Closed by @charliermarsh on 2023-03-03 22:22_
+
+---

@@ -1,0 +1,42 @@
+---
+number: 17546
+title: Daily property test run failed on Tue Apr 22 2025
+type: issue
+state: closed
+author: github-actions
+labels:
+  - bug
+  - testing
+  - ty
+assignees: []
+created_at: 2025-04-22T12:13:55Z
+updated_at: 2025-04-22T12:39:34Z
+url: https://github.com/astral-sh/ruff/issues/17546
+synced_at: 2026-01-07T13:12:16-06:00
+---
+
+# Daily property test run failed on Tue Apr 22 2025
+
+---
+
+_Issue opened by @github-actions on 2025-04-22 12:13_
+
+Run listed here: https://github.com/astral-sh/ruff/actions/runs/14594416530
+
+---
+
+_Label `bug` added by @github-actions[bot] on 2025-04-22 12:13_
+
+---
+
+_Label `red-knot` added by @github-actions[bot] on 2025-04-22 12:13_
+
+---
+
+_Label `testing` added by @github-actions[bot] on 2025-04-22 12:13_
+
+---
+
+_Closed by @AlexWaygood on 2025-04-22 12:39_
+
+---

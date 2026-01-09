@@ -1,0 +1,185 @@
+---
+number: 1923
+title: Cherry pick ef92e2b
+type: issue
+state: closed
+author: pksunkara
+labels:
+  - C-enhancement
+  - A-help
+assignees: []
+created_at: 2020-05-12T08:52:33Z
+updated_at: 2020-10-10T09:26:15Z
+url: https://github.com/clap-rs/clap/issues/1923
+synced_at: 2026-01-07T13:12:19-06:00
+---
+
+# Cherry pick ef92e2b
+
+---
+
+_Issue opened by @pksunkara on 2020-05-12 08:52_
+
+<!-- Issuehunt Badges -->
+[<img alt="Issuehunt badges" src="https://img.shields.io/badge/IssueHunt-%2410%20Rewarded-%237E24E3.svg" />](https://issuehunt.io/r/clap-rs/clap/issues/1923)
+<!-- /Issuehunt Badges -->
+
+
+ef92e2b is not implemented on v3, but I also don't have strong feelings about it. It changes the error message when `suggestions` are enabled. The old v2 and current v3 implementation will suggest a subcommand with the appropriate args even when no subcommand is used. Whereas that commit only suggest a subcommand when that subcommand is used.
+
+I think the current v3 (and old v2) is fine, but if we want to cherry pick it across (and I'm not sure it can be cleaning picked) that's fine too.
+
+_Originally posted by @kbknapp in https://github.com/clap-rs/clap/issues/1919#issuecomment-627062003_
+
+
+<!-- Issuehunt content -->
+
+---
+
+<details>
+<summary>
+<b>IssueHunt Summary</b>
+</summary>
+
+#### [<img src='https://avatars3.githubusercontent.com/u/31354274?v=4' alt='ldm0' width=24 height=24> ldm0](https://issuehunt.io/u/ldm0) has been rewarded.
+
+### Backers (Total: $10.00)
+
+- [<img src='https://avatars0.githubusercontent.com/u/174703?v=4' alt='pksunkara' width=24 height=24> pksunkara](https://issuehunt.io/u/pksunkara) ($10.00)
+
+### Submitted pull Requests
+- [#2160 Fix: Don't mention unused subcommands(Partly cherry pick ef92e2b)](https://issuehunt.io/r/clap-rs/clap/pull/2160)
+---
+
+### Tips
+
+- Checkout the [Issuehunt explorer](https://issuehunt.io/r/clap-rs/clap/) to discover more funded issues.
+- Need some help from other developers? [Add your repositories](https://issuehunt.io/r/new) on IssueHunt to raise funds.
+</details>
+<!-- /Issuehunt content-->
+
+---
+
+_Added to milestone `3.1` by @pksunkara on 2020-05-12 08:53_
+
+---
+
+_Label `C: errors` added by @pksunkara on 2020-05-12 08:54_
+
+---
+
+_Label `C: help message` added by @pksunkara on 2020-05-12 08:54_
+
+---
+
+_Label `P4: nice to have` added by @pksunkara on 2020-05-12 08:54_
+
+---
+
+_Label `T: enhancement` added by @pksunkara on 2020-05-12 08:54_
+
+---
+
+_Comment by @issuehunt-oss[bot] on 2020-05-13 10:55_
+
+[@pksunkara](https://issuehunt.io/u/pksunkara) has funded $5.00 to this issue.
+
+---
+- Submit pull request via [IssueHunt](https://issuehunt.io/repos/31315121/issues/1923) to receive this reward.
+- Want to contribute? Chip in to this issue via [IssueHunt](https://issuehunt.io/repos/31315121/issues/1923).
+- Checkout the [IssueHunt Issue Explorer](https://issuehunt.io/issues) to see more funded issues.
+- Need help from developers? [Add your repository](https://issuehunt.io/r/new) on IssueHunt to raise funds.
+
+---
+
+_Label `:dollar: Funded on Issuehunt` added by @issuehunt-oss[bot] on 2020-05-13 10:55_
+
+---
+
+_Comment by @issuehunt-oss[bot] on 2020-08-11 11:37_
+
+[@pksunkara](https://issuehunt.io/u/pksunkara) has funded $2.00 to this issue.
+
+---
+- Submit pull request via [IssueHunt](https://issuehunt.io/repos/31315121/issues/1923) to receive this reward.
+- Want to contribute? Chip in to this issue via [IssueHunt](https://issuehunt.io/repos/31315121/issues/1923).
+- Checkout the [IssueHunt Issue Explorer](https://issuehunt.io/issues) to see more funded issues.
+- Need help from developers? [Add your repository](https://issuehunt.io/r/new) on IssueHunt to raise funds.
+
+---
+
+_Comment by @issuehunt-oss[bot] on 2020-08-11 11:37_
+
+[@pksunkara](https://issuehunt.io/u/pksunkara) has cancelled funding for this issue.(Cancelled amount: $2.00) [See it on IssueHunt](https://issuehunt.io/repos/31315121/issues/1923)
+
+---
+
+_Comment by @issuehunt-oss[bot] on 2020-08-11 11:38_
+
+[@pksunkara](https://issuehunt.io/u/pksunkara) has cancelled funding for this issue.(Cancelled amount: $5.00) [See it on IssueHunt](https://issuehunt.io/repos/31315121/issues/1923)
+
+---
+
+_Label `:dollar: Funded on Issuehunt` removed by @issuehunt-oss[bot] on 2020-08-11 11:38_
+
+---
+
+_Comment by @issuehunt-oss[bot] on 2020-08-11 11:38_
+
+[@pksunkara](https://issuehunt.io/u/pksunkara) has funded $10.00 to this issue.
+
+---
+- Submit pull request via [IssueHunt](https://issuehunt.io/repos/31315121/issues/1923) to receive this reward.
+- Want to contribute? Chip in to this issue via [IssueHunt](https://issuehunt.io/repos/31315121/issues/1923).
+- Checkout the [IssueHunt Issue Explorer](https://issuehunt.io/issues) to see more funded issues.
+- Need help from developers? [Add your repository](https://issuehunt.io/r/new) on IssueHunt to raise funds.
+
+---
+
+_Label `:dollar: Funded on Issuehunt` added by @issuehunt-oss[bot] on 2020-08-11 11:38_
+
+---
+
+_Referenced in [clap-rs/clap#2056](../../clap-rs/clap/pulls/2056.md) on 2020-08-11 13:37_
+
+---
+
+_Referenced in [clap-rs/clap#2057](../../clap-rs/clap/pulls/2057.md) on 2020-08-11 14:00_
+
+---
+
+_Referenced in [clap-rs/clap#2157](../../clap-rs/clap/pulls/2157.md) on 2020-10-08 21:17_
+
+---
+
+_Referenced in [clap-rs/clap#2160](../../clap-rs/clap/pulls/2160.md) on 2020-10-09 13:58_
+
+---
+
+_Closed by @bors[bot] on 2020-10-09 20:31_
+
+---
+
+_Comment by @pksunkara on 2020-10-09 23:33_
+
+@ldm0 You can submit the bounty on issuehunt and redeem it.
+
+---
+
+_Comment by @issuehunt-oss[bot] on 2020-10-10 09:26_
+
+[@pksunkara](https://issuehunt.io/u/pksunkara) has rewarded $9.00 to [@ldm0](https://issuehunt.io/u/ldm0). [See it on IssueHunt](https://issuehunt.io/repos/31315121/issues/1923)
+
+- :moneybag: Total deposit: $10.00
+- :tada: Repository reward(0%): $0.00
+- :wrench: Service fee(10%): $1.00
+
+---
+
+_Label `:dollar: Funded on Issuehunt` removed by @issuehunt-oss[bot] on 2020-10-10 09:26_
+
+---
+
+_Label `:gift: Rewarded on Issuehunt` added by @issuehunt-oss[bot] on 2020-10-10 09:26_
+
+---

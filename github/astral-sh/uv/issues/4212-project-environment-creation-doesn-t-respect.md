@@ -1,0 +1,50 @@
+---
+number: 4212
+title: "Project environment creation doesn't respect version specifiers in `requires-python`"
+type: issue
+state: closed
+author: charliermarsh
+labels:
+  - bug
+  - preview
+assignees: []
+created_at: 2024-06-10T19:17:34Z
+updated_at: 2024-06-10T23:20:10Z
+url: https://github.com/astral-sh/uv/issues/4212
+synced_at: 2026-01-07T13:12:17-06:00
+---
+
+# Project environment creation doesn't respect version specifiers in `requires-python`
+
+---
+
+_Issue opened by @charliermarsh on 2024-06-10 19:17_
+
+Per https://github.com/charliermarsh/autobot/actions/runs/9454139177/job/26041035557?pr=4, it looks like `requires-python = ">=3.8"` gets parsed as an executable named `>=3.8`. I think stringifying there probably _never_ works for `requires-python`? But I'd have to look at the tests to understand whether there's some case it _is_ handling today.
+
+
+---
+
+_Label `bug` added by @charliermarsh on 2024-06-10 19:17_
+
+---
+
+_Label `preview` added by @charliermarsh on 2024-06-10 19:17_
+
+---
+
+_Assigned to @zanieb by @zanieb on 2024-06-10 20:04_
+
+---
+
+_Referenced in [astral-sh/uv#4216](../../astral-sh/uv/pulls/4216.md) on 2024-06-10 20:12_
+
+---
+
+_Referenced in [astral-sh/uv#4214](../../astral-sh/uv/pulls/4214.md) on 2024-06-10 20:12_
+
+---
+
+_Closed by @zanieb on 2024-06-10 23:20_
+
+---

@@ -1,0 +1,199 @@
+---
+number: 16664
+title: "macOS: `uv run` panics inside SystemConfiguration when sandboxed (Codex/seatbelt) — \"Attempted to create a NULL object\""
+type: issue
+state: closed
+author: onutc
+labels:
+  - bug
+assignees: []
+created_at: 2025-11-10T10:50:16Z
+updated_at: 2025-11-10T12:55:22Z
+url: https://github.com/astral-sh/uv/issues/16664
+synced_at: 2026-01-07T13:12:19-06:00
+---
+
+# macOS: `uv run` panics inside SystemConfiguration when sandboxed (Codex/seatbelt) — "Attempted to create a NULL object"
+
+---
+
+_Issue opened by @onutc on 2025-11-10 10:50_
+
+### Summary
+
+**IMPORTANT: This is a major blocker for running Python through `uv` in [OpenAI Codex](https://github.com/openai/codex) on macOS.**
+
+When `uv run` is executed inside a macOS sandbox (e.g., OpenAI Codex’ default seatbelt or a minimal seatbelt profile), `uv` panics in Rust while initializing SystemConfiguration’s dynamic store. The process aborts **before** the target command (Python) starts.
+
+I am not very knowledgeable about uv-seatbelt interaction, I have a feeling that there might be more than one issue here.
+
+## Reproduction A — inside Codex
+
+Install codex v0.55.0, and ask it to run `run uv run python -c "print('hello')"`
+
+```
+/ T R A N S C R I P T / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / /
+╭────────────────────────────────────────────────╮
+│ >_ OpenAI Codex (v0.55.0)                      │
+│                                                │
+│ model:     gpt-5-codex high   /model to change │
+│ directory: ~/copies/platform-2                 │
+╰────────────────────────────────────────────────╯
+
+  To get started, describe a task or try one of these commands:
+
+  /init - create an AGENTS.md file with instructions for Codex
+  /status - show current session configuration
+  /approvals - choose what Codex can do without approval
+  /model - choose what model and reasoning effort to use
+  /review - review any changes and find issues
+
+
+› run uv run python -c "print('hello from backend dir')"
+
+
+• Preparing to run backend Python command
+
+$ uv run python -c "print('hello')"
+
+thread 'main2' panicked at /Users/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/system-configuration-0.6.1/src/dynamic_store.rs:154:1:
+Attempted to create a NULL object.
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+thread 'main' panicked at /Users/runner/work/uv/uv/crates/uv/src/lib.rs:2409:10:
+Tokio executor failed, was there a panic?: Any { .. }
+✗ (101) • 133ms
+```
+
+Note that I cannot reproduce it in every folder. It doesn't raise an error when I open codex in /tmp directory.
+
+## Reproduction B — pure macOS seatbelt
+
+Save the following in a file repro.sh and run it:
+
+```bash
+cd /tmp && mkdir uv-sandbox-test && cd uv-sandbox-test
+
+# Sandbox profile blocking SystemConfiguration
+cat > block-sysconfig.sb <<'EOF'
+(version 1)
+(allow default)
+(deny mach-lookup (global-name "com.apple.SystemConfiguration.configd"))
+EOF
+
+# Create project and run from inside it
+uv init test-project
+cd test-project
+
+env RUST_BACKTRACE=full sandbox-exec -f ../block-sysconfig.sb \
+uv run python -c "print('hello')"
+```
+
+I am not sure this is the EXACT same error or seatbelt configuration on Codex that causes this error, but it seems very relevant.
+
+Output:
+
+
+```
+Mac :: /tmp » bash repro.sh
+mkdir: uv-sandbox-test: File exists
+Initialized project `test-project` at `/private/tmp/test-project`
+Using CPython 3.13.7
+Creating virtual environment at: .venv
+
+thread 'main2' panicked at /Users/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/system-configuration-0.6.1/src/dynamic_store.rs:154:1:
+Attempted to create a NULL object.
+stack backtrace:
+   0:        0x105545e44 - __mh_execute_header
+   1:        0x1051faaf0 - __mh_execute_header
+   2:        0x105545684 - __mh_execute_header
+   3:        0x105545ce4 - __mh_execute_header
+   4:        0x10554526c - __mh_execute_header
+   5:        0x105544894 - __mh_execute_header
+   6:        0x105544864 - __mh_execute_header
+   7:        0x106ccc22c - __mh_execute_header
+   8:        0x10542e094 - __mh_execute_header
+   9:        0x10642a55c - __mh_execute_header
+  10:        0x106428374 - __mh_execute_header
+  11:        0x106458ba4 - __mh_execute_header
+  12:        0x105067c70 - __mh_execute_header
+  13:        0x10505e190 - __mh_execute_header
+  14:        0x10504aaa8 - __mh_execute_header
+  15:        0x104f99274 - __mh_execute_header
+  16:        0x104fa7368 - __mh_execute_header
+  17:        0x10510c2b0 - __mh_execute_header
+  18:        0x106028388 - __mh_execute_header
+  19:        0x105d1441c - __mh_execute_header
+  20:        0x10557d99c - __mh_execute_header
+  21:        0x184a72c0c - __pthread_cond_wait
+
+thread 'main' panicked at /Users/runner/work/uv/uv/crates/uv/src/lib.rs:2409:10:
+Tokio executor failed, was there a panic?: Any { .. }
+stack backtrace:
+   0:        0x105545e44 - __mh_execute_header
+   1:        0x1051faaf0 - __mh_execute_header
+   2:        0x105545684 - __mh_execute_header
+   3:        0x105545ce4 - __mh_execute_header
+   4:        0x10554526c - __mh_execute_header
+   5:        0x10557835c - __mh_execute_header
+   6:        0x1055782cc - __mh_execute_header
+   7:        0x10557d4c0 - __mh_execute_header
+   8:        0x106cb105c - __mh_execute_header
+   9:        0x106cb144c - __mh_execute_header
+  10:        0x105fa9d08 - __mh_execute_header
+  11:        0x105cbe994 - __mh_execute_header
+  12:        0x106026538 - __mh_execute_header
+  13:        0x105cbecec - __mh_execute_header
+```
+
+# Other issues
+
+On Codex side: https://github.com/openai/codex/issues/1457
+
+### Platform
+
+macOS 15.5 arm64
+
+### Version
+
+uv 0.9.7 (0adb44480 2025-10-30)
+
+### Python version
+
+Python 3.13.7
+
+---
+
+_Label `bug` added by @onutc on 2025-11-10 10:50_
+
+---
+
+_Referenced in [openai/codex#1457](../../openai/codex/issues/1457.md) on 2025-11-10 10:52_
+
+---
+
+_Comment by @tekumara on 2025-11-10 11:29_
+
+Network related things, like reqwest, need to be able to lookup `com.apple.SystemConfiguration.configd` which you've explicitly denied in Reproduction B.
+
+For Reproduction A this looks like https://github.com/openai/codex/issues/5914 which is fixed in codex 0.56.0 see [here](https://github.com/openai/codex/issues/5914#issuecomment-3505687500)
+
+---
+
+_Comment by @onutc on 2025-11-10 12:55_
+
+I just upgraded to Codex 0.57.0 and confirm that this is resolved.
+
+---
+
+_Closed by @onutc on 2025-11-10 12:55_
+
+---
+
+_Referenced in [mullvad/system-configuration-rs#72](../../mullvad/system-configuration-rs/issues/72.md) on 2025-11-10 13:21_
+
+---
+
+_Referenced in [astral-sh/uv#16916](../../astral-sh/uv/issues/16916.md) on 2025-12-01 21:43_
+
+---

@@ -1,0 +1,188 @@
+---
+number: 7821
+title: "Environments and dependency version specifiers don't work with workspaces"
+type: issue
+state: closed
+author: chadrik
+labels:
+  - question
+assignees: []
+created_at: 2024-09-30T22:30:55Z
+updated_at: 2024-10-01T00:52:58Z
+url: https://github.com/astral-sh/uv/issues/7821
+synced_at: 2026-01-07T13:12:17-06:00
+---
+
+# Environments and dependency version specifiers don't work with workspaces
+
+---
+
+_Issue opened by @chadrik on 2024-09-30 22:30_
+
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with uv.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
+* The current uv platform.
+* The current uv version (`uv --version`).
+-->
+
+I ran into an issue with locking and version specifiers similar to https://github.com/astral-sh/uv/issues/4668 and https://github.com/astral-sh/uv/issues/4669, but the fix there of creating environments for different python versions does not work with workspaces. 
+
+Here's how I reproduced this.
+
+I started with this pyproject.toml and confirmed that it works with uv==0.4.17
+
+```toml
+[project]
+name = "foo"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.7"
+dependencies = [
+    "types-psutil==6.0.0.20240901 ; python_version >= '3.8'",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.uv]
+environments = ["python_version < '3.8'", "python_version >= '3.8'"]
+```
+
+```
+$ uv lock
+Using CPython 3.8.19 interpreter at: /usr/local/opt/python@3.8/bin/python3.8
+Resolved 2 packages in 3ms
+```
+
+Note that this requires the `tool.uv.environment` setting recommended in https://github.com/astral-sh/uv/issues/4668
+
+Next I setup my repo using workspaces, with a folder structure like this:
+
+```
+./
+  project-foo/
+    pyproject.toml
+  pyproject.toml
+```
+
+The root pyproject.toml looks like this:
+
+```toml
+[tool.uv.workspace]
+members = [
+    "project-foo",
+]
+
+[tool.uv.sources]
+foo = { workspace = true }
+
+[tool.uv]
+environments = ["python_version < '3.8'", "python_version >= '3.8'"]
+```
+
+The child looks like this (same as before but without the `uv.tool.environment` setting):
+
+```toml
+[project]
+name = "foo"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.7"
+dependencies = [
+    "types-psutil==6.0.0.20240901 ; python_version >= '3.8'",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.uv]
+environments = ["python_version < '3.8'", "python_version >= '3.8'"]
+```
+
+Locking from the root of the workspace fails:
+```
+$ uv lock
+Using CPython 3.8.19 interpreter at: /usr/local/opt/python@3.8/bin/python3.8
+  × No solution found when resolving dependencies:
+  ╰─▶ Because the requested Python version (>=3.7) does not satisfy Python>=3.8 and your project depends on types-psutil{python_full_version
+      >= '3.8'}==6.0.0.20240901, we can conclude that your project's requirements are unsatisfiable.
+```
+
+I made a repo to demonstrate:  https://github.com/chadrik/uv-tests
+
+These are some PRs mentioned that could be related:
+- https://github.com/astral-sh/uv/pull/4712
+- https://github.com/astral-sh/uv/pull/6143
+
+Is there a way to indicate that a dependency simply should not be installed on certain versions of python?
+
+
+---
+
+_Comment by @charliermarsh on 2024-09-30 22:36_
+
+Thanks. That repo is 404ing for me -- any chance the URL is not quite right?
+
+---
+
+_Comment by @charliermarsh on 2024-09-30 23:02_
+
+(Working now.)
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2024-09-30 23:02_
+
+---
+
+_Comment by @charliermarsh on 2024-10-01 00:16_
+
+Ah sorry. You need to add a `[project]` table to the root `pyproject.toml`:
+
+```diff
+diff --git a/pyproject.toml b/pyproject.toml
+index 504c40f..f0b42da 100644
+--- a/pyproject.toml
++++ b/pyproject.toml
+@@ -1,3 +1,7 @@
++[project]
++name = "root"
++version = "0.0.1"
++
+ [tool.uv.workspace]
+ members = [
+     "project-foo",
+```
+
+---
+
+_Label `question` added by @charliermarsh on 2024-10-01 00:16_
+
+---
+
+_Comment by @charliermarsh on 2024-10-01 00:19_
+
+I'll lift this restriction.
+
+---
+
+_Referenced in [astral-sh/uv#7824](../../astral-sh/uv/pulls/7824.md) on 2024-10-01 00:19_
+
+---
+
+_Closed by @charliermarsh on 2024-10-01 00:52_
+
+---
+
+_Closed by @charliermarsh on 2024-10-01 00:52_
+
+---

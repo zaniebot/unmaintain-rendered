@@ -1,0 +1,138 @@
+---
+number: 3677
+title: "[Feature Request] Inherit settings from parent directory for `ruff.toml` config files"
+type: issue
+state: closed
+author: XuehaiPan
+labels: []
+assignees: []
+created_at: 2023-03-23T06:33:21Z
+updated_at: 2023-03-23T07:16:35Z
+url: https://github.com/astral-sh/ruff/issues/3677
+synced_at: 2026-01-07T13:12:14-06:00
+---
+
+# [Feature Request] Inherit settings from parent directory for `ruff.toml` config files
+
+---
+
+_Issue opened by @XuehaiPan on 2023-03-23 06:33_
+
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+Thanks for the fantastic tool! Many tools support multiple configuration files in a multi-directory project. For example, you can have a per-directory `.gitignore` file to add extra ignore patterns. The `.gitignore` from the project root still affects the subdirectory. It would be nice if `ruff` can have a similar feature: inherit and merge configurations in the parent directory and subdirectory.
+
+```text
+${PROJECT_ROOT}
+├── src
+│   ├── a.file
+│   ├── b.file
+│   ...
+├── benchmark
+│   ├── .gitignore
+│   ├── a.csv
+│   ├── b.csv
+│   ...
+├── venv
+│   ├── bin
+│   ...
+├── .gitignore
+...
+``` 
+
+```gitignore
+# ${PROJECT_ROOT}/.gitignore
+
+venv/  # virtual environment
+*.csv  # CSV file
+```
+
+```gitignore
+# ${PROJECT_ROOT}/benchmark/.gitignore
+
+!*.csv
+```
+
+If I have a `.ruff.toml` in a subdirectory (e.g., `${PROJECT_ROOT}/tests/.ruff.toml`), currently `ruff` start a totally new namespace and ignores all configurations from the parent directory. If I run `ruff check ${PROJECT_ROOT}`, the `${PROJECT_ROOT}/pyproject.toml` will not affect the lint check under the `tests/` folder.
+
+My use case is:
+
+```toml
+# ${PROJECT_ROOT}/pyproject.toml
+
+[tool.ruff]
+target-version = "py37"
+line-length = 100
+show-source = true
+select = [
+    "E", "W",  # pycodestyle
+    "F",       # pyflakes
+    "C90",     # mccabe
+    "N",       # pep8-naming
+    "UP",      # pyupgrade
+    "ANN",     # flake8-annotations
+    "S",       # flake8-bandit
+    "BLE",     # flake8-blind-except
+    "B",       # flake8-bugbear
+    "COM",     # flake8-commas
+    "C4",      # flake8-comprehensions
+    "EXE",     # flake8-executable
+    "ISC",     # flake8-implicit-str-concat
+    "PIE",     # flake8-pie
+    "PYI",     # flake8-pyi
+    "Q",       # flake8-quotes
+    "RSE",     # flake8-raise
+    "RET",     # flake8-return
+    "SIM",     # flake8-simplify
+    "TID",     # flake8-tidy-imports
+    "PL",      # pylint
+    "RUF",     # ruff
+]
+
+[tool.ruff.flake8-quotes]
+docstring-quotes = "double"
+multiline-quotes = "double"
+inline-quotes = "single"
+```
+
+```toml
+# ${PROJECT_ROOT}/tests/.ruff.toml
+
+select = [
+    "COM",     # flake8-commas
+    "Q",       # flake8-quotes
+]
+```
+
+I have enabled many rules in `select` in the root directory. But sometimes I have to disable most of them for tests. I don't want to write a long list of `per-file-ignores` again for `tests/**/*.py`. Instead, I create a `.ruff.toml` file in the `tests/` folder and overwrite the `select` settings. Currently, `ruff` does not respect the settings in the parent directory (e.g., `tool.ruff.line-length`, `tool.ruff.flake8-quotes`). I still need to copy-paste settings between files.
+
+It would be nice if `ruff` can inherit and merge configurations in the parent directory and subdirectory.
+
+---
+
+_Comment by @JonathanPlasse on 2023-03-23 07:10_
+
+Would [`extend`](https://beta.ruff.rs/docs/settings/#extend) work for you?
+
+---
+
+_Comment by @XuehaiPan on 2023-03-23 07:16_
+
+> Would [`extend`](https://beta.ruff.rs/docs/settings/#extend) work for you?
+
+Thanks for the hint. It works and fits the exact use case for me.
+
+---
+
+_Closed by @XuehaiPan on 2023-03-23 07:16_
+
+---

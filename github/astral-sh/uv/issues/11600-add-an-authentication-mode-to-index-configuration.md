@@ -1,0 +1,93 @@
+---
+number: 11600
+title: "Add an `authentication` mode to `[index]` configuration"
+type: issue
+state: closed
+author: zanieb
+labels:
+  - enhancement
+assignees: []
+created_at: 2025-02-18T15:25:29Z
+updated_at: 2025-03-10T17:24:26Z
+url: https://github.com/astral-sh/uv/issues/11600
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# Add an `authentication` mode to `[index]` configuration
+
+---
+
+_Issue opened by @zanieb on 2025-02-18 15:25_
+
+### Summary
+
+There’s a bit of design work to be done here, but the rough problem is this:
+
+- If we receive a package index without a username, we always try an unauthenticated request first
+- If that fails, we search for credentials (e.g., via keyring)
+
+However, some indexes don’t *fail* on unauthenticated requests, instead they just forward to the public PyPI and now the user is confused their package is missing. The current solution is to tell users to set a username in their index URL, as that will force us to fetch credentials. However, if the username varies per user (sometimes its just a constant), they can’t commit that to the `pyproject.toml`. So, the idea is: add an authentication “mode” to the `tool.uv.index` table which allows a user to explicitly say “never use authentication” or “always use authentication” for a given index.
+
+See
+
+- https://github.com/astral-sh/uv/issues/3923
+- https://github.com/astral-sh/uv/issues/9331#issuecomment-2499221075
+
+### Example
+
+Not a final design, but for example
+
+```toml
+[[tool.uv.index]]
+name = "foo"
+url = "https://..."
+authentication = "auto | always | never"
+```
+
+---
+
+_Label `enhancement` added by @zanieb on 2025-02-18 15:25_
+
+---
+
+_Referenced in [astral-sh/uv#3923](../../astral-sh/uv/issues/3923.md) on 2025-02-18 15:26_
+
+---
+
+_Comment by @morotti on 2025-02-18 18:24_
+
+thanks, it would be great if it can be set with an environment variable, like `UV_INDEX_AUTHENTICATION=always`
+
+---
+
+_Comment by @jdumas on 2025-02-18 22:01_
+
+I wonder if a simple boolean `force_auth = true` would be sufficient? I don't see a case where the current `auto` mode would fail and you'd want to force unauthenticated instead.
+
+In any case I'm eagerly awaiting for this option. This is currently a blocker for me to use `uv` in downstream applications for internal projects.
+
+---
+
+_Comment by @zanieb on 2025-02-18 22:09_
+
+>  you'd want to force unauthenticated instead.
+
+I was thinking of cases where you don't want to accidentally leak credentials to another index
+
+---
+
+_Assigned to @jtfmumm by @jtfmumm on 2025-02-26 15:07_
+
+---
+
+_Referenced in [astral-sh/uv#11853](../../astral-sh/uv/issues/11853.md) on 2025-02-28 13:13_
+
+---
+
+_Referenced in [astral-sh/uv#11896](../../astral-sh/uv/pulls/11896.md) on 2025-03-02 18:55_
+
+---
+
+_Closed by @zanieb on 2025-03-10 17:24_
+
+---

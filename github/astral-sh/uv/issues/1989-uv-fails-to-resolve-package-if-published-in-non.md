@@ -1,0 +1,53 @@
+---
+number: 1989
+title: uv fails to resolve package if published in non normalized format
+type: issue
+state: closed
+author: gaborbernat
+labels:
+  - bug
+assignees: []
+created_at: 2024-02-26T20:07:53Z
+updated_at: 2024-02-26T20:40:38Z
+url: https://github.com/astral-sh/uv/issues/1989
+synced_at: 2026-01-07T13:12:16-06:00
+---
+
+# uv fails to resolve package if published in non normalized format
+
+---
+
+_Issue opened by @gaborbernat on 2024-02-26 20:07_
+
+Assume a package is published as `magic.demo.hera`. If you do `uv pip install magic.com` this correctly, redirects to `https://m.com/artifactory/api/pypi/magic-pypi/simple/magic-demo-hera/"`. However, if the page then contains packages in the form of:
+
+```
+magic.demo.hera-0.9.5+frozen-py3-none-any.whl
+magic.demo.hera-0.9.5+release.tar.gz
+```
+
+uv comes back with:
+
+
+```
+  × No solution found when resolving dependencies:
+  ╰─▶ Because there is no version of magic-demo-hera==0.9.5 and you require magic-demo-hera==0.9.5, we can conclude that the requirements are unsatisfiable.
+```
+
+This works with pip today though.
+
+---
+
+_Comment by @charliermarsh on 2024-02-26 20:40_
+
+I believe this is the same as https://github.com/astral-sh/uv/issues/1855. @BurntSushi is working on it this week.
+
+---
+
+_Closed by @charliermarsh on 2024-02-26 20:40_
+
+---
+
+_Label `bug` added by @charliermarsh on 2024-02-26 20:40_
+
+---

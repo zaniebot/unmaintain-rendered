@@ -1,0 +1,89 @@
+---
+number: 12336
+title: "Is it intentional that UV_MANAGED_PYTHON can be set only to \"true\" and \"false\"?"
+type: issue
+state: closed
+author: Yura52
+labels:
+  - bug
+assignees: []
+created_at: 2025-03-20T10:29:51Z
+updated_at: 2025-03-20T18:59:47Z
+url: https://github.com/astral-sh/uv/issues/12336
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# Is it intentional that UV_MANAGED_PYTHON can be set only to "true" and "false"?
+
+---
+
+_Issue opened by @Yura52 on 2025-03-20 10:29_
+
+### Question
+
+I have just tried to use the newly introduced `UV_MANAGED_PYTHON` like this:
+
+```
+UV_MANAGED_PYTHON="1" uv python list
+```
+
+I expected this to work, because it worked for `UV_FROZEN`, `UV_OFFLINE`, etc. However:
+
+```
+error: invalid value '1' for '--managed-python'
+  [possible values: true, false]
+```
+
+Sharing this in case if this is a bug :) Otherwise, it is not a big issue at all.
+
+### Platform
+
+`macOS`
+
+### Version
+
+`0.6.8`
+
+---
+
+_Label `question` added by @Yura52 on 2025-03-20 10:29_
+
+---
+
+_Comment by @zanieb on 2025-03-20 13:11_
+
+No, this should be updated to use the boolish parser like our other flags. Thanks!
+
+cc @jtfmumm 
+
+---
+
+_Label `question` removed by @zanieb on 2025-03-20 13:11_
+
+---
+
+_Label `bug` added by @zanieb on 2025-03-20 13:11_
+
+---
+
+_Comment by @jtfmumm on 2025-03-20 18:24_
+
+I'll fix this one.
+
+---
+
+_Assigned to @jtfmumm by @jtfmumm on 2025-03-20 18:24_
+
+---
+
+_Referenced in [astral-sh/uv#12345](../../astral-sh/uv/pulls/12345.md) on 2025-03-20 18:33_
+
+---
+
+_Closed by @jtfmumm on 2025-03-20 18:59_
+
+---
+
+_Closed by @jtfmumm on 2025-03-20 18:59_
+
+---

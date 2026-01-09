@@ -1,0 +1,206 @@
+---
+number: 16253
+title: uv does not distinguish between 3.14 and 3.14t while creating virtual environment
+type: issue
+state: closed
+author: DhavalGojiya
+labels:
+  - bug
+assignees: []
+created_at: 2025-10-11T14:15:24Z
+updated_at: 2025-11-09T16:32:26Z
+url: https://github.com/astral-sh/uv/issues/16253
+synced_at: 2026-01-07T13:12:19-06:00
+---
+
+# uv does not distinguish between 3.14 and 3.14t while creating virtual environment
+
+---
+
+_Issue opened by @DhavalGojiya on 2025-10-11 14:15_
+
+**Description:**
+After changing the Python version from 3.14t (Free threaded python) to 3.14 using uv python pin, uv sync does not remove the old virtual environment or create a new one with the updated Python version.
+
+**Steps to Reproduce:**
+
+```powershell
+PS D:\Dhaval-WebDev\Test\venus> cat .python-version
+3.14t
+
+PS D:\Dhaval-WebDev\Test\venus> uv sync
+Using CPython 3.14.0
+Creating virtual environment at: .venv
+Resolved 1 package in 83ms
+Audited in 0.01ms
+
+PS D:\Dhaval-WebDev\Test\venus> uv run python
+Python 3.14.0 free-threading build (main, Oct 10 2025, 12:50:21) [MSC v.1944 64 bit (AMD64)] on win32
+Type "help", "copyright", "credits" or "license" for more information.
+>>> import sys
+>>> sys.base_prefix
+'C:\\Users\\DHAVAL\\AppData\\Roaming\\uv\\python\\cpython-3.14.0+freethreaded-windows-x86_64-none'
+>>> sys.prefix
+'D:\\Dhaval-WebDev\\Test\\venus\\.venv'
+
+PS D:\Dhaval-WebDev\Test\venus> uv python pin 3.14
+Updated `.python-version` from `3.14t` -> `3.14`
+PS D:\Dhaval-WebDev\Test\venus> cat .python-version
+3.14
+
+PS D:\Dhaval-WebDev\Test\venus> uv sync
+Resolved 1 package in 2ms
+Audited in 0.01ms
+
+PS D:\Dhaval-WebDev\Test\venus> uv run python
+Python 3.14.0 free-threading build (main, Oct 10 2025, 12:50:21) [MSC v.1944 64 bit (AMD64)] on win32
+Type "help", "copyright", "credits" or "license" for more information.
+>>> import sys
+>>> sys.base_prefix
+'C:\\Users\\DHAVAL\\AppData\\Roaming\\uv\\python\\cpython-3.14.0+freethreaded-windows-x86_64-none'
+>>> sys.prefix
+'D:\\Dhaval-WebDev\\Test\\venus\\.venv'
+```
+
+**Expected Behavior:**
+After changing the Python version from `3.14t` (Free-threaded Python) to `3.14` using `uv python pin`, `uv sync` should:
+
+1. Remove the old virtual environment created with `3.14t`.
+2. Create a new virtual environment `.venv` using Python `3.14`.
+
+**Actual Behavior:**
+`uv sync` doesn't do anything; it thinks everything is up to date.
+
+**Extra Context:**  
+If we manually delete the `.venv` and then run `uv sync`, it correctly creates a new virtual environment using the updated `.python-version` → `3.14`.  
+At that time, there are no issues.
+
+### Platform
+
+Microsoft Windows 11 Home Single Language
+
+### Version
+
+uv 0.9.2 (141369ce7 2025-10-10)
+
+### Python version
+
+Python 3.14.0
+
+---
+
+_Label `bug` added by @DhavalGojiya on 2025-10-11 14:15_
+
+---
+
+_Comment by @DhavalGojiya on 2025-10-11 14:30_
+
+Also noticed:
+
+```powershell
+PS D:\Dhaval-WebDev\Test\venus> cat .python-version
+3.14t
+
+PS D:\Dhaval-WebDev\Test\venus> uv sync
+Using CPython 3.14.0
+Creating virtual environment at: .venv
+Resolved 1 package in 83ms
+Audited in 0.01ms
+````
+
+Here, `uv sync` says `Using CPython 3.14.0` - shouldn't it say `Using CPython 3.14t`?
+
+---
+
+_Referenced in [astral-sh/uv#16536](../../astral-sh/uv/pulls/16536.md) on 2025-10-31 14:21_
+
+---
+
+_Comment by @zanieb on 2025-10-31 14:23_
+
+A request for 3.14 is currently considered compatible with a 3.14 free-threaded interpreter.
+
+---
+
+_Comment by @DhavalGojiya on 2025-10-31 15:33_
+
+> A request for 3.14 is currently considered compatible with a 3.14 free-threaded interpreter.
+
+Ok, so this needs to be addressed, right? Since the runtime environments are different for both versions - especially when testing GitHub Actions with multiple Python versions locally - it’s unable to create the 3.14t environment, but that’s the one I actually want.
+
+---
+
+_Comment by @zanieb on 2025-10-31 18:26_
+
+>  it’s unable to create the 3.14t environment, but that’s the one I actually want.
+
+What do you mean? In this case, you can just request `3.14t`?
+
+---
+
+_Comment by @DhavalGojiya on 2025-10-31 18:33_
+
+> > it’s unable to create the 3.14t environment, but that’s the one I actually want.
+> 
+> What do you mean? In this case, you can just request `3.14t`?
+
+Uv is not removing old virtual environment and creating the new one. 
+This is what the issue was created for.
+```
+PS D:\Dhaval-WebDev\Test\venus> uv python pin 3.14
+Updated `.python-version` from `3.14t` -> `3.14`
+PS D:\Dhaval-WebDev\Test\venus> cat .python-version
+3.14
+
+PS D:\Dhaval-WebDev\Test\venus> uv sync
+Resolved 1 package in 2ms
+Audited in 0.01ms
+```
+
+---
+
+_Comment by @zanieb on 2025-10-31 19:53_
+
+In that case you're going from 3.14t -> 3.14, but in your last message you said you could not create a 3.14t environment that you want?
+
+---
+
+_Comment by @DhavalGojiya on 2025-10-31 20:15_
+
+> In that case you're going from 3.14t -> 3.14, but in your last message you said you could not create a 3.14t environment that you want?
+
+What I mean is, I can create a virtual environment with any version I want using uv.
+But if I already have a virtual environment with Python 3.14, and I want to create a new virtual environment for project using 3.14t, I first need to remove the .venv/ folder before reinstalling, and then run uv sync again - as you can see in the first message log.
+
+If you see the first message ( long output written by me), I think you find the issue.
+I am also not sure, that is it really an issue or is just uv behave like this.
+
+Because as per my knowledge If you change `.python-version` file and then again run `uv sync`, uv will first delete `.venv` folder and re create a requested python versions virtual environment that satisfies (`.python-version`) 
+
+---
+
+_Comment by @zanieb on 2025-10-31 20:58_
+
+https://github.com/astral-sh/uv/pull/16537 would address this
+
+---
+
+_Comment by @DhavalGojiya on 2025-11-04 10:50_
+
+I think the following PRs:
+
+- https://github.com/astral-sh/uv/pull/16536  
+- https://github.com/astral-sh/uv/pull/16537  
+
+addressed this issue.
+
+> Here, `uv sync` says **Using CPython 3.14.0** — shouldn't it say **Using CPython 3.14t**?  
+
+This one is also covered, right?  
+Can we close this issue, @zanieb?
+
+---
+
+_Closed by @zanieb on 2025-11-09 16:32_
+
+---

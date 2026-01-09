@@ -1,0 +1,69 @@
+---
+number: 12485
+title: Issues when using multiple venvs
+type: issue
+state: open
+author: xd009642
+labels:
+  - question
+assignees: []
+created_at: 2025-03-26T13:42:41Z
+updated_at: 2025-04-01T18:56:15Z
+url: https://github.com/astral-sh/uv/issues/12485
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# Issues when using multiple venvs
+
+---
+
+_Issue opened by @xd009642 on 2025-03-26 13:42_
+
+### Summary
+
+My application is a code sandboxing service (closed source) that's used to execute LLM code in a more secure environment. As such I've:
+
+1. Got a working dir with a venv in which API submitted code runs in
+2. The venv for the python API receiving and executing this code
+
+I'm attempting to use uv to handle both of these but then it's becoming a bit fiddly to get uv to use the right venv and me have the right cwd etc. 
+
+So my directory structure in my dockerfile is something like:
+
+```
+/app
+    /.venv
+    /src/
+/sandbox
+    /.venv
+``` 
+
+I was just trying to within `/sandbox` do `uv run /app/src/app.py` but then it picks up the `/sandbox` and complains about missing deps. I was hoping a `--venv-path` or `--root` arg existed for `uv run` for when running it outside of the source tree.
+
+I can probably get around this by just tweaking things around I just figured I'd raise this as a DX type issue since the team clearly cares a lot about ease of use 
+
+### Example
+
+_No response_
+
+---
+
+_Label `enhancement` added by @xd009642 on 2025-03-26 13:42_
+
+---
+
+_Comment by @zanieb on 2025-04-01 18:56_
+
+You can use `--python <path>` to target a specific environment, e.g., `uv run --python /sandbox/.venv`.
+
+You can also use `--directory` or `--project` to change our root directory at startup.
+
+---
+
+_Label `enhancement` removed by @zanieb on 2025-04-01 18:56_
+
+---
+
+_Label `question` added by @zanieb on 2025-04-01 18:56_
+
+---

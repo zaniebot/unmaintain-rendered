@@ -1,0 +1,200 @@
+---
+number: 11839
+title: "New Rule: Prefer list comprehension over generator comprehensions to create tuples"
+type: issue
+state: open
+author: Avasam
+labels:
+  - rule
+assignees: []
+created_at: 2024-06-11T17:32:40Z
+updated_at: 2025-07-12T13:01:03Z
+url: https://github.com/astral-sh/ruff/issues/11839
+synced_at: 2026-01-07T13:12:15-06:00
+---
+
+# New Rule: Prefer list comprehension over generator comprehensions to create tuples
+
+---
+
+_Issue opened by @Avasam on 2024-06-11 17:32_
+
+I was recently working on some bits of codes where most of my data had to be "readonly" (so I'm using immutable types like frozen dataclasses, frozensets, tuples, etc.) but also using plenty of comprehensions. Which made me wonder, since there's no "tuple comprehension" in Python, how I should be writing this code. I did a bit of performance testing, and here's the results:
+
+```py
+import sys
+from timeit import timeit
+
+print(sys.version)
+big_list = ["*"] * 99
+
+def foo(value: str): return value
+
+def test_list_comprehension():
+    return [foo(value) for value in big_list]
+
+def test_tuple_from_list_comprehension():
+    return tuple([foo(value) for value in big_list])
+
+def test_tuple_from_generator_comprehension():
+    return tuple(foo(value) for value in big_list)
+
+def test_unpack_generator_comprehension():
+    return (*(foo(value) for value in big_list),)
+
+print(
+    "test_list_comprehension",
+    timeit(test_list_comprehension),
+)
+print(
+    "test_tuple_from_list_comprehension",
+    timeit(test_tuple_from_list_comprehension),
+)
+print(
+    "test_tuple_from_generator_comprehension",
+    timeit(test_tuple_from_generator_comprehension),
+)
+print(
+    "test_unpack_generator_comprehension",
+    timeit(test_unpack_generator_comprehension),
+)
+```
+
+```
+3.9.13 (tags/v3.9.13:6de2ca5, May 17 2022, 16:36:42) [MSC v.1929 64 bit (AMD64)]
+test_list_comprehension 6.4194597
+test_tuple_from_list_comprehension 6.9672235
+test_tuple_from_generator_comprehension 8.996260200000002
+test_unpack_generator_comprehension 11.207814599999999
+```
+
+```
+3.12.0 (tags/v3.12.0:0fb18b0, Oct  2 2023, 13:03:39) [MSC v.1935 64 bit (AMD64)]
+test_list_comprehension 5.656617900000128
+test_tuple_from_list_comprehension 6.026029500000277
+test_tuple_from_generator_comprehension 9.207803900000272
+test_unpack_generator_comprehension 10.375420500000018
+```
+
+Unsurprisingly, the difference is even greater in 3.12 with inline list comprehension.
+
+Because of the `tuple`, the generator is immediately iterated, so you get no benefit from its "lazyness". This is probably true for other stdlib collections that don't have a comprehension syntax, tuple is just the only one I can think of atm.
+
+For this reason, I'm asking for a performance rule with an autofix that transforms code like this:
+```py
+tuple(a for a in b)
+```
+into
+```py
+tuple([a for a in b])
+```
+
+Which, unless I'm missing something, is free performance whilst staying readable and pythonic.
+
+It seems this would fit well in the `flake8-comprehensions` or `refurb` family of rules.
+
+---
+
+_Renamed from "New Rule: Prefer list comprehension over generators to create tuples" to "New Rule: Prefer list comprehension over generator comprehensions to create tuples" by @Avasam on 2024-06-11 17:34_
+
+---
+
+_Label `rule` added by @charliermarsh on 2024-06-12 02:45_
+
+---
+
+_Comment by @tdulcet on 2024-06-12 09:42_
+
+Using your script, I see less of a difference on Linux with CPython:
+```
+3.12.3 (main, Apr 10 2024, 05:33:47) [GCC 13.2.0]
+test_list_comprehension 3.4234498779999853
+test_tuple_from_list_comprehension 3.7473174160000156
+test_tuple_from_generator_comprehension 4.684340659999975
+test_unpack_generator_comprehension 4.938177772000017
+```
+```
+3.10.12 (main, Jun 11 2023, 05:26:28) [GCC 11.4.0]
+test_list_comprehension 5.881427110000001
+test_tuple_from_list_comprehension 6.184221321999999
+test_tuple_from_generator_comprehension 6.949574859000002
+test_unpack_generator_comprehension 7.213964431000001
+```
+```
+3.8.10 (default, May 26 2023, 14:05:08)
+[GCC 9.4.0]
+test_list_comprehension 5.159386299999994
+test_tuple_from_list_comprehension 5.68906659999999
+test_tuple_from_generator_comprehension 6.2835374
+test_unpack_generator_comprehension 6.521585700000003
+```
+```
+3.6.9 (default, Dec  8 2021, 21:08:43)
+[GCC 8.4.0]
+test_list_comprehension 5.325352799999997
+test_tuple_from_list_comprehension 5.670514699999998
+test_tuple_from_generator_comprehension 6.860152300000003
+test_unpack_generator_comprehension 7.0944126999999995
+```
+```
+2.7.17 (default, Feb 27 2021, 15:10:58)
+[GCC 7.5.0]
+('test_list_comprehension', 5.888335943222046)
+('test_tuple_from_list_comprehension', 6.135804891586304)
+('test_tuple_from_generator_comprehension', 6.965441942214966)
+```
+But much more of a difference with PyPy:
+```
+3.9.18 (7.3.15+dfsg-1build3, Apr 01 2024, 03:12:48)
+[PyPy 7.3.15 with GCC 13.2.0]
+test_list_comprehension 0.2822986920000403
+test_tuple_from_list_comprehension 0.40187594900010026
+test_tuple_from_generator_comprehension 0.9802658359999441
+test_unpack_generator_comprehension 1.0730282659999375
+```
+
+---
+
+_Comment by @ivanychev on 2024-06-26 00:54_
+
+I think tuple-from-list comprehension approach will lead to to 2x higher peak memory consumption, won't it?
+
+---
+
+_Referenced in [astral-sh/ruff#12754](../../astral-sh/ruff/issues/12754.md) on 2024-08-12 05:33_
+
+---
+
+_Referenced in [astral-sh/ruff#12912](../../astral-sh/ruff/issues/12912.md) on 2024-08-17 23:58_
+
+---
+
+_Referenced in [pypa/setuptools#4386](../../pypa/setuptools/pulls/4386.md) on 2024-12-31 00:04_
+
+---
+
+_Comment by @NeilGirdhar on 2025-01-01 23:40_
+
+It may be faster, but I think it's less legible since it introduces a useless list comprehension.  I think it would be better to post this on discuss to see the if core developers can make comprehension creation faster.
+
+---
+
+_Comment by @NeilGirdhar on 2025-01-01 23:48_
+
+Also, I came here to post a related issue, but probably the discussion belongs here since it's close enough:
+```python
+In [1]: %timeit x = [1, *[2 for _ in range(10)]]
+156 ns ± 3.32 ns per loop (mean ± std. dev. of 7 runs, 10,000,000 loops each)
+
+In [2]: %timeit x = [1, *(2 for _ in range(10))]
+337 ns ± 9.72 ns per loop (mean ± std. dev. of 7 runs, 1,000,000 loops each)
+```
+Ruff doesn't seem to have an opinion on whether an unpacked nested iterable should be written as a list or generator.  I think Ruff should have an opinion, and from a legibility standpoint, I prefer generators even though they are slower.
+
+---
+
+_Comment by @opk12 on 2025-07-12 13:01_
+
+Seems CPython 3.14 is going to optimize `tuple()` with generator https://github.com/python/cpython/pull/131737
+
+---

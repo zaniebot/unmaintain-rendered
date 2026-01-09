@@ -1,0 +1,75 @@
+---
+number: 8099
+title: "`uv init` should generate a skeleton test suite"
+type: issue
+state: open
+author: paveldikov
+labels: []
+assignees: []
+created_at: 2024-10-10T16:09:50Z
+updated_at: 2025-03-04T15:14:48Z
+url: https://github.com/astral-sh/uv/issues/8099
+synced_at: 2026-01-07T13:12:17-06:00
+---
+
+# `uv init` should generate a skeleton test suite
+
+---
+
+_Issue opened by @paveldikov on 2024-10-10 16:09_
+
+What it says on the tin, really. Just like we have `src/myproj/__init__.py::hello()`, why not also have `tests/test_placeholder.py::test_hello()` and maybe even `tests/conftest.py`?
+
+---
+
+_Comment by @zanieb on 2024-10-10 16:12_
+
+I don't know if we want to select a test framework yet.
+
+---
+
+_Comment by @chrisrodrigue on 2024-10-10 21:22_
+
+No need to import anything, maybe just generate the `tests` folder and `test_hello.py` with a docstring in the file.
+
+This should be the same whether someone was using pytest or unittest.
+
+---
+
+_Comment by @Ravencentric on 2024-10-10 21:25_
+
+I think this might be better suited as an **opt-in** configuration in user level uv.toml (See: https://github.com/astral-sh/uv/issues/8098) with the default behaviour being no skeleton test suite.
+
+---
+
+_Comment by @paveldikov on 2024-10-11 15:01_
+
+Agree with @chrisrodrigue, and that is what I had in mind.
+
+Although `uv` may well want to ship its own test framework implementation in future, realistically test case _discovery_ is a pretty ossified interface -- I can't imagine a new test framework implementing something that is radically different from `pytest`. (excluding `pytest`-isms such as fixtures, parametrize [sic], etc. In any case the aim here is to give people a fundamental setup for simple 'run `hello()` and `assert` test cases, and they can grow the complexity however they see fit)
+
+---
+
+_Comment by @matthias-busch on 2025-03-04 15:12_
+
+I started playing around with `uv` today as we are currently evaluating to make the switch from `poetry` to `uv` in our project.  
+
+I've played around with the different `uv init` options and was missing the `tests` folder or basically a equivalent folder structure of what i get from poetry:
+
+```shell
+❯ poetry new --src foobar-delete-later
+Created package foobar_delete_later in foobar-delete-later
+❯ tree foobar-delete-later
+foobar-delete-later
+├── README.md
+├── pyproject.toml
+├── src
+│   └── foobar_delete_later
+│       └── __init__.py
+└── tests
+    └── __init__.py 
+```
+
+It would be nice to just add a tests/__init__.py as we probably can agree, that we all implement unit tests regardless of which framework we implement them in
+
+---

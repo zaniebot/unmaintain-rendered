@@ -1,0 +1,114 @@
+---
+number: 13014
+title: Add a new rule to warn on implicitly-concatenated strings separated by a comment
+type: issue
+state: closed
+author: Zac-HD
+labels:
+  - rule
+assignees: []
+created_at: 2024-08-20T16:51:02Z
+updated_at: 2025-12-17T22:37:02Z
+url: https://github.com/astral-sh/ruff/issues/13014
+synced_at: 2026-01-07T13:12:15-06:00
+---
+
+# Add a new rule to warn on implicitly-concatenated strings separated by a comment
+
+---
+
+_Issue opened by @Zac-HD on 2024-08-20 16:51_
+
+What's wrong with this code?
+
+```python
+cmd = [
+    "rsync",
+    "-avz",  # archive mode, verbose, compress
+    "-e",
+    "ssh",
+    "--exclude=.git"  # equivalent to ignore-vcs
+    "--delete",
+    "/root/code/api/",
+    "user@remote:/app/"
+    # Preserve symlinks as-is  (equivalent to --symlink-mode=posix-raw)
+    "--links",
+]
+subprocess.run(cmd)
+```
+
+It's missing two commas!  However, if you're generally OK with multi-line implicit concatenation (which I am), there's currently no way to get a warning for this case.  I therefore propose adding a new rule, `ISC004`, which will warn if implicitly-concatenated strings are separated by a comment - which can be fixed by either adding an explicit `+` or moving the comment.
+
+See also https://github.com/flake8-implicit-str-concat/flake8-implicit-str-concat/issues/55.  I would not add an autofix for this lint rule, as the intended semantics are ambiguous.
+
+---
+
+_Label `rule` added by @MichaReiser on 2024-08-21 06:37_
+
+---
+
+_Comment by @MichaReiser on 2024-08-21 12:09_
+
+Related https://github.com/astral-sh/ruff/issues/13031
+
+---
+
+_Referenced in [astral-sh/ruff#13031](../../astral-sh/ruff/issues/13031.md) on 2024-08-21 12:27_
+
+---
+
+_Referenced in [flake8-implicit-str-concat/flake8-implicit-str-concat#55](../../flake8-implicit-str-concat/flake8-implicit-str-concat/issues/55.md) on 2024-08-25 16:20_
+
+---
+
+_Referenced in [astral-sh/ruff#16108](../../astral-sh/ruff/pulls/16108.md) on 2025-02-12 00:42_
+
+---
+
+_Referenced in [astral-sh/ruff#20854](../../astral-sh/ruff/issues/20854.md) on 2025-10-15 22:10_
+
+---
+
+_Comment by @MichaReiser on 2025-10-16 07:30_
+
+This has come up again in #20854. I wonder if there's an argument for an ISC rule or option that catches any implicit string concatenation within a set list, or a many-element tuple, instead of detecting in-between comments.
+
+---
+
+_Comment by @notatallshaw on 2025-10-16 15:38_
+
+Yeah, I assume this aligns with OPs intention, but pulling out an example from #20854 I would want this to be alerted on as well as OPs example:
+
+```python
+facts = (
+    "Lobsters have blue blood.",
+    "The liver is the only human organ that can fully regenerate itself.",
+    "Clarinets are made almost entirely out of wood from the mpingo tree."
+    "In 1971, astronaut Alan Shepard played golf on the moon.",
+)
+```
+
+But not this:
+
+```python
+facts = (
+    "Lobsters have blue blood.\n"
+    "The liver is the only human organ that can fully regenerate itself.\n"
+    "Clarinets are made almost entirely out of wood from the mpingo tree.\n"
+    "In 1971, astronaut Alan Shepard played golf on the moon.\n"
+)
+```
+
+As parenthesis are often used for multi-line string concatenation, whereas multi-line containers typically used to hold multiple elements and if multi-line concatenation is desired in a multi-line container I think it would be worth explicitly putting it in parenthesis to highlight.
+
+But I do appreciate there is some subjective choices here, and I would rather have OPs example alerted on than nothing at all.
+
+---
+
+_Referenced in [astral-sh/ruff#21972](../../astral-sh/ruff/pulls/21972.md) on 2025-12-14 03:22_
+
+---
+
+_Closed by @ntBre on 2025-12-17 22:37_
+
+---

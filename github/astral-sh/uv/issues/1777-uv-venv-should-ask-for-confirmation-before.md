@@ -1,0 +1,147 @@
+---
+number: 1777
+title: "\"uv venv\"  should ask for confirmation before overwriting an existing venv"
+type: issue
+state: closed
+author: woutervh
+labels:
+  - duplicate
+assignees: []
+created_at: 2024-02-20T19:26:14Z
+updated_at: 2024-02-21T00:20:07Z
+url: https://github.com/astral-sh/uv/issues/1777
+synced_at: 2026-01-07T13:12:16-06:00
+---
+
+# "uv venv"  should ask for confirmation before overwriting an existing venv
+
+---
+
+_Issue opened by @woutervh on 2024-02-20 19:26_
+
+using uv --version 0.16
+
+uv currently silently deletes an existing venv.
+
+
+creating a new venv and install a package:
+```
+> uv venv /tmp/foo/.venv 
+Using Python 3.11.6 interpreter at /opt/tools/pyenv/var/repo/versions/3.11.6/bin/python3
+Creating virtualenv at: /tmp/foo/.venv
+Activate with: source /tmp/foo/.venv/bin/activate
+
+>cd /tmp/foo
+> uv pip install pytest
+
+> ls -al .venv/bin/
+   ...
+   pytest
+   ....
+```
+
+executing "uv venv" in the same directory will delete the existing venv and replace it with a pristine one.
+```
+> uv venv
+Using Python 3.11.6 interpreter at /opt/tools/pyenv/var/repo/versions/3.11.6/bin/python3
+Creating virtualenv at: .venv
+Activate with: source .venv/bin/activate
+```
+
+
+Better usability:
+```
+> uv venv
+   An existing venv is found in /tmp/foo/.venv . 
+   Replace? [y/N]
+```
+
+or a force-option (force/overwrite/override)
+```
+> uv venv --force
+Using Python 3.11.6 interpreter at /opt/tools/pyenv/var/repo/versions/3.11.6/bin/python3
+Creating virtualenv at: .venv
+Activate with: source .venv/bin/activate
+```
+
+But virtualenv behaves differently:
+
+```
+> virtualenv --version
+virtualenv 20.25.0
+
+# create new venv
+> virtualenv /tmp/foo
+created virtual environment CPython3.11.5.final.0-64 in 122ms
+  creator CPython3Posix(dest=/opt/tools/uv/var/tmp/foo, clear=False, no_vcs_ignore=False, global=False)
+  seeder FromAppData(download=False, pip=bundle, setuptools=bundle, wheel=bundle, via=copy, app_data_dir=/opt/tools/virtualenv/var/cache)
+    added seed packages: pip==23.3.2, setuptools==69.0.3, wheel==0.42.0
+  activators BashActivator,CShellActivator,FishActivator,NushellActivator,PowerShellActivator,PythonActivator
+
+
+# install a package with an executable
+> /tmp/foo/bin/pip install pytest
+
+Collecting pytest
+  Using cached pytest-8.0.1-py3-none-any.whl.metadata (7.7 kB)
+...
+Successfully installed iniconfig-2.0.0 packaging-23.2 pluggy-1.4.0 pytest-8.0.1
+
+
+# the entrypoint is there:
+> ls -al bin /tmp/foo/bin
+...
+-rwxr-xr-x 1 wouter wouter  241 Feb 20 20:18 pytest*
+
+
+# now try to repace this env, 
+> virtualenv /tmp/foo
+
+created virtual environment CPython3.11.5.final.0-64 in 170ms
+  creator CPython3Posix(dest=/opt/tools/uv/var/tmp/foo, clear=False, no_vcs_ignore=False, global=False)
+  seeder FromAppData(download=False, pip=bundle, setuptools=bundle, wheel=bundle, via=copy, app_data_dir=/opt/tools/virtualenv/var/cache)
+    added seed packages: iniconfig==2.0.0, packaging==23.2, pip==23.3.2, pluggy==1.4.0, pytest==8.0.1, setuptools==69.0.3, wheel==0.42.0
+  activators BashActivator,CShellActivator,FishActivator,NushellActivator,PowerShellActivator,PythonActivator
+
+# although it looks to override, the aerlier package is still there:
+/opt/tools/uv/var/tmp/foo  ls -al bin
+-rwxr-xr-x 1 wouter wouter  241 Feb 20 20:18 pytest*
+
+```
+
+
+---
+
+_Renamed from "uv-venv should should confirmation before overwriting an existing venv" to ""uv venv"  should ask for confirmation before overwriting an existing venv" by @woutervh on 2024-02-20 19:29_
+
+---
+
+_Comment by @0v00 on 2024-02-20 20:49_
+
+same issue here [https://github.com/astral-sh/uv/issues/1472](https://github.com/astral-sh/uv/issues/1472)
+
+---
+
+_Comment by @astelmach01 on 2024-02-20 23:26_
+
++1, I though about having `uv venv` just simply warning you that you're deleting an existing venv, but this behavior is best
+
+---
+
+_Label `duplicate` added by @zanieb on 2024-02-21 00:19_
+
+---
+
+_Comment by @zanieb on 2024-02-21 00:20_
+
+Thanks for the thorough report but we'll track this in the original issue.
+
+---
+
+_Closed by @zanieb on 2024-02-21 00:20_
+
+---
+
+_Referenced in [astral-sh/uv#4276](../../astral-sh/uv/issues/4276.md) on 2024-06-12 15:35_
+
+---

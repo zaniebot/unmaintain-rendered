@@ -1,0 +1,181 @@
+---
+number: 13207
+title: "In uv's official Dockerfile example when uv sync is called 2nd time it removes the .venv it has just created and reinstalls everything from scratch"
+type: issue
+state: closed
+author: Ark-kun
+labels:
+  - question
+assignees: []
+created_at: 2025-04-30T01:33:22Z
+updated_at: 2025-04-30T22:41:09Z
+url: https://github.com/astral-sh/uv/issues/13207
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# In uv's official Dockerfile example when uv sync is called 2nd time it removes the .venv it has just created and reinstalls everything from scratch
+
+---
+
+_Issue opened by @Ark-kun on 2025-04-30 01:33_
+
+### Summary
+
+I'm building a simple uv-based container using Podman, following the official example: https://docs.astral.sh/uv/guides/integration/docker/#intermediate-layers
+
+Running `uv sync` twice results in uv removing and recreating the virtual environement, thus creating inefficient container images.
+
+```
+STEP 10/11: RUN --mount=type=cache,target=/root/.cache/uv     uv sync --frozen --no-dev
+warning: Ignoring existing virtual environment linked to non-existent Python interpreter: .venv/bin/python3 -> python
+Using CPython 3.10.14
+Removed virtual environment at: .venv
+Creating virtual environment at: .venv
+```
+ 
+Repro steps:
+* `git clone https://github.com/astral-sh/uv-docker-example`
+* `cd uv-docker-example`
+* Modify Dockerfile to replace the `--mount=bind=` options with explicit ADD directives as Podman has some Access denied issues with mounted files on Mac OSX
+* `podman build -f Dockerfile`
+
+Dockerfile:
+```
+# Use a Python image with uv pre-installed
+FROM ghcr.io/astral-sh/uv:python3.12-bookworm-slim
+
+# Install the project into `/app`
+WORKDIR /app
+
+ADD ./.python-version .
+ADD ./uv.lock .
+ADD ./pyproject.toml .
+
+# Enable bytecode compilation
+ENV UV_COMPILE_BYTECODE=1
+
+# Copy from the cache instead of linking since it's a mounted volume
+ENV UV_LINK_MODE=copy
+
+# Install the project's dependencies using the lockfile and settings
+RUN --mount=type=cache,target=/root/.cache/uv \
+    uv sync --frozen --no-dev --no-install-project       
+
+# Then, add the rest of the project source code and install it
+# Installing separately from its dependencies allows optimal layer caching
+ADD . /app
+RUN --mount=type=cache,target=/root/.cache/uv \
+    uv sync --frozen --no-dev
+
+# Place executables in the environment at the front of the path
+ENV PATH="/app/.venv/bin:$PATH"
+```
+
+
+```
+% podman build -f Dockerfile --no-cache=true
+STEP 1/11: FROM ghcr.io/astral-sh/uv:python3.12-bookworm-slim
+STEP 2/11: WORKDIR /app
+--> 49457bdf851e
+STEP 3/11: ADD ./.python-version .
+--> fdf465cb18e4
+STEP 4/11: ADD ./uv.lock .
+--> 1d63e6545763
+STEP 5/11: ADD ./pyproject.toml .
+--> dc2ffdf03748
+STEP 6/11: ENV UV_COMPILE_BYTECODE=1
+--> 6250b1df44ff
+STEP 7/11: ENV UV_LINK_MODE=copy
+--> 4d94792101c2
+STEP 8/11: RUN     --mount=type=cache,target=/root/.cache/uv     uv sync --frozen --no-dev --no-install-project       
+Downloading cpython-3.10.14-linux-aarch64-gnu (download) (18.5MiB)
+ Downloading cpython-3.10.14-linux-aarch64-gnu (download)
+Using CPython 3.10.14
+Creating virtual environment at: .venv
+Prepared 6 packages in 0.84ms
+Installed 6 packages in 297ms
+Bytecode compiled 1950 files in 459ms
+ + numpy==2.2.5
+ + pandas==2.2.3
+ + python-dateutil==2.9.0.post0
+ + pytz==2025.2
+ + six==1.17.0
+ + tzdata==2025.2
+--> 801317ba8e02
+STEP 9/11: ADD . /app
+--> bcf81b48cbbc
+STEP 10/11: RUN --mount=type=cache,target=/root/.cache/uv     uv sync --frozen --no-dev
+warning: Ignoring existing virtual environment linked to non-existent Python interpreter: .venv/bin/python3 -> python
+Using CPython 3.10.14
+Removed virtual environment at: .venv
+Creating virtual environment at: .venv
+Prepared 6 packages in 0.77ms
+Installed 6 packages in 357ms
+Bytecode compiled 1950 files in 608ms
+ + numpy==2.2.5
+ + pandas==2.2.3
+ + python-dateutil==2.9.0.post0
+ + pytz==2025.2
+ + six==1.17.0
+ + tzdata==2025.2
+--> 754eebfe8d34
+STEP 11/11: ENV PATH="/app/.venv/bin:$PATH"
+COMMIT
+--> 2674781947f2
+2674781947f2bcdc7a1a911539a5a6e862d6a70ff552ece3507e17d1056fae6b
+```
+
+Expected: uv does not delete and re-install .venv.
+
+
+### Platform
+
+macOS 15
+
+### Version
+
+ghcr.io/astral-sh/uv:python3.12-bookworm-slim == uv 0.7.0
+
+### Python version
+
+cpython-3.10.14
+
+---
+
+_Label `bug` added by @Ark-kun on 2025-04-30 01:33_
+
+---
+
+_Renamed from "In uv's official Dockerfile example uv sync removes the .venv it has just created and reinstalls everything from scratch" to "In uv's official Dockerfile example when uv sync is called 2nd time it removes the .venv it has just created and reinstalls everything from scratch" by @Ark-kun on 2025-04-30 01:33_
+
+---
+
+_Comment by @zanieb on 2025-04-30 02:00_
+
+Is your `.venv` in your `.dockerignore`? Otherwise, you'll copy it into the image and break the environment.
+
+---
+
+_Comment by @zanieb on 2025-04-30 02:00_
+
+e.g., see https://github.com/astral-sh/uv-docker-example/blob/main/.dockerignore
+
+---
+
+_Label `bug` removed by @zanieb on 2025-04-30 13:55_
+
+---
+
+_Label `question` added by @zanieb on 2025-04-30 13:55_
+
+---
+
+_Comment by @Ark-kun on 2025-04-30 22:41_
+
+I apologize. I think you're right. What a rookie mistake...
+
+---
+
+_Closed by @Ark-kun on 2025-04-30 22:41_
+
+---

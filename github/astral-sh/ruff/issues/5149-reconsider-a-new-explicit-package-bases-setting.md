@@ -1,0 +1,89 @@
+---
+number: 5149
+title: Reconsider a new explicit-package-bases setting
+type: issue
+state: open
+author: siddharthab
+labels:
+  - configuration
+assignees: []
+created_at: 2023-06-16T16:32:11Z
+updated_at: 2023-06-20T15:32:31Z
+url: https://github.com/astral-sh/ruff/issues/5149
+synced_at: 2026-01-07T13:12:15-06:00
+---
+
+# Reconsider a new explicit-package-bases setting
+
+---
+
+_Issue opened by @siddharthab on 2023-06-16 16:32_
+
+This issue is mostly requesting for one of the options mentioned in https://github.com/astral-sh/ruff/issues/1817#issuecomment-1382643952.
+
+We use a monorepo for our own internal use (nothing gets packaged and distributed), and so we don't really have a major objective reason to use regular packages over namespace packages. Something to note here is that our code organization might have deep nested directories with no .py files in the intermediate directories. All our tooling (black, isort, mypy, Bazel, Python toolchain itself) works with this setup except for ruff. Because everything almost works, new members are not in the habit of creating empty `__init__.py` files, which leads to some unexpected sharp edges in ruff that are not obvious to troubleshoot.
+
+To help enforce regular packages over namespace packages, we could enable INP (implicit-namespace-packages) ruff linter, but it works only on .py files, and as mentioned above, we may have many intermediate directories with no .py files in them. This use case is also mentioned in mypy docs (screenshot in the comment linked above) as an example for when `--explicit-package-bases` is useful.
+
+We are currently making do with adding entries to `known-third-party`, but it does add some friction.
+
+---
+
+_Comment by @siddharthab on 2023-06-16 16:48_
+
+Our issue could also be solved with using a setting that defines implicit namespace packages, rather than the current explicit list of namespace packages (option 2 in the mypy docs screenshot in the linked comment above).
+
+A simple use case for reproduction:
+
+Filesystem:
+```
+% tree
+.
+└── mypkg
+    └── requests
+        ├── __init__.py
+        └── module.py
+```
+
+`mypkg/requests/__init__.py`:
+```
+# Some package initialization code.
+```
+
+`mypkg/requests/module.py`:
+```
+import requests
+import urllib3
+
+_ = requests
+_ = urllib3
+```
+
+```bash
+% isort --check mypkg/requests/module.py   # No issues.
+% ruff --select=I001 mypkg/requests/module.py # Thinks 'requests' is a top-level first-party package.
+```
+
+---
+
+_Comment by @charliermarsh on 2023-06-16 16:50_
+
+I think adding an `explicit-package-bases` could make sense.
+
+---
+
+_Label `question` added by @charliermarsh on 2023-06-16 17:24_
+
+---
+
+_Label `configuration` added by @charliermarsh on 2023-06-16 17:24_
+
+---
+
+_Label `question` removed by @charliermarsh on 2023-06-20 15:32_
+
+---
+
+_Referenced in [astral-sh/ruff#10541](../../astral-sh/ruff/pulls/10541.md) on 2024-03-24 08:43_
+
+---

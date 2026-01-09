@@ -1,0 +1,72 @@
+---
+number: 15372
+title: uv init should do git init before getting author information from git
+type: issue
+state: closed
+author: sebastianw
+labels:
+  - enhancement
+assignees: []
+created_at: 2025-08-19T08:42:27Z
+updated_at: 2025-08-19T13:37:21Z
+url: https://github.com/astral-sh/uv/issues/15372
+synced_at: 2026-01-07T13:12:19-06:00
+---
+
+# uv init should do git init before getting author information from git
+
+---
+
+_Issue opened by @sebastianw on 2025-08-19 08:42_
+
+### Summary
+
+When using git to get the author information for `pyproject.toml`, I wondered why it was only getting my name but not my email address.
+
+I use `includeIf` in `.gitconfig` to set email address depending on folder (work/private):
+
+```gitconfig
+
+[user]
+name = My Name
+
+[includeIf "gitdir:~/repositories/work/"]
+  path = ./.gitconfig.work
+[includeIf "gitdir:~/repositories/privat/"]
+  path = ./.gitconfig.privat
+```
+
+git will only include these files when called in a directory with a `.git` subdirectory, as the config states:
+
+
+> The data that follows the keyword gitdir: is used as a glob pattern. If the location of the .git directory matches the pattern, the include condition is met.
+> 
+> The .git location may be auto-discovered, or come from $GIT_DIR environment variable. If the repository is auto-discovered via a .git file (e.g. from submodules, or a linked worktree), the .git location would be the final location where the .git directory is, not where the .git file is.
+> 
+> 
+
+When doing `uv init` it seems that the author information is collected from git before the git repository gets initialized which means it can't get the email information.
+
+If possible it would be nice if uv could init git before collecting the author information from it so that the email address is included in `pyproject.toml`.
+
+### Example
+
+_No response_
+
+---
+
+_Label `enhancement` added by @sebastianw on 2025-08-19 08:42_
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2025-08-19 10:21_
+
+---
+
+_Referenced in [astral-sh/uv#15377](../../astral-sh/uv/pulls/15377.md) on 2025-08-19 10:29_
+
+---
+
+_Closed by @zanieb on 2025-08-19 13:37_
+
+---

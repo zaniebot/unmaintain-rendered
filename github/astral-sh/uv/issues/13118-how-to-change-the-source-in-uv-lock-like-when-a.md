@@ -1,0 +1,61 @@
+---
+number: 13118
+title: "How to change the `source` in uv.lock (like when a package repo goes offline)?"
+type: issue
+state: open
+author: krupan
+labels:
+  - question
+assignees: []
+created_at: 2025-04-26T13:16:30Z
+updated_at: 2025-04-26T13:23:09Z
+url: https://github.com/astral-sh/uv/issues/13118
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# How to change the `source` in uv.lock (like when a package repo goes offline)?
+
+---
+
+_Issue opened by @krupan on 2025-04-26 13:16_
+
+### Question
+
+I have the wheels for the packages my project needs in a flat directory on an nfs server that all machines in my lab can access.  I add this to my `pyproject.toml`:
+```
+[[tool.uv.index]]
+url = "/path/to/wheels"
+format = "flat"
+```
+I run `uv sync` and it installs the packages under `.venv` and creates `uv.lock`.  Inside `uv.lock` the source for each package is recorded as:
+```
+source = { registry = "/path/to/wheels" }
+```
+Now, for some reason or another `/path/to/wheels` is gone, like we stopped using that nfs server or something.  Now, if someone else clones my project and attempts to sync, either with `uv sync` or `uv run`, then uv will not install the packages because it can't find them at `/path/to/wheels`.  I was told in another question that [this is expected](https://github.com/astral-sh/uv/issues/13094#issuecomment-2829188590).  My question is, is there a uv command/option that I can use in this scenario to download the packages from the default index (PyPI) instead of the `/path/to/wheels` index and then update the lockfile with a new source?
+
+### Platform
+
+linux
+
+### Version
+
+uv 0.6.16
+
+---
+
+_Label `question` added by @krupan on 2025-04-26 13:16_
+
+---
+
+_Comment by @krupan on 2025-04-26 13:23_
+
+UPDATE: I thought if I deleted `uv.lock` and then ran `uv sync` then it would work, but I still get this error:
+```
+ $ uv sync
+⠙ pyproject==0.1.0
+error: Failed to read `--find-links` directory: /path/to/wheels
+  Caused by: No such file or directory (os error 2)
+```
+Shouldn't uv fall back to the default index if one isn't available?
+
+---

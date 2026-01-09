@@ -1,0 +1,227 @@
+---
+number: 15243
+title: uv_build fails to build if directory symlink found in package path
+type: issue
+state: open
+author: dusktreader
+labels:
+  - needs-decision
+  - build-backend
+assignees: []
+created_at: 2025-08-12T16:51:40Z
+updated_at: 2025-12-15T07:48:36Z
+url: https://github.com/astral-sh/uv/issues/15243
+synced_at: 2026-01-07T13:12:19-06:00
+---
+
+# uv_build fails to build if directory symlink found in package path
+
+---
+
+_Issue opened by @dusktreader on 2025-08-12 16:51_
+
+### Summary
+
+## Bug Description
+
+If the package path for a package project type includes a symlink to a directory, the uv_build backend fails.
+
+
+## Reproduction
+
+1. Create a new package project with `uv init`:
+   ```
+   mkdir dummy && cd dummy && uv init --package
+   ```
+2. Add an assets directory with a single text file in the project root:
+   ```
+   mkdir assets && echo "dummy text file" > assets/dummy.txt
+   ```
+3. Create a symlink in the package directory to the assets directory:
+   ```
+   cd src/dummy && ln -s ../../assets assets && cd -
+   ```
+4. Build
+   ```
+   uv build
+   ```
+
+The final step will produce an error:
+```
+► uv build
+Building source distribution (uv build backend)...
+  × Failed to build `.../dummy`
+  ├─▶ Failed to write to dist/dummy-0.1.0.tar.gz
+  ╰─▶ failed to read from file `.../dummy/src/dummy/assets`: Is a directory (os error 21)
+```
+
+
+## Expected
+
+When building with hatchling, the package may contain symlinks to directories. These are treated as normal directories and the resulting package build includes non-symlink directories with the expected contents. I would expect uv_build to produce the same results.
+
+
+### Platform
+
+macos 15.5
+
+### Version
+
+0.8.4
+
+### Python version
+
+3.13
+
+---
+
+_Label `bug` added by @dusktreader on 2025-08-12 16:51_
+
+---
+
+_Assigned to @konstin by @zanieb on 2025-08-12 17:07_
+
+---
+
+_Comment by @zanieb on 2025-08-12 17:07_
+
+Thanks for the report!
+
+---
+
+_Label `build-backend` added by @konstin on 2025-09-05 12:42_
+
+---
+
+_Unassigned @konstin by @konstin on 2025-09-09 07:52_
+
+---
+
+_Label `needs-decision` added by @konstin on 2025-09-09 17:24_
+
+---
+
+_Label `bug` removed by @konstin on 2025-09-09 17:24_
+
+---
+
+_Comment by @jduf on 2025-09-23 14:37_
+
+I also have the same problem with uv 0.8.17 on MacOS 15.6
+
+---
+
+_Comment by @konstin on 2025-09-23 15:27_
+
+Is there a reason you can't place the directory inside the `src` directory instead of symlinking?
+
+---
+
+_Comment by @dusktreader on 2025-09-23 17:03_
+
+> Is there a reason you can't place the directory inside the `src` directory instead of symlinking?
+
+Yes, I'm writing a multi-lingual package where each implementation depends on the same assets that live in a directory in the project root. It looks something like:
+
+```
+jawa-lib/
+|- schemas/                            # these are shared among each implementation
+|- py                                  # this is the python implementation
+|  |- pyproject.toml
+|  |- src
+|     |- py-jawa/
+|        |- schemas -> ../../schemas
+|- ts                                  # this is the typescript/javascript implementation
+|  |- package.json
+|  |- src
+|     |- ts-jawa/
+|        |- schemas -> ../../schemas
+```
+
+---
+
+_Comment by @bersace on 2025-11-20 14:57_
+
+Same here. We use symlink to deduplicate files between workspace members. Setuptools is fine, not uv_build.
+
+uv is awesome, btw !
+
+
+
+---
+
+_Comment by @TDYQ-Liu on 2025-12-14 08:22_
+
+Same here.
+
+```
+path/main$ uv build --wheel 
+Building wheel...
+Error: failed to read from file `some_path/mypkg/main/src/mypkg/another_pkg`: Is a directory (os error 21)
+  × Failed to build `some_path/mypkg/main`
+  ├─▶ The build backend returned an error
+  ╰─▶ Call to `uv_build.build_wheel` failed (exit status: 1)
+      hint: This usually indicates a problem with the package or the build
+      environment.
+```
+
+In order to solve this problem, I have written a bash script to deal with it. Hoping to support symbolic package directory in the future uv version.
+
+```bash
+#!/usr/bin/bash
+PKGNAME=$(basename "$(find ./src/ -mindepth 1 -maxdepth 1 -type d)")
+DIRS=$(find .. -maxdepth 1 -mindepth 1 -type d ! -name "$(basename "$(pwd)")")
+
+function build {
+    clean_and_copy
+    uv
+    clean_and_create
+}
+
+function clean_and_copy {
+    find ./src/"$PKGNAME"/ -maxdepth 1 -type l -exec rm -rf {} +
+
+    for d in $DIRS; do
+        base=$(basename "$d")
+        source="$d"/src/"$base"
+        cp -r "$source" ./src/"$PKGNAME"/
+    done
+}
+
+function uv {
+    command uv build --wheel
+}
+
+function clean_and_create {
+    for d in $DIRS; do
+        base=$(basename "$d")
+        source="$d"/src/"$base"
+        rm -rf ./src/"$PKGNAME"/"$base"
+        ln -sr "$source" ./src/"$PKGNAME"/
+    done
+}
+
+build
+```
+
+```
+.
+├── build.sh
+├── dist
+├── pyproject.toml
+├── README.md
+├── src
+│   └── mypkg
+└── uv.lock
+
+```
+
+---
+
+_Comment by @bersace on 2025-12-15 07:48_
+
+Finally, I created a workspace with the library as an unpublished, unversionned project. Vendoring this library is quite clunky but as it's an app released only as rpm/deb, that's ok.
+
+Would be nice if uv implements something like go vendoring.
+
+---

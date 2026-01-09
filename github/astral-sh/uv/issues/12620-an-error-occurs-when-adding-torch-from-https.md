@@ -1,0 +1,140 @@
+---
+number: 12620
+title: "An error occurs when adding torch from https://download.pytorch.org/whl/cu118"
+type: issue
+state: closed
+author: Ruoc26
+labels:
+  - question
+assignees: []
+created_at: 2025-04-02T06:03:05Z
+updated_at: 2025-08-06T06:35:37Z
+url: https://github.com/astral-sh/uv/issues/12620
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# An error occurs when adding torch from https://download.pytorch.org/whl/cu118
+
+---
+
+_Issue opened by @Ruoc26 on 2025-04-02 06:03_
+
+### Question
+
+uv add torch==2.3.1 --index torch=https://download.pytorch.org/whl/cu118
+
+Using CPython 3.10.0 interpreter at: D:\miniconda3\envs\py3.10\python.exe
+Creating virtual environment at: .venv
+Resolved 25 packages in 9.54s
+error: Distribution `markupsafe==3.0.2 @ registry+https://download.pytorch.org/whl/cu118` can't be installed because it doesn't have a source distribution or wheel for the current platform
+
+hint: You're using CPython 3.10 (`cp310`), but `markupsafe` (v3.0.2) only has wheels with the following Python implementation tag: `cp313`
+
+### Platform
+
+_No response_
+
+### Version
+
+_No response_
+
+---
+
+_Label `question` added by @Ruoc26 on 2025-04-02 06:03_
+
+---
+
+_Comment by @zanieb on 2025-04-02 14:16_
+
+Have you read the `pytorch` guide? https://docs.astral.sh/uv/guides/integration/pytorch/
+
+
+
+---
+
+_Comment by @sglbl on 2025-04-09 08:39_
+
+> Have you read the `pytorch` guide? https://docs.astral.sh/uv/guides/integration/pytorch/
+
+I think because of markupsafe problem, the guide about using torch with extra's doesn't work anymore.
+
+@CRH26 I solved this issue by adding a compatible markupsafe version:
+In my case I use torch with cpu,
+
+`uv add torch==2.5.1+cpu markupsafe==2.1.5 --index https://download.pytorch.org/whl/cpu --index-strategy unsafe-best-match
+`
+But because of this every other package had conflicts about torch too so I added this to the toml file
+
+```toml
+[tool.uv]
+index-strategy = "unsafe-best-match"
+```
+
+---
+
+_Comment by @fritol on 2025-07-05 20:56_
+
+i applied what @sglbl said
+`pyproject.toml:`
+
+```toml
+# pyproject.toml
+
+[project]
+name = "my-cuda-pytorch-project"
+version = "0.1.0"
+description = "A project set up for PyTorch with CUDA support using uv."
+requires-python = ">=3.9" # Adjust this to your specific Python version (e.g., >=3.10, >=3.11)
+
+dependencies = [
+    "torch",
+    "torchvision",
+    "torchaudio",
+    "markupsafe==2.1.5", # Pinned to a version known to work for some users
+]
+
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+# Configuration for uv
+[tool.uv]
+index-strategy = "unsafe-best-match" # Crucial for resolving complex dependency conflicts
+```
+
+then use 
+`uv sync --index-url https://download.pytorch.org/whl/cu124 --extra-index-url https://pypi.org/simple --python 3.13.3`
+
+---
+
+_Comment by @blurgyy on 2025-08-04 07:04_
+
+It appears I can just install markupsafe 3.0.2 before adding pytorch, i.e., the following works just fine:
+
+```bash
+uv add git+https://github.com/pallets/markupsafe@3.0.2
+[...]
+
+uv add torch torchvision
+```
+
+This approach also does not require the `--index-strategy=unsafe-best-match` option.
+
+---
+
+_Comment by @Cingirakli1Dumbelek on 2025-08-04 07:08_
+
+it's a big bug.
+there is version that satisfies every condition but without you knowing that it gives you error. I think this issue should be prioritized.
+
+---
+
+_Comment by @Ruoc26 on 2025-08-06 06:33_
+
+I solved this problem by following the pytorch guide, I think the key was setting index.explicit = true
+
+---
+
+_Closed by @Ruoc26 on 2025-08-06 06:35_
+
+---

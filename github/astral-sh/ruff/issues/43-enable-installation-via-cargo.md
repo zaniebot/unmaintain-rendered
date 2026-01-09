@@ -1,0 +1,323 @@
+---
+number: 43
+title: Enable installation via cargo
+type: issue
+state: open
+author: charliermarsh
+labels:
+  - core
+assignees: []
+created_at: 2022-08-29T17:35:21Z
+updated_at: 2025-04-22T20:54:27Z
+url: https://github.com/astral-sh/ruff/issues/43
+synced_at: 2026-01-07T13:12:14-06:00
+---
+
+# Enable installation via cargo
+
+---
+
+_Issue opened by @charliermarsh on 2022-08-29 17:35_
+
+We can't upload to crates.io because we're using an unreleased version of RustPython.
+
+---
+
+_Label `enhancement` added by @charliermarsh on 2022-08-29 21:16_
+
+---
+
+_Comment by @charliermarsh on 2022-09-24 14:44_
+
+I've asked about publishing Ruff's RustPython fork here: https://github.com/RustPython/RustPython/issues/4179
+
+---
+
+_Comment by @youknowone on 2022-10-15 05:08_
+
+Regardless we are ready or not, I want to distribute rustpython-parser before ruff 0.1. Please poke me when you are ready for 0.1. I seriously don't want to block ruff's schedule by our fault.
+
+---
+
+_Comment by @charliermarsh on 2022-10-15 14:42_
+
+@youknowone - Thank you, that's really helpful and appreciated.
+
+There are a few PRs I'd need to merge to move off of my `RustPython` fork (which is largely ahead of `main`) -- I know you know about some of these, but I'll just enumerate them here for completeness:
+
+- https://github.com/RustPython/RustPython/pull/4192
+- https://github.com/RustPython/RustPython/pull/4143
+- (Not totally essential) https://github.com/charliermarsh/RustPython/pull/3
+- https://github.com/RustPython/RustPython/pull/4218
+
+---
+
+_Label `enhancement` removed by @charliermarsh on 2022-12-31 18:21_
+
+---
+
+_Label `core` added by @charliermarsh on 2022-12-31 18:22_
+
+---
+
+_Comment by @charliermarsh on 2023-01-11 16:27_
+
+RustPython just cut a new release on [crates.io](https://crates.io/crates/rustpython-parser). So the only blocker here is (1) confirming that we want to use the Crate, which might mean we're a little slower to pick up changes from Git; and (2) LibCST is still using my unpublished fork (which just removes pyo3 stuff).
+
+---
+
+_Comment by @zanieb on 2023-06-03 18:02_
+
+Hey! I was looking at adding documentation for installation from crates.io then realized it wasn't supported :D
+
+1) Is it feasible to use RustPython from Git for other releases and only publish to `crates.io` if the published RustPython version has the sufficient changes? Is that worth the trouble?
+
+2) Is this resolved now?
+
+---
+
+_Comment by @charliermarsh on 2023-06-03 19:00_
+
+I think there are three blockers here that we'd need to resolve, since, in order to publish to `crates.io`, we can't have any Git dependencies in the dependency tree:
+
+1. Publish our parser fork as their own crates (https://github.com/astral-sh/RustPython-Parser), e.g., `ruff_rustpython_parser` or similar.
+2. In RustPython (and our fork), remove the Git dependency on [unicode_names2](https://github.com/astral-sh/RustPython-Parser/blob/7a3eedbf6fb4ea7068a1bf7fe0e97e963ea95ffd/Cargo.toml#LL41C1-L41C15).
+3. Publish our LibCST fork as its own crate (https://github.com/charliermarsh/LibCST/tree/charlie/ruff).
+
+---
+
+_Comment by @zanieb on 2023-06-03 21:30_
+
+Related https://github.com/RustPython/Parser/issues/67
+
+---
+
+_Comment by @youknowone on 2023-06-04 08:17_
+
+I'd like to grant publish permission of parser to anyone from Ruff who need it.
+I didn't finish unicode_names2 patch to merge it yet. I need to port the implementation to its own phf.
+
+---
+
+_Referenced in [mtshiba/pylyzer#44](../../mtshiba/pylyzer/issues/44.md) on 2023-06-11 11:39_
+
+---
+
+_Referenced in [astral-sh/ruff#7179](../../astral-sh/ruff/pulls/7179.md) on 2023-09-06 05:43_
+
+---
+
+_Comment by @T-256 on 2023-10-17 15:20_
+
+I think all mentioned blockers are gone, Are there any new?
+
+---
+
+_Comment by @zanieb on 2023-10-17 15:41_
+
+Yes now that we've resolved the blockers we are considering publishing to crates.io but have not come to a decision yet.
+
+---
+
+_Comment by @KGrewal1 on 2024-02-18 10:21_
+
+Has there been any update on this (or would `cargo install --git  https://github.com/astral-sh/ruff ruff `work: seems to install but I'm not sure if there's tests I can run to confirm: does seem to be working on code I have)
+
+---
+
+_Comment by @charliermarsh on 2024-02-18 14:22_
+
+@KGrewal1 -- `cargo install --git  https://github.com/astral-sh/ruff ruff` should work just fine! I tested it myself too.
+
+---
+
+_Referenced in [astral-sh/ruff#10417](../../astral-sh/ruff/issues/10417.md) on 2024-03-15 03:04_
+
+---
+
+_Referenced in [astral-sh/ruff#14051](../../astral-sh/ruff/issues/14051.md) on 2024-11-01 18:31_
+
+---
+
+_Comment by @philwo on 2025-01-28 02:25_
+
+We're currently looking into options for a new Python code formatter for Chromium, and while we haven't made any decision yet, Ruff is definitely a favorite. 😊 
+
+This issue is a blocker for us, though, as we have a policy that all third-party software has to be mirrored into our internal repository, and tools then have to be built from there using internal infrastructure for security reasons. This would be very easy to setup for me if Ruff and all of its dependencies were published to crates.io, as we have existing automation and processes for importing packages hosted there.
+
+Would you be open to revisit this issue and see if Ruff could be published to crates.io?
+
+
+---
+
+_Comment by @charliermarsh on 2025-01-28 02:44_
+
+Thanks @philwo -- that's cool to hear! We can definitely consider it -- will need to discuss as a team. I assume it's not sufficient to, like, mirror the source distribution that we publish to PyPI, and build wheels from that?
+
+---
+
+_Comment by @philwo on 2025-01-31 08:41_
+
+Thank you @charliermarsh! I had a look - building Ruff locally on my developer machine from these sources works perfectly. But unfortunately the production environment, where I'd have to build and deploy the Ruff binary in the end, is very much optimized for the case where everything can be imported automatically from crates.io, and straying from that path quickly turns into a total headache. :/
+
+In case that you would be fine in general with publishing Ruff's code to crates.io and making it buildable from there, and that there are only technical blockers and "someone has to do the work" remaining, would that be something we could help with by contributing?
+
+---
+
+_Comment by @zanieb on 2025-01-31 20:39_
+
+We sometimes release from forks of dependencies to get bug fixes to our users faster. I'm a little hesitant to lose the ability to do so. Of course, that idea is generally in conflict with downstream re-distributors.
+
+I think the other concern is that people may consider our Rust libraries as part of our public API when, in reality, most (if not all) of our Rust APIs are unstable.
+
+I'll make sure we talk about this as a team next week. It'd be great to see Ruff used for Chromium.
+
+---
+
+_Comment by @BurntSushi on 2025-01-31 21:31_
+
+One of the other issues here is that publishing `ruff` on crates.io, AFAIK, requires that _all_ of its dependencies are on crates.io too. `ruff` is split into a ton of different crates. So all of those would need to be published.
+
+Today, when we make changes across crates (which is I think very common), we just make the changes. There's really nothing else to be done.
+
+But if all of these crates are published to crates.io, then I think there is a fair bit of overhead here:
+
+* The versions on crates that have been changed need to be bumped.
+* The versions on crates depending on those crates need to have the dependency specification changed to reflect the new minimum version.
+* The above two steps need to be repeated recursively up to `ruff` itself.
+
+There is also the question of semver, but I think we could essentially bypass this entirely by using `0.0.x` versioning exclusively.
+
+So I think that while the initial work to get everything published to crates.io is somewhat straight-forward, I think the ongoing burden of dealing with a bunch of independently published crates is pretty annoying.
+
+My suspicion is that it's possible to automate the steps above. If that can be done in a way where our core development workflow can remain blissfully unaware of the fact that every internal crate is actually versioned, then I think that would mitigate my primary concern.
+
+Is there tooling that you're aware of that helps with this problem?
+
+---
+
+_Comment by @KGrewal1 on 2025-02-01 09:25_
+
+I believe it is possible to have `{workspace=true}` for crates within the workspace in which case the all the crates which are for internal use, could use that and only the version number in the workspace cargo.toml needs to be changed from 0.0.x to 0.0.x+1 (or however versioning internal crates is decided): think cargo smart release or cargo release also help with publishing the workspaces https://crates.io/crates/cargo-smart-release
+
+---
+
+_Comment by @MichaReiser on 2025-02-01 20:15_
+
+@philwo just for my understanding. Are you limited to rust tooling (because they can only be installed from crates.io) or can you use other packages hosted on pypi (e.g. in case of black or any other Python tool)?
+
+Also for my curiosity. For which Chromium project are you evaluating ruff?
+
+---
+
+_Comment by @philwo on 2025-02-05 09:27_
+
+@BurntSushi @KGrewal1 I don't have much experience with Rust yet, but this reminds me very much of the tradeoff of working in a monorepo vs. having to coordinate changes across multiple repos that depend on each other. The ability to make atomic changes easily across all crates is worth a lot, for sure! If `{workspace=true}` and `cargo smart-release` would allow you to continue doing that in your "monorepo" here, while also making it possible to easily publish stable release versions of Ruff to crates.io as a collection of individual, versioned crates that depend on each other, that seems like a super nice solution to me :)
+
+@MichaReiser No, we're not limited to Rust tooling. We can import third-party open-source code written in most of the major languages into our monorepo and build it there. The problem is more that this import process tends to only support the canonical way how stuff is distributed in the respective language ecosystem, and doesn't handle special cases well.
+
+For example, if I wanted to import a Go library that didn't use `go.mod` to manage its dependencies, but pulled them in via Git submodules or relied on a `vendor` folder managed via some custom script, it would likely not work.
+
+Re: Black - we have an internal fork of Black called [Pyink](https://github.com/google/pyink) that stays in close sync with upstream and for all that matters to Chromium can be assumed to behave identically to upstream Black. Pyink's code is bi-di synced from and to GitHub on each change using automated tooling. Using Pyink / Black is the other option currently part of the proposal.
+
+> Also for my curiosity. For which Chromium project are you evaluating ruff?
+
+I'm part of a group of Chromium developers currently writing a proposal to change [Chromium's Python style guide](https://chromium.googlesource.com/chromium/src/+/main/styleguide/python/python.md) from YAPF to a more modern alternative. A few developers mentioned Ruff and that it has a couple of great benefits over Black, which is why I'm trying to find a way how to make it work, so that we can put it into the proposal as well. The change, if accepted by the Chromium Python developers committee, would then cover all of the Python code in Chromium's ecosystem, except ChromiumOS, which has [its own style guide](https://www.chromium.org/chromium-os/developer-library/reference/style-guides/python/).
+
+---
+
+_Comment by @MichaReiser on 2025-02-05 10:25_
+
+Thanks for the explanation. I assume something like `uv pip install ruff --no-binary :all:` that forces ruff to be built from the wheel's source wouldn't work for you. 
+
+---
+
+_Comment by @philwo on 2025-02-05 14:27_
+
+> Thanks for the explanation. I assume something like `uv pip install ruff --no-binary :all:` that forces ruff to be built from the wheel's source wouldn't work for you.
+
+Unfortunately not :( As we'd need to run the resulting `ruff` binary also on production servers, so that we could e.g. execute it to check formatting and possibly lint from Chromium's Gerrit or a web-based code editor, the security and auditing requirements for the builds and everything that goes into the resulting artifacts are really tough.
+
+---
+
+_Referenced in [conda/rattler#1044](../../conda/rattler/issues/1044.md) on 2025-02-11 15:17_
+
+---
+
+_Referenced in [astral-sh/ruff#16227](../../astral-sh/ruff/pulls/16227.md) on 2025-02-18 11:25_
+
+---
+
+_Comment by @CreatedBySeb on 2025-04-09 17:55_
+
+Chiming in with a related need, at the company I work for we are able to build Rust-based packages from source and consume them in our software without them being published on crates.io, however those packages cannot have git dependencies, only local and crates.io dependencies, which I understand to also be a blocker for publishing on crates.io. I thought I would bring this up here, since it gives a different use case for the first portion of the work, which is removing any git dependencies from Ruff.
+
+To provide context on the why, my company does third party library auditing when importing libraries. There is automated support for doing this from sources like crates.io and PyPI, and you can manually pull in the git source and do it yourself, however having direct git dependencies in `Cargo.toml` doesn't really fit in either box and is explicitly disallowed. Working around this would probably require build-time patching to redirect the dependencies to manually imported ones, which would get messy fast and slow adoption of new versions. It would be easiest for us to adopt new versions if all of Ruff's dependencies were available on crates.io, even if Ruff itself wasn't.
+
+Currently the latest version of Ruff we have available internally is `v0.4.4`, since it doesn't have any git dependencies (`v0.4.5` introduced the `lsp-types` fork, and `v0.4.9` introduced salsa via git). There is significant appetite for using Ruff in my company (some teams are continuing to use the old version rather than go back to Flake8, black & isort), but we are missing out on lots of valuable improvements as a result of this issue which hampers widespread adoption. My team was recently re-evaluating Ruff and was interested in adopting it across our codebases, but the inability to adopt new versions is a blocker for us.
+
+What are the possible paths forward for this? My understanding would be the following:
+
+1. For `lsp-types`, either:
+    a. Publish the fork, e.g. as `ruff-lsp-types`
+    b. Upstream the changes to `lsp-types`, and swap the dependency to their published crate once they are released
+2. For `salsa`, have them publish the changes in their master which are not yet released, and swap the dependency to the published crate
+
+Publishing a fork for `salsa` also is technically an option, but since the issue isn't the changes being merged just them being released, it doesn't seem worthwhile. 
+
+Happy to provide support if I can on unblocking this, since it will be significantly beneficial to my team and company more broadly.
+
+---
+
+_Comment by @BurntSushi on 2025-04-09 18:26_
+
+@CreatedBySeb Can you say more about why git dependencies are explicitly disallowed? I'm not quite grok'ing why they complicate things for you.
+
+---
+
+_Comment by @CreatedBySeb on 2025-04-09 19:00_
+
+@BurntSushi Sure thing, essentially how the process normally works (taking Rust as an example) is that packages are imported from crates.io by a system that does supply chain checks for license, security, etc. They are then made available in an internal registry which cargo is directed to use, so when I build a package with cargo it can only access the vetted packages and anything else will not be found. Git dependencies bypass the registry entirely and so they are blocked by our build fleet since the packages are not vetted, which means that we cannot publish/consume packages with git dependencies. Similar processes are used for other languages with implementation differences based on that language's tooling, some of which facilitate patching these types of cases more easily than others. This isn't a policy we are likely to be able to change, but it does also make reasonable sense since it would be hard to replicate this type of supply chain validation for Git dependencies.
+
+---
+
+_Comment by @cjames23 on 2025-04-10 13:27_
+
+I just want to add one other wrinkle that we have, I work at the same company as Seb, locally our users this can work because they have network access to build but on our build system we are network jailed and in the case of packages like ruff we compile from source. 
+
+---
+
+_Comment by @chrisjsewell on 2025-04-15 04:38_
+
+I would note rustpython now uses the ruff parser: https://github.com/RustPython/RustPython/pull/5494
+It currently has to source from GitHub, which seems really not great at all 😅
+
+---
+
+_Referenced in [salsa-rs/salsa#753](../../salsa-rs/salsa/pulls/753.md) on 2025-04-15 07:53_
+
+---
+
+_Comment by @CreatedBySeb on 2025-04-22 19:20_
+
+Since salsa has just done a release to `0.20.0` (https://github.com/salsa-rs/salsa/pull/753), could this be a good time to swap to a crates dependency on it rather than the git dependency? This release has the commit currently depended upon within it, so this shouldn't result in a regression for Ruff, but would remove one of the two git dependencies that are a blocker.
+
+---
+
+_Referenced in [astral-sh/ruff#17566](../../astral-sh/ruff/pulls/17566.md) on 2025-04-22 20:51_
+
+---
+
+_Comment by @CreatedBySeb on 2025-04-22 20:54_
+
+In order to help minimise the effort required by the maintainers, I have made the minimal PR to change the versions having run the test suites on two devices to ensure it still works as expected: https://github.com/astral-sh/ruff/pull/17566
+
+---
+
+_Referenced in [astral-sh/ruff#17970](../../astral-sh/ruff/issues/17970.md) on 2025-05-09 06:01_
+
+---
+
+_Referenced in [astral-sh/ruff#283](../../astral-sh/ruff/issues/283.md) on 2025-05-13 04:00_
+
+---

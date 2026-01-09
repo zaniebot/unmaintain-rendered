@@ -1,0 +1,72 @@
+---
+number: 16225
+title: Remove log notification for server debug info
+type: issue
+state: closed
+author: dhruvmanila
+labels:
+  - server
+assignees: []
+created_at: 2025-02-18T10:40:33Z
+updated_at: 2025-03-11T08:33:04Z
+url: https://github.com/astral-sh/ruff/issues/16225
+synced_at: 2026-01-07T13:12:16-06:00
+---
+
+# Remove log notification for server debug info
+
+---
+
+_Issue opened by @dhruvmanila on 2025-02-18 10:40_
+
+### Description
+
+Follow-up from https://github.com/astral-sh/ruff/pull/16214.
+
+Remove the following:
+
+https://github.com/astral-sh/ruff/blob/ed9c18d9b44f090f45ab50086d78b734a19f8608/crates/ruff_server/src/server/api/requests/execute_command.rs#L55-L60
+
+
+
+---
+
+_Label `server` added by @dhruvmanila on 2025-02-18 10:40_
+
+---
+
+_Added to milestone `v0.10` by @dhruvmanila on 2025-02-18 10:40_
+
+---
+
+_Comment by @MichaReiser on 2025-03-10 14:08_
+
+@dhruvmanila would you be able to PR this change for 0.10? 
+
+---
+
+_Assigned to @dhruvmanila by @dhruvmanila on 2025-03-10 14:16_
+
+---
+
+_Comment by @dhruvmanila on 2025-03-10 14:17_
+
+> would you be able to PR this change for 0.10?
+
+Yeah, will do.
+
+---
+
+_Comment by @MichaReiser on 2025-03-10 14:22_
+
+Thank you!
+
+---
+
+_Referenced in [astral-sh/ruff#16617](../../astral-sh/ruff/pulls/16617.md) on 2025-03-11 04:38_
+
+---
+
+_Closed by @dhruvmanila on 2025-03-11 08:33_
+
+---

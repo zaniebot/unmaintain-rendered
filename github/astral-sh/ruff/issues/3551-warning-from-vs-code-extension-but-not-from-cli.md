@@ -1,0 +1,76 @@
+---
+number: 3551
+title: Warning from VS Code extension but not from CLI
+type: issue
+state: closed
+author: adamhl8
+labels: []
+assignees: []
+created_at: 2023-03-15T22:22:28Z
+updated_at: 2023-03-16T00:12:34Z
+url: https://github.com/astral-sh/ruff/issues/3551
+synced_at: 2026-01-07T13:12:14-06:00
+---
+
+# Warning from VS Code extension but not from CLI
+
+---
+
+_Issue opened by @adamhl8 on 2023-03-15 22:22_
+
+I have some code that looks like this:
+
+```python
+def foobar():
+    foo = "foo"
+    if bar():
+        foo = "bar"
+    return foo
+```
+
+Which I'm correctly getting a `Unnecessary variable assignment before 'return statementRuff(RET504)'` warning in VS Code.
+
+However, when I run ruff via CLI on this file I don't get any warnings.
+
+`ruff -v my_module.py`:
+```
+[2023-03-15][17:24:14][ruff_cli::commands::run][DEBUG] Identified files to lint in: 1.764392ms
+[2023-03-15][17:24:14][ruff_cli::commands::run][DEBUG] Checked 1 files in: 2.313242ms
+```
+My config:
+
+```toml
+[tool.ruff]
+line-length = 120
+target-version = "py310"
+select = ["E", "F", "RET"]
+```
+
+---
+
+_Comment by @charliermarsh on 2023-03-15 23:40_
+
+Ah yeah, we changed `RET504` in a recent version to avoid flagging cases in which a variable had multiple assignments in a method, since it was a common source of confusion in cases like the above.
+
+There's some discussion about it [here](https://github.com/charliermarsh/ruff/issues/2950), definitely feel free to chime in there if you'd like.
+
+My guess is that you're using a different version in the CLI vs. in the VS Code extension. Maybe the VS Code extension is using the "bundled" version of Ruff? You could switch to the pre-release channel to get a more up-to-date version, I shipped a pre-release last night with latest Ruff :)
+
+
+---
+
+_Comment by @charliermarsh on 2023-03-16 00:02_
+
+Closing to redirect any follow-ups to https://github.com/charliermarsh/ruff/issues/2950 :)
+
+---
+
+_Closed by @charliermarsh on 2023-03-16 00:02_
+
+---
+
+_Comment by @adamhl8 on 2023-03-16 00:12_
+
+Oh yep, my VS Code extension is out of date. Thanks!
+
+---

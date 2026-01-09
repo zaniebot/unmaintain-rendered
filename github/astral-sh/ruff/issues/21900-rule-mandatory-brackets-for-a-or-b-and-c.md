@@ -1,0 +1,78 @@
+---
+number: 21900
+title: "[rule] mandatory brackets for `A or B and C`."
+type: issue
+state: closed
+author: randolf-scholz
+labels:
+  - question
+assignees: []
+created_at: 2025-12-10T17:03:24Z
+updated_at: 2025-12-10T17:15:29Z
+url: https://github.com/astral-sh/ruff/issues/21900
+synced_at: 2026-01-07T13:12:16-06:00
+---
+
+# [rule] mandatory brackets for `A or B and C`.
+
+---
+
+_Issue opened by @randolf-scholz on 2025-12-10 17:03_
+
+### Summary
+
+In python, `A or B and C` evaluates to `A or (B and C)`, but this can be surprising if one has not memorized the full table of [operator precedence](https://docs.python.org/3/reference/expressions.html#operator-precedence).
+
+Using explicit parentheses is clearer, so I suggest a rule that enforces bracketing when it detects 2 or more logical connectives chained together that include both `AND` and `OR`. (chains that only include `AND` or only include `OR` are exempt thanks to associativity)
+
+---
+
+_Renamed from "[rule] mandatory brakets for `A or B and C` and other logical connectives." to "[rule] mandatory brackets for `A or B and C` and other logical connectives." by @randolf-scholz on 2025-12-10 17:03_
+
+---
+
+_Renamed from "[rule] mandatory brackets for `A or B and C` and other logical connectives." to "[rule] mandatory brackets for `A or B and C`." by @randolf-scholz on 2025-12-10 17:03_
+
+---
+
+_Comment by @ntBre on 2025-12-10 17:13_
+
+This specific case is covered by [parenthesize-chained-operators (RUF021)](https://docs.astral.sh/ruff/rules/parenthesize-chained-operators/#parenthesize-chained-operators-ruf021). There's also a more general request in https://github.com/astral-sh/ruff/issues/19565.
+
+```
+❯ ruff check --select RUF021 --preview - <<<"A or B and C"
+RUF021 [*] Parenthesize `a and b` expressions when chaining `and` and `or` together, to make the precedence clear
+ --> -:1:6
+  |
+1 | A or B and C
+  |      ^^^^^^^
+  |
+help: Parenthesize the `and` subexpression
+  - A or B and C
+1 + A or (B and C)
+
+Found 1 error.
+[*] 1 fixable with the `--fix` option.
+```
+
+---
+
+_Label `question` added by @ntBre on 2025-12-10 17:13_
+
+---
+
+_Comment by @randolf-scholz on 2025-12-10 17:14_
+
+apologies for the duplicate
+
+---
+
+_Closed by @randolf-scholz on 2025-12-10 17:14_
+
+---
+
+_Comment by @ntBre on 2025-12-10 17:15_
+
+No worries, we always appreciate the suggestions!
+
+---

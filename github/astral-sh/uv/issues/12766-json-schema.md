@@ -1,0 +1,48 @@
+---
+number: 12766
+title: json schema
+type: issue
+state: closed
+author: MalikRumi
+labels:
+  - question
+assignees: []
+created_at: 2025-04-09T01:30:06Z
+updated_at: 2025-04-10T14:17:03Z
+url: https://github.com/astral-sh/uv/issues/12766
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# json schema
+
+---
+
+_Issue opened by @MalikRumi on 2025-04-09 01:30_
+
+### Question
+
+I just added uv to see how I like it. PyCharm is telling me that I have no json schema. But there is no discussion in the docs about a 'json schema'. In fact, on more than one of the supposed result pages, the only 'schema' on the page is my search query. There is some discussion about schemas, but whether that's exactly what PyCharm is screaming about, and if so **which** schema is totally a blank. Since you and or PyCharm clearly think not having a 'json schema' is a big deal - because otherwise why would I have the warning permanently across the bottom of my window - could you please explain what that is, and have it findable with *exactly that phrase* in you search engine, and in the docs, please?
+
+### Platform
+
+macOS 15
+
+### Version
+
+0.6.13
+
+---
+
+_Label `question` added by @MalikRumi on 2025-04-09 01:30_
+
+---
+
+_Comment by @charliermarsh on 2025-04-09 01:35_
+
+I'm sorry, I don't know what you're talking about. We do publish a JSON Schema for our `pyproject.toml` configuration, but whatever you're seeing is coming from PyCharm.
+
+---
+
+_Closed by @charliermarsh on 2025-04-10 14:17_
+
+---

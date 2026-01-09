@@ -1,0 +1,62 @@
+---
+number: 1724
+title: Conda and pixi question
+type: issue
+state: closed
+author: amirhosseindavoody
+labels:
+  - question
+assignees: []
+created_at: 2024-02-20T00:58:22Z
+updated_at: 2024-06-19T00:36:15Z
+url: https://github.com/astral-sh/uv/issues/1724
+synced_at: 2026-01-07T13:12:16-06:00
+---
+
+# Conda and pixi question
+
+---
+
+_Issue opened by @amirhosseindavoody on 2024-02-20 00:58_
+
+I have been using conda as my package manager for years and I thought pip is king of for the old days. Then I found pixi recently which is kind of like conda bug with more speed and more repeatability which is great.
+
+Now, I see uv which kind of revives pip but with more speed and I am confused of the goals for each project. I have seen other questions here about benchmarking the tools but my question is about the goals of each project and technical differences.
+
+- I have read so many times that conda is cross language and pip is only for python. Now if we can use one cross language package manager for everything why would someone go back to language specific (like pip).
+
+- On the other hand, I know we can install numpy with pip which has both C and python. Then what are the cases that pip cannot handle and we need something like conda and pixi.
+
+Sorry if the question is too fundamental but stumbling upon UV had me wondering about this for a while and I had to ask the question
+
+---
+
+_Comment by @zanieb on 2024-02-20 01:26_
+
+A full answer is pretty complicated, I'll try to get to it later. In the meantime, I can point you to a couple similar questions:
+
+- https://github.com/astral-sh/uv/issues/1703
+- https://github.com/astral-sh/uv/issues/1572
+
+---
+
+_Label `question` added by @zanieb on 2024-02-20 01:26_
+
+---
+
+_Comment by @ruben-arts on 2024-02-21 16:53_
+
+Don't mind me chiming in 🎐 . 
+
+Because conda always had a link with `pip` we implemented a rust version of that(`rip`) to integrate `pip` into `pixi`. But since we can do with `uv` what we could do with `rip` we're stopping the development on `rip` and will integrate `uv` into `pixi`. This way we can focus again on improving the conda-ecosystem while not leaving the python packages behind. Most of our user do indeed have your question, supporting both python c and possibly other languages. 
+
+For the pip to install of non python packages the shared libraries will get packaged up into the same wheel or are expected to be installed on the system/virtual environment. Conda on the other hand has the ability to easily package those shared libraries and install them alongside the python packages. Requiring a more minimal base installation replacing a large part of why docker is such an important development tool these days.
+
+More info on our decision here: https://prefix.dev/blog/uv_in_pixi
+
+
+---
+
+_Closed by @zanieb on 2024-06-19 00:36_
+
+---

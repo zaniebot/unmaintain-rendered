@@ -1,0 +1,116 @@
+---
+number: 22188
+title: "FAST002 (FastAPI dependency without `Annotated`) could be made even smarter"
+type: issue
+state: open
+author: tuttle
+labels:
+  - fixes
+  - diagnostics
+assignees: []
+created_at: 2025-12-25T00:10:29Z
+updated_at: 2025-12-31T12:00:38Z
+url: https://github.com/astral-sh/ruff/issues/22188
+synced_at: 2026-01-07T13:12:16-06:00
+---
+
+# FAST002 (FastAPI dependency without `Annotated`) could be made even smarter
+
+---
+
+_Issue opened by @tuttle on 2025-12-25 00:10_
+
+### Summary
+
+FAST002 autofix rewrites code substantially and is currently pretty smart, indeed saves a lot of work.
+
+Anyway I see two possible improvements, yet I'm not sure how complicated they would be to implement:
+
+## 1. FAST002 creates too long lines. 
+
+The autofix generates this:
+```python
+    query: Annotated[str | None, Query(description="Optional filtering of websites by registered domain name.")] = None,
+```
+which immediately triggers **E501 Line too long** in the same run.
+
+This would be great to generate instead if it is possible to do:
+
+```python
+    query: Annotated[
+        str | None,
+        Query(description="Optional filtering of websites by registered domain name."),
+    ] = None,
+```
+
+with possible wrap of too long strings.
+
+## 2. FAST002 silently skips autofix of badly ordered arguments.
+
+In our code we had this endpoint argument as the last one:
+
+```python
+    website_ids: str = Query(
+        ...,
+        description="Comma separated list of website IDs",
+    ),
+```
+
+It appears to me the FAST002's autofix detects it WOULD create:
+
+```python
+    website_ids: Annotated[str, Query(description="Comma separated list of website IDs")],
+```
+
+That means, from the Python POV, it **would turn the argument with default value to argument without default value**. But because the argument is placed AFTER other arguments with default value **which is impossible in Python**, the autofix is disabled and the code is left with unconverted arguments that still trigger FAST002.
+
+Would it be possible to either of these?
+
+a. Give the ruff user some kind hint to reorder the arguments manually before the autofix is applied.
+b. Reorder the arguments appropriately as part of the autofix.
+
+---
+
+_Comment by @ntBre on 2025-12-25 15:14_
+
+Thanks for the report!
+
+I think the long line is kind of a known issue. We don't really try to produce formatted fixes, expecting the user to run a formatter after any lint fixes. Some day we hope to combine the lint and format steps into one though (https://github.com/astral-sh/ruff/issues/8232).
+
+I think a hint as to why the fix was not offered is a great idea! We now have the ability to attach sub-diagnostics, so we could add a line like:
+
+```
+info: Fix was unavailable because ...
+```
+
+to the diagnostic. That might be interesting to explore in other rules too.
+
+We _could_ also consider reordering the arguments, but that feels like it's going a bit beyond what we usually call an unsafe fix, at least to me.
+
+---
+
+_Label `fixes` added by @ntBre on 2025-12-25 15:14_
+
+---
+
+_Label `diagnostics` added by @ntBre on 2025-12-25 15:14_
+
+---
+
+_Comment by @tuttle on 2025-12-31 12:00_
+
+@ntBre Thank you, Brent.
+
+It's great you add sub-diag messages!
+
+The reason I came up with hinting is that I consider FAST002's autofix to be kind of unique in changing the arguments so much.
+
+Also, the reason for disabling the fix here is so subtle, I suspect many developers simply won't see it.
+
+Happy New Year.
+
+---
+
+_Referenced in [astral-sh/ruff#17203](../../astral-sh/ruff/issues/17203.md) on 2025-12-31 15:14_
+
+---

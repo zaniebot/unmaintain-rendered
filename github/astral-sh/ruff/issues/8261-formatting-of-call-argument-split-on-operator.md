@@ -1,0 +1,65 @@
+---
+number: 8261
+title: Formatting of call argument split on operator reduces readability
+type: issue
+state: open
+author: zanieb
+labels:
+  - formatter
+  - style
+assignees: []
+created_at: 2023-10-26T19:29:10Z
+updated_at: 2023-10-26T23:54:03Z
+url: https://github.com/astral-sh/ruff/issues/8261
+synced_at: 2026-01-07T13:12:15-06:00
+---
+
+# Formatting of call argument split on operator reduces readability
+
+---
+
+_Issue opened by @zanieb on 2023-10-26 19:29_
+
+The following code is formatted the same with `black`, `black --preview`, and `ruff format`:
+
+```python
+if True:
+    # Limit the number of items displayed per rule to between 10 and 200
+    max_display_per_rule = max(
+        10,
+        200
+        // len(
+            set(all_rule_changes.added_violations.keys()).union(
+                all_rule_changes.removed_violations.keys()
+            )
+        ),
+    )
+```
+
+Moving the operator onto a new line makes it look like an argument in the function call.
+
+Perhaps the following would be clearer?
+
+```python
+if True:
+    # Limit the number of items displayed per rule to between 10 and 200
+    max_display_per_rule = max(
+        10,
+        200 // len(
+            set(all_rule_changes.added_violations.keys()).union(
+                all_rule_changes.removed_violations.keys()
+            )
+        ),
+    )
+```
+
+
+---
+
+_Label `formatter` added by @zanieb on 2023-10-26 19:29_
+
+---
+
+_Label `style` added by @MichaReiser on 2023-10-26 23:54_
+
+---

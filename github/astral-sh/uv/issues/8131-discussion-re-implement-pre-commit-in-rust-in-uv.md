@@ -1,0 +1,64 @@
+---
+number: 8131
+title: "Discussion: Re-implement pre-commit in rust (in `uv`)?"
+type: issue
+state: closed
+author: phitoduck
+labels: []
+assignees: []
+created_at: 2024-10-11T19:44:13Z
+updated_at: 2025-10-29T22:43:11Z
+url: https://github.com/astral-sh/uv/issues/8131
+synced_at: 2026-01-07T13:12:17-06:00
+---
+
+# Discussion: Re-implement pre-commit in rust (in `uv`)?
+
+---
+
+_Issue opened by @phitoduck on 2024-10-11 19:44_
+
+`pre-commit` is a great tool, but it has some weaknesses.
+
+- It's not written in `rust` (I mean c'mon)
+- It doesn't have great mono-repo support, e.g. if you have multiple packages in one repo it's hard to apply different sets of linting rules per package/subfolder within a repo. `uv` seems to have 1st-class support for multi-package repos (with Workspaces)
+
+But seriously, would it make sense to bring `pre-commit` into `uv` or otherwise into `ruff` or it's own project?
+
+---
+
+_Comment by @gaborbernat on 2024-10-11 19:55_
+
+FYI there is https://pypi.org/project/pre-commit-uv but obviously could be built into `uv` though `pre-commit` supports other languages (such as node, r, etc), so a full reimplementation would be more difficult.
+
+---
+
+_Comment by @Avasam on 2024-10-12 01:01_
+
+For me the real strength of pre-commit (the tool, not the git hook) comes from its ci integration (pre-commit.ci) that provides autofixing. It does however have some things its lacking in. Like a 250MiB download limit (which makes it near impossible to use large/complex ESLint configs). The fact it has to pin exact versions, which duplicates versions defined in code. The autoupdate PRs not being possible to disable. Blocks all downloads at runtime (so no referencing online configs). Monorepo support could be better. And probably more.
+
+On the CI side, it might be worth considering a GitHub action like https://github.com/EndBug/add-and-commit or https://github.com/stefanzweifel/git-auto-commit-action instead . Just run your formatters and autofixers as usual, then autocommit them. I'm personally looking for something like this since I'm also hitting pre-commit limitations with dprint and eslint (on top of the version lock annoyance), but haven't yet tested or vetted any. At work I wrote our own Azure DevOps extension for it.
+
+---
+
+_Comment by @j178 on 2024-11-16 16:52_
+
+Hi, I'm working on a Rust implementation of the `pre-commit` tool: [prek](https://github.com/j178/prek). It's still in the early stages, with only a few features implemented and not yet ready for production use. If anyone is interested, please give it a try!
+
+---
+
+_Comment by @rpdelaney on 2025-09-24 18:23_
+
+There's also [prek](https://github.com/j178/prek). I've been migrating over to [lefthook](https://lefthook.dev/), which is in Golang, but it has no issue with running per-subfolder git hooks.
+
+---
+
+_Comment by @zanieb on 2025-09-24 18:27_
+
+I'm going to close this — it's out of scope for us. Thanks for sharing some alternatives!
+
+---
+
+_Closed by @zanieb on 2025-09-24 18:27_
+
+---

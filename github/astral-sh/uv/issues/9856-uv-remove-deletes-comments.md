@@ -1,0 +1,135 @@
+---
+number: 9856
+title: "(🐞) `uv remove` deletes comments"
+type: issue
+state: open
+author: KotlinIsland
+labels:
+  - bug
+assignees: []
+created_at: 2024-12-13T00:11:00Z
+updated_at: 2025-04-10T21:01:17Z
+url: https://github.com/astral-sh/uv/issues/9856
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# (🐞) `uv remove` deletes comments
+
+---
+
+_Issue opened by @KotlinIsland on 2024-12-13 00:11_
+
+```toml
+[project]
+name = "python-test"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+dependencies = [
+    # should be in alphabetical order
+    "basedmypy[faster-cache]>=2.8.1", # this is a comment
+    "basedpyright>=1.18.2,<2.0.0",
+]
+```
+```
+> uv remove basedmypy
+```
+```toml
+[project]
+name = "python-test"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+dependencies = [ # this is a comment
+    "basedpyright>=1.18.2,<2.0.0",
+]
+```
+
+---
+
+_Label `bug` added by @charliermarsh on 2024-12-13 01:04_
+
+---
+
+_Comment by @charliermarsh on 2024-12-15 02:23_
+
+I think this is arguably correct... The comment is associated with the dependency. In some cases it would probably be equally strange _not_ to remove it? Like what if the comment described `basedmypy`.
+
+---
+
+_Label `bug` removed by @charliermarsh on 2024-12-15 23:17_
+
+---
+
+_Label `needs-decision` added by @charliermarsh on 2024-12-15 23:17_
+
+---
+
+_Comment by @woutervh on 2024-12-21 23:28_
+
+"The comment is associated with the dependency"
+
+This assumption holds for inline comments, but holds 50% for non-inline comments.
+I'm OK with removing the inline comments, but I would dislike it that non-inline commens are removed,
+preceding or not.
+
+---
+
+_Comment by @charliermarsh on 2024-12-22 00:35_
+
+It seems reasonable to err on the side of preserving comments.
+
+---
+
+_Label `needs-decision` removed by @charliermarsh on 2024-12-22 17:02_
+
+---
+
+_Label `bug` added by @charliermarsh on 2024-12-22 17:02_
+
+---
+
+_Comment by @charliermarsh on 2024-12-22 17:03_
+
+I suspect we _should_ remove the comments if we're removing the last dependency in the list.
+
+---
+
+_Comment by @woutervh on 2024-12-23 13:20_
+
+>I suspect we should remove the comments if we're removing the last dependency in the list.
+agreed
+
+---
+
+_Comment by @GeorgeFischhof on 2025-04-09 09:48_
+
+Hi I am a QA engineer, and I use a template-like pyproject.toml and have several lists with several commented out elements. Depending on what I have to test, I uncomment the appropriate dependency.
+
+Also sometimes add the commented out dependency before uninstalling it in order to have it in the toml file. (for next time) 
+
+I had to revert the toml file to get back my comments. ...
+
+There are as many kind of human behavior why they add some comment ... 
+
+So I think uv should not remove comments from the toml file. Right now uv remove command does not "do one thing well" (remove package, and its sub-dependencies and remove the registry of that). 
+It does one expected thing, and one unexpected.
+
+BR,
+George
+
+---
+
+_Comment by @kiran-4444 on 2025-04-10 21:01_
+
+I'd like to take this up.
+
+---
+
+_Referenced in [astral-sh/uv#13966](../../astral-sh/uv/issues/13966.md) on 2025-06-11 13:51_
+
+---
+
+_Referenced in [astral-sh/uv#14200](../../astral-sh/uv/pulls/14200.md) on 2025-06-22 19:52_
+
+---

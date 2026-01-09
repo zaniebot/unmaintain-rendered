@@ -1,0 +1,48 @@
+---
+number: 12632
+title: Could the expert in writing the document please make it clear and direct
+type: issue
+state: open
+author: mogoyu
+labels:
+  - question
+assignees: []
+created_at: 2025-04-02T17:06:52Z
+updated_at: 2025-04-02T17:53:24Z
+url: https://github.com/astral-sh/uv/issues/12632
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# Could the expert in writing the document please make it clear and direct
+
+---
+
+_Issue opened by @mogoyu on 2025-04-02 17:06_
+
+### Summary
+
+I find your documentation quite frustrating.  I'm using a Windows 10 system, and I need to customize all cache-dir directories to the specified D:\Python\uvcache. I defined it in C:\Users\mogoyu\AppData\Roaming\uv\uv.toml as: cache-dir = "D:\\Python\\uvcache". However, when I execute "uv tool install xxx", it still downloads to the default directory instead of my custom directory.  Why can't there be a straightforward explanation of which file to edit and which parameter to add?  I've gone through a lot of information, but nothing seems to work. Can't it be clearly defined with a specific name?  Additionally, I noticed that your default settings require checking configurations in different locations. Can't all configurations be consolidated into a single file?
+
+### Example
+
+_No response_
+
+---
+
+_Label `enhancement` added by @mogoyu on 2025-04-02 17:06_
+
+---
+
+_Comment by @charliermarsh on 2025-04-02 17:12_
+
+By "it still downloads to the default directory", what is "it"? Do you mean the tool itself, like the executable?
+
+---
+
+_Label `enhancement` removed by @zanieb on 2025-04-02 17:53_
+
+---
+
+_Label `question` added by @zanieb on 2025-04-02 17:53_
+
+---

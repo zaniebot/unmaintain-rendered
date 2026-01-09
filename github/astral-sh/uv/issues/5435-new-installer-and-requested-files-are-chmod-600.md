@@ -1,0 +1,95 @@
+---
+number: 5435
+title: new INSTALLER and REQUESTED files are chmod 600
+type: issue
+state: closed
+author: AtomBaf
+labels:
+  - bug
+  - compatibility
+assignees: []
+created_at: 2024-07-25T07:10:17Z
+updated_at: 2024-07-25T20:50:32Z
+url: https://github.com/astral-sh/uv/issues/5435
+synced_at: 2026-01-07T13:12:17-06:00
+---
+
+# new INSTALLER and REQUESTED files are chmod 600
+
+---
+
+_Issue opened by @AtomBaf on 2024-07-25 07:10_
+
+Since recently, I noticed that the `uv pip install` command will add 2 files in the metadata directory of an installed package: `INSTALLER` and `REQUESTED`.
+
+These files were not there in previous `uv` versions, I don't know however when it was introduced but I can tell that this was not the case in version `0.2.2`.
+Now with the current version `0.2.28` these files are there. My problem is that their mod is 600 instead of a more usual 644 for other files in the same directory (like `METADATA`or `WHEEL`).
+This causes a problem on my stack since for other reasons I install the package with one user, and another user read the libs metadata for some checks.
+
+edit: related commit: https://github.com/astral-sh/uv/pull/337/files#diff-c1686969b46b2c133e184a8c25069ada51363d91354e35fac208bb67239fcf2cL813
+
+
+---
+
+_Label `compatibility` added by @charliermarsh on 2024-07-25 13:45_
+
+---
+
+_Comment by @charliermarsh on 2024-07-25 13:45_
+
+Interesting, thanks.
+
+---
+
+_Comment by @charliermarsh on 2024-07-25 14:01_
+
+What operating system are you on?
+
+---
+
+_Comment by @charliermarsh on 2024-07-25 14:02_
+
+Interesting, ok, this changed because we initially create the file in a temporary directory, then move it over (to avoid partial writes), and by default that uses 600: https://docs.rs/tempfile/latest/tempfile/struct.Builder.html#method.permissions
+
+---
+
+_Label `bug` added by @zanieb on 2024-07-25 14:07_
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2024-07-25 14:35_
+
+---
+
+_Comment by @charliermarsh on 2024-07-25 14:35_
+
+I'm surprised we don't see this in more places?
+
+---
+
+_Comment by @AtomBaf on 2024-07-25 17:42_
+
+Sorry, my OS is Rocky Linux 9.3.
+
+And I think what I'm doing should not happen often since reading all the files including these 2 files is not what python will typically do. This is probably why I'm the first to report this.
+
+
+---
+
+_Comment by @charliermarsh on 2024-07-25 17:48_
+
+No worries. You're right that the permissions should be changed.
+
+---
+
+_Referenced in [astral-sh/uv#5457](../../astral-sh/uv/pulls/5457.md) on 2024-07-25 18:24_
+
+---
+
+_Closed by @charliermarsh on 2024-07-25 20:50_
+
+---
+
+_Closed by @charliermarsh on 2024-07-25 20:50_
+
+---

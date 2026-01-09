@@ -1,0 +1,104 @@
+---
+number: 21403
+title: Class property without return
+type: issue
+state: closed
+author: ashrub-holvi
+labels:
+  - rule
+assignees: []
+created_at: 2025-11-12T13:21:26Z
+updated_at: 2025-11-26T08:31:23Z
+url: https://github.com/astral-sh/ruff/issues/21403
+synced_at: 2026-01-07T13:12:16-06:00
+---
+
+# Class property without return
+
+---
+
+_Issue opened by @ashrub-holvi on 2025-11-12 13:21_
+
+### Summary
+
+Hi,
+possible linter check - method wrapped to property decorator must have at least one explicit return, possible issue is:
+```
+In [1]: class A:
+   ...:     @property
+   ...:     def b(self):
+   ...:         "Hi"
+   ...: 
+
+In [3]: A().b is None
+Out[3]: True
+```
+of course it should be covered by tests, but sometimes is not, especially if it's some special path in the code.
+
+---
+
+_Comment by @ntBre on 2025-11-12 14:52_
+
+This sounds reasonable to me. I thought one of our RET rules might activate here, but I didn't see anything in the [playground](https://play.ruff.rs/b7028262-015d-4f46-a0dd-f2f142559c37) even with an annotation. [useless-expression (B018)](https://docs.astral.sh/ruff/rules/useless-expression/#useless-expression-b018) triggers if you make the body an int or something, to avoid "Hi" looking like a docstring, but that wouldn't help in general.
+
+@amyreese what do you think?
+
+---
+
+_Label `rule` added by @ntBre on 2025-11-12 14:52_
+
+---
+
+_Label `needs-decision` added by @ntBre on 2025-11-12 14:52_
+
+---
+
+_Comment by @amyreese on 2025-11-12 21:49_
+
+Makes sense to me. Same for `@functools.cached_property`.
+
+---
+
+_Label `needs-decision` removed by @MichaReiser on 2025-11-13 08:06_
+
+---
+
+_Comment by @ShaharNaveh on 2025-11-19 11:04_
+
+How would the new rule handle this case:
+
+```py
+import abc
+
+
+class Meta(metaclass=abc.ABCMeta):
+    @property
+    @abc.abstractmethod
+    def prop1(self):
+        ...
+ 
+    @property
+    @abc.abstractmethod
+    def prop2(self):
+        """
+        Some docstring
+        """
+```
+
+Will it be ignored if `abc.abstractmethod` is one of the decorators?
+
+---
+
+_Comment by @MichaReiser on 2025-11-19 11:14_
+
+Yes, it should ignore abstract methods. We could even consider checking if `class` inherits `Protocol` (only directly) and, if so, ignore the error
+
+---
+
+_Referenced in [astral-sh/ruff#21535](../../astral-sh/ruff/pulls/21535.md) on 2025-11-20 08:49_
+
+---
+
+_Closed by @MichaReiser on 2025-11-26 08:31_
+
+---

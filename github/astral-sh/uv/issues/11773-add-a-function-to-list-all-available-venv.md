@@ -1,0 +1,141 @@
+---
+number: 11773
+title: Add a function to list all available venv environments AND decide AND show their location
+type: issue
+state: closed
+author: eabase
+labels:
+  - enhancement
+assignees: []
+created_at: 2025-02-25T07:39:27Z
+updated_at: 2025-02-26T13:37:52Z
+url: https://github.com/astral-sh/uv/issues/11773
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# Add a function to list all available venv environments AND decide AND show their location
+
+---
+
+_Issue opened by @eabase on 2025-02-25 07:39_
+
+### Summary
+
+I've been using the great package [`venvlink`](https://github.com/fohrloop/venvlink) for years, but now I wanna migrate to `uv` only to find that it has 2 main issues with venv's.
+
+1.  There is no way to list all the available (installed) virtual envirnments (venv's) and their locations
+2. There is no way to keep the package repository out of your project directory. I find this kind of crazy as it will scatter my entire disk with huge blobs of useless packages. Making backups completely waste of disk space as for **every** project I need to install a whole new set of packages. 
+
+Ok, it's possible that I missed some uv functionality here, because I haven't really started using it until now. 
+
+Anyway, this is what I can do with `venvlink`:
+* List **all** available venv from anywhere.
+* List specific **project locations** that are using those venv's.
+* Can *activate* any of those venv's from any location in the system! 🥇  
+* **share** venv installs locations between different venv's.
+* Keep all venv installations/files (ie. all python packages) on a separate disk. 
+  --> **NO WASTED SPACE for backup!** ♻ 
+
+Unfortunately `venvlink` is no longer maintained and developer have no longer any interest in the project. So integration with uv is not (yet) on the table. 
+
+
+### Example
+
+```bash
+# lsven
+
+limesdr
+llm
+lunar
+nanovna
+osint
+stats
+
+```
+
+And here I created a Powershell comandlet to do the above.
+It should be trivial (and simpler) to recreate in bash.
+
+![Image](https://github.com/user-attachments/assets/1b04a53b-955a-42bd-a3b1-455f97349344)
+
+**What is the current status of uv for better handling of venvs?**
+
+
+---
+
+Related packages: 
+* https://python-poetry.org/docs/managing-environments/#listing-the-environments-associated-with-the-project
+* https://github.com/pyenv/pyenv-virtualenv
+
+
+---
+
+_Label `enhancement` added by @eabase on 2025-02-25 07:39_
+
+---
+
+_Referenced in [astral-sh/uv#11360](../../astral-sh/uv/issues/11360.md) on 2025-02-25 07:50_
+
+---
+
+_Referenced in [astral-sh/uv#10895](../../astral-sh/uv/issues/10895.md) on 2025-02-25 07:53_
+
+---
+
+_Referenced in [astral-sh/uv#7957](../../astral-sh/uv/issues/7957.md) on 2025-02-25 07:57_
+
+---
+
+_Referenced in [astral-sh/uv#2103](../../astral-sh/uv/issues/2103.md) on 2025-02-25 08:00_
+
+---
+
+_Referenced in [astral-sh/uv#1632](../../astral-sh/uv/issues/1632.md) on 2025-02-25 08:06_
+
+---
+
+_Referenced in [fohrloop/venvlink#11](../../fohrloop/venvlink/issues/11.md) on 2025-02-25 08:14_
+
+---
+
+_Comment by @jonaslb on 2025-02-25 13:01_
+
+>  I find this kind of crazy as it will scatter my entire disk with huge blobs of useless packages
+
+`uv` uses hardlinks/reflinks/symlinks (as configured, but one of them per default) for venv setup, so packages don't actually take up all that space multiplied by the number of projects, but only once. They are cached in `~/.cache/uv` by default.
+
+Since there isn't an overhead to per-project venvs, you don't need to set up your custom virtual environments that are shared between projects. So you also don't need a venv listing (it's the same as your projects listing, in this case it looks like you could just `ls C:\mydev`).
+
+---
+
+_Comment by @eabase on 2025-02-26 09:56_
+
+Cool. Thanks for clarifying somewhat.
+
+It's seem that if you want to use a different location, for `~/.cache/uv` you'd need to do some symlink hacking. I'm very much against keeping (any kind of) package data/directories in your home directory. I'm not on a multi-user system, and will never be, so always installs non-dev apps/tools, system wide. Unless they are to be contained for whatever reason. So it makes no sense from a data storage/backup/compartmentalization point of view. 
+
+I didn't look into how uv does the package mgmt within that, but it seem that there is no simple way to connect the venv *names* with the actual venv *locations*, and therefore impossible to not duplicate packages. Or maybe I am wrong, so please explain. 
+
+And most importantly, it also seem that if I'm in one project location, lets say X, I can't do `activate Y` to use a different environment, tha belongs a differetn project, or perhaps just a venv test setup? 
+
+
+
+---
+
+_Comment by @konstin on 2025-02-26 10:08_
+
+Is this the same request as #1495?
+
+---
+
+_Comment by @eabase on 2025-02-26 13:28_
+
+Indeed looks very similar! (TL;DR, yet.) 
+So looks like I missed that one, I was sure I searched all issues labelled as "enhancement"...
+
+
+---
+
+_Closed by @konstin on 2025-02-26 13:37_
+
+---

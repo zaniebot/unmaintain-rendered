@@ -1,0 +1,98 @@
+---
+number: 5947
+title: Provide subcommand for completions
+type: issue
+state: closed
+author: titaniumtraveler
+labels:
+  - C-enhancement
+  - A-completion
+assignees: []
+created_at: 2025-03-12T21:44:53Z
+updated_at: 2025-03-13T14:18:57Z
+url: https://github.com/clap-rs/clap/issues/5947
+synced_at: 2026-01-07T13:12:20-06:00
+---
+
+# Provide subcommand for completions
+
+---
+
+_Issue opened by @titaniumtraveler on 2025-03-12 21:44_
+
+### Please complete the following tasks
+
+- [x] I have searched the [discussions](https://github.com/clap-rs/clap/discussions)
+- [x] I have searched the [open](https://github.com/clap-rs/clap/issues) and [rejected](https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed) issues
+
+### Clap Version
+
+master
+
+### Describe your use case
+
+There is currently no standard for how the user can generate completions and how they are to be installed.
+
+### Describe the solution you'd like
+
+I propose for `clap_complete` to provide a subcommand that can be easily integrated into existing CLIs that generates the completions either to `stdout`, or, if enabled, to the shell and OS/environment appropriate file:
+
+```rust
+#[derive(Args)]
+pub struct Completions {
+    /// The shell to generate the completions for
+    shell: Shell,
+    
+    /// Location to write the completions to
+    #[arg(long)]
+    save: Option<Option<SaveLocation>>,
+
+   // ... maybe some additional field to set for which command to generate the
+   // completions for like it is being done for `
+}
+
+impl Completions {
+    pub fn run(...) {
+       // ... Generate the completions
+    }
+}
+```
+
+The save location is an enum and defaults to writing to the users completions directory.
+i.e. when calling `<cli> completions bash --save` on linux that should write to `~/.local/share/bash-completion/completions/<cli>`. (Creating directories as needed)
+
+When setting it `--save root` that should be something `/usr/local/share/bash-completion/completions/<cli>`.
+
+---
+
+One *big* part of this whole thing is of cause actually researching for all supported shells from which paths they load completions from, but in my opinion collecting that knowledge in `clap_complete` instead of people having to figure that out themselves would be immensely beneficial.
+
+### Alternatives, if applicable
+
+_No response_
+
+### Additional Context
+
+_No response_
+
+---
+
+_Label `C-enhancement` added by @titaniumtraveler on 2025-03-12 21:44_
+
+---
+
+_Label `A-completion` added by @epage on 2025-03-13 14:14_
+
+---
+
+_Comment by @epage on 2025-03-13 14:18_
+
+We had #810.  We originally resolved that for the new, native completion system but then pivoted to controlling it through environment variables.  See #5671 for the context on that switch.  It would still be good to allow applications with an existing subcommand to continue to do so and we should explore that but that is a little different than this issue.
+
+With the solution provided in #5671, I'm not seeing a reason to keep this open.  If there is a reason that doesn't work, let us know and we can re-evaluate!
+
+---
+
+_Closed by @epage on 2025-03-13 14:18_
+
+---

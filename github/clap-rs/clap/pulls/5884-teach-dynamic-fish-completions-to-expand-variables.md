@@ -1,0 +1,86 @@
+---
+number: 5884
+title: Teach dynamic fish completions to expand variables
+type: pull_request
+state: open
+author: krobelus
+labels: []
+assignees: []
+base: master
+head: fish-expand-variables
+created_at: 2025-01-19T09:44:29Z
+updated_at: 2025-05-31T13:51:06Z
+url: https://github.com/clap-rs/clap/pull/5884
+synced_at: 2026-01-07T13:12:20-06:00
+---
+
+# Teach dynamic fish completions to expand variables
+
+---
+
+_Pull request opened by @krobelus on 2025-01-19 09:44_
+
+In fish, the command line
+
+	cargo b --manifest-path $PWD/clap_complete/Cargo.toml --example
+
+wrongly gets example-name completions from $PWD/Cargo.toml instead of
+$PWD/clap_complete/Cargo.toml.
+
+This is because fish's "commandline --tokenize" option produces tokens
+like "$PWD/clap_complete/Cargo.toml", which clap cannot see through.
+
+Starting in the upcoming fish version 4, there is a new option,
+"--tokens-expanded"[^1] to output the expanded arguments, matching
+what the program would see during execution.
+
+If an expansion of a token like {1,2,3}{1,2,3} would produce too
+many results, the unexpanded token is forwarded, thus falling back to
+existing behavior. Similarly, command substitutions ("$()") present
+on the command line are forwarded as-is, because they are not deemed
+safe to expand given that the user hasn't agreed to running them.
+
+Use this option if available, to fix the above example.
+
+I have not checked if any existing clap user tries to expand variables
+on their own. If this is a real possibility, we could let users
+opt into the new behavior.
+
+While at it, break up this overlong line.  Add redundant semicolons,
+in case a preexisting completion accidentally joins these lines with
+spaces[^2], like
+
+	if set -l completions (COMPLETE=fish myapp 2>/dev/null)
+		echo "$completions" | source
+	end
+
+I have not updated clap_complete/tests/snapshots/register_dynamic.fish
+(not sure how?) or tested this but I'm happy to do so.
+
+[^1]: https://github.com/fish-shell/fish-shell/pull/10212
+[^2]: https://github.com/fish-shell/fish-shell/pull/11046#discussion_r1917875912
+
+
+---
+
+_@epage reviewed on 2025-01-20 15:25_
+
+---
+
+_Review comment by @epage on `clap_complete/src/env/shells.rs`:233 on 2025-01-20 15:25_
+
+Could you split this into two commits
+1. Reformats the output
+2. Adds the new flag
+
+---
+
+_@epage reviewed on 2025-01-20 15:26_
+
+---
+
+_Review comment by @epage on `clap_complete/src/env/shells.rs`:233 on 2025-01-20 15:26_
+
+Could you add a test for this?
+
+---

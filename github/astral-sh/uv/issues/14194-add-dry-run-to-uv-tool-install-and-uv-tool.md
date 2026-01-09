@@ -1,0 +1,64 @@
+---
+number: 14194
+title: "Add `--dry-run` to `uv tool install` and `uv tool uninstall`"
+type: issue
+state: open
+author: muzimuzhi
+labels:
+  - enhancement
+assignees: []
+created_at: 2025-06-21T22:47:22Z
+updated_at: 2025-06-21T22:48:25Z
+url: https://github.com/astral-sh/uv/issues/14194
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# Add `--dry-run` to `uv tool install` and `uv tool uninstall`
+
+---
+
+_Issue opened by @muzimuzhi on 2025-06-21 22:47_
+
+### Summary
+
+Till uv 0.7.13, according to the changelogs, `--dry-run` is already added to several (sub)commands:
+
+| Version | (Sub)command(s) |
+|--------|--------|
+| [0.1.18](https://github.com/astral-sh/uv/blob/main/changelogs/0.1.x.md#0118) | `uv pip install` |
+| [0.4.27](https://github.com/astral-sh/uv/blob/main/changelogs/0.4.x.md#0427) | `uv lock` |
+| [0.5.6](https://github.com/astral-sh/uv/blob/main/changelogs/0.5.x.md#056) | `uv pip uninstall` |
+| [0.6.15](https://github.com/astral-sh/uv/blob/main/changelogs/0.6.x.md#0615) | `uv sync --locked` and `uv sync --frozen` |
+| [0.7.3](https://github.com/astral-sh/uv/blob/a82c210cabde1bb4422639d93ae2791a827c0bc9/CHANGELOG.md#073) | `uv self update` |
+
+<details><summary>Corresponding PRs</summary>
+<p>
+
+- #1436
+- #7783
+- #9557
+- #12778
+- #9829
+
+</p>
+</details>
+
+Similar to `uv pip install` and `uv pip uninstall`, it would be helpful if both `uv tool install` and `uv tool uninstall` can accept a `--dry-run` flag. https://github.com/astral-sh/uv/issues/6314#issuecomment-2504694125 once mentioned adding support for `uv tool install --dry-run`.
+
+Perhaps `uv tool upgrade` also needs an `--dry-run`.
+
+Open issues which request adding `--dry-run` to other uv (sub)commands:
+
+- https://github.com/astral-sh/uv/issues/12387
+- https://github.com/astral-sh/uv/issues/9828
+- https://github.com/astral-sh/uv/issues/3021 (`uv pip sync --dry-run` was mentioned in discussion)
+
+### Example
+
+_No response_
+
+---
+
+_Label `enhancement` added by @muzimuzhi on 2025-06-21 22:47_
+
+---

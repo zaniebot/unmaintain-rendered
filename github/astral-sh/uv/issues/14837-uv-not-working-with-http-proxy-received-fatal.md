@@ -1,0 +1,92 @@
+---
+number: 14837
+title: "uv not working with http_proxy: \"received fatal alert: HandshakeFailure\""
+type: issue
+state: open
+author: QiangZiBro
+labels:
+  - bug
+assignees: []
+created_at: 2025-07-23T07:31:41Z
+updated_at: 2025-10-06T09:22:20Z
+url: https://github.com/astral-sh/uv/issues/14837
+synced_at: 2026-01-07T13:12:19-06:00
+---
+
+# uv not working with http_proxy: "received fatal alert: HandshakeFailure"
+
+---
+
+_Issue opened by @QiangZiBro on 2025-07-23 07:31_
+
+### Summary
+
+Hello, I encountered an error using `uv` with standard `HTTP_PROXY`, `HTTPS_PROXY` environment variables. Given the explanation in https://github.com/astral-sh/uv/issues/3233, the two variables still do not work for me. What can I do to solve it?
+
+```bash
+# set my proxy
+export HTTP_PROXY="http://xx.xx.xx.xx:xx"
+export HTTPS_PROXY="http://xx.xx.xx.xx:xx"
+
+# create env
+uv venv --python 3.12 --seed
+
+# error occurs
+error: Failed to download https://github.com/astral-sh/python-build-standalone/releases/download/20250712/cpython-3.12.11%2B20250712-x86_64-unknown-linux-gnu-install_only_stripped.tar.gz
+  Caused by: Request failed after 3 retries
+  Caused by: error sending request for url (https://github.com/astral-sh/python-build-standalone/releases/download/20250712/cpython-3.12.11%2B20250712-x86_64-unknown-linux-gnu-install_only_stripped.tar.gz)
+  Caused by: client error (Connect)
+  Caused by: received fatal alert: HandshakeFailure
+
+```
+
+While I can wget the tarball over proxy without any issue
+```bash
+wget https://github.com/astral-sh/python-build-standalone/releases/download/20250712/cpython-3.12.11%2B20250712-x86_64-unknown-linux-gnu-install_only_stripped.tar.gz --no-check-certificate
+```
+
+### Platform
+
+Ubuntu 22.04.5 LTS
+
+### Version
+
+uv 0.8.2
+
+### Python version
+
+None
+
+---
+
+_Label `bug` added by @QiangZiBro on 2025-07-23 07:31_
+
+---
+
+_Comment by @zanieb on 2025-07-23 12:27_
+
+Can you share verbose logs (i.e., `-vv`)
+
+---
+
+_Comment by @flow4u on 2025-07-24 12:52_
+
+@zanieb I think I have the same issue (Windows VM with proxy). I was able to curl successfull the file ...only_stripped.tar.gz.  This is a screenshot of the verbose logs:
+
+<img width="1676" height="873" alt="Image" src="https://github.com/user-attachments/assets/9ff3b29f-6e90-4e72-b2f6-e4b443e40da1" />
+
+---
+
+_Comment by @Jose-albino on 2025-10-05 20:44_
+
+is this fixed already ?
+
+Is proxy supported by uv ?
+
+---
+
+_Comment by @konstin on 2025-10-06 09:22_
+
+@Jose-albino Can you describe what proxy and what proxy settings you are using? What commands are you running, and what do the verbose logs say?
+
+---

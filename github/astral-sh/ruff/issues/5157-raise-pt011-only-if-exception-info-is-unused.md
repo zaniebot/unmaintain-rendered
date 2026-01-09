@@ -1,0 +1,115 @@
+---
+number: 5157
+title: Raise PT011 only if exception info is unused
+type: issue
+state: open
+author: janosh
+labels:
+  - rule
+  - needs-decision
+assignees: []
+created_at: 2023-06-17T07:28:57Z
+updated_at: 2024-08-20T19:10:29Z
+url: https://github.com/astral-sh/ruff/issues/5157
+synced_at: 2026-01-07T13:12:15-06:00
+---
+
+# Raise PT011 only if exception info is unused
+
+---
+
+_Issue opened by @janosh on 2023-06-17 07:28_
+
+Make a new variant of `PT011` ([`pytest-raises-too-broad`](https://beta.ruff.rs/docs/rules/#flake8-pytest-style-pt)) that only triggers if the context is unused.
+
+
+```py
+# bad
+with pytest.raises(ValueError):
+    raise ValueError(f"unknown {option=}")
+
+# ok
+with pytest.raises(ValueError) as exc:
+    raise ValueError(f"unknown {option=}")
+
+assert f"unknown {option=}" in str(exc.value)
+```
+
+`PT011` currently triggers for both these cases even though the 2nd is plenty specific enough.
+
+---
+
+_Label `question` added by @charliermarsh on 2023-06-17 14:42_
+
+---
+
+_Label `question` removed by @charliermarsh on 2023-07-10 01:10_
+
+---
+
+_Label `rule` added by @charliermarsh on 2023-07-10 01:10_
+
+---
+
+_Label `needs-decision` added by @charliermarsh on 2023-07-10 01:10_
+
+---
+
+_Comment by @irm-codebase on 2024-06-26 21:15_
+
+Was about to open an issue on this, but it  seems this and  #6840 already discuss this.
+I agree with  the suggestion.
+
+Just trust us that the excinfo will be checked!
+
+Here is my example (quite similar to #5157):
+
+```python
+    @pytest.mark.parametrize("mapping", [{}, {"foo": 1, "bar": 1}])
+    def test_get_val_at_index_not_one_mapping(
+        self, expression_get_val_at_index, mapping
+    ):
+        with pytest.raises(ValueError) as excinfo:  # noqa: PT011, false positive.
+            expression_get_val_at_index(**mapping)
+        assert check_error_or_warning(
+            excinfo, "Supply one (and only one) dimension:index mapping"
+        )
+```
+
+---
+
+_Comment by @Avasam on 2024-08-12 15:15_
+
+imo as long as the exception info variable is used in a following assert statement, it's plenty enough to avoid false-positives whilst minimizing false-negatives.
+
+Using an assert instead of the match param is often desired for exact string matches and to avoid having to escape special regex characters.
+
+This is much more precise
+```py
+with pytest.raises(ValueError) as excinfo:
+    function_that_raises()
+assert "The complete error" == str(excinfo.value)
+    
+with pytest.raises(ValueError) as excinfo:
+    function_that_raises()
+assert "..." in str(excinfo.value)
+```
+
+Than this:
+```py
+with pytest.raises(ValueError, match="The complete error") as excinfo: # oops, this is a partial match !
+    function_that_raises()
+    
+with pytest.raises(ValueError, match="...") as excinfo: # oops, this matches any 3+ character strings !
+    function_that_raises()
+```
+
+---
+
+_Referenced in [astral-sh/ruff#6840](../../astral-sh/ruff/issues/6840.md) on 2024-08-12 15:17_
+
+---
+
+_Referenced in [pypa/setuptools#4557](../../pypa/setuptools/pulls/4557.md) on 2024-08-12 15:18_
+
+---

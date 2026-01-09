@@ -1,0 +1,313 @@
+---
+number: 16517
+title: "UV_LOCKED enables both `--check` and `--locked`"
+type: issue
+state: closed
+author: AlexVndnblcke
+labels:
+  - bug
+  - good first issue
+assignees: []
+created_at: 2025-10-30T16:08:29Z
+updated_at: 2025-10-31T17:09:30Z
+url: https://github.com/astral-sh/uv/issues/16517
+synced_at: 2026-01-07T13:12:19-06:00
+---
+
+# UV_LOCKED enables both `--check` and `--locked`
+
+---
+
+_Issue opened by @AlexVndnblcke on 2025-10-30 16:08_
+
+### Summary
+
+After an update to the latest version 0.9.6, a recent change in #16322 enables both flags `--check` and `--locked` when `UV_LOCKED` is set as environment variable.
+
+Minimal example:
+```
+uv lock  # OK
+uv lock --check  # OK
+uv lock --locked # OK
+UV_LOCKED=true uv lock  #FAIL
+```
+This yields the following error:
+
+```
+error: the argument '--check' cannot be used with '--locked'
+
+Usage: uv lock --check
+```
+
+The culprit seems to be that env variable `UV_LOCKED` is shared between the `--check` and `--locked` flag (see [diff](https://github.com/astral-sh/uv/pull/16322/files#diff-285d078c58cc5dc2d9330d2b9973fea0e3e076ea258a836c8c3b31690fd33a21L3722-R3732))
+
+*uv-cli/src/lib.rs:3716-3732*
+```
+    /// Check if the lockfile is up-to-date.
+    ///
+    /// Asserts that the `uv.lock` would remain unchanged after a resolution. If the lockfile is
+    /// missing or needs to be updated, uv will exit with an error.
+    ///
+    /// Equivalent to `--locked`.
+    #[arg(long, env = EnvVars::UV_LOCKED, value_parser = clap::builder::BoolishValueParser::new(), conflicts_with_all = ["check_exists", "upgrade", "locked"])]
+    pub check: bool,
+
+    /// Check if the lockfile is up-to-date.
+    ///
+    /// Asserts that the `uv.lock` would remain unchanged after a resolution. If the lockfile is
+    /// missing or needs to be updated, uv will exit with an error.
+    ///
+    /// Equivalent to `--check`.
+    #[arg(long, env = EnvVars::UV_LOCKED, value_parser = clap::builder::BoolishValueParser::new(), conflicts_with_all = ["check_exists", "upgrade", "check"], hide = true)]
+    pub locked: bool,
+```
+
+So I assume clap enables both conflicting flags when `UV_LOCKED` is being used.
+
+### Platform
+
+Darwin 24.6.0 arm64
+
+### Version
+
+0.9.6
+
+### Python version
+
+3.11.11
+
+---
+
+_Label `bug` added by @AlexVndnblcke on 2025-10-30 16:08_
+
+---
+
+_Comment by @zanieb on 2025-10-30 16:24_
+
+Thanks! This should be a trivial fix.
+
+---
+
+_Label `good first issue` added by @zanieb on 2025-10-30 16:24_
+
+---
+
+_Comment by @zanieb on 2025-10-30 16:24_
+
+(We should remove the environment variable from the `check` argument)
+
+---
+
+_Referenced in [astral-sh/uv#16521](../../astral-sh/uv/pulls/16521.md) on 2025-10-30 18:09_
+
+---
+
+_Closed by @charliermarsh on 2025-10-30 19:37_
+
+---
+
+_Comment by @pbrousseau-sdx on 2025-10-30 20:04_
+
+Not to push, but do you know when this will be released?  It seems to have broken our workflows.   (Workaround being to pin our workflows to the prior version of `uv`...)  Thanks!
+
+---
+
+_Comment by @charliermarsh on 2025-10-30 20:07_
+
+We'll try to get this out today.
+
+---
+
+_Comment by @pbrousseau-sdx on 2025-10-31 15:57_
+
+I suspect I ought to create a new ticket, but there is still a regression in my usecase.  My pipeline is using `0.9.7`, but I still get the above error.  I am not the author of this workflow, so I suspect there's things here that I don't understand, but it worked with `0.9.5`.  This is the workflow output:
+
+```
+Run astral-sh/setup-uv@v6
+  with:
+    activate-environment: false
+    working-directory: [REDACTED]
+    server-url: https://github.com/
+    github-token: ***
+    enable-cache: auto
+    cache-dependency-glob: **/*requirements*.txt
+  **/*requirements*.in
+  **/*constraints*.txt
+  **/*constraints*.in
+  **/pyproject.toml
+  **/uv.lock
+  **/*.py.lock
+  
+    restore-cache: true
+    save-cache: true
+    prune-cache: true
+    ignore-nothing-to-cache: false
+    ignore-empty-workdir: false
+    add-problem-matchers: true
+  env:
+    UV_LOCKED: true
+    pythonLocation: /opt/hostedtoolcache/Python/3.13.9/x64
+    PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.13.9/x64/lib/pkgconfig
+    Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.13.9/x64
+    Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.13.9/x64
+    Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.13.9/x64
+    LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.13.9/x64/lib
+    AWS_DEFAULT_REGION: us-east-1
+    AWS_REGION: us-east-1
+    AWS_ACCESS_KEY_ID: ***
+    AWS_SECRET_ACCESS_KEY: ***
+    AWS_SESSION_TOKEN: ***
+    CODEARTIFACT_TOKEN: ***
+    POETRY_HTTP_BASIC_PYTHON_PACKAGES_USERNAME: aws
+    POETRY_HTTP_BASIC_PYTHON_PACKAGES_PASSWORD: ***
+    PIP_INDEX_URL: [REDACTED]
+    UV_INDEX_PYTHON_PACKAGES_USERNAME: aws
+    UV_INDEX_PYTHON_PACKAGES_PASSWORD: ***
+  
+Trying to find version for uv in: /home/runner/work/[REDACTED]
+Could not find file: /home/runner/work/[REDACTED]
+Trying to find version for uv in: /home/runner/work/[REDACTED]
+Could not determine uv version from uv.toml or pyproject.toml. Falling back to latest.
+Getting latest version from GitHub API...
+manifest-file not provided, reading from local file.
+manifest-file does not contain version 0.9.7, arch x86_64, platform unknown-linux-gnu. Falling back to GitHub releases.
+Downloading uv from "https://github.com/astral-sh/uv/releases/download/0.9.7/uv-x86_64-unknown-linux-gnu.tar.gz" ...
+/usr/bin/tar xz --warning=no-unknown-keyword --overwrite -C /home/runner/work/_temp/dff6fc2b-84aa-4af3-ac63-489137107ca1 -f /home/runner/work/_temp/2f0494cb-700c-47e2-abc7-f381aefe948f
+Added /home/runner/.local/bin to the path
+Added /opt/hostedtoolcache/uv/0.9.7/x86_64 to the path
+Set UV_CACHE_DIR to /home/runner/work/_temp/setup-uv-cache
+Successfully installed uv version 0.9.7
+Searching files using cache dependency glob: [REDACTED]
+[REDACTED]
+Found 4 files to hash.
+Trying to restore uv cache from GitHub Actions cache with key: setup-uv-1-x86_64-unknown-linux-gnu-3.13.9-pruned-abb420bcb3b50b53cff205d1c1b04b8b674491cfe39214fae678ed6b72f6448e
+No GitHub Actions cache found for key: setup-uv-1-x86_64-unknown-linux-gnu-3.13.9-pruned-abb420bcb3b50b53cff205d1c1b04b8b674491cfe39214fae678ed6b72f6448e
+Run uv lock --check
+  uv lock --check
+  echo "PACKAGE_MANAGER=uv" >> ${GITHUB_ENV}
+  echo "INSTALL_COMMAND=uv sync" >> ${GITHUB_ENV}
+  echo "UV_LOCKED=1" >> ${GITHUB_ENV}
+  shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+  env:
+    UV_LOCKED: true
+    pythonLocation: /opt/hostedtoolcache/Python/3.13.9/x64
+    PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.13.9/x64/lib/pkgconfig
+    Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.13.9/x64
+    Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.13.9/x64
+    Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.13.9/x64
+    LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.13.9/x64/lib
+    AWS_DEFAULT_REGION: us-east-1
+    AWS_REGION: us-east-1
+    AWS_ACCESS_KEY_ID: ***
+    AWS_SECRET_ACCESS_KEY: ***
+    AWS_SESSION_TOKEN: ***
+    CODEARTIFACT_TOKEN: ***
+    POETRY_HTTP_BASIC_PYTHON_PACKAGES_USERNAME: aws
+    POETRY_HTTP_BASIC_PYTHON_PACKAGES_PASSWORD: ***
+    PIP_INDEX_URL: [REDACTED]
+    UV_INDEX_PYTHON_PACKAGES_USERNAME: aws
+    UV_INDEX_PYTHON_PACKAGES_PASSWORD: ***
+    UV_CACHE_DIR: /home/runner/work/_temp/setup-uv-cache
+error: the argument '--check' cannot be used with '--locked'
+Usage: uv lock --check --cache-dir <CACHE_DIR>
+For more information, try '--help'.
+Error: Process completed with exit code 2.
+```
+
+---
+
+_Comment by @zanieb on 2025-10-31 16:20_
+
+@pbrousseau-sdx can you share more about the workflow that was used there? Using `uv lock --check` with `UV_LOCKED=1` set is redundant.
+
+We can make the options non-conflicting.
+
+---
+
+_Referenced in [astral-sh/uv#16538](../../astral-sh/uv/pulls/16538.md) on 2025-10-31 16:28_
+
+---
+
+_Comment by @pbrousseau-sdx on 2025-10-31 17:09_
+
+I can share what we have in the pipeline, but I don't know enough to speak its full intent.  You can also say, "you're using it wrong".  :D
+
+We have a pipeline that is supposed to run a suite of tests:
+```
+name: Run tests
+
+[SNIP]
+
+env:
+  UV_LOCKED: true
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+
+[SNIP]
+
+      - name: Pytest
+        uses: myorg/actions/actions/project-pytest@main # see below
+        with:
+          python_ver: 3.13
+          addopts: "--cov-report=xml:./pytest-coverage.xml --junitxml=pytest.xml"
+
+      - name: Pytest code coverage report
+        uses: MishaKav/pytest-coverage-comment@main
+        with:
+          pytest-xml-coverage-path: ./pytest-coverage.xml
+          junitxml-path: ./pytest.xml
+```
+
+So that action looks like...
+
+```
+name: "Project pytest"
+
+inputs:
+  python_ver:
+    type: string
+    default: "3.11" 
+
+[SNIP]
+
+runs:
+  using: composite
+  steps:
+    - name: Setup Python
+      id: python
+      uses: actions/setup-python@v5
+      with:
+        python-version: "${{ inputs.python_ver }}"
+
+[SNIP]
+
+    - name: Install uv
+      uses: astral-sh/setup-uv@v6
+
+    - name: Detect UV Environment
+      id: detect-uv
+      working-directory: ${{ inputs.working_dir }}
+      continue-on-error: true
+      run: |
+        uv lock --check
+        echo "PACKAGE_MANAGER=uv" >> ${GITHUB_ENV}
+        echo "INSTALL_COMMAND=uv sync" >> ${GITHUB_ENV}
+        echo "UV_LOCKED=1" >> ${GITHUB_ENV}
+      shell: bash
+
+[SNIP]
+
+    - name: Install dependencies
+      working-directory: ${{ inputs.working_dir }}
+      run: eval ${{ env.INSTALL_COMMAND }}
+      shell: bash
+```
+
+And that `uv lock --check` step is what's failing.
+
+I don't know why we have `UV_LOCKED` set at the top level; though.
+
+---

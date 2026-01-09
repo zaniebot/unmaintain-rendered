@@ -1,0 +1,173 @@
+---
+number: 16493
+title: "Honor member-level `[tool.uv]` policy during workspace installs (propagate `no-build-isolation-package` upward)"
+type: issue
+state: open
+author: bheijden
+labels:
+  - enhancement
+assignees: []
+created_at: 2025-10-29T11:47:16Z
+updated_at: 2025-10-31T19:46:54Z
+url: https://github.com/astral-sh/uv/issues/16493
+synced_at: 2026-01-07T13:12:19-06:00
+---
+
+# Honor member-level `[tool.uv]` policy during workspace installs (propagate `no-build-isolation-package` upward)
+
+---
+
+_Issue opened by @bheijden on 2025-10-29 11:47_
+
+### Summary
+
+Today, when running `uv sync` from a workspace root, uv ignores a member package’s `[tool.uv]` policy (e.g., `no-build-isolation-package`). This forces duplicating policy at the workspace root, which is brittle and breaks locality—policy lives far from the dependency.
+
+**Request:** During workspace installs, apply each **member’s** `[tool.uv]` policy to that member (root `[tool.uv]` acts as defaults only, member-level overrides win). This matches how `tool.uv.sources` can be defined close to the dependency and makes CUDA/PyTorch extension builds reproducible without duplicating settings at the root.
+
+**Current behavior (problem):** Member-level `no-build-isolation-package` is ignored unless also duplicated at the root; removing a dependency from the member can leave stale root policy behind.
+
+**Desired behavior:** Member-level `[tool.uv]` (e.g., `no-build-isolation-package`) is honored for that member during a root workspace install; root-level `[tool.uv]` provides defaults but does not need to repeat member-specific policy.
+
+
+### Example
+
+
+**Layout**
+
+```
+workspace/
+├─ pyproject.toml          # workspace root
+└─ libs/
+   └─ app/
+      └─ pyproject.toml    # member that depends on nvidia-curobo
+```
+
+**`workspace/pyproject.toml` (root)**
+
+```toml
+[project]
+name = "root"
+version = "0.0.0"
+requires-python = ">=3.10"
+
+[tool.uv.workspace]
+members = ["libs/app"]
+```
+
+**`workspace/libs/app/pyproject.toml` (member)**
+
+```toml
+[project]
+name = "app"
+version = "0.1.0"
+dependencies = [
+  "torch",
+  "nvidia-curobo",  # must build against the in-venv torch (no isolation)
+]
+
+[tool.uv]
+no-build-isolation-package = ["nvidia-curobo"]  # colocated with the dependency
+
+[tool.uv.sources]
+nvidia-curobo = { git = "https://github.com/NVlabs/curobo", rev = "abcdef" }
+```
+
+**Repro steps (from workspace root):**
+
+```
+uv sync
+```
+
+**Current behavior:**
+`no-build-isolation-package` in the **member** is ignored; `nvidia-curobo` builds in isolation unless the same policy is duplicated in the **root**.
+
+**Desired behavior:**
+uv applies the **member’s** `[tool.uv]` to that member during workspace install, so `nvidia-curobo` is built **without isolation** (linking to the in-venv `torch`) without needing to repeat policy at the root.
+
+**Why this matters:**
+
+* Keeps policy **local** to the package that needs it.
+* Avoids stale/broken installs when dependencies move or are removed.
+* Reduces duplication and makes CUDA/torch extension workflows less brittle in multi-package workspaces.
+
+---
+
+_Label `enhancement` added by @bheijden on 2025-10-29 11:47_
+
+---
+
+_Comment by @zanieb on 2025-10-29 14:08_
+
+What if you had a second workspace member that depended on `nvidia-curobo`? We resolve the entire workspace at once, and I don't think we could resolve for two versions of `nvidia-curobo`, one built without isolation and one built with it. Otherwise, I think your points make sense.
+
+---
+
+_Comment by @bheijden on 2025-10-30 09:44_
+
+Totally agree that building two variants of the same package in one env is not feasible. I am not asking for that.
+
+Proposal: when running from the workspace root, aggregate member policies by taking the union of no-build-isolation-package across all members. If any member marks nvidia-curobo as no-build-isolation, install it once, non-isolated, for the whole environment. No per-member divergence, just a single deterministic build.
+
+This keeps policy local to the member that depends on it, avoids duplication in the root, and still respects the single-build constraint.
+
+Side note: for packages like CUDA or PyTorch extensions (e.g., curobo, flash-attn, apex), no-build-isolation is usually a package property rather than a per-member preference. In practice you almost always want the same setting everywhere, so the union rule should cover the common case cleanly.
+
+---
+
+_Comment by @zanieb on 2025-10-30 14:14_
+
+I still think that could be confusing, e.g., if you had
+
+```
+root
+--- foo
+------ nvidia-curobo (without `no-build-isolation`)
+--- bar
+------ nvidia-curobo (with `no-build-isolation`)
+```
+
+then `uv sync` would use `no-build-isolation` but `uv sync --package foo` would... not? and you'd end up in a broken situation. 
+
+In contrast to your original intent, a non-local (and non-parent!) declaration of `no-build-isolation` would affect `foo`.
+
+---
+
+_Comment by @bheijden on 2025-10-31 16:10_
+
+Totally hear you on the `uv sync` vs `uv sync --package foo` asymmetry.
+
+But don’t we have a similar situation with `tool.uv.sources`, and we accept it because workspace resolution yields predictable results? For example, a root
+
+```
+[tool.uv.sources]
+nvidia-curobo = { git = "...", rev = "abc" }
+```
+
+drives `uv sync` for all members, unless a member (e.g., `foo`) overrides that source in its own `tool.uv.sources`, in which case `uv sync --package foo` can pick the member-specific source.
+
+Concretely, the same shape arises with sources:
+
+```
+root
+--- foo
+------ nvidia-curobo (source = git ...@abc)
+--- bar
+------ nvidia-curobo (source = git ...@def)
+```
+
+A workspace `uv sync` must converge on a single source for the environment. If those member overrides are incompatible, resolution fails rather than producing two variants, while `uv sync --package foo` can use `foo`’s override independently.
+
+I would propose applying the same principle here for build isolation: during a workspace install, aggregate member `no-build-isolation-package` entries and resolve to a single plan. Treat `unspecified` as `require-isolated`. If any member is `require-nbi` and any other member is `require-isolated` or `unspecified`, raise a clear conflict **error** (already a big win vs silent mismatch). If there’s no conflict (e.g., only one member depends on the package and marks `require-nbi`), use that policy once for the whole env. Going further, make the conflict behavior opt-in configurable at the root (e.g., `prefer-non-isolated` or `prefer-isolated`) for teams that want a global default. This yields one deterministic build, keeps policy next to the dependency, and matches common CUDA/PyTorch extension workflows.
+
+---
+
+_Comment by @zanieb on 2025-10-31 19:46_
+
+> unless a member (e.g., foo) overrides that source in its own tool.uv.sources, in which case uv sync --package foo can pick the member-specific source.
+
+I don't think this actually is allowed, since we perform a resolution for the full workspace then re-use that single resolution for syncs, even when they pick a sub-package to use. The members _must_ have matching sources unless they're declared as conflicting. I'd need to double check what we actually do in practice, but conceptually this shouldn't work as you've described.
+
+I think we could fail as you've described and require explicit conflict markers if you need mixed build isolation policies across workspace members though.
+
+---

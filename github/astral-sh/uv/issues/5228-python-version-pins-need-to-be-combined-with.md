@@ -1,0 +1,52 @@
+---
+number: 5228
+title: "Python version pins need to be combined with `Requires-Python`"
+type: issue
+state: open
+author: zanieb
+labels:
+  - bug
+assignees: []
+created_at: 2024-07-19T19:19:06Z
+updated_at: 2024-07-19T19:22:08Z
+url: https://github.com/astral-sh/uv/issues/5228
+synced_at: 2026-01-07T13:12:17-06:00
+---
+
+# Python version pins need to be combined with `Requires-Python`
+
+---
+
+_Issue opened by @zanieb on 2024-07-19 19:19_
+
+As briefly discussed at https://github.com/astral-sh/uv/pull/4989#discussion_r1684805329
+
+When reading pins from `.python-version` files in workspaces, the `Requires-Python` information may need to be layered to resolve the correct Python interpreter e.g. with 
+
+- 3.10 and 3.12 on the PATH
+- A project that requires `>=3.11`
+- And a pin of `cpython`
+
+We will currently resolve to 3.10 since ignore the project Python requirement entirely when there is a pin.
+
+Instead, we should combine the `PythonRequest::Implementation` and the `Requires-Python` into a `PythonRequest::ImplementationVersion(..., VersionRequest::Range(...))`.
+
+---
+
+_Label `bug` added by @zanieb on 2024-07-19 19:19_
+
+---
+
+_Comment by @zanieb on 2024-07-19 19:22_
+
+This could get pretty complicated. We may want to think about the problem space a bit before implementing the suggestion.
+
+---
+
+_Referenced in [astral-sh/uv#5592](../../astral-sh/uv/pulls/5592.md) on 2024-07-30 14:17_
+
+---
+
+_Referenced in [astral-sh/uv#6372](../../astral-sh/uv/pulls/6372.md) on 2024-09-26 01:23_
+
+---

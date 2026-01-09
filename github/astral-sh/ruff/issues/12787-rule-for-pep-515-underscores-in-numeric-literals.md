@@ -1,0 +1,81 @@
+---
+number: 12787
+title: Rule for PEP 515 - Underscores in Numeric Literals
+type: issue
+state: open
+author: guillp
+labels:
+  - rule
+  - needs-decision
+  - needs-design
+assignees: []
+created_at: 2024-08-09T14:09:09Z
+updated_at: 2024-08-09T15:38:20Z
+url: https://github.com/astral-sh/ruff/issues/12787
+synced_at: 2026-01-07T13:12:15-06:00
+---
+
+# Rule for PEP 515 - Underscores in Numeric Literals
+
+---
+
+_Issue opened by @guillp on 2024-08-09 14:09_
+
+I would like to implement a rule for [PEP 515](https://peps.python.org/pep-0515/). This allows using underscores as visual separators in numerics. Large numbers are hard to read and using underscore as thousands, millions, etc. separators increases readability a lot.
+
+E.g this would turn this:
+```python
+my_large_int = 313391313513489341
+````
+into:
+```python
+my_large_int = 313_391_313_513_489_341
+```
+
+A few things I have in mind:
+- underscore would be added as thousands, millions, billions, etc. separator, so every 3 digits
+- for float, it probably makes sense to add it as thousandths, millionths, etc.
+- for integers <= 99999 (so 5 or less digits), no need to add a thousands separator, those are readable enough without it
+- for hexadecimal notation, add an underscore every 4 digits, if the length is > 4 (eg. `0x15_DEAD_BEEF`). Would it make sense to left-pad with 0 to have a length that is a multiple of 4 (so `0x0015_DEAD_BEEF`) ?
+- for binary notation, add an underscore every 8 digits (eg. `0b1100110_01101111_01101111`). Would it make sense to left pad with 0 up to a multiple of 8 (so `0b01100110_01101111_01101111`) ?
+
+I did not find any prior art so if such a rule exists somewhere else, feel free to point me to it as well.
+
+This would be my first Ruff rule and one of my first experiments with Rust, so I'm looking for feedback about the rule itself before I start coding it. If you feel this is not implementable for any reason, just let me know as well :)
+
+---
+
+_Comment by @MichaReiser on 2024-08-09 15:38_
+
+Thanks for the rule idea. 
+
+https://github.com/astral-sh/ruff/issues/3693 covers the handling of large numbers. The issue also points out that one challenge with such a rule is that different cultures use different grouping. That means the rule has to be configurable (although we could decide to skip this initially). It would be great to have a design for how different culture norms could be supported by the rule. 
+
+In my opinion, hexadecimal and binary numbers should have their own rules. I can see users who want to enforce strict number formatting but want more freedom when it comes to binary notation. The good thing is that it means we can add those rules one by one.
+
+My only concern with these rules is that they potentially overlap with the formatter. Although I think it's unlikely that the formatter wants to be opinionated about the formatting. 
+
+@AlexWaygood what's your take on these rules?
+
+
+---
+
+_Label `rule` added by @MichaReiser on 2024-08-09 15:38_
+
+---
+
+_Label `needs-design` added by @MichaReiser on 2024-08-09 15:38_
+
+---
+
+_Label `needs-decision` added by @MichaReiser on 2024-08-09 15:38_
+
+---
+
+_Referenced in [Lokejoke/ruff#12](../../Lokejoke/ruff/pulls/12.md) on 2024-11-17 19:55_
+
+---
+
+_Referenced in [astral-sh/ruff#18221](../../astral-sh/ruff/pulls/18221.md) on 2025-05-20 15:05_
+
+---

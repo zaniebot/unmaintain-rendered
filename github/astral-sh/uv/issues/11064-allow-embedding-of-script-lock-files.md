@@ -1,0 +1,107 @@
+---
+number: 11064
+title: Allow embedding of script lock files
+type: issue
+state: open
+author: zanieb
+labels:
+  - enhancement
+  - wish
+assignees: []
+created_at: 2025-01-29T14:30:56Z
+updated_at: 2025-07-28T17:29:59Z
+url: https://github.com/astral-sh/uv/issues/11064
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# Allow embedding of script lock files
+
+---
+
+_Issue opened by @zanieb on 2025-01-29 14:30_
+
+e.g., see https://github.com/astral-sh/uv/issues/6318#issuecomment-2621176886
+
+We added support for script lock files, but they're separate from the script. This makes them easier to detect and operate on. However, for fully reproducible scripts, it may be nice to embed a lockfile in the script itself.
+
+
+
+---
+
+_Label `enhancement` added by @zanieb on 2025-01-29 14:30_
+
+---
+
+_Referenced in [astral-sh/uv#6318](../../astral-sh/uv/issues/6318.md) on 2025-01-29 14:50_
+
+---
+
+_Label `wish` added by @zanieb on 2025-01-29 14:53_
+
+---
+
+_Comment by @marengaz on 2025-01-29 14:59_
+
+agree with [charlie's comment](https://github.com/astral-sh/uv/issues/6318#issuecomment-2621851205) that "embedded lockfile is somewhat impractical"
+perhaps a suitable compromise would be a flag to enforce the use with a lock file?
+
+```
+# /// script
+# requires-python = ">=3.12"
+# dependencies = [
+#     "requests<3",
+#     "rich",
+# ]
+# enforce-lock-file = true
+# ///
+```
+
+where `uv run --script` would throw a helpful error if the lock file wasn't resolvable by usual logic?
+
+---
+
+_Comment by @notatallshaw on 2025-01-29 15:05_
+
+https://github.com/astral-sh/uv/issues/6318#issuecomment-2621851205
+
+> I personally think the embedded lockfile is somewhat impractical -- just way too big. But we can probably support it.
+
+Depends on the use case, for general development environments I agree.
+
+But I can imagine situations where you'd like to send a file to someone outside traditional development, such as sending files to a semi technical user, or academic or other organizations where development best practices are not great and they email or copy files around. In cases like these there's a huge convenience to having just one file, not keeping two together and in sync.
+
+---
+
+_Comment by @martimlobao on 2025-01-29 15:20_
+
+@marengaz The usecase I'm envisioning is more what @notatallshaw is getting at: I don't want the script to fail if there isn't a lockfile, I want to be able to run the script reproducibly as a standalone executable.
+
+I can sympathize with the argument that an inline lockfile might be impractical in some cases though. At the risk of proposing yet another option, perhaps a `--inline` flag might be a good alternative to allow for each behavior depending on the use case.
+
+---
+
+_Comment by @charliermarsh on 2025-01-30 03:14_
+
+It seems fine to support this as an opt-in thing.
+
+---
+
+_Referenced in [astral-sh/uv#11104](../../astral-sh/uv/issues/11104.md) on 2025-01-30 21:44_
+
+---
+
+_Comment by @zmackie-datadog on 2025-02-07 20:49_
+
+FWIW a nice workflow to support would be "I work on a script at first, and then at some point I want to go from a script to a repoducible script to a project".
+
+---
+
+_Referenced in [astral-sh/uv#12303](../../astral-sh/uv/issues/12303.md) on 2025-03-20 16:46_
+
+---
+
+_Comment by @gsemet on 2025-04-04 06:34_
+
+Hello. I really like the idea of an automatically managed lockfile even without hashes. Would help a lot sharing scripts without pyproject.toml file while having full reproductivity both locally and in CI.
+
+---

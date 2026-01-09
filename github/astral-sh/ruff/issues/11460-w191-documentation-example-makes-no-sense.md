@@ -1,0 +1,70 @@
+---
+number: 11460
+title: W191 documentation example makes no sense
+type: issue
+state: closed
+author: njzjz
+labels:
+  - documentation
+assignees: []
+created_at: 2024-05-17T19:58:28Z
+updated_at: 2024-05-17T21:49:17Z
+url: https://github.com/astral-sh/ruff/issues/11460
+synced_at: 2026-01-07T13:12:15-06:00
+---
+
+# W191 documentation example makes no sense
+
+---
+
+_Issue opened by @njzjz on 2024-05-17 19:58_
+
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* List of keywords you searched for before creating this issue. Write them down here so that others can find this issue more easily and help provide feedback.
+  e.g. "RUF001", "unused variable", "Jupyter notebook"
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+https://docs.astral.sh/ruff/rules/tab-indentation/
+
+Although it's easy to understand this rule, the example makes no sense.
+
+![image](https://github.com/astral-sh/ruff/assets/9496702/fbccbad7-3af6-4c76-804d-aec46da81e43)
+
+In the documentation, the code blocks before and after "Use instead:" are the same. Both of them use the spaces but not tabs.
+
+The source code of the HTML page also indicates two code blocks are the same thing.
+
+![image](https://github.com/astral-sh/ruff/assets/9496702/56fe8d72-8bae-4e62-a9a7-80c26b0604b9)
+
+
+---
+
+_Comment by @charliermarsh on 2024-05-17 21:20_
+
+It does (correctly) use a tab in the actual rustdoc source. Perhaps it's being converted automatically somewhere. We can just remove it.
+
+---
+
+_Label `documentation` added by @charliermarsh on 2024-05-17 21:20_
+
+---
+
+_Referenced in [astral-sh/ruff#11462](../../astral-sh/ruff/pulls/11462.md) on 2024-05-17 21:28_
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2024-05-17 21:28_
+
+---
+
+_Closed by @charliermarsh on 2024-05-17 21:49_
+
+---

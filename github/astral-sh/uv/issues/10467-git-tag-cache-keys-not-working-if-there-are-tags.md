@@ -1,0 +1,80 @@
+---
+number: 10467
+title: git-tag cache-keys not working if there are tags containing slash
+type: issue
+state: closed
+author: snizovtsev
+labels: []
+assignees: []
+created_at: 2025-01-10T11:52:14Z
+updated_at: 2025-01-12T02:30:47Z
+url: https://github.com/astral-sh/uv/issues/10467
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# git-tag cache-keys not working if there are tags containing slash
+
+---
+
+_Issue opened by @snizovtsev on 2025-01-10 11:52_
+
+I use slashes in git tags to separate workspace member from version, like:
+
+```
+$ git tag -l
+py-consul/v1.5.3.post0
+xyz
+```
+
+gives "1.5.3.post0" version to workspace member `workspace/py-consul`.
+
+As so, I've each workspace member's `pyproject.toml` looks like this:
+
+```toml
+[project]
+name = "py-consul"
+dynamic = ["version", "x-run-hook"]
+
+[tool.uv]
+cache-keys = [{ git = { commit = true, tags = true } }, { file = "pyproject.toml" }]
+
+[tool.hatch.version]
+source = "my-plugin"
+```
+
+However I noticed `uv` won't bump my project version when I add or remove a second tag like `xyz`. It echos the following error in DEBUG log:
+
+```
+DEBUG Failed to read the current tags: failed to read from file `my-project/.git/refs/tags/py-consul`: Is a directory (os error 21)
+```
+
+Obviously, `uv` should be improved to walk entire `.git/refs/tags` directory instead of reading flat structure as it done now.
+
+If nobody objects, I want to use this issue as my practice in Rust and plan to work on a fix in a next few days.
+
+---
+
+_Comment by @snizovtsev on 2025-01-10 11:53_
+
+```
+$ tree .git/refs/tags
+.git/refs/tags
+├── py-consul
+│   └── v1.5.3.post0
+└── xyz
+
+```
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2025-01-10 13:09_
+
+---
+
+_Referenced in [astral-sh/uv#10500](../../astral-sh/uv/pulls/10500.md) on 2025-01-11 17:01_
+
+---
+
+_Closed by @charliermarsh on 2025-01-12 02:30_
+
+---

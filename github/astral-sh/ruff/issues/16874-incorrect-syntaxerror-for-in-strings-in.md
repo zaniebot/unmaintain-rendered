@@ -1,0 +1,1606 @@
+---
+number: 16874
+title: "Incorrect SyntaxError for `*` in strings in annotations (e.g. `Annotated`, `Literal`)"
+type: issue
+state: closed
+author: rg936672
+labels:
+  - bug
+  - preview
+assignees: []
+created_at: 2025-03-20T16:45:34Z
+updated_at: 2025-03-20T21:48:50Z
+url: https://github.com/astral-sh/ruff/issues/16874
+synced_at: 2026-01-07T13:12:16-06:00
+---
+
+# Incorrect SyntaxError for `*` in strings in annotations (e.g. `Annotated`, `Literal`)
+
+---
+
+_Issue opened by @rg936672 on 2025-03-20 16:45_
+
+### Summary
+
+Summary: `*` in strings that are part of annotations (e.g. in `Annotated`, `Literal`, or `jaxtyping.Shaped` annotations) is erroneously marked as a SyntaxError.
+
+[Playground link](https://play.ruff.rs/390dda63-1d6a-4dd3-b4b8-f5b7b637309a).
+
+These should be allowed; the code runs perfectly fine under Python 3.9 and 3.10.
+
+This issue is new in ruff 0.11.1 with preview enabled; it doesn't appear in ruff 0.11.0 or with preview disabled.
+
+### Version
+
+ruff 0.11.1 (c1971fdde 2025-03-20)
+
+---
+
+_Referenced in [gchq/coreax#1000](../../gchq/coreax/pulls/1000.md) on 2025-03-20 16:50_
+
+---
+
+_Assigned to @ntBre by @ntBre on 2025-03-20 16:57_
+
+---
+
+_Label `bug` added by @ntBre on 2025-03-20 16:58_
+
+---
+
+_Label `preview` added by @ntBre on 2025-03-20 16:59_
+
+---
+
+_Comment by @ntBre on 2025-03-20 17:01_
+
+Thanks, this is a bug from https://github.com/astral-sh/ruff/pull/16545. We're currently flagging any starred parameter rather than only looking at the annotation.
+
+---
+
+_Comment by @dangotbanned on 2025-03-20 17:07_
+
+Also popped up in CI for us 
+- https://github.com/vega/altair/actions/runs/13778777512/job/39119497035?pr=3815
+
+---
+
+_Referenced in [chenyuxyz/tinygrad#731](../../chenyuxyz/tinygrad/pulls/731.md) on 2025-03-20 17:09_
+
+---
+
+_Referenced in [tinygrad/tinygrad#9520](../../tinygrad/tinygrad/pulls/9520.md) on 2025-03-20 17:10_
+
+---
+
+_Referenced in [vega/altair#3815](../../vega/altair/pulls/3815.md) on 2025-03-20 17:11_
+
+---
+
+_Comment by @jorenham on 2025-03-20 17:20_
+
+I can confirm this: After upgrading to 0.11.1, 150 false positives are reported in the [numpy/numtype](https://github.com/numpy/numtype), as can be seen here:
+https://github.com/numpy/numtype/actions/runs/13975401728/job/39127811785?pr=347
+
+<details>
+<summary>Full output of <code>uv run ruff check</code>:</summary>
+
+```
+src/numpy-stubs/__init__.pyi:2152:79: SyntaxError: Cannot use star annotation on Python 3.10 (syntax was added in Python 3.11)
+     |
+2151 |     #
+2152 |     def __array_ufunc__(self, ufunc: ufunc, method: _UFuncMethod, /, *inputs: object, **kwargs: object) -> Any: ...
+     |                                                                               ^^^^^^
+2153 |
+2154 |     #
+     |
+
+src/numpy-stubs/__init__.pyi:3319:64: SyntaxError: Cannot use star annotation on Python 3.10 (syntax was added in Python 3.11)
+     |
+3317 |     def item(self: ndarray[Any, dtypes.StringDType], arg0: CanIndex | tuple[CanIndex, ...] = ..., /) -> str: ...
+3318 |     @overload
+3319 |     def item(self: ndarray[Any, dtypes.StringDType], /, *args: CanIndex) -> str: ...
+     |                                                                ^^^^^^^^
+3320 |     @overload  # use the same output type as that of the underlying `generic`
+3321 |     def item(self: _HasDTypeWithItem[_T], /) -> _T: ...
+     |
+
+src/numpy-stubs/__init__.pyi:3325:53: SyntaxError: Cannot use star annotation on Python 3.10 (syntax was added in Python 3.11)
+     |
+3323 |     def item(self: _HasDTypeWithItem[_T], arg0: CanIndex | tuple[CanIndex, ...] = ..., /) -> _T: ...
+3324 |     @overload
+3325 |     def item(self: _HasDTypeWithItem[_T], /, *args: CanIndex) -> _T: ...
+     |                                                     ^^^^^^^^
+3326 |
+3327 |     #
+     |
+
+src/numpy-stubs/__init__.pyi:3370:35: SyntaxError: Cannot use star annotation on Python 3.10 (syntax was added in Python 3.11)
+     |
+3368 |     def transpose(self, axes: _ShapeLike | None, /) -> Self: ...
+3369 |     @overload
+3370 |     def transpose(self, /, *axes: CanIndex) -> Self: ...
+     |                                   ^^^^^^^^
+3371 |
+3372 |     # NOTE: always raises when called on `generic`.
+     |
+
+src/numpy-stubs/__init__.pyi:3810:17: SyntaxError: Cannot use star annotation on Python 3.10 (syntax was added in Python 3.11)
+     |
+3808 |         size0: CanIndex,
+3809 |         /,
+3810 |         *shape: CanIndex,
+     |                 ^^^^^^^^
+3811 |         order: _OrderACF = "C",
+3812 |         copy: py_bool | None = None,
+     |
+
+src/numpy-stubs/__init__.pyi:3961:34: SyntaxError: Cannot use star annotation on Python 3.10 (syntax was added in Python 3.11)
+     |
+3959 |     #
+3960 |     @abc.abstractmethod
+3961 |     def __init__(self, /, *args: Any, **kwargs: Any) -> None: ...
+     |                                  ^^^
+3962 |
+3963 |     #
+     |
+
+src/numpy-stubs/__init__.pyi:4225:19: SyntaxError: Cannot use star annotation on Python 3.10 (syntax was added in Python 3.11)
+     |
+4223 |         size5: CanIndex,
+4224 |         /,
+4225 |         *sizes6_: CanIndex,
+     |                   ^^^^^^^^
+4226 |         order: _OrderACF = "C",
+4227 |         copy: py_bool | None = None,
+     |
+
+src/numpy-stubs/__init__.pyi:4808:34: SyntaxError: Cannot use star annotation on Python 3.10 (syntax was added in Python 3.11)
+     |
+4806 |     @override
+4807 |     def __hash__(self, /) -> int: ...
+4808 |     def __call__(self, /, *args: object, **kwargs: object) -> Any: ...
+     |                                  ^^^^^^
+4809 |
+4810 |     if sys.version_info >= (3, 12):
+     |
+
+src/numpy-stubs/__init__.pyi:6888:34: SyntaxError: Cannot use star annotation on Python 3.10 (syntax was added in Python 3.11)
+     |
+6886 | class flexible(_RealMixin, generic[_FlexItemT_co], Generic[_FlexItemT_co]):  # type: ignore[misc]
+6887 |     @abc.abstractmethod
+6888 |     def __init__(self, /, *args: Any, **kwargs: Any) -> None: ...
+     |                                  ^^^
+6889 |
+6890 | class void(flexible[bytes | tuple[Any, ...]]):  # type: ignore[misc]  # pyright: ignore[reportGeneralTypeIssues]
+     |
+
+src/numpy-stubs/_core/_internal.pyi:71:35: SyntaxError: Cannot use star annotation on Python 3.10 (syntax was added in Python 3.11)
+   |
+69 |     def __ne__(self, other: Self, /) -> bool: ...  # type: ignore[override]  # pyright: ignore[reportIncompatibleMethodOverride]
+70 |     def __mul__(self, other: object, /) -> Self: ...
+71 |     def __call__(self, /, *other: object) -> _T_co: ...
+   |                                   ^^^^^^
+72 |
+73 | def array_ufunc_errmsg_formatter(dummy: object, ufunc: np.ufunc, method: str, *inputs: object, **kwargs: object) -> str: ...
+   |
+
+src/numpy-stubs/_core/_internal.pyi:73:88: SyntaxError: Cannot use star annotation on Python 3.10 (syntax was added in Python 3.11)
+   |
+71 |     def __call__(self, /, *other: object) -> _T_co: ...
+72 |
+73 | def array_ufunc_errmsg_formatter(dummy: object, ufunc: np.ufunc, method: str, *inputs: object, **kwargs: object) -> str: ...
+   |                                                                                        ^^^^^^
+74 | def array_function_errmsg_formatter(public_api: Callable[..., object], types: Iterable[str]) -> str: ...
+75 | def npy_ctypes_check(cls: type) -> bool: ...
+   |
+
+src/numpy-stubs/_core/_multiarray_umath.pyi:388:29: SyntaxError: Cannot use star annotation on Python 3.10 (syntax was added in Python 3.11)
+    |
+387 |     #
+388 |     def __new__(cls, *args: npt.ArrayLike) -> Self: ...
+    |                             ^^^^^^^^^^^^^
+389 |
+390 |     #
+    |
+
+src/numpy-stubs/_core/_multiarray_umath.pyi:534:39: SyntaxError: Cannot use star annotation on Python 3.10 (syntax was added in Python 3.11)
+    |
+533 | #
+534 | def set_datetimeparse_function(*args: Incomplete, **kwargs: Incomplete) -> None: ...
+    |                                       ^^^^^^^^^^
+535 | def set_typeDict(dict: Mapping[str, np.dtype[Any]]) -> None: ...
+    |
+
+src/numpy-stubs/_core/_multiarray_umath.pyi:1598:37: SyntaxError: Cannot use star annotation on Python 3.10 (syntax was added in Python 3.11)
+     |
+1596 | #
+1597 | def min_scalar_type(a: npt.ArrayLike, /) -> np.dtype[Any]: ...
+1598 | def result_type(*arrays_and_dtypes: npt.ArrayLike | npt.DTypeLike) -> np.dtype[Any]: ...
+     |                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+1599 | def promote_types(type1: npt.DTypeLike, type2: npt.DTypeLike, /) -> np.dtype[Any]: ...
+     |
+
+src/numpy-stubs/_core/_multiarray_umath.pyi:1897:16: SyntaxError: Cannot use star annotation on Python 3.10 (syntax was added in Python 3.11)
+     |
+1895 | def c_einsum(
+1896 |     subscripts: str,
+1897 |     *operands: npt.ArrayLike,
+     |                ^^^^^^^^^^^^^
+1898 |     out: _ArrayT,
+1899 |     dtype: None = None,
+     |
+
+src/numpy-stubs/_core/_multiarray_umath.pyi:1906:16: SyntaxError: Cannot use star annotation on Python 3.10 (syntax was added in Python 3.11)
+     |
+1904 | def c_einsum(
+1905 |     subscripts: str,
+1906 |     *operands: npt.ArrayLike,
+     |                ^^^^^^^^^^^^^
+1907 |     out: None = None,
+1908 |     dtype: npt.DTypeLike | None = None,
+     |
+
+src/numpy-stubs/_core/_multiarray_umath.pyi:1951:31: SyntaxError: Cannot use star annotation on Python 3.10 (syntax was added in Python 3.11)
+     |
+1949 | ###
+1950 |
+1951 | def dragon4_positional(*args: Incomplete, **kwargs: Incomplete) -> Incomplete: ...
+     |                               ^^^^^^^^^^
+1952 | def dragon4_scientific(*args: Incomplete, **kwargs: Incomplete) -> Incomplete: ...
+1953 | def format_longfloat(*args: Incomplete, **kwargs: Incomplete) -> Incomplete: ...
+     |
+
+src/numpy-stubs/_core/_multiarray_umath.pyi:1952:31: SyntaxError: Cannot use star annotation on Python 3.10 (syntax was added in Python 3.11)
+     |
+1951 | def dragon4_positional(*args: Incomplete, **kwargs: Incomplete) -> Incomplete: ...
+1952 | def dragon4_scientific(*args: Incomplete, **kwargs: Incomplete) -> Incomplete: ...
+     |                               ^^^^^^^^^^
+1953 | def format_longfloat(*args: Incomplete, **kwargs: Incomplete) -> Incomplete: ...
+     |
+
+src/numpy-stubs/_core/_multiarray_umath.pyi:1953:29: SyntaxError: Cannot use star annotation on Python 3.10 (syntax was added in Python 3.11)
+     |
+1951 | def dragon4_positional(*args: Incomplete, **kwargs: Incomplete) -> Incomplete: ...
+1952 | def dragon4_scientific(*args: Incomplete, **kwargs: Incomplete) -> Incomplete: ...
+1953 | def format_longfloat(*args: Incomplete, **kwargs: Incomplete) -> Incomplete: ...
+     |                             ^^^^^^^^^^
+1954 |
+1955 | ###
+     |
+
+src/numpy-stubs/_core/einsumfunc.pyi:41:16: SyntaxError: Cannot use star annotation on Python 3.10 (syntax was added in Python 3.11)
+   |
+39 |     subscripts: str | _ArrayLikeInt_co,
+40 |     /,
+41 |     *operands: _ArrayLikeBool_co,
+   |                ^^^^^^^^^^^^^^^^^
+42 |     out: None = ...,
+43 |     dtype: _DTypeLikeBool | None = ...,
+   |
+
+src/numpy-stubs/_core/einsumfunc.pyi:52:16: SyntaxError: Cannot use star annotation on Python 3.10 (syntax was added in Python 3.11)
+   |
+50 |     subscripts: str | _ArrayLikeInt_co,
+51 |     /,
+52 |     *operands: _ArrayLikeUInt_co,
+   |                ^^^^^^^^^^^^^^^^^
+53 |     out: None = ...,
+54 |     dtype: _DTypeLikeUInt | None = ...,
+   |
+
+src/numpy-stubs/_core/einsumfunc.pyi:63:16: SyntaxError: Cannot use star annotation on Python 3.10 (syntax was added in Python 3.11)
+   |
+61 |     subscripts: str | _ArrayLikeInt_co,
+62 |     /,
+63 |     *operands: _ArrayLikeInt_co,
+   |                ^^^^^^^^^^^^^^^^
+64 |     out: None = ...,
+65 |     dtype: _DTypeLikeInt | None = ...,
+   |
+
+src/numpy-stubs/_core/einsumfunc.pyi:74:16: SyntaxError: Cannot use star annotation on Python 3.10 (syntax was added in Python 3.11)
+   |
+72 |     subscripts: str | _ArrayLikeInt_co,
+73 |     /,
+74 |     *operands: _ArrayLikeFloat_co,
+   |                ^^^^^^^^^^^^^^^^^^
+75 |     out: None = ...,
+76 |     dtype: _DTypeLikeFloat | None = ...,
+   |
+
+src/numpy-stubs/_core/einsumfunc.pyi:85:16: SyntaxError: Cannot use star annotation on Python 3.10 (syntax was added in Python 3.11)
+   |
+83 |     subscripts: str | _ArrayLikeInt_co,
+84 |     /,
+85 |     *operands: _ArrayLikeComplex_co,
+   |                ^^^^^^^^^^^^^^^^^^^^
+86 |     out: None = ...,
+87 |     dtype: _DTypeLikeComplex | None = ...,
+   |
+
+src/numpy-stubs/_core/einsumfunc.pyi:96:16: SyntaxError: Cannot use star annotation on Python 3.10 (syntax was added in Python 3.11)
+   |
+94 |     subscripts: str | _ArrayLikeInt_co,
+95 |     /,
+96 |     *operands: Any,
+   |                ^^^
+97 |     casting: _CastingUnsafe,
+98 |     dtype: _DTypeLikeComplex_co | None = ...,
+   |
+
+src/numpy-stubs/_core/einsumfunc.pyi:107:16: SyntaxError: Cannot use star annotation on Python 3.10 (syntax was added in Python 3.11)
+    |
+105 |     subscripts: str | _ArrayLikeInt_co,
+106 |     /,
+107 |     *operands: _ArrayLikeComplex_co,
+    |                ^^^^^^^^^^^^^^^^^^^^
+108 |     out: _ArrayT,
+109 |     dtype: _DTypeLikeComplex_co | None = ...,
+    |
+
+src/numpy-stubs/_core/einsumfunc.pyi:118:16: SyntaxError: Cannot use star annotation on Python 3.10 (syntax was added in Python 3.11)
+    |
+116 |     subscripts: str | _ArrayLikeInt_co,
+117 |     /,
+118 |     *operands: Any,
+    |                ^^^
+119 |     out: _ArrayT,
+120 |     casting: _CastingUnsafe,
+    |
+
+src/numpy-stubs/_core/einsumfunc.pyi:129:16: SyntaxError: Cannot use star annotation on Python 3.10 (syntax was added in Python 3.11)
+    |
+127 |     subscripts: str | _ArrayLikeInt_co,
+128 |     /,
+129 |     *operands: _ArrayLikeObject_co,
+    |                ^^^^^^^^^^^^^^^^^^^
+130 |     out: None = ...,
+131 |     dtype: _DTypeLikeObject | None = ...,
+    |
+
+src/numpy-stubs/_core/einsumfunc.pyi:140:16: SyntaxError: Cannot use star annotation on Python 3.10 (syntax was added in Python 3.11)
+    |
+138 |     subscripts: str | _ArrayLikeInt_co,
+139 |     /,
+140 |     *operands: Any,
+    |                ^^^
+141 |     casting: _CastingUnsafe,
+142 |     dtype: _DTypeLikeObject | None = ...,
+    |
+
+src/numpy-stubs/_core/einsumfunc.pyi:151:16: SyntaxError: Cannot use star annotation on Python 3.10 (syntax was added in Python 3.11)
+    |
+149 |     subscripts: str | _ArrayLikeInt_co,
+150 |     /,
+151 |     *operands: _ArrayLikeObject_co,
+    |                ^^^^^^^^^^^^^^^^^^^
+152 |     out: _ArrayT,
+153 |     dtype: _DTypeLikeObject | None = ...,
+    |
+
+src/numpy-stubs/_core/einsumfunc.pyi:162:16: SyntaxError: Cannot use star annotation on Python 3.10 (syntax was added in Python 3.11)
+    |
+160 |     subscripts: str | _ArrayLikeInt_co,
+161 |     /,
+162 |     *operands: Any,
+    |                ^^^
+163 |     out: _ArrayT,
+164 |     casting: _CastingUnsafe,
+    |
+
+src/numpy-stubs/_core/einsumfunc.pyi:177:16: SyntaxError: Cannot use star annotation on Python 3.10 (syntax was added in Python 3.11)
+    |
+175 |     subscripts: str | _ArrayLikeInt_co,
+176 |     /,
+177 |     *operands: _ArrayLikeComplex_co | _DTypeLikeObject,
+    |                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+178 |     optimize: _OptimizeKind = "greedy",
+179 |     einsum_call: L[False] = False,
+    |
+
+src/numpy-stubs/_core/shape_base.pyi:42:54: SyntaxError: Cannot use star annotation on Python 3.10 (syntax was added in Python 3.11)
+   |
+40 | def atleast_1d(a0: _Array1T0, a1: _Array1T1, /) -> tuple[_Array1T0, _Array1T1]: ...
+41 | @overload
+42 | def atleast_1d(a0: _Array1T, a1: _Array1T, /, *arys: _Array1T) -> tuple[_Array1T, ...]: ...  # type: ignore[overload-overlap]
+   |                                                      ^^^^^^^^
+43 | @overload
+44 | def atleast_1d(a0: _ArrayLike[_SCT], /) -> NDArray[_SCT]: ...
+   |
+
+src/numpy-stubs/_core/shape_base.pyi:48:70: SyntaxError: Cannot use star annotation on Python 3.10 (syntax was added in Python 3.11)
+   |
+46 | def atleast_1d(a0: _ArrayLike[_SCT0], a2: _ArrayLike[_SCT1], /) -> tuple[NDArray[_SCT0], NDArray[_SCT1]]: ...
+47 | @overload
+48 | def atleast_1d(a0: _ArrayLike[_SCT], a2: _ArrayLike[_SCT], /, *arys: _ArrayLike[_SCT]) -> tuple[NDArray[_SCT], ...]: ...
+   |                                                                      ^^^^^^^^^^^^^^^^
+49 | @overload
+50 | def atleast_1d(a0: ArrayLike, /) -> NDArray[Any]: ...
+   |
+
+src/numpy-stubs/_core/shape_base.pyi:54:56: SyntaxError: Cannot use star annotation on Python 3.10 (syntax was added in Python 3.11)
+   |
+52 | def atleast_1d(a0: ArrayLike, a2: ArrayLike, /) -> tuple[NDArray[Any], NDArray[Any]]: ...
+53 | @overload
+54 | def atleast_1d(a0: ArrayLike, a2: ArrayLike, /, *arys: ArrayLike) -> tuple[NDArray[Any], ...]: ...
+   |                                                        ^^^^^^^^^
+55 |
+56 | #
+   |
+
+src/numpy-stubs/_core/shape_base.pyi:62:54: SyntaxError: Cannot use star annotation on Python 3.10 (syntax was added in Python 3.11)
+   |
+60 | def atleast_2d(a0: _Array2T0, a1: _Array2T1, /) -> tuple[_Array2T0, _Array2T1]: ...
+61 | @overload
+62 | def atleast_2d(a0: _Array2T, a1: _Array2T, /, *arys: _Array2T) -> tuple[_Array2T, ...]: ...  # type: ignore[overload-overlap]
+   |                                                      ^^^^^^^^
+63 | @overload
+64 | def atleast_2d(a0: _ArrayLike[_SCT], /) -> NDArray[_SCT]: ...
+   |
+
+src/numpy-stubs/_core/shape_base.pyi:68:70: SyntaxError: Cannot use star annotation on Python 3.10 (syntax was added in Python 3.11)
+   |
+66 | def atleast_2d(a0: _ArrayLike[_SCT0], a2: _ArrayLike[_SCT1], /) -> tuple[NDArray[_SCT0], NDArray[_SCT1]]: ...
+67 | @overload
+68 | def atleast_2d(a0: _ArrayLike[_SCT], a2: _ArrayLike[_SCT], /, *arys: _ArrayLike[_SCT]) -> tuple[NDArray[_SCT], ...]: ...
+   |                                                                      ^^^^^^^^^^^^^^^^
+69 | @overload
+70 | def atleast_2d(a0: ArrayLike, /) -> NDArray[Any]: ...
+   |
+
+src/numpy-stubs/_core/shape_base.pyi:74:56: SyntaxError: Cannot use star annotation on Python 3.10 (syntax was added in Python 3.11)
+   |
+72 | def atleast_2d(a0: ArrayLike, a2: ArrayLike, /) -> tuple[NDArray[Any], NDArray[Any]]: ...
+73 | @overload
+74 | def atleast_2d(a0: ArrayLike, a2: ArrayLike, /, *arys: ArrayLike) -> tuple[NDArray[Any], ...]: ...
+   |                                                        ^^^^^^^^^
+75 |
+76 | #
+   |
+
+src/numpy-stubs/_core/shape_base.pyi:82:54: SyntaxError: Cannot use star annotation on Python 3.10 (syntax was added in Python 3.11)
+   |
+80 | def atleast_3d(a0: _Array3T0, a1: _Array3T1, /) -> tuple[_Array3T0, _Array3T1]: ...
+81 | @overload
+82 | def atleast_3d(a0: _Array3T, a1: _Array3T, /, *arys: _Array3T) -> tuple[_Array3T, ...]: ...  # type: ignore[overload-overlap]
+   |                                                      ^^^^^^^^
+83 | @overload
+84 | def atleast_3d(a0: _ArrayLike[_SCT], /) -> NDArray[_SCT]: ...
+   |
+
+src/numpy-stubs/_core/shape_base.pyi:88:70: SyntaxError: Cannot use star annotation on Python 3.10 (syntax was added in Python 3.11)
+   |
+86 | def atleast_3d(a0: _ArrayLike[_SCT0], a2: _ArrayLike[_SCT1], /) -> tuple[NDArray[_SCT0], NDArray[_SCT1]]: ...
+87 | @overload
+88 | def atleast_3d(a0: _ArrayLike[_SCT], a2: _ArrayLike[_SCT], /, *arys: _ArrayLike[_SCT]) -> tuple[NDArray[_SCT], ...]: ...
+   |                                                                      ^^^^^^^^^^^^^^^^
+89 | @overload
+90 | def atleast_3d(a0: ArrayLike, /) -> NDArray[Any]: ...
+   |
+
+src/numpy-stubs/_core/shape_base.pyi:94:56: SyntaxError: Cannot use star annotation on Python 3.10 (syntax was added in Python 3.11)
+   |
+92 | def atleast_3d(a0: ArrayLike, a2: ArrayLike, /) -> tuple[NDArray[Any], NDArray[Any]]: ...
+93 | @overload
+94 | def atleast_3d(a0: ArrayLike, a2: ArrayLike, /, *arys: ArrayLike) -> tuple[NDArray[Any], ...]: ...
+   |                                                        ^^^^^^^^^
+95 |
+96 | #
+   |
+
+src/numpy-stubs/_core/umath.pyi:199:80: SyntaxError: Cannot use star annotation on Python 3.10 (syntax was added in Python 3.11)
+    |
+197 | @type_check_only
+198 | class _CanArrayUFunc(Protocol[_OutT_co]):
+199 |     def __array_ufunc__(self, ufunc: np.ufunc, method: _UFuncMethod, /, *args: Any, **kwds: Any) -> _OutT_co: ...
+    |                                                                                ^^^
+200 |
+201 | ###
+    |
+
+src/numpy-stubs/_core/umath.pyi:1664:14: SyntaxError: Cannot use star annotation on Python 3.10 (syntax was added in Python 3.11)
+     |
+1662 |         x3: _ScalarLike_co,
+1663 |         /,
+1664 |         *xs: _ScalarLike_co,
+     |              ^^^^^^^^^^^^^^
+1665 |         out: None = None,
+1666 |         dtype: DTypeLike | None = None,
+     |
+
+src/numpy-stubs/_core/umath.pyi:1676:14: SyntaxError: Cannot use star annotation on Python 3.10 (syntax was added in Python 3.11)
+     |
+1674 |         x3: ArrayLike,
+1675 |         /,
+1676 |         *xs: ArrayLike,
+     |              ^^^^^^^^^
+1677 |         out: None = None,
+1678 |         dtype: DTypeLike | None = None,
+     |
+
+src/numpy-stubs/_core/umath.pyi:1688:14: SyntaxError: Cannot use star annotation on Python 3.10 (syntax was added in Python 3.11)
+     |
+1686 |         x3: ArrayLike,
+1687 |         /,
+1688 |         *xs: ArrayLike,
+     |              ^^^^^^^^^
+1689 |         out: _ArrayT | tuple[_ArrayT],
+1690 |         dtype: DTypeLike | None = None,
+     |
+
+src/numpy-stubs/_core/umath.pyi:1700:14: SyntaxError: Cannot use star annotation on Python 3.10 (syntax was added in Python 3.11)
+     |
+1698 |         x3: _CanArrayUFunc | ArrayLike,
+1699 |         /,
+1700 |         *xs: _CanArrayUFunc | ArrayLike,
+     |              ^^^^^^^^^^^^^^^^^^^^^^^^^^
+1701 |         out: _Out1[_AnyArray] | None = None,
+1702 |         dtype: DTypeLike | None = None,
+     |
+
+src/numpy-stubs/_core/umath.pyi:1713:14: SyntaxError: Cannot use star annotation on Python 3.10 (syntax was added in Python 3.11)
+     |
+1711 |         x1: _ScalarLike_co,
+1712 |         /,
+1713 |         *xs: _ScalarLike_co,
+     |              ^^^^^^^^^^^^^^
+1714 |         out: tuple[None, None] = (None, None),
+1715 |         dtype: DTypeLike | None = None,
+     |
+
+src/numpy-stubs/_core/umath.pyi:1723:14: SyntaxError: Cannot use star annotation on Python 3.10 (syntax was added in Python 3.11)
+     |
+1721 |         x1: ArrayLike,
+1722 |         /,
+1723 |         *xs: ArrayLike,
+     |              ^^^^^^^^^
+1724 |         out: tuple[None, None] = (None, None),
+1725 |         dtype: DTypeLike | None = None,
+     |
+
+src/numpy-stubs/_core/umath.pyi:1733:14: SyntaxError: Cannot use star annotation on Python 3.10 (syntax was added in Python 3.11)
+     |
+1731 |         x1: ArrayLike,
+1732 |         /,
+1733 |         *xs: ArrayLike,
+     |              ^^^^^^^^^
+1734 |         out: tuple[_ArrayT1, _ArrayT2],
+1735 |         dtype: DTypeLike | None = None,
+     |
+
+src/numpy-stubs/_core/umath.pyi:1743:14: SyntaxError: Cannot use star annotation on Python 3.10 (syntax was added in Python 3.11)
+     |
+1741 |         x1: _CanArrayUFunc | ArrayLike,
+1742 |         /,
+1743 |         *xs: _CanArrayUFunc | ArrayLike,
+     |              ^^^^^^^^^^^^^^^^^^^^^^^^^^
+1744 |         out: _Tuple2[_AnyArray | None] = (None, None),
+1745 |         dtype: DTypeLike | None = None,
+     |
+
+src/numpy-stubs/_core/umath.pyi:1756:14: SyntaxError: Cannot use star annotation on Python 3.10 (syntax was added in Python 3.11)
+     |
+1754 |         x1: _ScalarLike_co,
+1755 |         /,
+1756 |         *xs: _ScalarLike_co,
+     |              ^^^^^^^^^^^^^^
+1757 |         out: _Tuple2_[None] = ...,
+1758 |         dtype: DTypeLike | None = None,
+     |
+
+src/numpy-stubs/_core/umath.pyi:1766:14: SyntaxError: Cannot use star annotation on Python 3.10 (syntax was added in Python 3.11)
+     |
+1764 |         x1: ArrayLike,
+1765 |         /,
+1766 |         *xs: ArrayLike,
+     |              ^^^^^^^^^
+1767 |         out: _Tuple2_[None] = ...,
+1768 |         dtype: DTypeLike | None = None,
+     |
+
+src/numpy-stubs/_core/umath.pyi:1776:14: SyntaxError: Cannot use star annotation on Python 3.10 (syntax was added in Python 3.11)
+     |
+1774 |         x1: ArrayLike,
+1775 |         /,
+1776 |         *xs: ArrayLike,
+     |              ^^^^^^^^^
+1777 |         out: _Tuple2_[_ArrayT],
+1778 |         dtype: DTypeLike | None = None,
+     |
+
+src/numpy-stubs/_core/umath.pyi:1786:14: SyntaxError: Cannot use star annotation on Python 3.10 (syntax was added in Python 3.11)
+     |
+1784 |         x1: _CanArrayUFunc | ArrayLike,
+1785 |         /,
+1786 |         *xs: _CanArrayUFunc | ArrayLike,
+     |              ^^^^^^^^^^^^^^^^^^^^^^^^^^
+1787 |         out: _Tuple2_[_AnyArray | None] = ...,
+1788 |         dtype: DTypeLike | None = None,
+     |
+
+src/numpy-stubs/distutils/misc_util.pyi:56:17: SyntaxError: Cannot use star annotation on Python 3.10 (syntax was added in Python 3.11)
+   |
+54 | def get_num_build_jobs() -> int: ...
+55 | def allpath(name: str) -> Incomplete: ...
+56 | def njoin(*pat: str) -> Incomplete: ...
+   |                 ^^^
+57 | def get_mathlibs(path: str | None = None) -> Incomplete: ...
+58 | def minrelpath(path: str) -> Incomplete: ...
+   |
+
+src/numpy-stubs/distutils/misc_util.pyi:82:21: SyntaxError: Cannot use star annotation on Python 3.10 (syntax was added in Python 3.11)
+   |
+80 | def get_lib_source_files(lib: Incomplete) -> Incomplete: ...
+81 | def get_data_files(data: Incomplete) -> Incomplete: ...
+82 | def dot_join(*args: Incomplete) -> Incomplete: ...
+   |                     ^^^^^^^^^^
+83 | def get_frame(level: int = 0) -> Incomplete: ...
+   |
+
+src/numpy-stubs/distutils/misc_util.pyi:139:38: SyntaxError: Cannot use star annotation on Python 3.10 (syntax was added in Python 3.11)
+    |
+137 |     ) -> None: ...
+138 |     def add_data_dir(self, data_path: Incomplete) -> Incomplete: ...
+139 |     def add_data_files(self, *files: Incomplete) -> None: ...
+    |                                      ^^^^^^^^^^
+140 |     def add_define_macros(self, macros: Incomplete) -> None: ...
+141 |     def add_include_dirs(self, *paths: Incomplete) -> None: ...
+    |
+
+src/numpy-stubs/distutils/misc_util.pyi:141:40: SyntaxError: Cannot use star annotation on Python 3.10 (syntax was added in Python 3.11)
+    |
+139 |     def add_data_files(self, *files: Incomplete) -> None: ...
+140 |     def add_define_macros(self, macros: Incomplete) -> None: ...
+141 |     def add_include_dirs(self, *paths: Incomplete) -> None: ...
+    |                                        ^^^^^^^^^^
+142 |     def add_headers(self, *files: Incomplete) -> None: ...
+143 |     def paths(self, *paths: Incomplete, **kws: Incomplete) -> Incomplete: ...
+    |
+
+src/numpy-stubs/distutils/misc_util.pyi:142:35: SyntaxError: Cannot use star annotation on Python 3.10 (syntax was added in Python 3.11)
+    |
+140 |     def add_define_macros(self, macros: Incomplete) -> None: ...
+141 |     def add_include_dirs(self, *paths: Incomplete) -> None: ...
+142 |     def add_headers(self, *files: Incomplete) -> None: ...
+    |                                   ^^^^^^^^^^
+143 |     def paths(self, *paths: Incomplete, **kws: Incomplete) -> Incomplete: ...
+144 |     def add_extension(self, name: str, sources: Incomplete, **kw: Incomplete) -> Incomplete: ...
+    |
+
+src/numpy-stubs/distutils/misc_util.pyi:143:29: SyntaxError: Cannot use star annotation on Python 3.10 (syntax was added in Python 3.11)
+    |
+141 |     def add_include_dirs(self, *paths: Incomplete) -> None: ...
+142 |     def add_headers(self, *files: Incomplete) -> None: ...
+143 |     def paths(self, *paths: Incomplete, **kws: Incomplete) -> Incomplete: ...
+    |                             ^^^^^^^^^^
+144 |     def add_extension(self, name: str, sources: Incomplete, **kw: Incomplete) -> Incomplete: ...
+145 |     def add_library(self, name: str, sources: Incomplete, **build_info: Incomplete) -> None: ...
+    |
+
+src/numpy-stubs/distutils/misc_util.pyi:154:35: SyntaxError: Cannot use star annotation on Python 3.10 (syntax was added in Python 3.11)
+    |
+152 |     ) -> None: ...
+153 |     def add_npy_pkg_config(self, template: str, install_dir: Incomplete, subst_dict: Incomplete | None = None) -> None: ...
+154 |     def add_scripts(self, *files: Incomplete) -> None: ...
+    |                                   ^^^^^^^^^^
+155 |     def dict_append(self, **dict: Incomplete) -> None: ...
+156 |     def get_config_cmd(self) -> Incomplete: ...
+    |
+
+src/numpy-stubs/distutils/misc_util.pyi:165:32: SyntaxError: Cannot use star annotation on Python 3.10 (syntax was added in Python 3.11)
+    |
+163 |     def make_hg_version_py(self, delete: bool = True) -> Incomplete: ...
+164 |     def make_config_py(self, name: str = "__config__") -> None: ...
+165 |     def get_info(self, *names: str) -> Incomplete: ...
+    |                                ^^^
+166 |
+167 | def get_cmd(cmdname: str, _cache: dict[Incomplete, Incomplete] = {}) -> Incomplete: ...
+    |
+
+src/numpy-stubs/distutils/system_info.pyi:12:43: SyntaxError: Cannot use star annotation on Python 3.10 (syntax was added in Python 3.11)
+   |
+10 |     def calc_libraries_info(self) -> None: ...
+11 |     def calc_extra_info(self) -> None: ...
+12 |     def get_option_single(self, *options: object) -> None: ...
+   |                                           ^^^^^^
+13 |     def has_info(self) -> bool: ...
+14 |     def get_info(self, notfound_action: int = 0) -> dict[str, Incomplete]: ...
+   |
+
+src/numpy-stubs/distutils/system_info.pyi:26:36: SyntaxError: Cannot use star annotation on Python 3.10 (syntax was added in Python 3.11)
+   |
+24 |     def check_libs(self, lib_dirs: Incomplete, libs: Incomplete, opt_libs: list[Incomplete] = []) -> Incomplete: ...
+25 |     def check_libs2(self, lib_dirs: Incomplete, libs: Incomplete, opt_libs: list[Incomplete] = []) -> Incomplete: ...
+26 |     def combine_paths(self, *args: Incomplete) -> Incomplete: ...
+   |                                    ^^^^^^^^^^
+   |
+
+src/numpy-stubs/f2py/_backends/_distutils.pyi:11:30: SyntaxError: Cannot use star annotation on Python 3.10 (syntax was added in Python 3.11)
+   |
+ 9 |     )
+10 |     # NOTE: the `sef` typo matches runtime
+11 |     def __init__(sef, *args: object, **kwargs: object) -> None: ...
+   |                              ^^^^^^
+12 |     @override
+13 |     def compile(self) -> None: ...
+   |
+
+src/numpy-stubs/f2py/_backends/_meson.pyi:57:34: SyntaxError: Cannot use star annotation on Python 3.10 (syntax was added in Python 3.11)
+   |
+55 |     build_type: L["debug", "release"]
+56 |
+57 |     def __init__(self, /, *args: object, **kwargs: object) -> None: ...
+   |                                  ^^^^^^
+58 |     def write_meson_build(self, /, build_dir: Path) -> None: ...
+59 |     def run_meson(self, /, build_dir: Path) -> None: ...
+   |
+
+src/numpy-stubs/f2py/auxfuncs.pyi:143:15: SyntaxError: Cannot use star annotation on Python 3.10 (syntax was added in Python 3.11)
+    |
+142 | #
+143 | def l_and(*f: tuple[str, Callable[[_VT], _RT]]) -> Callable[[_VT], _RT]: ...
+    |               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+144 | def l_or(*f: tuple[str, Callable[[_VT], _RT]]) -> Callable[[_VT], _RT]: ...
+145 | def l_not(f: tuple[str, Callable[[_VT], _RT]]) -> Callable[[_VT], _RT]: ...
+    |
+
+src/numpy-stubs/f2py/auxfuncs.pyi:144:14: SyntaxError: Cannot use star annotation on Python 3.10 (syntax was added in Python 3.11)
+    |
+142 | #
+143 | def l_and(*f: tuple[str, Callable[[_VT], _RT]]) -> Callable[[_VT], _RT]: ...
+144 | def l_or(*f: tuple[str, Callable[[_VT], _RT]]) -> Callable[[_VT], _RT]: ...
+    |              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+145 | def l_not(f: tuple[str, Callable[[_VT], _RT]]) -> Callable[[_VT], _RT]: ...
+    |
+
+src/numpy-stubs/f2py/crackfortran.pyi:242:12: SyntaxError: Cannot use star annotation on Python 3.10 (syntax was added in Python 3.11)
+    |
+240 |     parents: list[tuple[str | None, _VisitResult]] = [],
+241 |     result: list[Any] | dict[str, Any] | None = None,
+242 |     *args: _Tss.args,
+    |            ^^^^^^^^^
+243 |     **kwargs: _Tss.kwargs,
+244 | ) -> _VisitItem | _VisitResult: ...
+    |
+
+src/numpy-stubs/f2py/crackfortran.pyi:251:12: SyntaxError: Cannot use star annotation on Python 3.10 (syntax was added in Python 3.11)
+    |
+249 |     parents: list[_VisitItem],
+250 |     result: object,  # ignored
+251 |     *args: object,  # ignored
+    |            ^^^^^^
+252 |     **kwargs: object,  # ignored
+253 | ) -> _VisitItem | None: ...
+    |
+
+src/numpy-stubs/f2py/symbolic.pyi:146:16: SyntaxError: Cannot use star annotation on Python 3.10 (syntax was added in Python 3.11)
+    |
+144 |         self,
+145 |         /,
+146 |         *args: _ToExprN,
+    |                ^^^^^^^^
+147 |         **kwargs: _ToExprN,
+148 |     ) -> Expr[L[Op.APPLY], tuple[Self, tuple[Expr, ...], dict[str, Expr]]]: ...
+    |
+
+src/numpy-stubs/f2py/symbolic.pyi:161:63: SyntaxError: Cannot use star annotation on Python 3.10 (syntax was added in Python 3.11)
+    |
+159 |     #
+160 |     @overload
+161 |     def traverse(self, /, visit: Callable[_Tss, None], *args: _Tss.args, **kwargs: _Tss.kwargs) -> Expr: ...
+    |                                                               ^^^^^^^^^
+162 |     @overload
+163 |     def traverse(self, /, visit: Callable[_Tss, _ExprT], *args: _Tss.args, **kwargs: _Tss.kwargs) -> _ExprT: ...
+    |
+
+src/numpy-stubs/f2py/symbolic.pyi:163:65: SyntaxError: Cannot use star annotation on Python 3.10 (syntax was added in Python 3.11)
+    |
+161 |     def traverse(self, /, visit: Callable[_Tss, None], *args: _Tss.args, **kwargs: _Tss.kwargs) -> Expr: ...
+162 |     @overload
+163 |     def traverse(self, /, visit: Callable[_Tss, _ExprT], *args: _Tss.args, **kwargs: _Tss.kwargs) -> _ExprT: ...
+    |                                                                 ^^^^^^^^^
+164 |
+165 |     #
+    |
+
+src/numpy-stubs/lib/_function_base_impl.pyi:196:34: SyntaxError: Cannot use star annotation on Python 3.10 (syntax was added in Python 3.11)
+    |
+195 |     #
+196 |     def __call__(self, /, *args: Any, **kwargs: Any) -> Any: ...
+    |                                  ^^^
+197 |
+198 | ###
+    |
+
+src/numpy-stubs/lib/_function_base_impl.pyi:393:12: SyntaxError: Cannot use star annotation on Python 3.10 (syntax was added in Python 3.11)
+    |
+391 |     condlist: ToBool_nd,
+392 |     funclist: Sequence[Callable[Concatenate[Array1D[_ScalarT], _Tss], Array] | _ScalarT | object],
+393 |     *args: _Tss.args,
+    |            ^^^^^^^^^
+394 |     **kw: _Tss.kwargs,
+395 | ) -> Array[_ScalarT]: ...
+    |
+
+src/numpy-stubs/lib/_function_base_impl.pyi:401:12: SyntaxError: Cannot use star annotation on Python 3.10 (syntax was added in Python 3.11)
+    |
+399 |     condlist: ToBool_nd,
+400 |     funclist: Sequence[Callable[Concatenate[Array1D, _Tss], Array] | object],
+401 |     *args: _Tss.args,
+    |            ^^^^^^^^^
+402 |     **kw: _Tss.kwargs,
+403 | ) -> Array: ...
+    |
+
+src/numpy-stubs/lib/_function_base_impl.pyi:429:41: SyntaxError: Cannot use star annotation on Python 3.10 (syntax was added in Python 3.11)
+    |
+427 | #
+428 | @overload
+429 | def gradient(f: ToGeneric_0d, *varargs: ArrayLike, axis: _ShapeLike | None = None, edge_order: L[1, 2] = 1) -> tuple[()]: ...
+    |                                         ^^^^^^^^^
+430 | @overload
+431 | def gradient(f: ArrayLike, *varargs: ArrayLike, axis: _ShapeLike | None = None, edge_order: L[1, 2] = 1) -> Any: ...
+    |
+
+src/numpy-stubs/lib/_function_base_impl.pyi:431:38: SyntaxError: Cannot use star annotation on Python 3.10 (syntax was added in Python 3.11)
+    |
+429 | def gradient(f: ToGeneric_0d, *varargs: ArrayLike, axis: _ShapeLike | None = None, edge_order: L[1, 2] = 1) -> tuple[()]: ...
+430 | @overload
+431 | def gradient(f: ArrayLike, *varargs: ArrayLike, axis: _ShapeLike | None = None, edge_order: L[1, 2] = 1) -> Any: ...
+    |                                      ^^^^^^^^^
+432 |
+433 | #
+    |
+
+src/numpy-stubs/lib/_function_base_impl.pyi:1221:10: SyntaxError: Cannot use star annotation on Python 3.10 (syntax was added in Python 3.11)
+     |
+1219 | @overload
+1220 | def meshgrid(
+1221 |     *xi: ArrayLike,
+     |          ^^^^^^^^^
+1222 |     copy: bool = True,
+1223 |     sparse: bool = False,
+     |
+
+src/numpy-stubs/lib/_index_tricks_impl.pyi:98:35: SyntaxError: Cannot use star annotation on Python 3.10 (syntax was added in Python 3.11)
+    |
+ 96 |     def __init__(self, shape: tuple[SupportsIndex, ...], /) -> None: ...
+ 97 |     @overload
+ 98 |     def __init__(self, /, *shape: SupportsIndex) -> None: ...
+    |                                   ^^^^^^^^^^^^^
+ 99 |
+100 |     #
+    |
+
+src/numpy-stubs/lib/_index_tricks_impl.pyi:149:25: SyntaxError: Cannot use star annotation on Python 3.10 (syntax was added in Python 3.11)
+    |
+147 |     @staticmethod
+148 |     @overload
+149 |     def concatenate(*a: _ToArray_nd[_ScalarT], axis: SupportsIndex | None = 0, out: None = None) -> Array[_ScalarT]: ...
+    |                         ^^^^^^^^^^^^^^^^^^^^^
+150 |     @staticmethod
+151 |     @overload
+    |
+
+src/numpy-stubs/lib/_index_tricks_impl.pyi:152:25: SyntaxError: Cannot use star annotation on Python 3.10 (syntax was added in Python 3.11)
+    |
+150 |     @staticmethod
+151 |     @overload
+152 |     def concatenate(*a: ArrayLike, axis: SupportsIndex | None = 0, out: _ArrayT) -> _ArrayT: ...
+    |                         ^^^^^^^^^
+153 |     @staticmethod
+154 |     @overload
+    |
+
+src/numpy-stubs/lib/_index_tricks_impl.pyi:155:25: SyntaxError: Cannot use star annotation on Python 3.10 (syntax was added in Python 3.11)
+    |
+153 |     @staticmethod
+154 |     @overload
+155 |     def concatenate(*a: ArrayLike, axis: SupportsIndex | None = 0, out: None = None) -> Array: ...
+    |                         ^^^^^^^^^
+156 |
+157 | @final
+    |
+
+src/numpy-stubs/lib/_index_tricks_impl.pyi:179:16: SyntaxError: Cannot use star annotation on Python 3.10 (syntax was added in Python 3.11)
+    |
+178 | @overload
+179 | def ix_(*args: _HasDType[_DTypeT] | SequenceND[_HasDType[_DTypeT]]) -> tuple[np.ndarray[tuple[int, ...], _DTypeT], ...]: ...
+    |                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+180 | @overload
+181 | def ix_(*args: bool | SequenceND[bool]) -> _Arrays[np.bool]: ...
+    |
+
+src/numpy-stubs/lib/_index_tricks_impl.pyi:181:16: SyntaxError: Cannot use star annotation on Python 3.10 (syntax was added in Python 3.11)
+    |
+179 | def ix_(*args: _HasDType[_DTypeT] | SequenceND[_HasDType[_DTypeT]]) -> tuple[np.ndarray[tuple[int, ...], _DTypeT], ...]: ...
+180 | @overload
+181 | def ix_(*args: bool | SequenceND[bool]) -> _Arrays[np.bool]: ...
+    |                ^^^^^^^^^^^^^^^^^^^^^^^
+182 | @overload
+183 | def ix_(*args: JustInt | SequenceND[JustInt]) -> _Arrays[np.intp]: ...
+    |
+
+src/numpy-stubs/lib/_index_tricks_impl.pyi:183:16: SyntaxError: Cannot use star annotation on Python 3.10 (syntax was added in Python 3.11)
+    |
+181 | def ix_(*args: bool | SequenceND[bool]) -> _Arrays[np.bool]: ...
+182 | @overload
+183 | def ix_(*args: JustInt | SequenceND[JustInt]) -> _Arrays[np.intp]: ...
+    |                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+184 | @overload
+185 | def ix_(*args: JustFloat | SequenceND[JustFloat]) -> _Arrays[np.float64]: ...
+    |
+
+src/numpy-stubs/lib/_index_tricks_impl.pyi:185:16: SyntaxError: Cannot use star annotation on Python 3.10 (syntax was added in Python 3.11)
+    |
+183 | def ix_(*args: JustInt | SequenceND[JustInt]) -> _Arrays[np.intp]: ...
+184 | @overload
+185 | def ix_(*args: JustFloat | SequenceND[JustFloat]) -> _Arrays[np.float64]: ...
+    |                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+186 | @overload
+187 | def ix_(*args: JustComplex | SequenceND[JustComplex]) -> _Arrays[np.complex128]: ...
+    |
+
+src/numpy-stubs/lib/_index_tricks_impl.pyi:187:16: SyntaxError: Cannot use star annotation on Python 3.10 (syntax was added in Python 3.11)
+    |
+185 | def ix_(*args: JustFloat | SequenceND[JustFloat]) -> _Arrays[np.float64]: ...
+186 | @overload
+187 | def ix_(*args: JustComplex | SequenceND[JustComplex]) -> _Arrays[np.complex128]: ...
+    |                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+188 | @overload
+189 | def ix_(*args: JustBytes | SequenceND[JustBytes]) -> _Arrays[np.bytes_]: ...
+    |
+
+src/numpy-stubs/lib/_index_tricks_impl.pyi:189:16: SyntaxError: Cannot use star annotation on Python 3.10 (syntax was added in Python 3.11)
+    |
+187 | def ix_(*args: JustComplex | SequenceND[JustComplex]) -> _Arrays[np.complex128]: ...
+188 | @overload
+189 | def ix_(*args: JustBytes | SequenceND[JustBytes]) -> _Arrays[np.bytes_]: ...
+    |                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+190 | @overload
+191 | def ix_(*args: JustStr | SequenceND[JustStr]) -> _Arrays[np.str_]: ...
+    |
+
+src/numpy-stubs/lib/_index_tricks_impl.pyi:191:16: SyntaxError: Cannot use star annotation on Python 3.10 (syntax was added in Python 3.11)
+    |
+189 | def ix_(*args: JustBytes | SequenceND[JustBytes]) -> _Arrays[np.bytes_]: ...
+190 | @overload
+191 | def ix_(*args: JustStr | SequenceND[JustStr]) -> _Arrays[np.str_]: ...
+    |                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+192 | @overload
+193 | def ix_(*args: int | SequenceND[int]) -> _Arrays[np.intp | np.bool]: ...  # type: ignore[overload-cannot-match]  # pyright: ignore[re…
+    |
+
+src/numpy-stubs/lib/_index_tricks_impl.pyi:193:16: SyntaxError: Cannot use star annotation on Python 3.10 (syntax was added in Python 3.11)
+    |
+191 | def ix_(*args: JustStr | SequenceND[JustStr]) -> _Arrays[np.str_]: ...
+192 | @overload
+193 | def ix_(*args: int | SequenceND[int]) -> _Arrays[np.intp | np.bool]: ...  # type: ignore[overload-cannot-match]  # pyright: ignore[re…
+    |                ^^^^^^^^^^^^^^^^^^^^^
+194 | @overload
+195 | def ix_(*args: float | SequenceND[float]) -> _Arrays[np.float64 | np.intp | np.bool]: ...  # type: ignore[overload-cannot-match]  # p…
+    |
+
+src/numpy-stubs/lib/_index_tricks_impl.pyi:195:16: SyntaxError: Cannot use star annotation on Python 3.10 (syntax was added in Python 3.11)
+    |
+193 | def ix_(*args: int | SequenceND[int]) -> _Arrays[np.intp | np.bool]: ...  # type: ignore[overload-cannot-match]  # pyright: ignore[re…
+194 | @overload
+195 | def ix_(*args: float | SequenceND[float]) -> _Arrays[np.float64 | np.intp | np.bool]: ...  # type: ignore[overload-cannot-match]  # p…
+    |                ^^^^^^^^^^^^^^^^^^^^^^^^^
+196 | @overload
+197 | def ix_(*args: complex | SequenceND[complex]) -> _Arrays[np.complex128 | np.float64 | np.intp | np.bool]: ...  # type: ignore[overloa…
+    |
+
+src/numpy-stubs/lib/_index_tricks_impl.pyi:197:16: SyntaxError: Cannot use star annotation on Python 3.10 (syntax was added in Python 3.11)
+    |
+195 | def ix_(*args: float | SequenceND[float]) -> _Arrays[np.float64 | np.intp | np.bool]: ...  # type: ignore[overload-cannot-match]  # p…
+196 | @overload
+197 | def ix_(*args: complex | SequenceND[complex]) -> _Arrays[np.complex128 | np.float64 | np.intp | np.bool]: ...  # type: ignore[overloa…
+    |                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+198 |
+199 | #
+    |
+
+src/numpy-stubs/lib/_npyio_impl.pyi:115:37: SyntaxError: Cannot use star annotation on Python 3.10 (syntax was added in Python 3.11)
+    |
+114 | #
+115 | def savez(file: _FNameWrite, *args: ArrayLike, allow_pickle: bool = True, **kwds: ArrayLike) -> None: ...
+    |                                     ^^^^^^^^^
+116 |
+117 | #
+    |
+
+src/numpy-stubs/lib/_npyio_impl.pyi:118:48: SyntaxError: Cannot use star annotation on Python 3.10 (syntax was added in Python 3.11)
+    |
+117 | #
+118 | def savez_compressed(file: _FNameWrite, *args: ArrayLike, allow_pickle: bool = True, **kwds: ArrayLike) -> None: ...
+    |                                                ^^^^^^^^^
+119 |
+120 | # File-like objects only have to implement `__iter__` and,
+    |
+
+src/numpy-stubs/lib/_shape_base_impl.pyi:72:12: SyntaxError: Cannot use star annotation on Python 3.10 (syntax was added in Python 3.11)
+   |
+70 |     axis: SupportsIndex,
+71 |     arr: ArrayLike,
+72 |     *args: _Tss.args,
+   |            ^^^^^^^^^
+73 |     **kwargs: _Tss.kwargs,
+74 | ) -> NDArray[_ScalarT]: ...
+   |
+
+src/numpy-stubs/lib/_shape_base_impl.pyi:80:12: SyntaxError: Cannot use star annotation on Python 3.10 (syntax was added in Python 3.11)
+   |
+78 |     axis: SupportsIndex,
+79 |     arr: ArrayLike,
+80 |     *args: _Tss.args,
+   |            ^^^^^^^^^
+81 |     **kwargs: _Tss.kwargs,
+82 | ) -> NDArray[Any]: ...
+   |
+
+src/numpy-stubs/lib/_shape_base_impl.pyi:154:27: SyntaxError: Cannot use star annotation on Python 3.10 (syntax was added in Python 3.11)
+    |
+152 | #
+153 | @overload
+154 | def get_array_wrap(*args: _CanArrayWrap) -> _DoesArrayWrap: ...
+    |                           ^^^^^^^^^^^^^
+155 | @overload
+156 | def get_array_wrap(*args: object) -> _DoesArrayWrap | None: ...
+    |
+
+src/numpy-stubs/lib/_shape_base_impl.pyi:156:27: SyntaxError: Cannot use star annotation on Python 3.10 (syntax was added in Python 3.11)
+    |
+154 | def get_array_wrap(*args: _CanArrayWrap) -> _DoesArrayWrap: ...
+155 | @overload
+156 | def get_array_wrap(*args: object) -> _DoesArrayWrap | None: ...
+    |                           ^^^^^^
+157 |
+158 | #
+    |
+
+src/numpy-stubs/lib/_stride_tricks_impl.pyi:55:29: SyntaxError: Cannot use star annotation on Python 3.10 (syntax was added in Python 3.11)
+   |
+53 | @overload
+54 | def broadcast_to(array: ArrayLike, shape: int | Iterable[int], subok: bool = ...) -> NDArray[Any]: ...
+55 | def broadcast_shapes(*args: _ShapeLike) -> _Shape: ...
+   |                             ^^^^^^^^^^
+56 | def broadcast_arrays(*args: ArrayLike, subok: bool = ...) -> tuple[NDArray[Any], ...]: ...
+   |
+
+src/numpy-stubs/lib/_stride_tricks_impl.pyi:56:29: SyntaxError: Cannot use star annotation on Python 3.10 (syntax was added in Python 3.11)
+   |
+54 | def broadcast_to(array: ArrayLike, shape: int | Iterable[int], subok: bool = ...) -> NDArray[Any]: ...
+55 | def broadcast_shapes(*args: _ShapeLike) -> _Shape: ...
+56 | def broadcast_arrays(*args: ArrayLike, subok: bool = ...) -> tuple[NDArray[Any], ...]: ...
+   |                             ^^^^^^^^^
+   |
+
+src/numpy-stubs/lib/_type_check_impl.pyi:223:52: SyntaxError: Cannot use star annotation on Python 3.10 (syntax was added in Python 3.11)
+    |
+221 | def common_type() -> type[np.float16]: ...
+222 | @overload
+223 | def common_type(a0: _HasDType[np.float16], /, *ai: _HasDType[np.float16]) -> type[np.float16]: ...  # type: ignore[overload-overlap]
+    |                                                    ^^^^^^^^^^^^^^^^^^^^^
+224 | @overload
+225 | def common_type(a0: _HasDType[np.float32], /, *ai: _HasDType[np.float32 | np.float16]) -> type[np.float32]: ...  # type: ignore[overl…
+    |
+
+src/numpy-stubs/lib/_type_check_impl.pyi:225:52: SyntaxError: Cannot use star annotation on Python 3.10 (syntax was added in Python 3.11)
+    |
+223 | def common_type(a0: _HasDType[np.float16], /, *ai: _HasDType[np.float16]) -> type[np.float16]: ...  # type: ignore[overload-overlap]
+224 | @overload
+225 | def common_type(a0: _HasDType[np.float32], /, *ai: _HasDType[np.float32 | np.float16]) -> type[np.float32]: ...  # type: ignore[overl…
+    |                                                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+226 | @overload
+227 | def common_type(
+    |
+
+src/numpy-stubs/lib/_type_check_impl.pyi:230:10: SyntaxError: Cannot use star annotation on Python 3.10 (syntax was added in Python 3.11)
+    |
+228 |     a0: _HasDType[Floating64 | np.integer],
+229 |     /,
+230 |     *ai: _HasDType[Floating64 | np.float32 | Number16 | np.integer],
+    |          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+231 | ) -> type[np.float64]: ...
+232 | @overload
+    |
+
+src/numpy-stubs/lib/_type_check_impl.pyi:236:10: SyntaxError: Cannot use star annotation on Python 3.10 (syntax was added in Python 3.11)
+    |
+234 |     a0: _HasDType[np.longdouble],
+235 |     /,
+236 |     *ai: _HasDType[np.floating | np.integer],
+    |          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+237 | ) -> type[np.longdouble]: ...
+238 | @overload
+    |
+
+src/numpy-stubs/lib/_type_check_impl.pyi:242:10: SyntaxError: Cannot use star annotation on Python 3.10 (syntax was added in Python 3.11)
+    |
+240 |     a0: _HasDType[np.complex64],
+241 |     /,
+242 |     *ai: _HasDType[Inexact32 | np.float16],
+    |          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+243 | ) -> type[np.complex64]: ...
+244 | @overload
+    |
+
+src/numpy-stubs/lib/_type_check_impl.pyi:248:10: SyntaxError: Cannot use star annotation on Python 3.10 (syntax was added in Python 3.11)
+    |
+246 |     a0: _HasDType[CFloating64],
+247 |     /,
+248 |     *ai: _HasDType[Number64 | Number32 | Number16 | np.integer],
+    |          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+249 | ) -> type[np.complex128]: ...
+250 | @overload
+    |
+
+src/numpy-stubs/lib/_type_check_impl.pyi:254:10: SyntaxError: Cannot use star annotation on Python 3.10 (syntax was added in Python 3.11)
+    |
+252 |     a0: _HasDType[np.clongdouble],
+253 |     /,
+254 |     *ai: _HasDType[np.number],
+    |          ^^^^^^^^^^^^^^^^^^^^
+255 | ) -> type[np.clongdouble]: ...
+256 | @overload
+    |
+
+src/numpy-stubs/lib/_type_check_impl.pyi:261:10: SyntaxError: Cannot use star annotation on Python 3.10 (syntax was added in Python 3.11)
+    |
+259 |     array1: _HasDType[np.float32],
+260 |     /,
+261 |     *ai: _HasDType[np.float32 | np.float16],
+    |          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+262 | ) -> type[np.float32]: ...
+263 | @overload
+    |
+
+src/numpy-stubs/lib/_type_check_impl.pyi:268:10: SyntaxError: Cannot use star annotation on Python 3.10 (syntax was added in Python 3.11)
+    |
+266 |     array1: _HasDType[Floating64 | np.integer],
+267 |     /,
+268 |     *ai: _HasDType[Floating64 | np.float32 | Number16 | np.integer],
+    |          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+269 | ) -> type[np.float64]: ...
+270 | @overload
+    |
+
+src/numpy-stubs/lib/_type_check_impl.pyi:275:10: SyntaxError: Cannot use star annotation on Python 3.10 (syntax was added in Python 3.11)
+    |
+273 |     array1: _HasDType[np.longdouble],
+274 |     /,
+275 |     *ai: _HasDType[np.floating | np.integer],
+    |          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+276 | ) -> type[np.longdouble]: ...
+277 | @overload
+    |
+
+src/numpy-stubs/lib/_type_check_impl.pyi:282:10: SyntaxError: Cannot use star annotation on Python 3.10 (syntax was added in Python 3.11)
+    |
+280 |     array1: _HasDType[np.complex64],
+281 |     /,
+282 |     *ai: _HasDType[Inexact32 | np.float16],
+    |          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+283 | ) -> type[np.complex64]: ...
+284 | @overload
+    |
+
+src/numpy-stubs/lib/_type_check_impl.pyi:289:10: SyntaxError: Cannot use star annotation on Python 3.10 (syntax was added in Python 3.11)
+    |
+287 |     array1: _HasDType[CFloating64 | np.complex64],
+288 |     /,
+289 |     *ai: _HasDType[Number64 | Number32 | Number16 | np.integer],
+    |          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+290 | ) -> type[np.complex128]: ...
+291 | @overload
+    |
+
+src/numpy-stubs/lib/_type_check_impl.pyi:296:10: SyntaxError: Cannot use star annotation on Python 3.10 (syntax was added in Python 3.11)
+    |
+294 |     array1: _HasDType[Floating64],
+295 |     /,
+296 |     *ai: _HasDType[Number64 | Number32 | Number16 | np.integer],
+    |          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+297 | ) -> type[np.complex128]: ...
+298 | @overload
+    |
+
+src/numpy-stubs/lib/_type_check_impl.pyi:303:10: SyntaxError: Cannot use star annotation on Python 3.10 (syntax was added in Python 3.11)
+    |
+301 |     array1: _HasDType[CFloating64],
+302 |     /,
+303 |     *ai: _HasDType[Number64 | Number32 | Number16 | np.integer],
+    |          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+304 | ) -> type[np.complex128]: ...
+305 | @overload
+    |
+
+src/numpy-stubs/lib/_type_check_impl.pyi:310:10: SyntaxError: Cannot use star annotation on Python 3.10 (syntax was added in Python 3.11)
+    |
+308 |     array1: _HasDType[CFloating64 | np.integer],
+309 |     /,
+310 |     *ai: _HasDType[Number64 | Number32 | Number16 | np.integer],
+    |          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+311 | ) -> type[np.complex128]: ...
+312 | @overload
+    |
+
+src/numpy-stubs/lib/_type_check_impl.pyi:317:10: SyntaxError: Cannot use star annotation on Python 3.10 (syntax was added in Python 3.11)
+    |
+315 |     array1: _HasDType[CFloating64 | np.complex64],
+316 |     /,
+317 |     *ai: _HasDType[Number64 | Number32 | Number16 | np.integer],
+    |          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+318 | ) -> type[np.complex128]: ...
+319 | @overload
+    |
+
+src/numpy-stubs/lib/_type_check_impl.pyi:323:10: SyntaxError: Cannot use star annotation on Python 3.10 (syntax was added in Python 3.11)
+    |
+321 |     a0: _HasDType[np.floating | np.integer],
+322 |     /,
+323 |     *ai: _HasDType[np.floating | np.integer],
+    |          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+324 | ) -> type[np.floating]: ...
+325 | @overload
+    |
+
+src/numpy-stubs/lib/_type_check_impl.pyi:330:10: SyntaxError: Cannot use star annotation on Python 3.10 (syntax was added in Python 3.11)
+    |
+328 |     array1: _HasDType[np.clongdouble],
+329 |     /,
+330 |     *ai: _HasDType[np.number],
+    |          ^^^^^^^^^^^^^^^^^^^^
+331 | ) -> type[np.clongdouble]: ...
+332 | @overload
+    |
+
+src/numpy-stubs/lib/_type_check_impl.pyi:337:10: SyntaxError: Cannot use star annotation on Python 3.10 (syntax was added in Python 3.11)
+    |
+335 |     array1: _HasDType[np.complexfloating],
+336 |     /,
+337 |     *ai: _HasDType[np.number],
+    |          ^^^^^^^^^^^^^^^^^^^^
+338 | ) -> type[np.clongdouble]: ...
+339 | @overload
+    |
+
+src/numpy-stubs/lib/_type_check_impl.pyi:344:10: SyntaxError: Cannot use star annotation on Python 3.10 (syntax was added in Python 3.11)
+    |
+342 |     array1: _HasDType[np.longdouble],
+343 |     /,
+344 |     *ai: _HasDType[np.number],
+    |          ^^^^^^^^^^^^^^^^^^^^
+345 | ) -> type[np.clongdouble]: ...
+346 | @overload
+    |
+
+src/numpy-stubs/lib/_type_check_impl.pyi:351:10: SyntaxError: Cannot use star annotation on Python 3.10 (syntax was added in Python 3.11)
+    |
+349 |     array1: _HasDType[np.number],
+350 |     /,
+351 |     *ai: _HasDType[np.number],
+    |          ^^^^^^^^^^^^^^^^^^^^
+352 | ) -> type[np.complexfloating]: ...
+353 | @overload
+    |
+
+src/numpy-stubs/lib/_type_check_impl.pyi:358:10: SyntaxError: Cannot use star annotation on Python 3.10 (syntax was added in Python 3.11)
+    |
+356 |     array1: _HasDType[np.complexfloating],
+357 |     /,
+358 |     *ai: _HasDType[np.number],
+    |          ^^^^^^^^^^^^^^^^^^^^
+359 | ) -> type[np.complexfloating]: ...
+360 | @overload
+    |
+
+src/numpy-stubs/lib/_type_check_impl.pyi:365:10: SyntaxError: Cannot use star annotation on Python 3.10 (syntax was added in Python 3.11)
+    |
+363 |     array1: _HasDType[np.number],
+364 |     /,
+365 |     *ai: _HasDType[np.number],
+    |          ^^^^^^^^^^^^^^^^^^^^
+366 | ) -> type[np.inexact]: ...
+    |
+
+src/numpy-stubs/ma/core.pyi:255:49: SyntaxError: Cannot use star annotation on Python 3.10 (syntax was added in Python 3.11)
+    |
+253 |     fill: Incomplete
+254 |     def __init__(self, /, mufunc: _UFuncT_co, fill: Incomplete = 0, domain: _DomainBase | None = None) -> None: ...
+255 |     def __call__(self, /, a: Incomplete, *args: Incomplete, **kwargs: Incomplete) -> Incomplete: ...
+    |                                                 ^^^^^^^^^^
+256 |
+257 | class _MaskedBinaryOperation(_MaskedUFunc[_UFuncT_co], Generic[_UFuncT_co]):
+    |
+
+src/numpy-stubs/ma/core.pyi:262:64: SyntaxError: Cannot use star annotation on Python 3.10 (syntax was added in Python 3.11)
+    |
+260 |     filly: Incomplete
+261 |     def __init__(self, mbfunc: _UFuncT_co, fillx: Incomplete = 0, filly: Incomplete = 0) -> None: ...
+262 |     def __call__(self, /, a: Incomplete, b: Incomplete, *args: Incomplete, **kwargs: Incomplete) -> Incomplete: ...
+    |                                                                ^^^^^^^^^^
+263 |
+264 |     #
+    |
+
+src/numpy-stubs/ma/core.pyi:275:64: SyntaxError: Cannot use star annotation on Python 3.10 (syntax was added in Python 3.11)
+    |
+273 |     filly: Incomplete
+274 |     def __init__(self, /, dbfunc: _UFuncT_co, domain: _DomainBase, fillx: Incomplete = 0, filly: Incomplete = 0) -> None: ...
+275 |     def __call__(self, /, a: Incomplete, b: Incomplete, *args: Incomplete, **kwargs: Incomplete) -> Incomplete: ...
+    |                                                                ^^^^^^^^^^
+276 |
+277 | class _extrema_operation(_MaskedUFunc[_UFuncT_co], Generic[_UFuncT_co]):
+    |
+
+src/numpy-stubs/ma/core.pyi:504:27: SyntaxError: Cannot use star annotation on Python 3.10 (syntax was added in Python 3.11)
+    |
+502 |     def ravel(self, order: Incomplete = ...) -> Incomplete: ...
+503 |     @override
+504 |     def reshape(self, *s: Incomplete, **kwargs: Incomplete) -> Incomplete: ...
+    |                           ^^^^^^^^^^
+505 |     @override
+506 |     def resize(  # type: ignore[override]  # pyright: ignore[reportIncompatibleMethodOverride]
+    |
+
+src/numpy-stubs/ma/core.pyi:694:32: SyntaxError: Cannot use star annotation on Python 3.10 (syntax was added in Python 3.11)
+    |
+692 |     #
+693 |     @override
+694 |     def partition(self, *args: Incomplete, **kwargs: Incomplete) -> Incomplete: ...
+    |                                ^^^^^^^^^^
+695 |     @override
+696 |     def argpartition(self, *args: Incomplete, **kwargs: Incomplete) -> Incomplete: ...
+    |
+
+src/numpy-stubs/ma/core.pyi:696:35: SyntaxError: Cannot use star annotation on Python 3.10 (syntax was added in Python 3.11)
+    |
+694 |     def partition(self, *args: Incomplete, **kwargs: Incomplete) -> Incomplete: ...
+695 |     @override
+696 |     def argpartition(self, *args: Incomplete, **kwargs: Incomplete) -> Incomplete: ...
+    |                                   ^^^^^^^^^^
+697 |
+698 |     #
+    |
+
+src/numpy-stubs/ma/core.pyi:796:30: SyntaxError: Cannot use star annotation on Python 3.10 (syntax was added in Python 3.11)
+    |
+794 |     def __deepcopy__(self, /, memo: object) -> Self: ...  # type: ignore[override]  # pyright: ignore[reportIncompatibleMethodOverrid…
+795 |     @override
+796 |     def copy(self, /, *args: object, **kwargs: object) -> Incomplete: ...
+    |                              ^^^^^^
+797 |
+798 | class _frommethod:
+    |
+
+src/numpy-stubs/ma/core.pyi:803:46: SyntaxError: Cannot use star annotation on Python 3.10 (syntax was added in Python 3.11)
+    |
+801 |     reversed: Incomplete
+802 |     def __init__(self, methodname: Incomplete, reversed: Incomplete = ...) -> None: ...
+803 |     def __call__(self, a: Incomplete, *args: Incomplete, **params: Incomplete) -> Incomplete: ...
+    |                                              ^^^^^^^^^^
+804 |     def getdoc(self) -> Incomplete: ...
+    |
+
+src/numpy-stubs/ma/core.pyi:808:34: SyntaxError: Cannot use star annotation on Python 3.10 (syntax was added in Python 3.11)
+    |
+806 | class _convert2ma:
+807 |     def __init__(self, /, funcname: str, np_ret: str, np_ma_ret: str, params: dict[str, Any] | None = None) -> None: ...
+808 |     def __call__(self, /, *args: object, **params: object) -> Any: ...
+    |                                  ^^^^^^
+809 |     def getdoc(self, /, np_ret: str, np_ma_ret: str) -> str | None: ...
+    |
+
+src/numpy-stubs/ma/extras.pyi:65:31: SyntaxError: Cannot use star annotation on Python 3.10 (syntax was added in Python 3.11)
+   |
+63 |     def __init__(self, funcname: Incomplete) -> None: ...
+64 |     def getdoc(self) -> Incomplete: ...
+65 |     def __call__(self, *args: Incomplete, **params: Incomplete) -> Incomplete: ...
+   |                               ^^^^^^^^^^
+66 |
+67 | class _fromnxfunction_single(_fromnxfunction):
+   |
+
+src/numpy-stubs/ma/extras.pyi:70:46: SyntaxError: Cannot use star annotation on Python 3.10 (syntax was added in Python 3.11)
+   |
+68 |     __doc__: str
+69 |     @override
+70 |     def __call__(self, x: Incomplete, *args: Incomplete, **params: Incomplete) -> Incomplete: ...
+   |                                              ^^^^^^^^^^
+71 |
+72 | class _fromnxfunction_seq(_fromnxfunction):
+   |
+
+src/numpy-stubs/ma/extras.pyi:75:46: SyntaxError: Cannot use star annotation on Python 3.10 (syntax was added in Python 3.11)
+   |
+73 |     __doc__: str
+74 |     @override
+75 |     def __call__(self, x: Incomplete, *args: Incomplete, **params: Incomplete) -> Incomplete: ...
+   |                                              ^^^^^^^^^^
+76 |
+77 | class _fromnxfunction_allargs(_fromnxfunction):
+   |
+
+src/numpy-stubs/ma/extras.pyi:80:31: SyntaxError: Cannot use star annotation on Python 3.10 (syntax was added in Python 3.11)
+   |
+78 |     __doc__: str
+79 |     @override
+80 |     def __call__(self, *args: Incomplete, **params: Incomplete) -> Incomplete: ...
+   |                               ^^^^^^^^^^
+81 |
+82 | class MAxisConcatenator(AxisConcatenator):
+   |
+
+src/numpy-stubs/ma/extras.pyi:100:12: SyntaxError: Cannot use star annotation on Python 3.10 (syntax was added in Python 3.11)
+    |
+ 98 |     axis: Incomplete,
+ 99 |     arr: Incomplete,
+100 |     *args: Incomplete,
+    |            ^^^^^^^^^^
+101 |     **kwargs: Incomplete,
+102 | ) -> Incomplete: ...
+    |
+
+src/numpy-stubs/matlib.pyi:573:30: SyntaxError: Cannot use star annotation on Python 3.10 (syntax was added in Python 3.11)
+    |
+571 | def rand(arg: int | tuple[()] | tuple[int] | tuple[int, int], /) -> _Matrix[np.float64]: ...
+572 | @overload
+573 | def rand(arg: int, /, *args: int) -> _Matrix[np.float64]: ...
+    |                              ^^^
+574 |
+575 | #
+    |
+
+src/numpy-stubs/matlib.pyi:579:31: SyntaxError: Cannot use star annotation on Python 3.10 (syntax was added in Python 3.11)
+    |
+577 | def randn(arg: int | tuple[()] | tuple[int] | tuple[int, int], /) -> _Matrix[np.float64]: ...
+578 | @overload
+579 | def randn(arg: int, /, *args: int) -> _Matrix[np.float64]: ...
+    |                               ^^^
+580 |
+581 | #
+    |
+
+src/numpy-stubs/random/mtrand.pyi:193:41: SyntaxError: Cannot use star annotation on Python 3.10 (syntax was added in Python 3.11)
+    |
+191 |     def rand(self) -> float: ...
+192 |     @overload
+193 |     def rand(self, arg0: int, /, *args: int) -> npt.NDArray[np.float64]: ...
+    |                                         ^^^
+194 |
+195 |     #
+    |
+
+src/numpy-stubs/random/mtrand.pyi:199:42: SyntaxError: Cannot use star annotation on Python 3.10 (syntax was added in Python 3.11)
+    |
+197 |     def randn(self) -> float: ...
+198 |     @overload
+199 |     def randn(self, arg0: int, /, *args: int) -> npt.NDArray[np.float64]: ...
+    |                                          ^^^
+200 |
+201 |     #
+    |
+
+src/numpy-stubs/testing/__init__.pyi:108:39: SyntaxError: Cannot use star annotation on Python 3.10 (syntax was added in Python 3.11)
+    |
+106 | # workaround for incorrect typeshed definition
+107 | class TestCase(_TestCase):
+108 |     def __init_subclass__(cls, *args: object, **kwargs: object) -> None: ...
+    |                                       ^^^^^^
+    |
+
+src/numpy-stubs/testing/_private/utils.pyi:285:12: SyntaxError: Cannot use star annotation on Python 3.10 (syntax was added in Python 3.11)
+    |
+283 |     callable: Callable[_Tss, Any],
+284 |     /,
+285 |     *args: _Tss.args,
+    |            ^^^^^^^^^
+286 |     **kwargs: _Tss.kwargs,
+287 | ) -> None: ...
+    |
+
+src/numpy-stubs/testing/_private/utils.pyi:302:12: SyntaxError: Cannot use star annotation on Python 3.10 (syntax was added in Python 3.11)
+    |
+300 |     expected_regexp: _RegexLike,
+301 |     callable: Callable[_Tss, Any],
+302 |     *args: _Tss.args,
+    |            ^^^^^^^^^
+303 |     **kwargs: _Tss.kwargs,
+304 | ) -> None: ...
+    |
+
+src/numpy-stubs/testing/_private/utils.pyi:347:80: SyntaxError: Cannot use star annotation on Python 3.10 (syntax was added in Python 3.11)
+    |
+345 | def assert_warns(warning_class: _WarningSpec) -> _GeneratorContextManager[None]: ...
+346 | @overload
+347 | def assert_warns(warning_class: _WarningSpec, func: Callable[_Tss, _T], *args: _Tss.args, **kwargs: _Tss.kwargs) -> _T: ...
+    |                                                                                ^^^^^^^^^
+348 |
+349 | #
+    |
+
+src/numpy-stubs/testing/_private/utils.pyi:353:60: SyntaxError: Cannot use star annotation on Python 3.10 (syntax was added in Python 3.11)
+    |
+351 | def assert_no_warnings() -> _GeneratorContextManager[None]: ...
+352 | @overload
+353 | def assert_no_warnings(func: Callable[_Tss, _T], /, *args: _Tss.args, **kwargs: _Tss.kwargs) -> _T: ...
+    |                                                            ^^^^^^^^^
+354 |
+355 | #
+    |
+
+src/numpy-stubs/testing/_private/utils.pyi:359:62: SyntaxError: Cannot use star annotation on Python 3.10 (syntax was added in Python 3.11)
+    |
+357 | def assert_no_gc_cycles() -> _GeneratorContextManager[None]: ...
+358 | @overload
+359 | def assert_no_gc_cycles(func: Callable[_Tss, Any], /, *args: _Tss.args, **kwargs: _Tss.kwargs) -> None: ...
+    |                                                              ^^^^^^^^^
+360 |
+361 | ###
+    |
+
+tool/testgen.py:70:20: SyntaxError: Cannot use star annotation on Python 3.10 (syntax was added in Python 3.11)
+   |
+70 | def _union(*types: str) -> str:
+   |                    ^^^
+71 |     ints: set[str] = set()
+72 |     uints: set[str] = set()
+   |
+
+tool/testgen.py:133:44: SyntaxError: Cannot use star annotation on Python 3.10 (syntax was added in Python 3.11)
+    |
+131 |         self._current_indent -= 1
+132 |
+133 |     def _generate_section(self, /, *lines: str) -> Generator[str]:
+    |                                            ^^^
+134 |         yield ""
+135 |         yield "###"
+    |
+
+Found 150 errors.
+```
+
+</details>
+
+---
+
+_Referenced in [numpy/numtype#347](../../numpy/numtype/pulls/347.md) on 2025-03-20 17:25_
+
+---
+
+_Referenced in [astral-sh/ruff#16878](../../astral-sh/ruff/pulls/16878.md) on 2025-03-20 18:12_
+
+---
+
+_Referenced in [astral-sh/ruff#16879](../../astral-sh/ruff/pulls/16879.md) on 2025-03-20 19:56_
+
+---
+
+_Referenced in [PrairieLearn/PrairieLearn#11611](../../PrairieLearn/PrairieLearn/pulls/11611.md) on 2025-03-20 20:38_
+
+---
+
+_Closed by @ntBre on 2025-03-20 21:44_
+
+---
+
+_Closed by @ntBre on 2025-03-20 21:44_
+
+---
+
+_Comment by @ntBre on 2025-03-20 21:48_
+
+This should be fixed by #16878, and #16879 should help to prevent similar issues with these in the future. This will be included in the next release, which should be first thing tomorrow!
+
+---
+
+_Referenced in [ISISComputingGroup/ibex_bluesky_core#140](../../ISISComputingGroup/ibex_bluesky_core/pulls/140.md) on 2025-03-20 23:23_
+
+---
+
+_Referenced in [data-apis/array-api-compat#257](../../data-apis/array-api-compat/pulls/257.md) on 2025-03-22 17:25_
+
+---

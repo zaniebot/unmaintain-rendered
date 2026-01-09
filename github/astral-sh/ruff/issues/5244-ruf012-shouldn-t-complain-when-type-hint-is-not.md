@@ -1,0 +1,89 @@
+---
+number: 5244
+title: "`RUF012` shouldn't complain when type hint is not present"
+type: issue
+state: closed
+author: harshil21
+labels: []
+assignees: []
+created_at: 2023-06-21T08:43:38Z
+updated_at: 2023-06-22T08:08:28Z
+url: https://github.com/astral-sh/ruff/issues/5244
+synced_at: 2026-01-07T13:12:15-06:00
+---
+
+# `RUF012` shouldn't complain when type hint is not present
+
+---
+
+_Issue opened by @harshil21 on 2023-06-21 08:43_
+
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+The following snippet produces an error which I think it shouldn't since there is no type annotation for that variable:
+
+```python
+# test.py
+class A:
+    var = ["hey", "there"]
+```
+
+This gets particularly annoying in test suites, since adding type hints there (specially in this case) is not required imo.
+
+### Command
+
+`ruff test.py --select RUF --isolated`
+
+```
+tests/ruff.py:2:11: RUF012 Mutable class attributes should be annotated with `typing.ClassVar`
+Found 1 error.
+```
+
+### Version
+
+`ruff 0.0.274`
+
+
+
+
+
+---
+
+_Comment by @scastlara on 2023-06-21 08:46_
+
+related https://github.com/astral-sh/ruff/issues/5243
+
+---
+
+_Comment by @harshil21 on 2023-06-21 08:46_
+
+yeah just opened within a minute of each other :D
+
+---
+
+_Comment by @charliermarsh on 2023-06-21 15:34_
+
+(Closing as a duplicate of #5244.)
+
+---
+
+_Closed by @charliermarsh on 2023-06-21 15:34_
+
+---
+
+_Comment by @Thomasdezeeuw on 2023-06-22 08:08_
+
+> (Closing as a duplicate of #5244.)
+
+I think you meant https://github.com/astral-sh/ruff/issues/5243, since this is #5244.
+
+---

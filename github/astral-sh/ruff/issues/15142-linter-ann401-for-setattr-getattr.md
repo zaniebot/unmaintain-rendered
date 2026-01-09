@@ -1,0 +1,64 @@
+---
+number: 15142
+title: "[linter] `ANN401` for `__setattr__`/`__getattr__`?"
+type: issue
+state: closed
+author: eliegoudout
+labels: []
+assignees: []
+created_at: 2024-12-26T03:46:47Z
+updated_at: 2024-12-26T08:11:51Z
+url: https://github.com/astral-sh/ruff/issues/15142
+synced_at: 2026-01-07T13:12:16-06:00
+---
+
+# [linter] `ANN401` for `__setattr__`/`__getattr__`?
+
+---
+
+_Issue opened by @eliegoudout on 2024-12-26 03:46_
+
+Hello,
+
+First off, let me say I'm really getting in love with `ruff` and `uv`, so thanks!
+
+I'm confronted with the following [`ANN401`](https://docs.astral.sh/ruff/rules/any-type/):
+```
+ANN401 Dynamically typed expressions (typing.Any) are disallowed in `val`
+    |
+235 |     def __setattr__(self, attr: str, val: Any) -> None:
+    |                                           ^^^ ANN401
+```
+
+which seems a bit too much, since it makes sens for such a method to not enforce any type (same for `__getattr__`).
+
+How would you recommend dealing with this? I could disable `ANN401` altogether but it would be a bit sad, or maybe replace `Any` with `object` (weird?).
+
+Do you think it would be wise for the linter to consider `__setattr__`/`__getattr__` (and other appropriate cases?) as special regarding `ANN401`?
+
+Thanks!
+
+
+---
+
+_Comment by @Daverball on 2024-12-26 07:21_
+
+The correct annotation in this case would generally be `object`. Which truly means "Anything will be accepted".
+
+`Any` is more of an escape hatch, where there is an actual constraint, i.e. you know not truly every value will be accepted, but it's either not possible to express that constraint in the type system yet or defining it ends up making the API extremely annoying to use.
+
+A good example of a function where `Any` is appropriate as the argument is `json.dumps`. Technically you can come up with a constraint for the value parameter that's correct, but the serializer can be extended with support for additional objects. So that constraint would become incorrect as soon as someone does that. So `Any` is appropriate as "We can't statically know what the correct constraint will be".
+
+That being said, ANN401 is very opinionated, and the same goes for some of the other ANN rules. Most people will probably be better served by the appropriate strictness settings in their type checker of choice, rather than ANN.
+
+---
+
+_Comment by @eliegoudout on 2024-12-26 08:11_
+
+Ok, thank you very much for the philosophical take on `Any` vs. `object`, I had no idea. I'm very fine with using `object` then!
+
+---
+
+_Closed by @eliegoudout on 2024-12-26 08:11_
+
+---

@@ -1,0 +1,164 @@
+---
+number: 13898
+title: SIM108 for return statements
+type: issue
+state: closed
+author: joppi588
+labels:
+  - question
+assignees: []
+created_at: 2024-10-23T19:00:17Z
+updated_at: 2024-10-28T20:46:50Z
+url: https://github.com/astral-sh/ruff/issues/13898
+synced_at: 2026-01-07T13:12:16-06:00
+---
+
+# SIM108 for return statements
+
+---
+
+_Issue opened by @joppi588 on 2024-10-23 19:00_
+
+For the following code snippet ruff detects a violation of SIM505:
+```
+def foo_sim108(bar):
+    if bar is not None:
+        xyz = bar
+    else:
+        xyz = "bar"
+    return xyz
+```
+and proposes
+```
+def foo_sim108(bar):
+    xyz=bar if bar is not None else "bar"
+    return xyz
+```
+Usually I would omit xyz and write
+```
+def foo_ret505(bar):
+    if bar is not None:
+        return bar
+    else:
+        return "bar"
+```
+which is simplified by RET505 to
+```
+def foo(bar):
+    if bar is not None:
+        return bar
+    return "bar"
+```
+
+However the shortest version would be
+```
+def simplified_foo(bar):
+    return bar if bar is not None else "bar"
+```
+
+For me it is a special case for SIM108 (return means that a value is assigned to the function output), but ruff does not propose this solution.
+Is this intended? 
+If yes, I would be happy to have this behavior described in the SIM108 documentation.
+If no, I would love to have it implemented.
+
+Keywords: SIM108, RET505
+Ruff version: 0.7.0
+
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* List of keywords you searched for before creating this issue. Write them down here so that others can find this issue more easily and help provide feedback.
+  e.g. "RUF001", "unused variable", "Jupyter notebook"
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+
+---
+
+_Renamed from "SIM108" to "SIM108 for return statements" by @joppi588 on 2024-10-23 19:05_
+
+---
+
+_Comment by @MichaReiser on 2024-10-24 06:14_
+
+Hi @joppi588 
+
+That makes sense to me. 
+
+Yes, this is intentional because there's `RET504` that detects the unnecessary assignment to `xyz` before returning ([playground](https://play.ruff.rs/7a1dee08-f03e-4882-95ff-7b64eb4d7c1f)).  Keeping the rules separate is that users are in control on whether they prefer the assignment before the return or not. 
+
+Running `ruff check --fix` should directly fix 
+
+```python
+def foo_sim108(bar):
+    if bar is not None:
+        xyz = bar
+    else:
+        xyz = "bar"
+    return xyz
+```
+
+to 
+
+```python
+def simplified_foo(bar):
+    return bar if bar is not None else "bar"
+```
+
+if you have both rules enabled. 
+
+---
+
+_Label `question` added by @MichaReiser on 2024-10-24 06:14_
+
+---
+
+_Comment by @joppi588 on 2024-10-24 19:52_
+
+Thanks @MichaReiser , I see.
+
+However simplifying
+```
+def foo(bar):
+    if bar is not None:
+        return bar
+    return "bar"
+```
+to
+```
+def simplified_foo(bar):
+    return bar if bar is not None else "bar"
+```
+would require a new rule, right?
+
+---
+
+_Comment by @MichaReiser on 2024-10-25 06:18_
+
+> would require a new rule, right?
+
+Yes, but it would be a very opinionated rule because it could result in very long expressions. 
+
+---
+
+_Comment by @joppi588 on 2024-10-28 20:46_
+
+I agree, the result would probably not look "better" in many cases.
+Even in the simple example I provided it is a matter of taste.
+
+Thanks for the discussion! I will close the issue.
+
+---
+
+_Closed by @joppi588 on 2024-10-28 20:46_
+
+---
+
+_Referenced in [astral-sh/ruff#15167](../../astral-sh/ruff/issues/15167.md) on 2024-12-28 20:01_
+
+---

@@ -1,0 +1,141 @@
+---
+number: 14173
+title: "`uvx` doesn't seem to support `git-lfs`"
+type: issue
+state: closed
+author: asmith26
+labels:
+  - bug
+assignees: []
+created_at: 2025-06-20T23:10:18Z
+updated_at: 2025-06-21T12:06:12Z
+url: https://github.com/astral-sh/uv/issues/14173
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# `uvx` doesn't seem to support `git-lfs`
+
+---
+
+_Issue opened by @asmith26 on 2025-06-20 23:10_
+
+### Summary
+
+**Minimal Reproducible Example**
+
+I've created a minimal [repo](https://github.com/asmith26/debug-uvx-gitlfs/) with 2 branches: 
+- `no-gitlfs`: this branch has **no git-lfs** files, and this works:
+
+```bash
+$  uvx --from git+ssh://git@github.com/asmith26/debug-uvx-gitlfs.git@no-gitlfs my_package
+
+# Works, prints "Hello my_package!"
+```
+
+- `main`: this branch has **has git-lfs** files, and these commands **don't work**:
+```bash
+$ uvx --from git+ssh://git@github.com/asmith26/debug-uvx-gitlfs.git my_package
+$ uvx --from git+ssh://git@github.com/asmith26/debug-uvx-gitlfs.git my_package_gitlfs
+
+# Both error out with:
+
+   Updating ssh://git@github.com/asmith26/debug-uvx-gitlfs.git (HEAD)                                                                                                          × Failed to download and build `my-package @ git+ssh://git@github.com/asmith26/debug-uvx-gitlfs.git@e592409ac469f534c4c09f18554b66c339593014`
+  ├─▶ Git operation failed
+  ╰─▶ process didn't exit successfully: `/usr/bin/git reset --hard e592409ac469f534c4c09f18554b66c339593014` (exit status: 128)
+      --- stderr
+      Downloading src/my_package/git-lfs.txt (25 B)
+      Error downloading object: src/my_package/git-lfs.txt (9dd7ca1): Smudge error: Error downloading src/my_package/git-lfs.txt
+      (9dd7ca19a3305d52c11ed9ed2121b1c270b99aa3cd1e0ebb92270e7b44f5829d): error transferring "9dd7ca19a3305d52c11ed9ed2121b1c270b99aa3cd1e0ebb92270e7b44f5829d": [0] remote
+      missing object 9dd7ca19a3305d52c11ed9ed2121b1c270b99aa3cd1e0ebb92270e7b44f5829d
+```
+
+In case also helpful, if you clone the repo and run the gitlfs package locally, it works:
+
+```bash
+$ git clone git@github.com:asmith26/debug-uvx-gitlfs.git
+$ cd debug-uvx-gitlfs
+$ uv run my_package_gitlfs
+
+# Works, prints "Hello my_package_gitlfs!"
+```
+
+### Platform
+
+Linux 6.8.0-62-generic x86_64 GNU/Linux
+
+### Version
+
+uv 0.7.13 
+
+### Python version
+
+Python 3.13.0
+
+---
+
+_Label `bug` added by @asmith26 on 2025-06-20 23:10_
+
+---
+
+_Comment by @zanieb on 2025-06-21 01:13_
+
+Have you tried turning on LFS support with [`UV_GIT_LFS`](https://docs.astral.sh/uv/reference/environment/#uv_git_lfs)?
+
+---
+
+_Comment by @zanieb on 2025-06-21 01:14_
+
+See https://github.com/astral-sh/uv/pull/10335
+
+---
+
+_Comment by @asmith26 on 2025-06-21 09:33_
+
+Thanks for your help @zanieb, unfortunately this doesn't seem to work:
+
+```bash
+$ export UV_GIT_LFS=1 && uvx --from git+ssh://git@github.com/asmith26/debug-uvx-gitlfs.git my_package_gitlfs
+
+  × Failed to download and build `my-package @ git+ssh://git@github.com/asmith26/debug-uvx-gitlfs.git@5c6f3ba213e37cb67f8d94fc24684a87f02a796c`
+  ├─▶ Git operation failed
+  ╰─▶ process didn't exit successfully: `/usr/bin/git reset --hard 5c6f3ba213e37cb67f8d94fc24684a87f02a796c` (exit status: 128)
+      --- stderr
+      Downloading src/my_package/git-lfs.txt (25 B)
+      Error downloading object: src/my_package/git-lfs.txt (9dd7ca1): Smudge error: Error downloading src/my_package/git-lfs.txt
+      (9dd7ca19a3305d52c11ed9ed2121b1c270b99aa3cd1e0ebb92270e7b44f5829d): error transferring "9dd7ca19a3305d52c11ed9ed2121b1c270b99aa3cd1e0ebb92270e7b44f5829d": [0] remote
+      missing object 9dd7ca19a3305d52c11ed9ed2121b1c270b99aa3cd1e0ebb92270e7b44f5829d
+
+      Errors logged to '~/.cache/uv/git-v0/checkouts/44eeb432cca41142/5c6f3ba/.git/lfs/logs/20250621T103207.446025077.log'.
+      Use `git lfs logs last` to view the log.
+      error: external filter 'git-lfs filter-process' failed
+      fatal: src/my_package/git-lfs.txt: smudge filter lfs failed
+```
+
+---
+
+_Comment by @zanieb on 2025-06-21 11:22_
+
+Can you try clearing your package from the git cache first? `rm -rf $(uv cache dir)/git-v0`
+
+---
+
+_Comment by @asmith26 on 2025-06-21 12:06_
+
+It worked! Many thanks for your help and time @zanieb !
+
+```bash
+$ rm -rf $(uv cache dir)/git-v0
+$ export UV_GIT_LFS=1 && uvx --from git+ssh://git@github.com/asmith26/debug-uvx-gitlfs.git my_package_gitlfs
+
+# Works, prints "Hello my_package_gitlfs!"
+```
+
+---
+
+_Closed by @asmith26 on 2025-06-21 12:06_
+
+---
+
+_Referenced in [astral-sh/uv#15127](../../astral-sh/uv/issues/15127.md) on 2025-08-07 09:38_
+
+---

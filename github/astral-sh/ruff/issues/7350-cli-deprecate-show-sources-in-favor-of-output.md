@@ -1,0 +1,69 @@
+---
+number: 7350
+title: "CLI: Deprecate `--show-sources` in favor of `--output_format <concise|full>`"
+type: issue
+state: closed
+author: zanieb
+labels:
+  - cli
+assignees: []
+created_at: 2023-09-13T16:11:34Z
+updated_at: 2024-02-01T19:35:06Z
+url: https://github.com/astral-sh/ruff/issues/7350
+synced_at: 2026-01-07T13:12:15-06:00
+---
+
+# CLI: Deprecate `--show-sources` in favor of `--output_format <concise|full>`
+
+---
+
+_Issue opened by @zanieb on 2023-09-13 16:11_
+
+The `--show-sources` / `--no-show-sources` flags should be replaced with `--output_format full` / `--format concise` options. Ruff's default format should change to `full`. These formats would replace the `text` format, which should undergo a deprecation period.
+
+The flags should also undergo a deprecation period during which
+- They are hidden from the CLI help menu
+- A warning is displayed if they are used
+- They are ignored if `--format <..>` is provided
+
+The "full" name is up for debate! Feel free to chime in with suggestions.
+
+In #7349 the default behavior is changed to `--show-sources` / `--format full`.
+
+---
+
+_Referenced in [astral-sh/ruff#7352](../../astral-sh/ruff/issues/7352.md) on 2023-09-13 16:21_
+
+---
+
+_Referenced in [astral-sh/ruff#7349](../../astral-sh/ruff/issues/7349.md) on 2023-09-13 16:23_
+
+---
+
+_Referenced in [astral-sh/ruff#7353](../../astral-sh/ruff/issues/7353.md) on 2023-09-13 16:25_
+
+---
+
+_Label `cli` added by @zanieb on 2023-09-13 16:26_
+
+---
+
+_Assigned to @snowsignal by @snowsignal on 2024-01-29 16:31_
+
+---
+
+_Renamed from "CLI: Deprecate `--show-sources` in favor of `--format <concise|full>`" to "CLI: Deprecate `--show-sources` in favor of `--output_format <concise|full>`" by @snowsignal on 2024-01-29 17:11_
+
+---
+
+_Referenced in [astral-sh/ruff#9687](../../astral-sh/ruff/pulls/9687.md) on 2024-01-29 19:21_
+
+---
+
+_Closed by @zanieb on 2024-02-01 19:35_
+
+---
+
+_Referenced in [astral-sh/ruff#19552](../../astral-sh/ruff/issues/19552.md) on 2025-07-31 20:20_
+
+---

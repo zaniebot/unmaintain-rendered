@@ -1,0 +1,83 @@
+---
+number: 6805
+title: "[I001] Is this a bug?"
+type: issue
+state: closed
+author: harupy
+labels: []
+assignees: []
+created_at: 2023-08-23T08:36:34Z
+updated_at: 2023-08-23T08:49:51Z
+url: https://github.com/astral-sh/ruff/issues/6805
+synced_at: 2026-01-07T13:12:15-06:00
+---
+
+# [I001] Is this a bug?
+
+---
+
+_Issue opened by @harupy on 2023-08-23 08:36_
+
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+`ruff --select I --fix` trasforms this code:
+
+```python
+from a import (
+    b as x,
+    c as y,
+)
+```
+
+into:
+
+```python
+from a import (
+    b as x,
+)
+from a import (
+    c as y,
+)
+```
+
+Observed in ruff 0.0.285.
+
+---
+
+_Referenced in [mlflow/mlflow#9424](../../mlflow/mlflow/pulls/9424.md) on 2023-08-23 08:38_
+
+---
+
+_Comment by @harupy on 2023-08-23 08:40_
+
+I see, isort has the same behavior:
+
+```
+> isort a.py
+Fixing /home/haru/Desktop/repositories/mlflow/a.py
+
+> cat a.py
+from a import b as x
+from a import c as y
+```
+
+---
+
+_Closed by @harupy on 2023-08-23 08:41_
+
+---
+
+_Comment by @harupy on 2023-08-23 08:42_
+
+Found https://beta.ruff.rs/docs/settings/#isort-combine-as-imports. This is not a bug.
+
+---

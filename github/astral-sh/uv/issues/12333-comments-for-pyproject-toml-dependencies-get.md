@@ -1,0 +1,136 @@
+---
+number: 12333
+title: "Comments for `pyproject.toml` dependencies get shifted unexpectedly"
+type: issue
+state: closed
+author: christeefy
+labels:
+  - bug
+  - help wanted
+assignees: []
+created_at: 2025-03-20T09:40:09Z
+updated_at: 2025-03-28T10:37:01Z
+url: https://github.com/astral-sh/uv/issues/12333
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# Comments for `pyproject.toml` dependencies get shifted unexpectedly
+
+---
+
+_Issue opened by @christeefy on 2025-03-20 09:40_
+
+### Summary
+
+Hi there, 
+
+I encountered an behaviour where comments for `pyproject.toml` dependencies gets shifted unexpectedly.
+
+## Minimal Reproducible Example
+Given an initial `pyproject.toml` file:
+```toml
+[project]
+name = "test-uv"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "fastapi>=0.115.11",
+    "jedi>=0.19.2", # This is a test comment
+    "typer>=0.15.2"
+]
+```
+
+Upon running `uv add pydantic` (note how `pydantic` would be inserted right under `jedi` and the comment), I expect to get:
+```toml
+[project]
+name = "test-uv"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "fastapi>=0.115.11",
+    "jedi>=0.19.2", # This is a test comment
+    "pydantic>=2.10.6", 
+    "typer>=0.15.2"
+]
+```
+
+Instead, comment associated with `jedi` has shifted to the line with `pydantic`:
+```toml
+[project]
+name = "test-uv"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "fastapi>=0.115.11",
+    "jedi>=0.19.2",  
+    "pydantic>=2.10.6", # This is a test comment
+    "typer>=0.15.2"
+]
+```
+
+## Notes
+In my testing, the bug occurs only when:
+- the comment is applied on a non-terminal dependency — a dependency that isn't the first or last in the list
+- a new dependency is inserted right below the commented one
+
+---
+
+### Contributing Back
+`uv` is an amazing project, and I'd love to contribute back to it. 
+I have some Rust experience, but I'm not familiar with the repo structure. If you can so kindly point me to the relevant section/crate in the repo, I'm happy to help resolve this bug 😊 
+
+### Platform
+
+Darwin 24.3.0 arm64
+
+### Version
+
+uv 0.6.8 (c1ef48276 2025-03-18)
+
+### Python version
+
+Python 3.12.2
+
+---
+
+_Label `bug` added by @christeefy on 2025-03-20 09:40_
+
+---
+
+_Renamed from "Comments for `pyproject.toml` dependencies gets shifted unexpectedly" to "Comments for `pyproject.toml` dependencies get shifted unexpectedly" by @christeefy on 2025-03-20 12:49_
+
+---
+
+_Comment by @charliermarsh on 2025-03-20 13:39_
+
+Thanks for the nice issue, this does look like a bug in comment handling. I believe the relevant code is in `add_dependency` in `pyproject_mut.rs`.
+
+---
+
+_Label `help wanted` added by @charliermarsh on 2025-03-20 13:39_
+
+---
+
+_Referenced in [astral-sh/uv#12360](../../astral-sh/uv/pulls/12360.md) on 2025-03-21 09:52_
+
+---
+
+_Comment by @christeefy on 2025-03-21 12:03_
+
+PR is ready for review, please take a look! 🙏 
+
+---
+
+_Closed by @Gankra on 2025-03-21 14:16_
+
+---
+
+_Closed by @Gankra on 2025-03-21 14:16_
+
+---

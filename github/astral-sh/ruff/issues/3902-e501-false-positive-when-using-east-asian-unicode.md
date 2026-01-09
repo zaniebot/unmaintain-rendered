@@ -1,0 +1,147 @@
+---
+number: 3902
+title: E501 false positive when using east_asian_unicode string
+type: issue
+state: closed
+author: MarcoGorelli
+labels: []
+assignees: []
+created_at: 2023-04-06T15:03:42Z
+updated_at: 2023-06-16T02:25:24Z
+url: https://github.com/astral-sh/ruff/issues/3902
+synced_at: 2026-01-07T13:12:14-06:00
+---
+
+# E501 false positive when using east_asian_unicode string
+
+---
+
+_Issue opened by @MarcoGorelli on 2023-04-06 15:03_
+
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+If I have a file with:
+```python
+from pandas import DataFrame
+
+df = DataFrame(
+    {"a": ["あああああ", "い", "う", "えええ"], "b": ["あ", "いいい", "う", "ええええええ"]},
+    index=["a", "bb", "c", "ddd"],
+)
+```
+then `ruff` reports a `E501` error (whereas flake8 doesn't)
+```console
+(.venv) marcogorelli@DESKTOP-U8OKFP3:~/tmp$ ruff t.py
+t.py:4:89: E501 Line too long (93 > 88 characters)
+Found 1 error.
+(.venv) marcogorelli@DESKTOP-U8OKFP3:~/tmp$ flake8 t.py
+```
+
+Indeed, if I open the file in Python and count the length of each line, I only get 72 for the offending line:
+```python
+>>> with open('t.py') as fd:
+...     content = fd.read()
+...
+>>> [len(line) for line in content.splitlines()]
+[28, 0, 15, 72, 34, 1]
+```
+
+---
+
+_Referenced in [pandas-dev/pandas#52452](../../pandas-dev/pandas/pulls/52452.md) on 2023-04-06 15:04_
+
+---
+
+_Comment by @charliermarsh on 2023-04-06 15:48_
+
+This is a consequence of migrating from character-count to unicode-width for line-length violations (https://github.com/charliermarsh/ruff/pull/3714), which was done in part for consistency with Black, which IIUC is moving towards splitting long lines based on width (https://github.com/psf/black/pull/3445). Whether this was a correct decision for us, and in the context of line-length violations, is something worth debating, but just wanted to clarify why and how this changed (since, until recently, we did use character count).
+
+---
+
+_Comment by @MarcoGorelli on 2023-04-06 15:50_
+
+makes sense, thanks for explaining!
+
+---
+
+_Comment by @charliermarsh on 2023-04-06 15:52_
+
+(Separately, just realizing that it's confusing to say `(93 > 88 characters)` when we're not actually counting _characters_.)
+
+---
+
+_Comment by @kuba-lilz on 2023-05-15 02:43_
+
+I guess I'm running into this problem when linting python files that contain comments/docstrings with Japanese characters using ruff
+
+For this line that pylint and all other tools correctly recognize to have 86 characters, ruff==0.0.267 reports it as having 122.
+```
+    # corrected_best_angleとtick_anglesの関係性を再確認する（tick_anglesの両端から外れてしまう場合について注意深く調べる）
+```
+(please not this line has a tab at the start)
+
+---
+
+_Comment by @vincent-olivert-riera on 2023-05-27 01:07_
+
+> This is a consequence of migrating from character-count to unicode-width for line-length violations (https://github.com/charliermarsh/ruff/pull/3714), which was done in part **for consistency with Black**, which IIUC is moving towards splitting long lines based on width (https://github.com/psf/black/pull/3445).
+
+@charliermarsh , my experience is that `ruff` and `black` have different behaviors when it comes to counting the line length.
+
+This is a quick test to reproduce the issue:
+
+```
+$ python3 -m venv venv
+
+$ ./venv/bin/pip install black==23.3.0 ruff==0.0.270
+[redacted]
+Successfully installed black-23.3.0 click-8.1.3 mypy-extensions-1.0.0 packaging-23.1 pathspec-0.11.1 platformdirs-3.5.1 ruff-0.0.270 tomli-2.0.1 typing-extensions-4.6.2
+
+$ cat pyproject.toml 
+[tool.ruff]
+line-length = 7
+[tool.black]
+line-length = 7
+
+$ cat foo.py 
+a = "あ"
+
+$ ./venv/bin/black --check foo.py 
+All done! ✨ 🍰 ✨
+1 file would be left unchanged.
+
+$ ./venv/bin/ruff check foo.py 
+foo.py:1:7: E501 Line too long (8 > 7 characters)
+Found 1 error.
+```
+
+---
+
+_Referenced in [astral-sh/ruff#5133](../../astral-sh/ruff/issues/5133.md) on 2023-06-16 02:24_
+
+---
+
+_Comment by @charliermarsh on 2023-06-16 02:24_
+
+@vincent-olivert-riera - I believe you need to run with `--preview`, as the change to use character width is part of the 23.3.0 [preview](https://github.com/psf/black/blob/main/CHANGES.md#2330) style.
+
+---
+
+_Comment by @charliermarsh on 2023-06-16 02:25_
+
+(I'm going to close this as a duplicate of #3825, although there's useful discussion in both issues.)
+
+---
+
+_Closed by @charliermarsh on 2023-06-16 02:25_
+
+---

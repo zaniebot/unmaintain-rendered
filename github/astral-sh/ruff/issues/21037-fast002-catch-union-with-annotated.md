@@ -1,0 +1,126 @@
+---
+number: 21037
+title: "FAST002: catch Union with Annotated"
+type: issue
+state: open
+author: wilt-vetrec
+labels:
+  - rule
+  - needs-decision
+assignees: []
+created_at: 2025-10-23T00:29:52Z
+updated_at: 2025-12-16T19:36:36Z
+url: https://github.com/astral-sh/ruff/issues/21037
+synced_at: 2026-01-07T13:12:16-06:00
+---
+
+# FAST002: catch Union with Annotated
+
+---
+
+_Issue opened by @wilt-vetrec on 2025-10-23 00:29_
+
+### Summary
+
+I ran into an issue in FastAPI recently, where I defined a route with an optional array query parameter, like so:
+
+```python
+@router.get("/optional_none_outside")
+def optional_none_outside(params: Annotated[list[Literal[1,2]], Query()] | None = None):
+    """Incorrect; fails when called like /my_route?params=1 or like /my_route?params=1&params=2"""
+    ...
+
+@router.get("/optional_none_inside")
+def optional_none_inside(params: Annotated[list[Literal[1,2]] | None, Query()] = None):
+    """Correct; succeeds with any number of params"""
+    ...
+```
+
+Full repro: https://replit.com/@wilt00/fastapi-query-annotation-repro#main.py
+
+I'm not sure why this happens, but my understanding is that this is expected and not a bug in FastAPI. Ruff's lint rule FAST002 did not flag this error, and I think it should. I'm happy to work on adding this check.
+
+---
+
+_Label `needs-decision` added by @amyreese on 2025-10-23 00:46_
+
+---
+
+_Label `rule` added by @amyreese on 2025-10-23 00:46_
+
+---
+
+_Comment by @ntBre on 2025-10-23 20:33_
+
+I think this would have to be a different rule since FAST002 is only inspecting the default values looking for `Query`, `Depends`, etc. This would require validating the annotation itself and might be pretty tricky to get right.
+
+---
+
+_Comment by @CoderJoshDK on 2025-10-24 15:23_
+
+After thinking about this more, I am not sure that this needs to be solved as a `FAST` based rule. This should either be a new lint or something a type aware system can handle. 
+
+<sub>Or nuclear option of "this is a bug with fastAPI, and they should fix it"</sub> 
+
+The reason I say that is because if we inspect the following:
+
+```py
+from typing import Annotated, get_type_hints
+
+def f(a: Annotated[str, "test data"]): ...
+def z(a: Annotated[str, "test data"] | None): ...
+def b(a: Annotated[str | None, "test data"]): ...
+
+
+get_type_hints(f, include_extras=True)
+# {'a': typing.Annotated[str, 'test data']}
+get_type_hints(z, include_extras=True)
+# {'a': typing.Optional[typing.Annotated[str, 'test data']]}
+get_type_hints(b, include_extras=True)
+# {'a': typing.Annotated[str | None, 'test data']}
+```
+
+We can see that `a` gets converted into an optional annotated object. This obfuscates the `Annotated` with a compound type. That type should ideally be contained inside the `typing.Annotated`. IE, this is a bad practice regardless of `fastapi` or not. Very few libraries handles this case properly. And instead of saying all libraries have some bug, it might be easier to say that it is bad practice to obfuscate the annotated type behind some other type (optional in this instance, but union should also be discouraged).
+
+The major counterpoint to my whole stance is that cpython totally does support complex types like this. And a library should be capable of handling this situation. A thread that might be worth reading up on is https://discuss.python.org/t/what-is-the-right-way-to-extract-pep-593-annotations/42424/27
+
+Anyway, even with that fact; introducing a lint rule that says "Annotated should be the top level type" still sounds like a good idea to me. There are plenty of other rules that are not objective truths to how code can be interpreted, but rather subjective truths to how to write good code. And it might be quite the code smell to have such a complicated `Annotated` situation. And if you disagree for your uncommon situation, you disable the rule (or never enable it in the first place?)
+
+---
+
+_Referenced in [astral-sh/ruff#21079](../../astral-sh/ruff/pulls/21079.md) on 2025-10-26 03:52_
+
+---
+
+_Comment by @JelleZijlstra on 2025-12-16 18:27_
+
+I don't think a general rule "Annotated should be the top level type" makes sense. Annotated has no precise semantics, but there are definitely possible use cases where it should not be the outermost type. For example, you might annotate strings that are meant to serve as regexes as say `Annotated[str, "regex"]`, and then `Annotated[str, "regex"] | None` is a completely sensible type.
+
+If this is a common issue with FastAPI specifically, the rule should look for FastAPI-style usages of Annotated only.
+
+---
+
+_Comment by @ntBre on 2025-12-16 19:02_
+
+Hmm, maybe this pattern is more common than we thought. It definitely comes up in a quick [GitHub search](https://github.com/search?q=language%3Apython+%2FAnnotated%5C%5B%5B%5E%2C%5D%2B%2C+%5B%5E%5D%5D%2B%5D+%5C%7C%2F&type=code&p=2).
+
+---
+
+_Comment by @CoderJoshDK on 2025-12-16 19:04_
+
+In principle, I agree with you, Jelle. In practice, the challenge is that some people use `Annotated` "wrong" (¿in incompatible ways?). Both users and library authors. 
+<sub>Use and consume wrong</sub>
+
+After thinking about it a bunch more, I think you are right. Shocker lol.
+
+That said, I am uneasy about how "Annotated has no precise semantics" and the ecosystem seems to disagree (at times) on its use. The lint rule would unfairly "punish" users when, in reality, library authors hold the same amount of blame. Perhaps this is a limitation of Annotated. It extends an object to carry metadata. And that can be very powerful. But there is also no way to express to a consumer that this metadata might be expected in a specific way. Not without sending them to docs. Ideally, my LSP should provide me with everything I need.
+
+Is this a python limitation? Perhaps it is. And perhaps this convo should be extended beyond ruff. But bringing it back to ruff for a second, I do wonder if there is _a_ potential lint rule to help guide the ecosystem. If there is one, it probably isn't the proposed one (the linked PR). I might go off and do more research and come back with some examples of real world use. Let's see if I find the time for that.
+
+---
+
+_Comment by @JelleZijlstra on 2025-12-16 19:36_
+
+I am not too familiar with FastAPI, but it sounds like a lint rule that specifically looks for use of `fastapi.Query` (and perhaps other FastAPI-specific objects that should always be at the top level) in a non-top-level Annotated should work.
+
+---

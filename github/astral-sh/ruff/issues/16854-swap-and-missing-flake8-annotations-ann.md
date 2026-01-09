@@ -1,0 +1,87 @@
+---
+number: 16854
+title: SWAP and MISSING flake8-annotations (ANN)
+type: issue
+state: open
+author: p1-dta
+labels:
+  - documentation
+assignees: []
+created_at: 2025-03-19T17:33:40Z
+updated_at: 2025-03-19T21:45:48Z
+url: https://github.com/astral-sh/ruff/issues/16854
+synced_at: 2026-01-07T13:12:16-06:00
+---
+
+# SWAP and MISSING flake8-annotations (ANN)
+
+---
+
+_Issue opened by @p1-dta on 2025-03-19 17:33_
+
+### Summary
+
+ANN203 does not exist, ANN202 detect protected AND private when it should only detect protected, ANN202 documentation mention private instead of protected.
+
+From flake8-annotations:
+
+- ANN202: Missing return type annotation for protected function
+- ANN203: Missing return type annotation for secret function
+
+From Ruff Rules documentation:
+
+- ANN202: [missing-return-type-private-function](https://docs.astral.sh/ruff/rules/missing-return-type-private-function/), `Missing return type annotation for private function {name}`
+- ANN203: No RUFF existing rules.
+
+From [Playground](https://play.ruff.rs/2767d675-b8d1-47cb-baad-e8872fb2de54):
+
+- ANN202 detect protected function but mention "private" function
+- ANN202 also detect private functions when it shouldn't
+- ANN203 not raised
+
+Expected detection: 
+
+- ANN202: Missing return type annotation for protected function
+- ANN203: Missing return type annotation for secret function
+
+---
+
+_Label `question` added by @ntBre on 2025-03-19 19:57_
+
+---
+
+_Comment by @ntBre on 2025-03-19 19:58_
+
+Thanks for opening the issue! Based on the [PR](https://github.com/astral-sh/ruff/pull/625) adding support for flake8-annotations rules, I think this was an intentional choice to combine ANN202 and ANN203. I also think "private" is pretty reasonable for both types. I don't think I've run into the "protected" and "secret" terminology before.
+
+Is this causing you any problems, or is it just a difference from the upstream rule?
+
+---
+
+_Comment by @p1-dta on 2025-03-19 20:44_
+
+Hi.
+In a nutshell: Ok for me, this need to be documented but we can close if you want, thanks for answering.
+
+If this is a ruff-specific implementation and design choice, I understand but this should be explicitly stated in documentation.
+
+No issue for me except that it feels weird to go from 202 to 204 without 203 and it is not coherent with flake8-annotations, even if I'm not against "updates" when it makes sense. In this case, to have two rules for annotations, one for protected and one for private doesn't seems very valuable to me. 
+
+For protected, that's the one leading underscore attributes or methods that, by convention, should not be accessed from outside of class scope, but still shared to subclasses. You can find here two instances of the word "protected" used [here](https://docs.python.org/3/library/gettext.html#gettext.NullTranslations) and [here](https://docs.python.org/3/library/zipfile.html#zipfile.ZipInfo). 
+For "secret", I don't know why they used this wording in the flake8 extension, maybe to explicitly emphasize the difference with conventional OOP private attr.
+
+---
+
+_Comment by @ntBre on 2025-03-19 21:45_
+
+Ah, I see, thanks. I think we could definitely mention this in the documentation.
+
+---
+
+_Label `question` removed by @ntBre on 2025-03-19 21:45_
+
+---
+
+_Label `documentation` added by @ntBre on 2025-03-19 21:45_
+
+---

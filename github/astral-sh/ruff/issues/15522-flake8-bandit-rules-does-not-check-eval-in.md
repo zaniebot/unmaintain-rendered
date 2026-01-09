@@ -1,0 +1,134 @@
+---
+number: 15522
+title: "`flake8-bandit` rules does not check `eval` in callback position"
+type: issue
+state: closed
+author: xvlady
+labels:
+  - bug
+  - rule
+assignees: []
+created_at: 2025-01-16T06:27:56Z
+updated_at: 2025-01-20T09:02:55Z
+url: https://github.com/astral-sh/ruff/issues/15522
+synced_at: 2026-01-07T13:12:16-06:00
+---
+
+# `flake8-bandit` rules does not check `eval` in callback position
+
+---
+
+_Issue opened by @xvlady on 2025-01-16 06:27_
+
+Demo code:
+```
+from pandas import DataFrame
+
+def me_eval():
+    eval('[]')
+    df = DataFrame({'a': ['1', '[]', '[1,2,3]'], 'b': [4, 5, 6]})
+    # print(df.to_dict())
+    df['a'] = df['a'].apply(eval)
+    # print(df.to_dict())
+    map(eval, l)
+    # print([i for i in r])
+
+
+if __name__ == '__main__':
+    me_eval()
+```
+
+Result:
+```
+{'a': {0: '1', 1: '[]', 2: '[1,2,3]'}, 'b': {0: 4, 1: 5, 2: 6}}
+{'a': {0: 1, 1: [], 2: [1, 2, 3]}, 'b': {0: 4, 1: 5, 2: 6}}
+[1, [], [1, 2, 3]]
+```
+
+Result check:
+```
+ruff check
+demo_eval.py:5:5: S307 Use of possibly insecure function; consider using `ast.literal_eval`
+  |
+4 | def me_eval():
+5 |     eval('[]')
+  |     ^^^^^^^^^^ S307
+6 |     df = DataFrame({'a': ['1', '[]', '[1,2,3]'], 'b': [4, 5, 6]})
+7 |     # print(df.to_dict())
+  |
+```
+
+This result check has problems: 8 and 10 lines with eval don't have message ruff
+problem text:
+```
+ df['a'].apply(eval)
+map(eval, ***)
+```
+
+---
+
+_Label `bug` added by @MichaReiser on 2025-01-16 06:38_
+
+---
+
+_Label `rule` added by @MichaReiser on 2025-01-16 06:38_
+
+---
+
+_Comment by @MichaReiser on 2025-01-16 06:38_
+
+TLDR: `S307` only finds literal `eval` call but not when `eval` is used in a callback position. We should probably change the rule to warn about all usages of `eval`
+
+---
+
+_Comment by @dylwil3 on 2025-01-16 15:36_
+
+We should also change [exec-builtin (S102)](https://docs.astral.sh/ruff/rules/exec-builtin/#exec-builtin-s102) for the same reason.
+
+---
+
+_Comment by @InSyncWithFoo on 2025-01-16 20:41_
+
+`S307` is but one in a series of rules checking for usages of "suspicious" functions:
+
+* [`S301`: `suspicious-pickle-usage`](https://docs.astral.sh/ruff/rules/suspicious-pickle-usage)
+* [`S302`: `suspicious-marshal-usage`](https://docs.astral.sh/ruff/rules/suspicious-marshal-usage)
+* [`S303`: `suspicious-insecure-hash-usage`](https://docs.astral.sh/ruff/rules/suspicious-insecure-hash-usage)
+* [`S304`: `suspicious-insecure-cipher-usage`](https://docs.astral.sh/ruff/rules/suspicious-insecure-cipher-usage)
+* [`S305`: `suspicious-insecure-cipher-mode-usage`](https://docs.astral.sh/ruff/rules/suspicious-insecure-cipher-mode-usage)
+* [`S306`: `suspicious-mktemp-usage`](https://docs.astral.sh/ruff/rules/suspicious-mktemp-usage)
+* [`S307`: `suspicious-eval-usage`](https://docs.astral.sh/ruff/rules/suspicious-eval-usage)
+* [`S308`: `suspicious-mark-safe-usage`](https://docs.astral.sh/ruff/rules/suspicious-mark-safe-usage)
+* [`S310`: `suspicious-url-open-usage`](https://docs.astral.sh/ruff/rules/suspicious-url-open-usage)
+* [`S311`: `suspicious-non-cryptographic-random-usage`](https://docs.astral.sh/ruff/rules/suspicious-non-cryptographic-random-usage)
+* [`S312`: `suspicious-telnet-usage`](https://docs.astral.sh/ruff/rules/suspicious-telnet-usage)
+* [`S313`: `suspicious-xmlc-element-tree-usage`](https://docs.astral.sh/ruff/rules/suspicious-xmlc-element-tree-usage)
+* [`S314`: `suspicious-xml-element-tree-usage`](https://docs.astral.sh/ruff/rules/suspicious-xml-element-tree-usage)
+* [`S315`: `suspicious-xml-expat-reader-usage`](https://docs.astral.sh/ruff/rules/suspicious-xml-expat-reader-usage)
+* [`S316`: `suspicious-xml-expat-builder-usage`](https://docs.astral.sh/ruff/rules/suspicious-xml-expat-builder-usage)
+* [`S317`: `suspicious-xml-sax-usage`](https://docs.astral.sh/ruff/rules/suspicious-xml-sax-usage)
+* [`S318`: `suspicious-xml-mini-dom-usage`](https://docs.astral.sh/ruff/rules/suspicious-xml-mini-dom-usage)
+* [`S319`: `suspicious-xml-pull-dom-usage`](https://docs.astral.sh/ruff/rules/suspicious-xml-pull-dom-usage)
+* [`S320`: `suspicious-xmle-tree-usage`](https://docs.astral.sh/ruff/rules/suspicious-xmle-tree-usage)
+* [`S321`: `suspicious-ftp-lib-usage`](https://docs.astral.sh/ruff/rules/suspicious-ftp-lib-usage)
+* [`S323`: `suspicious-unverified-context-usage`](https://docs.astral.sh/ruff/rules/suspicious-unverified-context-usage)
+
+...and these are all stable rules. This change will have to be in preview for a while, I suppose?
+
+---
+
+_Referenced in [astral-sh/ruff#15541](../../astral-sh/ruff/pulls/15541.md) on 2025-01-17 00:11_
+
+---
+
+_Renamed from "Don't checking eval S307" to "`flake8-bandit` rules does not check `eval` in callback position" by @dhruvmanila on 2025-01-17 03:56_
+
+---
+
+_Closed by @dhruvmanila on 2025-01-20 09:02_
+
+---
+
+_Closed by @dhruvmanila on 2025-01-20 09:02_
+
+---

@@ -1,0 +1,195 @@
+---
+number: 17283
+title: Uninstall + Install 1 package everytime uv is called in a monorepo library with a different virtual environment from the root
+type: issue
+state: open
+author: btakita
+labels:
+  - question
+assignees: []
+created_at: 2026-01-02T08:15:16Z
+updated_at: 2026-01-04T13:41:11Z
+url: https://github.com/astral-sh/uv/issues/17283
+synced_at: 2026-01-07T13:12:19-06:00
+---
+
+# Uninstall + Install 1 package everytime uv is called in a monorepo library with a different virtual environment from the root
+
+---
+
+_Issue opened by @btakita on 2026-01-02 08:15_
+
+### Question
+
+Hi, I'm migrating my repo from poetry to uv. I'm very happy with how fast the installs are. However, I'm running into issues with the root config (Python 3.14) wiping out all dependencies in my library venv (3.12) and even switching it over to Python 3.14 if I'm not careful.
+
+I don't want to remember all of the flags to use Python 3.12 and really don't want to force other devs on the team to.
+
+I currently have a Makefile which seems to be the most reliable starting point. But otherwise, every time I try to run a poe task or use uv in general, it takes over & messes up the environment.
+
+```Makefile
+init_uv:
+	uv venv .venv --python 3.12 --clear
+	uv sync --python 3.12 --all-extras
+
+```
+
+Are there any tips to make `uv` keep the python 3.12 and all dependencies (including groups and optional dependencies) when in the library directory? Without any extra cli options? Any tips in general? Sorry about the lack of specifics. I have to admit, this has been very confusing & I just want to start from the basics rather than document everything I have tried.
+
+### Platform
+
+Linux 6.18.2-3-cachyos x86_64 unknown
+
+### Version
+
+_No response_
+
+---
+
+_Label `question` added by @btakita on 2026-01-02 08:15_
+
+---
+
+_Comment by @btakita on 2026-01-02 16:01_
+
+I got the proper version of Python to remain the the subdirectory with the help of mise. Which loads the virtual environment. However I now get a warning when running a poe task within the subdirectory of a monorepo...using a different version of Python:
+
+Here is the poe task:
+```
+python = "uv run --active --no-project python"
+```
+
+Here is the output:
+```
+❯ poe python --version
+Poe => uv run --active --no-project python --version
+warning: `VIRTUAL_ENV=.venv` does not match the project environment path `/home/brian/work/monorepo-root/.venv` and will be ignored; use `--active` to target the active environment instead
+Uninstalled 1 package in 0.84ms
+Installed 1 package in 6ms
+Python 3.12.12
+```
+
+Is this warning something to be concerned about or is there a way to silence the warning since I want a different virtual env? Is there a way to make uv stop uninstalling & installing a package everytime it's used?
+
+---
+
+Tracking:
+
+https://github.com/astral-sh/uv/pull/6834
+https://github.com/astral-sh/uv/issues/7778
+https://github.com/astral-sh/uv/issues/17209
+https://github.com/astral-sh/uv/issues/17154
+https://github.com/astral-sh/uv/issues/17247
+
+
+---
+
+_Comment by @btakita on 2026-01-02 16:51_
+
+I was able to silence the warning by setting:
+
+```
+UV_PROJECT_ENVIRONMENT=relative/path/from/monorepo/root/.venv
+```
+
+But I still have the uninstall + install everytime uv is run.
+
+```
+❯ poe python --version
+Poe => uv run --active --exact --no-project python --version
+Uninstalled 1 package in 0.73ms
+Installed 1 package in 14ms
+Python 3.12.12
+```
+
+---
+
+_Renamed from "Monorepo where packages have different virtual environments & versions of python" to "Uninstall + Install 1 package in a monorepo library with a different virtual environment from the root" by @btakita on 2026-01-02 16:54_
+
+---
+
+_Renamed from "Uninstall + Install 1 package in a monorepo library with a different virtual environment from the root" to "Uninstall + Install 1 package everytime uv is called in a monorepo library with a different virtual environment from the root" by @btakita on 2026-01-02 16:55_
+
+---
+
+_Comment by @btakita on 2026-01-02 16:58_
+
+This may be a poe issue. Because if I run:
+
+```
+❯ uv run --no-project python --version
+Python 3.12.12
+```
+
+But with the poe task:
+
+```
+python = "uv run --no-project python"
+```
+
+I get:
+
+```
+❯ poe python --version
+Poe => uv run --no-project python --version
+Uninstalled 1 package in 0.76ms
+Installed 1 package in 6ms
+Python 3.12.12
+```
+
+Even though this is a [poe issue](https://github.com/nat-n/poethepoet/issues/345), some clarity on why a package is uninstalled & installed would be great! I wasn't able to figure out how to log which package it is. `--verbose` doesn't provide more detail.
+
+Note that `--no-project` prevents the uninstall + install of the package. Without it:
+
+```
+❯ uv run python --version
+Uninstalled 1 package in 0.40ms
+Installed 1 package in 9ms
+Python 3.12.12
+```
+
+---
+
+_Referenced in [nat-n/poethepoet#345](../../nat-n/poethepoet/issues/345.md) on 2026-01-02 17:02_
+
+---
+
+_Comment by @nat-n on 2026-01-03 14:23_
+
+Hi @btakita ,
+
+I suspect your problem is the default behaviour of uv workspaces which cause all projects in a monorepo to share a venv, which is usually helpful, but goes against what you want here.
+
+Here's a formula to setup a minimal example of a project setup similar to what you describe:
+
+```sh
+uv tool install poethepoet # ensure poe cli is installed globally
+```
+
+```sh
+# create buildable root project with dependencies and a poe task
+mkdir rootproject
+cd rootproject
+uv init --lib --python 3.13.0
+uv add typer
+cat >> pyproject.toml <<EOF
+[tool.poe.tasks.check-env]
+cmd = "python --version"
+EOF
+poe check-env
+
+# create buildable child project with dependencies and a poe task
+mkdir childproject
+cd childproject
+uv init --lib --python 3.12.0 --no-workspace # make sure childproject isn't added to shared workspace!
+uv add flask
+cat >> pyproject.toml <<EOF
+[tool.poe.tasks.check-env]
+cmd = "python --version"
+EOF
+poe check-env
+```
+
+With this you should see that there is a separate .venv for the childproject with distinct dependencies, and you can go back and forth between the two project directories and run their respective `poe check-env` tasks and see that they run with different python versions without having to update the venv back and forth every time :)
+
+---

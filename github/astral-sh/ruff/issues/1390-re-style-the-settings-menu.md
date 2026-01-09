@@ -1,0 +1,36 @@
+---
+number: 1390
+title: Re-style the settings menu
+type: issue
+state: closed
+author: charliermarsh
+labels:
+  - playground
+assignees: []
+created_at: 2022-12-26T19:06:10Z
+updated_at: 2022-12-29T18:03:56Z
+url: https://github.com/astral-sh/ruff/issues/1390
+synced_at: 2026-01-07T13:12:14-06:00
+---
+
+# Re-style the settings menu
+
+---
+
+_Issue opened by @charliermarsh on 2022-12-26 19:06_
+
+_No description provided._
+
+---
+
+_Label `playground` added by @charliermarsh on 2022-12-26 19:06_
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2022-12-26 19:06_
+
+---
+
+_Closed by @charliermarsh on 2022-12-29 18:03_
+
+---

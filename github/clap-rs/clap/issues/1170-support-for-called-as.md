@@ -1,0 +1,124 @@
+---
+number: 1170
+title: "Support for 'Called as'"
+type: issue
+state: closed
+author: MggMuggins
+labels: []
+assignees: []
+created_at: 2018-02-10T00:05:48Z
+updated_at: 2018-08-02T03:30:18Z
+url: https://github.com/clap-rs/clap/issues/1170
+synced_at: 2026-01-07T13:12:19-06:00
+---
+
+# Support for 'Called as'
+
+---
+
+_Issue opened by @MggMuggins on 2018-02-10 00:05_
+
+In some (mostly systems programming) situations, links are used to move a whole bunch of executables into one, and let that one figure out how it was called in order to determine it's behavior. I haven't done a ton of digging (so I don't know if there is support for this), but it would be really cool if clap supported this in some way. Feel free to close this, it's just a thought, really. Let me know if you want more detail.
+
+---
+
+_Comment by @kbknapp on 2018-02-10 03:44_
+
+This is supported in a somewhat hacky way, however this is something an external crate could do easily (one just doesn't exist yet).
+
+I'll give each "application" a different argument so you can see what it would conceptually look like to have different args for each.
+
+```
+$ cargo new facade --bin
+```
+
+```rust
+// src/main.rs
+
+extern crate clap;
+use clap::{Arg, App};
+
+use std::env;
+
+fn main(){
+    // set up each of our "applications"
+    let foo = App::new("foo")
+        .bin_name("foo")
+        .arg(Arg::with_name("a").short("a"));
+    let bar = App::new("bar")
+        .bin_name("bar")
+        .arg(Arg::with_name("b").short("b"));
+    let baz = App::new("baz")
+        .bin_name("baz")
+        .arg(Arg::with_name("c").short("c"));
+    
+    // match whatever the link was (normally you'd probably send those matches
+    // off to some *_run(matches) style function 
+    match &*env::args().nth(0).unwrap_or(String::new()) {
+        "foo" => foo.get_matches(),
+        "bar" => bar.get_matches(),
+        "baz" => baz.get_matches(),
+        _ => panic!("Something went terribly wrong.")
+    }
+}
+```
+
+```
+$ pwd
+/tmp/issue_1170
+
+$ ls -l
+total 24
+lrwxrwxrwx 1 kevin kevin   17 Feb  9 22:34 bar -> /home/kevin/.local/bin/facade
+lrwxrwxrwx 1 kevin kevin   17 Feb  9 22:34 baz -> /home/kevin/.local/bin/facade
+lrwxrwxrwx 1 kevin kevin   17 Feb  9 22:33 foo -> /home/kevin/.local/bin/facade
+
+$ foo --help
+foo
+
+USAGE:
+    foo [FLAGS]
+
+FLAGS:
+    -a
+    -h, --help       Prints help information
+    -V, --version    Prints version information
+
+$ bar --help
+bar
+
+USAGE:
+    bar [FLAGS]
+
+FLAGS:
+    -b
+    -h, --help       Prints help information
+    -V, --version    Prints version information
+
+$ baz --help
+baz
+
+USAGE:
+    baz [FLAGS]
+
+FLAGS:
+    -c
+    -h, --help       Prints help information
+    -V, --version    Prints version information
+```
+
+---
+
+_Closed by @kbknapp on 2018-02-10 03:44_
+
+---
+
+_Comment by @MggMuggins on 2018-02-10 17:23_
+
+I see. Thanks for the explanation!
+
+---
+
+_Referenced in [ogham/exa#332](../../ogham/exa/issues/332.md) on 2018-02-15 20:10_
+
+---

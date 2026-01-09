@@ -1,0 +1,133 @@
+---
+number: 3211
+title: "Regression: Subcommand attribute not supported for unit type"
+type: issue
+state: closed
+author: dunnock
+labels:
+  - C-bug
+  - S-waiting-on-author
+assignees: []
+created_at: 2021-12-23T16:16:25Z
+updated_at: 2021-12-27T16:29:13Z
+url: https://github.com/clap-rs/clap/issues/3211
+synced_at: 2026-01-07T13:12:19-06:00
+---
+
+# Regression: Subcommand attribute not supported for unit type
+
+---
+
+_Issue opened by @dunnock on 2021-12-23 16:16_
+
+### Please complete the following tasks
+
+- [X] I have searched the [discussions](https://github.com/clap-rs/clap/discussions)
+- [X] I have searched the existing issues
+
+### Rust Version
+
+rustc 1.57.0 (f1edd0429 2021-11-29)
+
+### Clap Version
+
+3.0.0-rc.7
+
+### Minimal reproducible code
+
+```rust
+use clap::{Parser, Subcommand};                                                                                                                        
+  
+  #[derive(Parser)]                                                                                                                        
+  struct Opt {                                                            
+      #[clap(subcommand)]                                                 
+      cmd: CmdOptions,
+  }                                                                       
+                                                              
+ #[derive(Subcommand)]   //  ■ proc-macro derive produced unparseable tokens                                                                                                                        
+  enum CmdOptions {
+      CmdStruct {          
+          #[clap(subcommand)]                                                                                                                                                                                                               
+          cmd: Cmd2      
+      },                                                                                                                                                                                                                 
+     CmdUnit(#[clap(subcommand)] Cmd2)   //  ■ expected type, found `#`  expected type                                                                                                                               
+  }                                                                  
+                                                                                                                                                                                              
+  #[derive(Subcommand)]                                              
+  enum Cmd2 {                                                                                                                        
+      Command
+  }
+
+fn main() {}
+```
+
+
+### Steps to reproduce the bug with the above code
+
+cargo build produces compilation errors
+
+### Actual Behaviour
+
+```
+❯ cargo build
+   Compiling clap-derive-bug v0.1.0 (/home/maxim/src/rust/clap-derive-bug)
+error: expected type, found `#`
+  --> src/main.rs:15:13
+   |
+15 |     CmdUnit(#[clap(subcommand)] Cmd2)
+   |             ^ expected type
+
+error: proc-macro derive produced unparseable tokens
+ --> src/main.rs:9:10
+  |
+9 | #[derive(Subcommand)]
+  |          ^^^^^^^^^^
+
+error: could not compile `clap-derive-bug` due to 2 previous errors
+```
+
+### Expected Behaviour
+
+#[clap(subcommand)] macro is supported for unit structs according to https://github.com/clap-rs/clap/discussions/3094
+
+### Additional Context
+
+_No response_
+
+### Debug Output
+
+_No response_
+
+---
+
+_Label `C-bug` added by @dunnock on 2021-12-23 16:16_
+
+---
+
+_Comment by @epage on 2021-12-23 16:28_
+
+We support the attribute on the variant, not on the tuple's element, similar to `flatten`.
+
+This was missing from the derive reference but I just added it, see https://github.com/clap-rs/clap/blob/master/examples/derive_ref/README.md#app-attributes
+
+---
+
+_Comment by @epage on 2021-12-23 16:28_
+
+Also, that linked discussion links out to a PR with an example: https://github.com/clap-rs/clap/pull/2587
+
+---
+
+_Label `S-waiting-on-author` added by @epage on 2021-12-23 16:30_
+
+---
+
+_Comment by @epage on 2021-12-27 16:29_
+
+I'm assuming what I point to resolves this and am closing this out.  Feel free to say otherwise!
+
+---
+
+_Closed by @epage on 2021-12-27 16:29_
+
+---

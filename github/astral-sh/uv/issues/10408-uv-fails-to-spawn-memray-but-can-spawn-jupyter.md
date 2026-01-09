@@ -1,0 +1,115 @@
+---
+number: 10408
+title: uv fails to spawn memray but can spawn jupyter
+type: issue
+state: closed
+author: rbavery
+labels:
+  - needs-mre
+assignees: []
+created_at: 2025-01-08T19:48:36Z
+updated_at: 2025-01-14T23:49:17Z
+url: https://github.com/astral-sh/uv/issues/10408
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# uv fails to spawn memray but can spawn jupyter
+
+---
+
+_Issue opened by @rbavery on 2025-01-08 19:48_
+
+I've added `jupyter` and `memray` as dev dependencies
+
+```shell
+-> % uv add --dev jupyter
+Resolved 313 packages in 0.90ms
+Audited 303 packages in 0.16ms
+(base)
+rave@studio2 [11:46:47] [~/wherobots-inference/dockers/gpu] [local-data-tests *]
+-> % uv add --dev memray
+Resolved 313 packages in 0.83ms
+Audited 303 packages in 0.17ms
+```
+
+```shell
+-> % uv run jupyter
+usage: jupyter [-h] [--version] [--config-dir] [--data-dir] [--runtime-dir] [--paths] [--json] [--debug] [subcommand]
+
+....
+
+-> % uv run memray
+error: Failed to spawn: `memray`
+  Caused by: No such file or directory (os error 2)
+```
+
+I'd expect memray to be available and to see the same output I would get from running memray after pip installing it without `uv run`
+
+```shell
+- > % pip install memray
+-> % memray
+usage: memray [-h] [-v] [-V] {run,flamegraph,table,live,tree,parse,summary,stats,transform,attach,detach} ...
+memray: error: the following arguments are required: command
+```
+
+I'm on the latest uv
+
+```shell
+-> % uv --version
+uv 0.5.16
+```
+
+
+---
+
+_Comment by @zanieb on 2025-01-08 20:59_
+
+What OS are you on?
+
+---
+
+_Comment by @rbavery on 2025-01-08 21:59_
+
+woops forgot to mention, I'm on Ubuntu 22.04 via WSL2
+
+---
+
+_Comment by @zanieb on 2025-01-08 22:08_
+
+What's in `ls .venv/bin`?
+
+---
+
+_Comment by @samypr100 on 2025-01-09 00:28_
+
+Note, I just tried this on Ubuntu 22.04 in WSL2 and didn't get any issues.
+
+```
+uv run memray
+usage: memray [-h] [-v] [-V] {run,flamegraph,table,live,tree,parse,summary,stats,transform,attach,detach} ...
+memray: error: the following arguments are required: command
+```
+
+What Docker and WSL version are you using? I am using 4.37.1 (Docker) 2.3.26 (WSL).
+
+---
+
+_Label `needs-mre` added by @samypr100 on 2025-01-09 00:30_
+
+---
+
+_Comment by @rbavery on 2025-01-14 23:33_
+
+Sorry I think this is an issue unique to me running memray within a docker container on WSL2. can't reproduce outside of it, closing.
+
+---
+
+_Closed by @rbavery on 2025-01-14 23:33_
+
+---
+
+_Comment by @zanieb on 2025-01-14 23:49_
+
+Thanks @rbavery !
+
+---

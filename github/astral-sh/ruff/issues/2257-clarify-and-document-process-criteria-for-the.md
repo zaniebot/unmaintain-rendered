@@ -1,0 +1,104 @@
+---
+number: 2257
+title: Clarify and document process/criteria for the inclusion of new checks
+type: issue
+state: open
+author: sciyoshi
+labels: []
+assignees: []
+created_at: 2023-01-27T14:50:03Z
+updated_at: 2023-03-16T12:18:59Z
+url: https://github.com/astral-sh/ruff/issues/2257
+synced_at: 2026-01-07T13:12:14-06:00
+---
+
+# Clarify and document process/criteria for the inclusion of new checks
+
+---
+
+_Issue opened by @sciyoshi on 2023-01-27 14:50_
+
+People who are looking to adopt Ruff will invariably have differing needs from their linter. There are currently at least 400 flake8 plugins/linter packages on PyPI, and it is unlikely that Ruff will grow in scope to support all of them (nor should it, I think).
+
+Given this, and especially in the absence of a [plugin system](https://github.com/charliermarsh/ruff/issues/283#issuecomment-1403025627), I think it would be helpful to document what checks would be accepted into Ruff. There is some information on the maintenance team's perspective on this scattered throughout comments in the GitHub issues. Perhaps the clearest stance I've seen is [laid out here](https://github.com/charliermarsh/ruff/issues/2054#issuecomment-1399613889), but there are also some related thoughts [here](https://github.com/charliermarsh/ruff/issues/2142#issuecomment-1402739664) and [here](https://github.com/charliermarsh/ruff/issues/2142#issuecomment-1402695405). If I were to attempt to summarize:
+
+1. **There should be a clear rationale for why a check is useful.**
+
+   An obvious criteria, and I would suggest that such a rationale would make sense to include as part of any documentation for the check.
+
+2. **It should be sufficiently robust, i.e. few false positives and negatives.**
+
+   For checks that are enabled by default in Ruff, I would agree with this. However, there is a class of checks that are useful to enable in some scenarios, but that shouldn't be enabled by default and should likely be explicitly opt-in. Would these be considered for inclusion? There's been discussion of having [check categories](https://github.com/charliermarsh/ruff/issues/1774), and maybe the answer is that the work there needs to be completed first.
+
+3. **It should not be overly complex to implement relative to its usefulness.**
+
+    This might exclude some otherwise useful checks, but I think limiting scope in this way makes sense in order to reduce the maintenance burden.
+
+4. **There should be evidence of demand.**
+
+   Does this mean the check is part of a flake8 plugin with N downloads/month for some N >> 0? Or is opening GitHub issue with a few votes enough to count?
+
+I would suggest another criteria: checks should likely be library-agnostic. Note that some upstream checks that are planned for inclusion already go against this, e.g. Django- and requests-related checks in flake8-bandit.
+
+As an example, ESLint documents their [guidelines for new rules here](https://eslint.org/docs/latest/contribute/propose-new-rule). Including a similar section with some of the above information in CONTRIBUTING.md would I think be helpful.
+
+There is also the broader question of whether Ruff is planning to take an opinionated stance on linting (akin to black for formatting), but maybe that is a separate discussion.
+
+---
+
+_Comment by @sciyoshi on 2023-01-27 14:52_
+
+Disclosure: I bring this question up because of a specific security-related check I'd be interested in seeing in Ruff that we've been using in our own codebase via a custom flake8 plugin, that is broadly useful but will likely have false positives (should not be enabled by default), and that has been requested in [flake8-bugbear](https://github.com/PyCQA/flake8-bugbear/issues/57) and [flake8-bandit](https://github.com/PyCQA/bandit/issues/445) but not yet implemented. At the moment, it seems there isn't a great place to add it (short of creating a new flake8 plugin for it specifically), but if there is a chance of it being accepted I'd be happy to do that work.
+
+---
+
+_Comment by @charliermarsh on 2023-01-27 15:34_
+
+This is great and a much-needed discussion. I can't write a complete response _right now_ but I'll try to return to this as soon as I can (hopefully this weekend).
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2023-01-27 15:40_
+
+---
+
+_Comment by @sciyoshi on 2023-01-30 01:21_
+
+Two other thoughts/questions that came to mind along similar lines:
+
+- Should Ruff include checks for compatibility with versions of Python that are unsupported by Ruff itself? (Per [this comment](https://github.com/charliermarsh/ruff/issues/2096#issuecomment-1399652963), probably not).
+- Should Ruff include checks for things that would normally be addressed by an AST-preserving autoformatter (black or [otherwise](https://github.com/charliermarsh/ruff/issues/1904))? Note that the already-implemented `flake8-quotes` and `flake8-commas` probably fall into this category, as would [`flake8-tabs`](https://github.com/charliermarsh/ruff/issues/2319#issuecomment-1407548839).
+
+---
+
+_Referenced in [astral-sh/ruff#2315](../../astral-sh/ruff/issues/2315.md) on 2023-01-31 04:33_
+
+---
+
+_Comment by @berzi on 2023-02-22 08:19_
+
+Additional question: is the process of implementing new checks documented for potential contributors? Upon a (very) cursory look I couldn't find anything and if I wanted to contribute I'd have to read existing code and try to emulate it, which might result in suboptimal implementation.
+
+---
+
+_Comment by @charliermarsh on 2023-02-22 16:15_
+
+@berzi - Yeah, the contributing section has some guidance on adding new rules! https://beta.ruff.rs/docs/contributing/#example-adding-a-new-lint-rule
+
+---
+
+_Referenced in [astral-sh/ruff#3269](../../astral-sh/ruff/issues/3269.md) on 2023-02-28 17:09_
+
+---
+
+_Comment by @jankatins on 2023-03-16 12:15_
+
+Another suggestion I would have is a "black"-like opinionated but more or less universally applicable set of checks as default: checks for clear bugs, (by some definition) sane formatting, typing problems, old style code which has newer versions, security issues, ... So I can drop in `ruff .` or even `ruff . --fix` and get a nice codebase (after fixing all checks) without having to configure anything at the start. Similar to the black experience: It makes sense, one might have a slightly different opinion but having one thing implemented makes the codebase better than not having ruff run on it. no matter the opinions.
+
+---
+
+_Comment by @berzi on 2023-03-16 12:18_
+
+@jankatins A default configuration already exists. One might argue it's currently too conservative, but that seems like a discussion for a separate issue.
+
+---

@@ -1,0 +1,71 @@
+---
+number: 620
+title: N805 First argument of a method should be named self -- false positive for __new__
+type: issue
+state: closed
+author: LefterisJP
+labels:
+  - bug
+assignees: []
+created_at: 2022-11-06T11:01:28Z
+updated_at: 2022-11-06T21:37:07Z
+url: https://github.com/astral-sh/ruff/issues/620
+synced_at: 2026-01-07T13:12:14-06:00
+---
+
+# N805 First argument of a method should be named self -- false positive for __new__
+
+---
+
+_Issue opened by @LefterisJP on 2022-11-06 11:01_
+
+In python `__new__` is a special method and its signature does not need to start with an argument named `self`. It most commonly looks like this:
+
+```python
+def __new__(cls, *args, **kwargs)
+    ....
+```
+
+Yet ruff will complain with `N805 First argument of a method should be named self`
+
+---
+
+_Label `bug` added by @charliermarsh on 2022-11-06 11:32_
+
+---
+
+_Comment by @charliermarsh on 2022-11-06 11:33_
+
+(Agreed!)
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2022-11-06 15:29_
+
+---
+
+_Comment by @andersk on 2022-11-06 17:51_
+
+Other exemptions present in the pep8-naming [source](https://github.com/PyCQA/pep8-naming/blob/main/src/pep8ext_naming.py): `__new__`, `__init_subclass__`, `__class_getitem__`, and any method in a class with `type` or `ABCMeta` in its base classes, are automatically class methods.
+
+---
+
+_Comment by @charliermarsh on 2022-11-06 19:26_
+
+Will fix all of those today.
+
+---
+
+_Referenced in [astral-sh/ruff#624](../../astral-sh/ruff/pulls/624.md) on 2022-11-06 20:29_
+
+---
+
+_Closed by @charliermarsh on 2022-11-06 20:29_
+
+---
+
+_Comment by @LefterisJP on 2022-11-06 21:37_
+
+Thank you Charlie. Realy.
+
+---

@@ -1,0 +1,44 @@
+---
+number: 18485
+title: F841 - not reporting unused variable with redeclaration
+type: issue
+state: closed
+author: Morkunas
+labels: []
+assignees: []
+created_at: 2025-06-05T20:26:05Z
+updated_at: 2025-06-05T21:39:08Z
+url: https://github.com/astral-sh/ruff/issues/18485
+synced_at: 2026-01-07T13:12:16-06:00
+---
+
+# F841 - not reporting unused variable with redeclaration
+
+---
+
+_Issue opened by @Morkunas on 2025-06-05 20:26_
+
+### Summary
+
+Hello. Thank you for making such a great tool.
+
+Here is playground link to reproduce. https://play.ruff.rs/d4a7b67c-b01b-4f84-b921-549b472f3b1d
+I'd expect to see another error (similar to unused b). Something like `Local variable `a` is assigned to but never used (F841) [Ln 3, Col 5]`.
+
+Thank you
+
+### Version
+
+v0.11.12
+
+---
+
+_Comment by @ntBre on 2025-06-05 21:39_
+
+Thanks for the report! The examples in https://github.com/astral-sh/ruff/issues/6704 are a bit more complex, but I believe that's where we are tracking the root cause of this. See https://github.com/astral-sh/ruff/issues/14355 for a more similar example also linked back to #6704.
+
+---
+
+_Closed by @ntBre on 2025-06-05 21:39_
+
+---

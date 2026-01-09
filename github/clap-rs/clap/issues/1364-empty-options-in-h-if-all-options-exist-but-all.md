@@ -1,0 +1,99 @@
+---
+number: 1364
+title: Empty OPTIONS in -h if all options exist but all are hidden_short_help
+type: issue
+state: closed
+author: FauxFaux
+labels:
+  - C-enhancement
+  - A-help
+  - E-easy
+assignees: []
+created_at: 2018-10-18T19:07:23Z
+updated_at: 2020-04-16T17:45:24Z
+url: https://github.com/clap-rs/clap/issues/1364
+synced_at: 2026-01-07T13:12:19-06:00
+---
+
+# Empty OPTIONS in -h if all options exist but all are hidden_short_help
+
+---
+
+_Issue opened by @FauxFaux on 2018-10-18 19:07_
+
+### Affected Version of clap
+
+2.32.0
+
+### Bug or Feature Request Summary
+
+If all of your option-taking arguments are `hidden_short_help`, I would expect the "OPTIONS" section to be absent (as if the flags did not exist). 
+
+### Actual Behavior Summary
+
+"OPTIONS:" shows up, and is not visually pleasing.
+
+```
+FLAGS:
+    -f               
+    -h, --help       Prints help information
+    -V, --version    Prints version information
+
+OPTIONS:
+
+
+ARGS:
+    <FILES>... 
+```
+
+### Sample Code or Link to Sample Code
+
+```rust
+extern crate clap; use clap::App; use clap::Arg;
+fn main() {
+    App::new("demo")
+        .arg(Arg::with_name("foo").short("f"))
+        .arg(Arg::with_name("baz").short("z")
+             .value_name("BAZ")
+             .hidden_short_help(true))
+        .arg(Arg::with_name("files")
+             .value_name("FILES")
+             .multiple(true))
+        .get_matches();
+}
+```
+
+
+---
+
+_Label `C: help message` added by @CreepySkeleton on 2020-02-01 15:41_
+
+---
+
+_Label `T: enhancement` added by @CreepySkeleton on 2020-02-01 15:41_
+
+---
+
+_Added to milestone `3.1` by @pksunkara on 2020-04-09 07:36_
+
+---
+
+_Label `C: args` added by @pksunkara on 2020-04-09 07:37_
+
+---
+
+_Label `D: easy` added by @pksunkara on 2020-04-09 07:37_
+
+---
+
+_Label `Z: good first issue` added by @pksunkara on 2020-04-09 07:37_
+
+---
+
+_Referenced in [clap-rs/clap#1832](../../clap-rs/clap/pulls/1832.md) on 2020-04-16 08:04_
+
+---
+
+_Closed by @bors[bot] on 2020-04-16 17:45_
+
+---

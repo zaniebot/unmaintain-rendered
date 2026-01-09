@@ -1,0 +1,282 @@
+---
+number: 1422
+title: Allow banning of certain modules and certain module members
+type: issue
+state: closed
+author: not-my-profile
+labels:
+  - rule
+assignees: []
+created_at: 2022-12-28T10:22:38Z
+updated_at: 2023-01-04T01:59:02Z
+url: https://github.com/astral-sh/ruff/issues/1422
+synced_at: 2026-01-07T13:12:14-06:00
+---
+
+# Allow banning of certain modules and certain module members
+
+---
+
+_Issue opened by @not-my-profile on 2022-12-28 10:22_
+
+Sometimes you want to assert that certain modules are never imported. Apparently Pylint and Pyflake have plugins for that ([pylint-restricted-imports](https://pypi.org/project/pylint-restricted-imports/) and [flake8-tidy-imports](https://github.com/adamchainz/flake8-tidy-imports#banned-modules) respectively).
+
+I think the disallowed modules / module members could be defined in a new `tool.ruff.banned-api` section in `pyproject.toml`. So you could for example have:
+
+```toml
+[tool.ruff.banned-api]
+argparse.msg = "Use typed_argparse instead."
+"decimal.Decimal".msg = "Use ints and floats only."
+"typing.TypedDict".msg = """Use typing_extensions.TypedDict instead.
+
+typing.TypedDict does not support typing.Generic for Python < 3.11,
+so we sometimes have to use typing_extensions.TypedDict instead.
+If we sometimes use typing_extensions.TypedDict, we however always
+want to use it because:
+
+class Foo(typing.TypedDict): ...
+class Bar(typing_extensions.TypedDict): ...
+class Baz(Foo, Bar): ...
+
+results in a runtime type error:
+
+> TypeError: metaclass conflict: the metaclass of a derived class must be a (non-strict) subclass of the metaclasses of all its bases
+"""
+```
+
+Note that banning module members is a bit challenging because we also have to account for attribute access e.g.
+
+```python
+import example
+example.evil_function()
+
+# or
+
+import example as other
+other.evil_function()
+```
+
+I think it is quite clear that it is impossible for such a lint to prevent all the ways an API can be accessed, for example banned modules could still be accessed via `importlib` or `eval` and banning `eval` is a hopeless endeavor because there are countless ways of accessing it e.g. `globals()['__builtins__'].eval` or even `dataclasses.builtins.eval`. Completely preventing attribute access is even more difficult because you'd have to understand data flows (e.g.  `(lambda x: x.evil_function())(example)`).
+
+So I just think the documentation of the lint should clarify that it's meant to prevent accidental usage of the API and can be easily circumvented.
+
+Aside from such false negatives the attribute access check would probably also result in false positives e.g.
+
+```python
+import example, other
+example = other
+example.evil_function()
+
+# or
+
+def foo(example):
+    example.evil_function()
+```
+
+So I think the error message for detected attribute access should say something like "it looks like you used a banned API" instead of using assertive language that might confuse users.
+
+Lastly in cases where the fix is just replacing one import for another (e.g. changing `typing.TypedDict` to `typing_extensions.TypedDict`) it would be nice if ruff could provide automatic fixing via `--fix`. This is also the reason why I suggested the `.msg` in the previous config example because then we could additionally specify e.g:
+
+```toml
+"typing.TypedDict".fix-to = "typing_extensions.TypedDict"
+```
+
+I have not contributed to ruff yet, but if the people here like the suggested lint, I could look into implementing it :)
+
+---
+
+_Referenced in [microsoft/pyright#4380](../../microsoft/pyright/issues/4380.md) on 2022-12-28 10:27_
+
+---
+
+_Comment by @charliermarsh on 2022-12-28 12:21_
+
+Thanks for writing this up!
+
+I think the most straightforward path would be to model this after `flake8-tidy-imports`, and use the error code `TID251` (we already supported `I252` from `flake8-tidy-imports`, but it's one of the few codes we renamed to avoid conflicts).
+
+We can start by using the same API as `flake8-tidy-imports`. (Replacement autofix is a bit difficult right now, because we need a way to "inject" an import into a file -- see https://github.com/charliermarsh/ruff/issues/835. That is, if you change `typing` to `typing_extensions`, you may have to add an import for it.)
+
+---
+
+_Label `rule` added by @charliermarsh on 2022-12-28 12:21_
+
+---
+
+_Comment by @charliermarsh on 2022-12-28 12:32_
+
+It looks like `flake8-tidy-imports` only flags imports and not arbitrary member accesses, so I'd also be fine starting with that behavior (which makes the check somewhat trivial to implement).
+
+https://github.com/adamchainz/flake8-tidy-imports/blob/main/src/flake8_tidy_imports/__init__.py#L184
+
+I know that doesn't solve your `typing.TypedDict` problem since it's common to `import typing`, but we could enforce that as a separate check (banned member access).
+
+---
+
+_Comment by @charliermarsh on 2022-12-28 12:42_
+
+Let me know if you're interested in implementing, and I could write up some more specific instructions.
+
+---
+
+_Comment by @not-my-profile on 2022-12-28 13:07_
+
+> we need a way to "inject" an import into a file
+
+Good point, should we open a separate issue for that?
+
+> It looks like flake8-tidy-imports only flags imports and not arbitrary member accesses
+
+According to its README `flake8-tidy-imports` does support banning members
+
+>Note that despite the name, you can ban imported objects too, since the syntax is the same. 
+
+but only when they're imported as e.g. `import TypedDict from typing` and not when accessed via the module name (see https://github.com/adamchainz/flake8-tidy-imports/issues/63)
+
+> we could enforce that as a separate check (banned member access)
+
+I am not sure how much sense it makes to have two separate checks for this because `from foo import bar` is ambiguous ... just from that we cannot know if `bar` is the `foo.bar` module or if `bar` is an object defined in the `foo` module (which is probably also the reason why `flake8-tidy-imports` supports this ... it's not intentional, it's a side effect).
+
+With this side-effect in mind I think it makes sense to properly check for attribute access as well, at which point the check is more than I251, ... I am not sure if using an existing identifier implies that the check by ruff is exactly the same?
+
+Yes I'm interested in implementing this :)
+
+---
+
+_Comment by @charliermarsh on 2022-12-28 14:16_
+
+> Good point, should we open a separate issue for that?
+
+It's filed here: https://github.com/charliermarsh/ruff/issues/835. (I linked the wrong issue above, edited.)
+
+> According to its README flake8-tidy-imports does support banning members
+
+Yeah! I saw that too. What I meant was that it doesn't detect module accesses as in the issue you linked. I was mostly suggesting that should be a separate check so-as to maintain compatibility with `flake8-tidy-imports`, but if that's the _intent_ of the check, and they just consider it a deficiency, then it's fine to do it all as one check code as you've proposed.
+
+
+---
+
+_Comment by @charliermarsh on 2022-12-28 14:19_
+
+> Yes I'm interested in implementing this :)
+
+Great! There are some instructions on adding check codes in general in the [contributing guide](https://github.com/charliermarsh/ruff/blob/main/CONTRIBUTING.md).
+
+For this code, you'd then want to do two things above those initial steps:
+
+1. Add the `banned-modules` option to `src/flake8_tidy_imports/settings.rs`, probably as a hash map from module name to message.
+2. In `checkers/ast.rs`, around [here](https://github.com/charliermarsh/ruff/blob/main/src/checkers/ast.rs#L635), add a call out to a new check in `src/flake8_tidy_imports/checks.rs` (and similarly for `StmtKind::ImportFrom`) with the appropriate logic.
+
+---
+
+_Comment by @charliermarsh on 2022-12-28 14:21_
+
+I'd kind of prefer to avoid implementing all of the wildcarding that `flake8-tidy-imports` supports. It complicates the API and the implementation, and makes it more challenging to do these checks efficiently across the codebase (which will be required if we support flagging member access -- we'll have to perform these checks a lot).
+
+I also can't really find any usages of the wildcarding in [code search](https://cs.github.com/?q=banned-modules).
+
+So, IMO, let's skip that for now.
+
+---
+
+_Comment by @charliermarsh on 2022-12-28 14:22_
+
+(You can just ping here as you have questions, I'm happy to help.)
+
+---
+
+_Comment by @not-my-profile on 2022-12-29 05:02_
+
+> Add the `banned-modules` option
+
+I think naming it `banned-api` makes more sense since it can also be used to ban module members.
+
+---
+
+_Referenced in [astral-sh/ruff#1436](../../astral-sh/ruff/pulls/1436.md) on 2022-12-29 08:41_
+
+---
+
+_Closed by @charliermarsh on 2022-12-30 03:11_
+
+---
+
+_Comment by @not-my-profile on 2022-12-30 07:35_
+
+Thanks for being so responsive and thoughtful! The `CONTRIBUTING.md` and `cargo +nightly dev generate-all` are really quite nice. I did run into some small issues when following `CONTRIBUTING.md` and just opened #1466 to address these (and also #1465 with a followup fix for something we both missed).
+
+---
+
+_Comment by @charliermarsh on 2022-12-30 12:23_
+
+Thank you for your contribution, and for bearing with my feedback! It's hugely appreciated! I'm really glad to have you as a contributor :)
+
+
+---
+
+_Comment by @sbdchd on 2023-01-04 01:45_
+
+I use a the wildcard syntax [in a project](https://github.com/chdsbd/kodiak/blob/0c1171bc8f574d7ee11ab6174036edadfbc5ec09/bot/tox.ini#LL1-L4C28), so the config ends up being:
+
+
+```ini
+[flake8]
+banned-modules =
+  httpx.* = Use kodiak.http
+ban-relative-imports = true
+```
+
+My use case is preventing people from importing `httpx` at all and instead using the project's wrapper around the library
+
+Maybe there is a way to achieve this without the `*`?
+
+[example uses (in the wrapper module)](https://github.com/chdsbd/kodiak/blob/0c1171bc8f574d7ee11ab6174036edadfbc5ec09/bot/kodiak/http.py#L5-L13
+) that flake8-tidy-import lints:
+
+```python
+from httpx import (  # noqa: I251
+    AsyncClient,
+    HTTPError,
+    HTTPStatusError,
+    Request,
+    Response,
+)
+from httpx._config import DEFAULT_TIMEOUT_CONFIG  # noqa: I251
+from httpx._types import TimeoutTypes  # noqa: I251
+```
+
+
+---
+
+_Comment by @charliermarsh on 2023-01-04 01:46_
+
+Would `banned-modules = httpx` achieve the same thing? (Sorry, being lazy, but what's the difference between the semantics in those two cases?)
+
+---
+
+_Comment by @sbdchd on 2023-01-04 01:54_
+
+Oh yeah that's what I should have been using, didn't know about that!
+
+I'll make a separate issue because I think the following config isn't working:
+
+
+```toml
+[tool.ruff.flake8-tidy-imports]
+# Disallow all relative imports.
+ban-relative-imports = "all"
+[tool.ruff.flake8-tidy-imports.banned-api]
+"httpx".msg = "Use kodiak.http"
+```
+
+---
+
+_Comment by @charliermarsh on 2023-01-04 01:59_
+
+Go for it, I haven’t used that plug-in a ton yet myself but happy to take a look.
+
+---
+
+_Referenced in [astral-sh/ruff#1614](../../astral-sh/ruff/issues/1614.md) on 2023-01-04 02:01_
+
+---

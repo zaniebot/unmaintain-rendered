@@ -1,0 +1,42 @@
+---
+number: 22284
+title: Consider replacing bincode
+type: issue
+state: open
+author: MichaReiser
+labels:
+  - internal
+assignees: []
+created_at: 2025-12-29T17:32:09Z
+updated_at: 2025-12-30T18:28:30Z
+url: https://github.com/astral-sh/ruff/issues/22284
+synced_at: 2026-01-07T13:12:16-06:00
+---
+
+# Consider replacing bincode
+
+---
+
+_Issue opened by @MichaReiser on 2025-12-29 17:32_
+
+bincode is now unmaintained (considered feature complete). It still gets security updates, for now. But we should probably consider moving to something else.
+
+https://git.sr.ht/~stygianentity/bincode/tree/trunk/item/README.md
+
+---
+
+_Label `internal` added by @MichaReiser on 2025-12-29 17:32_
+
+---
+
+_Comment by @chirizxc on 2025-12-30 18:16_
+
+https://github.com/djkoloski/rust_serialization_benchmark
+
+From what I know:
+
+[borsh-rs](https://github.com/near/borsh-rs)  |  [wincode](https://github.com/anza-xyz/wincode)
+
+But according to benchmarks, it seems that [bitcode](https://github.com/SoftbearStudios/bitcode) is one of the fastest
+
+---

@@ -1,0 +1,187 @@
+---
+number: 725
+title: "how to parse `mv <files>... <target>`?"
+type: issue
+state: closed
+author: hh9527
+labels:
+  - C-enhancement
+  - A-parsing
+assignees: []
+created_at: 2016-11-01T06:56:34Z
+updated_at: 2018-08-02T03:29:56Z
+url: https://github.com/clap-rs/clap/issues/725
+synced_at: 2026-01-07T13:12:19-06:00
+---
+
+# how to parse `mv <files>... <target>`?
+
+---
+
+_Issue opened by @hh9527 on 2016-11-01 06:56_
+
+E.g.: `mv a1 a2 a3/`
+
+I use the code like this:
+
+```rust
+let m = App::new()
+  .arg(Arg::with_name("files").required(true).multiple(true))
+  .arg(Arg::with_name("target").required(true))
+  .get_matches();
+```
+
+When input `mv a1 a2 a3/`, I expect result like this:
+
+```js
+{
+  files: ["a1", "a2"],
+  target: "a3",
+}
+```
+
+But I got a error:
+
+```
+error: The following required arguments were not provided:
+    <target>
+```
+
+
+---
+
+_Comment by @kbknapp on 2016-11-01 16:03_
+
+This is because there's no way to know when `<files>` ends and `<target>` starts. Positional arguments that take multiple values must be the _last_ positional argument.
+
+There are two ways to fix this, either swap the arguments (i.e. `<target> <files>...`) or limit the number of values to a fixed number (i.e. `<file> <file> <target>`). Obviously one of those solutions is less viable than the other (fixed number of files), but it's still an option.
+
+Hope this helps! I'm also open to suggestions :wink:
+
+
+---
+
+_Label `T: RFC / question` added by @kbknapp on 2016-11-01 16:04_
+
+---
+
+_Renamed from "how to parse `mv <files> <target>`?" to "how to parse `mv <files>... <target>`?" by @kbknapp on 2016-11-01 16:04_
+
+---
+
+_Comment by @kbknapp on 2016-11-01 16:07_
+
+Also, thinking about this a little more, there may be a way I could add this feature. Let me play with some implementations and get back with you!
+
+
+---
+
+_Label `T: enhancement` added by @kbknapp on 2016-11-01 16:07_
+
+---
+
+_Label `P4: nice to have` added by @kbknapp on 2016-11-01 16:07_
+
+---
+
+_Label `C: args` added by @kbknapp on 2016-11-01 16:07_
+
+---
+
+_Label `C: parsing` added by @kbknapp on 2016-11-01 16:07_
+
+---
+
+_Label `W: 2.x` added by @kbknapp on 2016-11-01 16:07_
+
+---
+
+_Comment by @kbknapp on 2016-11-01 20:29_
+
+I found a way to make this work, after #727 merges I'll upload v2.17.0 to crates.io
+
+At which point this will give the expected results:
+
+``` rust
+let m = App::new()
+  .arg(Arg::with_name("files").required(true).multiple(true))
+  .arg(Arg::with_name("target").required(true))
+  .get_matches();
+```
+
+
+---
+
+_Closed by @homu on 2016-11-01 22:15_
+
+---
+
+_Comment by @kbknapp on 2016-11-02 01:01_
+
+@hh9527 v2.17.0 is up on crates.io now
+
+
+---
+
+_Comment by @hh9527 on 2016-11-02 01:49_
+
+waooo, it is so nice of you! thank you for this great project!
+
+
+---
+
+_Comment by @hh9527 on 2016-11-02 02:56_
+
+@kbknapp I have tried v2.17.0, it works without subcommand, but still break in subcommand.
+
+This works:
+
+``` rust
+    let m = App::new("mv")
+        .arg(Arg::with_name("paths").required(true).multiple(true))
+        .arg(Arg::with_name("target").required(true))
+        .get_matches();
+```
+
+And this not:
+
+``` rust
+    let m = App::new("cli")
+        .subcommand(
+            SubCommand::with_name("mv")
+                .arg(Arg::with_name("paths").required(true).multiple(true))
+                .arg(Arg::with_name("target").required(true))
+        ).get_matches();
+```
+
+
+---
+
+_Comment by @kbknapp on 2016-11-02 03:15_
+
+Ah, thanks for pointing this out, I hadn't testsed it _after_ a subcommand, only before!
+
+
+---
+
+_Reopened by @kbknapp on 2016-11-02 03:15_
+
+---
+
+_Comment by @kbknapp on 2016-11-02 03:34_
+
+It's fixed in #730 :wink:
+
+
+---
+
+_Closed by @homu on 2016-11-02 05:14_
+
+---
+
+_Comment by @kbknapp on 2016-11-02 13:36_
+
+v2.17.1 is up now!
+
+
+---

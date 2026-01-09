@@ -1,0 +1,129 @@
+---
+number: 17019
+title: expand tilde in cache-dir
+type: pull_request
+state: open
+author: Mobocop
+labels: []
+assignees: []
+base: main
+head: bugfix/16288-expand-tilde
+created_at: 2025-12-07T21:56:07Z
+updated_at: 2025-12-08T23:45:44Z
+url: https://github.com/astral-sh/uv/pull/17019
+synced_at: 2026-01-07T13:12:19-06:00
+---
+
+# expand tilde in cache-dir
+
+---
+
+_Pull request opened by @Mobocop on 2025-12-07 21:56_
+
+<!--
+Thank you for contributing to uv! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title?
+- Does this pull request include references to any relevant issues?
+-->
+
+## Summary
+
+<!-- What's the purpose of the change? What does it do, and why? -->
+fixes https://github.com/astral-sh/uv/issues/16288 (I believe that this is a bug, and not an enhancement as stated on the ticket)
+
+The special character `~` was not being expanded for `cache-dir` (both CLI and from pyproject.toml and uv.toml). This had different behaviour on Windows and Linux. 
+* On Windows it made a directory called `~` which was used as the cache dir
+* On Linux it made a directory called `~` which remained empty and the ~ was expanded to make the cache directory
+
+The issue is easily reproduced by installing running uv with a specified cache-dir containing a "~", e.g.
+`uv pip install uv --cache-dir="~/.cache/uv"`
+
+This issue is not present in ruff, ([implementation here](https://github.com/astral-sh/ruff/blob/ef45c97dab2e1ab8268308a53e6dd452db40b0db/crates/ruff_server/src/logging.rs#L18-L29)) who use the [shellexpand](https://crates.io/crates/shellexpand) crate to expand the paths
+
+In this PR I have implemented path expansion (as implemented in ruff) into uv for the cache-dir
+
+## Test Plan
+
+<!-- How was it tested? -->
+I have tested that this fix works on Linux (Ubuntu 24.04) and on Windows 10 (22H2)
+
+
+---
+
+_Converted to draft by @Mobocop on 2025-12-07 22:01_
+
+---
+
+_Comment by @Mobocop on 2025-12-07 22:02_
+
+Apparently I failed the CI. I'll look into it before marking this ready.
+
+---
+
+_Marked ready for review by @Mobocop on 2025-12-07 22:37_
+
+---
+
+_Comment by @zanieb on 2025-12-08 12:41_
+
+If we're going to expand `~` in user-provided paths we'll need to do so everywhere consistently, not just for `cache-dir`.
+
+---
+
+_Comment by @zanieb on 2025-12-08 12:41_
+
+I'm not sure if there are any serious downsides / implications to doing so, we probably need consensus on that first.
+
+Can you point to the commit in Ruff that added support for this?
+
+cc @woodruffw / @konstin 
+
+---
+
+_Comment by @konstin on 2025-12-08 14:26_
+
+I agree that `~` sounds good, but we need to do it consistently - It's more complex than treating it as just a bugfix in one location I'm afraid. For example if we only changes the `cache-dir`, users would get confused why `cache-dir` works with the tilde but other path-based configuration doesn't.
+
+I wouldn't expand env vars (`shellexpand::full`), just tildes. We already support env vars for changing the cache, and I'd like to keep the complexity from string interpolation to a minimum, and there exist real paths with a `$` in them. An open question is where exactly we support tildes, and how we handle tilde-created paths in lockfile if we support such options too: For example, would an index path be stored with `~/path/to/index` in the lockfile?
+
+---
+
+_Referenced in [astral-sh/uv#16982](../../astral-sh/uv/issues/16982.md) on 2025-12-08 15:45_
+
+---
+
+_Comment by @Mobocop on 2025-12-08 21:35_
+
+> If we're going to expand `~` in user-provided paths we'll need to do so everywhere consistently, not just for `cache-dir`.
+
+I completely agree. If you (or someone) can point me at the variables to be expanded I don't mind giving it a go.
+
+> Can you point to the commit in Ruff that added support for this?
+
+The cache_dir in ruff has always expanded paths fully: https://github.com/astral-sh/ruff/pull/1351
+
+Digging back through the source, I think this is the first issue which raises shell expansion issue (and associated PR), where the issue was actually raised to support environment variables:
+Issue - https://github.com/astral-sh/ruff/issues/1316
+PR - https://github.com/astral-sh/ruff/pull/1323
+
+> I wouldn't expand env vars (`shellexpand::full`), just tildes. We already support env vars for changing the cache, and I'd like to keep the complexity from string interpolation to a minimum, and there exist real paths with a `$` in them. An open question is where exactly we support tildes, and how we handle tilde-created paths in lockfile if we support such options too: For example, would an index path be stored with `~/path/to/index` in the lockfile?
+
+I don't mind what you want implemented. `shellexpand::full` would be consistent with ruff.
+
+I've never seen a path with a "$" in it which was not a variable, but even if there is one I thought that a shell would require it to be escaped. Having said that, using this branch I have tested (Ubunutu 20.04) "$" in the cache directory name. Both
+`uv pip install uv --cache-dir="$"`
+and 
+`uv pip install uv --cache-dir="./\$/"`
+worked by creating/using the folder named "$" as the cache-dir (not that I would ever recommend doing this).
+
+I don't have an answer to the lockfile question, I would assume you would want an absolute/expanded path, so that your lockfile is more "locked"?
+
+---
+
+_Comment by @woodruffw on 2025-12-08 23:45_
+
+I might be an outlier here, but I think that behavior (expanding variables, not just tilde) is pretty astonishing and should arguably be limited/removed in ruff too 😅 
+
+---

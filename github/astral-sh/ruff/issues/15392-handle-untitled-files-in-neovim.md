@@ -1,0 +1,238 @@
+---
+number: 15392
+title: "Handle \"untitled\" files in Neovim"
+type: issue
+state: open
+author: dhruvmanila
+labels:
+  - bug
+  - server
+assignees: []
+created_at: 2025-01-10T08:20:20Z
+updated_at: 2025-02-21T09:18:23Z
+url: https://github.com/astral-sh/ruff/issues/15392
+synced_at: 2026-01-07T13:12:16-06:00
+---
+
+# Handle "untitled" files in Neovim
+
+---
+
+_Issue opened by @dhruvmanila on 2025-01-10 08:20_
+
+Currently, the language server crashes with the following panic:
+
+```
+   0.000076625s  INFO main ruff_server::server: No workspace settings found for file:///Users/dhruv/playground/ruff, using default settings
+   0.016819875s DEBUG ThreadId(15) ruff_server::session::index::ruff_settings: Ignored path via `exclude`: /Users/dhruv/playground/ruff/.vscode
+   0.025011584s  INFO main ruff_server::session::index: Registering workspace: /Users/dhruv/playground/ruff
+   0.025738917s TRACE ruff:main notification{method="textDocument/didOpen"}: ruff_server::server::api: enter
+   0.026116917s TRACE ruff:worker:0 request{id=2 method="textDocument/diagnostic"}: ruff_server::server::api: enter
+   0.026236834s DEBUG ruff:worker:0 request{id=2 method="textDocument/diagnostic"}: ruff_server::resolve: Included path via `include`: /Users/dhruv/playground/ruff/type_inference/definition_vs_declaration.py
+   0.027171209s  INFO     ruff:main ruff_server::server: Configuration file watcher successfully registered
+  24.044284625s TRACE     ruff:main notification{method="workspace/didChangeWorkspaceFolders"}: ruff_server::server::api: enter
+  24.044426375s ERROR     ruff:main notification{method="workspace/didChangeWorkspaceFolders"}: ruff_server::server::api: An error occurred while running workspace/didChangeWorkspaceFolders: Failed to convert workspace URL to file path: file://./
+  24.044570667s TRACE     ruff:main notification{method="textDocument/didOpen"}: ruff_server::server::api: enter
+  24.100126375s  WARN     ruff:main ruff_server::session::index: No settings available for file:/// - falling back to default settings
+  24.101414459s TRACE ruff:worker:2 request{id=3 method="textDocument/diagnostic"}: ruff_server::server::api: enter
+  24.101510542s DEBUG ruff:worker:2 request{id=3 method="textDocument/diagnostic"}: ruff_server::resolve: Included path via Python language ID: /
+  24.101617792s ERROR ruff:worker:2 request{id=3 method="textDocument/diagnostic"}: ruff_server::server: panicked at crates/ruff_server/src/lint.rs:89:18:
+a path to a document should have a parent path
+```
+
+At `24.044284625s`, the unnamed buffer has been assigned the filetype as Python in Neovim which triggers the following notifications from the client to the server:
+ 
+`didChangeWorkspaceFolders`:
+```
+[DEBUG][2025-01-10 13:32:36] .../vim/lsp/rpc.lua:286	"rpc.send"	{
+  jsonrpc = "2.0",
+  method = "workspace/didChangeWorkspaceFolders",
+  params = {
+    event = {
+      added = { {
+          name = ".",
+          uri = "file://."
+        } },
+      removed = {}
+    }
+  }
+}
+```
+
+which fails with the following error:
+```
+  24.044426375s ERROR     ruff:main notification{method="workspace/didChangeWorkspaceFolders"}: ruff_server::server::api: An error occurred while running workspace/didChangeWorkspaceFolders: Failed to convert workspace URL to file path: file://./
+```
+
+`textDocument/didOpen`:
+```
+[DEBUG][2025-01-10 13:32:36] .../vim/lsp/rpc.lua:286	"rpc.send"	{
+  jsonrpc = "2.0",
+  method = "textDocument/didOpen",
+  params = {
+    textDocument = {
+      languageId = "python",
+      text = "\n",
+      uri = "file://",
+      version = 0
+    }
+  }
+}
+```
+
+`textDocument/diagnostic`:
+```
+[DEBUG][2025-01-10 13:32:36] .../vim/lsp/rpc.lua:286	"rpc.send"	{
+  id = 2,
+  jsonrpc = "2.0",
+  method = "textDocument/diagnostic",
+  params = {
+    range = {
+      ["end"] = {
+        character = 0,
+        line = 1
+      },
+      start = {
+        character = 0,
+        line = 0
+      }
+    },
+    textDocument = {
+      uri = "file://"
+    }
+  }
+}
+```
+
+---
+
+_Label `bug` added by @dhruvmanila on 2025-01-10 08:20_
+
+---
+
+_Label `server` added by @dhruvmanila on 2025-01-10 08:20_
+
+---
+
+_Comment by @MichaReiser on 2025-01-10 08:29_
+
+Hmm this is interesting. Can you open multiple unnamed buffers? Do they get unique uris? Is this even a valid file path?
+
+---
+
+_Comment by @dhruvmanila on 2025-01-10 08:35_
+
+Yes, you can open multiple unnamed buffers. They are using the same URIs.
+
+---
+
+_Comment by @MichaReiser on 2025-01-10 08:42_
+
+> Yes, you can open multiple unnamed buffers. They are using the same URIs.
+
+That at least seems a bug to me in neovim because the server can now no longer distinguish between them. I think neovim should not use `file:://` for unnamed buffers but do the same as VS code and use some other non-file path
+
+---
+
+_Comment by @MichaReiser on 2025-01-10 08:44_
+
+See https://github.com/astral-sh/ruff/discussions/12336
+
+---
+
+_Comment by @dhruvmanila on 2025-01-10 08:49_
+
+Yeah, I saw the Neovim issue (https://github.com/neovim/neovim/issues/21276) but that seems to have concluded with continue using "file://" until using "untitled://" is actually the recommended way in the protocol.
+
+---
+
+_Comment by @dhruvmanila on 2025-01-10 08:53_
+
+So, this was merged https://github.com/neovim/neovim/pull/22407 but was quickly reverted https://github.com/neovim/neovim/pull/22604
+
+---
+
+_Comment by @dhruvmanila on 2025-01-10 09:12_
+
+Could this be a bug in the URI parsing library? The `vscode-uri` library is able to parse `file://./`:
+
+```
+l {
+  scheme: 'file',
+  authority: '.',
+  path: '/',
+  query: '',
+  fragment: '',
+  _formatted: null,
+  _fsPath: null
+}
+```
+
+---
+
+_Comment by @dhruvmanila on 2025-01-10 09:13_
+
+And, I _think_ this is why Pyright raised "heap out of memory" error because it tried to index the entire home directory.
+
+---
+
+_Comment by @MichaReiser on 2025-01-10 09:18_
+
+I think we're able to parse it but `.` has no parent directory
+
+---
+
+_Comment by @dhruvmanila on 2025-01-10 09:20_
+
+> I think we're able to parse it but `.` has no parent directory
+
+I don't think so:
+
+```
+  24.044426375s ERROR     ruff:main notification{method="workspace/didChangeWorkspaceFolders"}: ruff_server::server::api: An error occurred while running workspace/didChangeWorkspaceFolders: Failed to convert workspace URL to file path: file://./
+```
+
+which happens at:
+
+https://github.com/astral-sh/ruff/blob/443bf38565ce481a10fe43a6aa6e1d57c3560c9f/crates/ruff_server/src/session/index.rs#L414-L416
+
+---
+
+_Comment by @dhruvmanila on 2025-01-10 09:20_
+
+Oh so we _can_ parse it but it's not being considered a valid file path (sorry!)
+
+And, yes, you're correct about the parent directory part
+
+---
+
+_Comment by @kaddkaka on 2025-02-21 09:18_
+
+This issue comes up often in my vim workflow when reviewing git changes and looking at file state not in current working but rather from another branch as an ephemeral file crated from data from the `.git` folder.
+
+Another way to trigger the unsaved buffers in nevom follows:
+
+```
+nvim
+:set filetype=python
+```
+Causes error:
+```
+Client ruff quit with exit code 2 and signal 0. Check log for errors: ...
+```
+Log:
+```
+ruff failed
+Cause: failed to convert workspace URL to file path
+```
+
+
+---
+
+_Referenced in [astral-sh/ruff#9918](../../astral-sh/ruff/issues/9918.md) on 2025-02-24 21:14_
+
+---
+
+_Referenced in [astral-sh/ruff#19264](../../astral-sh/ruff/pulls/19264.md) on 2025-07-16 12:13_
+
+---

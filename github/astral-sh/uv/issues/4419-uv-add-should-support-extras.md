@@ -1,0 +1,48 @@
+---
+number: 4419
+title: "`uv add` should support extras"
+type: issue
+state: closed
+author: ibraheemdev
+labels:
+  - preview
+assignees: []
+created_at: 2024-06-19T18:25:20Z
+updated_at: 2024-06-26T22:36:08Z
+url: https://github.com/astral-sh/uv/issues/4419
+synced_at: 2026-01-07T13:12:17-06:00
+---
+
+# `uv add` should support extras
+
+---
+
+_Issue opened by @ibraheemdev on 2024-06-19 18:25_
+
+`uv add` should support adding extras.
+
+---
+
+_Label `preview` added by @ibraheemdev on 2024-06-19 18:25_
+
+---
+
+_Referenced in [astral-sh/uv#3959](../../astral-sh/uv/issues/3959.md) on 2024-06-19 18:25_
+
+---
+
+_Referenced in [astral-sh/uv#4566](../../astral-sh/uv/pulls/4566.md) on 2024-06-26 21:24_
+
+---
+
+_Assigned to @ibraheemdev by @charliermarsh on 2024-06-26 21:32_
+
+---
+
+_Closed by @ibraheemdev on 2024-06-26 22:36_
+
+---
+
+_Closed by @ibraheemdev on 2024-06-26 22:36_
+
+---

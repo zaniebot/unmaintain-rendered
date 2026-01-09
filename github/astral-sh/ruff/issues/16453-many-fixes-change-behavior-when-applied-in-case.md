@@ -1,0 +1,217 @@
+---
+number: 16453
+title: "Many fixes change behavior when applied in `case` patterns"
+type: issue
+state: open
+author: dscorbett
+labels:
+  - bug
+assignees: []
+created_at: 2025-03-01T19:07:40Z
+updated_at: 2025-03-02T17:02:40Z
+url: https://github.com/astral-sh/ruff/issues/16453
+synced_at: 2026-01-07T13:12:16-06:00
+---
+
+# Many fixes change behavior when applied in `case` patterns
+
+---
+
+_Issue opened by @dscorbett on 2025-03-01 19:07_
+
+### Summary
+
+Many rules’ fixes change behavior when applied in `case` patterns. The examples below are all about syntax errors but it is also possible to make examples where runtime behavior changes. It might be helpful to add a new `SemanticModel` method for whether the model is in a pattern.
+
+The fix for [`f-string-missing-placeholders` (F541)](https://docs.astral.sh/ruff/rules/f-string-missing-placeholders/) can change a syntax error into no error. The fix should be marked unsafe in that context.
+```console
+$ cat >f541.py <<'# EOF'
+match "x":
+    case f"x": ...
+# EOF
+
+$ python f541.py
+  File "f541.py", line 2
+    case f"x": ...
+         ^^^^
+SyntaxError: patterns may only match literals and attribute lookups
+
+$ ruff --isolated check --select F541 f541.py --fix
+Found 1 error (1 fixed, 0 remaining).
+
+$ cat f541.py
+match "x":
+    case "x": ...
+
+$ python f541.py
+```
+
+The fix for [`missing-f-string-syntax` (RUF027)](https://docs.astral.sh/ruff/rules/missing-f-string-syntax/) can introduce a syntax error. No fix should be provided but the rule should still report a violation.
+```console
+$ cat >ruf027.py <<'# EOF'
+x = 1
+match f"{x}":
+    case "{x}": ...
+# EOF
+
+$ python ruf027.py
+
+$ ruff --isolated check --target-version py310 --preview --select RUF027 ruf027.py --unsafe-fixes --fix
+Found 1 error (1 fixed, 0 remaining).
+
+$ cat ruf027.py
+x = 1
+match f"{x}":
+    case f"{x}": ...
+
+$ python ruf027.py
+  File "ruf027.py", line 3
+    case f"{x}": ...
+         ^^^^^^
+SyntaxError: patterns may only match literals and attribute lookups
+```
+
+The fix for [`numpy-deprecated-type-alias` (NPY001)](https://docs.astral.sh/ruff/rules/numpy-deprecated-type-alias/) can also introduce a syntax error. The fix could import  `builtins` and refer to the replacement type with attribute syntax, e.g. `case builtins.int` instead of `case int`.
+```console
+$ cat >npy001.py <<'# EOF'
+import numpy as np
+match int:
+    case np.int: ...
+    case _: ...
+# EOF
+
+$ ruff --isolated check --select NPY001 npy001.py --fix
+Found 1 error (1 fixed, 0 remaining).
+
+$ cat npy001.py
+import numpy as np
+match int:
+    case int: ...
+    case _: ...
+
+$ python npy001.py
+  File "npy001.py", line 3
+    case int: ...
+         ^^^
+SyntaxError: name capture 'int' makes remaining patterns unreachable
+```
+
+If a NumPy function is imported, the fix for [`numpy-deprecated-function` (NPY003)](https://docs.astral.sh/ruff/rules/numpy-deprecated-function/) can introduce a syntax error when replacing a deprecated function with it. The fix could refer to the replacement function with attribute syntax, e.g. `case np.prod` instead of `case prod` even if `prod` is already imported.
+```console
+$ cat >npy003.py <<'# EOF'
+import numpy as np
+from numpy import prod
+match prod:
+    case np.product: ...
+    case _: ...
+# EOF
+
+$ ruff --isolated check --select NPY003 npy003.py --fix
+Found 1 error (1 fixed, 0 remaining).
+
+$ cat npy003.py
+import numpy as np
+from numpy import prod
+match prod:
+    case prod: ...
+    case _: ...
+
+$ python npy003.py
+  File "npy003.py", line 4
+    case prod: ...
+         ^^^^
+SyntaxError: name capture 'prod' makes remaining patterns unreachable
+```
+
+[`numpy2-deprecation` (NPY201)](https://docs.astral.sh/ruff/rules/numpy2-deprecation/) is similar. The fix in this example should use `case np.inf` instead of `case inf`.
+```console
+$ cat >npy201.py <<'# EOF'
+import numpy as np
+from numpy import inf
+match inf:
+    case np.Infinity: ...
+    case _: ...
+# EOF
+
+$ ruff --isolated check --select NPY201 npy201.py --fix
+Found 1 error (1 fixed, 0 remaining).
+
+$ cat npy201.py
+import numpy as np
+from numpy import inf
+match inf:
+    case inf: ...
+    case _: ...
+
+$ python npy201.py
+  File "npy201.py", line 4
+    case inf: ...
+         ^^^
+SyntaxError: name capture 'inf' makes remaining patterns unreachable
+```
+
+[`math-constant` (FURB152)](https://docs.astral.sh/ruff/rules/math-constant/) is similar. The fix in this example should use `case math.pi` instead of `case pi`.
+```console
+$ cat >furb152.py <<'# EOF'
+from math import pi
+match pi:
+    case 3.14159: ...
+    case _: ...
+# EOF
+
+$ ruff --isolated check --target-version py310 --preview --select FURB152 furb152.py --fix
+Found 1 error (1 fixed, 0 remaining).
+
+$ cat furb152.py
+from math import pi
+match pi:
+    case pi: ...
+    case _: ...
+
+$ python furb152.py
+  File "furb152.py", line 3
+    case pi: ...
+         ^^
+SyntaxError: name capture 'pi' makes remaining patterns unreachable
+```
+
+[`hardcoded-string-charset` (FURB156)](https://docs.astral.sh/ruff/rules/hardcoded-string-charset/) is similar. The fix in this example should use `case string.octdigits` instead of `case octdigits`.
+```console
+$ cat >furb156.py <<'# EOF'
+from string import octdigits
+match octdigits:
+    case "01234567": ...
+    case _: ...
+# EOF
+
+$ ruff --isolated check --target-version py310 --preview --select FURB156 furb156.py --fix
+Found 1 error (1 fixed, 0 remaining).
+
+$ cat furb156.py
+from string import octdigits
+match octdigits:
+    case octdigits: ...
+    case _: ...
+
+$ python furb156.py
+  File "furb156.py", line 3
+    case octdigits: ...
+         ^^^^^^^^^
+SyntaxError: name capture 'octdigits' makes remaining patterns unreachable
+```
+
+### Version
+
+ruff 0.9.9 (091d0af2a 2025-02-28)
+
+---
+
+_Label `bug` added by @dylwil3 on 2025-03-01 21:10_
+
+---
+
+_Comment by @InSyncWithFoo on 2025-03-02 17:02_
+
+The `F541` error shouldn't even be emitted in the first place, considering that f-strings are not allowed as patterns, and [have never been](https://peps.python.org/pep-0634/#literal-patterns) ever since PEP 634 (cc @ntBre).
+
+---

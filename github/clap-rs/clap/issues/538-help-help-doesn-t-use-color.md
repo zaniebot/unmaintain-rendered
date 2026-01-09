@@ -1,0 +1,208 @@
+---
+number: 538
+title: "\"help help\" doesn't use color"
+type: issue
+state: closed
+author: joshtriplett
+labels:
+  - C-bug
+  - A-help
+assignees: []
+created_at: 2016-06-23T21:44:35Z
+updated_at: 2018-08-02T03:29:50Z
+url: https://github.com/clap-rs/clap/issues/538
+synced_at: 2026-01-07T13:12:19-06:00
+---
+
+# "help help" doesn't use color
+
+---
+
+_Issue opened by @joshtriplett on 2016-06-23 21:44_
+
+When clap provides a `help` subcommand, running `command help help` produces help for the `help` subcommand:
+
+```
+help 
+Prints this message or the help of the given subcommand(s)
+
+USAGE:
+    help [FLAGS]
+
+FLAGS:
+    -h, --help       Prints help information
+    -V, --version    Prints version information
+```
+
+However, this help doesn't use color, unlike the help for every other subcommand.
+
+
+---
+
+_Comment by @kbknapp on 2016-06-24 00:26_
+
+That's a bug.
+
+I used to protect against this, but I think I regressed a few versions back since I didn't add a test for it....thanks for letting me know!
+
+
+---
+
+_Label `T: bug` added by @kbknapp on 2016-06-24 00:26_
+
+---
+
+_Label `P2: need to have` added by @kbknapp on 2016-06-24 00:26_
+
+---
+
+_Label `C: help message` added by @kbknapp on 2016-06-24 00:26_
+
+---
+
+_Label `C: subcommands` added by @kbknapp on 2016-06-24 00:26_
+
+---
+
+_Label `D: easy` added by @kbknapp on 2016-06-24 00:26_
+
+---
+
+_Label `W: 2.x` added by @kbknapp on 2016-06-24 00:26_
+
+---
+
+_Added to milestone `2.7.0` by @kbknapp on 2016-06-24 00:26_
+
+---
+
+_Referenced in [clap-rs/clap#533](../../clap-rs/clap/issues/533.md) on 2016-06-24 00:33_
+
+---
+
+_Comment by @kbknapp on 2016-06-24 00:40_
+
+Aaaah, so digging into this, it actually wasn't a regression, but a logic bug I hadn't thought of.
+
+When the feature to allow both versions `help <subcmd>` and `<subcmd> help` was added, it had the side affect of dispatching this strange behavior. Should be fixed quickly.
+
+
+---
+
+_Comment by @kbknapp on 2016-06-24 01:52_
+
+I have a local branch with this fixed. Once I knock out a few more issues I'll roll up the PR.
+
+Also, I forgot to address the lack of color. This wasn't a bug per-se, the `AppSettings::ColoredHelp` isn't propagated through child subcommands unless one uses `App::global_setting`.
+
+Either way, the fix I have correctly dispatches `<cmd> help help` to the `<cmd>` help message  (same as `<cmd> help`. And it's colored without `global_setting`.
+
+
+---
+
+_Comment by @joshtriplett on 2016-06-24 03:12_
+
+> Also, I forgot to address the lack of color. This wasn't a bug per-se, the AppSettings::ColoredHelp isn't propagated through child subcommands unless one uses App::global_setting.
+
+I had used global_setting, though, and `help help` still didn't use color.
+
+> Either way, the fix I have correctly dispatches <cmd> help help to the <cmd> help message (same as <cmd> help.
+
+That seems unusual; I think it made sense for `cmd help help` to show the help for the `help` subcommand, for consistency with `cmd help anothersubcmd`.
+
+
+---
+
+_Comment by @kbknapp on 2016-06-24 03:17_
+
+> That seems unusual; I think it made sense for cmd help help to show the help for the help subcommand, for consistency with cmd help anothersubcmd.
+
+I hadn't thought of it like that. Hmmm....let me see if I can make that work before pushing this PR since the more I think about it, the more I like how you stated it.
+
+
+---
+
+_Comment by @kbknapp on 2016-06-24 03:49_
+
+Ok, I got this working in the way you said, and I'm much happier with it now. Should be able to roll up the PR in a minute.
+
+
+---
+
+_Closed by @homu on 2016-06-24 05:00_
+
+---
+
+_Comment by @laishulu on 2016-07-22 14:41_
+
+I have a subcommand `foo`, I run `myapp help foo`, I still can't see any color, even I have the following codes.
+
+``` rust
+    let yaml = load_yaml!("cli.yml");
+    let app_m = clap::App::from_yaml(yaml)
+        .setting(clap::AppSettings::SubcommandRequired)
+        .global_setting(clap::AppSettings::ColoredHelp)
+        .get_matches();
+```
+
+the clap version is 2.9.2
+
+
+---
+
+_Comment by @laishulu on 2016-07-23 09:26_
+
+Any feedback?
+
+
+---
+
+_Referenced in [clap-rs/clap#591](../../clap-rs/clap/issues/591.md) on 2016-07-23 09:28_
+
+---
+
+_Comment by @kbknapp on 2016-07-23 18:25_
+
+@chenhouwu this is because the global settings need to be applied prior to the subcommand being added to the parent command. Adding a `global_setting: "ColoredHelp"` to your top level command in the yaml should fix this.
+
+
+---
+
+_Comment by @laishulu on 2016-07-23 18:50_
+
+Still the same result following your instruction, i.e. help for main command is colored, but help for subcommand is not colored.
+
+also, I can run if I have the following line in the yml file, what's the correct way to config this?
+
+``` yaml
+setting: "SubcommandRequired"
+```
+
+
+---
+
+_Comment by @kbknapp on 2016-07-23 19:33_
+
+Could you open a new issue for this, it'll be easier to track and fix that way. :wink: 
+
+
+---
+
+_Comment by @laishulu on 2016-07-23 19:36_
+
+for the uncolored subcommand, see this issue: https://github.com/kbknapp/clap-rs/issues/591
+
+
+---
+
+_Comment by @laishulu on 2016-07-23 20:05_
+
+OK now, with the following lines in the yml file
+
+``` yaml
+global_settings:
+    - ColoredHelp
+```
+
+
+---

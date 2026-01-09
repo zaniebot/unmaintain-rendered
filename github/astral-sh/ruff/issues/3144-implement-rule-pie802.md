@@ -1,0 +1,69 @@
+---
+number: 3144
+title: Implement rule PIE802
+type: issue
+state: closed
+author: Skylion007
+labels:
+  - rule
+assignees: []
+created_at: 2023-02-22T20:47:00Z
+updated_at: 2023-02-23T01:58:47Z
+url: https://github.com/astral-sh/ruff/issues/3144
+synced_at: 2026-01-07T13:12:14-06:00
+---
+
+# Implement rule PIE802
+
+---
+
+_Issue opened by @Skylion007 on 2023-02-22 20:47_
+
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+Implement flake8-PIE PIE802 from https://github.com/sbdchd/flake8-pie, it would be nice to have parity now that flake8-PIE is deprecated in favor of this tool.
+
+---
+
+_Renamed from "Implement PIE-802" to "Implement rule PIE802" by @Skylion007 on 2023-02-22 20:47_
+
+---
+
+_Label `rule` added by @charliermarsh on 2023-02-22 21:10_
+
+---
+
+_Comment by @charliermarsh on 2023-02-22 21:11_
+
+Sounds good, that rule is also autofixable.
+
+---
+
+_Comment by @matthewlloyd on 2023-02-22 22:14_
+
+Working on this.
+
+---
+
+_Comment by @charliermarsh on 2023-02-22 22:16_
+
+@matthewlloyd - The flake8-comprehensions rules and fixers are probably a good reference.
+
+---
+
+_Referenced in [astral-sh/ruff#3149](../../astral-sh/ruff/pulls/3149.md) on 2023-02-22 23:43_
+
+---
+
+_Closed by @charliermarsh on 2023-02-23 01:58_
+
+---

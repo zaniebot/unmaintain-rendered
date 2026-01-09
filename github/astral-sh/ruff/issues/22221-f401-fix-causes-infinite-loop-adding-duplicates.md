@@ -1,0 +1,87 @@
+---
+number: 22221
+title: "F401 fix causes infinite loop adding duplicates to `__all__`"
+type: issue
+state: open
+author: harupy
+labels:
+  - bug
+  - fixes
+assignees: []
+created_at: 2025-12-27T11:36:08Z
+updated_at: 2025-12-28T11:31:58Z
+url: https://github.com/astral-sh/ruff/issues/22221
+synced_at: 2026-01-07T13:12:16-06:00
+---
+
+# F401 fix causes infinite loop adding duplicates to `__all__`
+
+---
+
+_Issue opened by @harupy on 2025-12-27 11:36_
+
+### Summary
+
+How to reproduce:
+
+```sh
+$ mkdir foo
+$ echo '
+import foo.bar.module
+import foo.baz.module
+
+__all__ = []
+' > foo/__init__.py
+
+$ cargo run --bin ruff -- check test_f401_dup/foo/__init__.py --select F401 --preview --fix foo/__init__.py
+```
+
+`foo/__init__.py` looks like this after the fix is applied:
+
+```python
+import foo.bar.module
+import foo.baz.module
+
+__all__ = [
+    "foo",
+    ...,
+    "foo",
+    "foo",
+    "foo",
+    "foo",
+]
+```
+
+It appears that `foo.baz.module` is never marked as used, and ruff keeps adding `foo` in `__all__`.
+
+### Version
+
+da188d5cf654d7ac5a1ff3606d2baef78fa63d70
+
+### Context
+
+Ran into this bug when I upgraded ruff to 0.14.10 in mlflow/mlflow
+
+---
+
+_Renamed from "F401 fix causes infinite loop adding duplicates to __all__" to "F401 fix causes infinite loop adding duplicates to `__all__`" by @harupy on 2025-12-27 11:53_
+
+---
+
+_Label `bug` added by @ntBre on 2025-12-27 14:45_
+
+---
+
+_Label `fixes` added by @ntBre on 2025-12-27 14:45_
+
+---
+
+_Comment by @ntBre on 2025-12-27 15:05_
+
+Thanks for the report! I suspect this is related to our recent submodule import changes. cc @dylwil3 
+
+---
+
+_Referenced in [astral-sh/ruff#22359](../../astral-sh/ruff/pulls/22359.md) on 2026-01-03 16:31_
+
+---

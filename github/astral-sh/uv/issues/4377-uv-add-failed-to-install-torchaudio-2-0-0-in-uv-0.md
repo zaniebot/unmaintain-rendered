@@ -1,0 +1,889 @@
+---
+number: 4377
+title: "``uv add`` failed to install  torchaudio==2.0.0 in ``uv 0.2.12 (b8c039166 2024-06-17)``"
+type: issue
+state: closed
+author: FishAlchemist
+labels:
+  - preview
+assignees: []
+created_at: 2024-06-18T06:47:35Z
+updated_at: 2024-06-19T17:27:59Z
+url: https://github.com/astral-sh/uv/issues/4377
+synced_at: 2026-01-07T13:12:17-06:00
+---
+
+# ``uv add`` failed to install  torchaudio==2.0.0 in ``uv 0.2.12 (b8c039166 2024-06-17)``
+
+---
+
+_Issue opened by @FishAlchemist on 2024-06-18 06:47_
+
+**Version:** uv 0.2.12 (b8c039166 2024-06-17)
+**OS:** Windows 11
+### Command:
+```powershell
+uv add torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121  --verbose
+ ```
+ I cannot find the version 2.0.0 of torchaudio  that supports Windows in https://download.pytorch.org/whl/cu121/torchaudio/
+ Using ``uv add torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121``  will successfully install  `` torchaudio==2.3.1+cu121``. (cpython 3.10.11 virtual environment)
+ 
+### Error Message:
+```
+error: found distribution torchaudio==2.0.0 @ registry+https://download.pytorch.org/whl/cu121 with neither wheels nor source distribution
+```
+### pyproject.toml:
+```toml
+[project]
+name = "test_uv"
+version = "0.1.0a15"
+requires-python = "==3.10.*,>=3.10.0"
+dependencies = [
+    "torch",
+    "torchvision",
+    "torchaudio",
+]
+```
+<details>
+<summary> verbose output </summary>
+
+```powershell
+DEBUG uv 0.2.12 (b8c039166 2024-06-17)
+warning: `uv add` is experimental and may change without warning.
+DEBUG Found project root: `G:\uv\.test`
+DEBUG Project is contained in non-workspace project: `G:\uv`
+DEBUG No workspace root found, using project root
+DEBUG Interpreter meets the project `Requires-Python` constraint >=3.10.0, <3.11.dev0
+DEBUG Using request timeout of 30s
+DEBUG Using request timeout of 30s
+DEBUG Acquired lock for `\\?\C:\Users\user_name\AppData\Local\uv\cache\built-wheels-v3\editable\d6748a6d370c633a`
+DEBUG Preparing metadata for: test-uv @ file:///G:/uv/.test
+DEBUG No static `PKG-INFO` available for: test-uv @ file:///G:/uv/.test (MissingPkgInfo)
+DEBUG Found static `pyproject.toml` for: test-uv @ file:///G:/uv/.test
+DEBUG Project is contained in non-workspace project: `G:\uv`
+DEBUG No workspace root found, using project root
+DEBUG Solving with installed Python version: 3.10.11
+DEBUG Solving with target Python version: >=3.10.0, <3.11.dev0
+DEBUG Adding direct dependency: test-uv*
+DEBUG Searching for a compatible version of test-uv @ file:///G:/uv/.test (*)
+DEBUG Adding transitive dependency for test-uv==0.1.0a15: torch*
+DEBUG Adding transitive dependency for test-uv==0.1.0a15: torchvision*
+DEBUG Adding transitive dependency for test-uv==0.1.0a15: torchaudio*
+DEBUG No cache entry for: https://download.pytorch.org/whl/cu121/torch/
+DEBUG No cache entry for: https://download.pytorch.org/whl/cu121/torchvision/
+DEBUG No cache entry for: https://download.pytorch.org/whl/cu121/torchaudio/
+DEBUG Searching for a compatible version of torch (*)
+DEBUG Selecting: torch==2.3.1+cu121 (torch-2.3.1+cu121-cp310-cp310-linux_x86_64.whl)
+DEBUG Found fresh response for: https://download.pytorch.org/whl/cu121/torch-2.3.1%2Bcu121-cp310-cp310-linux_x86_64.whl#sha256=f0deb5d2f932a68ed54625ba140eddbf2af22be978ee19b9b63c986add6425b2
+DEBUG Adding transitive dependency for torch==2.3.1+cu121: filelock*
+DEBUG Adding transitive dependency for torch==2.3.1+cu121: typing-extensions>=4.8.0
+DEBUG No cache entry for: https://download.pytorch.org/whl/cu121/filelock/
+DEBUG Adding transitive dependency for torch==2.3.1+cu121: sympy*
+DEBUG Adding transitive dependency for torch==2.3.1+cu121: networkx*
+DEBUG Adding transitive dependency for torch==2.3.1+cu121: jinja2*
+DEBUG Adding transitive dependency for torch==2.3.1+cu121: fsspec*
+DEBUG Adding transitive dependency for torch==2.3.1+cu121: nvidia-cuda-nvrtc-cu12{platform_system == 'Linux' and platform_machine == 'x86_64'}==12.1.105
+DEBUG Adding transitive dependency for torch==2.3.1+cu121: nvidia-cuda-runtime-cu12{platform_system == 'Linux' and platform_machine == 'x86_64'}==12.1.105
+DEBUG Adding transitive dependency for torch==2.3.1+cu121: nvidia-cuda-cupti-cu12{platform_system == 'Linux' and platform_machine == 'x86_64'}==12.1.105
+DEBUG Adding transitive dependency for torch==2.3.1+cu121: nvidia-cudnn-cu12{platform_system == 'Linux' and platform_machine == 'x86_64'}==8.9.2.26
+DEBUG Adding transitive dependency for torch==2.3.1+cu121: nvidia-cublas-cu12{platform_system == 'Linux' and platform_machine == 'x86_64'}==12.1.3.1
+DEBUG Adding transitive dependency for torch==2.3.1+cu121: nvidia-cufft-cu12{platform_system == 'Linux' and platform_machine == 'x86_64'}==11.0.2.54
+DEBUG Adding transitive dependency for torch==2.3.1+cu121: nvidia-curand-cu12{platform_system == 'Linux' and platform_machine == 'x86_64'}==10.3.2.106
+DEBUG No cache entry for: https://download.pytorch.org/whl/cu121/typing-extensions/
+DEBUG Adding transitive dependency for torch==2.3.1+cu121: nvidia-cusolver-cu12{platform_system == 'Linux' and platform_machine == 'x86_64'}==11.4.5.107
+DEBUG Adding transitive dependency for torch==2.3.1+cu121: nvidia-cusparse-cu12{platform_system == 'Linux' and platform_machine == 'x86_64'}==12.1.0.106
+DEBUG Adding transitive dependency for torch==2.3.1+cu121: nvidia-nccl-cu12{platform_system == 'Linux' and platform_machine == 'x86_64'}==2.20.5
+DEBUG Adding transitive dependency for torch==2.3.1+cu121: nvidia-nvtx-cu12{platform_system == 'Linux' and platform_machine == 'x86_64'}==12.1.105
+DEBUG Adding transitive dependency for torch==2.3.1+cu121: triton{platform_system == 'Linux' and platform_machine == 'x86_64' and python_version < '3.12'}==2.3.1
+DEBUG Adding transitive dependency for torch==2.3.1+cu121: mkl{platform_system == 'Windows'}>=2021.1.1, <=2021.4.0
+DEBUG No cache entry for: https://download.pytorch.org/whl/cu121/sympy/
+DEBUG No cache entry for: https://download.pytorch.org/whl/cu121/networkx/
+DEBUG No cache entry for: https://download.pytorch.org/whl/cu121/jinja2/
+DEBUG No cache entry for: https://download.pytorch.org/whl/cu121/nvidia-cuda-runtime-cu12/
+DEBUG No cache entry for: https://download.pytorch.org/whl/cu121/nvidia-cuda-cupti-cu12/
+DEBUG No cache entry for: https://download.pytorch.org/whl/cu121/nvidia-cudnn-cu12/
+DEBUG No cache entry for: https://download.pytorch.org/whl/cu121/nvidia-cublas-cu12/
+DEBUG No cache entry for: https://download.pytorch.org/whl/cu121/nvidia-cufft-cu12/
+DEBUG No cache entry for: https://download.pytorch.org/whl/cu121/nvidia-curand-cu12/
+DEBUG No cache entry for: https://download.pytorch.org/whl/cu121/nvidia-nccl-cu12/
+DEBUG No cache entry for: https://download.pytorch.org/whl/cu121/nvidia-nvtx-cu12/
+DEBUG No cache entry for: https://download.pytorch.org/whl/cu121/triton/
+DEBUG No cache entry for: https://download.pytorch.org/whl/cu121/mkl/
+DEBUG No cache entry for: https://download.pytorch.org/whl/cu121/fsspec/
+DEBUG No cache entry for: https://download.pytorch.org/whl/cu121/nvidia-cuda-nvrtc-cu12/
+DEBUG No cache entry for: https://download.pytorch.org/whl/cu121/nvidia-cusolver-cu12/
+DEBUG No cache entry for: https://download.pytorch.org/whl/cu121/nvidia-cusparse-cu12/
+DEBUG Found fresh response for: https://download.pytorch.org/whl/cu121/torchvision-0.18.1%2Bcu121-cp310-cp310-linux_x86_64.whl#sha256=e95ba5a2c616939281e01babf11664d6d1725e81bba57ef81f81c3e57e4d4151
+DEBUG Found fresh response for: https://download.pytorch.org/whl/cu121/torchaudio-2.3.1%2Bcu121-cp310-cp310-linux_x86_64.whl#sha256=0b423f4ae3356f11f6723e8c77208ac3f9361a4f941e4cc08d86c32c137594bc
+DEBUG Found stale response for: https://download.pytorch.org/whl/filelock-3.13.1-py3-none-any.whl#sha256=57dbda9b35157b05fb3e58ee91448612eb674172fab98ee235ccb0b5bee19a1c
+DEBUG Sending revalidation request for: https://download.pytorch.org/whl/filelock-3.13.1-py3-none-any.whl#sha256=57dbda9b35157b05fb3e58ee91448612eb674172fab98ee235ccb0b5bee19a1c
+DEBUG Found stale response for: https://download.pytorch.org/whl/typing_extensions-4.9.0-py3-none-any.whl#sha256=af72aea155e91adfc61c3ae9e0e342dbc0cba726d6cba4b6c72c1f34e47291cd
+DEBUG Sending revalidation request for: https://download.pytorch.org/whl/typing_extensions-4.9.0-py3-none-any.whl#sha256=af72aea155e91adfc61c3ae9e0e342dbc0cba726d6cba4b6c72c1f34e47291cd
+DEBUG Found not-modified response for: https://download.pytorch.org/whl/filelock-3.13.1-py3-none-any.whl#sha256=57dbda9b35157b05fb3e58ee91448612eb674172fab98ee235ccb0b5bee19a1c
+DEBUG Found not-modified response for: https://download.pytorch.org/whl/typing_extensions-4.9.0-py3-none-any.whl#sha256=af72aea155e91adfc61c3ae9e0e342dbc0cba726d6cba4b6c72c1f34e47291cd
+DEBUG Found fresh response for: https://download.pytorch.org/whl/sympy-1.12-py3-none-any.whl#sha256=c3588cd4295d0c0f603d0f2ae780587e64e2efeedb3521e46b9bb1d08d184fa5
+DEBUG Found fresh response for: https://download.pytorch.org/whl/networkx-3.2.1-py3-none-any.whl#sha256=f18c69adc97877c42332c170849c96cefa91881c99a7cb3e95b7c659ebdc1ec2
+DEBUG Found stale response for: https://download.pytorch.org/whl/Jinja2-3.1.3-py3-none-any.whl#sha256=7d6d50dd97d52cbc355597bd845fabfbac3f551e1f99619e39a35ce8c370b5fa
+DEBUG Sending revalidation request for: https://download.pytorch.org/whl/Jinja2-3.1.3-py3-none-any.whl#sha256=7d6d50dd97d52cbc355597bd845fabfbac3f551e1f99619e39a35ce8c370b5fa
+DEBUG Searching for a compatible version of nvidia-cuda-nvrtc-cu12{platform_system == 'Linux' and platform_machine == 'x86_64'} (==12.1.105)
+DEBUG Selecting: nvidia-cuda-nvrtc-cu12{platform_system == 'Linux' and platform_machine == 'x86_64'}==12.1.105 (nvidia_cuda_nvrtc_cu12-12.1.105-py3-none-manylinux1_x86_64.whl)
+DEBUG Searching for a compatible version of nvidia-cuda-nvrtc-cu12{platform_system == 'Linux' and platform_machine == 'x86_64'} (==12.1.105)
+DEBUG Selecting: nvidia-cuda-nvrtc-cu12{platform_system == 'Linux' and platform_machine == 'x86_64'}==12.1.105 (nvidia_cuda_nvrtc_cu12-12.1.105-py3-none-manylinux1_x86_64.whl)
+DEBUG Found fresh response for: https://download.pytorch.org/whl/cu121/nvidia_cuda_nvrtc_cu12-12.1.105-py3-none-manylinux1_x86_64.whl#sha256=339b385f50c309763ca65456ec75e17bbefcbbf2893f462cb8b90584cd27a1c2
+DEBUG Searching for a compatible version of nvidia-cuda-nvrtc-cu12 (==12.1.105)
+DEBUG Selecting: nvidia-cuda-nvrtc-cu12==12.1.105 (nvidia_cuda_nvrtc_cu12-12.1.105-py3-none-manylinux1_x86_64.whl)
+DEBUG Searching for a compatible version of nvidia-cuda-runtime-cu12{platform_system == 'Linux' and platform_machine == 'x86_64'} (==12.1.105)
+DEBUG Selecting: nvidia-cuda-runtime-cu12{platform_system == 'Linux' and platform_machine == 'x86_64'}==12.1.105 (nvidia_cuda_runtime_cu12-12.1.105-py3-none-manylinux1_x86_64.whl)
+DEBUG Searching for a compatible version of nvidia-cuda-runtime-cu12{platform_system == 'Linux' and platform_machine == 'x86_64'} (==12.1.105)
+DEBUG Selecting: nvidia-cuda-runtime-cu12{platform_system == 'Linux' and platform_machine == 'x86_64'}==12.1.105 (nvidia_cuda_runtime_cu12-12.1.105-py3-none-manylinux1_x86_64.whl)
+DEBUG Found fresh response for: https://download.pytorch.org/whl/cu121/nvidia_cuda_runtime_cu12-12.1.105-py3-none-manylinux1_x86_64.whl#sha256=6e258468ddf5796e25f1dc591a31029fa317d97a0a94ed93468fc86301d61e40
+DEBUG Searching for a compatible version of nvidia-cuda-runtime-cu12 (==12.1.105)
+DEBUG Selecting: nvidia-cuda-runtime-cu12==12.1.105 (nvidia_cuda_runtime_cu12-12.1.105-py3-none-manylinux1_x86_64.whl)
+DEBUG Searching for a compatible version of nvidia-cuda-cupti-cu12{platform_system == 'Linux' and platform_machine == 'x86_64'} (==12.1.105)
+DEBUG Selecting: nvidia-cuda-cupti-cu12{platform_system == 'Linux' and platform_machine == 'x86_64'}==12.1.105 (nvidia_cuda_cupti_cu12-12.1.105-py3-none-manylinux1_x86_64.whl)
+DEBUG Searching for a compatible version of nvidia-cuda-cupti-cu12{platform_system == 'Linux' and platform_machine == 'x86_64'} (==12.1.105)
+DEBUG Selecting: nvidia-cuda-cupti-cu12{platform_system == 'Linux' and platform_machine == 'x86_64'}==12.1.105 (nvidia_cuda_cupti_cu12-12.1.105-py3-none-manylinux1_x86_64.whl)
+DEBUG Found fresh response for: https://download.pytorch.org/whl/cu121/nvidia_cuda_cupti_cu12-12.1.105-py3-none-manylinux1_x86_64.whl#sha256=e54fde3983165c624cb79254ae9818a456eb6e87a7fd4d56a2352c24ee542d7e
+DEBUG Searching for a compatible version of nvidia-cuda-cupti-cu12 (==12.1.105)
+DEBUG Selecting: nvidia-cuda-cupti-cu12==12.1.105 (nvidia_cuda_cupti_cu12-12.1.105-py3-none-manylinux1_x86_64.whl)
+DEBUG Searching for a compatible version of nvidia-cudnn-cu12{platform_system == 'Linux' and platform_machine == 'x86_64'} (==8.9.2.26)
+DEBUG Selecting: nvidia-cudnn-cu12{platform_system == 'Linux' and platform_machine == 'x86_64'}==8.9.2.26 (nvidia_cudnn_cu12-8.9.2.26-py3-none-manylinux1_x86_64.whl)
+DEBUG Searching for a compatible version of nvidia-cudnn-cu12{platform_system == 'Linux' and platform_machine == 'x86_64'} (==8.9.2.26)
+DEBUG Selecting: nvidia-cudnn-cu12{platform_system == 'Linux' and platform_machine == 'x86_64'}==8.9.2.26 (nvidia_cudnn_cu12-8.9.2.26-py3-none-manylinux1_x86_64.whl)
+DEBUG Found fresh response for: https://download.pytorch.org/whl/cu121/nvidia_cudnn_cu12-8.9.2.26-py3-none-manylinux1_x86_64.whl#sha256=5ccb288774fdfb07a7e7025ffec286971c06d8d7b4fb162525334616d7629ff9
+DEBUG Adding transitive dependency for nvidia-cudnn-cu12{platform_system == 'Linux' and platform_machine == 'x86_64'}==8.9.2.26: nvidia-cublas-cu12*
+DEBUG Searching for a compatible version of nvidia-cudnn-cu12 (==8.9.2.26)
+DEBUG Selecting: nvidia-cudnn-cu12==8.9.2.26 (nvidia_cudnn_cu12-8.9.2.26-py3-none-manylinux1_x86_64.whl)
+DEBUG Adding transitive dependency for nvidia-cudnn-cu12==8.9.2.26: nvidia-cublas-cu12*
+DEBUG Found stale response for: https://download.pytorch.org/whl/fsspec-2024.2.0-py3-none-any.whl#sha256=817f969556fa5916bc682e02ca2045f96ff7f586d45110fcb76022063ad2c7d8
+DEBUG Sending revalidation request for: https://download.pytorch.org/whl/fsspec-2024.2.0-py3-none-any.whl#sha256=817f969556fa5916bc682e02ca2045f96ff7f586d45110fcb76022063ad2c7d8
+DEBUG Searching for a compatible version of nvidia-cublas-cu12{platform_system == 'Linux' and platform_machine == 'x86_64'} (==12.1.3.1)
+DEBUG Selecting: nvidia-cublas-cu12{platform_system == 'Linux' and platform_machine == 'x86_64'}==12.1.3.1 (nvidia_cublas_cu12-12.1.3.1-py3-none-manylinux1_x86_64.whl)
+DEBUG Searching for a compatible version of nvidia-cublas-cu12 (==12.1.3.1)
+DEBUG Selecting: nvidia-cublas-cu12==12.1.3.1 (nvidia_cublas_cu12-12.1.3.1-py3-none-manylinux1_x86_64.whl)
+DEBUG Found fresh response for: https://download.pytorch.org/whl/cu121/nvidia_cublas_cu12-12.1.3.1-py3-none-manylinux1_x86_64.whl#sha256=ee53ccca76a6fc08fb9701aa95b6ceb242cdaab118c3bb152af4e579af792728
+DEBUG Searching for a compatible version of nvidia-cublas-cu12{platform_system == 'Linux' and platform_machine == 'x86_64'} (==12.1.3.1)
+DEBUG Selecting: nvidia-cublas-cu12{platform_system == 'Linux' and platform_machine == 'x86_64'}==12.1.3.1 (nvidia_cublas_cu12-12.1.3.1-py3-none-manylinux1_x86_64.whl)
+DEBUG Searching for a compatible version of nvidia-cufft-cu12{platform_system == 'Linux' and platform_machine == 'x86_64'} (==11.0.2.54)
+DEBUG Selecting: nvidia-cufft-cu12{platform_system == 'Linux' and platform_machine == 'x86_64'}==11.0.2.54 (nvidia_cufft_cu12-11.0.2.54-py3-none-manylinux1_x86_64.whl)
+DEBUG Searching for a compatible version of nvidia-cufft-cu12{platform_system == 'Linux' and platform_machine == 'x86_64'} (==11.0.2.54)
+DEBUG Selecting: nvidia-cufft-cu12{platform_system == 'Linux' and platform_machine == 'x86_64'}==11.0.2.54 (nvidia_cufft_cu12-11.0.2.54-py3-none-manylinux1_x86_64.whl)
+DEBUG Found fresh response for: https://download.pytorch.org/whl/cu121/nvidia_cufft_cu12-11.0.2.54-py3-none-manylinux1_x86_64.whl#sha256=794e3948a1aa71fd817c3775866943936774d1c14e7628c74f6f7417224cdf56
+DEBUG Searching for a compatible version of nvidia-cufft-cu12 (==11.0.2.54)
+DEBUG Selecting: nvidia-cufft-cu12==11.0.2.54 (nvidia_cufft_cu12-11.0.2.54-py3-none-manylinux1_x86_64.whl)
+DEBUG Searching for a compatible version of nvidia-curand-cu12{platform_system == 'Linux' and platform_machine == 'x86_64'} (==10.3.2.106)
+DEBUG Selecting: nvidia-curand-cu12{platform_system == 'Linux' and platform_machine == 'x86_64'}==10.3.2.106 (nvidia_curand_cu12-10.3.2.106-py3-none-manylinux1_x86_64.whl)
+DEBUG Searching for a compatible version of nvidia-curand-cu12{platform_system == 'Linux' and platform_machine == 'x86_64'} (==10.3.2.106)
+DEBUG Selecting: nvidia-curand-cu12{platform_system == 'Linux' and platform_machine == 'x86_64'}==10.3.2.106 (nvidia_curand_cu12-10.3.2.106-py3-none-manylinux1_x86_64.whl)
+DEBUG Found fresh response for: https://download.pytorch.org/whl/cu121/nvidia_curand_cu12-10.3.2.106-py3-none-manylinux1_x86_64.whl#sha256=9d264c5036dde4e64f1de8c50ae753237c12e0b1348738169cd0f8a536c0e1e0
+DEBUG Searching for a compatible version of nvidia-curand-cu12 (==10.3.2.106)
+DEBUG Selecting: nvidia-curand-cu12==10.3.2.106 (nvidia_curand_cu12-10.3.2.106-py3-none-manylinux1_x86_64.whl)
+DEBUG Searching for a compatible version of nvidia-cusolver-cu12{platform_system == 'Linux' and platform_machine == 'x86_64'} (==11.4.5.107)
+DEBUG Selecting: nvidia-cusolver-cu12{platform_system == 'Linux' and platform_machine == 'x86_64'}==11.4.5.107 (nvidia_cusolver_cu12-11.4.5.107-py3-none-manylinux1_x86_64.whl)
+DEBUG Searching for a compatible version of nvidia-cusolver-cu12{platform_system == 'Linux' and platform_machine == 'x86_64'} (==11.4.5.107)
+DEBUG Selecting: nvidia-cusolver-cu12{platform_system == 'Linux' and platform_machine == 'x86_64'}==11.4.5.107 (nvidia_cusolver_cu12-11.4.5.107-py3-none-manylinux1_x86_64.whl)
+DEBUG Found fresh response for: https://download.pytorch.org/whl/cu121/nvidia_cusolver_cu12-11.4.5.107-py3-none-manylinux1_x86_64.whl#sha256=8a7ec542f0412294b15072fa7dab71d31334014a69f953004ea7a118206fe0dd
+DEBUG Adding transitive dependency for nvidia-cusolver-cu12{platform_system == 'Linux' and platform_machine == 'x86_64'}==11.4.5.107: nvidia-cublas-cu12*
+DEBUG Adding transitive dependency for nvidia-cusolver-cu12{platform_system == 'Linux' and platform_machine == 'x86_64'}==11.4.5.107: nvidia-nvjitlink-cu12*
+DEBUG Adding transitive dependency for nvidia-cusolver-cu12{platform_system == 'Linux' and platform_machine == 'x86_64'}==11.4.5.107: nvidia-cusparse-cu12*
+DEBUG Searching for a compatible version of nvidia-cusolver-cu12 (==11.4.5.107)
+DEBUG Selecting: nvidia-cusolver-cu12==11.4.5.107 (nvidia_cusolver_cu12-11.4.5.107-py3-none-manylinux1_x86_64.whl)
+DEBUG No cache entry for: https://download.pytorch.org/whl/cu121/nvidia-nvjitlink-cu12/
+DEBUG Adding transitive dependency for nvidia-cusolver-cu12==11.4.5.107: nvidia-cublas-cu12*
+DEBUG Adding transitive dependency for nvidia-cusolver-cu12==11.4.5.107: nvidia-nvjitlink-cu12*
+DEBUG Adding transitive dependency for nvidia-cusolver-cu12==11.4.5.107: nvidia-cusparse-cu12*
+DEBUG Searching for a compatible version of nvidia-cusparse-cu12{platform_system == 'Linux' and platform_machine == 'x86_64'} (==12.1.0.106)
+DEBUG Selecting: nvidia-cusparse-cu12{platform_system == 'Linux' and platform_machine == 'x86_64'}==12.1.0.106 (nvidia_cusparse_cu12-12.1.0.106-py3-none-manylinux1_x86_64.whl)
+DEBUG Searching for a compatible version of nvidia-cusparse-cu12 (==12.1.0.106)
+DEBUG Selecting: nvidia-cusparse-cu12==12.1.0.106 (nvidia_cusparse_cu12-12.1.0.106-py3-none-manylinux1_x86_64.whl)
+DEBUG Found fresh response for: https://download.pytorch.org/whl/cu121/nvidia_cusparse_cu12-12.1.0.106-py3-none-manylinux1_x86_64.whl#sha256=f3b50f42cf363f86ab21f720998517a659a48131e8d538dc02f8768237bd884c
+DEBUG Adding transitive dependency for nvidia-cusparse-cu12==12.1.0.106: nvidia-nvjitlink-cu12*
+DEBUG Searching for a compatible version of nvidia-cusparse-cu12{platform_system == 'Linux' and platform_machine == 'x86_64'} (==12.1.0.106)
+DEBUG Selecting: nvidia-cusparse-cu12{platform_system == 'Linux' and platform_machine == 'x86_64'}==12.1.0.106 (nvidia_cusparse_cu12-12.1.0.106-py3-none-manylinux1_x86_64.whl)
+DEBUG Adding transitive dependency for nvidia-cusparse-cu12{platform_system == 'Linux' and platform_machine == 'x86_64'}==12.1.0.106: nvidia-nvjitlink-cu12*
+DEBUG Searching for a compatible version of nvidia-nccl-cu12{platform_system == 'Linux' and platform_machine == 'x86_64'} (==2.20.5)
+DEBUG Selecting: nvidia-nccl-cu12{platform_system == 'Linux' and platform_machine == 'x86_64'}==2.20.5 (nvidia_nccl_cu12-2.20.5-py3-none-manylinux2014_x86_64.whl)
+DEBUG Searching for a compatible version of nvidia-nccl-cu12{platform_system == 'Linux' and platform_machine == 'x86_64'} (==2.20.5)
+DEBUG Selecting: nvidia-nccl-cu12{platform_system == 'Linux' and platform_machine == 'x86_64'}==2.20.5 (nvidia_nccl_cu12-2.20.5-py3-none-manylinux2014_x86_64.whl)
+DEBUG Found fresh response for: https://download.pytorch.org/whl/cu121/nvidia_nccl_cu12-2.20.5-py3-none-manylinux2014_x86_64.whl#sha256=057f6bf9685f75215d0c53bf3ac4a10b3e6578351de307abad9e18a99182af56
+DEBUG Searching for a compatible version of nvidia-nccl-cu12 (==2.20.5)
+DEBUG Selecting: nvidia-nccl-cu12==2.20.5 (nvidia_nccl_cu12-2.20.5-py3-none-manylinux2014_x86_64.whl)
+DEBUG Searching for a compatible version of nvidia-nvtx-cu12{platform_system == 'Linux' and platform_machine == 'x86_64'} (==12.1.105)
+DEBUG Selecting: nvidia-nvtx-cu12{platform_system == 'Linux' and platform_machine == 'x86_64'}==12.1.105 (nvidia_nvtx_cu12-12.1.105-py3-none-manylinux1_x86_64.whl)
+DEBUG Searching for a compatible version of nvidia-nvtx-cu12{platform_system == 'Linux' and platform_machine == 'x86_64'} (==12.1.105)
+DEBUG Selecting: nvidia-nvtx-cu12{platform_system == 'Linux' and platform_machine == 'x86_64'}==12.1.105 (nvidia_nvtx_cu12-12.1.105-py3-none-manylinux1_x86_64.whl)
+DEBUG Found fresh response for: https://download.pytorch.org/whl/cu121/nvidia_nvtx_cu12-12.1.105-py3-none-manylinux1_x86_64.whl#sha256=dc21cf308ca5691e7c04d962e213f8a4aa9bbfa23d95412f452254c2caeb09e5
+DEBUG Searching for a compatible version of nvidia-nvtx-cu12 (==12.1.105)
+DEBUG Selecting: nvidia-nvtx-cu12==12.1.105 (nvidia_nvtx_cu12-12.1.105-py3-none-manylinux1_x86_64.whl)
+DEBUG Searching for a compatible version of triton{platform_system == 'Linux' and platform_machine == 'x86_64' and python_version < '3.12'} (==2.3.1)
+DEBUG Selecting: triton{platform_system == 'Linux' and platform_machine == 'x86_64' and python_version < '3.12'}==2.3.1 (triton-2.3.1-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl)
+DEBUG Searching for a compatible version of triton{platform_system == 'Linux' and platform_machine == 'x86_64' and python_version < '3.12'} (==2.3.1)
+DEBUG Selecting: triton{platform_system == 'Linux' and platform_machine == 'x86_64' and python_version < '3.12'}==2.3.1 (triton-2.3.1-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl)
+DEBUG Found fresh response for: https://download.pytorch.org/whl/triton-2.3.1-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl#sha256=3c84595cbe5e546b1b290d2a58b1494df5a2ef066dd890655e5b8a8a92205c33
+DEBUG Adding transitive dependency for triton{platform_system == 'Linux' and platform_machine == 'x86_64' and python_version < '3.12'}==2.3.1: filelock*
+DEBUG Searching for a compatible version of triton (==2.3.1)
+DEBUG Selecting: triton==2.3.1 (triton-2.3.1-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl)
+DEBUG Adding transitive dependency for triton==2.3.1: filelock*
+DEBUG Searching for a compatible version of torchvision (*)
+DEBUG Selecting: torchvision==0.18.1+cu121 (torchvision-0.18.1+cu121-cp310-cp310-linux_x86_64.whl)
+DEBUG Adding transitive dependency for torchvision==0.18.1+cu121: numpy*
+DEBUG Adding transitive dependency for torchvision==0.18.1+cu121: torch==2.3.1
+DEBUG Adding transitive dependency for torchvision==0.18.1+cu121: pillow>=5.3.0, <8.3.dev0 | >=8.4.dev0
+DEBUG Searching for a compatible version of torchvision (<0.18.1+cu121 | >0.18.1+cu121)
+DEBUG Selecting: torchvision==0.18.0+cu121 (torchvision-0.18.0+cu121-cp310-cp310-linux_x86_64.whl)
+DEBUG No cache entry for: https://download.pytorch.org/whl/cu121/numpy/
+DEBUG No cache entry for: https://download.pytorch.org/whl/cu121/pillow/
+DEBUG Found fresh response for: https://download.pytorch.org/whl/cu121/torchvision-0.18.0%2Bcu121-cp310-cp310-linux_x86_64.whl#sha256=13e1b48dc5ce41ccb8100ab3dd26fdf31d8f1e904ecf2865ac524493013d0df5
+DEBUG Adding transitive dependency for torchvision==0.18.0+cu121: numpy*
+DEBUG Adding transitive dependency for torchvision==0.18.0+cu121: torch==2.3.0
+DEBUG Adding transitive dependency for torchvision==0.18.0+cu121: pillow>=5.3.0, <8.3.dev0 | >=8.4.dev0
+DEBUG Searching for a compatible version of torchvision (<0.18.0+cu121 | >0.18.0+cu121, <0.18.1+cu121 | >0.18.1+cu121)
+DEBUG Found fresh response for: https://download.pytorch.org/whl/cu121/torchvision-0.17.2%2Bcu121-cp310-cp310-linux_x86_64.whl#sha256=c0f325635f8834fa55e69ab61075fb2bbcbb45395a985bba1db378b15627104b
+DEBUG Selecting: torchvision==0.17.2+cu121 (torchvision-0.17.2+cu121-cp310-cp310-linux_x86_64.whl)
+DEBUG Adding transitive dependency for torchvision==0.17.2+cu121: numpy*
+DEBUG Adding transitive dependency for torchvision==0.17.2+cu121: torch==2.2.2
+DEBUG Adding transitive dependency for torchvision==0.17.2+cu121: pillow>=5.3.0, <8.3.dev0 | >=8.4.dev0
+DEBUG Searching for a compatible version of torchvision (<0.17.2+cu121 | >0.17.2+cu121, <0.18.0+cu121 | >0.18.0+cu121, <0.18.1+cu121 | >0.18.1+cu121)
+DEBUG Selecting: torchvision==0.17.1+cu121 (torchvision-0.17.1+cu121-cp310-cp310-linux_x86_64.whl)
+DEBUG Found fresh response for: https://download.pytorch.org/whl/cu121/torchvision-0.17.1%2Bcu121-cp310-cp310-linux_x86_64.whl#sha256=27af47915f6e762c1d44e58e8088d22ac97445668f9f793524032b2baf4f34bd
+DEBUG Adding transitive dependency for torchvision==0.17.1+cu121: numpy*
+DEBUG Adding transitive dependency for torchvision==0.17.1+cu121: torch==2.2.1
+DEBUG Adding transitive dependency for torchvision==0.17.1+cu121: pillow>=5.3.0, <8.3.dev0 | >=8.4.dev0
+DEBUG Searching for a compatible version of torchvision (<0.17.1+cu121 | >0.17.1+cu121, <0.17.2+cu121 | >0.17.2+cu121, <0.18.0+cu121 | >0.18.0+cu121, <0.18.1+cu121 | >0.18.1+cu121)
+DEBUG Selecting: torchvision==0.17.0+cu121 (torchvision-0.17.0+cu121-cp310-cp310-linux_x86_64.whl)
+DEBUG Prefetching 5 torchvision versions
+DEBUG Found fresh response for: https://download.pytorch.org/whl/cu121/torchvision-0.17.0%2Bcu121-cp310-cp310-linux_x86_64.whl#sha256=e1273e9862fc821febc4c716f13849b1ffa87c0d69f6ab824356c5532c490f08
+DEBUG Found fresh response for: https://download.pytorch.org/whl/torchvision-0.17.0-cp310-cp310-linux_aarch64.whl#sha256=3d86c212fc6379e9bec3ac647d062e34c2cf36c26b98840b66573eb9fbe1f1d9
+DEBUG Adding transitive dependency for torchvision==0.17.0+cu121: numpy*
+DEBUG Adding transitive dependency for torchvision==0.17.0+cu121: requests*
+DEBUG Adding transitive dependency for torchvision==0.17.0+cu121: torch==2.2.0
+DEBUG Adding transitive dependency for torchvision==0.17.0+cu121: pillow>=5.3.0, <8.3.dev0 | >=8.4.dev0
+DEBUG Found fresh response for: https://download.pytorch.org/whl/cu121/torchvision-0.16.2%2Bcu121-cp310-cp310-linux_x86_64.whl#sha256=baa7970c6b5437312e5dd0bd0f2571a20b786c3e285bafd6ed3e4f62a5c3c76e
+DEBUG Searching for a compatible version of torchvision (<0.17.0+cu121 | >0.17.0+cu121, <0.17.1+cu121 | >0.17.1+cu121, <0.17.2+cu121 | >0.17.2+cu121, <0.18.0+cu121 | >0.18.0+cu121, <0.18.1+cu121 | >0.18.1+cu121)
+DEBUG Selecting: torchvision==0.17.0 (torchvision-0.17.0-cp310-cp310-linux_aarch64.whl)
+DEBUG Found fresh response for: https://download.pytorch.org/whl/torchvision-0.16.2-cp310-cp310-linux_aarch64.whl#sha256=96c7583700112a410bdc4e1e4f118c429dab49c29c9a31a2cc3579bc9b08b19d
+DEBUG Adding transitive dependency for torchvision==0.17.0: numpy*
+DEBUG Adding transitive dependency for torchvision==0.17.0: requests*
+DEBUG Adding transitive dependency for torchvision==0.17.0: torch==2.2.0
+DEBUG Found fresh response for: https://download.pytorch.org/whl/cu121/torchvision-0.16.1%2Bcu121-cp310-cp310-linux_x86_64.whl#sha256=02094becdf5dc42a6afe2190e1acb3f32dd9c2d3add827ddfe91b544cc23adf4
+DEBUG Adding transitive dependency for torchvision==0.17.0: pillow>=5.3.0, <8.3.dev0 | >=8.4.dev0
+DEBUG No cache entry for: https://download.pytorch.org/whl/cu121/requests/
+DEBUG Searching for a compatible version of torchvision (<0.17.0 | >0.17.0, <0.17.0+cu121 | >0.17.0+cu121, <0.17.1+cu121 | >0.17.1+cu121, <0.17.2+cu121 | >0.17.2+cu121, <0.18.0+cu121 | >0.18.0+cu121, <0.18.1+cu121 | >0.18.1+cu121)
+DEBUG Selecting: torchvision==0.16.2+cu121 (torchvision-0.16.2+cu121-cp310-cp310-linux_x86_64.whl)
+DEBUG Adding transitive dependency for torchvision==0.16.2+cu121: numpy*
+DEBUG Adding transitive dependency for torchvision==0.16.2+cu121: requests*
+DEBUG Adding transitive dependency for torchvision==0.16.2+cu121: torch==2.1.2
+DEBUG Adding transitive dependency for torchvision==0.16.2+cu121: pillow>=5.3.0, <8.3.dev0 | >=8.4.dev0
+DEBUG Searching for a compatible version of torchvision (<0.16.2+cu121 | >0.16.2+cu121, <0.17.0 | >0.17.0, <0.17.0+cu121 | >0.17.0+cu121, <0.17.1+cu121 | >0.17.1+cu121, <0.17.2+cu121 | >0.17.2+cu121, <0.18.0+cu121 | >0.18.0+cu121, <0.18.1+cu121 | >0.18.1+cu121)
+DEBUG Selecting: torchvision==0.16.2 (torchvision-0.16.2-cp310-cp310-linux_aarch64.whl)
+DEBUG Adding transitive dependency for torchvision==0.16.2: numpy*
+DEBUG Adding transitive dependency for torchvision==0.16.2: requests*
+DEBUG Adding transitive dependency for torchvision==0.16.2: torch==2.1.2
+DEBUG Adding transitive dependency for torchvision==0.16.2: pillow>=5.3.0, <8.3.dev0 | >=8.4.dev0
+DEBUG Searching for a compatible version of torchvision (<0.16.2 | >0.16.2, <0.16.2+cu121 | >0.16.2+cu121, <0.17.0 | >0.17.0, <0.17.0+cu121 | >0.17.0+cu121, <0.17.1+cu121 | >0.17.1+cu121, <0.17.2+cu121 | >0.17.2+cu121, <0.18.0+cu121 | >0.18.0+cu121, <0.18.1+cu121 | >0.18.1+cu121)
+DEBUG Selecting: torchvision==0.16.1+cu121 (torchvision-0.16.1+cu121-cp310-cp310-linux_x86_64.whl)
+DEBUG Adding transitive dependency for torchvision==0.16.1+cu121: numpy*
+DEBUG Adding transitive dependency for torchvision==0.16.1+cu121: requests*
+DEBUG Adding transitive dependency for torchvision==0.16.1+cu121: torch==2.1.1
+DEBUG Adding transitive dependency for torchvision==0.16.1+cu121: pillow>=5.3.0, <8.3.dev0 | >=8.4.dev0
+DEBUG Searching for a compatible version of torchvision (<0.16.1+cu121 | >0.16.1+cu121, <0.16.2 | >0.16.2, <0.16.2+cu121 | >0.16.2+cu121, <0.17.0 | >0.17.0, <0.17.0+cu121 | >0.17.0+cu121, <0.17.1+cu121 | >0.17.1+cu121, <0.17.2+cu121 | >0.17.2+cu121, <0.18.0+cu121 | >0.18.0+cu121, <0.18.1+cu121 | >0.18.1+cu121)
+DEBUG Selecting: torchvision==0.16.1 (torchvision-0.16.1-cp310-cp310-linux_aarch64.whl)
+DEBUG Found fresh response for: https://download.pytorch.org/whl/torchvision-0.16.1-cp310-cp310-linux_aarch64.whl#sha256=632887b22e67ce32a3ede806b868bba4057601e46d680de14b32a391eac1b483
+DEBUG Prefetching 10 torchvision versions
+DEBUG Found fresh response for: https://download.pytorch.org/whl/cu121/torchvision-0.16.0%2Bcu121-cp310-cp310-linux_x86_64.whl#sha256=e76e78d0ad43636c9884b3084ffaea8a8b61f21129fbfa456a5fe734f0affea9
+DEBUG Adding transitive dependency for torchvision==0.16.1: numpy*
+DEBUG Adding transitive dependency for torchvision==0.16.1: requests*
+DEBUG Adding transitive dependency for torchvision==0.16.1: torch==2.1.1
+DEBUG Adding transitive dependency for torchvision==0.16.1: pillow>=5.3.0, <8.3.dev0 | >=8.4.dev0
+DEBUG Found fresh response for: https://download.pytorch.org/whl/torchvision-0.16.0-cp310-cp310-linux_aarch64.whl#sha256=e4327e082b703921ae52caeee4f7839f7e6c73cfc5eedea468ecb5c1487ecdbf
+DEBUG Searching for a compatible version of torchvision (<0.16.1 | >0.16.1, <0.16.1+cu121 | >0.16.1+cu121, <0.16.2 | >0.16.2, <0.16.2+cu121 | >0.16.2+cu121, <0.17.0 | >0.17.0, <0.17.0+cu121 | >0.17.0+cu121, <0.17.1+cu121 | >0.17.1+cu121, <0.17.2+cu121 | >0.17.2+cu121, <0.18.0+cu121 | >0.18.0+cu121, <0.18.1+cu121 | >0.18.1+cu121)
+DEBUG Found fresh response for: https://download.pytorch.org/whl/torchvision-0.15.1-cp310-cp310-manylinux2014_aarch64.whl#sha256=b82fcc5abc9b5c96495c76596a1573025cc1e09d97d2d6fda717c44b9ca45881
+DEBUG Selecting: torchvision==0.16.0+cu121 (torchvision-0.16.0+cu121-cp310-cp310-linux_x86_64.whl)
+DEBUG Found fresh response for: https://download.pytorch.org/whl/torchvision-0.15.0-cp310-cp310-manylinux2014_aarch64.whl#sha256=ab6dbfc49422a904d681045d8a25b8cb761eeb6174c7d05ff70f04900ebc583c
+DEBUG Adding transitive dependency for torchvision==0.16.0+cu121: numpy*
+DEBUG Adding transitive dependency for torchvision==0.16.0+cu121: requests*
+DEBUG Adding transitive dependency for torchvision==0.16.0+cu121: torch==2.1.0
+DEBUG Adding transitive dependency for torchvision==0.16.0+cu121: pillow>=5.3.0, <8.3.dev0 | >=8.4.dev0
+DEBUG Found fresh response for: https://download.pytorch.org/whl/torchvision-0.15.2-cp310-cp310-manylinux2014_aarch64.whl#sha256=1eefebf5fbd01a95fe8f003d623d941601c94b5cec547b420da89cb369d9cf96
+DEBUG Searching for a compatible version of torchvision (<0.16.0+cu121 | >0.16.0+cu121, <0.16.1 | >0.16.1, <0.16.1+cu121 | >0.16.1+cu121, <0.16.2 | >0.16.2, <0.16.2+cu121 | >0.16.2+cu121, <0.17.0 | >0.17.0, <0.17.0+cu121 | >0.17.0+cu121, <0.17.1+cu121 | >0.17.1+cu121, <0.17.2+cu121 | >0.17.2+cu121, <0.18.0+cu121 | >0.18.0+cu121, <0.18.1+cu121 | >0.18.1+cu121)
+DEBUG Found fresh response for: https://download.pytorch.org/whl/torchvision-0.14.1-cp310-cp310-macosx_10_9_x86_64.whl#sha256=eeb05dd9dd3af5428fee525400759daf8da8e4caec45ddd6908cfb36571f6433
+DEBUG Selecting: torchvision==0.16.0 (torchvision-0.16.0-cp310-cp310-linux_aarch64.whl)
+DEBUG Found fresh response for: https://download.pytorch.org/whl/torchvision-0.14.0-cp310-cp310-macosx_10_9_x86_64.whl#sha256=7b6e1706760eace0257ebb0677404cdd64f4cf88804bc6379f694cf3ed470591
+DEBUG Adding transitive dependency for torchvision==0.16.0: numpy*
+DEBUG Adding transitive dependency for torchvision==0.16.0: requests*
+DEBUG Adding transitive dependency for torchvision==0.16.0: torch==2.1.0
+DEBUG Adding transitive dependency for torchvision==0.16.0: pillow>=5.3.0, <8.3.dev0 | >=8.4.dev0
+DEBUG Found fresh response for: https://download.pytorch.org/whl/torchvision-0.13.1-cp310-cp310-macosx_10_9_x86_64.whl#sha256=19286a733c69dcbd417b86793df807bd227db5786ed787c17297741a9b0d0fc7
+DEBUG Searching for a compatible version of torchvision (<0.16.0 | >0.16.0, <0.16.0+cu121 | >0.16.0+cu121, <0.16.1 | >0.16.1, <0.16.1+cu121 | >0.16.1+cu121, <0.16.2 | >0.16.2, <0.16.2+cu121 | >0.16.2+cu121, <0.17.0 | >0.17.0, <0.17.0+cu121 | >0.17.0+cu121, <0.17.1+cu121 | >0.17.1+cu121, <0.17.2+cu121 | >0.17.2+cu121, <0.18.0+cu121 | >0.18.0+cu121, <0.18.1+cu121 | >0.18.1+cu121)
+DEBUG Found fresh response for: https://download.pytorch.org/whl/torchvision-0.13.0-cp310-cp310-macosx_10_9_x86_64.whl#sha256=61d5093a50b7923a4e5bf9e0271001c29e01abec2348b7dd93370a0a9d15836c
+DEBUG Selecting: torchvision==0.15.2 (torchvision-0.15.2-cp310-cp310-manylinux2014_aarch64.whl)
+DEBUG Adding transitive dependency for torchvision==0.15.2: numpy*
+DEBUG Adding transitive dependency for torchvision==0.15.2: requests*
+DEBUG Adding transitive dependency for torchvision==0.15.2: torch==2.0.1
+DEBUG Adding transitive dependency for torchvision==0.15.2: pillow>=5.3.0, <8.3.dev0 | >=8.4.dev0
+DEBUG Searching for a compatible version of torchvision (<0.15.2 | >0.15.2, <0.16.0 | >0.16.0, <0.16.0+cu121 | >0.16.0+cu121, <0.16.1 | >0.16.1, <0.16.1+cu121 | >0.16.1+cu121, <0.16.2 | >0.16.2, <0.16.2+cu121 | >0.16.2+cu121, <0.17.0 | >0.17.0, <0.17.0+cu121 | >0.17.0+cu121, <0.17.1+cu121 | >0.17.1+cu121, <0.17.2+cu121 | >0.17.2+cu121, <0.18.0+cu121 | >0.18.0+cu121, <0.18.1+cu121 | >0.18.1+cu121)
+DEBUG Selecting: torchvision==0.15.1 (torchvision-0.15.1-cp310-cp310-manylinux2014_aarch64.whl)
+DEBUG Adding transitive dependency for torchvision==0.15.1: numpy*
+DEBUG Adding transitive dependency for torchvision==0.15.1: requests*
+DEBUG Adding transitive dependency for torchvision==0.15.1: torch==2.0.0
+DEBUG Adding transitive dependency for torchvision==0.15.1: pillow>=5.3.0, <8.3.dev0 | >=8.4.dev0
+DEBUG Searching for a compatible version of torchvision (<0.15.1 | >0.15.1, <0.15.2 | >0.15.2, <0.16.0 | >0.16.0, <0.16.0+cu121 | >0.16.0+cu121, <0.16.1 | >0.16.1, <0.16.1+cu121 | >0.16.1+cu121, <0.16.2 | >0.16.2, <0.16.2+cu121 | >0.16.2+cu121, <0.17.0 | >0.17.0, <0.17.0+cu121 | >0.17.0+cu121, <0.17.1+cu121 | >0.17.1+cu121, <0.17.2+cu121 | >0.17.2+cu121, <0.18.0+cu121 | >0.18.0+cu121, <0.18.1+cu121 | >0.18.1+cu121)
+DEBUG Selecting: torchvision==0.15.0 (torchvision-0.15.0-cp310-cp310-manylinux2014_aarch64.whl)
+DEBUG Adding transitive dependency for torchvision==0.15.0: numpy*
+DEBUG Adding transitive dependency for torchvision==0.15.0: requests*
+DEBUG Adding transitive dependency for torchvision==0.15.0: torch*
+DEBUG Adding transitive dependency for torchvision==0.15.0: pillow>=5.3.0, <8.3.dev0 | >=8.4.dev0
+DEBUG Searching for a compatible version of torchaudio (*)
+DEBUG Selecting: torchaudio==2.3.1+cu121 (torchaudio-2.3.1+cu121-cp310-cp310-linux_x86_64.whl)
+DEBUG Adding transitive dependency for torchaudio==2.3.1+cu121: torch==2.3.1
+DEBUG Searching for a compatible version of torchaudio (<2.3.1+cu121 | >2.3.1+cu121)
+DEBUG Selecting: torchaudio==2.3.0+cu121 (torchaudio-2.3.0+cu121-cp310-cp310-linux_x86_64.whl)
+DEBUG Found fresh response for: https://download.pytorch.org/whl/cu121/torchaudio-2.3.0%2Bcu121-cp310-cp310-linux_x86_64.whl#sha256=38b49393f8c322dcaa29d19e5acbf5a0b1978cf1b719445ab670f1fb486e3aa6
+DEBUG Adding transitive dependency for torchaudio==2.3.0+cu121: torch==2.3.0
+DEBUG Searching for a compatible version of torchaudio (<2.3.0+cu121 | >2.3.0+cu121, <2.3.1+cu121 | >2.3.1+cu121)
+DEBUG Selecting: torchaudio==2.2.2+cu121 (torchaudio-2.2.2+cu121-cp310-cp310-linux_x86_64.whl)
+DEBUG Found fresh response for: https://download.pytorch.org/whl/cu121/torchaudio-2.2.2%2Bcu121-cp310-cp310-linux_x86_64.whl#sha256=fde18554d84fd0047588f0bced03d770f6553f17851a3b441379164a13c99b07
+DEBUG Adding transitive dependency for torchaudio==2.2.2+cu121: torch==2.2.2
+DEBUG Searching for a compatible version of torchaudio (<2.2.2+cu121 | >2.2.2+cu121, <2.3.0+cu121 | >2.3.0+cu121, <2.3.1+cu121 | >2.3.1+cu121)
+DEBUG Selecting: torchaudio==2.2.1+cu121 (torchaudio-2.2.1+cu121-cp310-cp310-linux_x86_64.whl)
+DEBUG Found fresh response for: https://download.pytorch.org/whl/cu121/torchaudio-2.2.1%2Bcu121-cp310-cp310-linux_x86_64.whl#sha256=23f6236429e2bf676b820e8e7221a1d58aaf908bff2ba2665aa852df71a97961
+DEBUG Adding transitive dependency for torchaudio==2.2.1+cu121: torch==2.2.1
+DEBUG Searching for a compatible version of torchaudio (<2.2.1+cu121 | >2.2.1+cu121, <2.2.2+cu121 | >2.2.2+cu121, <2.3.0+cu121 | >2.3.0+cu121, <2.3.1+cu121 | >2.3.1+cu121)
+DEBUG Selecting: torchaudio==2.2.0+cu121 (torchaudio-2.2.0+cu121-cp310-cp310-linux_x86_64.whl)
+DEBUG Found fresh response for: https://download.pytorch.org/whl/cu121/torchaudio-2.2.0%2Bcu121-cp310-cp310-linux_x86_64.whl#sha256=db3cb79aadaa3ef63ff968f0ab2457681ad4f9f458c2af8d6579f1d4aff6632b
+DEBUG Prefetching 5 torchaudio versions
+DEBUG Adding transitive dependency for torchaudio==2.2.0+cu121: torch==2.2.0
+DEBUG Searching for a compatible version of torchaudio (<2.2.0+cu121 | >2.2.0+cu121, <2.2.1+cu121 | >2.2.1+cu121, <2.2.2+cu121 | >2.2.2+cu121, <2.3.0+cu121 | >2.3.0+cu121, <2.3.1+cu121 | >2.3.1+cu121)
+DEBUG Found fresh response for: https://download.pytorch.org/whl/torchaudio-2.1.2-cp310-cp310-linux_aarch64.whl#sha256=f82657fc4ec3b473bf6c752c0ee62d7f511af9ef37e5143f8339ec049504d767
+DEBUG Selecting: torchaudio==2.2.0 (torchaudio-2.2.0-cp310-cp310-linux_aarch64.whl)
+DEBUG Found fresh response for: https://download.pytorch.org/whl/torchaudio-2.2.0-cp310-cp310-linux_aarch64.whl#sha256=d4ea094b8721a361982db062ee993f2a6f71dfe16f62a84f8900b2364f33a2e4
+DEBUG Adding transitive dependency for torchaudio==2.2.0: torch==2.2.0
+DEBUG Found fresh response for: https://download.pytorch.org/whl/cu121/torchaudio-2.1.1%2Bcu121-cp310-cp310-linux_x86_64.whl#sha256=eff8260e02f88a694a964b2bb6f637a6af3107787d907eae7e5801816033bfa7
+DEBUG Searching for a compatible version of torchaudio (<2.2.0 | >2.2.0, <2.2.0+cu121 | >2.2.0+cu121, <2.2.1+cu121 | >2.2.1+cu121, <2.2.2+cu121 | >2.2.2+cu121, <2.3.0+cu121 | >2.3.0+cu121, <2.3.1+cu121 | >2.3.1+cu121)
+DEBUG Selecting: torchaudio==2.1.2+cu121 (torchaudio-2.1.2+cu121-cp310-cp310-linux_x86_64.whl)
+DEBUG Found fresh response for: https://download.pytorch.org/whl/cu121/torchaudio-2.1.2%2Bcu121-cp310-cp310-linux_x86_64.whl#sha256=1e8a9207631e8ba6ecbdee3c9d66f1e9d438ad62b0b4d4f184016d8be89d68a7
+DEBUG Adding transitive dependency for torchaudio==2.1.2+cu121: torch==2.1.2
+DEBUG Searching for a compatible version of torchaudio (<2.1.2+cu121 | >2.1.2+cu121, <2.2.0 | >2.2.0, <2.2.0+cu121 | >2.2.0+cu121, <2.2.1+cu121 | >2.2.1+cu121, <2.2.2+cu121 | >2.2.2+cu121, <2.3.0+cu121 | >2.3.0+cu121, <2.3.1+cu121 | >2.3.1+cu121)
+DEBUG Selecting: torchaudio==2.1.2 (torchaudio-2.1.2-cp310-cp310-linux_aarch64.whl)
+DEBUG Adding transitive dependency for torchaudio==2.1.2: torch==2.1.2
+DEBUG Searching for a compatible version of torchaudio (<2.1.2 | >2.1.2, <2.1.2+cu121 | >2.1.2+cu121, <2.2.0 | >2.2.0, <2.2.0+cu121 | >2.2.0+cu121, <2.2.1+cu121 | >2.2.1+cu121, <2.2.2+cu121 | >2.2.2+cu121, <2.3.0+cu121 | >2.3.0+cu121, <2.3.1+cu121 | >2.3.1+cu121)
+DEBUG Selecting: torchaudio==2.1.1+cu121 (torchaudio-2.1.1+cu121-cp310-cp310-linux_x86_64.whl)
+DEBUG Adding transitive dependency for torchaudio==2.1.1+cu121: torch==2.1.1
+DEBUG Searching for a compatible version of torchaudio (<2.1.1+cu121 | >2.1.1+cu121, <2.1.2 | >2.1.2, <2.1.2+cu121 | >2.1.2+cu121, <2.2.0 | >2.2.0, <2.2.0+cu121 | >2.2.0+cu121, <2.2.1+cu121 | >2.2.1+cu121, <2.2.2+cu121 | >2.2.2+cu121, <2.3.0+cu121 | >2.3.0+cu121, <2.3.1+cu121 | >2.3.1+cu121)
+DEBUG Selecting: torchaudio==2.1.1 (torchaudio-2.1.1-cp310-cp310-linux_aarch64.whl)
+DEBUG Prefetching 10 torchaudio versions
+DEBUG Found fresh response for: https://download.pytorch.org/whl/torchaudio-2.1.1-cp310-cp310-linux_aarch64.whl#sha256=74add4a0e5fa04998ed52a0137d3b1d9c2ad25da8212c46df0ed73fa1d146a77
+DEBUG Found fresh response for: https://download.pytorch.org/whl/cu121/torchaudio-2.1.0%2Bcu121-cp310-cp310-linux_x86_64.whl#sha256=676bda4042734eda99bc59b2d7f761f345d3cde0cad492ad34e3aefde688c6d8
+DEBUG Adding transitive dependency for torchaudio==2.1.1: torch==2.1.1
+DEBUG Found fresh response for: https://download.pytorch.org/whl/torchaudio-2.0.2-cp310-cp310-manylinux2014_aarch64.whl#sha256=dadf237b4fd155a3d213bdfeffeded47f5a553d383817500438b44f24fa53851
+DEBUG Searching for a compatible version of torchaudio (<2.1.1 | >2.1.1, <2.1.1+cu121 | >2.1.1+cu121, <2.1.2 | >2.1.2, <2.1.2+cu121 | >2.1.2+cu121, <2.2.0 | >2.2.0, <2.2.0+cu121 | >2.2.0+cu121, <2.2.1+cu121 | >2.2.1+cu121, <2.2.2+cu121 | >2.2.2+cu121, <2.3.0+cu121 | >2.3.0+cu121, <2.3.1+cu121 | >2.3.1+cu121)
+DEBUG Found fresh response for: https://download.pytorch.org/whl/torchaudio-2.1.0-cp310-cp310-linux_aarch64.whl#sha256=010f63fe766787e058989ffadd793daadd946ce1de903be171087938cdbdc1d7
+DEBUG Selecting: torchaudio==2.1.0+cu121 (torchaudio-2.1.0+cu121-cp310-cp310-linux_x86_64.whl)
+DEBUG Found fresh response for: https://download.pytorch.org/whl/torchaudio-0.13.1-cp310-cp310-macosx_10_9_x86_64.whl#sha256=5e0f3dc6699506521364266704e6bf89d0d0579fd435d12c5c2f5858d52de4fa
+DEBUG Adding transitive dependency for torchaudio==2.1.0+cu121: torch==2.1.0
+DEBUG Found fresh response for: https://download.pytorch.org/whl/torchaudio-2.0.1-cp310-cp310-manylinux2014_aarch64.whl#sha256=6419199c773c5045c594ff950d5e5dbbfa6c830892ec09721d4ed8704b702bfd
+DEBUG Found fresh response for: https://download.pytorch.org/whl/torchaudio-0.13.0-cp310-cp310-macosx_10_9_x86_64.whl#sha256=2b7bcc5f4a8814c22a66b55ad2d8e23015c081acc99063edaf2d152c8fb0ce7b
+DEBUG Searching for a compatible version of torchaudio (<2.1.0+cu121 | >2.1.0+cu121, <2.1.1 | >2.1.1, <2.1.1+cu121 | >2.1.1+cu121, <2.1.2 | >2.1.2, <2.1.2+cu121 | >2.1.2+cu121, <2.2.0 | >2.2.0, <2.2.0+cu121 | >2.2.0+cu121, <2.2.1+cu121 | >2.2.1+cu121, <2.2.2+cu121 | >2.2.2+cu121, <2.3.0+cu121 | >2.3.0+cu121, <2.3.1+cu121 | >2.3.1+cu121)
+DEBUG Found fresh response for: https://download.pytorch.org/whl/torchaudio-2.0.0-cp310-cp310-manylinux2014_aarch64.whl#sha256=def4fb5f6cec90314d8b233ac874897aa7b99191a71df7a9228ef89b450e9194
+DEBUG Selecting: torchaudio==2.1.0 (torchaudio-2.1.0-cp310-cp310-linux_aarch64.whl)
+DEBUG Found fresh response for: https://download.pytorch.org/whl/torchaudio-0.12.1-cp310-cp310-macosx_10_9_x86_64.whl#sha256=dc138bee06b2305442fc132171f2a01d5f42509eaa21bdf87c3d26a6f4a09fdd
+DEBUG Adding transitive dependency for torchaudio==2.1.0: torch==2.1.0
+DEBUG Found fresh response for: https://download.pytorch.org/whl/torchaudio-0.12.0-cp310-cp310-macosx_10_15_x86_64.whl#sha256=26d854c6d8eb1d051da832b92db49a1403704106f1955045dd27c47741503079
+DEBUG Searching for a compatible version of torchaudio (<2.1.0 | >2.1.0, <2.1.0+cu121 | >2.1.0+cu121, <2.1.1 | >2.1.1, <2.1.1+cu121 | >2.1.1+cu121, <2.1.2 | >2.1.2, <2.1.2+cu121 | >2.1.2+cu121, <2.2.0 | >2.2.0, <2.2.0+cu121 | >2.2.0+cu121, <2.2.1+cu121 | >2.2.1+cu121, <2.2.2+cu121 | >2.2.2+cu121, <2.3.0+cu121 | >2.3.0+cu121, <2.3.1+cu121 | >2.3.1+cu121)
+DEBUG Selecting: torchaudio==2.0.2 (torchaudio-2.0.2-cp310-cp310-manylinux2014_aarch64.whl)
+DEBUG Found not-modified response for: https://download.pytorch.org/whl/Jinja2-3.1.3-py3-none-any.whl#sha256=7d6d50dd97d52cbc355597bd845fabfbac3f551e1f99619e39a35ce8c370b5fa
+DEBUG Adding transitive dependency for torchaudio==2.0.2: torch==2.0.1
+DEBUG Searching for a compatible version of torchaudio (<2.0.2 | >2.0.2, <2.1.0 | >2.1.0, <2.1.0+cu121 | >2.1.0+cu121, <2.1.1 | >2.1.1, <2.1.1+cu121 | >2.1.1+cu121, <2.1.2 | >2.1.2, <2.1.2+cu121 | >2.1.2+cu121, <2.2.0 | >2.2.0, <2.2.0+cu121 | >2.2.0+cu121, <2.2.1+cu121 | >2.2.1+cu121, <2.2.2+cu121 | >2.2.2+cu121, <2.3.0+cu121 | >2.3.0+cu121, <2.3.1+cu121 | >2.3.1+cu121)
+DEBUG Selecting: torchaudio==2.0.1 (torchaudio-2.0.1-cp310-cp310-manylinux2014_aarch64.whl)
+DEBUG Adding transitive dependency for torchaudio==2.0.1: torch==2.0.0
+DEBUG Searching for a compatible version of torchaudio (<2.0.1 | >2.0.1, <2.0.2 | >2.0.2, <2.1.0 | >2.1.0, <2.1.0+cu121 | >2.1.0+cu121, <2.1.1 | >2.1.1, <2.1.1+cu121 | >2.1.1+cu121, <2.1.2 | >2.1.2, <2.1.2+cu121 | >2.1.2+cu121, <2.2.0 | >2.2.0, <2.2.0+cu121 | >2.2.0+cu121, <2.2.1+cu121 | >2.2.1+cu121, <2.2.2+cu121 | >2.2.2+cu121, <2.3.0+cu121 | >2.3.0+cu121, <2.3.1+cu121 | >2.3.1+cu121)
+DEBUG Selecting: torchaudio==2.0.0 (torchaudio-2.0.0-cp310-cp310-manylinux2014_aarch64.whl)
+DEBUG Adding transitive dependency for torchaudio==2.0.0: torch*
+DEBUG Searching for a compatible version of filelock (*)
+DEBUG Selecting: filelock==3.13.1 (filelock-3.13.1-py3-none-any.whl)
+DEBUG Searching for a compatible version of typing-extensions (>=4.8.0)
+DEBUG Selecting: typing-extensions==4.9.0 (typing_extensions-4.9.0-py3-none-any.whl)
+DEBUG Searching for a compatible version of sympy (*)
+DEBUG Selecting: sympy==1.12 (sympy-1.12-py3-none-any.whl)
+DEBUG Adding transitive dependency for sympy==1.12: mpmath>=0.19
+DEBUG Searching for a compatible version of networkx (*)
+DEBUG Selecting: networkx==3.2.1 (networkx-3.2.1-py3-none-any.whl)
+DEBUG Searching for a compatible version of jinja2 (*)
+DEBUG Selecting: jinja2==3.1.3 (Jinja2-3.1.3-py3-none-any.whl)
+DEBUG Adding transitive dependency for jinja2==3.1.3: markupsafe>=2.0
+DEBUG Searching for a compatible version of fsspec (*)
+DEBUG No cache entry for: https://download.pytorch.org/whl/cu121/mpmath/
+DEBUG Selecting: fsspec==2024.2.0 (fsspec-2024.2.0-py3-none-any.whl)
+DEBUG No cache entry for: https://download.pytorch.org/whl/cu121/markupsafe/
+DEBUG Found not-modified response for: https://download.pytorch.org/whl/fsspec-2024.2.0-py3-none-any.whl#sha256=817f969556fa5916bc682e02ca2045f96ff7f586d45110fcb76022063ad2c7d8
+DEBUG Searching for a compatible version of mkl{platform_system == 'Windows'} (>=2021.1.1, <=2021.4.0)
+DEBUG Selecting: mkl{platform_system == 'Windows'}==2021.4.0 (mkl-2021.4.0-py2.py3-none-win_amd64.whl)
+DEBUG Searching for a compatible version of mkl{platform_system == 'Windows'} (==2021.4.0)
+DEBUG Selecting: mkl{platform_system == 'Windows'}==2021.4.0 (mkl-2021.4.0-py2.py3-none-win_amd64.whl)
+DEBUG Found stale response for: https://download.pytorch.org/whl/mkl-2021.4.0-py2.py3-none-win_amd64.whl#sha256=ceef3cafce4c009dd25f65d7ad0d833a0fbadc3d8903991ec92351fe5de1e718
+DEBUG Sending revalidation request for: https://download.pytorch.org/whl/mkl-2021.4.0-py2.py3-none-win_amd64.whl#sha256=ceef3cafce4c009dd25f65d7ad0d833a0fbadc3d8903991ec92351fe5de1e718
+DEBUG Found not-modified response for: https://download.pytorch.org/whl/mkl-2021.4.0-py2.py3-none-win_amd64.whl#sha256=ceef3cafce4c009dd25f65d7ad0d833a0fbadc3d8903991ec92351fe5de1e718
+DEBUG Adding transitive dependency for mkl{platform_system == 'Windows'}==2021.4.0: intel-openmp>=2021.dev0, <2022.dev0
+DEBUG Adding transitive dependency for mkl{platform_system == 'Windows'}==2021.4.0: tbb>=2021.dev0, <2022.dev0
+DEBUG Searching for a compatible version of mkl (==2021.4.0)
+DEBUG Selecting: mkl==2021.4.0 (mkl-2021.4.0-py2.py3-none-win_amd64.whl)
+DEBUG Adding transitive dependency for mkl==2021.4.0: intel-openmp>=2021.dev0, <2022.dev0
+DEBUG Adding transitive dependency for mkl==2021.4.0: tbb>=2021.dev0, <2022.dev0
+DEBUG No cache entry for: https://download.pytorch.org/whl/cu121/intel-openmp/
+DEBUG No cache entry for: https://download.pytorch.org/whl/cu121/tbb/
+DEBUG Searching for a compatible version of nvidia-nvjitlink-cu12 (*)
+DEBUG Selecting: nvidia-nvjitlink-cu12==12.1.105 (nvidia_nvjitlink_cu12-12.1.105-py3-none-manylinux1_x86_64.whl)
+DEBUG Found fresh response for: https://download.pytorch.org/whl/cu121/nvidia_nvjitlink_cu12-12.1.105-py3-none-manylinux1_x86_64.whl#sha256=015fed699b390ce3b8a8578d822d501a4194d0a341d3859554067c1ab291cb85
+DEBUG Found fresh response for: https://download.pytorch.org/whl/requests-2.28.1-py3-none-any.whl#sha256=8fefa2a1a1365bf5520aac41836fbee479da67864514bdb821f31ce07ce65349
+DEBUG Found fresh response for: https://download.pytorch.org/whl/pillow-10.2.0-cp310-cp310-macosx_10_10_x86_64.whl#sha256=7823bdd049099efa16e4246bdf15e5a13dbb18a51b68fa06d6c1d4d8b99a796e
+DEBUG Searching for a compatible version of numpy (*)
+DEBUG Selecting: numpy==1.26.3 (numpy-1.26.3-cp310-cp310-macosx_10_9_x86_64.whl)
+DEBUG Found fresh response for: https://download.pytorch.org/whl/numpy-1.26.3-cp310-cp310-macosx_10_9_x86_64.whl#sha256=806dd64230dbbfaca8a27faa64e2f414bf1c6622ab78cc4264f7f5f028fee3bf
+DEBUG Searching for a compatible version of pillow (>=5.3.0, <8.3.dev0 | >=8.4.dev0)
+DEBUG Selecting: pillow==10.2.0 (pillow-10.2.0-cp310-cp310-macosx_10_10_x86_64.whl)
+DEBUG Searching for a compatible version of requests (*)
+DEBUG Selecting: requests==2.28.1 (requests-2.28.1-py3-none-any.whl)
+DEBUG Adding transitive dependency for requests==2.28.1: charset-normalizer>=2, <3
+DEBUG Adding transitive dependency for requests==2.28.1: idna>=2.5, <4
+DEBUG Adding transitive dependency for requests==2.28.1: urllib3>=1.21.1, <1.27
+DEBUG No cache entry for: https://download.pytorch.org/whl/cu121/charset-normalizer/
+DEBUG Adding transitive dependency for requests==2.28.1: certifi>=2017.4.17
+DEBUG No cache entry for: https://download.pytorch.org/whl/cu121/idna/
+DEBUG No cache entry for: https://download.pytorch.org/whl/cu121/urllib3/
+DEBUG No cache entry for: https://download.pytorch.org/whl/cu121/certifi/
+DEBUG Found fresh response for: https://download.pytorch.org/whl/MarkupSafe-2.1.5-cp310-cp310-macosx_10_9_universal2.whl#sha256=a17a92de5231666cfbe003f0e4b9b3a7ae3afb1ec2845aadc2bacc93ff85febc
+DEBUG Searching for a compatible version of mpmath (>=0.19)
+DEBUG Selecting: mpmath==1.3.0 (mpmath-1.3.0-py3-none-any.whl)
+DEBUG Found stale response for: https://download.pytorch.org/whl/mpmath-1.3.0-py3-none-any.whl#sha256=a0b2b9fe80bbcd81a6647ff13108738cfb482d481d826cc0e02f5b35e5c88d2c
+DEBUG Sending revalidation request for: https://download.pytorch.org/whl/mpmath-1.3.0-py3-none-any.whl#sha256=a0b2b9fe80bbcd81a6647ff13108738cfb482d481d826cc0e02f5b35e5c88d2c
+DEBUG Found not-modified response for: https://download.pytorch.org/whl/mpmath-1.3.0-py3-none-any.whl#sha256=a0b2b9fe80bbcd81a6647ff13108738cfb482d481d826cc0e02f5b35e5c88d2c
+DEBUG Searching for a compatible version of markupsafe (>=2.0)
+DEBUG Selecting: markupsafe==2.1.5 (MarkupSafe-2.1.5-cp310-cp310-macosx_10_9_universal2.whl)
+DEBUG Searching for a compatible version of intel-openmp (>=2021.dev0, <2022.dev0)
+DEBUG Selecting: intel-openmp==2021.4.0 (intel_openmp-2021.4.0-py2.py3-none-win_amd64.whl)
+DEBUG Found stale response for: https://download.pytorch.org/whl/intel_openmp-2021.4.0-py2.py3-none-win_amd64.whl#sha256=eef4c8bcc8acefd7f5cd3b9384dbf73d59e2c99fc56545712ded913f43c4a94f
+DEBUG Sending revalidation request for: https://download.pytorch.org/whl/intel_openmp-2021.4.0-py2.py3-none-win_amd64.whl#sha256=eef4c8bcc8acefd7f5cd3b9384dbf73d59e2c99fc56545712ded913f43c4a94f
+DEBUG Found stale response for: https://download.pytorch.org/whl/tbb-2021.11.0-py3-none-win_amd64.whl#sha256=688349e1c5758ecc121293135502022ac25d5704f0a3dd890b34094414949f89
+DEBUG Sending revalidation request for: https://download.pytorch.org/whl/tbb-2021.11.0-py3-none-win_amd64.whl#sha256=688349e1c5758ecc121293135502022ac25d5704f0a3dd890b34094414949f89
+DEBUG Found not-modified response for: https://download.pytorch.org/whl/intel_openmp-2021.4.0-py2.py3-none-win_amd64.whl#sha256=eef4c8bcc8acefd7f5cd3b9384dbf73d59e2c99fc56545712ded913f43c4a94f
+DEBUG Searching for a compatible version of tbb (>=2021.dev0, <2022.dev0)
+DEBUG Selecting: tbb==2021.11.0 (tbb-2021.11.0-py3-none-win_amd64.whl)
+DEBUG Found not-modified response for: https://download.pytorch.org/whl/tbb-2021.11.0-py3-none-win_amd64.whl#sha256=688349e1c5758ecc121293135502022ac25d5704f0a3dd890b34094414949f89
+DEBUG Found fresh response for: https://download.pytorch.org/whl/idna-3.4-py3-none-any.whl#sha256=90b77e79eaa3eba6de819a0c442c0b4ceefc341a7a2ab77d7562bf49f425c5c2
+DEBUG Searching for a compatible version of charset-normalizer (>=2, <3)
+DEBUG Selecting: charset-normalizer==2.1.1 (charset_normalizer-2.1.1-py3-none-any.whl)
+DEBUG Found fresh response for: https://download.pytorch.org/whl/charset_normalizer-2.1.1-py3-none-any.whl#sha256=83e9a75d1911279afd89352c68b45348559d1fc0506b054b346651b5e7fee29f
+DEBUG Searching for a compatible version of idna (>=2.5, <4)
+DEBUG Selecting: idna==3.4 (idna-3.4-py3-none-any.whl)
+DEBUG Searching for a compatible version of urllib3 (>=1.21.1, <1.27)
+DEBUG Selecting: urllib3==1.26.13 (urllib3-1.26.13-py2.py3-none-any.whl)
+DEBUG Found fresh response for: https://download.pytorch.org/whl/urllib3-1.26.13-py2.py3-none-any.whl#sha256=47cc05d99aaa09c9e72ed5809b60e7ba354e64b59c9c173ac3018642d8bb41fc
+DEBUG Searching for a compatible version of certifi (>=2017.4.17)
+DEBUG Selecting: certifi==2022.12.7 (certifi-2022.12.7-py3-none-any.whl)
+DEBUG Found fresh response for: https://download.pytorch.org/whl/certifi-2022.12.7-py3-none-any.whl#sha256=4ad3232f5e926d6718ec31cfc1fcadfde020920e278684144551c91769c7bc18
+DEBUG Tried 63 versions: torchaudio 15, torchvision 15, certifi 1, charset-normalizer 1, filelock 1, fsspec 1, idna 1, intel-openmp 1, jinja2 1, markupsafe 1, mkl 1, mpmath 1, networkx 1, numpy 1, nvidia-cublas-cu12 1, nvidia-cuda-cupti-cu12 1, nvidia-cuda-nvrtc-cu12 1, nvidia-cuda-runtime-cu12 1, nvidia-cudnn-cu12 1, nvidia-cufft-cu12 1, nvidia-curand-cu12 1, nvidia-cusolver-cu12 1, nvidia-cusparse-cu12 1, nvidia-nccl-cu12 1, nvidia-nvjitlink-cu12 1, nvidia-nvtx-cu12 1, pillow 1, requests 1, sympy 1, tbb 1, test-uv 1, torch 1, triton 1, typing-extensions 1, urllib3 1
+Resolved 35 packages in 3.95s
+error: found distribution torchaudio==2.0.0 @ registry+https://download.pytorch.org/whl/cu121 with neither wheels nor source distribution
+```
+</details>
+
+---
+
+_Comment by @zanieb on 2024-06-18 13:51_
+
+I'm presuming this works with `uv pip install`? This might be a cross-platform lock problem.
+
+---
+
+_Label `preview` added by @zanieb on 2024-06-18 13:52_
+
+---
+
+_Comment by @FishAlchemist on 2024-06-18 14:05_
+
+> I'm presuming this works with `uv pip install`? This might be a cross-platform lock problem.
+
+I don't know. I'll paste the part of uv.lock that mentions ``torchaudio``.
+```toml
+[[distribution.dependencies]]
+name = "torchaudio"
+version = "2.0.0"
+source = "registry+https://download.pytorch.org/whl/cu121"
+```
+```toml
+[[distribution]]
+name = "torchaudio"
+version = "2.0.0"
+source = "registry+https://download.pytorch.org/whl/cu121"
+wheels = [
+	{ url = "https://download.pytorch.org/whl/torchaudio-2.0.0-cp310-cp310-manylinux2014_aarch64.whl#sha256=def4fb5f6cec90314d8b233ac874897aa7b99191a71df7a9228ef89b450e9194", hash = "sha256:def4fb5f6cec90314d8b233ac874897aa7b99191a71df7a9228ef89b450e9194" },
+	{ url = "https://download.pytorch.org/whl/torchaudio-2.0.0-cp311-cp311-manylinux2014_aarch64.whl#sha256=e94790602302b3ab8d1fa5103b9f975ef9b2c88764e7178b99f4644d409b6c27", hash = "sha256:e94790602302b3ab8d1fa5103b9f975ef9b2c88764e7178b99f4644d409b6c27" },
+	{ url = "https://download.pytorch.org/whl/torchaudio-2.0.0-cp38-cp38-manylinux2014_aarch64.whl#sha256=d0449a00e4e054ae509ef2b4fcc47926c5302f4c5c89f97010fc8fd1f8e5021f", hash = "sha256:d0449a00e4e054ae509ef2b4fcc47926c5302f4c5c89f97010fc8fd1f8e5021f" },
+	{ url = "https://download.pytorch.org/whl/torchaudio-2.0.0-cp39-cp39-manylinux2014_aarch64.whl#sha256=b0e90daa39e5736a2b39b812d4547629ce9ed7c49df298d54a6302c4e04047b8", hash = "sha256:b0e90daa39e5736a2b39b812d4547629ce9ed7c49df298d54a6302c4e04047b8" }
+]
+```
+
+---
+
+_Comment by @BurntSushi on 2024-06-18 14:27_
+
+I am able to reproduce on Linux:
+
+```
+$ cat pyproject.toml
+[project]
+name = "test_uv"
+version = "0.1.0a15"
+requires-python = "==3.10.*,>=3.10.0"
+dependencies = [
+    "torch",
+    "torchvision",
+    "torchaudio",
+]
+
+$ UV_INDEX_URL=https://download.pytorch.org/whl/cu121 uv lock
+warning: `uv lock` is experimental and may change without warning.
+Using Python 3.10.14 interpreter at: /home/andrew/.local/share/uv/toolchains/cpython-3.10.14-linux-x86_64-gnu/install/bin/python3
+Resolved 35 packages in 334ms
+
+$ uv sync
+warning: `uv sync` is experimental and may change without warning.
+Using Python 3.10.14 interpreter at: /home/andrew/.local/share/uv/toolchains/cpython-3.10.14-linux-x86_64-gnu/install/bin/python3
+Creating virtualenv at: .venv
+error: found distribution torchaudio==2.0.0 @ registry+https://download.pytorch.org/whl/cu121 with neither wheels nor source distribution
+```
+
+---
+
+_Comment by @BurntSushi on 2024-06-18 14:28_
+
+The error from `uv sync` makes sense to me because the lock file only contains `manylinux2014_aarch64` wheels, which aren't usable on my x86-64 Linux environment.
+
+---
+
+_Comment by @BurntSushi on 2024-06-18 14:53_
+
+`uv pip install` doesn't work either. It fails with no resolution:
+
+```
+$ uv venv -p 3.10
+$ UV_INDEX_URL=https://download.pytorch.org/whl/cu121 uv pip install -p 3.10 torch torchvision torchaudio
+  x No solution found when resolving dependencies:
+  `-> Because only the following versions of torchaudio are available:
+          torchaudio==0.2
+          torchaudio==0.3.0
+          torchaudio==0.3.1
+          torchaudio==0.3.2
+          torchaudio==0.4.0
+          torchaudio==0.5.0
+          torchaudio==0.5.1
+          torchaudio==0.6.0
+          torchaudio==0.7.0
+          torchaudio==0.7.1
+          torchaudio==0.7.2
+          torchaudio==0.8.0
+          torchaudio==0.8.1
+          torchaudio==0.9.0
+          torchaudio==0.9.1
+          torchaudio==0.10.0
+          torchaudio==0.10.1
+          torchaudio==0.10.2
+          torchaudio==0.11.0
+          torchaudio==0.12.0
+          torchaudio==0.12.1
+          torchaudio==0.13.0
+          torchaudio==0.13.1
+          torchaudio==2.0.0
+          torchaudio==2.0.1
+          torchaudio==2.0.2
+          torchaudio==2.1.0
+          torchaudio==2.1.0+cu121
+          torchaudio==2.1.1
+          torchaudio==2.1.1+cu121
+          torchaudio==2.1.2
+          torchaudio==2.1.2+cu121
+          torchaudio==2.2.0
+          torchaudio==2.2.0+cu121
+          torchaudio==2.2.1+cu121
+          torchaudio==2.2.2+cu121
+          torchaudio==2.3.0+cu121
+          torchaudio==2.3.1+cu121
+      and torchaudio==0.2 has no wheels are available with a matching Python implementation, we can conclude that torchaudio<0.3.0 cannot be used.
+      And because torchaudio==0.3.0 has no wheels are available with a matching Python implementation, we can conclude that torchaudio<0.3.1 cannot be used.
+      And because torchaudio==0.3.1 has no wheels are available with a matching Python implementation and torchaudio==0.3.2 has no wheels are available with a matching Python implementation, we can conclude that torchaudio<0.4.0
+      cannot be used.
+      And because torchaudio==0.4.0 has no wheels are available with a matching Python implementation and torchaudio==0.5.0 has no wheels are available with a matching Python ABI, we can conclude that torchaudio<0.5.1 cannot be
+      used.
+      And because torchaudio==0.5.1 has no wheels are available with a matching Python ABI and torchaudio==0.6.0 has no wheels are available with a matching Python ABI, we can conclude that torchaudio<0.7.0 cannot be used.
+      And because torchaudio==0.7.0 has no wheels are available with a matching Python ABI and torchaudio==0.7.1 has no wheels are available with a matching Python ABI, we can conclude that torchaudio<0.7.2 cannot be used.
+      And because torchaudio==0.7.2 has no wheels are available with a matching Python ABI and torchaudio==0.8.0 has no wheels are available with a matching Python ABI, we can conclude that torchaudio<0.8.1 cannot be used.
+      And because torchaudio==0.8.1 has no wheels are available with a matching Python ABI and torchaudio==0.9.0 has no wheels are available with a matching Python ABI, we can conclude that torchaudio<0.9.1 cannot be used.
+      And because torchaudio==0.9.1 has no wheels are available with a matching Python ABI and torchaudio==0.10.0 has no wheels are available with a matching Python ABI, we can conclude that torchaudio<0.10.1 cannot be used.
+      And because torchaudio==0.10.1 has no wheels are available with a matching Python ABI and torchaudio==0.10.2 has no wheels are available with a matching Python ABI, we can conclude that torchaudio<0.11.0 cannot be used.
+      And because torchaudio==0.11.0 has no wheels are available with a matching Python ABI and torchaudio==0.12.0 has no wheels are available with a matching Python ABI, we can conclude that torchaudio<0.12.1 cannot be used.
+      And because torchaudio==0.12.1 has no wheels are available with a matching Python ABI and torchaudio==0.13.0 has no wheels are available with a matching Python ABI, we can conclude that torchaudio<0.13.1 cannot be used.
+      And because torchaudio==0.13.1 has no wheels are available with a matching Python ABI and torchaudio==2.0.0 has no wheels are available with a matching Python implementation, we can conclude that torchaudio<2.0.1 cannot
+      be used.
+      And because torchaudio==2.0.1 has no wheels are available with a matching Python implementation and torchaudio==2.0.2 has no wheels are available with a matching Python implementation, we can conclude that torchaudio<2.1.0
+      cannot be used.
+      And because torchaudio==2.1.0 has no wheels are available with a matching Python implementation and torchaudio==2.1.0+cu121 depends on torch==2.1.0, we can conclude that torchaudio<2.1.1 depends on torch==2.1.0.
+      And because torchaudio==2.1.1 has no wheels are available with a matching Python implementation and torchaudio==2.1.1+cu121 depends on torch==2.1.1, we can conclude that torchaudio<2.1.2 depends on one of:
+          torch==2.1.0
+          torch==2.1.1
+
+      And because torchaudio==2.1.2 has no wheels are available with a matching Python implementation and torchaudio==2.1.2+cu121 depends on torch==2.1.2, we can conclude that torchaudio<2.2.0 depends on one of:
+          torch==2.1.0
+          torch==2.1.1
+          torch==2.1.2
+
+      And because torchaudio==2.2.0 has no wheels are available with a matching Python implementation and torchaudio==2.2.0+cu121 depends on torch==2.2.0, we can conclude that torchaudio<2.2.1+cu121 depends on one of:
+          torch==2.1.0
+          torch==2.1.1
+          torch==2.1.2
+          torch==2.2.0
+
+      And because torchaudio==2.2.1+cu121 depends on torch==2.2.1 and torch==2.2.2, we can conclude that torchaudio<2.3.0+cu121 depends on one of:
+          torch==2.1.0
+          torch==2.1.1
+          torch==2.1.2
+          torch==2.2.0
+          torch==2.2.1
+          torch==2.2.2
+
+      And because torchaudio==2.3.0+cu121 depends on torch==2.3.0 and torch==2.3.1, we can conclude that all versions of torchaudio depend on one of:
+          torch==2.1.0
+          torch==2.1.1
+          torch==2.1.2
+          torch==2.2.0
+          torch==2.2.1
+          torch==2.2.2
+          torch==2.3.0
+          torch==2.3.1
+
+      And because only the following versions of torch are available:
+          torch<2.1.0
+          torch>2.1.0,<2.1.1
+          torch>2.1.1,<2.1.2
+          torch>2.1.2,<2.2.0
+          torch>2.2.0,<2.2.1
+          torch>2.2.1,<2.2.2
+          torch>2.2.2,<2.3.0
+          torch>2.3.0,<2.3.1
+          torch>2.3.1
+      and you require torchaudio, we can conclude that the requirements are unsatisfiable.
+```
+
+The [wheels listed for `torchaudio`](https://download.pytorch.org/whl/torchaudio/) suggest to me that this may be related to local version segments.
+
+I note also that `pip` itself fails here too:
+
+```
+$ python3.10 -m venv .venv
+$ . .venv/bin/activate
+$ pip install --index-url https://download.pytorch.org/whl/cu121 pip install torch torchvision torchaudio
+Looking in indexes: https://download.pytorch.org/whl/cu121
+Requirement already satisfied: pip in ./.venv/lib/python3.10/site-packages (23.0.1)
+ERROR: Could not find a version that satisfies the requirement install (from versions: none)
+ERROR: No matching distribution found for install
+```
+
+So I think I would ask why it is expected that this case works.
+
+---
+
+_Comment by @BurntSushi on 2024-06-18 16:47_
+
+@FishAlchemist DM'ed me to correct a mistake in the commands above. Namely, I was running `pip install pip install torch torchvision torchaudio`. But `install` doesn't exist. Once I correct it, `pip install` does indeed work here:
+
+```
+(.venv) [andrew@duff i4377]$ pip install --index-url https://download.pytorch.org/whl/cu121 torch torchvision torchaudio
+Looking in indexes: https://download.pytorch.org/whl/cu121
+Collecting torch
+  Downloading https://download.pytorch.org/whl/cu121/torch-2.3.1%2Bcu121-cp310-cp310-linux_x86_64.whl (781.0 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 781.0/781.0 MB 12.3 MB/s eta 0:00:00
+Collecting torchvision
+  Downloading https://download.pytorch.org/whl/cu121/torchvision-0.18.1%2Bcu121-cp310-cp310-linux_x86_64.whl (7.0 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 7.0/7.0 MB 69.8 MB/s eta 0:00:00
+Collecting torchaudio
+  Downloading https://download.pytorch.org/whl/cu121/torchaudio-2.3.1%2Bcu121-cp310-cp310-linux_x86_64.whl (3.4 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 3.4/3.4 MB 72.1 MB/s eta 0:00:00
+Collecting nvidia-nccl-cu12==2.20.5
+  Downloading https://download.pytorch.org/whl/cu121/nvidia_nccl_cu12-2.20.5-py3-none-manylinux2014_x86_64.whl (176.2 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 176.2/176.2 MB 34.1 MB/s eta 0:00:00
+Collecting typing-extensions>=4.8.0
+  Downloading https://download.pytorch.org/whl/typing_extensions-4.9.0-py3-none-any.whl (32 kB)
+Collecting nvidia-cudnn-cu12==8.9.2.26
+  Downloading https://download.pytorch.org/whl/cu121/nvidia_cudnn_cu12-8.9.2.26-py3-none-manylinux1_x86_64.whl (731.7 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 731.7/731.7 MB 12.0 MB/s eta 0:00:00
+Collecting triton==2.3.1
+  Downloading https://download.pytorch.org/whl/triton-2.3.1-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (168.1 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 168.1/168.1 MB 35.6 MB/s eta 0:00:00
+Collecting jinja2
+  Downloading https://download.pytorch.org/whl/Jinja2-3.1.3-py3-none-any.whl (133 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 133.2/133.2 kB 16.9 MB/s eta 0:00:00
+Collecting nvidia-cusolver-cu12==11.4.5.107
+  Downloading https://download.pytorch.org/whl/cu121/nvidia_cusolver_cu12-11.4.5.107-py3-none-manylinux1_x86_64.whl (124.2 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 124.2/124.2 MB 37.8 MB/s eta 0:00:00
+Collecting nvidia-cuda-nvrtc-cu12==12.1.105
+  Downloading https://download.pytorch.org/whl/cu121/nvidia_cuda_nvrtc_cu12-12.1.105-py3-none-manylinux1_x86_64.whl (23.7 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 23.7/23.7 MB 73.2 MB/s eta 0:00:00
+Collecting nvidia-cusparse-cu12==12.1.0.106
+  Downloading https://download.pytorch.org/whl/cu121/nvidia_cusparse_cu12-12.1.0.106-py3-none-manylinux1_x86_64.whl (196.0 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 196.0/196.0 MB 35.1 MB/s eta 0:00:00
+Collecting nvidia-nvtx-cu12==12.1.105
+  Downloading https://download.pytorch.org/whl/cu121/nvidia_nvtx_cu12-12.1.105-py3-none-manylinux1_x86_64.whl (99 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 99.1/99.1 kB 11.9 MB/s eta 0:00:00
+Collecting sympy
+  Using cached https://download.pytorch.org/whl/sympy-1.12-py3-none-any.whl (5.7 MB)
+Collecting nvidia-cuda-runtime-cu12==12.1.105
+  Downloading https://download.pytorch.org/whl/cu121/nvidia_cuda_runtime_cu12-12.1.105-py3-none-manylinux1_x86_64.whl (823 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 823.6/823.6 kB 66.5 MB/s eta 0:00:00
+Collecting nvidia-cublas-cu12==12.1.3.1
+  Downloading https://download.pytorch.org/whl/cu121/nvidia_cublas_cu12-12.1.3.1-py3-none-manylinux1_x86_64.whl (410.6 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 410.6/410.6 MB 19.1 MB/s eta 0:00:00
+Collecting nvidia-curand-cu12==10.3.2.106
+  Downloading https://download.pytorch.org/whl/cu121/nvidia_curand_cu12-10.3.2.106-py3-none-manylinux1_x86_64.whl (56.5 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 56.5/56.5 MB 52.0 MB/s eta 0:00:00
+Collecting networkx
+  Using cached https://download.pytorch.org/whl/networkx-3.2.1-py3-none-any.whl (1.6 MB)
+Collecting nvidia-cufft-cu12==11.0.2.54
+  Downloading https://download.pytorch.org/whl/cu121/nvidia_cufft_cu12-11.0.2.54-py3-none-manylinux1_x86_64.whl (121.6 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 121.6/121.6 MB 42.4 MB/s eta 0:00:00
+Collecting filelock
+  Downloading https://download.pytorch.org/whl/filelock-3.13.1-py3-none-any.whl (11 kB)
+Collecting fsspec
+  Downloading https://download.pytorch.org/whl/fsspec-2024.2.0-py3-none-any.whl (170 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 170.9/170.9 kB 20.9 MB/s eta 0:00:00
+Collecting nvidia-cuda-cupti-cu12==12.1.105
+  Downloading https://download.pytorch.org/whl/cu121/nvidia_cuda_cupti_cu12-12.1.105-py3-none-manylinux1_x86_64.whl (14.1 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 14.1/14.1 MB 58.4 MB/s eta 0:00:00
+Collecting nvidia-nvjitlink-cu12
+  Downloading https://download.pytorch.org/whl/cu121/nvidia_nvjitlink_cu12-12.1.105-py3-none-manylinux1_x86_64.whl (19.8 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 19.8/19.8 MB 64.3 MB/s eta 0:00:00
+Collecting pillow!=8.3.*,>=5.3.0
+  Downloading https://download.pytorch.org/whl/pillow-10.2.0-cp310-cp310-manylinux_2_28_x86_64.whl (4.5 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 4.5/4.5 MB 58.9 MB/s eta 0:00:00
+Collecting numpy
+  Downloading https://download.pytorch.org/whl/numpy-1.26.3-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (18.2 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 18.2/18.2 MB 57.6 MB/s eta 0:00:00
+Collecting MarkupSafe>=2.0
+  Downloading https://download.pytorch.org/whl/MarkupSafe-2.1.5-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (25 kB)
+Collecting mpmath>=0.19
+  Using cached https://download.pytorch.org/whl/mpmath-1.3.0-py3-none-any.whl (536 kB)
+Installing collected packages: mpmath, typing-extensions, sympy, pillow, nvidia-nvtx-cu12, nvidia-nvjitlink-cu12, nvidia-nccl-cu12, nvidia-curand-cu12, nvidia-cufft-cu12, nvidia-cuda-runtime-cu12, nvidia-cuda-nvrtc-cu12, nvidia-cuda-cupti-cu12, nvidia-cublas-cu12, numpy, networkx, MarkupSafe, fsspec, filelock, triton, nvidia-cusparse-cu12, nvidia-cudnn-cu12, jinja2, nvidia-cusolver-cu12, torch, torchvision, torchaudio
+Successfully installed MarkupSafe-2.1.5 filelock-3.13.1 fsspec-2024.2.0 jinja2-3.1.3 mpmath-1.3.0 networkx-3.2.1 numpy-1.26.3 nvidia-cublas-cu12-12.1.3.1 nvidia-cuda-cupti-cu12-12.1.105 nvidia-cuda-nvrtc-cu12-12.1.105 nvidia-cuda-runtime-cu12-12.1.105 nvidia-cudnn-cu12-8.9.2.26 nvidia-cufft-cu12-11.0.2.54 nvidia-curand-cu12-10.3.2.106 nvidia-cusolver-cu12-11.4.5.107 nvidia-cusparse-cu12-12.1.0.106 nvidia-nccl-cu12-2.20.5 nvidia-nvjitlink-cu12-12.1.105 nvidia-nvtx-cu12-12.1.105 pillow-10.2.0 sympy-1.12 torch-2.3.1+cu121 torchaudio-2.3.1+cu121 torchvision-0.18.1+cu121 triton-2.3.1 typing-extensions-4.9.0
+```
+
+But my `uv pip install` command above is correct, so that doesn't work. So I at least think we can rule out any specific issues with the universal resolver. This might be related to [local version compatibility not being fully aligned with `pip`](https://github.com/astral-sh/uv/blob/main/PIP_COMPATIBILITY.md#local-version-identifiers).
+
+---
+
+_Comment by @BurntSushi on 2024-06-18 16:58_
+
+This `pyproject.toml` seems to work:
+
+```
+[project]
+name = "test_uv"
+version = "0.1.0a15"
+requires-python = "==3.10.*,>=3.10.0"
+dependencies = [
+    # torch-2.3.1+cu121-cp310-cp310-linux_x86_64.whl
+    "torch==2.3.1+cu121",
+    # torchvision-0.18.1+cu121-cp310-cp310-linux_x86_64.whl
+    "torchvision==0.18.1+cu121",
+    # torchaudio-2.3.1+cu121-cp310-cp310-linux_x86_64.whl
+    "torchaudio==2.3.1+cu121",
+]
+```
+
+I'm not sure if it is correct for your use case though.
+
+---
+
+_Comment by @FishAlchemist on 2024-06-18 17:47_
+
+> This `pyproject.toml` seems to work:
+> 
+> ```
+> [project]
+> name = "test_uv"
+> version = "0.1.0a15"
+> requires-python = "==3.10.*,>=3.10.0"
+> dependencies = [
+>     # torch-2.3.1+cu121-cp310-cp310-linux_x86_64.whl
+>     "torch==2.3.1+cu121",
+>     # torchvision-0.18.1+cu121-cp310-cp310-linux_x86_64.whl
+>     "torchvision==0.18.1+cu121",
+>     # torchaudio-2.3.1+cu121-cp310-cp310-linux_x86_64.whl
+>     "torchaudio==2.3.1+cu121",
+> ]
+> ```
+> 
+> I'm not sure if it is correct for your use case though.
+
+After I executed the following two commands in order, it seemed to be successfully executed.
+1.  ``uv sync --index-url https://download.pytorch.org/whl/cu121``
+2.  ``uv sync``
+
+![image](https://github.com/astral-sh/uv/assets/48265002/f084cf75-86a1-454c-828b-443994023bbd)
+
+Although I don’t know why when executing ``uv sync`` , if ``--index-url`` is specified, the execution will fail.
+**command:**
+```powershell
+uv sync --index-url https://download.pytorch.org/whl/cu121
+```
+**error:**
+```powershell
+error: Failed to download distributions
+  Caused by: Failed to fetch wheel: test-uv @ file:///G:/uv/.test
+  Caused by: Failed to build: `test-uv @ file:///G:/uv/.test`
+  Caused by: Failed to install requirements from setup.py build (resolve)
+  Caused by: No solution found when resolving: setuptools>=40.8.0
+  Caused by: Because setuptools was not found in the package registry and you require setuptools>=40.8.0, we can conclude that the requirements are unsatisfiable.
+```
+Ideally, I would use ``uv add`` directly to add dependencies. If I really need to modify ``pyproject.toml``, there is no need to specify ``index-url`` when using ``uv lock``.
+**Expected add command:**
+```powershell
+ uv add torch==2.3.1+cu121 torchvision==0.18.1+cu121 torchaudio==2.3.1+cu121 --index-url https://download.pytorch.org/whl/cu121 
+ ```
+
+---
+
+_Comment by @BurntSushi on 2024-06-18 17:55_
+
+It looks like it fails because it's trying to use that index for everything, including for things like `setuptools`. But you shouldn't need it for `uv sync` (_after_ the lock file is created) since the index info is encoded into the lock file.
+
+Our index strategy isn't really built out yet for the project oriented `uv`. IIRC, the `--index-url` exposed in `uv` is a stop-gap to expose _something_ so that we can point `uv` at something other than PyPI. But IIRC, the plan is to permit pinning individual packages to specific indices in `pyproject.toml`. That will probably be necessary for folks using pytorch to have a smooth experience.
+
+---
+
+_Comment by @FishAlchemist on 2024-06-18 18:35_
+
+https://github.com/astral-sh/uv/issues/4377#issuecomment-2176649558
+Oh, I forgot to mention that the execution of ``uv add`` I just mentioned will fail.
+### command:
+```powershell
+ uv add torch==2.3.1+cu121 torchvision==0.18.1+cu121 torchaudio==2.3.1+cu121 --index-url https://download.pytorch.org/whl/cu121 
+```
+uv wants to go to ``https://download.pytorch.org/whl/cu121/setuptools/`` to find ``setuptools``.
+Maybe after creating the lock file, it need to ignore ``--index-url`` when doing ``sync``.
+
+
+---
+
+_Comment by @FishAlchemist on 2024-06-19 17:27_
+
+Specify ``Local version identifiers`` and the installation will be successful.
+I forgot that ``UV`` has this limit.
+https://github.com/astral-sh/uv/blob/0.2.12/PIP_COMPATIBILITY.md#local-version-identifiers
+So I think since the problem has been solved, I will close this issue.
+
+As for the ``uv add`` issue mentioned in https://github.com/astral-sh/uv/issues/4377#issuecomment-2176727227 , I think it is not directly related to this issue. If uv's maintainer need to solve this problem, it may be better to open another issue.
+
+
+---
+
+_Closed by @FishAlchemist on 2024-06-19 17:27_
+
+---

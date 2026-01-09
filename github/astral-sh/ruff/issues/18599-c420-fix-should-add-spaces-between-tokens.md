@@ -1,0 +1,61 @@
+---
+number: 18599
+title: C420 fix should add spaces between tokens
+type: issue
+state: closed
+author: dscorbett
+labels:
+  - bug
+  - fixes
+  - help wanted
+assignees: []
+created_at: 2025-06-09T20:52:51Z
+updated_at: 2025-06-30T16:38:27Z
+url: https://github.com/astral-sh/ruff/issues/18599
+synced_at: 2026-01-07T13:12:16-06:00
+---
+
+# C420 fix should add spaces between tokens
+
+---
+
+_Issue opened by @dscorbett on 2025-06-09 20:52_
+
+### Summary
+
+The fix for [`unnecessary-dict-comprehension-for-iterable` (C420)](https://docs.astral.sh/ruff/rules/unnecessary-dict-comprehension-for-iterable/) can introduce a syntax error when the opening brace follows a keyword without intervening white space.
+
+```console
+$ cat >c420.py <<'# EOF'
+0 or{x: None for x in "x"}
+# EOF
+
+$ ruff --isolated check c420.py --select C420 --diff 2>&1 | grep error:
+error: Fix introduced a syntax error. Reverting all changes.
+```
+
+### Version
+
+ruff 0.11.13 (5faf72a4d 2025-06-05)
+
+---
+
+_Label `bug` added by @ntBre on 2025-06-09 20:58_
+
+---
+
+_Label `fixes` added by @ntBre on 2025-06-09 20:58_
+
+---
+
+_Label `help wanted` added by @ntBre on 2025-06-09 20:58_
+
+---
+
+_Referenced in [astral-sh/ruff#18616](../../astral-sh/ruff/pulls/18616.md) on 2025-06-10 19:55_
+
+---
+
+_Closed by @ntBre on 2025-06-30 16:38_
+
+---

@@ -1,0 +1,141 @@
+---
+number: 17263
+title: "`SIM114` fix introduces type checker errors"
+type: issue
+state: open
+author: AITechXcel
+labels:
+  - rule
+assignees: []
+created_at: 2025-04-07T04:45:46Z
+updated_at: 2025-04-07T12:07:55Z
+url: https://github.com/astral-sh/ruff/issues/17263
+synced_at: 2026-01-07T13:12:16-06:00
+---
+
+# `SIM114` fix introduces type checker errors
+
+---
+
+_Issue opened by @AITechXcel on 2025-04-07 04:45_
+
+### Summary
+
+```python
+def get_value(dotted_str: str, dict_obj: JSON) -> JSON:
+    names = parse_path(dotted_str)
+    result: JSON = dict_obj
+    for name in names:
+        if isinstance(name, int) and isinstance(result, list):
+            result = result[name]
+        elif isinstance(name, str) and isinstance(result, dict):
+            result = result[name]
+        else:
+            msg = f"Expected int or str, got {type(name)}"
+            raise ValueError(msg)
+    return result
+```
+
+`SIM114` turns this into ternary operator, which then gives:
+
+```
+No overloads for "__getitem__" match the provided argumentsPylance[reportCallIssue](https://github.com/microsoft/pyright/blob/main/docs/configuration.md#reportCallIssue)
+builtins.pyi(1026, 9): Overload 2 is the closest match
+⌘+click to open in new tab
+Argument of type "int | str" cannot be assigned to parameter "s" of type "slice" in function "__getitem__"
+  Type "int | str" is incompatible with type "slice"
+    "int" is incompatible with "slice"PylancereportArgumentType
+⌘+click to open in new tab
+Argument of type "int | str" cannot be assigned to parameter "key" of type "str" in function "__getitem__"
+  Type "int | str" is incompatible with type "str"
+    "int" is incompatible with "str"Pylance[reportArgumentType](https://github.com/microsoft/pyright/blob/main/docs/configuration.md#reportArgumentType)
+```
+
+### Version
+
+    "ruff==0.9.8",
+
+---
+
+_Renamed from "Ruff is turning valid code into invalid code, meaning I cannot run my code" to "`SIM114` turns valid code into invalid code, meaning I cannot run my code" by @MichaReiser on 2025-04-07 06:55_
+
+---
+
+_Renamed from "`SIM114` turns valid code into invalid code, meaning I cannot run my code" to "`SIM114` fix introduces type checker errors" by @MichaReiser on 2025-04-07 06:57_
+
+---
+
+_Label `rule` added by @MichaReiser on 2025-04-07 07:01_
+
+---
+
+_Comment by @MichaReiser on 2025-04-07 07:02_
+
+Your code should run fine but `SIM114` does introduce type checking errors because Pyright doesn't support narrowing as complicated as this. @sharkdp would red knot understand:
+
+```py
+if isinstance(name, int) and isinstance(result, list) or isinstance(name, str) and isinstance(result, dict):
+    result = result[name]
+else:
+    msg = f"Expected int or str, got {type(name)}"
+    
+```
+
+Either way. I think this makes an argument that we shouldn't flag `isinstance` checks (unless @AlexWaygood disagrees)
+
+---
+
+_Comment by @sharkdp on 2025-04-07 07:42_
+
+> because Pyright doesn't support narrowing as complicated as this
+
+I don't think that's correct. Both [pyright](https://pyright-play.net/?code=GYJw9gtgBALgngBwJYDsDmUkQWEMogCmAboQIYA2A%2BvAoQFD0AmhwUwAFCmRIQFxQwAIwBWhAMYwANAUIBnAK4UYA4WMkBKPvSi7MbDjr3Gkc1HJhkU4wlx6EZqGBqPHdVppjMoLVmxyJFZRkKU2dXN1wvc0trW25eGQsQFzc9D2ifWP9ApWkoJiRNCK0I4yJSShpEePsNXQBiTBR8AB8oZLK9CvJqWltc5XqoJtCLKHbCyXogA) and [Red Knot](https://playknot.ruff.rs/96745062-29cc-4ae8-9fa9-cedc06af3d8f) can narrow the types just fine after the conditions have been merged:
+```py
+from typing import reveal_type
+
+def f(name: object, result: object):
+    if (
+        isinstance(name, int)
+        and isinstance(result, list)
+        or isinstance(name, str)
+        and isinstance(result, dict)
+    ):
+        reveal_type(name)  # int | str
+        reveal_type(result)  # list | dict
+```
+
+But the problem is that `result[name]` is not true for all four possible combinations of `list | dict` vs `int | str`. You can not subscript a list with an argument type of `str`. So pyright is correct to issue a diagnostic in the transformed code.
+
+In other words: the code transformation suggested by this rule is fine at runtime, but it's not enough to prove to a type checker that the code is correct.
+
+It is, of course, *conceivable* that a sophisticated type checker could understand this code using a narrowing constraint that captures the *relationship* between `name` and `result`. That is, it would have to generate a narrowing constraint that captures the full Boolean logic here in something like `(name is int AND result is list) OR (name is str AND result is dict)`. But no existing type checker can do this, and it's even hard to imagine how this could work.
+
+So in summary, I think that SIM114 is indeed suggesting something problematic here. Determining the full set of cases where a transformation could lead to type checking problems seems ... difficult? A lot of conditions can lead to narrowing constraints, not just `isinstance` checks.
+
+---
+
+_Comment by @AlexWaygood on 2025-04-07 10:25_
+
+FWIW: I also do not find the proposed rewrite by SIM114 here any simpler. It's slightly less repetitive, but it also feels less readable to me!
+
+I don't think there's a great fix here. As @sharkdp says, the type-checking issue here is far from limited to just `isinstance()` conditions. Our best option may simply be to make sure the fix is always marked as unsafe, clearly document why the fix is always unsafe, and (in my opinion) clearly document that it's a somewhat opinionated rule that might not always "simplify" your code.
+
+---
+
+_Comment by @MichaReiser on 2025-04-07 11:50_
+
+I'm not sure if I want to extend fix safety to also cover possibility where it introduces type checker errors. I also don't think it helps here. The problem here isn't about the fix, it's about that there's a diagnostic in the first place. 
+
+I'm leaning towards documenting the possibility that this can introduce type checker errors, but otherwise, leave it as is. It's an opinionated rule and it's only a problem if you use a type checker (which will catch this for you!)
+
+
+
+---
+
+_Comment by @AlexWaygood on 2025-04-07 12:07_
+
+I remember when we last discussed it internally, somebody suggested that we shouldn't be claiming that any autofix is "safe" unless we'd be happy for it to be automatically applied when saving the file. I certainly wouldn't be happy for a fix to be automatically applied when pressing "save" if it means that my code will no longer pass a type checker!
+
+I agree that the bigger problem is that we ideally wouldn't issue a diagnostic at all if there's a possibility that the suggested rewrite would make it no longer type-check. But we agree that this would be very hard. Without that, I think it's probably better to say that users have to explicitly opt into the autofix, since there's a nontrivial chance the fix will turn CI checks red on their pull request.
+
+---

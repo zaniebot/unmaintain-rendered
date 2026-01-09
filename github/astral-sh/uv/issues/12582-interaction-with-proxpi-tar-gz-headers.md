@@ -1,0 +1,55 @@
+---
+number: 12582
+title: Interaction with proxpi tar.gz headers
+type: issue
+state: open
+author: cgravill
+labels:
+  - question
+assignees: []
+created_at: 2025-03-31T11:04:25Z
+updated_at: 2025-12-13T18:11:39Z
+url: https://github.com/astral-sh/uv/issues/12582
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# Interaction with proxpi tar.gz headers
+
+---
+
+_Issue opened by @cgravill on 2025-03-31 11:04_
+
+### Question
+
+We're using [proxpi](https://github.com/EpicWink/proxpi) with self hosted temporary CI runners to cache pypi.org usage.
+
+I ran into issue with tar.gz files which down to headers and presumably automatic processing in `uv`:
+https://github.com/EpicWink/proxpi/issues/67
+
+Poetry has a [similar issue](https://github.com/EpicWink/proxpi/issues/9#issuecomment-1164318555) and there's a workaround. I promised to report it here as it'd be great if it worked with defaults.
+
+### Platform
+
+Ubuntu 24.04.2 LTS x86_64
+
+### Version
+
+uv 0.6.9
+
+---
+
+_Label `question` added by @cgravill on 2025-03-31 11:04_
+
+---
+
+_Comment by @charliermarsh on 2025-03-31 13:00_
+
+Thanks!
+
+---
+
+_Comment by @michael-o on 2025-12-13 18:11_
+
+This is for me clearly a bug in proxpi, I have the same. I don't expect flask to perform any magic.
+
+---

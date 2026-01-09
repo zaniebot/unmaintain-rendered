@@ -1,0 +1,41 @@
+---
+number: 16508
+title: "Auto-fixes for PD `use-of` rules"
+type: issue
+state: open
+author: allen-pattern
+labels:
+  - fixes
+  - wish
+assignees: []
+created_at: 2025-03-04T19:40:35Z
+updated_at: 2025-03-05T07:43:28Z
+url: https://github.com/astral-sh/ruff/issues/16508
+synced_at: 2026-01-07T13:12:16-06:00
+---
+
+# Auto-fixes for PD `use-of` rules
+
+---
+
+_Issue opened by @allen-pattern on 2025-03-04 19:40_
+
+### Summary
+
+Almost of the pandas rules have auto-fixes but many of them could be added relatively trivially. PD003-PD009 in particular are simply changing the name of the method.
+
+---
+
+_Label `fixes` added by @ntBre on 2025-03-04 21:55_
+
+---
+
+_Comment by @ntBre on 2025-03-04 22:00_
+
+Interesting, it seems like this was previously implemented in https://github.com/astral-sh/ruff/pull/2741, but we didn't have the ability to flag fixes as unsafe at that point. I think we could reconsider adding this now!
+
+---
+
+_Label `wish` added by @MichaReiser on 2025-03-05 07:43_
+
+---

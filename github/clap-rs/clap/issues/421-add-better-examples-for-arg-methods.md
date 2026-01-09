@@ -1,0 +1,94 @@
+---
+number: 421
+title: Add better examples for Arg methods
+type: issue
+state: closed
+author: kbknapp
+labels:
+  - C-enhancement
+  - A-docs
+assignees: []
+created_at: 2016-02-08T21:33:00Z
+updated_at: 2018-08-02T03:29:48Z
+url: https://github.com/clap-rs/clap/issues/421
+synced_at: 2026-01-07T13:12:19-06:00
+---
+
+# Add better examples for Arg methods
+
+---
+
+_Issue opened by @kbknapp on 2016-02-08 21:33_
+
+Need examples of the the args being used with a particular setting.
+- [x] `short`
+- [x] `long`
+- [x] `help`
+- [x] `required`
+- [x] `conflicts_with`
+- [x] `conflicts_with_all`
+- [x] `overrides_with`
+- [x] `overrides_with_all`
+- [x] `requires`
+- [x] `requires_all`
+- [x] `takes_value`
+- [x] `index`
+- [x] `multiple`
+- [x] `global`
+- [x] `empty_values`
+- [x] `hidden`
+- [x] `possible_values`
+- [x] `possible_value`
+- [x] `group`
+- [x] `number_of_values`
+- [x] `validator`
+- [x] `max_values`
+- [x] `min_values`
+- [x] `use_delimiter`
+- [x] `value_delimiter`
+- [x] `value_names`
+- [x] `value_name`
+- [x] `default_value`
+- [x] `next_line_help`
+
+
+---
+
+_Label `T: enhancement` added by @kbknapp on 2016-02-08 21:33_
+
+---
+
+_Label `C: docs` added by @kbknapp on 2016-02-08 21:33_
+
+---
+
+_Label `D: easy` added by @kbknapp on 2016-02-08 21:33_
+
+---
+
+_Label `P3: want to have` added by @kbknapp on 2016-02-08 21:33_
+
+---
+
+_Label `E: tedious` added by @kbknapp on 2016-02-08 21:33_
+
+---
+
+_Label `W: 2.x` added by @kbknapp on 2016-02-08 21:33_
+
+---
+
+_Referenced in [clap-rs/clap#425](../../clap-rs/clap/pulls/425.md) on 2016-02-15 11:01_
+
+---
+
+_Comment by @kbknapp on 2016-02-19 15:47_
+
+Closed with #425 
+
+
+---
+
+_Closed by @kbknapp on 2016-02-19 15:47_
+
+---

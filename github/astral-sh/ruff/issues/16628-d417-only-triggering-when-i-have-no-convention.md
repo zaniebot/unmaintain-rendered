@@ -1,0 +1,78 @@
+---
+number: 16628
+title: "`D417` only triggering when I have no `convention`"
+type: issue
+state: open
+author: tylerlaprade
+labels:
+  - documentation
+  - question
+  - docstring
+assignees: []
+created_at: 2025-03-11T15:04:24Z
+updated_at: 2025-03-13T11:49:20Z
+url: https://github.com/astral-sh/ruff/issues/16628
+synced_at: 2026-01-07T13:12:16-06:00
+---
+
+# `D417` only triggering when I have no `convention`
+
+---
+
+_Issue opened by @tylerlaprade on 2025-03-11 15:04_
+
+### Summary
+
+[`D417`](https://docs.astral.sh/ruff/rules/undocumented-param/) is supposed to be enabled when `convention = google`, but I can only get it to trigger when I remove my `convention` entirely.
+
+https://play.ruff.rs/6daf08f0-a7fc-4e69-81c8-fb82235e5f87
+
+### Version
+
+`ruff 0.9.10 (0dfa810e9 2025-03-07)`
+
+---
+
+_Label `question` added by @MichaReiser on 2025-03-12 08:07_
+
+---
+
+_Comment by @MichaReiser on 2025-03-12 09:01_
+
+This is due to the google convention using *Arguments* as the section name and not *Parameters*. It works as expected when renaming *Parameters* to *Arguments* https://play.ruff.rs/f8364e1f-5ccb-4e66-938d-cfbcc74e9079
+
+---
+
+_Comment by @tylerlaprade on 2025-03-12 19:55_
+
+Aha, I see! Perhaps the extra behavior of each convention could be added to the documentation?
+
+Also, is there a way to make the rule work on both Arguments and Parameters simultaneously?
+
+---
+
+_Label `docstring` added by @AlexWaygood on 2025-03-13 01:25_
+
+---
+
+_Assigned to @AlexWaygood by @AlexWaygood on 2025-03-13 01:25_
+
+---
+
+_Unassigned @AlexWaygood by @AlexWaygood on 2025-03-13 01:25_
+
+---
+
+_Label `documentation` added by @MichaReiser on 2025-03-13 11:49_
+
+---
+
+_Comment by @MichaReiser on 2025-03-13 11:49_
+
+> Also, is there a way to make the rule work on both Arguments and Parameters simultaneously?
+
+I only briefly skimmed over the code but I don't think there is (without changing the implementation)
+
+https://github.com/astral-sh/ruff/blob/281e6d9791576aaf5c6eae0f13a06272fb8adc9c/crates/ruff_linter/src/docstrings/styles.rs#L11-L18
+
+---

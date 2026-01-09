@@ -1,0 +1,51 @@
+---
+number: 12919
+title: "Update sysconfig entries to patch cross-compiled `CC` paths"
+type: issue
+state: closed
+author: zanieb
+labels:
+  - bug
+assignees: []
+created_at: 2025-04-16T13:35:04Z
+updated_at: 2025-06-02T15:58:32Z
+url: https://github.com/astral-sh/uv/issues/12919
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# Update sysconfig entries to patch cross-compiled `CC` paths
+
+---
+
+_Issue opened by @zanieb on 2025-04-16 13:35_
+
+#12239 fixed this for `aarch64`, but this is also going to be a problem for other cross-compiles like, s390x, e.g., the values will be:
+
+```
+  host_cc: /usr/bin/x86_64-linux-gnu-gcc
+  host_cxx: /usr/bin/x86_64-linux-gnu-g++
+  target_cc: /usr/bin/s390x-linux-gnu-gcc
+```
+
+_Originally posted by @zanieb in https://github.com/astral-sh/uv/issues/12239#issuecomment-2729651511_
+            
+
+---
+
+_Comment by @zanieb on 2025-04-16 13:35_
+
+@samypr100 were you interested in making this more robust?
+
+---
+
+_Label `bug` added by @zanieb on 2025-04-16 14:51_
+
+---
+
+_Referenced in [astral-sh/uv#13441](../../astral-sh/uv/pulls/13441.md) on 2025-05-14 02:29_
+
+---
+
+_Closed by @zanieb on 2025-06-02 15:58_
+
+---

@@ -1,0 +1,54 @@
+---
+number: 12169
+title: ruff binary varies from ASLR
+type: issue
+state: open
+author: bmwiedemann
+labels: []
+assignees: []
+created_at: 2024-07-03T12:19:26Z
+updated_at: 2025-01-07T06:34:32Z
+url: https://github.com/astral-sh/ruff/issues/12169
+synced_at: 2026-01-07T13:12:15-06:00
+---
+
+# ruff binary varies from ASLR
+
+---
+
+_Issue opened by @bmwiedemann on 2024-07-03 12:19_
+
+While working on [reproducible builds](https://reproducible-builds.org/) for [openSUSE](https://en.opensuse.org/openSUSE:Reproducible_Builds), I found that
+our `python-ruff` package varies from Address-Space-Layout-Randomization (ASLR).
+
+I reproduced this with both 0.5.0 and 0.4.10.
+
+It is a variation that happens with low-entropy - maybe just 1 bit, so occasionally, two identical `ruff` binaries are produced.
+
+I uploaded two 0.5.0 binaries and a diff into http://rb.zq1.de/other/python-ruff/ - maybe something related to rust/llvm.
+
+---
+
+_Comment by @MichaReiser on 2024-07-03 12:26_
+
+Scanning through the diff, it seems that most (all?) are related to the `libCST` dependency. 
+
+Maybe a non-determinism in their macro?
+
+---
+
+_Comment by @bmwiedemann on 2024-07-03 12:34_
+
+`grep ^- ruff-strings-diff.txt | grep -vi libcst` also shows
+```
+-anon.ea5251168591221b31fa999991ef59a1.39.llvm.6396498261944353430
+-_ZN60_$LT$alloc..string..String$u20$as$u20$core..fmt..Display$GT$3fmt17hb6d27bec17dc24a4E.llvm.1673184941240675199
+```
+
+---
+
+_Comment by @bmwiedemann on 2025-01-07 06:34_
+
+There is indeed an issue with rust/llvm LTO in libCST https://github.com/Instagram/LibCST/pull/1213 - but not sure if this is the only issue here.
+
+---

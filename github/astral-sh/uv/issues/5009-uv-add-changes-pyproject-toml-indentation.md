@@ -1,0 +1,81 @@
+---
+number: 5009
+title: "`uv add` changes pyproject.toml indentation"
+type: issue
+state: closed
+author: konstin
+labels:
+  - help wanted
+  - preview
+assignees: []
+created_at: 2024-07-12T14:29:08Z
+updated_at: 2024-07-15T23:13:24Z
+url: https://github.com/astral-sh/uv/issues/5009
+synced_at: 2026-01-07T13:12:17-06:00
+---
+
+# `uv add` changes pyproject.toml indentation
+
+---
+
+_Issue opened by @konstin on 2024-07-12 14:29_
+
+When using `uv add` on a `project.dependencies` with indentation 2, it changes the indentation to 4 for the entire list, creating a big diff. `uv add` should instead respect the existing indentation.
+
+---
+
+_Label `preview` added by @konstin on 2024-07-12 14:29_
+
+---
+
+_Label `help wanted` added by @charliermarsh on 2024-07-12 18:06_
+
+---
+
+_Comment by @flyaroundme on 2024-07-14 15:42_
+
+To me it looks like not being possible if using only `toml_edit` rust crate that is currently used. Seems like it requires to fork `toml_edit` to respect indentation while (de)serializing toml files heh
+
+---
+
+_Comment by @charliermarsh on 2024-07-14 23:46_
+
+What about in `reformat_array_multiline`? It seems like we unequivocally add four spaces there.
+
+---
+
+_Comment by @flyaroundme on 2024-07-15 03:28_
+
+Ah yeah exactly, missed that
+
+---
+
+_Comment by @flyaroundme on 2024-07-15 13:27_
+
+I'm working on it, reworking `reformat_array_multiline`, so you can assign to me
+
+---
+
+_Assigned to @flyaroundme by @charliermarsh on 2024-07-15 13:35_
+
+---
+
+_Referenced in [astral-sh/uv#5075](../../astral-sh/uv/pulls/5075.md) on 2024-07-15 14:57_
+
+---
+
+_Closed by @ibraheemdev on 2024-07-15 23:13_
+
+---
+
+_Closed by @ibraheemdev on 2024-07-15 23:13_
+
+---
+
+_Referenced in [astral-sh/uv#5852](../../astral-sh/uv/issues/5852.md) on 2024-08-07 12:28_
+
+---
+
+_Referenced in [astral-sh/uv#16006](../../astral-sh/uv/pulls/16006.md) on 2025-09-23 19:04_
+
+---

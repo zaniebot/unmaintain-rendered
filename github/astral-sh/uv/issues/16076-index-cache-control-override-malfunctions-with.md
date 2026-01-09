@@ -1,0 +1,119 @@
+---
+number: 16076
+title: Index cache-control override malfunctions with username in URL
+type: issue
+state: closed
+author: nordewal
+labels:
+  - bug
+assignees: []
+created_at: 2025-09-30T14:58:59Z
+updated_at: 2025-10-02T01:17:02Z
+url: https://github.com/astral-sh/uv/issues/16076
+synced_at: 2026-01-07T13:12:19-06:00
+---
+
+# Index cache-control override malfunctions with username in URL
+
+---
+
+_Issue opened by @nordewal on 2025-09-30 14:58_
+
+### Summary
+
+We are using a GCP artifact registry for our internal PyPi. For authentication we use the keyring provider of GCP (https://pypi.org/project/keyrings.google-artifactregistry-auth/). Ideally we would like to configure all of our index related setting in the `pyproject.toml`. Which mostly works, except for the `cache-control` header override.
+
+Our ideal (minimal) `pyproject.toml`:
+
+```toml
+[project]
+name = "test"
+version = "0.1.0"
+dependencies = ["pandas>=2.2"]
+
+[tool.uv]
+keyring-provider = "subprocess"
+
+[[tool.uv.index]]
+cache-control = { api = "max-age=600", files = "max-age=365000000, immutable" }
+default = true
+url = "https://oauth2accesstoken@europe-west4-python.pkg.dev/our-gcp-project/pypi/simple/"
+
+```
+
+This however leads to uv not using its cache. If you execute the following command multiple times, you see that it re-downloads all dependencies each time:
+
+```sh
+rm -rf .venv/; uv sync
+```
+
+After some playing around, I figured out what the issue is: the `oauth2accesstoken@` in the URL seems to throw uv off. When I move the username to an env variable, the caching (header override) works as expected:
+
+```toml
+[project]
+name = "test"
+version = "0.1.0"
+dependencies = ["pandas>=2.2"]
+
+[tool.uv]
+keyring-provider = "subprocess"
+
+[[tool.uv.index]]
+cache-control = { api = "max-age=600", files = "max-age=365000000, immutable" }
+default = true
+name = "internal"
+url = "https://europe-west4-python.pkg.dev/our-gcp-project/pypi/simple/"
+
+```
+
+Run the following multiple times, and uv always uses the cached version:
+```sh
+export UV_INDEX_INTERNAL_USERNAME=oauth2accesstoken
+rm -rf .venv/; uv sync
+```
+
+Would it be possible to support URLs in the form of `https://USERNAME@INDEX` together with overriding `cache-control` headers?
+
+This would make our lives easier, as otherwise the configuration of the index lives in two places: the `pyproject.toml` and the env variable. Since the username itself here is not a secret (the token provided by the keyring is the secret), I also don't see a security issue.
+
+### Platform
+
+Linux 6.12.30+bpo-amd64
+
+### Version
+
+uv 0.8.22
+
+### Python version
+
+Python 3.11.12
+
+---
+
+_Label `bug` added by @nordewal on 2025-09-30 14:59_
+
+---
+
+_Comment by @charliermarsh on 2025-10-01 15:53_
+
+Yeah that should work -- I will take a look.
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2025-10-01 15:53_
+
+---
+
+_Referenced in [astral-sh/uv#16088](../../astral-sh/uv/pulls/16088.md) on 2025-10-01 16:27_
+
+---
+
+_Closed by @charliermarsh on 2025-10-01 20:57_
+
+---
+
+_Comment by @nordewal on 2025-10-02 01:17_
+
+Thank you for the very quick fix - much appreciated! 
+
+---

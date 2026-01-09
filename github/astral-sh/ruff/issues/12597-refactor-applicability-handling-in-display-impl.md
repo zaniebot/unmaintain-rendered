@@ -1,0 +1,38 @@
+---
+number: 12597
+title: "Refactor applicability handling in `Display` impl for `message::diff::Diff`"
+type: issue
+state: open
+author: chriskrycho
+labels:
+  - internal
+assignees: []
+created_at: 2024-07-31T18:04:09Z
+updated_at: 2024-07-31T18:30:23Z
+url: https://github.com/astral-sh/ruff/issues/12597
+synced_at: 2026-01-07T13:12:15-06:00
+---
+
+# Refactor applicability handling in `Display` impl for `message::diff::Diff`
+
+---
+
+_Issue opened by @chriskrycho on 2024-07-31 18:04_
+
+Spinning this out of some of the discussion on #12595, as requested by @zanieb.
+
+That PR adds support for displaying fixes, but hard codes in displaying *only* fixes at the `Applicability::Safe` level in the `Display` implementation. That really isn’t where it belongs: the `TextEmitter` is more appropriate. However, that also bumps into a number of other pieces related to design questions around what exactly to do for displaying those.
+
+The `Diff` itself should simply produce the diff and any appropriate CTA, without configuration or handling for availability. The `TextEmitter` should be responsible for determining what to print. However, at present that is somewhat coupled because the `Diff::from_message` consumes the `Message` from which it is constructed, and produces an `Option<Diff>`. (As an aside: an implementation like `from_message` should idiomatically use `std::from::From`.)
+
+Additionally, this should make it possible to solve the other problem with the current implementation: that it hard-codes displaying only safe fixes even when the user runs `ruff check --unsafe-fixes` (which *does* work in the absence of `--fix`, and should only *display*) fixes.
+
+---
+
+_Label `internal` added by @zanieb on 2024-07-31 18:08_
+
+---
+
+_Referenced in [astral-sh/ruff#12595](../../astral-sh/ruff/pulls/12595.md) on 2024-08-01 14:02_
+
+---

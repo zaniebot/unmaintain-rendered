@@ -1,0 +1,128 @@
+---
+number: 9683
+title: Add dedicated error message for dependencies with relative paths
+type: issue
+state: open
+author: charliermarsh
+labels:
+  - error messages
+assignees: []
+created_at: 2024-12-06T14:29:01Z
+updated_at: 2025-09-26T19:15:54Z
+url: https://github.com/astral-sh/uv/issues/9683
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# Add dedicated error message for dependencies with relative paths
+
+---
+
+_Issue opened by @charliermarsh on 2024-12-06 14:29_
+
+Given:
+
+```toml
+[project]
+name = "foo"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13.0"
+dependencies = ["foo @ ./scripts/path"]
+```
+
+Running `uv pip install -r pyproject.toml` gives you:
+
+```
+error: Failed to parse metadata from built wheel
+  Caused by: relative path without a working directory: ./scripts/path
+foo@ ./scripts/path
+     ^^^^^^^^^^^^^^
+```
+
+I think this is common enough that we should map the error to something that explains that you can't have relative paths here.
+
+---
+
+_Label `error messages` added by @charliermarsh on 2024-12-06 14:29_
+
+---
+
+_Comment by @Avasam on 2025-03-07 04:05_
+
+Why can't one have a relative package?
+pip  understands it:
+```toml
+[dependency-groups]
+dev = [
+    # Utilities for typeshed infrastructure scripts.
+    "ts_utils @ file:lib",
+]
+```
+Running `pip install --group=dev`:
+```
+Processing e:\users\avasam\documents\git\typeshed\lib
+  Installing build dependencies ... done
+  Getting requirements to build wheel ... done
+  Preparing metadata (pyproject.toml) ... done
+Building wheels for collected packages: ts_utils
+  Building wheel for ts_utils (pyproject.toml) ... done
+  Created wheel for ts_utils: filename=ts_utils-0.0.0-py3-none-any.whl size=9799 sha256=71500cdf89a1076acc39d0b1230e7eba715e30263fbcc4f761e4365415d1776c
+  Stored in directory: C:\Users\Avasam\AppData\Local\Temp\pip-ephem-wheel-cache-arsvhtxw\wheels\00\2d\32\d7e3a21f208c4a8070a33090d86b7d4485b97c106ecbd54e91
+Successfully built ts_utils
+Installing collected packages: ts_utils
+  Attempting uninstall: ts_utils
+    Found existing installation: ts_utils 0.0.0
+    Uninstalling ts_utils-0.0.0:
+      Successfully uninstalled ts_utils-0.0.0
+Successfully installed ts_utils-0.0.0
+```
+
+One could do this to work on uv:
+```toml
+[dependency-groups]
+dev = [
+    # Utilities for typeshed infrastructure scripts.
+    "ts_utils @ file:${PROJECT_ROOT}/lib",
+]
+```
+
+uv sync result:
+```
+Resolved 2 packages in 3ms
+Installed 1 package in 8ms
+ + ts-utils==0.0.0 (from file:///E:/Users/Avasam/Documents/Git/typeshed/lib)
+```
+
+But now that's become incompatible with pip:
+```
+Processing e:\users\avasam\documents\git\typeshed\${project_root}\lib
+ERROR: Could not install packages due to an OSError: [Errno 2] No such file or directory: 'E:\\Users\\Avasam\\Documents\\Git\\typeshed\\${PROJECT_ROOT}\\lib'
+```
+
+Is there a better solution or a config I'm missing ?
+
+`uv 0.6.5 (bcbcd0a1e 2025-03-06)`
+
+
+---
+
+_Referenced in [astral-sh/uv#9258](../../astral-sh/uv/issues/9258.md) on 2025-03-07 04:18_
+
+---
+
+_Referenced in [python/typeshed#12806](../../python/typeshed/pulls/12806.md) on 2025-03-07 04:21_
+
+---
+
+_Referenced in [Avasam/typeshed#40](../../Avasam/typeshed/pulls/40.md) on 2025-03-07 04:39_
+
+---
+
+_Referenced in [python/typeshed#13974](../../python/typeshed/issues/13974.md) on 2025-05-12 07:40_
+
+---
+
+_Referenced in [python/typeshed#14085](../../python/typeshed/pulls/14085.md) on 2025-05-16 20:28_
+
+---

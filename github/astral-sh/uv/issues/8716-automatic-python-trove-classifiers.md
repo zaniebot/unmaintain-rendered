@@ -1,0 +1,200 @@
+---
+number: 8716
+title: Automatic Python Trove Classifiers
+type: issue
+state: open
+author: harkabeeparolus
+labels:
+  - wish
+assignees: []
+created_at: 2024-10-31T08:01:19Z
+updated_at: 2025-03-03T11:27:20Z
+url: https://github.com/astral-sh/uv/issues/8716
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# Automatic Python Trove Classifiers
+
+---
+
+_Issue opened by @harkabeeparolus on 2024-10-31 08:01_
+
+### Summary
+
+I wish uv would provide default automatic trove classifiers for Python versions when building wheels.
+
+[Poetry adds automatic default Python version (and license) trove classifiers](https://python-poetry.org/docs/pyproject/#classifiers). This improves the package metadata when uploading to PyPI, and means that the developer doesn't have to manage these versions manually as the project's Python requirements change.
+
+* Please note that license trove classifiers are deprecated since `Metadata-Version: 2.4`, so we should not implement them, but favour `License-Expression` instead.
+
+### Suggested Implementation
+
+* Provide a build backend that supports automatically calculating Python version trove classifiers from the `Requires-Python` specifier IF `pyproject.toml` contains `dynamic = ["classifiers"]`.
+  * And/or encourage other build backends to support this feature.
+* Have `uv init` add `dynamic = ["classifiers"]` to the `pyproject.toml` template when using a build backend known to support automatic version classifiers.
+
+Thanks to @konstin for [pointing me towards `dynamic`](https://github.com/astral-sh/uv/issues/8716#issuecomment-2449481821) as a solution.
+
+### Examples
+
+Example (with **Poetry** version 1.8.4):
+
+```bash
+$ poetry new foo && cd foo
+$ sed -i -e $'/^version =/a\\\nlicense = "GPL-3.0-or-later"\n' pyproject.toml
+$ poetry build
+$ unzip -p dist/foo-0.1.0-py3-none-any.whl foo-0.1.0.dist-info/METADATA
+Metadata-Version: 2.1
+Name: foo
+Version: 0.1.0
+Summary:
+License: GPL-3.0-or-later
+Author: Yeeg9yoo Ohl4eida
+Author-email: boo6gima@choo7eir.com
+Requires-Python: >=3.9,<4.0
+Classifier: License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Programming Language :: Python :: 3.13
+Description-Content-Type: text/markdown
+```
+
+Compare this to **uv 0.4.29** (85f9a0d0e 2024-10-30):
+
+```bash
+$ uv init --package foo && cd foo
+$ sed -i -e $'/^version =/a\\\nlicense = "GPL-3.0-or-later"\n' pyproject.toml
+$ uv build
+$ unzip -p dist/foo-0.1.0-py3-none-any.whl foo-0.1.0.dist-info/METADATA
+Metadata-Version: 2.3
+Name: foo
+Version: 0.1.0
+Summary: Add your description here
+Author-email: Yeeg9yoo Ohl4eida <boo6gima@choo7eir.com>
+License-Expression: GPL-3.0-or-later
+Requires-Python: >=3.13
+```
+
+(Interestingly, this metadata is actually **invalid** since it breaks the specification. [The `License-Expression` field is not available until `Metadata-Version: 2.4` or later](https://packaging.python.org/en/latest/specifications/core-metadata/#license-expression). 😳)
+
+
+---
+
+_Renamed from "Automatic Python Version Trove Classifiers" to "Automatic Python Trove Classifiers" by @harkabeeparolus on 2024-10-31 08:03_
+
+---
+
+_Comment by @HenriBlacksmith on 2024-10-31 09:15_
+
+Could they automatically be added to the `pyproject.toml` too? (Not sure when but it could be even better)
+
+---
+
+_Comment by @harkabeeparolus on 2024-10-31 09:58_
+
+> Could they automatically be added to the `pyproject.toml` too? (Not sure when but it could be even better)
+
+Preferably not, in my opinion... My point is that adding default classifiers automatically to the wheel enables you to specify versions in _one place_ only, instead of copy-pasting or editing them in several different places.
+
+A _single source of truth_ is better than multiple manually managed sources of confusion. 😉
+
+---
+
+_Comment by @konstin on 2024-10-31 10:04_
+
+Specification note: PEP 621 only allows us to do this if with `dynamic = ["classifiers"]`. Poetry is allowed to do this since they are not using the `[project]` table.
+
+---
+
+_Comment by @HenriBlacksmith on 2024-10-31 12:35_
+
+> > Could they automatically be added to the `pyproject.toml` too? (Not sure when but it could be even better)
+> 
+> 
+> 
+> Preferably not, in my opinion... My point is that adding default classifiers automatically to the wheel enables you to specify versions in _one place_ only, instead of copy-pasting or editing them in several different places.
+> 
+> 
+> 
+> A _single source of truth_ is better than multiple manually managed sources of confusion. 😉
+
+Maybe those are two different features then, one could be a command to update "static" classifiers in the `pyproject.toml` and another one a setting to enrich classifiers in the build (maybe via the dynamic mode)
+
+---
+
+_Comment by @harkabeeparolus on 2024-10-31 19:13_
+
+> Specification note: PEP 621 only allows us to do this if with `dynamic = ["classifiers"]`. Poetry is allowed to do this since they are not using the `[project]` table.
+
+That's a good point!
+
+I'm not familiar enough with PEP 621, so I wonder... Would it be possible to use `dynamic = ["classifiers"]` to get default values, and at the same time also use manually specified values to override the defaults or to specify additional classifiers?
+
+---
+
+_Comment by @harkabeeparolus on 2024-11-01 08:13_
+
+> Specification note: PEP 621 only allows us to do this if with `dynamic = ["classifiers"]`. Poetry is allowed to do this since they are not using the `[project]` table.
+
+Update:
+
+I browsed through the specifications for [`pyproject.toml`](https://packaging.python.org/en/latest/specifications/pyproject-toml/) as well as [Core metadata](https://packaging.python.org/en/latest/specifications/core-metadata/), which are based partly on PEP 621 and 643, and I see no problems with my suggestion.
+
+While both specifying core metadata AND declaring it to be dynamic is not explicitly mentioned in the specs, it is also clearly not forbidden, as far as I can tell.
+
+In other words, we could certainly have build backends that provide default Python version trove classifiers if unspecified AND if `classifiers` is declared as dynamic... And we could include `dynamic = ["classifiers"]` in the `uv init` templates for the backends that support this feature.
+
+---
+
+_Label `wish` added by @charliermarsh on 2024-11-01 13:40_
+
+---
+
+_Comment by @tsvikas on 2025-01-05 18:07_
+
+update:
+poetry 2 now works like this:
+if `project.classifiers` is set, it doesn't change it
+if `project.classifiers` is not set, and `project.dynamic` contains `"classifiers"`: it will set classifiers to be `tool.poetry.classifiers` (if exists) + the automaticly created classifiers (license, version, etc.).
+
+that seems like a reasonable behaviour. could we duplicate it?
+
+---
+
+_Comment by @harkabeeparolus on 2025-01-07 11:02_
+
+> update: poetry 2 now works like this: if `project.classifiers` is set, it doesn't change it if `project.classifiers` is not set, and `project.dynamic` contains `"classifiers"`: it will set classifiers to be `tool.poetry.classifiers` (if exists) + the automaticly created classifiers (license, version, etc.).
+> 
+> that seems like a reasonable behaviour. could we duplicate it?
+
+I agree, this would be nice. Poetry 2 seems to do a lot of things right. 😄
+More info about this new behavior: https://python-poetry.org/docs/pyproject/#classifiers
+
+---
+
+_Comment by @MicaelJarniac on 2025-02-10 20:16_
+
+`Typing :: Typed` could also be inferred from the project I think, by the presence of a `py.typed` marker.
+
+---
+
+_Referenced in [MicaelJarniac/crustypy#190](../../MicaelJarniac/crustypy/issues/190.md) on 2025-02-11 23:35_
+
+---
+
+_Comment by @ambv on 2025-03-03 11:27_
+
+Note that since this issue was opened, specifying `License ::` in trove classifiers [is now deprecated](https://packaging.python.org/en/latest/specifications/pyproject-toml/#classifiers) and the preferred spelling is to use the license text or file in `[project]`, which lands in `METADATA` without duplication.
+
+---
+
+_Referenced in [opendp/tumult-core#8](../../opendp/tumult-core/pulls/8.md) on 2025-07-04 13:10_
+
+---
+
+_Referenced in [MedShift/bigc#72](../../MedShift/bigc/pulls/72.md) on 2025-10-28 20:19_
+
+---

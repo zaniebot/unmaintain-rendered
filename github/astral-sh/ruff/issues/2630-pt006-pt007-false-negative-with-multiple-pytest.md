@@ -1,0 +1,107 @@
+---
+number: 2630
+title: "`PT006` & `PT007`: False negative with multiple `@pytest.mark.parametrize()` decorators"
+type: issue
+state: closed
+author: ngnpope
+labels:
+  - bug
+assignees: []
+created_at: 2023-02-07T17:08:43Z
+updated_at: 2023-04-12T16:46:21Z
+url: https://github.com/astral-sh/ruff/issues/2630
+synced_at: 2026-01-07T13:12:14-06:00
+---
+
+# `PT006` & `PT007`: False negative with multiple `@pytest.mark.parametrize()` decorators
+
+---
+
+_Issue opened by @ngnpope on 2023-02-07 17:08_
+
+```python
+import pytest
+
+@pytest.mark.parametrize("a,b,c", [(1, 2), (3, 4), (5, 6)])  # Raises PT006
+def test_single_decorator_for_pt006(a, b, c):
+    pass
+
+@pytest.mark.parametrize(("a", "b", "c"), ((1, 2), (3, 4), (5, 6)))  # Raises PT007
+def test_single_decorator_for_pt007(a, b, c):
+    pass
+
+@pytest.mark.parametrize("a", [1, 2])  # OK
+@pytest.mark.parametrize("b,c", [(3, 4), (5, 6)])  # Should raise PT006
+def test_multiple_decorators_for_pt006(a, b, c):
+    pass
+
+@pytest.mark.parametrize("a", [1, 2])  # OK
+@pytest.mark.parametrize(("b", "c"), ((3, 4), (5, 6)))  # Should raise PT007
+def test_multiple_decorators_for_pt007(a, b, c):
+    pass
+```
+
+Gives the following:
+
+```console
+❯ ruff --version
+ruff 0.0.243
+
+❯ ruff --isolated --select PT bug.py 
+bug.py:3:26: PT006 [*] Wrong name(s) type in `@pytest.mark.parametrize`, expected `tuple`
+bug.py:7:43: PT007 Wrong values type in `@pytest.mark.parametrize` expected `list` of `tuple`
+Found 2 errors.
+[*] 1 potentially fixable with the --fix option.
+```
+
+~~Makes me wonder whether there ought to be a new rule too to recommend using a single decorator?~~ _(Only makes sense if the arguments are the same length.)_
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2023-02-08 15:47_
+
+---
+
+_Label `bug` added by @charliermarsh on 2023-02-08 15:47_
+
+---
+
+_Referenced in [astral-sh/ruff#2662](../../astral-sh/ruff/pulls/2662.md) on 2023-02-08 16:07_
+
+---
+
+_Closed by @charliermarsh on 2023-02-08 16:13_
+
+---
+
+_Comment by @ssbarnea on 2023-04-12 16:43_
+
+I see a conflict here as ruff asks to use a list while flake8 asks for 
+```
+ruff:
+PT007 Wrong values type in `@pytest.mark.parametrize` expected `list` of `tuple`
+
+flake8:
+PT007 wrong values type in @pytest.mark.parametrize, expected tuple of tuples
+```
+
+Basically there is no way to sort this for both ruff and flake8
+
+---
+
+_Comment by @cidrblock on 2023-04-12 16:45_
+
+A new entry in the pyproject.toml worked for me:
+
+```
+[tool.ruff.flake8-pytest-style]
+parametrize-values-type = "tuple"
+```
+
+---
+
+_Comment by @charliermarsh on 2023-04-12 16:46_
+
+IIUC both plugins allow this to be configured. "`list` of `tuple`" for both Ruff and flake8-pytest-style. Is it possible that you have flake8-pytest-style configured to enforce tuples of tuples?
+
+---

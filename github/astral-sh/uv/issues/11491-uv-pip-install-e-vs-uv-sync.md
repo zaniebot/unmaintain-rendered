@@ -1,0 +1,64 @@
+---
+number: 11491
+title: "`uv pip install -e .` vs `uv sync`"
+type: issue
+state: closed
+author: oliverangelil
+labels:
+  - question
+assignees: []
+created_at: 2025-02-13T20:25:53Z
+updated_at: 2025-02-13T23:00:12Z
+url: https://github.com/astral-sh/uv/issues/11491
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# `uv pip install -e .` vs `uv sync`
+
+---
+
+_Issue opened by @oliverangelil on 2025-02-13 20:25_
+
+### Question
+
+In the [github actions example](https://docs.astral.sh/uv/guides/integration/github/#syncing-and-running), the following is used to install the project:
+```
+- name: Install the project
+  run: uv sync --all-extras --dev
+```
+
+I'm more familiar with `pip install -e .`, therefore to profit from the speed of rust I do `uv pip install -e .`. 
+However I notice that `uv sync` does almost the same - the only thing I noticed is that a `uv.lock` file is created. 
+
+Would you recommend one approach over the other?
+
+### Platform
+
+Ubuntu 22.04.5 LTS 
+
+### Version
+
+0.5.31
+
+---
+
+_Label `question` added by @oliverangelil on 2025-02-13 20:25_
+
+---
+
+_Comment by @zanieb on 2025-02-13 21:25_
+
+Using `uv sync` is preferable because you can commit the lockfile then get consistent dependencies across platforms and require explicit lockfile updates for dependency versions to change. It's also faster because we don't need to re-resolve.
+
+
+---
+
+_Comment by @zanieb on 2025-02-13 21:25_
+
+`uv pip` is a "lower-level" interface that focuses on supporting manual management of the environment and doesn't expose the workflow benefits of lots of the work we're doing here.
+
+---
+
+_Closed by @oliverangelil on 2025-02-13 23:00_
+
+---

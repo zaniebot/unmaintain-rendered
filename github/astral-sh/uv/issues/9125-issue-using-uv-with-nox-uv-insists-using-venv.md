@@ -1,0 +1,111 @@
+---
+number: 9125
+title: "Issue using uv with nox: uv insists using `.venv` instead of the nox-managed virtualenv"
+type: issue
+state: closed
+author: sfermigier
+labels:
+  - question
+assignees: []
+created_at: 2024-11-14T17:57:02Z
+updated_at: 2025-06-16T17:29:28Z
+url: https://github.com/astral-sh/uv/issues/9125
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# Issue using uv with nox: uv insists using `.venv` instead of the nox-managed virtualenv
+
+---
+
+_Issue opened by @sfermigier on 2024-11-14 17:57_
+
+I have trouble integrating uv with nox.
+
+Here is what I would like to work:
+
+```python
+nox.options.default_venv_backend = "uv|virtualenv"
+
+@nox.session
+def lint(session: nox.Session) -> None:
+    session.run("uv", "sync", "--no-dev")
+    session.run("uv", "pip", "install", "pyright")
+    session.run("uv", "run", "pyright")
+```
+
+If fails, because uv ignores the virtualenv supplied by nox:
+
+```
+warning: `VIRTUAL_ENV=.nox/lint` does not match the project environment path `.venv` and will be ignored
+```
+
+Here's a workaround:
+
+```python
+nox.options.default_venv_backend = "uv|virtualenv"
+
+@nox.session
+def lint(session: nox.Session) -> None:
+    session.run("rm", "-rf", ".venv", external=True)
+    session.run("ln", "-s", ".nox/lint", ".venv", external=True)
+    session.run("uv", "sync", "--no-dev")
+    session.run("uv", "pip", "install", "abilian-devtools")
+    session.run("just", "lint", external=True)
+```
+
+Here's a successful run:
+
+```
+nox -e lint -r
+nox > Running session lint
+nox > Creating virtual environment (uv) using python in .nox/lint
+nox > rm -rf .venv
+nox > ln -s .nox/lint .venv
+nox > uv sync --no-dev
+...
+```
+
+However, at the end of the run, I have to run `uv sync` to recreate my `.venv` to keep working.
+
+I have eventually found another workaround, but anyway, I still think the use case of running "uv sync" from a virtualenv created by something else (e.g. tox or nox) could be useful.
+
+Another thing that breaks is if I have a Makefile or Justfile that calls `uv run make something`, then `uv` will use `.venv` and not `.nox/whatever` and this breaks.
+
+Version infos:
+
+```
+❯ nox --version
+2024.10.9
+❯ uv --version
+uv 0.5.1 (Homebrew 2024-11-08)
+```
+
+
+
+---
+
+_Comment by @zanieb on 2024-11-14 18:00_
+
+Please see https://github.com/astral-sh/uv/pull/6834 and the discussions linked there.
+
+---
+
+_Comment by @kianmeng on 2025-06-13 18:33_
+
+In case you found this page through search engine result, see the Nox's Cookbook, https://nox.thea.codes/en/stable/cookbook.html#using-a-lockfile on how to resolve this.
+
+---
+
+_Label `question` added by @konstin on 2025-06-16 17:29_
+
+---
+
+_Comment by @konstin on 2025-06-16 17:29_
+
+Closing as answered by the nox docs.
+
+---
+
+_Closed by @konstin on 2025-06-16 17:29_
+
+---

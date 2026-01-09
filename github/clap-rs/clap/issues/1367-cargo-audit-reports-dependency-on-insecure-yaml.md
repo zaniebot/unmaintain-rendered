@@ -1,0 +1,68 @@
+---
+number: 1367
+title: cargo-audit reports dependency on insecure yaml-rust 
+type: issue
+state: closed
+author: matthiaskrgr
+labels: []
+assignees: []
+created_at: 2018-10-31T10:09:06Z
+updated_at: 2019-10-04T13:06:35Z
+url: https://github.com/clap-rs/clap/issues/1367
+synced_at: 2026-01-07T13:12:19-06:00
+---
+
+# cargo-audit reports dependency on insecure yaml-rust 
+
+---
+
+_Issue opened by @matthiaskrgr on 2018-10-31 10:09_
+
+`clap` depends on `yaml-rust` 0.3.5 which is flagged as insecure:
+
+````
+   Fetching advisory database from `https://github.com/RustSec/advisory-db.git`
+      Loaded 14 security advisories (from /home/matthias/.cargo/advisory-db)
+    Scanning Cargo.lock for vulnerabilities (51 crate dependencies)
+error: Vulnerable crates found!
+
+ID:  RUSTSEC-2018-0006
+Crate:   yaml-rust
+Version: 0.3.5
+Date:    2018-09-17
+URL:     https://github.com/chyh1990/yaml-rust/pull/109
+Title:   Uncontrolled recursion leads to abort in deserialization
+Solution: upgrade to: >= 0.4.1
+
+error: 1 vulnerability found!
+````
+
+is it possible to update to 0.4 ?
+
+---
+
+_Referenced in [clap-rs/clap#1375](../../clap-rs/clap/pulls/1375.md) on 2018-11-08 16:12_
+
+---
+
+_Comment by @DemiMarie on 2018-11-27 01:08_
+
+This isn’t exploitable, since the YAML comes from the app developer and is thus trusted.  That said, it should still be fixed.
+
+---
+
+_Comment by @Dylan-DPC-zz on 2019-10-04 13:04_
+
+This will be fixed when #1541 is merged
+
+---
+
+_Comment by @Dylan-DPC-zz on 2019-10-04 13:06_
+
+Uhmm, this is fixed in 3.0 candidate. Thanks
+
+---
+
+_Closed by @Dylan-DPC-zz on 2019-10-04 13:06_
+
+---

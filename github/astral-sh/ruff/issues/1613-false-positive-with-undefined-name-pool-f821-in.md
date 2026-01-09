@@ -1,0 +1,70 @@
+---
+number: 1613
+title: "false positive with `Undefined name Pool F821` in .pyi "
+type: issue
+state: closed
+author: sbdchd
+labels:
+  - bug
+assignees: []
+created_at: 2023-01-04T01:49:26Z
+updated_at: 2023-01-04T02:27:27Z
+url: https://github.com/astral-sh/ruff/issues/1613
+synced_at: 2026-01-07T13:12:14-06:00
+---
+
+# false positive with `Undefined name Pool F821` in .pyi 
+
+---
+
+_Issue opened by @sbdchd on 2023-01-04 01:49_
+
+minimal reproducible example of [a larger module type stub](https://github.com/chdsbd/kodiak/blob/0c1171bc8f574d7ee11ab6174036edadfbc5ec09/bot/typings/asyncio_redis/pool.pyi#L4-L4) aka `.pyi` file:
+
+
+```python
+# pool.pyi
+class Pool:
+    @classmethod
+    def create(cls) -> Pool: ...
+```
+
+errors with:
+
+```
+Undefined name `Pool`Ruff(F821)
+```
+
+```
+typings/asyncio_redis/pool.pyi:31:10: F821 Undefined name `Pool`
+```
+
+---
+
+_Comment by @charliermarsh on 2023-01-04 02:22_
+
+Iiiinteresting... Check out https://pypi.org/project/flake8-pyi/:
+
+```
+from __future__ import annotations has no effect in stub files, since type checkers automatically treat stubs as having those semantics.
+```
+
+I didn't realize that.
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2023-01-04 02:22_
+
+---
+
+_Label `bug` added by @charliermarsh on 2023-01-04 02:22_
+
+---
+
+_Referenced in [astral-sh/ruff#1616](../../astral-sh/ruff/pulls/1616.md) on 2023-01-04 02:27_
+
+---
+
+_Closed by @charliermarsh on 2023-01-04 02:27_
+
+---

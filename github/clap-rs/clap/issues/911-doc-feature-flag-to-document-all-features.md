@@ -1,0 +1,70 @@
+---
+number: 911
+title: Doc feature flag to document all features
+type: issue
+state: closed
+author: SuperFluffy
+labels:
+  - C-enhancement
+  - A-docs
+  - E-help-wanted
+assignees: []
+created_at: 2017-03-21T10:07:49Z
+updated_at: 2018-08-02T03:30:04Z
+url: https://github.com/clap-rs/clap/issues/911
+synced_at: 2026-01-07T13:12:19-06:00
+---
+
+# Doc feature flag to document all features
+
+---
+
+_Issue opened by @SuperFluffy on 2017-03-21 10:07_
+
+When writing the doc string in #910 I noticed that while I reference `App::from_yaml`, it is not contained in the resulting documentation. Only when passing invoking `cargo doc --feature yaml` will cargo also build the documentation for that method.
+
+To fix this and similar feature-related issues, we could include a feature `doc` or `all` which contains all the possible features.
+
+I am not sure how we can make `docs.rs` pick the appropriate flags though.
+
+---
+
+_Comment by @kbknapp on 2017-03-22 00:38_
+
+I'd like this. But I'm also not sure how to provide flags to docs.rs. Pinging @onur
+
+---
+
+_Label `C: docs` added by @kbknapp on 2017-03-22 00:39_
+
+---
+
+_Label `D: easy` added by @kbknapp on 2017-03-22 00:39_
+
+---
+
+_Label `M: help wanted` added by @kbknapp on 2017-03-22 00:39_
+
+---
+
+_Label `P3: want to have` added by @kbknapp on 2017-03-22 00:39_
+
+---
+
+_Label `T: enhancement` added by @kbknapp on 2017-03-22 00:39_
+
+---
+
+_Comment by @onur on 2017-03-22 07:29_
+
+I'll finalize onur/docs.rs#73 soon.
+
+---
+
+_Referenced in [clap-rs/clap#997](../../clap-rs/clap/pulls/997.md) on 2017-07-07 11:11_
+
+---
+
+_Closed by @kbknapp on 2017-07-21 13:39_
+
+---

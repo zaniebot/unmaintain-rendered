@@ -1,0 +1,40 @@
+---
+number: 15641
+title: Bring back issue template
+type: issue
+state: closed
+author: MichaReiser
+labels:
+  - help wanted
+assignees: []
+created_at: 2025-01-21T13:51:40Z
+updated_at: 2025-01-22T07:48:36Z
+url: https://github.com/astral-sh/ruff/issues/15641
+synced_at: 2026-01-07T13:12:16-06:00
+---
+
+# Bring back issue template
+
+---
+
+_Issue opened by @MichaReiser on 2025-01-21 13:51_
+
+We removed the issue template because GitHub's new issue preview no longer supports the deprecated style issue template that we used. We didn't want to use the new style of issue templates because it introduces an unnecessary step to select the template --- where there's just one --- when creating a new issue (see https://github.com/astral-sh/ruff/issues/15135).
+
+GitHub now made a change so that this unnecessary step should no longer be needed. See [this comment](https://github.com/orgs/community/discussions/148713#discussioncomment-11902486). 
+
+Let's give it a try to bring back our issue template that we removed in https://github.com/astral-sh/ruff/pull/15163. Ideally, it would work the same as the old one where all it does is to define a default text.
+
+---
+
+_Label `help wanted` added by @MichaReiser on 2025-01-21 13:51_
+
+---
+
+_Referenced in [astral-sh/ruff#15651](../../astral-sh/ruff/pulls/15651.md) on 2025-01-21 16:05_
+
+---
+
+_Closed by @MichaReiser on 2025-01-22 07:48_
+
+---

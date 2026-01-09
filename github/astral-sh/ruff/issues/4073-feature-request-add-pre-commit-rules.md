@@ -1,0 +1,85 @@
+---
+number: 4073
+title: "[Feature Request] Add pre-commit rules."
+type: issue
+state: open
+author: veritas9872
+labels:
+  - plugin
+  - needs-decision
+assignees: []
+created_at: 2023-04-24T01:30:11Z
+updated_at: 2025-03-02T12:35:21Z
+url: https://github.com/astral-sh/ruff/issues/4073
+synced_at: 2026-01-07T13:12:14-06:00
+---
+
+# [Feature Request] Add pre-commit rules.
+
+---
+
+_Issue opened by @veritas9872 on 2023-04-24 01:30_
+
+Thank you for the great work on `ruff`! I would like to ask if the official hooks in the `pre-commit` repository could be implemented in `ruff`. While these are not always related to Python, they are very commonly used and implementing them in `ruff` would benefit many projects. Some rules already overlap, such as finding `breakpoint()` code, but implementing the rest may be beneficial.
+
+Link: https://github.com/pre-commit/pre-commit-hooks
+
+---
+
+_Comment by @edgarrmondragon on 2023-04-24 05:05_
+
+~I believe this is already supported by flake8-debugger's [T100](https://beta.ruff.rs/docs/rules/#flake8-debugger-t10)~
+
+Nevermind, re-read 😅
+
+---
+
+_Comment by @veritas9872 on 2023-04-24 05:09_
+
+@edgarrmondragon Thank you for the comment. I intended the example as one that was already implemented. However, the other rules, such as excluding files that are too large, checking Python AST, check YAML & TOML, etc. are not implemented in `ruff` to the best of my knowledge.
+
+---
+
+_Label `plugin` added by @charliermarsh on 2023-04-25 00:13_
+
+---
+
+_Label `needs-decision` added by @charliermarsh on 2023-07-10 01:26_
+
+---
+
+_Comment by @raayu83 on 2023-10-28 09:58_
+
+I'd also love to see the pre-commit rules implemented.
+Right now, my pre-commit rules include ruff and check-yaml and check-toml from the pre-commit repo.
+If the pre-commit rules were included in ruff all checks could be done with a single tool.
+While these rules aren't about .py files, they are about file types commonly used together with Python.
+
+
+---
+
+_Referenced in [astral-sh/ruff#11380](../../astral-sh/ruff/issues/11380.md) on 2024-07-16 23:39_
+
+---
+
+_Referenced in [Taxel/PlexTraktSync#1947](../../Taxel/PlexTraktSync/pulls/1947.md) on 2024-07-26 18:56_
+
+---
+
+_Comment by @PGijsbers on 2025-02-25 08:47_
+
+I would like to see the `debug-statements` hook which just checks for `breakpoint()` calls, seems very in line with the Python linter.
+
+---
+
+_Comment by @hauntsaninja on 2025-03-02 09:25_
+
+@PGijsbers as mentioned previously, that specific one should be covered by T100
+
+---
+
+_Comment by @PGijsbers on 2025-03-02 12:35_
+
+Sorry, my bad. Must have glossed over the strikethrough.
+
+---

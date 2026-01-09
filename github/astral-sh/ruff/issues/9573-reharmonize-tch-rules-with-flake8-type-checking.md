@@ -1,0 +1,88 @@
+---
+number: 9573
+title: "Reharmonize `TCH*` rules with flake8-type-checking"
+type: issue
+state: closed
+author: Daverball
+labels:
+  - breaking
+assignees: []
+created_at: 2024-01-18T16:22:23Z
+updated_at: 2024-11-18T17:35:21Z
+url: https://github.com/astral-sh/ruff/issues/9573
+synced_at: 2026-01-07T13:12:15-06:00
+---
+
+# Reharmonize `TCH*` rules with flake8-type-checking
+
+---
+
+_Issue opened by @Daverball on 2024-01-18 16:22_
+
+There recently have been a whole bunch of contributions to flake8-type-checking made by yours truly which greatly decreased the rate of false positives/negatives and added new rules, as well as better support for SQLAlchemy.
+
+Ruff independently added one of the rules which is slated to be added to `flake8-type-checking` in the next release as TC010 (string union syntax), whereas in Ruff the rule is TCH006.
+
+Considering there's no longer a naming conflict in the `TC*` range (tryceratops kindly changed its code to match ruff's) I would suggest deprecating the `TCH*` rules and keep aliases around for backwards compatibility. At the same time we can reharmonize the rule numbering and make `TCH006` alias to `TC010`.
+
+I can take a stab at porting some of the improvements from `flake8-type-checking` to Ruff, although I'm still a Rust novice, so I can't guarantee I will be able to contribute in a meaningful manner any time soon.
+
+---
+
+_Label `breaking` added by @charliermarsh on 2024-01-18 17:34_
+
+---
+
+_Comment by @charliermarsh on 2024-01-18 17:35_
+
+I think this makes sense, I don't know if it will be part of 0.2.0 or not. \cc @zanieb 
+
+---
+
+_Referenced in [astral-sh/ruff#9721](../../astral-sh/ruff/pulls/9721.md) on 2024-01-30 21:05_
+
+---
+
+_Referenced in [astral-sh/ruff#12927](../../astral-sh/ruff/pulls/12927.md) on 2024-08-16 11:43_
+
+---
+
+_Referenced in [astral-sh/ruff#13208](../../astral-sh/ruff/issues/13208.md) on 2024-09-02 09:26_
+
+---
+
+_Comment by @Daverball on 2024-11-18 15:18_
+
+@AlexWaygood Could we fit this into the 0.8.0 release (i.e. renaming `TCH` to `TC` while leaving redirects)?
+
+Otherwise I will need to wait until the `TCH006` -> `TCH010` redirect gets removed before I can implement `TC006`.
+
+I'm happy to open a PR myself.
+
+---
+
+_Comment by @AlexWaygood on 2024-11-18 16:19_
+
+@Daverball unfortunately I'm already somewhat behind on my tasks for this release, so I won't be able to work on this myself. I'd be very happy to review a PR targeting the `ruff-0.8` branch, however.
+
+I can't immediately find the PRs in the past where we've remapped rules, but there have been some -- if you can find them, they should be a good template to use
+
+---
+
+_Referenced in [astral-sh/ruff#14438](../../astral-sh/ruff/pulls/14438.md) on 2024-11-18 17:15_
+
+---
+
+_Added to milestone `v0.8` by @AlexWaygood on 2024-11-18 17:18_
+
+---
+
+_Comment by @MichaReiser on 2024-11-18 17:35_
+
+This change will be released as part of Ruff 0.8
+
+---
+
+_Closed by @MichaReiser on 2024-11-18 17:35_
+
+---

@@ -1,0 +1,163 @@
+---
+number: 5269
+title: Major performance degradation when cache is enabled on 0.0.274
+type: issue
+state: closed
+author: denik
+labels:
+  - bug
+  - performance
+assignees: []
+created_at: 2023-06-21T20:05:19Z
+updated_at: 2023-06-22T19:15:07Z
+url: https://github.com/astral-sh/ruff/issues/5269
+synced_at: 2026-01-07T13:12:15-06:00
+---
+
+# Major performance degradation when cache is enabled on 0.0.274
+
+---
+
+_Issue opened by @denik on 2023-06-21 20:05_
+
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+When cache is full, ruff 0.0.274 is much slower than without cache:
+
+```
+% ruff --version
+ruff 0.0.274
+
+% rm -fr .ruff_cache
+
+% time ruff -ns .
+ruff -ns .  10.87s user 2.25s system 620% cpu 2.114 total
+
+% time ruff -s .
+ruff -s .  10.96s user 2.53s system 705% cpu 1.913 total
+
+% time ruff -s .
+ruff -s .  23.84s user 8.42s system 105% cpu 30.517 total
+
+% time ruff -s .
+ruff -s .  23.19s user 8.65s system 105% cpu 30.123 total
+```
+
+Previous version works as expected - full cache speeds it up:
+
+```
+% ruff --version
+ruff 0.0.273
+
+% rm -fr .ruff_cache
+
+% time ruff -ns .
+ruff -ns .  10.88s user 2.29s system 766% cpu 1.717 total
+
+% time ruff -s .
+ruff -s .  11.06s user 3.03s system 706% cpu 1.993 total
+
+% time ruff -s .
+ruff -s .  0.69s user 1.61s system 218% cpu 1.053 total
+
+% time ruff -s .
+ruff -s .  0.69s user 1.60s system 219% cpu 1.044 total
+```
+
+```
+% git ls-files '*.py' | wc -l
+   38541
+```
+
+This is on Mac OS X, but the same effect is observed on Linux.
+
+---
+
+_Comment by @charliermarsh on 2023-06-21 20:13_
+
+Thanks, that's a surprisingly extreme degradation, will take a look.
+
+Can you tell me a bit about the characteristics of the project? That's an enormous number of Python files :) Do most of the files contain violations? Or is `ruff check` clean? (Is this a public repo?)
+
+
+---
+
+_Comment by @charliermarsh on 2023-06-21 20:14_
+
+I would love to test `main` on this to see if it's at all improved.
+
+---
+
+_Comment by @denik on 2023-06-21 20:21_
+
+This was a private repo with a huge number of violations. 
+
+```
+Found 406804 errors.
+[*] 3152 potentially fixable with the --fix option.
+```
+
+---
+
+_Comment by @charliermarsh on 2023-06-21 20:22_
+
+In my testing, on large projects like CPython, `main` is faster or as-fast as v0.0.273, while v0.0.274 is 5-10x slower. So I'd expect the next release to fix this to a large degree, but the degradation you're seeing is even larger than that 5-10x estimate, so it's hard to say with complete certainty.
+
+---
+
+_Label `bug` added by @charliermarsh on 2023-06-21 20:23_
+
+---
+
+_Comment by @charliermarsh on 2023-06-21 20:29_
+
+Maybe I'll cut another release sooner rather than later and we can test it out. I'm trying to find another project of comparable scale. CPython is the largest I can find, at 696,787 lines of Python across 1,893 files. (That's more than Airflow, Django, etc.)
+
+---
+
+_Comment by @charliermarsh on 2023-06-21 20:31_
+
+Okay, I tested on TensorFlow, which has 925,816 lines of Python across 3,059 files, and `main` and `v0.0.273` are equivalent, while `v0.0.274` is 15x slower.
+
+---
+
+_Comment by @denik on 2023-06-21 20:35_
+
+Checked e71f044f0d6b6869 - it's indeed much faster, similar to 0.0.273.
+
+Thanks! Looking forward to 0.0.275 :)
+
+---
+
+_Label `performance` added by @MichaReiser on 2023-06-21 20:43_
+
+---
+
+_Comment by @charliermarsh on 2023-06-21 20:44_
+
+Oh, thank you so much for doing that! That's really helpful to hear. I probably won't release tonight (just a little drained from yesterday's release cycle), but before the end of the week.
+
+---
+
+_Referenced in [astral-sh/ruff#5267](../../astral-sh/ruff/pulls/5267.md) on 2023-06-21 21:07_
+
+---
+
+_Comment by @charliermarsh on 2023-06-22 19:15_
+
+Should be fixed in v0.0.275 (out now).
+
+---
+
+_Closed by @charliermarsh on 2023-06-22 19:15_
+
+---

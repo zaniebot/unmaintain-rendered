@@ -1,0 +1,53 @@
+---
+number: 12274
+title: "Add `-> None` automatically to all pytest tests"
+type: issue
+state: closed
+author: chbndrhnns
+labels:
+  - question
+assignees: []
+created_at: 2024-07-10T12:16:22Z
+updated_at: 2024-07-10T12:54:37Z
+url: https://github.com/astral-sh/ruff/issues/12274
+synced_at: 2026-01-07T13:12:15-06:00
+---
+
+# Add `-> None` automatically to all pytest tests
+
+---
+
+_Issue opened by @chbndrhnns on 2024-07-10 12:16_
+
+When running mypy on a larger codebase with many tests, it will report missing `-> None` annotations on tests in strict mode.
+
+I suggest adding a rule that adds this return type to all tests discovered by pytest.
+
+---
+
+_Comment by @AlexWaygood on 2024-07-10 12:30_
+
+Hi, thanks for the feature request! Have you tried enabling the autofixes for [`ANN201`](https://docs.astral.sh/ruff/rules/missing-return-type-undocumented-public-function/), `ANN202`, `ANN204`, `ANN205` and `ANN206`? They might already do what you want here
+
+---
+
+_Label `question` added by @AlexWaygood on 2024-07-10 12:44_
+
+---
+
+_Comment by @chbndrhnns on 2024-07-10 12:53_
+
+I just did seconds ago and was about to close the issue due to this ;)
+Thanks much
+
+---
+
+_Closed by @chbndrhnns on 2024-07-10 12:53_
+
+---
+
+_Comment by @AlexWaygood on 2024-07-10 12:54_
+
+You're very welcome, glad to hear it! :D
+
+---

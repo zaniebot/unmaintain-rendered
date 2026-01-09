@@ -1,0 +1,82 @@
+---
+number: 4526
+title: "ARG003 and ARG004 don't get triggered"
+type: issue
+state: closed
+author: spapanik
+labels: []
+assignees: []
+created_at: 2023-05-19T11:11:20Z
+updated_at: 2023-05-22T21:00:02Z
+url: https://github.com/astral-sh/ruff/issues/4526
+synced_at: 2026-01-07T13:12:14-06:00
+---
+
+# ARG003 and ARG004 don't get triggered
+
+---
+
+_Issue opened by @spapanik on 2023-05-19 11:11_
+
+Hi,
+
+I ARG003 and ARG004 aren't working as expected.
+
+My minimal example is a file containing:
+```python
+class Example:
+    def can_be_static(self, x: int) -> int:
+        return x
+
+    @classmethod
+    def cls_can_be_static(cls, x: int) -> int:
+        return x
+```
+
+and the `pyproject.toml` contains (ruff-related) only:
+```toml
+[tool.ruff]
+select = ["ARG"]
+```
+
+trying to lint the file using ruff produces no errors, although it was expected find both ARG003 and ARG004
+
+my version is `ruff 0.0.269`
+
+---
+
+_Comment by @JonathanPlasse on 2023-05-19 11:54_
+
+> ```python
+> class Example:
+>     def can_be_static(self, x: int) -> int:
+>         return x
+>                ^
+> 
+>     @classmethod
+>     def cls_can_be_static(cls, x: int) -> int:
+>         return x
+>                ^
+> ```
+I added `^` where `x` is used. `ARG` will ignore `self` and `cls`.
+
+
+---
+
+_Comment by @charliermarsh on 2023-05-19 12:28_
+
+Yeah this is working as intended I believe, but let me know if we're misunderstanding.
+
+---
+
+_Closed by @charliermarsh on 2023-05-19 12:28_
+
+---
+
+_Comment by @spapanik on 2023-05-22 21:00_
+
+Maybe I'm misunderstanding, because if in the first method I `return self`, then ARG002 would get triggered. I was under the impression that ARG004 would trigger if `self` is unused, as this means that the method can be turned into a static method.
+
+If this isn't the case, I would like to make a feature request for a rule that checks for unused `self`, or unused `cls` in the case of classmethods.
+
+---

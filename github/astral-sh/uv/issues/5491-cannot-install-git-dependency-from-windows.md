@@ -1,0 +1,141 @@
+---
+number: 5491
+title: Cannot install git dependency from Windows
+type: issue
+state: closed
+author: mcrumiller
+labels:
+  - needs-mre
+assignees: []
+created_at: 2024-07-26T20:04:56Z
+updated_at: 2024-10-08T21:52:28Z
+url: https://github.com/astral-sh/uv/issues/5491
+synced_at: 2026-01-07T13:12:17-06:00
+---
+
+# Cannot install git dependency from Windows
+
+---
+
+_Issue opened by @mcrumiller on 2024-07-26 20:04_
+
+I'm trying to install a package on one of our local gitlab servers. pip succeeds whereas uv fails (url and project name redacted since it's work stuff):
+
+version: `uv==0.2.30`.
+
+```
+C:\>python -m uv pip install git+https://<url>/<project>.git
+Updating https://<url>/<project>.git (HEAD)
+error: Git operation failed
+  Caused by: failed to fetch into: C:\Users\<username>\AppData\Local\uv\cache\git-v0\db\002f1daecf4da80d
+  Caused by: process didn't exit successfully: `git fetch --force --update-head-ok https://<url>/<project>.git +HEAD:refs/remotes/origin/HEAD` (exit code: 128)
+--- stderr
+
+Unhandled Exception: System.ArgumentException: Illegal characters in path.
+   at System.Security.Permissions.FileIOPermission.EmulateFileIOPermissionChecks(String fullPath)
+   at System.IO.Directory.InternalGetCurrentDirectory(Boolean checkHost)
+   at System.Diagnostics.Process.StartWithCreateProcess(ProcessStartInfo startInfo)
+   at System.Diagnostics.Process.Start()
+   at Microsoft.Git.CredentialManager.Interop.Windows.WindowsEnvironment.TryLocateExecutable(String program, String& path)
+   at Microsoft.Git.CredentialManager.EnvironmentExtensions.LocateExecutable(IEnvironment environment, String program)
+   at Microsoft.Git.CredentialManager.CommandContext..ctor()
+   at Microsoft.Git.CredentialManager.Program.Main(String[] args)
+bash: /dev/tty: No such device or address
+error: failed to execute prompt script (exit code 1)
+fatal: could not read Username for 'https://<url>': No such file or directory
+```
+However, with `pip` it succeeds:
+
+```
+C:\>python -m pip install git+https://<url>/<project>.git
+<lots of output and takes a long time>
+Successfully installed <project>
+```
+
+The funkiest character the url and project contain is the dash character `-`.
+
+---
+
+_Comment by @charliermarsh on 2024-07-26 20:55_
+
+Nothing obvious stands out to me here. Are you able to install other Git dependencies -- i.e., is it specific to this package?
+
+---
+
+_Label `needs-mre` added by @charliermarsh on 2024-07-26 21:02_
+
+---
+
+_Comment by @mcrumiller on 2024-07-26 21:13_
+
+Ok, I think I'm going to clone the repo and re-host internally and re-attempt to install.
+
+---
+
+_Comment by @mcrumiller on 2024-07-26 21:16_
+
+Ok, another example: I imported/cloned `python-gitlab`, which is hosted at https://gitlab.com/python-gitlab/python-gitlab, to our internal company gitlab instance, and attempted an install.
+
+```
+C:\Projects>python -m uv pip install git+https://gitlab.<company>.net/<group>/python-gitlab.git
+Updating https://gitlab.<company>.net/<group>>/python-gitlab.git (HEAD)
+error: Git operation failed
+  Caused by: failed to clone into: C:\Users\<username>\AppData\Local\uv\cache\git-v0\db\5b5bbd451124ffaa
+  Caused by: process didn't exit successfully: `git fetch --force --update-head-ok https://gitlab.<company>.net/<group>>/python-gitlab.git +HEAD:refs/remotes/origin/HEAD` (exit code: 128)
+--- stderr
+
+Unhandled Exception: System.ArgumentException: Illegal characters in path.
+   at System.Security.Permissions.FileIOPermission.EmulateFileIOPermissionChecks(String fullPath)
+   at System.IO.Directory.InternalGetCurrentDirectory(Boolean checkHost)
+   at System.Diagnostics.Process.StartWithCreateProcess(ProcessStartInfo startInfo)
+   at System.Diagnostics.Process.Start()
+   at Microsoft.Git.CredentialManager.Interop.Windows.WindowsEnvironment.TryLocateExecutable(String program, String& path)
+   at Microsoft.Git.CredentialManager.EnvironmentExtensions.LocateExecutable(IEnvironment environment, String program)
+   at Microsoft.Git.CredentialManager.CommandContext..ctor()
+   at Microsoft.Git.CredentialManager.Program.Main(String[] args)
+bash: /dev/tty: No such device or address
+error: failed to execute prompt script (exit code 1)
+fatal: could not read Username for 'https://gitlab.<company>.net': No such file or directory
+```
+
+---
+
+_Comment by @samypr100 on 2024-07-27 00:53_
+
+Does it work if you don't use the internal clone and use the upstream one?
+
+Can you run both uv and pip with `GIT_TRACE=1` and `GIT_CURL_VERBOSE=1` set and see if you spot any noticeable errors/differences?
+
+---
+
+_Comment by @samypr100 on 2024-07-27 20:08_
+
+Thanks, I tried it with upstream python-gitlab and it does work. Looking at the logs nothing seems odd besides the fact that it stops working during the git credential manage step in uv vs pip during the query to git credential manager. The exception leads me to think it's related to the environment being passed to credential manager between both uv vs pip.
+
+Worth checking, but do you happen to have a configuration issue with your `PATH` as it's described in this blog https://jakebinstein.com/blog/illegal-characters-in-path-problem-with-windows-10/ locally?
+
+---
+
+_Comment by @mcrumiller on 2024-07-28 17:15_
+
+Thanks @samypr100. Unfortunately I don't seem to have any illegal chars in the path--no double-quotes,  I removed all trailing backslashes, but still no luck.
+
+I'll see if I can get rust/llvm installed over the next few days to see if I can help diagnose. I appreciate the help!
+
+---
+
+_Comment by @mcrumiller on 2024-10-08 18:00_
+
+FYI this issue no longer exists on the latest version. Whether there was an update on our end or on yours, or in git, the issue appears to resolved.
+
+---
+
+_Closed by @mcrumiller on 2024-10-08 18:00_
+
+---
+
+_Comment by @charliermarsh on 2024-10-08 21:52_
+
+Great, thank you for following up!
+
+---

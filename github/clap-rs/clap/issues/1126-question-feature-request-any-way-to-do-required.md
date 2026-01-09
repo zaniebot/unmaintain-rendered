@@ -1,0 +1,131 @@
+---
+number: 1126
+title: "Question/Feature request: Any way to do required_ifs \"flags exists\"."
+type: issue
+state: closed
+author: 8176135
+labels:
+  - C-enhancement
+  - A-validators
+  - S-waiting-on-design
+assignees: []
+created_at: 2017-12-12T04:54:36Z
+updated_at: 2025-06-10T15:35:15Z
+url: https://github.com/clap-rs/clap/issues/1126
+synced_at: 2026-01-07T13:12:19-06:00
+---
+
+# Question/Feature request: Any way to do required_ifs "flags exists".
+
+---
+
+_Issue opened by @8176135 on 2017-12-12 04:54_
+
+Clap version: 2.29.0
+
+I'll start with the problem I am trying to solve:
+I have the flags -A, -B, -C, which are all optional by themselves. However, if **both** -A, and -B are used, -C must also be used. (-C takes some values that -A and -B need)
+
+- Clap has `required_unless_all(name)`, but doesn't have the opposite of that e.g. `required_if_all(name)`?
+
+- I know clap has `required_ifs()`, but that compares the input from an argument with a value, but the value doesn't matter in this case, only that the flags are present or not.
+
+- Having `requires()` on -A and -B also won't work in this case, as only having one of them will make -C required.
+
+- `requires_all()` does the opposite of what I want, requiring both -A and -B to be used -C can be used
+
+None of the above is unexpected, (the documentation is really good at explaining each option 👍 ), but there doesn't seem to be a `required_if_all([names])`. Any ideas?
+
+---
+
+_Comment by @kbknapp on 2018-01-09 16:51_
+
+I'm not opposed to adding something like that, however I'll explain why it doesn't exist (yet).
+
+When dealing with flags and requirements, since they are a simple on/off switch, if you know `-A` and `-B` requires `-C` (as the programmer), you could just act *as if* `-C` was used. I'd recommend telling the user via a help message or something, ("using `-A` and `-B` together *implies* `-C`", etc.). 
+
+From a UX standpoint, the user isn't supplying any additional information by being forced to pass `-C` since it's a flag. The only thing they're saying is essentially, "I know the -C switch is required."
+
+The only time requiring an additional flag is a good idea is when the task is destructive (like deleting, etc.) and the user needs to confirm that they're sure they know what they're doing (by including the flag) such as `--force` usually, or `-D` in `git branch`.
+
+However, in these circumstances it's far better to have a custom error message telling the user what is about to happen and *why* the extra flag is required. A generic clap error of, "-C is required but wasn't used" could actually be harmful here, since the user will almost always just blindly copy the `-C` argument and not know why.
+
+---
+
+_Label `T: RFC / question` added by @kbknapp on 2018-01-09 16:51_
+
+---
+
+_Comment by @kbknapp on 2018-07-22 02:49_
+
+Closing for now to get 3.x out the door. We can re-address after release if needed.
+
+---
+
+_Closed by @kbknapp on 2018-07-22 02:49_
+
+---
+
+_Label `W: after v3 release` added by @kbknapp on 2018-07-22 02:49_
+
+---
+
+_Comment by @CreepySkeleton on 2020-02-02 02:18_
+
+I'm leaving it closed for the time being
+
+---
+
+_Label `W: after v3 release` removed by @pksunkara on 2021-05-26 11:09_
+
+---
+
+_Reopened by @pksunkara on 2021-05-26 11:09_
+
+---
+
+_Referenced in [epage/clapng#84](../../epage/clapng/issues/84.md) on 2021-12-06 16:39_
+
+---
+
+_Label `T: RFC / question` removed by @epage on 2021-12-08 21:03_
+
+---
+
+_Label `C-enhancement` added by @epage on 2021-12-08 21:03_
+
+---
+
+_Label `A-validators` added by @epage on 2021-12-09 18:00_
+
+---
+
+_Label `S-waiting-on-design` added by @epage on 2021-12-09 18:00_
+
+---
+
+_Comment by @messense on 2022-01-15 08:59_
+
+Is there any way to do "required if other options present"? For example `--tls-key <PATH>` is only required if `--tls-cert <PATH>` is present.
+
+---
+
+_Comment by @epage on 2022-01-17 15:48_
+
+Interesting.  We support "present" for defaults but not requires or required.
+
+#3008 has the potential for making our required, requires, defaults, etc more general.
+
+---
+
+_Comment by @epage on 2025-06-10 15:35_
+
+Also, this is focused on items that are now `ArgAction::SetTrue`.  There is a value for those now that can be checked.
+
+A more general "if another argument is present, regardless of value" is needed, let's track that in a separate issue.
+
+---
+
+_Closed by @epage on 2025-06-10 15:35_
+
+---

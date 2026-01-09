@@ -1,0 +1,79 @@
+---
+number: 12139
+title: PEP-723 requires-python version not downloaded with uv run
+type: issue
+state: closed
+author: jmoudev
+labels:
+  - bug
+assignees: []
+created_at: 2025-03-12T16:46:01Z
+updated_at: 2025-03-12T16:53:12Z
+url: https://github.com/astral-sh/uv/issues/12139
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# PEP-723 requires-python version not downloaded with uv run
+
+---
+
+_Issue opened by @jmoudev on 2025-03-12 16:46_
+
+### Summary
+
+The documentation mentions the following in reference to PEP-723 style scripts:
+"uv run will search for and use the required Python version. The Python version will download if it is not installed — see the documentation on [Python versions](https://docs.astral.sh/uv/concepts/python-versions/) for more details."
+https://docs.astral.sh/uv/guides/scripts/#declaring-script-dependencies
+https://github.com/astral-sh/uv/blob/c1a0bb85ea7e16b998cf1fca41de5f6323dcd5a4/docs/guides/scripts.md?plain=1#L216-L218
+
+However, when running a PEP-723 script uv errors out when the specified Python version in the requires-python doesn't exist:
+
+Script header:
+```Python
+# /// script
+# requires-python = "==3.8"
+# ///
+```
+
+```bash
+$ uv run --script main.py
+error: No interpreter found for Python ==3.8 in virtual environments, managed installations, or search path
+```
+
+This seems contrary to the documentation guidance that the Python version should be downloaded.
+
+Thanks in advance :)
+
+### Platform
+
+Darwin 24.3.0 arm64
+
+### Version
+
+0.6.6
+
+### Python version
+
+_No response_
+
+---
+
+_Label `bug` added by @jmoudev on 2025-03-12 16:46_
+
+---
+
+_Comment by @charliermarsh on 2025-03-12 16:46_
+
+You might be intending to use `==3.8.*`? `==3.8` is equal to `==3.8.0`, and I suspect we don't have a 3.8.0 build.
+
+---
+
+_Comment by @jmoudev on 2025-03-12 16:53_
+
+Thanks so much for the response.. yeah this works!
+
+---
+
+_Closed by @jmoudev on 2025-03-12 16:53_
+
+---

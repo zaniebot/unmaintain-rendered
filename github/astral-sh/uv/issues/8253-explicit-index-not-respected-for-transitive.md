@@ -1,0 +1,248 @@
+---
+number: 8253
+title: Explicit index not respected for transitive dependency
+type: issue
+state: open
+author: juzna
+labels:
+  - question
+assignees: []
+created_at: 2024-10-16T12:47:13Z
+updated_at: 2025-11-27T19:35:32Z
+url: https://github.com/astral-sh/uv/issues/8253
+synced_at: 2026-01-07T13:12:17-06:00
+---
+
+# Explicit index not respected for transitive dependency
+
+---
+
+_Issue opened by @juzna on 2024-10-16 12:47_
+
+Hey, thanks for delivering explicit indexes in #7481 ❤️ I'm trying this with uv built from the last commit (e71b1d0c), but I have a problem with transitive dependencies & explicit index.
+
+Scenario: `my-app` depends on internal pkg `a`, which declares a dependency on (internal) package `b.`
+
+In my app project.toml, I define the index plus I set sources for both pkg `a` & `b. But then `uv lock` gives me
+> Because b was not found in the package registry ...
+
+So it's ignoring the source definition when resolving a transitive dependency.
+
+```toml
+[[tool.uv.index]]
+name = "my-internal-index"
+url = "..."
+explicit = true
+
+[tool.uv.sources]
+a = { index = "my-internal-index" }
+b = { index = "my-internal-index" }
+
+[project.dependencies]
+a = { version = "1.0" }  # `a` declares a dependency on `b`
+```
+
+
+---
+
+_Comment by @charliermarsh on 2024-10-16 12:48_
+
+Sources only apply to dependencies that are declared in the project itself. In this case, you'd need to define `b` as a dependency.
+
+---
+
+_Comment by @juzna on 2024-10-16 12:57_
+
+Yep, that works.
+
+Though, is it a good approach? `my-app` doesn't really depend on `b`, only transitively. So if `a` removes the dependency on `b` in the future, I'll be left with an unused dependency. For this reason, I'll also get a warning by [deptry](https://github.com/fpgmaas/deptry) that the dependency is not used in my code.
+
+---
+
+_Label `question` added by @charliermarsh on 2024-10-16 13:35_
+
+---
+
+_Comment by @corleyma on 2024-10-16 21:26_
+
+I don't know if it applies here, but this handling of transitive dependencies is the primary driver for the "glob pattern-based source declaration" functionality that exists in PDM and others have implemented using poetry plugins described e.g. [here](https://github.com/astral-sh/uv/issues/171#issuecomment-2302093785).  The idea is that in corporate environments, where it's common to enforce a namespace for internal packages, this makes it easy to setup a declaration that handles pinning transitive internal dependencies to a particular repository.
+
+just echoing that there is some desire to have a way to inform a package manager about how to handle particular transitive dependencies.
+
+---
+
+_Comment by @odie5533 on 2024-10-18 16:55_
+
+@juzna You may be better off though removing the `explicit = true` so that all packages are checked on your internal index first. That's probably a fair workaround, and improves your security.
+
+---
+
+_Comment by @mnchsmn on 2024-10-23 15:53_
+
+We're also running into this issue. We have a library that depends on torch, so for that library we have set up as in the docs, and that works.
+```
+[tool.uv.sources]
+torch = { index = "pytorch" }
+
+[[tool.uv.index]]
+name = "pytorch"
+url = "https://download.pytorch.org/whl/cpu"
+explicit = true
+```
+Now when this library is used in an application, I'm getting `Because there is no version of torch{platform_system == 'Linux'}==2.5.0+cpu...`, even when the same index is also added in the application's `pyproject.toml`. Making the index non-explicit also doesn't work, because the torch index contains some older version of `requests` which then blocks us from fetching the required `requests` from the default index. It does work with non-explicit index and `--index-strategy unsafe-first-match` but we'd prefer to avoid using the unsafe option. 
+
+---
+
+_Comment by @oxenit on 2024-12-17 13:54_
+
+I would also be in favor of an improvement of this corporate use case. 
+My package `A` depends on package `B` from private index which itself depends on `C` from private index.
+
+No way to make it works from `A` `pyproject.toml` without `explicit = true` that we don't want as it puts unnecessary pressure on our internal index, only used for our packages.
+Option 2 of defining transitive dependencies like `C` directly in `A` is not very clean either.
+
+
+---
+
+_Referenced in [astral-sh/uv#10850](../../astral-sh/uv/issues/10850.md) on 2025-01-22 14:00_
+
+---
+
+_Referenced in [astral-sh/uv#12065](../../astral-sh/uv/issues/12065.md) on 2025-03-08 14:15_
+
+---
+
+_Referenced in [astral-sh/uv#12936](../../astral-sh/uv/issues/12936.md) on 2025-04-17 12:53_
+
+---
+
+_Referenced in [astral-sh/uv#13035](../../astral-sh/uv/issues/13035.md) on 2025-04-21 23:57_
+
+---
+
+_Comment by @NellyWhads on 2025-05-08 05:11_
+
+Hey guys, do you have any further thoughts on this? Using `uv` with multiple packages from separate indices is somewhat painful right now do to a lack of configurability of such a feature.
+
+Example:
+* project depends on `rospy` from their index, which has other transitive dependencies in their custom index
+* project depends on `custom-lib` from an internal index, which has other transitive dependencies in the internal index
+* both depend on `numpy` (silly example) from the PyPi index
+
+How do we resolve such dependencies without declaring _both_ the `rospy` index and `custom-lib` index as `non-explicit`? Marking both as `non-explicit` leads to poor resolution from unexpected indices.
+
+---
+
+_Referenced in [astral-sh/uv#14538](../../astral-sh/uv/issues/14538.md) on 2025-07-10 23:30_
+
+---
+
+_Referenced in [astral-sh/uv#15003](../../astral-sh/uv/issues/15003.md) on 2025-07-31 17:55_
+
+---
+
+_Referenced in [astral-sh/uv#14651](../../astral-sh/uv/issues/14651.md) on 2025-08-02 20:13_
+
+---
+
+_Comment by @NeverDieOne on 2025-09-01 12:47_
+
+Do you have any plans to add some options to resolve it ?
+
+---
+
+_Comment by @mikenerone on 2025-09-02 14:52_
+
+This missing functionality is problematic for me, as well, so +1, but I'm going to go a bit further and say that `uv pip install <package>` should _also_ honor the source configurations. The common use case for this is plugins: my (proprietary) app employs a plugin package architecture. Devs frequently need to test the app locally with different plugin packages installed (all of which are arbitrary and optional, so not dependencies of the main app at all). Currently, we can't simply install the package with `uv pip install` as one would hope, even if we assign those packages to our private package index in `[tool.uv.sources]`. That should work.
+
+Note: currently we work around this by installing from the repo URL or a local clone, but this approach requires extra care, as it introduces the risk that we're testing with a build of the plugin package that doesn't correspond to the latest release.
+
+---
+
+_Referenced in [astral-sh/uv#13428](../../astral-sh/uv/issues/13428.md) on 2025-09-05 12:58_
+
+---
+
+_Comment by @JustGevorg on 2025-09-11 17:28_
+
++1 from me for adding this fnctional. @charliermarsh advice from his answer works for me but in more complicated cases i see this approach may cause troubles in managing my company internal dependencies
+
+---
+
+_Comment by @ARKAD97 on 2025-09-19 23:44_
+
++1
+
+Can't properly handle installing nightly torch for CUDA Toolkit 13.0:
+
+```toml
+[project.optional-dependencies]
+cu128 = [ "torch==2.7.1" ]
+cu129 = [ "torch==2.8.0" ]
+cu130 = [ "torch==2.9.0.dev20250909+cu130" ]
+
+[tool.uv.sources]
+torch = [
+  { index = "cu128", extra = "cu128" },
+  { index = "cu129", extra = "cu129" },
+  { index = "cu130", extra = "cu130" }
+]
+
+[[tool.uv.index]]
+name = "cu128"
+url = "https://download.pytorch.org/whl/cu128"
+explicit = true
+
+[[tool.uv.index]]
+name = "cu129"
+url = "https://download.pytorch.org/whl/cu129"
+explicit = true
+
+[[tool.uv.index]]
+name = "cu130"
+url = "https://download.pytorch.org/whl/nightly/cu130"
+explicit = true
+```
+
+Making non-explicit all indices is kinda scary
+
+
+---
+
+_Comment by @MauroPfister on 2025-10-06 15:00_
+
+Ran into the same issue also in a corporate setting where only some package should be fetched from the private index. Would appreciate seeing an improvement of that usecase here.
+
+---
+
+_Comment by @KochankovID on 2025-10-09 13:53_
+
++1 
+
+
+
+---
+
+_Comment by @tekeinhor on 2025-11-14 14:49_
+
++1, ran into this issue today as well 
+
+(Thanks for all u do)
+
+---
+
+_Comment by @karim-moon on 2025-11-27 03:59_
+
++1
+
+---
+
+_Comment by @rabyj on 2025-11-27 19:35_
+
+@KochankovID @tekeinhor @karim-moon 
+
+Just a quick note: on many projects, maintainers prefer avoiding “+1” comments since they notify everyone without adding new information. Using the 👍 reaction on the original post is usually the recommended way to show support and keep the thread clean and useful for maintainers.
+
+Thanks!
+
+---

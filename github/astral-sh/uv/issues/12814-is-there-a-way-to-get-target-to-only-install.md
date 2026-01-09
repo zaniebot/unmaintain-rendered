@@ -1,0 +1,95 @@
+---
+number: 12814
+title: Is there a way to get --target to only install missing packages?
+type: issue
+state: open
+author: LordAro
+labels:
+  - question
+assignees: []
+created_at: 2025-04-10T16:51:58Z
+updated_at: 2025-04-11T10:22:51Z
+url: https://github.com/astral-sh/uv/issues/12814
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# Is there a way to get --target to only install missing packages?
+
+---
+
+_Issue opened by @LordAro on 2025-04-10 16:51_
+
+### Question
+
+For Complicated Reasons, I have need to create a python distribution with some extra packages, and install a further subset of python packages into a different folder. Currently, I have the following:
+
+```bash
+python_ver=3.12.9
+uv python install ${python_ver} --install-dir .
+cp -ar cpython-${python_ver}-* my-python-dist  # no way of specifying exact directory, see uv#11933
+
+uv export --no-default-groups > requirements-core.txt
+uv pip install --break-system-packages --python my-python-dist requests
+
+uv export --only-group dev --only-group test > requirements-dev.txt
+uv pip install--python my-python-dist --target extra-python-packages json-schema-for-humans  # pulls in requests
+```
+
+This all works quite well, *except* for the fact that the packages installed into extra-python-packages include everything that's already installed into my-python-dist, apparently not taking anything already installed there into account- e.g. requests is an indirect dependency of both requirements files so is already installed in my-python-dist but gets installed again into extra-python-packages. Ideally I'd like to be able to avoid that - is there a way of doing that?
+
+```
+$ uv pip install --break-system-packages --python my-python-dist requests
+Using Python 3.12.9 environment at: my-python-dist
+Resolved 5 packages in 108ms
+Installed 5 packages in 23ms
+ + certifi==2025.1.31
+ + charset-normalizer==3.4.1
+ + idna==3.10
+ + requests==2.32.3
+ + urllib3==2.3.0
+$ uv pip install --break-system-packages --python my-python-dist json-schema-for-humans --target flibble  # reinstalls requests and everything else!
+Using CPython 3.12.9 interpreter at: my-python-dist/bin/python3
+Resolved 19 packages in 198ms
+Installed 19 packages in 41ms
+ + certifi==2025.1.31
+ + charset-normalizer==3.4.1
+ + click==8.1.8
+ + dataclasses-json==0.6.7
+ + idna==3.10
+ + jinja2==3.1.6
+ + json-schema-for-humans==1.3.4
+ + markdown2==2.5.3
+ + markupsafe==3.0.2
+ + marshmallow==3.26.1
+ + mypy-extensions==1.0.0
+ + packaging==24.2
+ + pygments==2.19.1
+ + pytz==2025.2
+ + pyyaml==6.0.2
+ + requests==2.32.3
+ + typing-extensions==4.13.1
+ + typing-inspect==0.9.0
+ + urllib3==2.3.0
+```
+
+Of course, if there's a Better Way of doing all this, I'm all ears.
+
+### Platform
+
+Ubuntu 22.04
+
+### Version
+
+uv 0.6.13
+
+---
+
+_Label `question` added by @LordAro on 2025-04-10 16:51_
+
+---
+
+_Comment by @konstin on 2025-04-11 10:22_
+
+Currently, uv can't read dependencies from a base environment.
+
+---

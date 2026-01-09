@@ -1,0 +1,63 @@
+---
+number: 13090
+title: "uv-build: add a config setting to control compression level"
+type: issue
+state: open
+author: mgorny
+labels:
+  - enhancement
+  - configuration
+assignees: []
+created_at: 2025-04-24T14:14:07Z
+updated_at: 2025-05-04T12:38:30Z
+url: https://github.com/astral-sh/uv/issues/13090
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# uv-build: add a config setting to control compression level
+
+---
+
+_Issue opened by @mgorny on 2025-04-24 14:14_
+
+### Summary
+
+While the primary use case for PEP517 build backends is publishing packages for publishing, downstream maintainers are also forced to use them as part of distribution package build process. In this workflow, the built wheels are almost immediately unpacked/installed and discarded. Therefore, compression is not really necessary — usually it is just a waste of energy to compress something only to have to decompress it back.
+
+In Gentoo, we usually work around the problem by patching the `zipfile` module to disable compression. However, that obviously works only for pure Python backends. Would you consider adding a `config_settings` option to override the compression level, so that we could disable compression on built wheels in order to save energy?
+
+### Example
+
+I imagine we'd use it like:
+
+```
+gpep517 build-wheel --output-fd 3 --wheel-dir dist --config-json '{ "compression_level": 0 }'
+```
+
+---
+
+_Label `enhancement` added by @mgorny on 2025-04-24 14:14_
+
+---
+
+_Comment by @konstin on 2025-04-24 14:23_
+
+Has compressing/decompressing are noticeable performance impact for you, what relative and absolute performance difference do you see?
+
+---
+
+_Comment by @mgorny on 2025-04-24 15:02_
+
+I don't know because I haven't seen any package use `uv-build` yet :-). I'm a perfectionist, though. I suppose I could try checking other Python backends (I suppose `zlib` would give close enough results) with some big Python packages like Django or ansible, but I'd have to find time when my CPUs aren't all busy.
+
+---
+
+_Comment by @konstin on 2025-04-24 15:06_
+
+In this case I'd say we wait until we see adoption and get some real world numbers, if we see a noticeable overhead, we can add the option.
+
+---
+
+_Label `configuration` added by @charliermarsh on 2025-05-04 12:38_
+
+---

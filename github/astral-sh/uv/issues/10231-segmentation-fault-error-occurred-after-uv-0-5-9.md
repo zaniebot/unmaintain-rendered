@@ -1,0 +1,196 @@
+---
+number: 10231
+title: "\"Segmentation fault\" error occurred after uv@0.5.9 version."
+type: issue
+state: closed
+author: ChoSeoHwan
+labels:
+  - windows
+  - needs-mre
+assignees: []
+created_at: 2024-12-30T06:24:45Z
+updated_at: 2025-01-23T02:19:45Z
+url: https://github.com/astral-sh/uv/issues/10231
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# "Segmentation fault" error occurred after uv@0.5.9 version.
+
+---
+
+_Issue opened by @ChoSeoHwan on 2024-12-30 06:24_
+
+## Problem
+
+"Segmentation fault" error occurred after uv@0.5.9 version.
+
+## Tobe
+
+It should work fine as of version 0.5.8
+
+
+## Environment
+
+- uv : after 0.5.9
+- os : windows10 build 19045.4291
+
+## Reproduce
+
+1. install uv@0.5.9
+
+```bash
+$ uv version
+uv 0.5.9 (0652800cb 2024-12-13)
+```
+
+2. run any uv command (with errors)
+
+```bash
+$ uv run hello.py 
+Segmentation fault
+
+$ uv python list
+Segmentation fault
+```
+
+3. downgrade to uv@0.5.8 version
+
+```bash
+$ uv version
+uv 0.5.8 (80d41671b 2024-12-11)
+```
+
+4. run any uv command (run successfully)
+
+```bash
+$ uv run hello.py 
+Hello from application!
+
+$ uv python list
+cpython-3.13.1+freethreaded-windows-x86_64-none    <download available>
+cpython-3.13.1-windows-x86_64-none                 <download available>
+...
+```
+
+
+
+---
+
+_Label `windows` added by @charliermarsh on 2024-12-30 15:47_
+
+---
+
+_Label `needs-mre` added by @charliermarsh on 2024-12-30 15:47_
+
+---
+
+_Comment by @charliermarsh on 2024-12-31 15:30_
+
+Huh, very little changed between these two releases. Maybe #9815?
+
+---
+
+_Comment by @ChoSeoHwan on 2025-01-03 04:50_
+
+Oh.. I see.
+But my team members are also experiencing the same issue.
+The flow from installation to usage is as follows. uv does not work after `0.5.9` version.
+
+```
+C:\Users>scoop install uv@0.5.9
+WARN  Given version (0.5.9) does not match manifest (0.5.14)
+WARN  Attempting to generate manifest for 'uv' (0.5.9)
+Autoupdating uv
+Searching hash for uv-i686-pc-windows-msvc.zip in https://github.com/astral-sh/uv/releases/download/0.5.9/uv-i686-pc-windows-msvc.zip.sha256
+Found: 73ac9d7aab6bafe1d8da36b7d4cb2bd969ca1d9c675b7a021afec3c913fe223f using Extract Mode
+Searching hash for uv-x86_64-pc-windows-msvc.zip in https://github.com/astral-sh/uv/releases/download/0.5.9/uv-x86_64-pc-windows-msvc.zip.sha256
+Found: 8cb608cdf23b79f4f598969b72890db657c5addab312890c37ab20b9b57c501f using Extract Mode
+Writing updated uv manifest
+Installing 'uv' (0.5.9) [64bit] from 'C:\Users\scoop\workspace\uv.json'
+Loading uv-x86_64-pc-windows-msvc.zip from cache.
+Checking hash of uv-x86_64-pc-windows-msvc.zip ... ok.
+Extracting uv-x86_64-pc-windows-msvc.zip ... done.
+Linking ~\scoop\apps\uv\current => ~\scoop\apps\uv\0.5.9
+Creating shim for 'uv'.
+Creating shim for 'uvx'.
+'uv' (0.5.9) was installed successfully!
+
+C:\Users>uv python list
+
+C:\Users>scoop install uv@0.5.8
+WARN  Given version (0.5.8) does not match manifest (0.5.14)
+WARN  Attempting to generate manifest for 'uv' (0.5.8)
+Autoupdating uv
+Searching hash for uv-i686-pc-windows-msvc.zip in https://github.com/astral-sh/uv/releases/download/0.5.8/uv-i686-pc-windows-msvc.zip.sha256
+Found: 2e1dc6042c1d419c296d4fa424218b24fb87a2fc6c8b61280f9d7df26a90e3f7 using Extract Mode
+Searching hash for uv-x86_64-pc-windows-msvc.zip in https://github.com/astral-sh/uv/releases/download/0.5.8/uv-x86_64-pc-windows-msvc.zip.sha256
+Found: 9335f35ebfb29ad2cc8b65862f43d5f72ee50038a22b216e999342efb402e319 using Extract Mode
+Writing updated uv manifest
+Installing 'uv' (0.5.8) [64bit] from 'C:\Users\scoop\workspace\uv.json'
+Loading uv-x86_64-pc-windows-msvc.zip from cache.
+Checking hash of uv-x86_64-pc-windows-msvc.zip ... ok.
+Extracting uv-x86_64-pc-windows-msvc.zip ... done.
+Linking ~\scoop\apps\uv\current => ~\scoop\apps\uv\0.5.8
+Creating shim for 'uv'.
+Creating shim for 'uvx'.
+'uv' (0.5.8) was installed successfully!
+
+C:\Users>uv python list
+cpython-3.13.1+freethreaded-windows-x86_64-none    <download available>
+cpython-3.13.1-windows-x86_64-none                 <download available>
+cpython-3.12.8-windows-x86_64-none                 <download available>
+cpython-3.11.11-windows-x86_64-none                <download available>
+cpython-3.11.7-windows-x86_64-none                 E:\Language\Python\Python-3.11.7-amd64\python.exe
+cpython-3.10.16-windows-x86_64-none                <download available>
+cpython-3.9.21-windows-x86_64-none                 <download available>
+cpython-3.9.13-windows-x86-none                    E:\Language\Python\Python-3.9.13\python.exe
+cpython-3.8.20-windows-x86_64-none                 <download available>
+cpython-3.7.9-windows-x86_64-none                  <download available>
+pypy-3.10.14-windows-x86_64-none                   <download available>
+pypy-3.9.19-windows-x86_64-none                    <download available>
+pypy-3.8.16-windows-x86_64-none                    <download available>
+pypy-3.7.13-windows-x86_64-none                    <download available>
+```
+
+---
+
+_Comment by @Gankra on 2025-01-14 20:22_
+
+We've had a few releases since you filed this issue, just wanted to check in that it's still happening with the latest (uv@0.5.18)?
+
+I'm working on trying to reproduce, but no luck so far. Does running the faulting commands with `-v` produce any more output?
+
+---
+
+_Comment by @Gankra on 2025-01-14 20:45_
+
+Conveniently I actually found a Windows 10.0.19045 machine, but alas uv 0.5.9 works fine on it.
+
+---
+
+_Comment by @ChoSeoHwan on 2025-01-23 02:19_
+
+ok I finally solved the issue.
+
+
+I don't know the exact reason, but since `uv@0.5.9`, it has been causing errors due to conflicts with our internal security system.
+
+After debugging with `WinDump`, I found that it was a conflict with a security program called `PaperSecu`.
+
+
+
+Since it was confirmed that it was not an issue with uv itself, I will close this issue for now.
+
+---
+
+_Closed by @ChoSeoHwan on 2025-01-23 02:19_
+
+---
+
+_Referenced in [astral-sh/uv#12537](../../astral-sh/uv/issues/12537.md) on 2025-04-01 22:32_
+
+---
+
+_Referenced in [astral-sh/uv#12612](../../astral-sh/uv/issues/12612.md) on 2025-04-01 23:09_
+
+---

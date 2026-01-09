@@ -1,0 +1,168 @@
+---
+number: 4976
+title: "Default display for `String` is awkward, ie `[default: ]`"
+type: issue
+state: open
+author: nathan-at-least
+labels:
+  - C-bug
+  - A-help
+  - E-easy
+assignees: []
+created_at: 2023-06-19T19:29:54Z
+updated_at: 2025-12-31T15:15:56Z
+url: https://github.com/clap-rs/clap/issues/4976
+synced_at: 2026-01-07T13:12:20-06:00
+---
+
+# Default display for `String` is awkward, ie `[default: ]`
+
+---
+
+_Issue opened by @nathan-at-least on 2023-06-19 19:29_
+
+### Please complete the following tasks
+
+- [X] I have searched the [discussions](https://github.com/clap-rs/clap/discussions)
+- [X] I have searched the [open](https://github.com/clap-rs/clap/issues) and [rejected](https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed) issues
+
+### Rust Version
+
+rustc 1.69.0 (84c898d65 2023-04-16)
+
+### Clap Version
+
+4.3.4
+
+### Minimal reproducible code
+
+```rust
+use clap::Parser;
+
+#[derive(Parser)]
+struct Opts {
+    #[clap(long, default_value_t)]
+    text: String,
+}
+
+fn main() {
+    Opts::parse();
+}
+```
+
+### Steps to reproduce the bug with the above code
+
+```
+$ cargo run -- --help
+```
+
+
+### Actual Behaviour
+
+```
+Usage: foo [OPTIONS]
+
+Options:
+      --text <TEXT>  [default: ]
+  -h, --help         Print help
+```
+
+### Expected Behaviour
+
+I do not think this "should" happen given the current release, but IMO it would be more ideal:
+
+```
+Usage: foo [OPTIONS]
+
+Options:
+      --text <TEXT>  [default: '']
+  -h, --help         Print help
+```
+
+In this proposed feature enhancement, all `Display` values would be disambiguated via single quote `'`, so some examples:
+
+- field type `String` displays `[default '']`
+- field type `i64` displays `[default '0']`
+- field type `bool` displays `[default 'false']`
+
+### Additional Context
+
+The display of `default_value_t` defaults just literally uses `Display`, which can be confusing for a variety of defaults:
+
+- empty string (like in this example)
+- strings containing ']' or other symbols.
+
+unlikely / pathological cases:
+- newlines
+
+In my "expected behavior" I'm imagining consistent shell-like escaping. This need not be literal shell syntax (especially because users can vary which shells they use and across platforms), but only "unambiguous to typical commandline users".
+
+Simply surrounding the `Display` value with single ticks `'` handles the empty string case, but introduces an escaping problem with `Display` values that contain `'`. So this complication would make this feature improvement a bit more messy.
+
+Perhaps `\'`-style escapes would be simple enough?
+
+```
+#[clap(long, default_value = "val: 'blah'")]
+text: String,
+```
+
+-would produce:
+
+```
+[default: 'val: \'blah\'']
+```
+
+### Debug Output
+
+n/a
+
+---
+
+_Label `C-bug` added by @nathan-at-least on 2023-06-19 19:29_
+
+---
+
+_Comment by @nathan-at-least on 2023-06-19 19:35_
+
+I filed this as a bug, because I consider UX issues which may cause confusion to users as bugs. I could also see categorizing this as a feature/enhancement.
+
+---
+
+_Comment by @epage on 2023-06-19 19:50_
+
+Currently, we only check for ` ` to decide if we should use quoting.  When we quote, we are currently using Rust's debug representation of a string.
+
+I think checking for empty string and quoting in that case is reasonable.
+
+We also have the code spread out a bit.  We should probably consolidate these before quoting for empty strings.
+
+See
+- https://github.com/clap-rs/clap/blob/e1152433694b253bc1fe048b5b2eda96aff79aa0/clap_builder/src/output/help_template.rs#L796-L800
+- https://github.com/clap-rs/clap/blob/e1152433694b253bc1fe048b5b2eda96aff79aa0/clap_builder/src/builder/possible_value.rs#L187-L197
+- https://github.com/clap-rs/clap/blob/e1152433694b253bc1fe048b5b2eda96aff79aa0/clap_builder/src/error/format.rs#L495-L505
+
+---
+
+_Label `A-help` added by @epage on 2023-06-19 19:50_
+
+---
+
+_Label `E-easy` added by @epage on 2023-06-19 19:50_
+
+---
+
+_Referenced in [clap-rs/clap#1695](../../clap-rs/clap/issues/1695.md) on 2023-10-25 03:03_
+
+---
+
+_Comment by @zippy-dice on 2024-04-21 13:43_
+
+Is it ideal to quote for String that is empty or contain spaces?
+As a solution, I suggest creating a function to wrap a string by `''` or `""` and use it in help_template.rs and possible_value.rs. 
+In that case, I believe there would be no need to change format.rs, as it will always enclose a string by `''`, regardless of whitespace or empty strings.
+
+---
+
+_Referenced in [clap-rs/clap#6204](../../clap-rs/clap/pulls/6204.md) on 2025-12-31 14:54_
+
+---

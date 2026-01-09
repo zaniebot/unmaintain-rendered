@@ -1,0 +1,124 @@
+---
+number: 7521
+title: Impossible to use a virtualenv created against an interpreter not named python
+type: issue
+state: open
+author: Muream
+labels:
+  - bug
+  - virtualenv
+assignees: []
+created_at: 2024-09-18T22:57:33Z
+updated_at: 2024-09-19T11:02:26Z
+url: https://github.com/astral-sh/uv/issues/7521
+synced_at: 2026-01-07T13:12:17-06:00
+---
+
+# Impossible to use a virtualenv created against an interpreter not named python
+
+---
+
+_Issue opened by @Muream on 2024-09-18 22:57_
+
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with uv.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
+* The current uv platform.
+* The current uv version (`uv --version`).
+-->
+
+Hello, 
+This is going to be more of a question than a bug
+
+I am in a situation where I need to create a virtualenv against a python executable named `mayapy` instead of `python` 
+When I run this sort of command `uv run -p "C:\Program Files\Autodesk\Maya2024\bin\mayapy.exe" hello.py`
+I run into this error `No Python at '"C:\Program Files\Autodesk\Maya2024\bin\python.exe'`
+
+Here's the full output of the command:
+```bat
+uv run -p "C:\Program Files\Autodesk\Maya2024\bin\mayapy.exe" --verbose hello.py
+DEBUG uv 0.4.9
+DEBUG Found project root: `C:\Users\muream\projects\maya\test-mayapy-venv`
+DEBUG No workspace root found, using project root
+DEBUG Discovered project `test-mayapy-venv` at: C:\Users\muream\projects\maya\test-mayapy-venv
+DEBUG Checking for Python interpreter at path `C:\Program Files\Autodesk\Maya2024\bin\mayapy.exe`
+Using Python 3.10.8 interpreter at: C:\Program Files\Autodesk\Maya2024\bin\mayapy.exe
+Creating virtualenv at: .venv
+DEBUG Using request timeout of 30s
+DEBUG Starting clean resolution
+DEBUG Found static `pyproject.toml` for: test-mayapy-venv @ file:///C:/Users/muream/projects/maya/test-mayapy-venv
+DEBUG No workspace root found, using project root
+DEBUG Solving with installed Python version: 3.10.8
+DEBUG Solving with target Python version: >=3.7
+DEBUG Adding direct dependency: test-mayapy-venv*
+DEBUG Searching for a compatible version of test-mayapy-venv @ file:///C:/Users/muream/projects/maya/test-mayapy-venv (*)
+DEBUG Tried 1 versions: test-mayapy-venv 1
+DEBUG Split universal resolution took 0.001s
+Resolved 1 package in 7ms
+DEBUG Using request timeout of 30s
+Audited in 0.01ms
+DEBUG Using Python 3.10.8 interpreter at: C:\Users\muream\projects\maya\test-mayapy-venv\.venv\Scripts\python.exe
+DEBUG Running `python hello.py`
+No Python at '"C:\Program Files\Autodesk\Maya2024\bin\python.exe'
+DEBUG Command exited with code: 103
+```
+
+I'm wondering what you'd recommend doing in this kind of situation?
+
+This is not an issue unique to uv, I've had the same problem with poetry and I imagine venv/virtualenv would also struggle with this.
+I can create this symlink as a bandaid `Maya2024\bin\python.exe -> Maya2024\bin\mayapy.exe` but while it does work, it's not ideal.
+
+I realize this is very much an edge case but unfortunately I have to use this interpreter as the base for the virtualenv as it comes with all of Maya's own libraries and it has been historically very hard to create virtual environments with this interpreter
+
+I also apologize for this being hard to repro as you would need access to Autodesk Maya
+
+I am running on Windows 11, mainly with Nushell but I have the same issue with Powershell.
+And I'm using uv ` 0.4.9`
+
+Let me know if you need any more information or if you need me to try anything
+
+---
+
+_Renamed from "Impossible to create a virtualenv against an interpreter not named python" to "Impossible to use a virtualenv created against an interpreter not named python" by @Muream on 2024-09-18 22:58_
+
+---
+
+_Comment by @zanieb on 2024-09-18 23:35_
+
+Does `C:\Program Files\Autodesk\Maya2024\bin\mayapy.exe -c "import sys; print(sys.executable)"` show `python.exe`?
+
+---
+
+_Comment by @Muream on 2024-09-19 07:19_
+
+Looks like it returns the path to mayapy.exe
+```cmd
+$ "C:\Program Files\Autodesk\Maya2024\bin\mayapy.exe" -c "import sys; print(sys.executable)"
+C:\Program Files\Autodesk\Maya2024\bin\mayapy.exe
+```
+
+---
+
+_Comment by @Muream on 2024-09-19 10:18_
+
+I realized I was behind on a few updates, I tried again with `uv 0.4.12` and the issue is still the same
+
+---
+
+_Comment by @zanieb on 2024-09-19 11:02_
+
+Thanks sounds like a bug of some sort then.
+
+---
+
+_Label `bug` added by @zanieb on 2024-09-19 11:02_
+
+---
+
+_Label `virtualenv` added by @zanieb on 2024-09-19 11:02_
+
+---

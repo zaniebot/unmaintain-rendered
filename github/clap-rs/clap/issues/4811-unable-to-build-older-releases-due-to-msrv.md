@@ -1,0 +1,108 @@
+---
+number: 4811
+title: unable to build older releases due to MSRV conflict
+type: issue
+state: closed
+author: tones111
+labels:
+  - C-bug
+assignees: []
+created_at: 2023-03-30T03:47:04Z
+updated_at: 2023-03-30T12:11:43Z
+url: https://github.com/clap-rs/clap/issues/4811
+synced_at: 2026-01-07T13:12:20-06:00
+---
+
+# unable to build older releases due to MSRV conflict
+
+---
+
+_Issue opened by @tones111 on 2023-03-30 03:47_
+
+### Please complete the following tasks
+
+- [X] I have searched the [discussions](https://github.com/clap-rs/clap/discussions)
+- [X] I have searched the [open](https://github.com/clap-rs/clap/issues) and [rejected](https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed) issues
+
+### Rust Version
+
+1.62.1
+
+### Clap Version
+
+v4.0.32
+
+### Minimal reproducible code
+
+
+N/A
+
+### Steps to reproduce the bug with the above code
+
+```
+cargo new --bin args
+cd args
+cargo add clap@=4.0.32
+cargo +1.62.1 check
+```
+
+### Actual Behaviour
+
+```
+error: package `clap_lex v0.3.3` cannot be built because it requires rustc 1.64.0 or newer, while the currently active rustc version is 1.62.1
+```
+
+### Expected Behaviour
+
+Since the [MSRV for clap v4.0.32 is rust 1.60.0](https://github.com/clap-rs/clap/blob/v4.0.32/Cargo.toml#L26) I expect to be able to compile with the 1.62.1 compiler.
+
+### Additional Context
+
+It looks like the version numbers for dependencies need to be constrained to prevent cargo from picking a version with an incompatible MSRV.  In this case clap_lex should be fixed to v0.3.0 since v0.3.1 bumped the MSRV to rust 1.64.0.  There may be other incompatibilities... this is just the first error presented.
+
+### Debug Output
+
+_No response_
+
+---
+
+_Label `C-bug` added by @tones111 on 2023-03-30 03:47_
+
+---
+
+_Comment by @tones111 on 2023-03-30 04:10_
+
+It looks like I'm able to build by adding the constraint described above to v4.0.32.
+```
+-clap_lex = { path = "./clap_lex", version = "0.3.0" }
++clap_lex = { path = "./clap_lex", version = "=0.3.0" }
+```
+ however, I'm unable to create a pull request since there's no branch at that point in the repo.  Would it be possible to tag a v4.0.33 with this change?
+
+---
+
+_Comment by @epage on 2023-03-30 12:11_
+
+The way to solve this is for you to run `cargo update -p clap_lex --precise 0.3.0`.  Newer versions of `cargo` should include that suggestion in the error.
+
+Unfortunately, crates can only be responsible that they can build for the MSRV but should not be responsible for all of  versions of dependencies to build for the MSRV
+- One way is for everyone to treat a change to MSRV as a breaking change but this is quite disruptive and leads to multiple copies of crates in dependency graphs
+- Another way is to use version constraints, as you mentioned, but this has repercussions on the ecosystem, for example
+  - https://github.com/rust-lang/cargo/issues/6584#issuecomment-1308032517
+  - https://www.reddit.com/r/rust/comments/p8clcx/how_to_fix_cargo_dependency_issue/
+
+The ideal long term solution is for cargo to handle this automatically which I'm working towards: https://github.com/rust-lang/cargo/issues/9930
+
+---
+
+_Closed by @epage on 2023-03-30 12:11_
+
+---
+
+_Referenced in [rust-lang/cargo#9930](../../rust-lang/cargo/issues/9930.md) on 2023-03-30 12:16_
+
+---
+
+_Referenced in [eclipse-zenoh/zenoh#740](../../eclipse-zenoh/zenoh/issues/740.md) on 2024-02-16 03:47_
+
+---

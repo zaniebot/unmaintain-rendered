@@ -1,0 +1,270 @@
+---
+number: 3365
+title: Write a script to aggregate OSS data on Ruff configuration
+type: issue
+state: closed
+author: charliermarsh
+labels:
+  - good first issue
+  - internal
+assignees: []
+created_at: 2023-03-06T19:27:13Z
+updated_at: 2023-05-11T20:09:41Z
+url: https://github.com/astral-sh/ruff/issues/3365
+synced_at: 2026-01-07T13:12:14-06:00
+---
+
+# Write a script to aggregate OSS data on Ruff configuration
+
+---
+
+_Issue opened by @charliermarsh on 2023-03-06 19:27_
+
+Right now, it's hard for us to make data-informed decisions. It'd be nice to leverage our open-source usage to help understand questions like:
+
+- Which rules are commonly turned on?
+- Which rules are commonly turned off?
+- Which rules are commonly `# noqa` ignored (i.e., false positives)?
+
+This is good prior art (\ht @konstin): https://github.com/rust-lang/rust-clippy/issues/7666
+
+
+---
+
+_Label `good first issue` added by @charliermarsh on 2023-03-06 19:27_
+
+---
+
+_Label `internal` added by @charliermarsh on 2023-03-06 19:27_
+
+---
+
+_Comment by @charliermarsh on 2023-03-06 19:27_
+
+Labeling this as "good first issue", not because it's well-scoped, but because it's a relatively independent project (and could be done without writing any Rust, if anyone is eager to help out).
+
+---
+
+_Comment by @akx on 2023-03-08 13:58_
+
+I could take a look – https://github.com/search?q=path%3A**%2Fpyproject.toml+ruff&type=code seems like a good starting point (along with  `**/ruff.toml`).
+
+---
+
+_Comment by @konstin on 2023-03-08 14:12_
+
+fwiw it seems that github doesn't expose an api to their dependency graph, so i'd also go with that code search (or something api friendlier if github has too tight query limits)
+
+---
+
+_Comment by @akx on 2023-03-08 14:18_
+
+@konstin Dependency graph probably wouldn't directly pick up e.g. `ruff-pre-commit` in a pre-commit config file (which is how I tend to use ruff). Anyway, I have a skeleton of an aggregator up already 🔧 
+
+---
+
+_Comment by @akx on 2023-03-08 17:35_
+
+Alright, here goes with some initial data 😁 
+
+* Results: https://gist.github.com/akx/de1fddb5950d763c9d9d934e5522e6f0#file-results-md
+  * JSON: https://gist.github.com/akx/de1fddb5950d763c9d9d934e5522e6f0#file-results-json
+* Code: https://github.com/akx/ruff-usage-aggregate
+
+The GitHub Search API doesn't seem to be using the [new Code Search stuff](https://github.blog/changelog/2023-02-23-no-more-waitlist-code-search-and-code-view-are-available-to-all-in-public-beta/) and is heavily rate-limited, so the dataset may not be great just yet (PRs welcome, of course). Let me know if you want the files I have so far!
+
+---
+
+_Comment by @JonathanPlasse on 2023-03-08 18:13_
+
+What about the `ALL` data?
+
+---
+
+_Comment by @akx on 2023-03-08 18:15_
+
+> What about the `ALL` data?
+
+If you mean the `ALL` selector, it's enabled in 23/306 files seen. (You can see it in the "Other values" list in the Select section.) It would probably be interesting to see if those repos also have lots of `ignore`s.
+
+Similarly, I guess a more holistic view (that knew about all of the codes Ruff knows about) would be an interesting next step!
+
+---
+
+_Comment by @charliermarsh on 2023-03-09 02:56_
+
+Oooh this is so useful! Thank you @akx! The other piece of data that would be really useful to see, though not sure whether it can fit into this paradigm, is how often various codes are used in `# noqa`, since a `# noqa` is often indicative of a false positive.
+
+Another question I'd have (though not your responsibility to answer, only if you're curious): I know the data is based on 306 TOML files. I'd be interested to know how often various fields are set vs. unset. (E.g., the `.md` version says 200 files enable `E` and `F`. Are the remaining 306 omitting them? Or do they use the default config, and so they're enabled anyway?)
+
+
+---
+
+_Comment by @akx on 2023-03-09 07:26_
+
+@charliermarsh Sure! I updated the gist with ["Fields set in configuration"](https://gist.github.com/akx/de1fddb5950d763c9d9d934e5522e6f0#fields-set-in-configuration) (since I already had that data anyway, it just wasn't aggregated). It's also based on a slightly larger dataset (I realized I didn't process `ruff.toml`s correctly before).
+
+Finding noqas will require a bit more magic, but now that I do have a good starter dataset of which repos may have Ruff enabled, we can go from there (but not right now since I have 9% laptop battery left 😂)
+
+
+---
+
+_Comment by @akx on 2023-03-10 09:07_
+
+I updated the gist with a bigger dataset (1352 files!) – and since the JSON data was getting unwieldy, had to remove it from there. If someone needs it for analysis, let me know... though that said, everything should now be recreatable with just running `make` in `ruff-usage-aggregate` :)
+
+The numbers remain roughly the same:
+
+* empty `select`/`extend-select`: 61% 
+* empty `ignore`/`extend-ignore`: 69%
+* empty `fixable`: 95%
+* empty `unfixable`: 88%
+* most-configured field: `line-length`
+* median configured line-length: 100
+* most popular configured line-length: 120
+* most popular configured Python version: py310
+* top unfixable by far: F401 (unused import)
+* top ignore: E501 (line length), D203 (blank line before class docstring), D213 (multi-line docstring summary should start at 2nd line)
+
+
+---
+
+_Comment by @akx on 2023-03-10 11:33_
+
+Welp, turns out there was a bug or two that conflated "unset" with "empty set" 🙄  – I _think_ this data is now more or less correct:
+
+| Name | Value |
+| --- | --- |
+| Total TOML files | 1613 |
+| Unique TOML files | 1352 |
+| Deduplicated TOML files | 261 |
+| No select | 28.7% |
+| No ignore | 35.3% |
+| No fixable | 94.8% |
+| No unfixable | 84.2% |
+| Most popular configured Python version | py310 |
+| Median configured line length | 100 |
+| Most common unfixable | F401 |
+| Most common ignore | E501 |
+| Most common select | F |
+
+Also updated into the gist, with all of the details...
+
+---
+
+_Comment by @akx on 2023-03-21 08:45_
+
+Updated with some 90+ new repos in a fortnight: https://gist.github.com/akx/211308a4d2b31aaf4412558af6fe62a1
+
+| Name | Value |
+| --- | --- |
+| Total TOML files | 1846 |
+| Unique TOML files | 1577 |
+| Deduplicated TOML files | 269 |
+| No select | 29.4% |
+| No ignore | 36.0% |
+| No fixable | 94.2% |
+| No unfixable | 84.6% |
+| Most popular configured Python version | py310 |
+| Median configured line length | 100.0 |
+| Most common unfixable | F401 |
+| Most common ignore | E501 |
+| Most common select | F |
+
+---
+
+_Comment by @charliermarsh on 2023-03-22 02:13_
+
+Awesome, thank you for this! (Gonna close issue :))
+
+---
+
+_Closed by @charliermarsh on 2023-03-22 02:13_
+
+---
+
+_Comment by @akx on 2023-03-28 12:21_
+
+https://gist.github.com/akx/817f5dc5663b80ae1315e108393b11a5
+
+126 new unique configuration files in a week 🎉 
+
+| Name | Value |
+| --- | --- |
+| Total TOML files | 1982 |
+| Unique TOML files | 1703 |
+| Deduplicated TOML files | 279 |
+| No select | 29.8% |
+| No ignore | 36.1% |
+| No fixable | 94.2% |
+| No unfixable | 85.1% |
+| Most popular configured Python version | py310 |
+| Median configured line length | 100.0 |
+| Most common unfixable | F401 |
+| Most common ignore | E501 |
+| Most common select | F |
+
+---
+
+_Comment by @MichaReiser on 2023-03-28 12:30_
+
+I love these updates. Thank you @akx, for updating them. 
+
+---
+
+_Comment by @akx on 2023-04-27 11:50_
+
+https://gist.github.com/akx/291e96a3cb4f085d86e4830eecb5375e
+
+| Name | Value |
+| --- | --- |
+| Total TOML files | 3143 |
+| Unique TOML files | 2628 |
+| Deduplicated TOML files | 515 |
+| No select | 29.6% |
+| No ignore | 35.8% |
+| No fixable | 92.3% |
+| No unfixable | 85.1% |
+| Most popular configured Python version | py310 |
+| Median configured line length | 100 |
+| Most common unfixable | F401 |
+| Most common ignore | E501 |
+| Most common select | F |
+
+---
+
+_Comment by @akx on 2023-05-10 09:27_
+
+https://gist.github.com/akx/01c0d37eedd921c0b88d06262812413a
+
+| Name | Value |
+| --- | --- |
+| Total TOML files | 3812 |
+| Unique TOML files | 3230 |
+| Deduplicated TOML files | 582 |
+| No select | 29.8% |
+| No ignore | 35.3% |
+| No fixable | 91.9% |
+| No unfixable | 84.9% |
+| Most popular configured Python version | py310 |
+| Median configured line length | 100.0 |
+| Most common unfixable | F401 |
+| Most common ignore | E501 |
+| Most common select | F |
+
+
+---
+
+_Comment by @konstin on 2023-05-11 20:07_
+
+Thank you for the continued data collection! Would it be feasible to filter out forks? i think we're seeing quite a bit of duplication in the dataset from them, there's e.g. 111 OpenBBTerminal in https://github.com/akx/ruff-usage-aggregate/blob/master/data/known-github-tomls.jsonl .
+
+---
+
+_Comment by @akx on 2023-05-11 20:09_
+
+@konstin Forks might be hard to find without consulting the GitHub API more, but we're already only considering unique TOMLs:
+
+https://github.com/akx/ruff-usage-aggregate/blob/47a3db9be5a03d5f107a9001831bb2caf6620843/ruff_usage_aggregate/models.py#L19-L29
+
+---

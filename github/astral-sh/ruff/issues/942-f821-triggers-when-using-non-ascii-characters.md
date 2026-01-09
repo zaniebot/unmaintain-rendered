@@ -1,0 +1,218 @@
+---
+number: 942
+title: F821 triggers when using non-ASCII characters
+type: issue
+state: closed
+author: trag1c
+labels:
+  - bug
+assignees: []
+created_at: 2022-11-28T14:51:37Z
+updated_at: 2024-03-29T23:08:29Z
+url: https://github.com/astral-sh/ruff/issues/942
+synced_at: 2026-01-07T13:12:14-06:00
+---
+
+# F821 triggers when using non-ASCII characters
+
+---
+
+_Issue opened by @trag1c on 2022-11-28 14:51_
+
+```py
+from time import time_ns
+
+def time_µs() -> int:
+	return time_ns() // 1000
+
+def main() -> None:
+	print(time_µs())
+
+if __name__ == "__main__":
+	main()
+```
+```
+test.py:7:9: F821 Undefined name `time_μs`
+```
+(it's obviously fine with a name like `time_us`)
+
+---
+
+_Label `bug` added by @charliermarsh on 2022-11-28 14:53_
+
+---
+
+_Comment by @charliermarsh on 2022-11-28 14:53_
+
+Fascinating.
+
+---
+
+_Comment by @charliermarsh on 2022-11-30 01:14_
+
+Oddly I'm not seeing this error when running on my machine 🤔 
+
+---
+
+_Comment by @trag1c on 2022-11-30 01:18_
+
+> Oddly I'm not seeing this error when running on my machine 🤔
+
+Do you need any more details?
+
+---
+
+_Comment by @charliermarsh on 2022-11-30 01:22_
+
+Could it make a difference if you uploaded the exact file, rather than pasting the snippet?
+
+---
+
+_Comment by @trag1c on 2022-11-30 01:28_
+
+> Could it make a difference if you uploaded the exact file, rather than pasting the snippet?
+
+Unfortunately, I don't have the exact file anymore. I didn't actually run this snippet until now, and oddly it also seems to work for me in this case.
+
+It complains about it in this example though:
+```py
+def time_µs():
+    ...
+
+def main():
+    time_μs()
+```
+
+---
+
+_Comment by @charliermarsh on 2022-11-30 01:30_
+
+Oh cool, that repros for me too. Thanks!
+
+---
+
+_Comment by @charliermarsh on 2022-11-30 02:20_
+
+Really don't understand this one.
+
+It seems to work fine if you indent with tabs, but not with spaces?
+
+```py
+def time_µs() -> int:
+	...
+
+def main() -> None:
+	time_µs()
+```
+
+---
+
+_Comment by @charliermarsh on 2022-11-30 02:21_
+
+Wait, no, that's wrong -- the tabs are irrelevant.
+
+---
+
+_Comment by @charliermarsh on 2022-11-30 02:24_
+
+I think there's something strange in how the `time_µs` is written in the first example. Notice that my editor doesn't like it either:
+
+![Screen Shot 2022-11-29 at 9 23 43 PM](https://user-images.githubusercontent.com/1309177/204692220-6cf5b20d-42ca-4339-aca5-cf23bf76f7d1.png)
+
+![Screen Shot 2022-11-29 at 9 23 40 PM](https://user-images.githubusercontent.com/1309177/204692224-03640094-2396-4546-8d97-a89c55bd8480.png)
+
+
+---
+
+_Comment by @charliermarsh on 2022-11-30 02:29_
+
+Yeah, I think these are actually using different characters? In `foo.py` above, the first representation of `time_us` uses:
+
+```
+116
+105
+109
+101
+95
+194
+181
+115
+```
+
+The second uses:
+
+```
+116
+105
+109
+101
+95
+206
+188
+115
+```
+
+The difference is `[206, 188]` vs. `[194, 181]`, which I guess represent slightly different characters?
+
+```
+string_utf8_lossy: μ
+string_utf8_lossy: µ
+```
+
+
+---
+
+_Comment by @charliermarsh on 2022-11-30 02:30_
+
+So, I think this is _correct_?
+
+---
+
+_Closed by @charliermarsh on 2022-11-30 02:30_
+
+---
+
+_Comment by @charliermarsh on 2022-11-30 02:32_
+
+Sigh, yes, the former (`[206, 188]`) is [Greek Small Letter Mu](https://www.compart.com/en/unicode/U+03BC), while the latter ([`194, 181]`) is [Micro Sign](https://www.compart.com/en/unicode/U+00B5). You can see that the UTF-8 Encoding hex digits match up.
+
+
+---
+
+_Comment by @trag1c on 2022-11-30 02:34_
+
+Sorry for wasting your time, looks like it's VSCode that treats these two as the same character, e.g. when highlighting or using autocompletion (that's probably when it inserted a different character? 🤨).
+
+Anyways great project! ❤️
+
+---
+
+_Comment by @charliermarsh on 2022-11-30 02:36_
+
+Haha no, all good, I was totally stumped! I learned a bit about debugging this stuff anyway.
+
+Thank you for the kind words :)
+
+
+---
+
+_Comment by @ekzhang on 2022-11-30 06:08_
+
+(Off-topic) By the way, Rust has a [built-in lint](https://doc.rust-lang.org/rustc/lints/listing/warn-by-default.html#confusable-idents) for this, just tried compiling the code in this [playground](https://play.rust-lang.org/?version=stable&mode=debug&edition=2021&gist=a7ea09c6779f9f7c522e98b68df209db).
+
+<img width="719" alt="image" src="https://user-images.githubusercontent.com/7550632/204720397-9f56cb20-8dc9-4e05-996d-d198ee22ea36.png">
+
+
+---
+
+_Referenced in [astral-sh/ruff#5003](../../astral-sh/ruff/issues/5003.md) on 2023-06-10 12:02_
+
+---
+
+_Comment by @covracer on 2024-03-29 23:08_
+
+Hopefully https://github.com/astral-sh/ruff/pull/4430 will help prevent micro/mu mixups
+
+I was also surprised by [PEP 3131](https://peps.python.org/pep-3131/) edge cases.
+
+---

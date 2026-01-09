@@ -1,0 +1,123 @@
+---
+number: 3052
+title: C901 (max-complexity) not reported since 0.0.247
+type: issue
+state: closed
+author: kalekseev
+labels:
+  - bug
+assignees: []
+created_at: 2023-02-20T07:21:29Z
+updated_at: 2023-03-13T12:20:31Z
+url: https://github.com/astral-sh/ruff/issues/3052
+synced_at: 2026-01-07T13:12:14-06:00
+---
+
+# C901 (max-complexity) not reported since 0.0.247
+
+---
+
+_Issue opened by @kalekseev on 2023-02-20 07:21_
+
+Can't find anything that can cause the change in changelog https://github.com/charliermarsh/ruff/releases/tag/v0.0.247 or docs https://beta.ruff.rs/docs/settings/#max-complexity 
+```
+❯ cat > a.py
+def fn(a, b, c, d, e):
+    if a:
+        ...
+    try:
+        ...
+    except ValueError:
+        ...
+    if b:
+        ...
+    if c:
+        ...
+    if d:
+        ...
+    else:
+        try:
+            if a:
+                if not b:
+                    ...
+        except ValueError:
+            ...
+    ...
+
+❯ pip install ruff==0.0.246
+Collecting ruff==0.0.246
+  Using cached ruff-0.0.246-py3-none-macosx_10_9_x86_64.macosx_11_0_arm64.macosx_10_9_universal2.whl (10.7 MB)
+Installing collected packages: ruff
+  Attempting uninstall: ruff
+    Found existing installation: ruff 0.0.244
+    Uninstalling ruff-0.0.244:
+      Successfully uninstalled ruff-0.0.244
+Successfully installed ruff-0.0.246
+
+❯ ruff --select C a.py
+a.py:1:5: C901 `fn` is too complex (11)
+Found 1 error.
+
+❯ pip install ruff==0.0.247
+Collecting ruff==0.0.247
+  Using cached ruff-0.0.247-py3-none-macosx_10_9_x86_64.macosx_11_0_arm64.macosx_10_9_universal2.whl (11.1 MB)
+Installing collected packages: ruff
+  Attempting uninstall: ruff
+    Found existing installation: ruff 0.0.246
+    Uninstalling ruff-0.0.246:
+      Successfully uninstalled ruff-0.0.246
+Successfully installed ruff-0.0.247
+
+❯ ruff --select C a.py
+❯
+
+
+```
+
+---
+
+_Comment by @charliermarsh on 2023-02-20 14:54_
+
+I think the issue here is that you need to do `--select C9` now, since `C` is assigned to both `flake8-comprehensions` and `mccabe`. But I didn't realize that these no longer worked. @not-my-profile, is this intended? Is there a way we could re-enable them?
+
+---
+
+_Label `bug` added by @charliermarsh on 2023-02-20 14:54_
+
+---
+
+_Comment by @not-my-profile on 2023-02-20 16:06_
+
+Ah yeah my bad. I redirected `C` to `C4` in 849b947b ... I didn't realize that it previously also included C9. Since the many-to-one mapping broke up the `RuleCodePrefix` enum we can no longer easily map one prefix to rules from different linters.
+
+---
+
+_Comment by @charliermarsh on 2023-03-11 16:33_
+
+We have the same problem, I think, which `T`, which is redirected to `T10`, so `T` no longer turns on the `T200` rules.
+
+---
+
+_Comment by @charliermarsh on 2023-03-11 17:37_
+
+Gonna consider this high-priority since we've silently turned off rules for users.
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2023-03-11 19:01_
+
+---
+
+_Referenced in [astral-sh/ruff#3452](../../astral-sh/ruff/pulls/3452.md) on 2023-03-11 20:39_
+
+---
+
+_Comment by @charliermarsh on 2023-03-11 20:53_
+
+Fixed in #3452.
+
+---
+
+_Closed by @charliermarsh on 2023-03-13 12:20_
+
+---

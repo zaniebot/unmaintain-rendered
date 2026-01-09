@@ -1,0 +1,50 @@
+---
+number: 3926
+title: "universal-lock: check that markers are disjoint before forking"
+type: issue
+state: closed
+author: BurntSushi
+labels:
+  - internal
+assignees: []
+created_at: 2024-05-30T18:24:56Z
+updated_at: 2024-06-10T12:42:25Z
+url: https://github.com/astral-sh/uv/issues/3926
+synced_at: 2026-01-07T13:12:17-06:00
+---
+
+# universal-lock: check that markers are disjoint before forking
+
+---
+
+_Issue opened by @BurntSushi on 2024-05-30 18:24_
+
+In #3831, I decided to punt on checking whether markers were disjoint before forking the resolver. But we need to do this for correctness. Namely, if we fork because two different dependency specifications reference the same package but their markers are _not_ disjoint, then we could wind up in a situation where two different versions of the same package would be installed according to the lock file. Which, of course, we cannot do. So we can only permit forking when marker expressions are completely disjoint, thus guaranteeing that only one version will be selected at install time.
+
+---
+
+_Label `internal` added by @BurntSushi on 2024-05-30 18:24_
+
+---
+
+_Assigned to @BurntSushi by @BurntSushi on 2024-05-30 18:24_
+
+---
+
+_Referenced in [astral-sh/uv#3350](../../astral-sh/uv/issues/3350.md) on 2024-05-30 18:25_
+
+---
+
+_Referenced in [astral-sh/uv#4135](../../astral-sh/uv/pulls/4135.md) on 2024-06-10 12:42_
+
+---
+
+_Comment by @BurntSushi on 2024-06-10 12:42_
+
+Closed by https://github.com/astral-sh/uv/pull/4135
+
+---
+
+_Closed by @BurntSushi on 2024-06-10 12:42_
+
+---

@@ -1,0 +1,125 @@
+---
+number: 3249
+title: "Zsh completion: Options and flags are not completed when they come after ordered arguments"
+type: issue
+state: open
+author: AndydeCleyre
+labels:
+  - bug
+  - external
+assignees: []
+created_at: 2024-04-24T16:07:08Z
+updated_at: 2024-11-12T20:20:39Z
+url: https://github.com/astral-sh/uv/issues/3249
+synced_at: 2026-01-07T13:12:17-06:00
+---
+
+# Zsh completion: Options and flags are not completed when they come after ordered arguments
+
+---
+
+_Issue opened by @AndydeCleyre on 2024-04-24 16:07_
+
+```console
+$ uv pip compile requirements.in --  # mash TAB key here
+```
+
+The command accepts options in this position, but that is not reflected by the current Zsh completion.
+
+```console
+$ uv --version
+uv 0.1.37
+$ uname
+Linux
+```
+
+---
+
+_Comment by @zanieb on 2024-04-24 16:25_
+
+`--` is typically used to indicate you are passing options through to another tool. Is there a reason you're using it like this?
+
+---
+
+_Referenced in [AndydeCleyre/zpy#32](../../AndydeCleyre/zpy/issues/32.md) on 2024-04-24 16:36_
+
+---
+
+_Comment by @AndydeCleyre on 2024-04-24 16:40_
+
+Sorry, I wasn't clear -- I'm not using dash, dash, space, but instead: dash, dash, tab 
+
+---
+
+_Comment by @zanieb on 2024-04-24 17:12_
+
+Oh! Thanks for clarifying haha interesting. We don't write our own completion tooling, not sure if we can do anything here. I wonder if this reproduces with a trivial clap example or if there's an issue upstream?
+
+---
+
+_Label `bug` added by @zanieb on 2024-04-24 17:13_
+
+---
+
+_Label `upstream` added by @zanieb on 2024-04-24 17:13_
+
+---
+
+_Comment by @charliermarsh on 2024-04-24 17:40_
+
+Dumb question but just confirming that you went through the steps to generate / install the Zsh completions?
+
+---
+
+_Comment by @AndydeCleyre on 2024-04-24 17:42_
+
+@charliermarsh 
+
+Yes, of course, thanks. The completion in general works, but is more sensitive to order than the actual command.
+
+---
+
+_Comment by @AndydeCleyre on 2024-05-14 18:19_
+
+I can't tell if this is or is not describing the same issue: https://github.com/clap-rs/clap/issues/5244
+
+---
+
+_Comment by @AndydeCleyre on 2024-10-15 21:28_
+
+I *think* [prqlc](https://github.com/PRQL/prql/tree/main/prqlc/prqlc), which also uses clap_complete_command, manages to get this working. 
+
+For example:
+
+```console
+$ prqlc watch --help
+Watch a directory and compile .prql files to .sql files
+
+Usage: prqlc watch [OPTIONS] <PATH>
+
+Arguments:
+  <PATH>  Directory or file to watch for changes
+
+Options:
+      --no-format     
+      --no-signature  
+      --color <WHEN>  Controls when to use color [default: auto] [possible values: auto, always, never]
+  -h, --help          Print help
+
+$ prqlc watch . --n  # TAB
+```
+
+does complete options for the `watch` subcommand.
+
+Possibly this is due to its use of clap's derive feature 🤷🏼 .
+
+---
+
+_Comment by @AndydeCleyre on 2024-11-12 20:20_
+
+OK, found these:
+
+- https://github.com/clap-rs/clap/discussions/4648
+- https://github.com/clap-rs/clap/issues/3166
+
+---

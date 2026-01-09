@@ -1,0 +1,376 @@
+---
+number: 13444
+title: uv add fails due to interpreter-v4 cache missing invalidation
+type: issue
+state: open
+author: tlandschoff-scale
+labels:
+  - question
+assignees: []
+created_at: 2025-05-14T07:21:12Z
+updated_at: 2025-05-16T13:17:09Z
+url: https://github.com/astral-sh/uv/issues/13444
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# uv add fails due to interpreter-v4 cache missing invalidation
+
+---
+
+_Issue opened by @tlandschoff-scale on 2025-05-14 07:21_
+
+### Summary
+
+First, thanks for uv, it is a great help for us. We used to use pip + virtualenv, and regularly ran into errors because a dev did not update the venv. uv run now takes care of this 😄 
+
+We are currently migrating toward using manylinux wheels (used to pip install everything from source) and ran into issues because the virtual environment `$PROJECT/.venv` is recreated without `--system-site-packages`, but uv does not catch that change.
+
+Here is a transcript of the misbehavior on my Ubuntu noble system:
+
+```console
+~/tmp/2025-05-14/broken$ uv init --python `which python3`
+~/tmp/2025-05-14/broken$ uv python pin `which python3`
+~/tmp/2025-05-14/broken$ uv venv --system-site-packages
+
+# Fails as expected, system-site-packages disable manylinux wheels:
+
+~/tmp/2025-05-14/broken$ uv add --no-build cffi==1.17.1
+Using CPython 3.9.20 interpreter at: /opt/scalesdk/python39/bin/python3.9
+Removed virtual environment at: .venv
+Creating virtual environment at: .venv
+Resolved 3 packages in 599ms
+error: Distribution `cffi==1.17.1 @ registry+https://pypi.service.scale/simple/` can't be installed because it is marked as `--no-build` but has no binary distribution
+
+# But after recreating the virtualenv without this issue, it should work
+
+~/tmp/2025-05-14/broken$ rm -rf .venv/ && uv venv
+~/tmp/2025-05-14/broken$ uv add --no-build cffi==1.17.1
+Using CPython 3.9.20 interpreter at: /opt/scalesdk/python39/bin/python3.9
+Removed virtual environment at: .venv
+Creating virtual environment at: .venv
+Resolved 3 packages in 615ms
+error: Distribution `cffi==1.17.1 @ registry+https://pypi.service.scale/simple/` can't be installed because it is marked as `--no-build` but has no binary distribution
+```
+
+This appears to be a caching issue, it can be fixed by deleting the interpreter-v4 cache. Here is a Dockerfile based on Debian bookworm that reproduces the behavior:
+
+```
+FROM python:3.12-bookworm
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
+
+RUN mkdir /workspace
+WORKDIR /workspace
+
+RUN echo "\
+manylinux1_compatible = False\n\
+manylinux2010_compatible = False\n\
+manylinux2014_compatible = False\n\
+def manylinux_compatible(*_, **__):\n\
+    return False\n\
+" > `python -c "import sysconfig;print(sysconfig.get_path('purelib'))"`/_manylinux.py
+RUN cat `python -c "import sysconfig;print(sysconfig.get_path('purelib'))"`/_manylinux.py
+
+RUN uv self version && python --version
+RUN uv init --python `which python` && uv venv --system-site-packages
+RUN uv add --no-build cffi==1.17.1 || true  # uv add fails: no binary
+RUN rm -rf .venv && uv venv
+RUN uv add --no-build cffi==1.17.1 || true  # fails again, why?
+RUN rm -rf $HOME/.cache/uv/interpreter-v4
+RUN uv add --no-build cffi==1.17.1  # works
+```
+
+Running it, I get this:
+
+```console
+$ docker build . --progress plain --no-cache
+[sudo] password for torsten.landschoff: 
+#0 building with "default" instance using docker driver
+
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile: 873B done
+#1 DONE 0.0s
+
+#2 [internal] load metadata for docker.io/library/python:3.12-bookworm
+#2 ...
+
+#3 [internal] load metadata for ghcr.io/astral-sh/uv:latest
+#3 DONE 0.7s
+
+#2 [internal] load metadata for docker.io/library/python:3.12-bookworm
+#2 DONE 1.3s
+
+#4 [internal] load .dockerignore
+#4 transferring context: 2B done
+#4 DONE 0.0s
+
+#5 FROM ghcr.io/astral-sh/uv:latest@sha256:87a04222b228501907f487b338ca6fc1514a93369bfce6930eb06c8d576e58a4
+#5 CACHED
+
+#6 [stage-0  1/13] FROM docker.io/library/python:3.12-bookworm@sha256:4f13b45cdbbb834d3cc6c60abbd8f2923ad36e43a23a52769e07a6223c1fced7
+#6 CACHED
+
+#7 [stage-0  2/13] COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
+#7 DONE 0.2s
+
+#8 [stage-0  3/13] RUN mkdir /workspace
+#8 DONE 0.3s
+
+#9 [stage-0  4/13] WORKDIR /workspace
+#9 DONE 0.0s
+
+#10 [stage-0  5/13] RUN echo "manylinux1_compatible = False\nmanylinux2010_compatible = False\nmanylinux2014_compatible = False\ndef manylinux_compatible(*_, **__):\n    return False\n" > `python -c "import sysconfig;print(sysconfig.get_path('purelib'))"`/_manylinux.py
+#10 DONE 0.3s
+
+#11 [stage-0  6/13] RUN cat `python -c "import sysconfig;print(sysconfig.get_path('purelib'))"`/_manylinux.py
+#11 0.207 manylinux1_compatible = False
+#11 0.207 manylinux2010_compatible = False
+#11 0.207 manylinux2014_compatible = False
+#11 0.207 def manylinux_compatible(*_, **__):
+#11 0.207     return False
+#11 0.207 
+#11 DONE 0.2s
+
+#12 [stage-0  7/13] RUN uv self version && python --version
+#12 0.189 uv 0.7.3
+#12 0.193 Python 3.12.10
+#12 DONE 0.2s
+
+#13 [stage-0  8/13] RUN uv init --python `which python` && uv venv --system-site-packages
+#13 0.379 Initialized project `workspace`
+#13 0.536 Using CPython 3.12.10 interpreter at: /usr/local/bin/python3.12
+#13 0.536 Creating virtual environment at: .venv
+#13 DONE 0.6s
+
+#14 [stage-0  9/13] RUN uv add --no-build cffi==1.17.1 || true  # uv add fails: no binary
+#14 0.655 Resolved 3 packages in 254ms
+#14 0.657 error: Distribution `cffi==1.17.1 @ registry+https://pypi.org/simple` can't be installed because it is marked as `--no-build` but has no binary distribution
+#14 DONE 0.7s
+
+#15 [stage-0 10/13] RUN rm -rf .venv && uv venv
+#15 0.231 Using CPython 3.12.10 interpreter at: /usr/local/bin/python3.12
+#15 0.231 Creating virtual environment at: .venv
+#15 DONE 0.2s
+
+#16 [stage-0 11/13] RUN uv add --no-build cffi==1.17.1 || true  # fails again, why?
+#16 0.231 Resolved 3 packages in 10ms
+#16 0.233 error: Distribution `cffi==1.17.1 @ registry+https://pypi.org/simple` can't be installed because it is marked as `--no-build` but has no binary distribution
+#16 DONE 0.3s
+
+#17 [stage-0 12/13] RUN rm -rf $HOME/.cache/uv/interpreter-v4
+#17 DONE 0.3s
+
+#18 [stage-0 13/13] RUN uv add --no-build cffi==1.17.1  # works
+#18 0.422 Resolved 3 packages in 6ms
+#18 0.592 Prepared 2 packages in 168ms
+#18 0.604 Installed 2 packages in 12ms
+#18 0.604  + cffi==1.17.1
+#18 0.604  + pycparser==2.22
+#18 DONE 0.6s
+
+#19 exporting to image
+#19 exporting layers
+#19 exporting layers 0.4s done
+#19 writing image sha256:6e804a371b654517435e1f3e79e950b3b5f6067ba26a488d1ce3f1af0ea40f62 done
+#19 DONE 0.4s
+```
+
+The workaround to remove the interpreter cache helps us out here, but this happens for every developer that updates to our current main branch, and also during `uv sync`.
+
+
+### Platform
+
+Debian bookworm (docker image python:3.12-bookworm)
+
+### Version
+
+uv 0.7.3
+
+### Python version
+
+Python 3.12.10
+
+---
+
+_Label `bug` added by @tlandschoff-scale on 2025-05-14 07:21_
+
+---
+
+_Comment by @charliermarsh on 2025-05-14 19:30_
+
+I think this has been reported before and we deemed it acceptable because toggling manylinux is so rare, and invalidating this is impossible without querying Python (which makes the cache redundant). I believe you can run with `--refresh` if you want to force invalidation for a period of time?
+
+---
+
+_Label `bug` removed by @charliermarsh on 2025-05-14 23:26_
+
+---
+
+_Label `question` added by @charliermarsh on 2025-05-14 23:26_
+
+---
+
+_Comment by @tlandschoff-scale on 2025-05-15 08:31_
+
+I think you don't get the point. Nobody toggled manylinux, I created a completely new virtual environment from scratch after deleting it.
+
+I would expect that cache to forget all cached information that is older than the creation time of the venv.
+
+> invalidating this is impossible without querying Python
+
+But the cache entry has a timestamp in unix time according to the source:
+
+```
+    /// Cache structure: `interpreter-v0/<digest(path)>.msgpack`
+    ///
+    /// # Example
+    ///
+    /// The contents of each of the `MsgPack` files has a timestamp field in unix time, the [PEP 508]
+    /// markers and some information from the `sys`/`sysconfig` modules.
+    ///
+    /// ```json
+    /// {
+    ///   "timestamp": 1698047994491,
+```
+
+And at least on Unix, the stat information of the directory contains the birth time:
+
+```console
+$ stat -c %W .venv/
+1747297754
+```
+
+I would expect to discard a cache entry that is older than the whole venv folder.
+
+
+---
+
+_Comment by @konstin on 2025-05-15 08:49_
+
+We cache the information per underlying Python interpreter, not per venv. The timestamp we use is the one of the resolved symlink, so we can cache and reuse this information across venv creation.
+
+---
+
+_Comment by @tlandschoff-scale on 2025-05-15 09:44_
+
+Are you sure about that? I dropped the interpreter-v4 cache and played around a bit:
+
+### Initial state: nothing cached
+
+```console
+$ uv self version
+uv 0.7.3
+$ tree ~/.cache/uv/interpreter-v4/
+/home/torsten.landschoff/.cache/uv/interpreter-v4/
+
+0 directories, 0 files
+```
+
+### Initialize uv: two interpreters cached
+
+```console
+$ tree ~/.cache/uv/interpreter-v4/
+/home/torsten.landschoff/.cache/uv/interpreter-v4/
+└── 22dbb80d45d1d804
+    ├── abd8c262a82f2e6a.msgpack
+    └── bf829e315dd7bd1b.msgpack
+
+2 directories, 2 files
+```
+
+### Add a package (creates venv): still 2 interpreters
+
+```console
+$ uv add msgpack
+Using CPython 3.13.1
+Creating virtual environment at: .venv
+Resolved 2 packages in 696ms
+Prepared 1 package in 315ms
+Installed 1 package in 6ms
+ + msgpack==1.1.0
+
+$ tree ~/.cache/uv/interpreter-v4/
+/home/torsten.landschoff/.cache/uv/interpreter-v4/
+└── 22dbb80d45d1d804
+    ├── abd8c262a82f2e6a.msgpack
+    └── bf829e315dd7bd1b.msgpack
+
+2 directories, 2 files
+```
+
+### Run uv sync: 3 interpreters cached
+
+```console
+$ uv sync
+Resolved 2 packages in 14ms
+Audited 1 package in 0.02ms
+$ tree ~/.cache/uv/interpreter-v4/
+/home/torsten.landschoff/.cache/uv/interpreter-v4/
+└── 22dbb80d45d1d804
+    ├── abd8c262a82f2e6a.msgpack
+    ├── b25974a1e7203b4e.msgpack
+    └── bf829e315dd7bd1b.msgpack
+
+2 directories, 3 files
+```
+
+It appears that the cache entry contains the site packages of the venv, so I'd expect it to be per venv:
+
+```console
+$ mpk -j b25974a1e7203b4e.msgpack|jq .[1][2]
+[
+  "/home/torsten.landschoff/uv-testing/.venv/lib/python3.13/site-packages",
+  "/home/torsten.landschoff/uv-testing/.venv/lib/python3.13/site-packages",
+  "/home/torsten.landschoff/uv-testing/.venv/bin",
+  "/home/torsten.landschoff/uv-testing/.venv",
+  "/home/torsten.landschoff/uv-testing/.venv/include/site/python3.13"
+]
+```
+
+### One cache entry per venv
+
+Looks like the interpreter cache entry is created on syncing the virtual env a second time. This creates enva up to envd and syncs each env again:
+
+```console
+$ for env in a a b b c c d d; do VIRTUAL_ENV="env$env" uv sync --active --quiet; done
+
+$ tree ~/.cache/uv/interpreter-v4/
+/home/torsten.landschoff/.cache/uv/interpreter-v4/
+└── 22dbb80d45d1d804
+    ├── 9556e87181fdda70.msgpack
+    ├── a3a1b647ae42b42f.msgpack
+    ├── abd8c262a82f2e6a.msgpack
+    ├── b25974a1e7203b4e.msgpack
+    ├── bf4f243d221336dd.msgpack
+    ├── bf829e315dd7bd1b.msgpack
+    └── ed8843e457492b15.msgpack
+
+2 directories, 7 files
+```
+
+So it appears like there is one cache entry created per virtual env after all? What am I missing?
+
+What I can confirm though is that the time stamps inside the msgpack files appear to be identical, so they likely stem from the same source (the python binary?).
+
+
+---
+
+_Comment by @konstin on 2025-05-16 10:56_
+
+Thanks for catching that! The logic is slightly: We do cache per venv, but the cache key (on Unix) is the timestamp of the underlying interpreter , as we need to invalidate the cache when the underlying interpreter was e.g. update through a system package manager.
+
+Another part of this is that we currently don't really support `--system-site-packages` (it's a hard problem), uv only looks at the current venv.
+
+---
+
+_Comment by @tlandschoff-scale on 2025-05-16 13:17_
+
+> Another part of this is that we currently don't really support --system-site-packages (it's a hard problem), uv only looks at the current venv.
+
+I am happy with that, we try to drop system site packages anyway. Being dependent on packages that lie outside the virtual env should definitely be avoided. (We have that setup as we did not have binaries for some packages on the customer's target systems we had to support).
+
+> but the cache key (on Unix) is the timestamp of the underlying interpreter
+
+My idea would be to just use the maximum value of the timestamps of the symlink and the target file. If I understand correctly, this should fix the caching for virtual environment that have been deleted since?
+
+
+---

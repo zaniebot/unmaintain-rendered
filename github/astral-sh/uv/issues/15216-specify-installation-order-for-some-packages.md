@@ -1,0 +1,53 @@
+---
+number: 15216
+title: Specify installation order for some packages
+type: issue
+state: closed
+author: hongquan
+labels:
+  - enhancement
+assignees: []
+created_at: 2025-08-11T03:54:19Z
+updated_at: 2025-08-11T11:59:21Z
+url: https://github.com/astral-sh/uv/issues/15216
+synced_at: 2026-01-07T13:12:19-06:00
+---
+
+# Specify installation order for some packages
+
+---
+
+_Issue opened by @hongquan on 2025-08-11 03:54_
+
+### Summary
+
+[urllib3-future](https://pypi.org/project/urllib3-future/) is meant to shadow [urllib3](https://pypi.org/project/urllib3/), so it provides the same import module name as `urllib3`.
+My project indirectly depends on both (one via [niquests](https://pypi.org/project/niquests/), one via something I don't remember). I am happily to let `urllib3-future` overwrite `urllib3`. But because *uv* install packages in parallel, sometimes, _urllib3-future_ is installed after _urllib3_, sometimes before.
+
+Is there any way to tell `uv` to install `urllib3-future` after `urllib3`?
+
+### Example
+
+_No response_
+
+---
+
+_Label `enhancement` added by @hongquan on 2025-08-11 03:54_
+
+---
+
+_Comment by @charliermarsh on 2025-08-11 11:12_
+
+Unfortunately we support anything like that, no. The closest thing is that we now warn (IIRC) if two packages try to shadow each other. You would _probably_ need to use two separate dependency groups or extras, and install them in order.
+
+---
+
+_Comment by @hongquan on 2025-08-11 11:59_
+
+Thanks.
+
+---
+
+_Closed by @hongquan on 2025-08-11 11:59_
+
+---

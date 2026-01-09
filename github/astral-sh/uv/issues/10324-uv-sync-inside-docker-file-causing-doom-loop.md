@@ -1,0 +1,195 @@
+---
+number: 10324
+title: UV sync inside docker file causing doom loop
+type: issue
+state: closed
+author: Goldziher
+labels:
+  - question
+assignees: []
+created_at: 2025-01-06T10:01:54Z
+updated_at: 2025-05-26T04:23:48Z
+url: https://github.com/astral-sh/uv/issues/10324
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# UV sync inside docker file causing doom loop
+
+---
+
+_Issue opened by @Goldziher on 2025-01-06 10:01_
+
+Hi there,
+
+I migrated a project from PDM to UV. Everything was smooth except building the container, which now causes a doom loop. Afrer debugging this for a while, I concluded the culprit is Spacy (v3.8.*) which causes UV to loop for a very long time when running sync. It seems there are some GCC build warnings raised, which cause this loop. The result is that while my project eventually build (I had to add g++ as an explicit build dependency to make this work), It takes almost 300 seconds - 99% of which are spent in this loop. 
+
+Here is a minimal reproduction of the issue: https://github.com/Goldziher/uv-issue-reproduction
+
+---
+
+_Comment by @charliermarsh on 2025-01-06 14:41_
+
+What is your host platform, and what Docker platform are you targeting? For me, this takes 17 seconds total: `DOCKER_BUILDKIT=1 docker build --platform linux/amd64 . --progress=plain`
+
+---
+
+_Label `question` added by @charliermarsh on 2025-01-06 14:41_
+
+---
+
+_Comment by @Goldziher on 2025-01-06 15:39_
+
+> What is your host platform, and what Docker platform are you targeting? For me, this takes 17 seconds total: `DOCKER_BUILDKIT=1 docker build --platform linux/amd64 . --progress=plain`
+
+Platform is linux/amd64. I use an m1 pro.  
+
+I'll get the actual numbers. 
+
+Q: 17 seconds for the installation or the entire docker build? 
+
+---
+
+_Comment by @Goldziher on 2025-01-06 16:30_
+
+This takes 20 secs on my machine + the same for the system installs. 
+
+---
+
+_Comment by @Goldziher on 2025-01-06 16:40_
+
+Here is a video demoing the issue I am seeing: #https://github.com/user-attachments/assets/983c2112-805a-4a3b-a3cf-9fe3018e0159
+
+
+---
+
+_Comment by @charliermarsh on 2025-01-06 17:03_
+
+Hmm. It's clearly building from source (which is why it's slow), though I'm not sure why. It's hard to imagine why it would possibly be building from source on your machine but not mine when running `DOCKER_BUILDKIT=1 docker build --platform linux/amd64 . --progress=plain`. Do you have the complete logs from the "slow" Docker build with `--verbose` that you could share?
+
+---
+
+_Comment by @shauneccles on 2025-01-06 20:19_
+
+
+You mentioned M1, which is aarch64 - are you doing a cross compile to x64?
+
+
+![Image](https://github.com/user-attachments/assets/f8327487-b954-48fb-b889-daafe769b1ff)
+
+
+---
+
+_Comment by @Goldziher on 2025-01-06 20:36_
+
+> You mentioned M1, which is aarch64 - are you doing a cross compile to x64?
+> 
+> ![Image](https://github.com/user-attachments/assets/f8327487-b954-48fb-b889-daafe769b1ff)
+
+I'm not, no.
+
+Command there was `docker compose build` and the docker compose file looks like this:
+
+```yaml
+services:
+    backend:
+        build:
+            context: .
+            dockerfile: Dockerfile
+       # ...
+```
+
+---
+
+_Comment by @Goldziher on 2025-01-06 20:37_
+
+> Hmm. It's clearly building from source (which is why it's slow), though I'm not sure why. It's hard to imagine why it would possibly be building from source on your machine but not mine when running `DOCKER_BUILDKIT=1 docker build --platform linux/amd64 . --progress=plain`. Do you have the complete logs from the "slow" Docker build with `--verbose` that you could share?
+
+I'll arrange this tomorrow. 
+
+---
+
+_Comment by @charliermarsh on 2025-01-06 20:37_
+
+Oh, it says in the logs that it's trying to build for ARM Linux? You can see `linux-aarch64-cpython`. Are you certain that you're setting the platform explicitly to x86_64?
+
+---
+
+_Comment by @charliermarsh on 2025-01-06 20:38_
+
+(None of those projects provide wheels for ARM Linux, so you'd have to build from source if you didn't override the platform.)
+
+---
+
+_Comment by @Goldziher on 2025-01-06 21:08_
+
+> Oh, it says in the logs that it's trying to build for ARM Linux? You can see `linux-aarch64-cpython`. Are you certain that you're setting the platform explicitly to x86_64?
+
+I'm not setting the platform up locally at all. I think there is some confusion. 
+
+The command in the video, and for the log file was `docker compose build`. Default behaviour for latest version of docker desktop on mac is used (docker engine version:  27.4.0). 
+
+I did run the reproductions using the exact same command you used in the reproduction repository, which took me 20 seconds. 
+
+Here is the log file for a build using the default architecture for mac. [build.log](https://github.com/user-attachments/files/18324353/build.log)
+
+I then added platforms to the docker compose file:
+
+```yaml
+        build:
+            context: .
+            dockerfile: Dockerfile
+            platforms:
+                - "linux/amd64"
+```
+
+And created second log file: [build_2.log](https://github.com/user-attachments/files/18324486/build_2.log)
+
+The second build took 133 seconds, which is almost a quarter of the time the first build took. Still, 133 seconds is pretty long.
+
+While this supports the fact that some libraries do not have wheels and require building, the main issue is that while PDM was pretty slow with docker, it was still faster than UV in this scenario. 
+
+I can reproduce this by using a different branch. But not tonight 😉 
+
+---
+
+_Comment by @charliermarsh on 2025-01-06 21:45_
+
+> I'm not setting the platform up locally at all. I think there is some confusion.
+
+Right, I'm referring to the `--platform` argument in Docker. The first logs you posted are definitely building an ARM image. Just look at lines like `#12 12.65 Unpacking libatspi2.0-0:arm64 (2.46.0-5) ...`. It doesn't have anything to do with uv -- the package manager won't matter at all in this case. If you try to install SpaCy on an ARM Linux image like that, it _must_ be built from scratch. And all the time is being spent asking SpaCy to build itself. PDM, uv, etc. It wouldn't matter.
+
+I wouldn't expect PDM to be faster than uv for the second logs (which are x86). It looks like uv took 23 seconds? That seems not-impossible given that you're running under emulation (your machine is ARM but the container is x86). It looks like `playwright install chromium --with-deps` took about 68 seconds, for reference.
+
+
+---
+
+_Comment by @Goldziher on 2025-01-07 06:43_
+
+> > I'm not setting the platform up locally at all. I think there is some confusion.
+> 
+> Right, I'm referring to the `--platform` argument in Docker. The first logs you posted are definitely building an ARM image. Just look at lines like `#12 12.65 Unpacking libatspi2.0-0:arm64 (2.46.0-5) ...`. It doesn't have anything to do with uv -- the package manager won't matter at all in this case. If you try to install SpaCy on an ARM Linux image like that, it _must_ be built from scratch. And all the time is being spent asking SpaCy to build itself. PDM, uv, etc. It wouldn't matter.
+> 
+> I wouldn't expect PDM to be faster than uv for the second logs (which are x86). It looks like uv took 23 seconds? That seems not-impossible given that you're running under emulation (your machine is ARM but the container is x86). It looks like `playwright install chromium --with-deps` took about 68 seconds, for reference.
+> 
+
+Yes I agree that the build on ARM accounts for most of the time it requires. 
+
+I'll get the PDM data. It was about twice as fast (or half as slow) as UV in building on arm. Which is the issue here I think. 
+
+---
+
+_Comment by @Goldziher on 2025-01-07 07:23_
+
+Ok, I reran this with PDM. It seems I am wrong. Thanks for all the assistance and sorry for wasting your time!
+
+---
+
+_Closed by @Goldziher on 2025-01-07 07:23_
+
+---
+
+_Comment by @Achyut198 on 2025-05-26 04:23_
+
+im also facing same issue in my case it even worse taking 10 to 15 minutes sometimes even more than that
+
+---

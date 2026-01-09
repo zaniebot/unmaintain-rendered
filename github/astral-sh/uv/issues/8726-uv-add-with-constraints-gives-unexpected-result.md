@@ -1,0 +1,134 @@
+---
+number: 8726
+title: uv add with constraints gives unexpected result
+type: issue
+state: closed
+author: itrase
+labels:
+  - question
+assignees: []
+created_at: 2024-10-31T14:12:41Z
+updated_at: 2024-10-31T15:37:49Z
+url: https://github.com/astral-sh/uv/issues/8726
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# uv add with constraints gives unexpected result
+
+---
+
+_Issue opened by @itrase on 2024-10-31 14:12_
+
+To reproduce (on uv 0.4.29)
+```
+mkdir project_a
+cd project_a
+uv init
+uv add torch>=2.4.0
+```
+
+This results in the toml file:
+```
+[project]
+name = "project-a"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "torch>=2.5.1",
+]
+```
+
+Why is the constraint different than what I asked for? Is this the intended behavior, and if so, what is the right way to specify a lower bound using uv add?
+
+---
+
+_Comment by @zanieb on 2024-10-31 14:38_
+
+Hm interesting. I can't reproduce with a similar example
+
+```
+❯ uv init
+Initialized project `example`
+❯ uv add 'anyio>0.1'
+Resolved 4 packages in 91ms
+Installed 3 packages in 6ms
+ + anyio==4.6.2.post1
+ + idna==3.10
+ + sniffio==1.3.1
+❯ cat pyproject.toml
+[project]
+name = "example"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "anyio>0.1",
+]
+```
+
+or with the example you provided:
+
+
+```
+❯ uv add 'torch>=2.4.0'
+Resolved 24 packages in 480ms
+Prepared 9 packages in 3.08s
+Installed 10 packages in 132ms
+ + filelock==3.16.1
+ + fsspec==2024.10.0
+ + jinja2==3.1.4
+ + markupsafe==3.0.2
+ + mpmath==1.3.0
+ + networkx==3.4.2
+ + setuptools==75.3.0
+ + sympy==1.13.1
+ + torch==2.5.1
+ + typing-extensions==4.12.2
+❯ cat pyproject.toml
+[project]
+name = "project-a"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "torch>=2.4.0",
+]
+```
+
+Can you share verbose logs for `uv add`?
+
+---
+
+_Comment by @itrase on 2024-10-31 15:20_
+
+Figured it out - I was missing quotes.
+`uv add torch>=2.4.0` doesn't work, and silently drops the requirement
+`uv add "torch>=2.4.0"` works totally fine
+So that solves the problem, but I wonder if uv should maybe give a warning when a user gives a constraint that isn't used?
+
+
+---
+
+_Comment by @zanieb on 2024-10-31 15:21_
+
+That's a shell problem, uv doesn't even see the `>=2.40`, your shell removes that before it gets to us, e.g., for `echo "test" > file` syntax.
+
+---
+
+_Label `question` added by @zanieb on 2024-10-31 15:21_
+
+---
+
+_Comment by @itrase on 2024-10-31 15:34_
+
+ah got it - thanks! This can definitely be closed then
+
+---
+
+_Closed by @zanieb on 2024-10-31 15:37_
+
+---

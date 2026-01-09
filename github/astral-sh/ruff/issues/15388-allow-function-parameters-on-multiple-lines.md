@@ -1,0 +1,65 @@
+---
+number: 15388
+title: Allow function parameters on multiple lines
+type: issue
+state: closed
+author: kurt-rhee
+labels:
+  - question
+assignees: []
+created_at: 2025-01-10T01:27:37Z
+updated_at: 2025-01-10T02:09:49Z
+url: https://github.com/astral-sh/ruff/issues/15388
+synced_at: 2026-01-07T13:12:16-06:00
+---
+
+# Allow function parameters on multiple lines
+
+---
+
+_Issue opened by @kurt-rhee on 2025-01-10 01:27_
+
+`if __name__ == "__main__":
+    commission_inverter(
+        source_data=InverterDataSource.CEC,
+        inverter_name="string",  # comment
+    )`
+
+https://github.com/astral-sh/ruff/issues/7368
+
+I have been adding comments to force ruff to allow my functions to separate parameters onto separate lines of code.  Is this the best way to do this or should I be doing this some other way?  I am new to ruff.
+
+---
+
+_Comment by @tjkuson on 2025-01-10 01:46_
+
+A trailing comma should force `ruff format` to leave arguments on separate lines.
+
+For example,
+
+```python
+def fn(
+    foo,
+    bar,
+):
+    pass
+```
+
+will remain unchanged, as will
+
+```python
+print(
+    "hello",
+    "world",
+)
+```
+
+---
+
+_Label `question` added by @charliermarsh on 2025-01-10 01:53_
+
+---
+
+_Closed by @charliermarsh on 2025-01-10 02:09_
+
+---

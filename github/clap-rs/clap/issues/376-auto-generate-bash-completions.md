@@ -1,0 +1,416 @@
+---
+number: 376
+title: Auto generate bash completions
+type: issue
+state: closed
+author: kbknapp
+labels:
+  - E-hard
+  - A-completion
+assignees: []
+created_at: 2016-01-09T18:51:06Z
+updated_at: 2016-07-23T19:54:27Z
+url: https://github.com/clap-rs/clap/issues/376
+synced_at: 2026-01-07T13:12:19-06:00
+---
+
+# Auto generate bash completions
+
+---
+
+_Issue opened by @kbknapp on 2016-01-09 18:51_
+
+Thanks to @kamalmarhubi for reminding me about this and making some suggestions.
+
+
+---
+
+_Label `T: new feature` added by @kbknapp on 2016-01-09 18:51_
+
+---
+
+_Label `P4: nice to have` added by @kbknapp on 2016-01-09 18:51_
+
+---
+
+_Label `D: intermediate` added by @kbknapp on 2016-01-09 18:51_
+
+---
+
+_Label `W: 1.x` added by @kbknapp on 2016-01-09 18:51_
+
+---
+
+_Comment by @kamalmarhubi on 2016-01-09 18:54_
+
+Copying comments over:
+@kamalmarhubi ([original comment](https://github.com/kbknapp/clap-rs/issues/259#issuecomment-169474729))
+
+> Is this in the feature list? I just started using clap, and the structure seems very amenable to allowing completion. Though rather than generating an auto-completion file, I had been thinking of a special completion mode enabled by flag or env var. Completion mode would take a partial command line and offer a list of completions. The benefit is that the program can use runtime information to complete values for some args, eg drawing values out of a database.
+> 
+> Either way, I think it's a really worthwhile feature.
+
+
+---
+
+_Comment by @kamalmarhubi on 2016-01-09 18:54_
+
+@kbknapp ([original comment](https://github.com/kbknapp/clap-rs/issues/259#issuecomment-170269151))
+
+> Yes it is....although I have created anew issue to track it since it's just been on the back burner. I've thought about doing like you said but what I'm leary of is including that functionality unconditionally in programs that don't need or care about it. Perhaps only compiling in that functionality only in debug mode? I need to think on this and am open to all suggestions :)
+
+
+---
+
+_Comment by @sru on 2016-01-09 19:14_
+
+@kamalmarhubi I am quite confused on the "completion mode" that you speak of. AFAIK, shells (bash, zsh...) cannot get runtime information of programs that are not yet run. They do completion by predefined completion functions. For example, [here is bash completion for git](https://github.com/git/git/blob/master/contrib/completion/git-completion.bash).
+
+@kbknapp Since generating completion file is one time process, it'd be more appropriate if we could do it on compile time. Nobody wants an overhead of generating completion file every time a program is run ;)
+
+
+---
+
+_Comment by @kamalmarhubi on 2016-01-09 19:25_
+
+> I'm leary of is including that functionality unconditionally in programs that don't need or care about it. Perhaps only compiling in that functionality only in debug mode? I need to think on this and am open to all suggestions :)
+
+I have no idea how they work or if they're appropriate, but it sounds like a possible use for [features](http://doc.crates.io/manifest.html#the-features-section) in the `Cargo.toml`. Disabled by default, and downstream binaries can enable it by specifying a `[dependencies.clap]` section:
+
+```
+[dependencies.clap]
+version = "2"
+features = ["completions"]
+```
+
+
+---
+
+_Comment by @kamalmarhubi on 2016-01-09 19:27_
+
+@sru: note that the completion file calls `git` multiple times to construct completions. I'm suggesting that a completion file for a Clap app could call the app itself with a special mode.
+
+
+---
+
+_Comment by @kamalmarhubi on 2016-01-10 02:57_
+
+Equivalents from a few other languages' ecosystems:
+- cobra (go): https://github.com/spf13/cobra/blob/master/bash_completions.md
+- click (python): http://click.pocoo.org/6/bashcomplete/
+- yargs (nodejs): https://www.npmjs.com/package/yargs#completioncmd-description-fn
+
+
+---
+
+_Comment by @kamalmarhubi on 2016-01-10 04:13_
+
+I just noticed that clap is already using features for a couple of extras: http://kbknapp.github.io/clap-rs/clap/index.html#optional-dependencies--features
+
+
+---
+
+_Comment by @kbknapp on 2016-01-10 08:31_
+
+> Since generating completion file is one time process, it'd be more appropriate if we could do it on compile time. Nobody wants an overhead of generating completion file every time a program is run ;)
+
+@sru exactly my point :) Which is kind of my thoughts on either using some sort of syntax extension or the like to generate this at compile time, or _potentially_ allowing this completion to be generated at runtime **only** in via features like @kamalmarhubi mentions. This would allow similar to how we run clippy, just a one time build/run to generate the completions functions, then you build without the feature enabled for actual use.
+
+
+---
+
+_Comment by @RaitoBezarius on 2016-03-17 16:57_
+
+Just FYI:
+
+> @kamalmarhubi I am quite confused on the "completion mode" that you speak of. AFAIK, shells (bash, zsh...) cannot get runtime information of programs that are not yet run. They do completion by predefined completion functions. For example, here is bash completion for git.
+
+fish is theorically able to get the documentation from the manual (`man`), I wonder if it could constitute a solution (at least for fish which _is_ NON-POSIX -- don't kill me please, I like shiny stuff).
+
+
+---
+
+_Referenced in [habitat-sh/habitat#602](../../habitat-sh/habitat/issues/602.md) on 2016-06-01 08:00_
+
+---
+
+_Comment by @clux on 2016-06-03 21:33_
+
+Hey. So.. I am managing a fairly decent sized clap based app that actually has a custom bash completions script. It wasn't actually to bad to write a completion script for a clap app (though still not something I'd recommend) because clap it has a quite rigid structure in how arguments and subcommands are parsed. I think my current script could have easily been generated by clap provided one or two extra instructions were added to clap.
+
+Sorry for the wall of text.
+
+### Suggested completion algorithm
+
+The bash side, the part that will be generated and passed to `complete -F`.
+1. if the first argument was the binary name, and the first word after that starts with dash, complete from global flags
+2. if no subcommands exist in app, complete from special completions lists if it exists
+3. if no subcommands have yet been provided in the current arguments, suggest the list of global subcommands
+4. if a subcommand has been given and the next argument starts with a dash, complete from the subcommands' flags
+5. if no subcommands exist under current subcommand, complete from special completions list if it exists
+
+And you would iterate 4 and 5 until you are at the bottom of the tree for this. Think this kind of recursion would work. I have a proof of concept up to, but not including this point (recursion), and it feels pretty great.
+
+All the lists mentioned would be compiled into the bash script as variables, or as scripts to be called using extensions:
+
+### Suggested Extensions
+
+Some choices to be made here to make this work. We could easily allow:
+
+#### Static Completions
+
+Special suggestions could be populated from a list that a user provides to clap.
+E.g.:
+
+``` rust
+let args = App::new("foo")
+    .subcommand(SubCommand::with_name("fetch")
+        .arg(Arg::with_name("components")
+          .completions(vec!["yajl", "zlib"])))
+```
+
+which would be nice, easy to implement (just dump the list straight into the completion script as a variable), but it's not very flexible.
+
+#### Dynamic Completions
+
+A dynamic option would be more useful if if the list is dependent on some outside state that needs IO to verify. E.g., if a command like `fetch` needs to look up against a networked registry, or some local database / yaml file / directory structure.
+
+I can see two options from clap's side that could provide this:
+
+##### 1. Inline bash
+
+Easy to implement (just dump the function straight into the completion script to be eval'd), but it's not a particularly elegant solution.
+
+``` rust
+let args = App::new("foo")
+    .subcommand(SubCommand::with_name("fetch")
+        .arg(Arg::with_name("components")
+            .completer("find ~/.foo/cache/ -maxdepth 1 -mindepth 1 -type d -printf \"%f \"")
+```
+
+##### 2. Allow custom functions
+
+Allow completer functions that do some computation or IO:
+
+``` rust
+fn fetch_completer() -> Result<(), Vec<String>> {
+    // provide a list from some IO operation
+}
+
+let args = App::new("foo")
+    .subcommand(SubCommand::with_name("fetch")
+        .arg(Arg::with_name("components")
+            .completer(fetch_completer)
+```
+
+clap could then expose that function secretly as a hidden subcommand, say `foo __fetch_suggestions`, which could be eval'd in the generated completion script at the appropriate time in the algorithm.
+
+#### ----
+
+In my current app, I am kind of using a combination of the two already:
+- bash functions to do computation/io
+- suggestion functions listed in `main.rs` as proper clap subcommands (but would like to hide these). 
+
+## ----
+
+So.. Does this approach seem sensible? Anyone see better approaches?
+I'd be willing to have a go trying to implement something like this in clap if there's interest.
+
+
+---
+
+_Comment by @kbknapp on 2016-06-04 02:20_
+
+Excellent! Thanks for taking the time to put all this together! I'm still on vacation for the next two days, but let me do some looking into this and I'll post back here with what I find. I'd be excited if we can get this into `clap`. Also, I've been working on the 3x branch, so this might get put in with those changes which would allow for a few changes in a breaking manner if need-be, although I'd try to err on the side of non-breaking changes.
+
+
+---
+
+_Label `W: 3.x` added by @kbknapp on 2016-06-04 02:20_
+
+---
+
+_Label `W: 1.x` removed by @kbknapp on 2016-06-04 02:20_
+
+---
+
+_Comment by @clux on 2016-06-04 20:01_
+
+Cool. Enjoy your vacation :)
+
+I have a rough prototype of something working [here](https://github.com/clux/clap-rs/commit/4465cf7162f6e6c893277aeac30afc9694205a6f) that maybe you could have a look at when you get back. A very hacky thing, but it gets some basics done.
+
+
+---
+
+_Comment by @kbknapp on 2016-06-23 04:35_
+
+I've finally began working on this issue! The method I'm going with uses a build.rs script and outputs a completion file which from initial testing works great even with subcommands and aliases. It's not perfect as it's "dumb" about what positional args are left but as an initial approach I'm happy. Once I do a little more testing and tweaking I'll put in the PR.
+
+Edit, to be clear this also works by only completing on the valid options for each individual subcommand ;)
+
+
+---
+
+_Added to milestone `2.7.0` by @kbknapp on 2016-06-23 13:35_
+
+---
+
+_Assigned to @kbknapp by @kbknapp on 2016-06-23 13:35_
+
+---
+
+_Label `D: hard` added by @kbknapp on 2016-06-23 13:35_
+
+---
+
+_Label `P3: want to have` added by @kbknapp on 2016-06-23 13:35_
+
+---
+
+_Label `W: 2.x` added by @kbknapp on 2016-06-23 13:35_
+
+---
+
+_Label `D: intermediate` removed by @kbknapp on 2016-06-23 13:35_
+
+---
+
+_Label `P4: nice to have` removed by @kbknapp on 2016-06-23 13:35_
+
+---
+
+_Label `W: 3.x` removed by @kbknapp on 2016-06-23 13:35_
+
+---
+
+_Comment by @clux on 2016-06-23 20:05_
+
+Awesome. I had no idea how to actually generate the completion script without hooking into the arg chain at the very end when it was fully populated. Glad you have found a sensible way.
+
+I'd be happy to test it out and look for some edge cases when you get it in a sensible state :smile: 
+
+
+---
+
+_Referenced in [clap-rs/clap#533](../../clap-rs/clap/issues/533.md) on 2016-06-24 00:19_
+
+---
+
+_Comment by @kbknapp on 2016-06-28 14:47_
+
+I went ahead and put you 2.7.0 since I had limited time to work on this over the past few days. This issue is next in the hopper.
+
+
+---
+
+_Added to milestone `2.8.0` by @kbknapp on 2016-06-28 14:48_
+
+---
+
+_Removed from milestone `2.7.0` by @kbknapp on 2016-06-28 14:48_
+
+---
+
+_Added to milestone `2.9.0` by @kbknapp on 2016-06-30 03:29_
+
+---
+
+_Removed from milestone `2.8.0` by @kbknapp on 2016-06-30 03:29_
+
+---
+
+_Referenced in [clap-rs/clap#552](../../clap-rs/clap/issues/552.md) on 2016-06-30 08:55_
+
+---
+
+_Label `C: completion gen` added by @kbknapp on 2016-06-30 17:39_
+
+---
+
+_Comment by @kbknapp on 2016-07-01 04:18_
+
+I just finished implementing this. Putting in the PR now. As a sample, I built [`rustup`](https://github.com/rust-lang-nursery/rustup.rs) with this method and here's the [generated completion script](https://gist.github.com/kbknapp/09a37f2fce306573040ea0500e3b1408). I've tested it and it works through all subcommands and arguments. I'm quite happy with it :smile: 
+
+
+---
+
+_Comment by @clux on 2016-07-01 10:16_
+
+Very nice. Just tested it on my app and got  400 line bash.sh that works pretty well :+1: 
+
+Is there a way to provide dynamic completion values to the script here? E.g. like completor fn above.
+
+
+---
+
+_Comment by @clux on 2016-07-01 10:28_
+
+I like how it suggests positional arguments as `<argName>..` as you will never actually get that into your shell (provided you have at least one flag), but it provides helpful info in the completion list. 
+
+Found one issue:
+If you type out a subcommand alias instead of the normal subcommand name, then you can't get completions for that subcommand.
+
+
+---
+
+_Referenced in [clap-rs/clap#555](../../clap-rs/clap/issues/555.md) on 2016-07-01 11:33_
+
+---
+
+_Closed by @homu on 2016-07-01 11:51_
+
+---
+
+_Comment by @kbknapp on 2016-07-01 13:19_
+
+I plan on adding aliases and possible values next prior to updating on crates.io. There isn't a way to use a completer fn yet, but it should be addable once I have this base system complete.
+
+
+---
+
+_Referenced in [clap-rs/clap#556](../../clap-rs/clap/issues/556.md) on 2016-07-01 13:21_
+
+---
+
+_Referenced in [clap-rs/clap#557](../../clap-rs/clap/issues/557.md) on 2016-07-01 13:24_
+
+---
+
+_Comment by @kbknapp on 2016-07-01 21:27_
+
+Aliases and possible values are now completable. Once I get home tonight I'll update the version on crates.io
+
+
+---
+
+_Comment by @kbknapp on 2016-07-02 02:50_
+
+For the curious, here's a demo for `rustup`
+
+![rustup_demo](http://i.imgur.com/icbrIYe.gif)
+
+
+---
+
+_Referenced in [clap-rs/clap#568](../../clap-rs/clap/issues/568.md) on 2016-07-04 21:35_
+
+---
+
+_Comment by @nerdrew on 2016-07-21 06:19_
+
+Are there plans for zsh completion?
+
+
+---
+
+_Referenced in [rust-lang/rustup#387](../../rust-lang/rustup/issues/387.md) on 2016-07-21 06:31_
+
+---
+
+_Comment by @kbknapp on 2016-07-23 19:54_
+
+@nerdrew Yes there are, I just haven't had time to implement it yet. #579 adds Fish support. I'm also open to people submitting a PR for ZSH :wink:
+
+
+---

@@ -1,0 +1,305 @@
+---
+number: 13622
+title: "`uv python list` is showing '<download available>' for python instances installed with `--preview`"
+type: issue
+state: open
+author: Andrej730
+labels:
+  - bug
+assignees: []
+created_at: 2025-05-23T18:13:24Z
+updated_at: 2025-10-10T10:41:49Z
+url: https://github.com/astral-sh/uv/issues/13622
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# `uv python list` is showing '<download available>' for python instances installed with `--preview`
+
+---
+
+_Issue opened by @Andrej730 on 2025-05-23 18:13_
+
+### Summary
+
+A minor thing but uv is still showing `<download available>` for python instances installed with preview. `--preview`
+See example below.
+
+```
+>uv python list
+cpython-3.12.10-windows-x86_64-none                  L:\Software\uv\UV_PYTHON_INSTALL_DIR\cpython-3.12.10-windows-x86_64-none\python.exe
+cpython-3.12.10-windows-x86_64-none                  .local\bin\python3.12.exe
+cpython-3.12.10-windows-x86_64-none                  <download available>
+cpython-3.11.12-windows-x86_64-none                  L:\Software\uv\UV_PYTHON_INSTALL_DIR\cpython-3.11.12-windows-x86_64-none\python.exe
+cpython-3.11.12-windows-x86_64-none                  .local\bin\python3.exe
+cpython-3.11.12-windows-x86_64-none                  .local\bin\python3.11.exe
+cpython-3.11.12-windows-x86_64-none                  .local\bin\python.exe
+cpython-3.11.12-windows-x86_64-none                  <download available>
+cpython-3.10.17-windows-x86_64-none                  L:\Software\uv\UV_PYTHON_INSTALL_DIR\cpython-3.10.17-windows-x86_64-none\python.exe
+cpython-3.9.22-windows-x86_64-none                   L:\Software\uv\UV_PYTHON_INSTALL_DIR\cpython-3.9.22-windows-x86_64-none\python.exe
+cpython-3.8.20-windows-x86_64-none                   L:\Software\uv\UV_PYTHON_INSTALL_DIR\cpython-3.8.20-windows-x86_64-none\python.exe
+cpython-3.8.20-windows-x86_64-none                   .local\bin\python3.8.exe
+cpython-3.8.20-windows-x86_64-none                   <download available>
+
+>uv python install 3.9 --preview
+Installed Python 3.9.22 in 5ms
+ + cpython-3.9.22-windows-x86_64-none (python3.9.exe)
+
+>uv python list
+cpython-3.12.10-windows-x86_64-none                  L:\Software\uv\UV_PYTHON_INSTALL_DIR\cpython-3.12.10-windows-x86_64-none\python.exe
+cpython-3.12.10-windows-x86_64-none                  .local\bin\python3.12.exe
+cpython-3.12.10-windows-x86_64-none                  <download available>
+cpython-3.11.12-windows-x86_64-none                  L:\Software\uv\UV_PYTHON_INSTALL_DIR\cpython-3.11.12-windows-x86_64-none\python.exe
+cpython-3.11.12-windows-x86_64-none                  .local\bin\python3.exe
+cpython-3.11.12-windows-x86_64-none                  .local\bin\python3.11.exe
+cpython-3.11.12-windows-x86_64-none                  .local\bin\python.exe
+cpython-3.11.12-windows-x86_64-none                  <download available>
+cpython-3.10.17-windows-x86_64-none                  L:\Software\uv\UV_PYTHON_INSTALL_DIR\cpython-3.10.17-windows-x86_64-none\python.exe
+cpython-3.9.22-windows-x86_64-none                   L:\Software\uv\UV_PYTHON_INSTALL_DIR\cpython-3.9.22-windows-x86_64-none\python.exe
+cpython-3.9.22-windows-x86_64-none                   .local\bin\python3.9.exe
+cpython-3.9.22-windows-x86_64-none                   <download available>
+cpython-3.8.20-windows-x86_64-none                   L:\Software\uv\UV_PYTHON_INSTALL_DIR\cpython-3.8.20-windows-x86_64-none\python.exe
+cpython-3.8.20-windows-x86_64-none                   .local\bin\python3.8.exe
+cpython-3.8.20-windows-x86_64-none                   <download available>
+```
+
+### Platform
+
+Windows 11
+
+### Version
+
+uv 0.7.6 (7f3e94a09 2025-05-19)
+
+### Python version
+
+_No response_
+
+---
+
+_Label `bug` added by @Andrej730 on 2025-05-23 18:13_
+
+---
+
+_Renamed from "`uv python list` is shosing '<download available>' for python instances installed with `--preview`" to "`uv python list` is showing '<download available>' for python instances installed with `--preview`" by @Andrej730 on 2025-05-23 18:14_
+
+---
+
+_Assigned to @zanieb by @konstin on 2025-05-26 22:14_
+
+---
+
+_Comment by @zanieb on 2025-09-25 16:22_
+
+Hm I can't reproduce this on macoS
+
+```
+❯ uv python uninstall --all
+Searching for Python installations
+Uninstalled Python 3.9.23 in 88ms
+ - cpython-3.9.23-macos-aarch64-none (python3.9)
+❯ uv python install 3.9 --preview
+Installed Python 3.9.23 in 779ms
+ + cpython-3.9.23-macos-aarch64-none (python3.9)
+❯ uv python list 3.9
+cpython-3.9.23-macos-aarch64-none    /Users/zb/.local/bin/python3.9 -> /Users/zb/.local/share/uv/python/cpython-3.9-macos-aarch64-none/bin/python3.9
+cpython-3.9.23-macos-aarch64-none    /Users/zb/.local/share/uv/python/cpython-3.9-macos-aarch64-none/bin/python3.9
+cpython-3.9.6-macos-aarch64-none     /usr/bin/python3
+pypy-3.9.19-macos-aarch64-none       <download available>
+```
+
+Does this still occur?
+
+---
+
+_Comment by @my1e5 on 2025-10-10 09:43_
+
+I am seeing this behavior too on Windows (I can't reproduce it on macOS). As far as I can tell, it's not related to `--preview`? I've never used the `--preview` flag. I'm seeing it for all my Python installations where I have the latest patch version installed. 
+
+```
+$ uv -V
+uv 0.9.1 (9887ef5bd 2025-10-09)
+
+$ uv python list
+cpython-3.14.0-windows-x86_64-none                 C:\Users\my1e5\AppData\Roaming\uv\data\python\cpython-3.14.0-windows-x86_64-none\python.exe
+cpython-3.14.0-windows-x86_64-none                 C:\Users\my1e5\.local\bin\python3.14.exe
+cpython-3.14.0-windows-x86_64-none                 <download available>
+cpython-3.14.0+freethreaded-windows-x86_64-none    <download available>
+cpython-3.13.8-windows-x86_64-none                 <download available>
+cpython-3.13.8+freethreaded-windows-x86_64-none    <download available>
+cpython-3.13.6-windows-x86_64-none                 C:\Users\my1e5\AppData\Roaming\uv\data\python\cpython-3.13.6-windows-x86_64-none\python.exe
+cpython-3.13.6-windows-x86_64-none                 C:\Users\my1e5\.local\bin\python3.13.exe
+cpython-3.13.5-windows-x86_64-none                 C:\Users\my1e5\AppData\Roaming\uv\data\python\cpython-3.13.5-windows-x86_64-none\python.exe
+cpython-3.12.11-windows-x86_64-none                C:\Users\my1e5\AppData\Roaming\uv\data\python\cpython-3.12.11-windows-x86_64-none\python.exe
+cpython-3.12.11-windows-x86_64-none                C:\Users\my1e5\.local\bin\python3.12.exe
+cpython-3.12.11-windows-x86_64-none                <download available>
+cpython-3.11.13-windows-x86_64-none                C:\Users\my1e5\AppData\Roaming\uv\data\python\cpython-3.11.13-windows-x86_64-none\python.exe
+cpython-3.11.13-windows-x86_64-none                C:\Users\my1e5\.local\bin\python3.11.exe
+cpython-3.11.13-windows-x86_64-none                <download available>
+cpython-3.10.18-windows-x86_64-none                C:\Users\my1e5\AppData\Roaming\uv\data\python\cpython-3.10.18-windows-x86_64-none\python.exe
+cpython-3.10.18-windows-x86_64-none                <download available>
+cpython-3.9.23-windows-x86_64-none                 C:\Users\my1e5\AppData\Roaming\uv\data\python\cpython-3.9.23-windows-x86_64-none\python.exe
+cpython-3.9.23-windows-x86_64-none                 <download available>
+cpython-3.8.20-windows-x86_64-none                 <download available>
+pypy-3.11.13-windows-x86_64-none                   <download available>
+pypy-3.10.16-windows-x86_64-none                   <download available>
+pypy-3.9.19-windows-x86_64-none                    <download available>
+pypy-3.8.16-windows-x86_64-none                    <download available>
+graalpy-3.12.0-windows-x86_64-none                 <download available>
+graalpy-3.11.0-windows-x86_64-none                 <download available>
+graalpy-3.10.0-windows-x86_64-none                 <download available>
+```
+Note how it shows a `<download available>` for these most-current patch versions
+```
+cpython-3.14.0-windows-x86_64-none                 C:\Users\my1e5\AppData\Roaming\uv\data\python\cpython-3.14.0-windows-x86_64-none\python.exe
+cpython-3.14.0-windows-x86_64-none                 C:\Users\my1e5\.local\bin\python3.14.exe
+cpython-3.14.0-windows-x86_64-none                 <download available>
+```
+```
+cpython-3.12.11-windows-x86_64-none                C:\Users\my1e5\AppData\Roaming\uv\data\python\cpython-3.12.11-windows-x86_64-none\python.exe
+cpython-3.12.11-windows-x86_64-none                C:\Users\my1e5\.local\bin\python3.12.exe
+cpython-3.12.11-windows-x86_64-none                <download available>
+```
+```
+cpython-3.11.13-windows-x86_64-none                C:\Users\my1e5\AppData\Roaming\uv\data\python\cpython-3.11.13-windows-x86_64-none\python.exe
+cpython-3.11.13-windows-x86_64-none                C:\Users\my1e5\.local\bin\python3.11.exe
+cpython-3.11.13-windows-x86_64-none                <download available>
+```
+
+---
+
+_Comment by @my1e5 on 2025-10-10 10:13_
+
+Using a different Windows PC, @zanieb I just tried the exact same steps you used. I get different results if I use the `--preview` flag or not:
+
+## Without `--preview`
+It shows 
+```
+cpython-3.14.0-windows-x86_64-none    AppData\Roaming\uv\python\cpython-3.14.0-windows-x86_64-none\python.exe
+cpython-3.14.0-windows-x86_64-none    .local\bin\python3.14.exe
+cpython-3.14.0-windows-x86_64-none    <download available>
+```
+```
+$ uv -v python uninstall --all
+DEBUG uv 0.9.1 (9887ef5bd 2025-10-09)
+DEBUG Acquired lock for `AppData\Roaming\uv\python`
+Searching for Python installations
+No Python installations found
+DEBUG Released lock at `C:\Users\rd3\AppData\Roaming\uv\python\.lock`
+
+$ uv -v python install 3.14
+DEBUG uv 0.9.1 (9887ef5bd 2025-10-09)
+DEBUG Acquired lock for `AppData\Roaming\uv\python`
+DEBUG No installation found for request `3.14 (cpython-3.14-windows-x86_64-none)`
+DEBUG Found download `cpython-3.14.0-windows-x86_64-none` for request `3.14 (cpython-3.14-windows-x86_64-none)`
+DEBUG Using request timeout of 30s
+DEBUG Downloading https://github.com/astral-sh/python-build-standalone/releases/download/20251007/cpython-3.14.0%2B20251007-x86_64-pc-windows-msvc-install_only_stripped.tar.gz
+DEBUG Extracting cpython-3.14.0-20251007-x86_64-pc-windows-msvc-install_only_stripped.tar.gz to temporary location: C:\Users\rd3\AppData\Roaming\uv\python\.temp\.tmpVcad0n
+Downloading cpython-3.14.0-windows-x86_64-none (download) (21.2MiB)
+ Downloading cpython-3.14.0-windows-x86_64-none (download)
+DEBUG Moving C:\Users\rd3\AppData\Roaming\uv\python\.temp\.tmpVcad0n\python to AppData\Roaming\uv\python\cpython-3.14.0-windows-x86_64-none
+DEBUG Installed executable at `C:\Users\rd3\.local\bin\python3.14.exe` for cpython-3.14.0-windows-x86_64-none
+Installed Python 3.14.0 in 1.45s
+ + cpython-3.14.0-windows-x86_64-none (python3.14.exe)
+DEBUG Released lock at `C:\Users\rd3\AppData\Roaming\uv\python\.lock`
+
+$ uv -v python list 3.14
+DEBUG uv 0.9.1 (9887ef5bd 2025-10-09)
+DEBUG Acquired shared lock for `C:\Users\rd3\AppData\Local\uv\cache`
+DEBUG Searching for Python 3.14 in managed installations, search path, or registry
+DEBUG Searching for managed installations at `AppData\Roaming\uv\python`
+DEBUG Found managed installation `cpython-3.14.0-windows-x86_64-none`
+DEBUG Found `cpython-3.14.0-windows-x86_64-none` at `C:\Users\rd3\AppData\Roaming\uv\python\cpython-3.14.0-windows-x86_64-none\python.exe` (managed installations)
+DEBUG Found `cpython-3.14.0-windows-x86_64-none` at `C:\Users\rd3\.local\bin\python3.14.exe` (first executable in the search path)
+DEBUG Found `cpython-3.12.10-windows-x86_64-none` at `C:\Users\rd3\AppData\Local\Microsoft\WindowsApps\python3.exe` (search path)
+DEBUG Skipping interpreter at `AppData\Local\Microsoft\WindowsApps\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\python.exe` from search path: does not satisfy request `3.14`
+DEBUG Found `cpython-3.12.10-windows-x86_64-none` at `C:\Users\rd3\AppData\Local\Microsoft\WindowsApps\python.exe` (search path)
+DEBUG Skipping interpreter at `AppData\Local\Microsoft\WindowsApps\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\python.exe` from search path: does not satisfy request `3.14`
+DEBUG Found `cpython-3.14.0-windows-x86_64-none` at `C:\Users\rd3\AppData\Roaming\uv\python\cpython-3.14.0-windows-x86_64-none\python.exe` (registry)
+cpython-3.14.0-windows-x86_64-none    AppData\Roaming\uv\python\cpython-3.14.0-windows-x86_64-none\python.exe
+cpython-3.14.0-windows-x86_64-none    .local\bin\python3.14.exe
+cpython-3.14.0-windows-x86_64-none    <download available>
+DEBUG Released lock at `C:\Users\rd3\AppData\Local\uv\cache\.lock`
+```
+## With `--preview`
+Where it showed `<download available>` before, it now shows the path to a 3.14 python.
+```
+cpython-3.14.0-windows-x86_64-none    AppData\Roaming\uv\python\cpython-3.14.0-windows-x86_64-none\python.exe
+cpython-3.14.0-windows-x86_64-none    .local\bin\python3.14.exe
+cpython-3.14.0-windows-x86_64-none    AppData\Roaming\uv\python\cpython-3.14-windows-x86_64-none\python.exe
+```
+```
+$ uv -v python uninstall --all
+DEBUG uv 0.9.1 (9887ef5bd 2025-10-09)
+DEBUG Acquired lock for `AppData\Roaming\uv\python`
+Searching for Python installations
+No Python installations found
+DEBUG Released lock at `C:\Users\rd3\AppData\Roaming\uv\python\.lock`
+
+$ uv -v python install 3.14 --preview
+DEBUG uv 0.9.1 (9887ef5bd 2025-10-09)
+DEBUG Acquired lock for `AppData\Roaming\uv\python`
+DEBUG No installation found for request `3.14 (cpython-3.14-windows-x86_64-none)`
+DEBUG Found download `cpython-3.14.0-windows-x86_64-none` for request `3.14 (cpython-3.14-windows-x86_64-none)`
+DEBUG Using request timeout of 30s
+DEBUG Downloading https://github.com/astral-sh/python-build-standalone/releases/download/20251007/cpython-3.14.0%2B20251007-x86_64-pc-windows-msvc-install_only_stripped.tar.gz
+DEBUG Extracting cpython-3.14.0-20251007-x86_64-pc-windows-msvc-install_only_stripped.tar.gz to temporary location: C:\Users\rd3\AppData\Roaming\uv\python\.temp\.tmpWV0wjy
+Downloading cpython-3.14.0-windows-x86_64-none (download) (21.2MiB)
+ Downloading cpython-3.14.0-windows-x86_64-none (download)
+DEBUG Moving C:\Users\rd3\AppData\Roaming\uv\python\.temp\.tmpWV0wjy\python to AppData\Roaming\uv\python\cpython-3.14.0-windows-x86_64-none
+DEBUG Installed executable at `C:\Users\rd3\.local\bin\python3.14.exe` for cpython-3.14.0-windows-x86_64-none
+DEBUG Created link AppData\Roaming\uv\python\cpython-3.14-windows-x86_64-none -> AppData\Roaming\uv\python\cpython-3.14.0-windows-x86_64-none
+Installed Python 3.14.0 in 1.21s
+ + cpython-3.14.0-windows-x86_64-none (python3.14.exe)
+DEBUG Released lock at `C:\Users\rd3\AppData\Roaming\uv\python\.lock`
+
+$ uv -v python list 3.14
+DEBUG uv 0.9.1 (9887ef5bd 2025-10-09)
+DEBUG Acquired shared lock for `C:\Users\rd3\AppData\Local\uv\cache`
+DEBUG Searching for Python 3.14 in managed installations, search path, or registry
+DEBUG Searching for managed installations at `AppData\Roaming\uv\python`
+DEBUG Found managed installation `cpython-3.14.0-windows-x86_64-none`
+DEBUG Found `cpython-3.14.0-windows-x86_64-none` at `C:\Users\rd3\AppData\Roaming\uv\python\cpython-3.14-windows-x86_64-none\python.exe` (managed installations)
+DEBUG Found `cpython-3.14.0-windows-x86_64-none` at `C:\Users\rd3\.local\bin\python3.14.exe` (first executable in the search path)
+DEBUG Found `cpython-3.12.10-windows-x86_64-none` at `C:\Users\rd3\AppData\Local\Microsoft\WindowsApps\python3.exe` (search path)
+DEBUG Skipping interpreter at `AppData\Local\Microsoft\WindowsApps\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\python.exe` from search path: does not satisfy request `3.14`
+DEBUG Found `cpython-3.12.10-windows-x86_64-none` at `C:\Users\rd3\AppData\Local\Microsoft\WindowsApps\python.exe` (search path)
+DEBUG Skipping interpreter at `AppData\Local\Microsoft\WindowsApps\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\python.exe` from search path: does not satisfy request `3.14`
+DEBUG Found `cpython-3.14.0-windows-x86_64-none` at `C:\Users\rd3\AppData\Roaming\uv\python\cpython-3.14.0-windows-x86_64-none\python.exe` (registry)
+cpython-3.14.0-windows-x86_64-none    AppData\Roaming\uv\python\cpython-3.14.0-windows-x86_64-none\python.exe
+cpython-3.14.0-windows-x86_64-none    .local\bin\python3.14.exe
+cpython-3.14.0-windows-x86_64-none    AppData\Roaming\uv\python\cpython-3.14-windows-x86_64-none\python.exe
+DEBUG Released lock at `C:\Users\rd3\AppData\Local\uv\cache\.lock`
+```
+### System info
+```
+$ systeminfo
+OS Name:                       Microsoft Windows 11 Pro
+OS Version:                    10.0.26100 N/A Build 26100
+```
+
+---
+
+_Comment by @my1e5 on 2025-10-10 10:30_
+
+Ah, maybe I've just misunderstood. Is the 3rd entry which shows `download available` *meant* to represent a 'preview' installation?
+
+So without ever using `--preview`, if you see 
+
+```
+$ uv python list 3.14
+cpython-3.14.0-windows-x86_64-none                 C:\Users\my1e5\AppData\Roaming\uv\data\python\cpython-3.14.0-windows-x86_64-none\python.exe
+cpython-3.14.0-windows-x86_64-none                 C:\Users\my1e5\.local\bin\python3.14.exe
+cpython-3.14.0-windows-x86_64-none                 <download available>
+```
+then this is to be expected? 
+
+This initially caught my attention because it seemed like it was not picking up that I had already downloaded `cpython-3.14.0` and was incorrectly outputting the line with `<download available>`. On the face of it all entries have the name `cpython-3.14.0-windows-x86_64-none`.
+
+But then I don't get a 3rd entry on my mac:
+```
+% uv python list 3.14
+cpython-3.14.0-macos-aarch64-none    /Users/rd/.local/bin/python3.14 -> /Users/rd/.local/share/uv/python/cpython-3.14.0-macos-aarch64-none/bin/python3.14
+cpython-3.14.0-macos-aarch64-none    /Users/rd/.local/share/uv/python/cpython-3.14.0-macos-aarch64-none/bin/python3.14
+```
+
+---

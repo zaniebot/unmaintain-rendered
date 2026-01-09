@@ -1,0 +1,122 @@
+---
+number: 1592
+title: "PT006 autofix: should maintain the replaced string's quote style instead of always using `\"`"
+type: issue
+state: closed
+author: bluetech
+labels:
+  - fixes
+assignees: []
+created_at: 2023-01-03T10:18:11Z
+updated_at: 2023-01-03T15:26:00Z
+url: https://github.com/astral-sh/ruff/issues/1592
+synced_at: 2026-01-07T13:12:14-06:00
+---
+
+# PT006 autofix: should maintain the replaced string's quote style instead of always using `"`
+
+---
+
+_Issue opened by @bluetech on 2023-01-03 10:18_
+
+Currently the PT006 autofix replaces e.g. `'first, second'` with `("first", "second")`. It would be better if it would maintain the string's quote style, in this example `('first', 'second')`.
+
+Code where `"` is hardcoded currently:
+
+https://github.com/charliermarsh/ruff/blob/8b277138de351801560d903658958b7967f80dde/src/flake8_pytest_style/plugins/parametrize.rs#L142-L160
+
+I couldn't quickly find a way to get the quote style of the string (is this info available on a string literal ast `Expr`?) so I'm just lazily opening an issue :)
+
+---
+
+_Renamed from "PT006 autofix: should maintain the replaced strings quote style instead of always using `"`" to "PT006 autofix: should maintain the replaced string's quote style instead of always using `"`" by @bluetech on 2023-01-03 11:27_
+
+---
+
+_Comment by @charliermarsh on 2023-01-03 12:10_
+
+You can use `checker.style.quote()` to get the quotation style for the file, if you want to add to your PR or open a separate PR :)
+
+---
+
+_Label `autofix` added by @charliermarsh on 2023-01-03 12:10_
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2023-01-03 13:15_
+
+---
+
+_Comment by @charliermarsh on 2023-01-03 13:15_
+
+Actually, I'm in this code anyway so will fix real quick.
+
+---
+
+_Comment by @saadmk11 on 2023-01-03 13:21_
+
+@charliermarsh I was about to send a PR for this. :laughing: 
+
+---
+
+_Comment by @charliermarsh on 2023-01-03 13:26_
+
+@saadmk11 - Feel free!
+
+---
+
+_Comment by @charliermarsh on 2023-01-03 13:27_
+
+@saadmk11 - I think it'd be nice to use `SourceCodeGenerator` entirely instead of manually crafting the expression, e.g.:
+
+```rust
+generator.unparse_expr(
+    &create_expr(ExprKind::Tuple {
+            ...
+    })
+)
+```
+
+---
+
+_Unassigned @charliermarsh by @charliermarsh on 2023-01-03 13:27_
+
+---
+
+_Assigned to @saadmk11 by @charliermarsh on 2023-01-03 13:27_
+
+---
+
+_Comment by @saadmk11 on 2023-01-03 13:31_
+
+> @saadmk11 - I think it'd be nice to use `SourceCodeGenerator` entirely instead of manually crafting the expression, e.g.:
+> 
+> ```rust
+> generator.unparse_expr(
+>     &create_expr(ExprKind::Tuple {
+>             ...
+>     })
+> )
+> ```
+
+Yup That's what I did. :) It was quite interesting to learn how `SourceCodeGenerator` works.
+
+---
+
+_Referenced in [astral-sh/ruff#1600](../../astral-sh/ruff/pulls/1600.md) on 2023-01-03 13:41_
+
+---
+
+_Closed by @charliermarsh on 2023-01-03 15:16_
+
+---
+
+_Comment by @edgarrmondragon on 2023-01-03 15:25_
+
+TIL about `SourceCodeGenerator`. Thanks for fixing this @saadmk11 !
+
+---
+
+_Referenced in [astral-sh/ruff#1620](../../astral-sh/ruff/issues/1620.md) on 2023-01-04 02:57_
+
+---

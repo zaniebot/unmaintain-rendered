@@ -1,0 +1,824 @@
+---
+number: 19982
+title: "Fix for `PIE790` and `PYI021` introduces a syntax error"
+type: issue
+state: closed
+author: blackteahamburger
+labels:
+  - bug
+assignees: []
+created_at: 2025-08-19T05:21:54Z
+updated_at: 2025-09-24T21:27:01Z
+url: https://github.com/astral-sh/ruff/issues/19982
+synced_at: 2026-01-07T13:12:16-06:00
+---
+
+# Fix for `PIE790` and `PYI021` introduces a syntax error
+
+---
+
+_Issue opened by @blackteahamburger on 2025-08-19 05:21_
+
+### Summary
+
+`pin.pyi`:
+<details><summary>Details</summary>
+<p>
+
+```py
+"""Type stubs for micro:bit pin module."""
+
+from typing import overload, Literal
+
+class MicroBitDigitalPin:
+    """A digital pin on the micro:bit."""
+
+    NO_PULL: int = 0
+    PULL_UP: int = 1
+    PULL_DOWN: int = 2
+
+    def read_digital(self) -> int:
+        """Read digital value (0 or 1)."""
+        ...
+
+    def write_digital(self, value: int) -> None:
+        """Write digital value (0 or 1)."""
+        ...
+
+    @overload
+    def set_pull(self, value: int) -> None:
+        """Set pull resistor mode."""
+        ...
+
+    @overload
+    def set_pull(self, value: Literal[0, 1, 2]) -> None:
+        """Set pull resistor mode."""
+        ...
+
+    def get_pull(self) -> int:
+        """Get current pull mode."""
+        ...
+
+    def get_mode(self) -> str:
+        """Get current pin mode."""
+        ...
+
+    def write_analog(self, value: int) -> None:
+        """Write analog value (0-1023) for PWM."""
+        ...
+
+    def set_analog_period(self, period: int) -> None:
+        """Set PWM period in milliseconds."""
+        ...
+
+    def set_analog_period_microseconds(self, period: int) -> None:
+        """Set PWM period in microseconds."""
+        ...
+
+    def get_analog_period_microseconds(self) -> int:
+        """Get PWM period in microseconds."""
+        ...
+
+class MicroBitAnalogDigitalPin(MicroBitDigitalPin):
+    """An analog/digital pin on the micro:bit."""
+
+    def read_analog(self) -> int:
+        """Read analog value (0-1023)."""
+        ...
+
+class MicroBitTouchPin(MicroBitAnalogDigitalPin):
+    """A touch-sensitive pin on the micro:bit."""
+
+    CAPACITIVE: int = 0
+    RESISTIVE: int = 1
+
+    def is_touched(self) -> bool:
+        """Check if pin is being touched."""
+        ...
+
+    def was_touched(self) -> bool:
+        """Check if pin was touched since last check."""
+        ...
+
+    def get_touches(self) -> int:
+        """Get number of touches since last check."""
+        ...
+
+    def set_touch_mode(self, mode: int) -> None:
+        """Set touch detection mode."""
+        ...
+```
+
+</p>
+</details> 
+
+`ruff check pin.pyi --fix`:
+<details><summary>Details</summary>
+<p>
+
+```
+[2025-08-19][13:15:22][ruff::resolve][DEBUG] Using configuration file (via cwd) at: /root/.config/ruff/ruff.toml
+[2025-08-19][13:15:22][ruff_workspace::resolver][DEBUG] Included path via `include`: "/Data/micropython-microbit/stubs/microbit/pin.pyi"
+[2025-08-19][13:15:22][ignore::gitignore][DEBUG] opened gitignore file: /Data/micropython-microbit/stubs/microbit/.ruff_cache/.gitignore
+[2025-08-19][13:15:22][ruff_workspace::resolver][DEBUG] Ignored path via `exclude`: "/Data/micropython-microbit/stubs/microbit/.ruff_cache"
+[2025-08-19][13:15:22][ruff::commands::check][DEBUG] Identified files to lint in: 3.219548ms
+[2025-08-19][13:15:22][ruff::diagnostics][DEBUG] Checking: /Data/micropython-microbit/stubs/microbit/pin.pyi
+[2025-08-19][13:15:22][ruff_linter::rules::isort::categorize][DEBUG] Categorized 'typing' as Known(StandardLibrary) (KnownStandardLibrary)
+
+error: Fix introduced a syntax error. Reverting all changes.
+
+This indicates a bug in Ruff. If you could open an issue at:
+
+    https://github.com/astral-sh/ruff/issues/new?title=%5BFix%20error%5D
+
+...quoting the contents of `pin.pyi`, the rule codes I001, PIE790, PYI021, along with the `pyproject.toml` settings and executed command, we'd be very appreciative!
+
+[2025-08-19][13:15:22][ruff_linter::rules::isort::categorize][DEBUG] Categorized 'typing' as Known(StandardLibrary) (KnownStandardLibrary)
+[2025-08-19][13:15:22][ruff::commands::check][DEBUG] Checked 1 files in: 916.395µs
+PYI021 [*] Docstrings should not be included in stubs
+ --> pin.pyi:1:1
+  |
+1 | """Type stubs for micro:bit pin module."""
+  | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2 |
+3 | from typing import overload, Literal
+  |
+help: Remove docstring
+
+CPY001 Missing copyright notice at top of file
+--> pin.pyi:1:1
+
+I001 [*] Import block is un-sorted or un-formatted
+ --> pin.pyi:3:1
+  |
+1 | """Type stubs for micro:bit pin module."""
+2 |
+3 | from typing import overload, Literal
+  | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+4 |
+5 | class MicroBitDigitalPin:
+  |
+help: Organize imports
+
+PYI021 [*] Docstrings should not be included in stubs
+ --> pin.pyi:6:5
+  |
+5 | class MicroBitDigitalPin:
+6 |     """A digital pin on the micro:bit."""
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+7 |
+8 |     NO_PULL: int = 0
+  |
+help: Remove docstring
+
+PYI048 Function body must contain exactly one statement
+  --> pin.pyi:12:9
+   |
+10 |     PULL_DOWN: int = 2
+11 |
+12 |     def read_digital(self) -> int:
+   |         ^^^^^^^^^^^^
+13 |         """Read digital value (0 or 1)."""
+14 |         ...
+   |
+
+PYI021 [*] Docstrings should not be included in stubs
+  --> pin.pyi:13:9
+   |
+12 |     def read_digital(self) -> int:
+13 |         """Read digital value (0 or 1)."""
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+14 |         ...
+   |
+help: Remove docstring
+
+PIE790 [*] Unnecessary `...` literal
+  --> pin.pyi:14:9
+   |
+12 |     def read_digital(self) -> int:
+13 |         """Read digital value (0 or 1)."""
+14 |         ...
+   |         ^^^
+15 |
+16 |     def write_digital(self, value: int) -> None:
+   |
+help: Remove unnecessary `...`
+
+PYI048 Function body must contain exactly one statement
+  --> pin.pyi:16:9
+   |
+14 |         ...
+15 |
+16 |     def write_digital(self, value: int) -> None:
+   |         ^^^^^^^^^^^^^
+17 |         """Write digital value (0 or 1)."""
+18 |         ...
+   |
+
+PYI021 [*] Docstrings should not be included in stubs
+  --> pin.pyi:17:9
+   |
+16 |     def write_digital(self, value: int) -> None:
+17 |         """Write digital value (0 or 1)."""
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+18 |         ...
+   |
+help: Remove docstring
+
+PIE790 [*] Unnecessary `...` literal
+  --> pin.pyi:18:9
+   |
+16 |     def write_digital(self, value: int) -> None:
+17 |         """Write digital value (0 or 1)."""
+18 |         ...
+   |         ^^^
+19 |
+20 |     @overload
+   |
+help: Remove unnecessary `...`
+
+PYI048 Function body must contain exactly one statement
+  --> pin.pyi:21:9
+   |
+20 |     @overload
+21 |     def set_pull(self, value: int) -> None:
+   |         ^^^^^^^^
+22 |         """Set pull resistor mode."""
+23 |         ...
+   |
+
+D418 Function decorated with `@overload` shouldn't contain a docstring
+  --> pin.pyi:21:9
+   |
+20 |     @overload
+21 |     def set_pull(self, value: int) -> None:
+   |         ^^^^^^^^
+22 |         """Set pull resistor mode."""
+23 |         ...
+   |
+
+PYI021 [*] Docstrings should not be included in stubs
+  --> pin.pyi:22:9
+   |
+20 |     @overload
+21 |     def set_pull(self, value: int) -> None:
+22 |         """Set pull resistor mode."""
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+23 |         ...
+   |
+help: Remove docstring
+
+PIE790 [*] Unnecessary `...` literal
+  --> pin.pyi:23:9
+   |
+21 |     def set_pull(self, value: int) -> None:
+22 |         """Set pull resistor mode."""
+23 |         ...
+   |         ^^^
+24 |
+25 |     @overload
+   |
+help: Remove unnecessary `...`
+
+PYI048 Function body must contain exactly one statement
+  --> pin.pyi:26:9
+   |
+25 |     @overload
+26 |     def set_pull(self, value: Literal[0, 1, 2]) -> None:
+   |         ^^^^^^^^
+27 |         """Set pull resistor mode."""
+28 |         ...
+   |
+
+D418 Function decorated with `@overload` shouldn't contain a docstring
+  --> pin.pyi:26:9
+   |
+25 |     @overload
+26 |     def set_pull(self, value: Literal[0, 1, 2]) -> None:
+   |         ^^^^^^^^
+27 |         """Set pull resistor mode."""
+28 |         ...
+   |
+
+PYI021 [*] Docstrings should not be included in stubs
+  --> pin.pyi:27:9
+   |
+25 |     @overload
+26 |     def set_pull(self, value: Literal[0, 1, 2]) -> None:
+27 |         """Set pull resistor mode."""
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+28 |         ...
+   |
+help: Remove docstring
+
+PIE790 [*] Unnecessary `...` literal
+  --> pin.pyi:28:9
+   |
+26 |     def set_pull(self, value: Literal[0, 1, 2]) -> None:
+27 |         """Set pull resistor mode."""
+28 |         ...
+   |         ^^^
+29 |
+30 |     def get_pull(self) -> int:
+   |
+help: Remove unnecessary `...`
+
+PYI048 Function body must contain exactly one statement
+  --> pin.pyi:30:9
+   |
+28 |         ...
+29 |
+30 |     def get_pull(self) -> int:
+   |         ^^^^^^^^
+31 |         """Get current pull mode."""
+32 |         ...
+   |
+
+PYI021 [*] Docstrings should not be included in stubs
+  --> pin.pyi:31:9
+   |
+30 |     def get_pull(self) -> int:
+31 |         """Get current pull mode."""
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+32 |         ...
+   |
+help: Remove docstring
+
+PIE790 [*] Unnecessary `...` literal
+  --> pin.pyi:32:9
+   |
+30 |     def get_pull(self) -> int:
+31 |         """Get current pull mode."""
+32 |         ...
+   |         ^^^
+33 |
+34 |     def get_mode(self) -> str:
+   |
+help: Remove unnecessary `...`
+
+PYI048 Function body must contain exactly one statement
+  --> pin.pyi:34:9
+   |
+32 |         ...
+33 |
+34 |     def get_mode(self) -> str:
+   |         ^^^^^^^^
+35 |         """Get current pin mode."""
+36 |         ...
+   |
+
+PYI021 [*] Docstrings should not be included in stubs
+  --> pin.pyi:35:9
+   |
+34 |     def get_mode(self) -> str:
+35 |         """Get current pin mode."""
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+36 |         ...
+   |
+help: Remove docstring
+
+PIE790 [*] Unnecessary `...` literal
+  --> pin.pyi:36:9
+   |
+34 |     def get_mode(self) -> str:
+35 |         """Get current pin mode."""
+36 |         ...
+   |         ^^^
+37 |
+38 |     def write_analog(self, value: int) -> None:
+   |
+help: Remove unnecessary `...`
+
+PYI048 Function body must contain exactly one statement
+  --> pin.pyi:38:9
+   |
+36 |         ...
+37 |
+38 |     def write_analog(self, value: int) -> None:
+   |         ^^^^^^^^^^^^
+39 |         """Write analog value (0-1023) for PWM."""
+40 |         ...
+   |
+
+PYI021 [*] Docstrings should not be included in stubs
+  --> pin.pyi:39:9
+   |
+38 |     def write_analog(self, value: int) -> None:
+39 |         """Write analog value (0-1023) for PWM."""
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+40 |         ...
+   |
+help: Remove docstring
+
+PIE790 [*] Unnecessary `...` literal
+  --> pin.pyi:40:9
+   |
+38 |     def write_analog(self, value: int) -> None:
+39 |         """Write analog value (0-1023) for PWM."""
+40 |         ...
+   |         ^^^
+41 |
+42 |     def set_analog_period(self, period: int) -> None:
+   |
+help: Remove unnecessary `...`
+
+PYI048 Function body must contain exactly one statement
+  --> pin.pyi:42:9
+   |
+40 |         ...
+41 |
+42 |     def set_analog_period(self, period: int) -> None:
+   |         ^^^^^^^^^^^^^^^^^
+43 |         """Set PWM period in milliseconds."""
+44 |         ...
+   |
+
+PYI021 [*] Docstrings should not be included in stubs
+  --> pin.pyi:43:9
+   |
+42 |     def set_analog_period(self, period: int) -> None:
+43 |         """Set PWM period in milliseconds."""
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+44 |         ...
+   |
+help: Remove docstring
+
+PIE790 [*] Unnecessary `...` literal
+  --> pin.pyi:44:9
+   |
+42 |     def set_analog_period(self, period: int) -> None:
+43 |         """Set PWM period in milliseconds."""
+44 |         ...
+   |         ^^^
+45 |
+46 |     def set_analog_period_microseconds(self, period: int) -> None:
+   |
+help: Remove unnecessary `...`
+
+PYI048 Function body must contain exactly one statement
+  --> pin.pyi:46:9
+   |
+44 |         ...
+45 |
+46 |     def set_analog_period_microseconds(self, period: int) -> None:
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+47 |         """Set PWM period in microseconds."""
+48 |         ...
+   |
+
+PYI021 [*] Docstrings should not be included in stubs
+  --> pin.pyi:47:9
+   |
+46 |     def set_analog_period_microseconds(self, period: int) -> None:
+47 |         """Set PWM period in microseconds."""
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+48 |         ...
+   |
+help: Remove docstring
+
+PIE790 [*] Unnecessary `...` literal
+  --> pin.pyi:48:9
+   |
+46 |     def set_analog_period_microseconds(self, period: int) -> None:
+47 |         """Set PWM period in microseconds."""
+48 |         ...
+   |         ^^^
+49 |
+50 |     def get_analog_period_microseconds(self) -> int:
+   |
+help: Remove unnecessary `...`
+
+PYI048 Function body must contain exactly one statement
+  --> pin.pyi:50:9
+   |
+48 |         ...
+49 |
+50 |     def get_analog_period_microseconds(self) -> int:
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+51 |         """Get PWM period in microseconds."""
+52 |         ...
+   |
+
+PYI021 [*] Docstrings should not be included in stubs
+  --> pin.pyi:51:9
+   |
+50 |     def get_analog_period_microseconds(self) -> int:
+51 |         """Get PWM period in microseconds."""
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+52 |         ...
+   |
+help: Remove docstring
+
+PIE790 [*] Unnecessary `...` literal
+  --> pin.pyi:52:9
+   |
+50 |     def get_analog_period_microseconds(self) -> int:
+51 |         """Get PWM period in microseconds."""
+52 |         ...
+   |         ^^^
+53 |
+54 | class MicroBitAnalogDigitalPin(MicroBitDigitalPin):
+   |
+help: Remove unnecessary `...`
+
+PYI021 [*] Docstrings should not be included in stubs
+  --> pin.pyi:55:5
+   |
+54 | class MicroBitAnalogDigitalPin(MicroBitDigitalPin):
+55 |     """An analog/digital pin on the micro:bit."""
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+56 |
+57 |     def read_analog(self) -> int:
+   |
+help: Remove docstring
+
+PYI048 Function body must contain exactly one statement
+  --> pin.pyi:57:9
+   |
+55 |     """An analog/digital pin on the micro:bit."""
+56 |
+57 |     def read_analog(self) -> int:
+   |         ^^^^^^^^^^^
+58 |         """Read analog value (0-1023)."""
+59 |         ...
+   |
+
+PYI021 [*] Docstrings should not be included in stubs
+  --> pin.pyi:58:9
+   |
+57 |     def read_analog(self) -> int:
+58 |         """Read analog value (0-1023)."""
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+59 |         ...
+   |
+help: Remove docstring
+
+PIE790 [*] Unnecessary `...` literal
+  --> pin.pyi:59:9
+   |
+57 |     def read_analog(self) -> int:
+58 |         """Read analog value (0-1023)."""
+59 |         ...
+   |         ^^^
+60 |
+61 | class MicroBitTouchPin(MicroBitAnalogDigitalPin):
+   |
+help: Remove unnecessary `...`
+
+PYI021 [*] Docstrings should not be included in stubs
+  --> pin.pyi:62:5
+   |
+61 | class MicroBitTouchPin(MicroBitAnalogDigitalPin):
+62 |     """A touch-sensitive pin on the micro:bit."""
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+63 |
+64 |     CAPACITIVE: int = 0
+   |
+help: Remove docstring
+
+PYI048 Function body must contain exactly one statement
+  --> pin.pyi:67:9
+   |
+65 |     RESISTIVE: int = 1
+66 |
+67 |     def is_touched(self) -> bool:
+   |         ^^^^^^^^^^
+68 |         """Check if pin is being touched."""
+69 |         ...
+   |
+
+PYI021 [*] Docstrings should not be included in stubs
+  --> pin.pyi:68:9
+   |
+67 |     def is_touched(self) -> bool:
+68 |         """Check if pin is being touched."""
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+69 |         ...
+   |
+help: Remove docstring
+
+PIE790 [*] Unnecessary `...` literal
+  --> pin.pyi:69:9
+   |
+67 |     def is_touched(self) -> bool:
+68 |         """Check if pin is being touched."""
+69 |         ...
+   |         ^^^
+70 |
+71 |     def was_touched(self) -> bool:
+   |
+help: Remove unnecessary `...`
+
+PYI048 Function body must contain exactly one statement
+  --> pin.pyi:71:9
+   |
+69 |         ...
+70 |
+71 |     def was_touched(self) -> bool:
+   |         ^^^^^^^^^^^
+72 |         """Check if pin was touched since last check."""
+73 |         ...
+   |
+
+PYI021 [*] Docstrings should not be included in stubs
+  --> pin.pyi:72:9
+   |
+71 |     def was_touched(self) -> bool:
+72 |         """Check if pin was touched since last check."""
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+73 |         ...
+   |
+help: Remove docstring
+
+PIE790 [*] Unnecessary `...` literal
+  --> pin.pyi:73:9
+   |
+71 |     def was_touched(self) -> bool:
+72 |         """Check if pin was touched since last check."""
+73 |         ...
+   |         ^^^
+74 |
+75 |     def get_touches(self) -> int:
+   |
+help: Remove unnecessary `...`
+
+PYI048 Function body must contain exactly one statement
+  --> pin.pyi:75:9
+   |
+73 |         ...
+74 |
+75 |     def get_touches(self) -> int:
+   |         ^^^^^^^^^^^
+76 |         """Get number of touches since last check."""
+77 |         ...
+   |
+
+PYI021 [*] Docstrings should not be included in stubs
+  --> pin.pyi:76:9
+   |
+75 |     def get_touches(self) -> int:
+76 |         """Get number of touches since last check."""
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+77 |         ...
+   |
+help: Remove docstring
+
+PIE790 [*] Unnecessary `...` literal
+  --> pin.pyi:77:9
+   |
+75 |     def get_touches(self) -> int:
+76 |         """Get number of touches since last check."""
+77 |         ...
+   |         ^^^
+78 |
+79 |     def set_touch_mode(self, mode: int) -> None:
+   |
+help: Remove unnecessary `...`
+
+PYI048 Function body must contain exactly one statement
+  --> pin.pyi:79:9
+   |
+77 |         ...
+78 |
+79 |     def set_touch_mode(self, mode: int) -> None:
+   |         ^^^^^^^^^^^^^^
+80 |         """Set touch detection mode."""
+81 |         ...
+   |
+
+PYI021 [*] Docstrings should not be included in stubs
+  --> pin.pyi:80:9
+   |
+79 |     def set_touch_mode(self, mode: int) -> None:
+80 |         """Set touch detection mode."""
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+81 |         ...
+   |
+help: Remove docstring
+
+PIE790 [*] Unnecessary `...` literal
+  --> pin.pyi:81:9
+   |
+79 |     def set_touch_mode(self, mode: int) -> None:
+80 |         """Set touch detection mode."""
+81 |         ...
+   |         ^^^
+   |
+help: Remove unnecessary `...`
+
+Found 53 errors.
+[*] 35 fixable with the --fix option.
+```
+
+</p>
+</details> 
+
+`ruff.toml`:
+
+<details><summary>Details</summary>
+<p>
+
+```toml
+preview = true
+unsafe-fixes = true
+target-version = "py313"
+line-length = 79
+builtins = ["_"]
+
+[analyze]
+preview = true
+
+[format]
+preview = true
+docstring-code-format = true
+line-ending = "lf"
+skip-magic-trailing-comma = true
+
+[lint]
+future-annotations = true
+select = ["ALL"]
+typing-extensions = false
+unfixable = ["T201"]
+ignore = [
+    "D206",
+    "E114",
+    "E111",
+    "W191",
+    "Q003",
+    "Q002",
+    "Q000",
+    "Q001",
+    "COM812",
+    "D208",
+    "E117",
+    "COM819",
+    "D300",
+    "D207",
+    "Q004",
+    "S404",
+    "S602",
+    "S603",
+    "D203",
+    "D212",
+]
+
+[lint.isort]
+split-on-trailing-comma = false
+
+[lint.extend-per-file-ignores]
+"**/__init__.py*" = ["F403", "F401"]
+"tests/**/*.py" = [
+    # at least this three should be fine in tests:
+    "S101", # asserts allowed in tests...
+    "ARG",  # Unused function args -> fixtures nevertheless are functionally relevant...
+    "FBT",  # Don't care about booleans as positional arguments in tests, e.g. via @pytest.mark.parametrize()
+    # The below are debateable
+    "PLR2004", # Magic value used in comparison, ...
+    "S311",    # Standard pseudo-random generators are not suitable for cryptographic purposes
+]
+```
+
+</p>
+</details> 
+
+
+### Version
+
+0.12.9
+
+---
+
+_Comment by @ntBre on 2025-08-19 14:27_
+
+Thanks for the report! I think I've minimized the example to the following:
+
+```py
+# try.pyi
+def set_touch_mode(self, mode: int) -> None:
+    """Set touch detection mode."""
+    ...
+```
+
+```shell
+ruff check try.pyi --fix --select PYI021,PIE790 --unsafe-fixes
+```
+
+PYI021 suggests removing the docstring and then PIE790 suggests removing the ellipsis, leaving an empty function body. PIE790 already has a fix `IsolationLevel` set, so we may be able to fix this by adding one to `PYI021` too.
+
+---
+
+_Label `bug` added by @ntBre on 2025-08-19 14:28_
+
+---
+
+_Renamed from "Fix introduced a syntax error" to "Fix for `PIE790` and `PYI021` introduces a syntax error" by @ntBre on 2025-08-19 14:31_
+
+---
+
+_Referenced in [astral-sh/ruff#20010](../../astral-sh/ruff/pulls/20010.md) on 2025-08-20 20:17_
+
+---
+
+_Closed by @ntBre on 2025-09-24 21:27_
+
+---

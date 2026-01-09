@@ -1,0 +1,137 @@
+---
+number: 13149
+title: Multiline function definition headers
+type: issue
+state: closed
+author: RubenVanEldik
+labels:
+  - formatter
+assignees: []
+created_at: 2024-08-29T09:11:35Z
+updated_at: 2024-08-29T10:33:45Z
+url: https://github.com/astral-sh/ruff/issues/13149
+synced_at: 2026-01-07T13:12:15-06:00
+---
+
+# Multiline function definition headers
+
+---
+
+_Issue opened by @RubenVanEldik on 2024-08-29 09:11_
+
+I have a question about a quite opinionated formatting issue. Apologies if this has been discussed before, but it's quite hard to search for it in the exiting issues.
+
+When a list (or, set, tuple, etc) gets too long for a single line, it becomes a multiline statement where each item is on its own line. However, when the function arguments get too long (which happens very often when you're adding types), the function arguments get all moved to their own line, if possible.
+
+I think this intermediate solution is the worst of both worlds because the number of lines are tripled but the line length is often barely shorter. Which makes the whole function harder to read.
+
+You can fix this yourself already by adding a comma after the last argument, but I would like to propose that if a function definition header does not fit on a single line, each argument should get it's own line. Similar to lists, etc.
+
+Before formatting:
+```py
+my_list_variable = ["item_one", "item_two", "item_three", "item_four", "item_five", "item_six"]
+
+def my_func(arg_1: int, arg_2: int, arg_3: int, arg_4: int, arg_5: int, arg_6: int, arg_7: int):
+    pass
+```
+
+After formatting:
+```py
+my_list_variable = [
+    "item_one",
+    "item_two",
+    "item_three",
+    "item_four",
+    "item_five",
+    "item_six",
+]
+
+
+def my_func(
+    arg_1: int, arg_2: int, arg_3: int, arg_4: int, arg_5: int, arg_6: int, arg_7: int
+):
+    pass
+```
+
+My proposed fromatting:
+```py
+my_list_variable = [
+    "item_one",
+    "item_two",
+    "item_three",
+    "item_four",
+    "item_five",
+    "item_six",
+]
+
+
+def my_func(
+    arg_1: int,
+    arg_2: int,
+    arg_3: int,
+    arg_4: int,
+    arg_5: int,
+    arg_6: int,
+    arg_7: int,
+):
+    pass
+
+```
+
+([Ruff playground link](https://play.ruff.rs/94e8d3d7-a048-409e-a321-f0ac24a9db86))
+
+* List of keywords you searched for before creating this issue. `function definition header', 'function signature'
+
+
+
+---
+
+_Label `formatter` added by @AlexWaygood on 2024-08-29 09:42_
+
+---
+
+_Comment by @AlexWaygood on 2024-08-29 09:51_
+
+Hi, thanks for opening the issue!
+
+As with many formatting decisions, this is unfortunately quite subjective. Many people prefer the "intermediate" solution rather than their function definition immediately being exploded across multiple lines when it goes a single character over the line length. In this style decision -- as with most of our style decisions currently -- we follow what Black does.
+
+However, are you aware of the formatter's behaviour around trailing commas? If you have a trailing comma at the end of your parameter list, the formatter will always split the parameter list over multiple lines, even if it's well below the maximum line length you've specified: https://play.ruff.rs/27f31e3e-5bf5-40e2-b142-4b885563940f
+
+---
+
+_Comment by @RubenVanEldik on 2024-08-29 10:00_
+
+Hi Alex, thank you for your response!
+
+It is indeed very subjective! I wanted to see if this could be a discussion for Ruff, but it makes total sense to follow Black in this regard. So I'll close the issue!
+
+For now I'll just instruct all my colleagues manually to add the comma whenever it doesn't fit on a single line anymore :)
+
+---
+
+_Closed by @RubenVanEldik on 2024-08-29 10:01_
+
+---
+
+_Comment by @AlexWaygood on 2024-08-29 10:06_
+
+> For now I'll just instruct all my colleagues manually to add the comma whenever it doesn't fit on a single line anymore :)
+
+Ah, you can enforce it with one of our linter rules ;) https://docs.astral.sh/ruff/rules/missing-trailing-comma/
+
+---
+
+_Comment by @RubenVanEldik on 2024-08-29 10:28_
+
+You're completely right.. Somehow I have added this rule to our ignore list a few months ago.
+
+Sorry for discussing an a rule that I actively ignored myself... 🙄🙄
+
+---
+
+_Comment by @AlexWaygood on 2024-08-29 10:33_
+
+hehe, no worries!
+
+---

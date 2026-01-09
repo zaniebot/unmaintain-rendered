@@ -1,0 +1,195 @@
+---
+number: 5925
+title: Support for multiple environment variables
+type: issue
+state: open
+author: orhun
+labels:
+  - C-enhancement
+  - A-builder
+  - E-easy
+assignees: []
+created_at: 2025-02-22T21:17:53Z
+updated_at: 2025-07-03T14:52:13Z
+url: https://github.com/clap-rs/clap/issues/5925
+synced_at: 2026-01-07T13:12:20-06:00
+---
+
+# Support for multiple environment variables
+
+---
+
+_Issue opened by @orhun on 2025-02-22 21:17_
+
+### Please complete the following tasks
+
+- [x] I have searched the [discussions](https://github.com/clap-rs/clap/discussions)
+- [x] I have searched the [open](https://github.com/clap-rs/clap/issues) and [rejected](https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed) issues
+
+### Clap Version
+
+4.5.27
+
+### Describe your use case
+
+I'd like to have support for multiple environment variables for a single argument.
+
+For example, `--foo` would both accept `FOO_VALUE` and `FOO_VAL` variables for its value.
+
+I have tried the following via derive:
+
+```rust
+	#[arg(
+		long,
+		env = "FOO_VALUE",
+        env = "FOO_VAL",
+	)]
+```
+
+But this ends up overriding the previously defined environment variable.
+
+### Describe the solution you'd like
+
+Add a new attribute for accepting a `Vec<OsStr>` as follows:
+
+```rust
+	#[arg(
+		long,
+		envs = ["FOO_VALUE", "FOO_VAL"],
+	)]
+```
+
+Or support multiple usages of `env` as described above.
+
+### Alternatives, if applicable
+
+None.
+
+### Additional Context
+
+This was brought up to my attention [in this issue](https://github.com/orhun/git-cliff/issues/994).
+
+Simply I want to support both `GITHUB_REPO` and `GITHUB_REPOSITORY` variables. I cannot just switch to  `GITHUB_REPOSITORY` since it would be breaking. But I will consider that based on the outcome of this proposal :)
+
+---
+
+_Label `C-enhancement` added by @orhun on 2025-02-22 21:17_
+
+---
+
+_Referenced in [orhun/git-cliff#994](../../orhun/git-cliff/issues/994.md) on 2025-02-22 21:18_
+
+---
+
+_Label `A-builder` added by @epage on 2025-02-23 00:54_
+
+---
+
+_Label `E-easy` added by @epage on 2025-02-23 00:54_
+
+---
+
+_Comment by @epage on 2025-02-23 00:55_
+
+Seems reasonable. Let's coordinate on help output before anyone moves forward with this.
+
+---
+
+_Comment by @fahri-r on 2025-03-09 15:18_
+
+If you don't mind, I can try to add this feature. 
+Just to clarify, I just want to ask:
+
+`envs = ["FOO_VALUE", "FOO_VAL"],`
+
+If both "FOO_VALUE" and "FOO_VAL" have values, then "FOO_VALUE" is the valid one, right?
+
+---
+
+_Referenced in [clap-rs/clap#5946](../../clap-rs/clap/pulls/5946.md) on 2025-03-10 12:26_
+
+---
+
+_Comment by @epage on 2025-03-10 17:29_
+
+Layering is a complex topic but since we don't support laying CLI on top of Env, I figure we don't need to layer Env on top of Env.
+
+---
+
+_Comment by @fahri-r on 2025-03-11 00:46_
+
+Sorry, I don't get it. do you mean that we don't need a complex logic like I said in my prev comment?
+
+---
+
+_Comment by @epage on 2025-03-11 15:44_
+
+I was saying that simply only accepting the first one would probably work.
+
+Laying is the general topic of how to handle when you have multiple sources for configuration.  In some situations, a config needs to be merged while others need overwrite.  Since clap only supports overwrite between cli / env, we can use that excuse to continue to do so for env / env layer.
+
+Keep in mind that there is another point to resolve in https://github.com/clap-rs/clap/issues/5925#issuecomment-2676479697
+
+---
+
+_Comment by @fahri-r on 2025-03-12 13:05_
+
+> Seems reasonable. Let's coordinate on help output before anyone moves forward with this.
+
+Ah, that was my error. You mean help output like this right?
+`[name]  [env: FOO_VALUE=] [default: FOO]`
+
+Maybe for envs we can make like this:
+`[name]  [envs: [FOO_VALUE, FOO_VAL]] [default: FOO]`
+
+but I'm not really sure is it possible or no
+
+---
+
+_Comment by @pksunkara on 2025-07-03 09:43_
+
+I don't think array conveys what this is doing correctly. Wdyt about this?
+
+```
+name description [envs: FOO_VALUE|FOO_VAL] [default: foo]
+```
+
+---
+
+_Comment by @epage on 2025-07-03 14:36_
+
+Keep in mind that we can have both
+```
+[env: FOO_NAME]
+[env: FOO_NAME=value]
+```
+
+We also generally use `,` as a separate for "one of" (see also #6059).
+
+Hmm, if we are showing values and our approach is "take the first", should we somehow convey that?  Seems like it could be confusing to show each env var and value.
+
+
+
+---
+
+_Comment by @epage on 2025-07-03 14:37_
+
+Hmm, `hide_env` is all-or-nothing.  Would people want some envs to be visible and some to not be visible?
+
+---
+
+_Comment by @pksunkara on 2025-07-03 14:52_
+
+If it can contain value, having a `,` as separator might be confusing.
+
+```
+[env: FOO_VALUE,FOO_VAL=value]
+```
+
+---
+
+> Hmm, `hide_env` is all-or-nothing. Would people want some envs to be visible and some to not be visible?
+
+I would say yes, specifically if someone is trying to support compatibility (either backwards or with other tools)
+
+---

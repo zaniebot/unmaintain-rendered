@@ -1,0 +1,65 @@
+---
+number: 6006
+title: A .citation() option similar to that of .version()
+type: issue
+state: closed
+author: jianshu93
+labels:
+  - C-enhancement
+assignees: []
+created_at: 2025-05-17T19:43:47Z
+updated_at: 2025-05-17T20:18:08Z
+url: https://github.com/clap-rs/clap/issues/6006
+synced_at: 2026-01-07T13:12:20-06:00
+---
+
+# A .citation() option similar to that of .version()
+
+---
+
+_Issue opened by @jianshu93 on 2025-05-17 19:43_
+
+### Please complete the following tasks
+
+- [x] I have searched the [discussions](https://github.com/clap-rs/clap/discussions)
+- [x] I have searched the [open](https://github.com/clap-rs/clap/issues) and [rejected](https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed) issues
+
+### Clap Version
+
+4.5
+
+### Describe your use case
+
+Dear clap team, 
+
+I am wondering whether it makes sense to add a citation option so that when software packages are itself a paper, we can put the original paper citation there, just like the version. Thanks!
+
+### Describe the solution you'd like
+
+similar to that of .version("v0.1.0")
+
+### Alternatives, if applicable
+
+_No response_
+
+### Additional Context
+
+_No response_
+
+---
+
+_Label `C-enhancement` added by @jianshu93 on 2025-05-17 19:43_
+
+---
+
+_Comment by @epage on 2025-05-17 19:59_
+
+We provide ways for users to customize version and help today.
+
+Could you help me in what way built-in support would be a benefit?
+
+---
+
+_Closed by @jianshu93 on 2025-05-17 20:18_
+
+---

@@ -1,0 +1,85 @@
+---
+number: 14975
+title: RUF200 explanation is misleading/wrong
+type: issue
+state: closed
+author: knirch
+labels:
+  - documentation
+  - good first issue
+  - help wanted
+assignees: []
+created_at: 2024-12-14T21:02:27Z
+updated_at: 2024-12-23T05:00:17Z
+url: https://github.com/astral-sh/ruff/issues/14975
+synced_at: 2026-01-07T13:12:16-06:00
+---
+
+# RUF200 explanation is misleading/wrong
+
+---
+
+_Issue opened by @knirch on 2024-12-14 21:02_
+
+> ## Example
+> ```toml
+> [project]
+> name = "crab"
+> version = "1.0.0"
+> authors = ["Ferris the Crab <ferris@example.org>"]
+> ```
+> 
+> Use instead:
+> ```toml
+> [project]
+> name = "crab"
+> version = "1.0.0"
+> authors = [
+>   { email = "ferris@example.org" },
+>   { name = "Ferris the Crab"}
+> ]
+> ```
+
+which I assume meant to say;
+
+```toml
+[project]
+name = "crab"
+version = "1.0.0"
+authors = [
+  { name = "Ferris the Crab", email = "ferris@example.org" }
+]
+```
+otherwise how would this trio author a project? 
+```toml
+[project]
+name = "llm-fueled-cringe"
+authors = [
+  { name = "Ferris the Crab", email = "ferris@example.org" }, 
+  { name = "Cameron the Tortoise" },
+  { email = "ed.peacock@example.org" }
+]
+```
+
+
+---
+
+_Label `documentation` added by @MichaReiser on 2024-12-15 11:58_
+
+---
+
+_Label `help wanted` added by @MichaReiser on 2024-12-15 11:58_
+
+---
+
+_Label `good first issue` added by @dhruvmanila on 2024-12-17 05:07_
+
+---
+
+_Referenced in [astral-sh/ruff#15099](../../astral-sh/ruff/pulls/15099.md) on 2024-12-22 18:24_
+
+---
+
+_Closed by @dhruvmanila on 2024-12-23 05:00_
+
+---

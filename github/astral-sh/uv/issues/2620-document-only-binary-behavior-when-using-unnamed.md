@@ -1,0 +1,58 @@
+---
+number: 2620
+title: "Document `--only-binary` behavior when using unnamed requirements"
+type: issue
+state: closed
+author: zanieb
+labels:
+  - documentation
+assignees: []
+created_at: 2024-03-22T19:07:30Z
+updated_at: 2024-05-22T14:46:29Z
+url: https://github.com/astral-sh/uv/issues/2620
+synced_at: 2026-01-07T13:12:17-06:00
+---
+
+# Document `--only-binary` behavior when using unnamed requirements
+
+---
+
+_Issue opened by @zanieb on 2024-03-22 19:07_
+
+We should highlight all exemptions from `--only-binary` and note differences from `pip` in our compatibility document. Note that `pip` does not necessarily have intuitive behavior here as discussed in https://github.com/astral-sh/uv/pull/2600#discussion_r1534779844. This is also an opportunity to highlight any behaviors we should change.
+
+---
+
+_Label `documentation` added by @zanieb on 2024-03-22 19:07_
+
+---
+
+_Comment by @zanieb on 2024-04-12 19:57_
+
+@charliermarsh could you do this?
+
+---
+
+_Comment by @charliermarsh on 2024-04-12 19:59_
+
+Yeah
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2024-04-12 19:59_
+
+---
+
+_Comment by @charliermarsh on 2024-05-22 13:50_
+
+Doing now.
+
+---
+
+_Referenced in [astral-sh/uv#3735](../../astral-sh/uv/pulls/3735.md) on 2024-05-22 13:58_
+
+---
+
+_Closed by @charliermarsh on 2024-05-22 14:46_
+
+---

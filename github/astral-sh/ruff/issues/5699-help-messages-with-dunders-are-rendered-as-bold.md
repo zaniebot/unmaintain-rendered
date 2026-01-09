@@ -1,0 +1,94 @@
+---
+number: 5699
+title: "Help messages with dunders are rendered as bold instead of displaying literal `__`"
+type: issue
+state: closed
+author: zanieb
+labels:
+  - bug
+  - help wanted
+assignees: []
+created_at: 2023-07-12T00:05:30Z
+updated_at: 2023-11-13T14:45:17Z
+url: https://github.com/astral-sh/ruff/issues/5699
+synced_at: 2026-01-07T13:12:15-06:00
+---
+
+# Help messages with dunders are rendered as bold instead of displaying literal `__`
+
+---
+
+_Issue opened by @zanieb on 2023-07-12 00:05_
+
+Help messages with content that includes `__XXXX__` is rendered bold instead of displaying the `__` which is common for dunder variables.
+
+<img width="496" alt="Screenshot 2023-07-11 at 19 04 06" src="https://github.com/astral-sh/ruff/assets/2586601/95546a1f-0faa-4bef-bf7b-2629e149f7d4">
+
+
+```
+example.py:1:22: F401 [*] `.version.__version__` imported but unused
+  |
+1 | from .version import __version__
+  |                      ^^^^^^^^^^^ F401
+  |
+  = help: Remove unused import: `.version.version`
+
+Found 1 error.
+[*] 1 potentially fixable with the --fix option.
+```
+
+or
+
+```
+example.pyi:3:32: PYI016 Duplicate union member `Literal["__test__"]`
+  |
+1 | from typing import Literal, Union
+
+2 | 
+3 | x = Union[Literal["__test__"], Literal["__test__"]]
+  |                                ^^^^^^^^^^^^^^^^^^^ PYI016
+  |
+  = help: Remove duplicate union member `Literal["test"]`
+```
+
+Originally reported in https://github.com/astral-sh/ruff/issues/5697#issuecomment-1631623181
+
+---
+
+_Referenced in [astral-sh/ruff#5697](../../astral-sh/ruff/issues/5697.md) on 2023-07-12 00:07_
+
+---
+
+_Label `bug` added by @zanieb on 2023-07-12 00:11_
+
+---
+
+_Label `help wanted` added by @zanieb on 2023-07-12 00:11_
+
+---
+
+_Renamed from "Help messages with dunders are rendered as bold instead of literal `__`" to "Help messages with dunders are rendered as bold instead of displaying literal `__`" by @zanieb on 2023-07-12 00:12_
+
+---
+
+_Comment by @charliermarsh on 2023-07-12 03:11_
+
+This came up once before, in response IIRC @MichaReiser said we should look into replacing the annotate-snippets crate which has some unusual behavior (like this).
+
+---
+
+_Comment by @MichaReiser on 2023-07-12 04:38_
+
+See https://github.com/rust-lang/annotate-snippets-rs/pull/54
+
+---
+
+_Comment by @charliermarsh on 2023-11-13 14:45_
+
+Closed by https://github.com/astral-sh/ruff/pull/8646.
+
+---
+
+_Closed by @charliermarsh on 2023-11-13 14:45_
+
+---

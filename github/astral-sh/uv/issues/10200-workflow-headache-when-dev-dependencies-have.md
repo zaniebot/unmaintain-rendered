@@ -1,0 +1,117 @@
+---
+number: 10200
+title: "Workflow Headache: when dev dependencies have stricter requirements than runtime deps"
+type: issue
+state: closed
+author: ayjayt
+labels:
+  - question
+  - needs-mre
+assignees: []
+created_at: 2024-12-27T16:59:09Z
+updated_at: 2025-01-29T23:18:43Z
+url: https://github.com/astral-sh/uv/issues/10200
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# Workflow Headache: when dev dependencies have stricter requirements than runtime deps
+
+---
+
+_Issue opened by @ayjayt on 2024-12-27 16:59_
+
+Hi!
+
+* sometimes my development dependencies have a higher requirements than the package
+
+I wrote the package to work with python versions >=3.9, but a development dependency is >-3.10.
+
+I want `uv` to accept that while I do need a higher python version in my `.venv`, I don't need to increase the value in the `pyproject.toml`. 
+
+
+Just posting this here to start a discussion!
+
+---
+
+_Comment by @samypr100 on 2024-12-27 23:46_
+
+Could you provide a full example (e.g. pyproject.toml) of what you're trying to achieve? Are you using dependency groups?
+
+---
+
+_Label `question` added by @samypr100 on 2024-12-27 23:47_
+
+---
+
+_Label `needs-mre` added by @samypr100 on 2024-12-27 23:47_
+
+---
+
+_Referenced in [astral-sh/uv#10201](../../astral-sh/uv/issues/10201.md) on 2024-12-27 23:59_
+
+---
+
+_Comment by @ayjayt on 2024-12-28 00:06_
+
+Okay, it actually seems that this was _somewhat_ addressed in a new version of uv, since now there is a help comment about how to bypass the restriction.
+
+However, for posterity
+
+```toml
+# pyproject.toml
+requires-python = ">=3.8"
+```
+
+`uv add --group foo choreographer`
+
+Output:
+```text
+  × No solution found when resolving dependencies for split (python_full_version == '3.8.*'):
+  ╰─▶ Because the requested Python version (>=3.8) does not satisfy Python>=3.9 and all versions of choreographer depend on Python>=3.9, we
+      can conclude that all versions of choreographer cannot be used.
+      And because temp:foo depends on choreographer and your project requires temp:foo, we can conclude that your project's requirements
+      are unsatisfiable.
+
+      hint: The `requires-python` value (>=3.8) includes Python versions that are not supported by your dependencies (e.g., all versions of
+      choreographer only supports >=3.9). Consider using a more restrictive `requires-python` value (like >=3.9).
+  help: If you want to add the package regardless of the failed resolution, provide the `--frozen` flag to skip locking and syncing.
+```
+
+I'm generally okay with this.
+
+
+I do think it's worth mentioning, conceptually, the idea that groups may have different python requirements than the main dependencies or extras.
+
+edit: And I don't know what other commands within the workflow will prompt the above errors and warnings, but I would sort of like to have a development group which is outside the restrictions of the **package**.
+
+---
+
+_Comment by @AKuederle on 2025-01-03 10:16_
+
+Just as a note on this: A common case where this occurs is with sphinx. They seem to quite aggressively remove support for older Python versions. This means you suddenly can not use a newer version of Sphinx to build your documentation, just because your own package still needs to support older Python versions. It feels like that the version of my documentation tool should be independent of the supported versions of my package.
+
+Given that "requires-python" and development dependencies also serve different audiences (consumer of a a package vs. developer of a package), the existens of a `require-python` in the developer dependencies (that is stricter than the require-python of the actual package), would not feel to much out of place I think.
+
+---
+
+_Comment by @ayjayt on 2025-01-29 23:05_
+
+@AKuederle i 100% agree with you, it would be nice!
+
+---
+
+_Comment by @zanieb on 2025-01-29 23:18_
+
+You can do `sphinx; python_version >= '3.12'` (or similar) to solve for a newer version of sphinx despite your `requires-python`.
+
+---
+
+_Closed by @zanieb on 2025-01-29 23:18_
+
+---
+
+_Comment by @zanieb on 2025-01-29 23:18_
+
+(Closing because I'm not sure this is actionable as-is. Markers are a reasonable solution. We might also allow applying separate Python requirements to entire dependency groups)
+
+---

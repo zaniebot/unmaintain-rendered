@@ -1,0 +1,256 @@
+---
+number: 10828
+title: langchain version confusion with aiohttp started in uv 0.5.17
+type: issue
+state: closed
+author: kendallbailey
+labels:
+  - question
+  - resolver
+assignees: []
+created_at: 2025-01-21T21:40:47Z
+updated_at: 2025-01-23T13:15:50Z
+url: https://github.com/astral-sh/uv/issues/10828
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# langchain version confusion with aiohttp started in uv 0.5.17
+
+---
+
+_Issue opened by @kendallbailey on 2025-01-21 21:40_
+
+### Summary
+
+I get strange results when pip compiling a requirements.in file having `aiohttp` and `langchain`.
+
+With `uv` version 0.5.16 it will select `langchain==0.3.15` and `aiohttp==3.11.11`. However, when using `uv` version 0.5.17, it rejects `langchain` versions >0.0.133. Seems to be something to do with `async-timeout` which both packages depend on.
+
+To reproduce the problem, create a `reqs.in` with content of
+
+```
+aiohttp
+langchain
+```
+
+Then with `uv` 0.5.17
+```
+$ uv pip compile reqs.in | grep langchain=
+Resolved 28 packages in 217ms
+langchain==0.0.133
+```
+
+with `uv` 0.5.16
+```
+$ uv pip compile reqs.in | grep langchain=
+Resolved 38 packages in 153ms
+langchain==0.3.15
+```
+
+
+Adding a `--verbose` flag shows the divergence in behavior refers to `async-timeout`
+
+0.5.17 has
+```
+DEBUG Found fresh response for: https://pypi.org/simple/frozenlist/
+DEBUG Recording unit propagation conflict of langchain from incompatibility of (langchain, async-timeout{python_full_version < '3.11'})
+DEBUG Searching for a compatible version of langchain (<0.3.15 | >0.3.15)
+DEBUG Selecting: langchain==0.3.14 [compatible] (langchain-0.3.14-py3-none-any.whl)
+```
+
+0.5.16 never logs a "unit propagation conflict".
+
+As it turns out `langchain` depends on `aiohttp`. Removing `aiohttp` from the `reqs.in` shouldn't change the transitive dependencies, but for `uv` 0.5.17+ it will eliminate the odd behavior and it will select `langchain==0.3.15` as expected.
+
+Also, changing the order in the `reqs.txt` so that `aiohttp` is after `langchain` will eliminate the odd behavior. `uv` will again select `langchain==0.3.15`
+
+
+
+### Platform
+
+Ubuntu Linux 22.04
+
+### Version
+
+0.5.17
+
+### Python version
+
+3.10.16
+
+---
+
+_Label `bug` added by @kendallbailey on 2025-01-21 21:40_
+
+---
+
+_Comment by @zanieb on 2025-01-21 21:44_
+
+The order of dependencies affects the priority of the package in the resolver. Placing `aiohttp` before `langchain` means we try to resolve that package first, and it looks like we backtrack in a surprising way. Because you don't specify lower bounds, the resolver happily backtracks to a very old version of `langchain`.
+
+See also https://github.com/astral-sh/uv/issues/8157
+
+---
+
+_Label `bug` removed by @zanieb on 2025-01-21 21:44_
+
+---
+
+_Label `question` added by @zanieb on 2025-01-21 21:44_
+
+---
+
+_Label `resolver` added by @zanieb on 2025-01-21 21:44_
+
+---
+
+_Comment by @charliermarsh on 2025-01-21 21:48_
+
+Yeah, it's a "correct" resolution, just unintuitive. It ends up prioritizing choosing the latest `async-timeout`, which is why that package is upgraded in the version with an "old" LangChain (`5.0.1` vs. `4.0.3`).
+
+Maybe @konstin can look at why we didn't shuffle the prioritization. Regardless I'd suggest constraining the dependencies if you aren't happy with all versions of LangChain?
+
+
+---
+
+_Comment by @charliermarsh on 2025-01-21 21:51_
+
+A bit confused by the backtracking because we seem to re-prioritize:
+
+```
+Package async-timeout{python_full_version < '3.11'} has too many conflicts (culprit), deprioritizing and backtracking
+```
+
+But then we just pick the same version?
+
+```
+DEBUG Package async-timeout{python_full_version < '3.11'} has too many conflicts (culprit), deprioritizing and backtracking
+DEBUG Backtracked 1 decisions
+DEBUG Searching for a compatible version of async-timeout{python_full_version < '3.11'} (>=4.0, <6.0)
+DEBUG Selecting: async-timeout==5.0.1 [compatible] (async_timeout-5.0.1-py3-none-any.whl)
+DEBUG Searching for a compatible version of langchain (<0.3.11 | >0.3.11, <0.3.12 | >0.3.12, <0.3.13 | >0.3.13, <0.3.14 | >0.3.14, <0.3.15 | >0.3.15)
+DEBUG Selecting: langchain==0.3.10 [compatible] (langchain-0.3.10-py3-none-any.whl)
+```
+
+---
+
+_Comment by @charliermarsh on 2025-01-21 21:53_
+
+I'll leave it to @konstin to go deeper.
+
+---
+
+_Comment by @kendallbailey on 2025-01-21 22:06_
+
+Maybe I'm naive. I hoped that if there's a solution with all explicit first order dependencies at their latest versions, then such a solution would be found and preferred. We'll have to be more diligent in setting and updating lower bounds.  Thanks.
+
+---
+
+_Comment by @zanieb on 2025-01-21 22:14_
+
+I think that might be very hard to implement — I don't know of any Python resolver that makes that guarantee.
+
+---
+
+_Comment by @charliermarsh on 2025-01-21 22:27_
+
+I think this probably changed in https://github.com/astral-sh/uv/pull/10441.
+
+---
+
+_Comment by @kendallbailey on 2025-01-21 22:30_
+
+I understand the general problem is hugely complex... but as a special case, wouldn't it be possible to
+1. Gather the latest valid versions of first order dependencies
+2. Pin those, and search for a solution
+3. If step 2 fails, fall back to the general approach in use now
+?
+
+---
+
+_Comment by @charliermarsh on 2025-01-21 22:33_
+
+Sorry, I'd be strongly opposed to something like that. You already get that behavior unless you have packages in the tree that apply upper bounds (like LangChain does here). We should just handle this case better in the resolver. There shouldn't be any sort of special-casing.
+
+---
+
+_Comment by @charliermarsh on 2025-01-21 22:37_
+
+I think I see a path to fixing this case.
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2025-01-21 22:37_
+
+---
+
+_Comment by @charliermarsh on 2025-01-21 22:43_
+
+Nevermind, my idea would _only_ work for the `uv pip` interface.
+
+---
+
+_Unassigned @charliermarsh by @charliermarsh on 2025-01-21 22:43_
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2025-01-21 23:01_
+
+---
+
+_Referenced in [astral-sh/uv#10833](../../astral-sh/uv/pulls/10833.md) on 2025-01-21 23:15_
+
+---
+
+_Comment by @charliermarsh on 2025-01-21 23:15_
+
+I fixed it here: https://github.com/astral-sh/uv/pull/10833
+
+---
+
+_Comment by @konstin on 2025-01-22 10:48_
+
+> To reproduce the problem, create a reqs.in with content of
+>
+> ```
+> aiohttp
+> langchain
+> ```
+
+Please specify lower bounds on your requirements: Without lower bounds, the resolver can't tell which versions are or aren't compatible with your project, and has to potentially backtrack to ancient versions. With just two dependencies it's reasonable to just pin the latest version, but in projects with more requirements we often have to select a version below the latest version even for direct dependencies due to a conflict in the transitive dependencies, hence we're making this trade-off.
+
+> Maybe I'm naive. I hoped that if there's a solution with all explicit first order dependencies at their latest versions, then such a solution would be found and preferred. We'll have to be more diligent in setting and updating lower bounds. Thanks.
+
+> I understand the general problem is hugely complex... but as a special case, wouldn't it be possible to
+> 
+>     1. Gather the latest valid versions of first order dependencies
+> 
+>     2. Pin those, and search for a solution
+> 
+>     3. If step 2 fails, fall back to the general approach in use now
+>        ?
+
+
+This partially an algorithmic constraint: Finding a valid solution is much easier than reject step 2. Getting a solution requires only showing a single solution, while rejecting requires rejecting all possible sets of (transitive) dependencies, which makes this sequence of steps prohibitively expensive. While I agree that in your case aiohttp==3.11.11 langchain==0.3.15 is the more desirable solution, trying more generally to optimize stronger for (more) direct dependencies would move our resolver into a different class of SAT that needs much more global information than uv's resolver currently uses (we'd have to find a solution that optimizes a score function vs. looking for a solution with some prioritization tricks). Fwiw, we currently prioritize for selecting the versions of direct dependencies first, meaning they get the highest version possible, except when we do conflict resolution, which is the case you ran into.
+
+---
+
+_Closed by @charliermarsh on 2025-01-22 17:12_
+
+---
+
+_Closed by @charliermarsh on 2025-01-22 17:12_
+
+---
+
+_Comment by @konstin on 2025-01-23 13:15_
+
+Tracking down the problem chain:
+* We select `aiohttp==3.11.11`
+* That requires `async-timeout<6.0,>=4.0; python_version < "3.11"`
+* The change prioritized async-timeout (that's the bad part now fixed) so we select `async-timeout==5.0.1`
+* That clashes with `langchain==0.3.15: aiohttp>=3.8.3, <4.0.0`
+* We run conflict resolution / unit propagation with langchain and aiohttp, with aiohttp winning because it was selected first
+* We get the undesirable resolution
+
+---

@@ -1,0 +1,48 @@
+---
+number: 10774
+title: "N815: TypedDict Subclasses are not ignored"
+type: issue
+state: closed
+author: Zer0x00
+labels: []
+assignees: []
+created_at: 2024-04-04T11:28:10Z
+updated_at: 2024-04-04T11:31:48Z
+url: https://github.com/astral-sh/ruff/issues/10774
+synced_at: 2026-01-07T13:12:15-06:00
+---
+
+# N815: TypedDict Subclasses are not ignored
+
+---
+
+_Issue opened by @Zer0x00 on 2024-04-04 11:28_
+
+In https://github.com/astral-sh/ruff/pull/4066 a routine was implemented to ignore TypedDicts from N815 (mixed-case-variable-in-class-scope). But subclasses are not respected from the ignore rule for TypedDicts.
+
+```python3
+from typing import TypedDict
+
+
+class Baseclass(TypedDict):
+    camelCaseOK: str # No violation
+
+
+class Subclass(Baseclass):
+    camelCaseNotOK: str # Violation! But should not violate because it is a subclass of Baseclass
+```
+
+
+---
+
+_Comment by @AlexWaygood on 2024-04-04 11:31_
+
+Thanks for opening the issue! Luckily, this was fixed three days ago in #10719, so shouldn't be an issue once the next release comes out :-)
+
+Closing as a duplicate of #10671
+
+---
+
+_Closed by @AlexWaygood on 2024-04-04 11:31_
+
+---

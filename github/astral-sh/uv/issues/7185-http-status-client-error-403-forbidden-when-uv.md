@@ -1,0 +1,45 @@
+---
+number: 7185
+title: HTTP status client error (403 Forbidden) when uv self upgrade
+type: issue
+state: open
+author: geoqiao
+labels:
+  - releases
+assignees: []
+created_at: 2024-09-08T08:52:04Z
+updated_at: 2024-09-26T11:58:20Z
+url: https://github.com/astral-sh/uv/issues/7185
+synced_at: 2026-01-07T13:12:17-06:00
+---
+
+# HTTP status client error (403 Forbidden) when uv self upgrade
+
+---
+
+_Issue opened by @geoqiao on 2024-09-08 08:52_
+
+HTTP status client error (403 Forbidden) when uv self upgrade.
+
+Details:
+```shell
+ $ uv self update
+info: Checking for updates...
+error: HTTP status client error (403 Forbidden) for url (https://api.github.com/repos/astral-sh/uv/releases)
+```
+The current uv platform: macOS 14.6.1
+
+The current uv version: uv 0.4.7 (a178051e8 2024-09-07)
+
+
+---
+
+_Label `release` added by @zanieb on 2024-09-08 13:14_
+
+---
+
+_Comment by @raayu83 on 2024-09-26 11:58_
+
+I have the same problem on windows
+
+---

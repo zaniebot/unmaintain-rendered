@@ -1,0 +1,78 @@
+---
+number: 3019
+title: PLW0120 false positive for/with/break/else
+type: issue
+state: closed
+author: pawamoy
+labels:
+  - bug
+assignees: []
+created_at: 2023-02-18T19:35:17Z
+updated_at: 2023-02-19T16:17:06Z
+url: https://github.com/astral-sh/ruff/issues/3019
+synced_at: 2026-01-07T13:12:14-06:00
+---
+
+# PLW0120 false positive for/with/break/else
+
+---
+
+_Issue opened by @pawamoy on 2023-02-18 19:35_
+
+* A minimal code snippet that reproduces the bug.
+
+```python
+from contextlib import suppress
+
+for name in ["demo"]:
+    with suppress(AttributeError, KeyError):
+        thing = name
+        break
+else:
+    thing = "other stuff"
+```
+
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+
+```console
+% ruff demo.py
+demo.py:1:1: D100 Missing docstring in public module
+demo.py:7:1: PLW0120 `else` clause on loop without a `break` statement; remove the `else` and de-indent all the code inside it
+Found 2 errors.
+```
+
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+
+Just enabling a bunch of letters, plus targeting Python 3.7.
+
+* The current Ruff version (`ruff --version`).
+
+```console
+% ruff --version
+ruff 0.0.247
+```
+
+
+---
+
+_Label `bug` added by @charliermarsh on 2023-02-18 20:46_
+
+---
+
+_Comment by @charliermarsh on 2023-02-18 20:46_
+
+Thanks! Looks like a bug.
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2023-02-19 15:17_
+
+---
+
+_Referenced in [astral-sh/ruff#3032](../../astral-sh/ruff/pulls/3032.md) on 2023-02-19 15:40_
+
+---
+
+_Closed by @charliermarsh on 2023-02-19 16:17_
+
+---

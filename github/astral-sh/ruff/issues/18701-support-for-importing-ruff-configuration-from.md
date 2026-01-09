@@ -1,0 +1,60 @@
+---
+number: 18701
+title: Support for importing Ruff configuration from installed Python packages
+type: issue
+state: closed
+author: agusticonesagago
+labels: []
+assignees: []
+created_at: 2025-06-16T07:05:21Z
+updated_at: 2025-06-16T07:19:43Z
+url: https://github.com/astral-sh/ruff/issues/18701
+synced_at: 2026-01-07T13:12:16-06:00
+---
+
+# Support for importing Ruff configuration from installed Python packages
+
+---
+
+_Issue opened by @agusticonesagago on 2025-06-16 07:05_
+
+### Summary
+
+Hi! 👋
+
+I maintain a Python package (`XXX`) that includes a detailed `ruff.toml` configuration. I would like to avoid duplicating this configuration manually in each project that uses the `XXX` package.
+
+Currently, Ruff doesn't seem to support importing or extending configuration from a Python package that is installed via pip, e.g. something like:
+```
+[include]
+from = "XXX.ruff"
+```
+
+**What I’d like to achieve**
+I'd like Ruff to support a way to:
+- Import or extend configuration from an installed Python package (e.g., scouter)
+- Or allow defining the config path programmatically
+- Or support a pyproject.toml option like:
+```
+[tool.ruff]
+extend-config = "XXX/ruff.toml"
+```
+This would help teams standardize linting rules across projects without copy-pasting config files.
+
+Is there currently any way to achieve this? If so, could you point me to how it's done? If not, would this be considered as a feature request?
+
+Thanks for the amazing work on Ruff! 🙏
+
+---
+
+_Comment by @MichaReiser on 2025-06-16 07:19_
+
+Hi. This has come up before, but we haven't had time to make significant progress on it. One challenge with importing configurations from packages is that Ruff needs to become virtual environment aware and implement a fair amount of module resolution. 
+
+See https://github.com/astral-sh/ruff/issues/12352
+
+---
+
+_Closed by @MichaReiser on 2025-06-16 07:19_
+
+---

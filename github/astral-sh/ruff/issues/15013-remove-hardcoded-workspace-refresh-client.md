@@ -1,0 +1,59 @@
+---
+number: 15013
+title: "Remove hardcoded `workspace_refresh` client capability"
+type: issue
+state: closed
+author: dhruvmanila
+labels:
+  - bug
+  - server
+assignees: []
+created_at: 2024-12-16T08:42:02Z
+updated_at: 2024-12-16T10:56:41Z
+url: https://github.com/astral-sh/ruff/issues/15013
+synced_at: 2026-01-07T13:12:16-06:00
+---
+
+# Remove hardcoded `workspace_refresh` client capability
+
+---
+
+_Issue opened by @dhruvmanila on 2024-12-16 08:42_
+
+Resolve the following todo:
+
+https://github.com/astral-sh/ruff/blob/bcd944347d972daa3a82ba38449778ebd56d70c0/crates/ruff_server/src/session/capabilities.rs#L40-L51
+
+This should address https://github.com/astral-sh/ruff/discussions/10581#discussioncomment-11568968.
+
+---
+
+_Label `bug` added by @dhruvmanila on 2024-12-16 08:42_
+
+---
+
+_Label `server` added by @dhruvmanila on 2024-12-16 08:42_
+
+---
+
+_Comment by @dhruvmanila on 2024-12-16 08:49_
+
+So, the PR hasn't been merged yet in the original repository: https://github.com/gluon-lang/lsp-types/pull/281 but our forked version does contain this fix which we're using.
+
+---
+
+_Assigned to @dhruvmanila by @dhruvmanila on 2024-12-16 08:49_
+
+---
+
+_Referenced in [astral-sh/ruff#15014](../../astral-sh/ruff/pulls/15014.md) on 2024-12-16 09:02_
+
+---
+
+_Closed by @dhruvmanila on 2024-12-16 10:56_
+
+---
+
+_Closed by @dhruvmanila on 2024-12-16 10:56_
+
+---

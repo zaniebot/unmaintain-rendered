@@ -1,0 +1,52 @@
+---
+number: 20119
+title: "Drop `pathdiff` dependency for GitLab output"
+type: issue
+state: open
+author: ntBre
+labels:
+  - needs-decision
+assignees: []
+created_at: 2025-08-27T20:46:05Z
+updated_at: 2025-08-27T20:55:26Z
+url: https://github.com/astral-sh/ruff/issues/20119
+synced_at: 2026-01-07T13:12:16-06:00
+---
+
+# Drop `pathdiff` dependency for GitLab output
+
+---
+
+_Issue opened by @ntBre on 2025-08-27 20:46_
+
+As noted in #20117, we only use `pathdiff` for one `relativize_path_to` call in our GitLab output format. This was added in #3475 to make the GitLab output relative to the `CI_PROJECT_DIR` environment variable. According to the [docs](https://docs.gitlab.com/ci/variables/predefined_variables/), this is a pre-defined variable with this description:
+
+> The full path the repository is cloned to, and where the job runs from. If the GitLab Runner `builds_dir` parameter is set, this variable is set relative to the value of `builds_dir`. For more information, see the Advanced GitLab Runner configuration.
+            
+In my simple test [repo](https://gitlab.com/nothanks3/test-gitlab-output-format/-/merge_requests/1), echoing `$CI_PROJECT_DIR` and `pwd` shows that the job starts out in this directory, as stated above:
+
+```
+$ echo $CI_PROJECT_DIR
+/builds/nothanks3/test-gitlab-output-format
+$ pwd
+/builds/nothanks3/test-gitlab-output-format
+$ ruff --version
+ruff 0.12.8
+$ ruff check --output-format=gitlab > code-quality-report.json
+```
+
+For basic usage like this, it seems fine then to drop `relativize_path_to` and `pathdiff` in favor of the fallback handling that makes the path relative to the CWD. In fact, this was the behavior before https://github.com/astral-sh/ruff/pull/1837, which made GitLab paths absolute. I'm just slightly concerned that this could break users with more adventurous directory changes in their CI jobs.
+
+We could also use our own `relativize_path` function in `render.rs`, but the behavior seems to be a bit different from [`pathdiff::diff_paths`](https://docs.rs/pathdiff/0.2.3/src/pathdiff/lib.rs.html#43-86) if the base directory isn't a prefix of the path. `diff_paths` will add `..` components in this case.
+
+This is the only function we use from `pathdiff`, so yet another option is vendoring just that.
+
+---
+
+_Label `needs-decision` added by @ntBre on 2025-08-27 20:54_
+
+---
+
+_Referenced in [astral-sh/ty#1242](../../astral-sh/ty/issues/1242.md) on 2025-09-23 19:43_
+
+---

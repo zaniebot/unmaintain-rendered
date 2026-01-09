@@ -1,0 +1,107 @@
+---
+number: 6462
+title: "Problems with using `setuptools` as a default build-backend for projects"
+type: issue
+state: closed
+author: zanieb
+labels: []
+assignees: []
+created_at: 2024-08-22T21:08:29Z
+updated_at: 2024-08-28T18:09:00Z
+url: https://github.com/astral-sh/uv/issues/6462
+synced_at: 2026-01-07T13:12:17-06:00
+---
+
+# Problems with using `setuptools` as a default build-backend for projects
+
+---
+
+_Issue opened by @zanieb on 2024-08-22 21:08_
+
+This would be a violation of the spec, sort of:
+
+> If the pyproject.toml file is absent, or the build-backend key is missing, the source tree is not using this specification, and tools should revert to the legacy behaviour of running setup.py (either directly, or by implicitly invoking the setuptools.buildmeta:_legacy backend).
+
+Using `setuptools.buildmeta:_legacy` for a project is problematic as a default:
+
+- #6456 
+- https://github.com/astral-sh/uv/issues/6443
+- https://github.com/astral-sh/uv/issues/6460
+
+We have a few options here, e.g.:
+
+1. Use a different build backend as a default
+2. Avoid building and installing the project at all if there's not a build backend
+3. Special-case situations that would cause setuptools to fail or complain, warn the user before then? Fix the problem for them somehow?
+
+Maybe there are other options?
+
+---
+
+_Comment by @charliermarsh on 2024-08-22 21:09_
+
+The third one is sort of interesting. We could definitely check if there are obvious problems, and do something different.
+
+---
+
+_Referenced in [astral-sh/uv#6460](../../astral-sh/uv/issues/6460.md) on 2024-08-22 21:10_
+
+---
+
+_Comment by @samypr100 on 2024-08-22 22:28_
+
+`setuptools.build_meta:__legacy__`* right?
+
+Sadly, I still feel [_BuildMetaLegacyBackend](https://github.com/pypa/setuptools/blob/v73.0.1/setuptools/build_meta.py#L473) will stay around for many more years given what happened with the temporary removal of `test` on [v72.0.0](https://github.com/pypa/setuptools/blob/main/NEWS.rst#v7200).
+
+
+
+---
+
+_Comment by @zanieb on 2024-08-22 22:34_
+
+Yep, the legacy one. I don't mind using it for builds in general, but I think we need to provide a better experience than it delivers to people who just try to `uv sync` or `uv run` in their project.
+
+---
+
+_Comment by @konstin on 2024-08-23 10:53_
+
+I like (2) for projects that are managed by uv. We obviously need to continue to use the setuptools fallback for published source distributions and outside-of-workspace dependencies, but if the user doesn't specify a build backend, we can leave them in a manually mode. There's a large number of python projects that's just a number of scripts that aren't targeted at redistribution. I've seen a number of scientic/ML projects that were just a collection of jupyter notebooks. These greatly profit from dependency management, but don't need any management of their project.
+
+---
+
+_Comment by @chrisrodrigue on 2024-08-23 23:50_
+
+> If the pyproject.toml file is absent, or the build-backend key is missing, the source tree is not using this specification, and tools **should** revert to the legacy behaviour of running setup.py (either directly, or by implicitly invoking the setuptools.buildmeta:_legacy backend).
+
+Perhaps [RFC 2119](https://datatracker.ietf.org/doc/html/rfc2119.html ) keyword SHOULD *should* have been capitalized here? 
+
+Since shoulds are recommendations (rather than requirements like shalls/musts), I see no violation of the spec here 🙂
+
+---
+
+_Comment by @zanieb on 2024-08-23 23:52_
+
+Yes it's not quite a specification violation, but we strive to conform with "SHOULD" too
+
+---
+
+_Comment by @edmorley on 2024-08-24 12:53_
+
+> This would be a violation of the spec, sort of:
+
+(At the risk of being slightly pedantic) Surely the spec only comes into play when actually building a package though? The root issue here is that uv currently assumes that all projects should be built as a package - which in my experience is more the exception than the norm for your typical end-user Python app. 
+
+ie: This issue is more about uv needing a heuristic for "should this project be packaged" (xref #6511), and if that heuristic determined the answer was "no", then it's not a violation of the spec to skip packaging using the setuptools backend.
+
+---
+
+_Comment by @zanieb on 2024-08-28 18:08_
+
+As of [uv 0.4.0](https://github.com/astral-sh/uv/releases/tag/0.4.0), we no longer build the package if a build system is not defined unless the user opts-in.
+
+---
+
+_Closed by @zanieb on 2024-08-28 18:08_
+
+---

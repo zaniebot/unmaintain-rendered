@@ -1,0 +1,763 @@
+---
+number: 2755
+title: Unspecific protocol error detected
+type: issue
+state: closed
+author: henryiii
+labels:
+  - bug
+  - needs-mre
+  - network
+assignees: []
+created_at: 2024-04-01T08:48:38Z
+updated_at: 2025-12-04T14:32:46Z
+url: https://github.com/astral-sh/uv/issues/2755
+synced_at: 2026-01-07T13:12:17-06:00
+---
+
+# Unspecific protocol error detected
+
+---
+
+_Issue opened by @henryiii on 2024-04-01 08:48_
+
+I moved Scientific-Python's cookie over to uv, which due to the large number of installs needed when testing a cookiecutter with 11 backends, really saved a lot of time, taking some jobs from 6 minutes to 3 minutes. However, the jobs have become flakey. I've first noticed it with the PyPy job, but just got it with the CPython 3.12 macOS job:
+
+
+```
+nox > Command uv pip install '.[test]' failed with exit code 2:
+Resolved 7 packages in 8ms
+error: Failed to download distributions
+  Caused by: Failed to fetch wheel: cookie-maturin @ file:///Users/runner/work/cookie/cookie/.nox/tests-maturin-novcs/tmp/cookie-maturin
+  Caused by: Failed to build: cookie-maturin @ file:///Users/runner/work/cookie/cookie/.nox/tests-maturin-novcs/tmp/cookie-maturin
+  Caused by: Failed to install requirements from build-system.requires (install)
+  Caused by: Failed to download and build distributions
+  Caused by: Failed to fetch wheel: maturin==1.5.1
+  Caused by: Failed to extract archive
+  Caused by: request or response body error: error reading a body from connection: stream error received: unspecific protocol error detected
+  Caused by: error reading a body from connection: stream error received: unspecific protocol error detected
+  Caused by: stream error received: unspecific protocol error detected
+```
+
+https://github.com/scientific-python/cookie/actions/runs/8504663817/job/23291927556?pr=395
+
+Here's a PyPy linux failure:
+
+```
+nox > Command uv pip install cookiecutter poetry failed with exit code 2:
+Resolved 56 packages in 465ms
+error: Failed to download distributions
+  Caused by: Failed to fetch wheel: rapidfuzz==3.7.0
+  Caused by: Failed to extract archive
+  Caused by: request or response body error: error reading a body from connection: stream error received: unspecific protocol error detected
+  Caused by: error reading a body from connection: stream error received: unspecific protocol error detected
+  Caused by: stream error received: unspecific protocol error detected
+```
+
+https://github.com/scientific-python/cookie/actions/runs/8503847665/job/23289923070
+
+---
+
+_Comment by @skshetry on 2024-04-01 10:08_
+
+I am also getting the same problem in GitHub Actions (unfortunately, I cannot link to the job). I had 2 failures today.
+
+```console
+nox > Command uv pip install '.[tests]' failed with exit code 2:
+Resolved 176 packages in 2.81s
+error: Failed to download distributions
+  Caused by: Failed to fetch wheel: pyarrow==15.0.2
+  Caused by: Failed to extract archive
+  Caused by: request or response body error: error reading a body from connection: stream error received: unspecific protocol error detected
+  Caused by: error reading a body from connection: stream error received: unspecific protocol error detected
+  Caused by: stream error received: unspecific protocol error detected
+```
+
+```console
+nox > Command uv pip install '.[tests]' failed with exit code 2:
+Resolved 168 packages in 2.82s
+error: Failed to download distributions
+  Caused by: Failed to fetch wheel: torch==2.2.2
+  Caused by: Failed to extract archive
+  Caused by: request or response body error: error reading a body from connection: stream error received: unspecific protocol error detected
+  Caused by: error reading a body from connection: stream error received: unspecific protocol error detected
+  Caused by: stream error received: unspecific protocol error detected
+```
+
+This happened on Linux (ubuntu-latest-8-cores/3.12) and macOS (macoS-latest/3.9), respectively. `uv --version` is `0.1.26`.
+
+
+---
+
+_Comment by @charliermarsh on 2024-04-01 14:10_
+
+Thanks, I’ve never seen this before so not sure what’s up. We’ll take a look.
+
+---
+
+_Label `bug` added by @charliermarsh on 2024-04-01 14:39_
+
+---
+
+_Label `needs-mre` added by @charliermarsh on 2024-04-01 14:39_
+
+---
+
+_Comment by @charliermarsh on 2024-04-01 17:51_
+
+Has anyone seen this in prior versions?
+
+---
+
+_Comment by @henryiii on 2024-04-02 08:32_
+
+I added this pretty recently, so not sure. I can pin an older version though if you want me to test one.
+
+---
+
+_Comment by @seanmonstar on 2024-04-02 23:06_
+
+> stream error received: unspecific protocol error detected
+
+That would mean an HTTP/2 `RST_STREAM` with the error code of `PROTOCOL_ERROR`. Received from the server.
+
+Unfortunately, stream resets don't come with any extra info (in the spec), but figured I'd mention it in case that helps understanding the environment.
+
+---
+
+_Label `network` added by @konstin on 2024-07-02 09:38_
+
+---
+
+_Referenced in [astral-sh/uv#4725](../../astral-sh/uv/pulls/4725.md) on 2024-07-02 09:49_
+
+---
+
+_Comment by @Grub4K on 2025-08-14 01:41_
+
+I can reproduce this consistently with 0.8.10 when using USB tethering and mobile internet. After about 6 minutes a similar error happens:
+```
+error: Failed to install graalpy-3.11.0-linux-x86_64-gnu
+  Caused by: Failed to extract archive: graalpy-24.2.2-linux-amd64.tar.gz
+  Caused by: I/O operation failed during extraction
+  Caused by: failed to unpack `/home/grub4k/.local/share/uv/python/.temp/.tmpndAeIK/graalpy-24.2.2-linux-amd64/lib/libpythonvm.so`
+  Caused by: failed to unpack `graalpy-24.2.2-linux-amd64/lib/libpythonvm.so` into `/home/grub4k/.local/share/uv/python/.temp/.tmpndAeIK/graalpy-24.2.2-linux-amd64/lib/libpythonvm.so`
+  Caused by: error decoding response body
+  Caused by: request or response body error
+  Caused by: error reading a body from connection
+  Caused by: stream error received: unspecific protocol error detected
+```
+
+<details><summary>Full output of <code>uv -vv python install graalpy</code></summary>
+
+```
+DEBUG uv 0.8.10
+TRACE Checking lock for `/home/grub4k/.local/share/uv/python` at `/home/grub4k/.local/share/uv/python/.lock`
+DEBUG Acquired lock for `/home/grub4k/.local/share/uv/python`
+TRACE Found existing installation cpython-3.14.0b1-linux-x86_64-gnu
+TRACE Found existing installation cpython-3.13.3-linux-x86_64-gnu
+TRACE Found existing installation cpython-3.12.10-linux-x86_64-gnu
+TRACE Found existing installation cpython-3.11.12-linux-x86_64-gnu
+TRACE Found existing installation cpython-3.10.17-linux-x86_64-gnu
+TRACE Found existing installation cpython-3.9.22-linux-x86_64-gnu
+TRACE Found existing installation cpython-3.8.20-linux-x86_64-gnu
+TRACE Found `ld` path: /lib64/ld-linux-x86-64.so.2
+TRACE stdout output from `ld`: ""
+TRACE stderr output from `ld`: "/lib64/ld-linux-x86-64.so.2: missing program name\nTry '/lib64/ld-linux-x86-64.so.2 --help' for more information.\n"
+TRACE Tried to find musl version by running `"/lib64/ld-linux-x86-64.so.2"`, but failed: Could not find musl version in output of: `/lib64/ld-linux-x86-64.so.2`
+TRACE Tried to find libc version from possible symlink at "/lib64/ld-linux-x86-64.so.2", but failed: Failed to determine libc
+TRACE stdout output from `ld.so --version`: "ld.so (GNU libc) stable release version 2.42.\nCopyright (C) 2025 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.\nThere is NO warranty; not even for MERCHANTABILITY or FITNESS FOR A\nPARTICULAR PURPOSE.\n"
+TRACE Found manylinux 2.42 in stdout of ld.so version
+TRACE Architecture `x86_64` is not compatible with `aarch64`
+TRACE Architecture `x86_64` is not compatible with `aarch64`
+TRACE Architecture `x86_64` is not compatible with `armv7`
+TRACE Architecture `x86_64` is not compatible with `armv7`
+TRACE Architecture `x86_64` is not compatible with `armv7`
+TRACE Architecture `x86_64` is not compatible with `armv7`
+TRACE Architecture `x86_64` is not compatible with `powerpc64le`
+TRACE Architecture `x86_64` is not compatible with `powerpc64le`
+TRACE Architecture `x86_64` is not compatible with `riscv64gc`
+TRACE Architecture `x86_64` is not compatible with `riscv64gc`
+TRACE Architecture `x86_64` is not compatible with `s390x`
+TRACE Architecture `x86_64` is not compatible with `s390x`
+TRACE Architecture `x86_64` is not compatible with `aarch64`
+TRACE Architecture `x86_64` is not compatible with `aarch64`
+TRACE Architecture `x86_64` is not compatible with `armv7`
+TRACE Architecture `x86_64` is not compatible with `armv7`
+TRACE Architecture `x86_64` is not compatible with `armv7`
+TRACE Architecture `x86_64` is not compatible with `armv7`
+TRACE Architecture `x86_64` is not compatible with `powerpc64le`
+TRACE Architecture `x86_64` is not compatible with `powerpc64le`
+TRACE Architecture `x86_64` is not compatible with `riscv64gc`
+TRACE Architecture `x86_64` is not compatible with `riscv64gc`
+TRACE Architecture `x86_64` is not compatible with `s390x`
+TRACE Architecture `x86_64` is not compatible with `s390x`
+TRACE Architecture `x86_64` is not compatible with `aarch64`
+TRACE Architecture `x86_64` is not compatible with `aarch64`
+TRACE Architecture `x86_64` is not compatible with `armv7`
+TRACE Architecture `x86_64` is not compatible with `armv7`
+TRACE Architecture `x86_64` is not compatible with `armv7`
+TRACE Architecture `x86_64` is not compatible with `armv7`
+TRACE Architecture `x86_64` is not compatible with `powerpc64le`
+TRACE Architecture `x86_64` is not compatible with `powerpc64le`
+TRACE Architecture `x86_64` is not compatible with `riscv64gc`
+TRACE Architecture `x86_64` is not compatible with `riscv64gc`
+TRACE Architecture `x86_64` is not compatible with `s390x`
+TRACE Architecture `x86_64` is not compatible with `s390x`
+TRACE Architecture `x86_64` is not compatible with `aarch64`
+TRACE Architecture `x86_64` is not compatible with `aarch64`
+TRACE Architecture `x86_64` is not compatible with `armv7`
+TRACE Architecture `x86_64` is not compatible with `armv7`
+TRACE Architecture `x86_64` is not compatible with `armv7`
+TRACE Architecture `x86_64` is not compatible with `armv7`
+TRACE Architecture `x86_64` is not compatible with `powerpc64le`
+TRACE Architecture `x86_64` is not compatible with `powerpc64le`
+TRACE Architecture `x86_64` is not compatible with `riscv64gc`
+TRACE Architecture `x86_64` is not compatible with `riscv64gc`
+TRACE Architecture `x86_64` is not compatible with `s390x`
+TRACE Architecture `x86_64` is not compatible with `s390x`
+TRACE Architecture `x86_64` is not compatible with `aarch64`
+TRACE Architecture `x86_64` is not compatible with `aarch64`
+TRACE Architecture `x86_64` is not compatible with `armv7`
+TRACE Architecture `x86_64` is not compatible with `armv7`
+TRACE Architecture `x86_64` is not compatible with `armv7`
+TRACE Architecture `x86_64` is not compatible with `armv7`
+TRACE Architecture `x86_64` is not compatible with `powerpc64le`
+TRACE Architecture `x86_64` is not compatible with `powerpc64le`
+TRACE Architecture `x86_64` is not compatible with `riscv64gc`
+TRACE Architecture `x86_64` is not compatible with `riscv64gc`
+TRACE Architecture `x86_64` is not compatible with `s390x`
+TRACE Architecture `x86_64` is not compatible with `s390x`
+TRACE Architecture `x86_64` is not compatible with `aarch64`
+TRACE Architecture `x86_64` is not compatible with `aarch64`
+TRACE Architecture `x86_64` is not compatible with `armv7`
+TRACE Architecture `x86_64` is not compatible with `armv7`
+TRACE Architecture `x86_64` is not compatible with `armv7`
+TRACE Architecture `x86_64` is not compatible with `armv7`
+TRACE Architecture `x86_64` is not compatible with `powerpc64le`
+TRACE Architecture `x86_64` is not compatible with `powerpc64le`
+TRACE Architecture `x86_64` is not compatible with `riscv64gc`
+TRACE Architecture `x86_64` is not compatible with `riscv64gc`
+TRACE Architecture `x86_64` is not compatible with `s390x`
+TRACE Architecture `x86_64` is not compatible with `s390x`
+TRACE Architecture `x86_64` is not compatible with `aarch64`
+TRACE Architecture `x86_64` is not compatible with `aarch64`
+TRACE Architecture `x86_64` is not compatible with `armv7`
+TRACE Architecture `x86_64` is not compatible with `armv7`
+TRACE Architecture `x86_64` is not compatible with `armv7`
+TRACE Architecture `x86_64` is not compatible with `armv7`
+TRACE Architecture `x86_64` is not compatible with `powerpc64le`
+TRACE Architecture `x86_64` is not compatible with `powerpc64le`
+TRACE Architecture `x86_64` is not compatible with `riscv64gc`
+TRACE Architecture `x86_64` is not compatible with `riscv64gc`
+TRACE Architecture `x86_64` is not compatible with `s390x`
+TRACE Architecture `x86_64` is not compatible with `s390x`
+TRACE Architecture `x86_64` is not compatible with `aarch64`
+TRACE Architecture `x86_64` is not compatible with `aarch64`
+TRACE Architecture `x86_64` is not compatible with `armv7`
+TRACE Architecture `x86_64` is not compatible with `armv7`
+TRACE Architecture `x86_64` is not compatible with `armv7`
+TRACE Architecture `x86_64` is not compatible with `armv7`
+TRACE Architecture `x86_64` is not compatible with `powerpc64le`
+TRACE Architecture `x86_64` is not compatible with `powerpc64le`
+TRACE Architecture `x86_64` is not compatible with `riscv64gc`
+TRACE Architecture `x86_64` is not compatible with `riscv64gc`
+TRACE Architecture `x86_64` is not compatible with `s390x`
+TRACE Architecture `x86_64` is not compatible with `s390x`
+TRACE Architecture `x86_64` is not compatible with `aarch64`
+TRACE Architecture `x86_64` is not compatible with `aarch64`
+TRACE Architecture `x86_64` is not compatible with `armv7`
+TRACE Architecture `x86_64` is not compatible with `armv7`
+TRACE Architecture `x86_64` is not compatible with `armv7`
+TRACE Architecture `x86_64` is not compatible with `armv7`
+TRACE Architecture `x86_64` is not compatible with `powerpc64le`
+TRACE Architecture `x86_64` is not compatible with `powerpc64le`
+TRACE Architecture `x86_64` is not compatible with `riscv64gc`
+TRACE Architecture `x86_64` is not compatible with `riscv64gc`
+TRACE Architecture `x86_64` is not compatible with `s390x`
+TRACE Architecture `x86_64` is not compatible with `s390x`
+TRACE Architecture `x86_64` is not compatible with `aarch64`
+TRACE Architecture `x86_64` is not compatible with `aarch64`
+TRACE Architecture `x86_64` is not compatible with `armv7`
+TRACE Architecture `x86_64` is not compatible with `armv7`
+TRACE Architecture `x86_64` is not compatible with `armv7`
+TRACE Architecture `x86_64` is not compatible with `armv7`
+TRACE Architecture `x86_64` is not compatible with `powerpc64le`
+TRACE Architecture `x86_64` is not compatible with `powerpc64le`
+TRACE Architecture `x86_64` is not compatible with `s390x`
+TRACE Architecture `x86_64` is not compatible with `s390x`
+TRACE Architecture `x86_64` is not compatible with `aarch64`
+TRACE Architecture `x86_64` is not compatible with `aarch64`
+TRACE Architecture `x86_64` is not compatible with `armv7`
+TRACE Architecture `x86_64` is not compatible with `armv7`
+TRACE Architecture `x86_64` is not compatible with `armv7`
+TRACE Architecture `x86_64` is not compatible with `armv7`
+TRACE Architecture `x86_64` is not compatible with `powerpc64le`
+TRACE Architecture `x86_64` is not compatible with `powerpc64le`
+TRACE Architecture `x86_64` is not compatible with `riscv64gc`
+TRACE Architecture `x86_64` is not compatible with `riscv64gc`
+TRACE Architecture `x86_64` is not compatible with `s390x`
+TRACE Architecture `x86_64` is not compatible with `s390x`
+TRACE Architecture `x86_64` is not compatible with `aarch64`
+TRACE Architecture `x86_64` is not compatible with `aarch64`
+TRACE Architecture `x86_64` is not compatible with `armv7`
+TRACE Architecture `x86_64` is not compatible with `armv7`
+TRACE Architecture `x86_64` is not compatible with `armv7`
+TRACE Architecture `x86_64` is not compatible with `armv7`
+TRACE Architecture `x86_64` is not compatible with `powerpc64le`
+TRACE Architecture `x86_64` is not compatible with `powerpc64le`
+TRACE Architecture `x86_64` is not compatible with `riscv64gc`
+TRACE Architecture `x86_64` is not compatible with `riscv64gc`
+TRACE Architecture `x86_64` is not compatible with `s390x`
+TRACE Architecture `x86_64` is not compatible with `s390x`
+TRACE Architecture `x86_64` is not compatible with `aarch64`
+TRACE Architecture `x86_64` is not compatible with `aarch64`
+TRACE Architecture `x86_64` is not compatible with `armv7`
+TRACE Architecture `x86_64` is not compatible with `armv7`
+TRACE Architecture `x86_64` is not compatible with `armv7`
+TRACE Architecture `x86_64` is not compatible with `armv7`
+TRACE Architecture `x86_64` is not compatible with `powerpc64le`
+TRACE Architecture `x86_64` is not compatible with `powerpc64le`
+TRACE Architecture `x86_64` is not compatible with `riscv64gc`
+TRACE Architecture `x86_64` is not compatible with `riscv64gc`
+TRACE Architecture `x86_64` is not compatible with `s390x`
+TRACE Architecture `x86_64` is not compatible with `s390x`
+TRACE Architecture `x86_64` is not compatible with `aarch64`
+TRACE Architecture `x86_64` is not compatible with `aarch64`
+TRACE Architecture `x86_64` is not compatible with `armv7`
+TRACE Architecture `x86_64` is not compatible with `armv7`
+TRACE Architecture `x86_64` is not compatible with `armv7`
+TRACE Architecture `x86_64` is not compatible with `armv7`
+TRACE Architecture `x86_64` is not compatible with `powerpc64le`
+TRACE Architecture `x86_64` is not compatible with `powerpc64le`
+TRACE Architecture `x86_64` is not compatible with `riscv64gc`
+TRACE Architecture `x86_64` is not compatible with `riscv64gc`
+TRACE Architecture `x86_64` is not compatible with `s390x`
+TRACE Architecture `x86_64` is not compatible with `s390x`
+TRACE Architecture `x86_64` is not compatible with `aarch64`
+TRACE Architecture `x86_64` is not compatible with `aarch64`
+TRACE Architecture `x86_64` is not compatible with `armv7`
+TRACE Architecture `x86_64` is not compatible with `armv7`
+TRACE Architecture `x86_64` is not compatible with `armv7`
+TRACE Architecture `x86_64` is not compatible with `armv7`
+TRACE Architecture `x86_64` is not compatible with `powerpc64le`
+TRACE Architecture `x86_64` is not compatible with `powerpc64le`
+TRACE Architecture `x86_64` is not compatible with `riscv64gc`
+TRACE Architecture `x86_64` is not compatible with `riscv64gc`
+TRACE Architecture `x86_64` is not compatible with `s390x`
+TRACE Architecture `x86_64` is not compatible with `s390x`
+TRACE Architecture `x86_64` is not compatible with `aarch64`
+TRACE Architecture `x86_64` is not compatible with `aarch64`
+TRACE Architecture `x86_64` is not compatible with `armv7`
+TRACE Architecture `x86_64` is not compatible with `armv7`
+TRACE Architecture `x86_64` is not compatible with `armv7`
+TRACE Architecture `x86_64` is not compatible with `armv7`
+TRACE Architecture `x86_64` is not compatible with `powerpc64le`
+TRACE Architecture `x86_64` is not compatible with `powerpc64le`
+TRACE Architecture `x86_64` is not compatible with `riscv64gc`
+TRACE Architecture `x86_64` is not compatible with `riscv64gc`
+TRACE Architecture `x86_64` is not compatible with `s390x`
+TRACE Architecture `x86_64` is not compatible with `s390x`
+TRACE Architecture `x86_64` is not compatible with `aarch64`
+TRACE Architecture `x86_64` is not compatible with `aarch64`
+TRACE Architecture `x86_64` is not compatible with `armv7`
+TRACE Architecture `x86_64` is not compatible with `armv7`
+TRACE Architecture `x86_64` is not compatible with `armv7`
+TRACE Architecture `x86_64` is not compatible with `armv7`
+TRACE Architecture `x86_64` is not compatible with `powerpc64le`
+TRACE Architecture `x86_64` is not compatible with `powerpc64le`
+TRACE Architecture `x86_64` is not compatible with `s390x`
+TRACE Architecture `x86_64` is not compatible with `s390x`
+TRACE Architecture `x86_64` is not compatible with `aarch64`
+TRACE Architecture `x86_64` is not compatible with `armv7`
+TRACE Architecture `x86_64` is not compatible with `armv7`
+TRACE Architecture `x86_64` is not compatible with `powerpc64le`
+TRACE Architecture `x86_64` is not compatible with `s390x`
+TRACE Architecture `x86_64` is not compatible with `aarch64`
+TRACE Architecture `x86_64` is not compatible with `armv7`
+TRACE Architecture `x86_64` is not compatible with `armv7`
+TRACE Architecture `x86_64` is not compatible with `powerpc64le`
+TRACE Architecture `x86_64` is not compatible with `s390x`
+TRACE Architecture `x86_64` is not compatible with `aarch64`
+TRACE Architecture `x86_64` is not compatible with `armv7`
+TRACE Architecture `x86_64` is not compatible with `armv7`
+TRACE Architecture `x86_64` is not compatible with `powerpc64le`
+TRACE Architecture `x86_64` is not compatible with `riscv64gc`
+TRACE Architecture `x86_64` is not compatible with `s390x`
+TRACE Architecture `x86_64` is not compatible with `aarch64`
+TRACE Architecture `x86_64` is not compatible with `armv7`
+TRACE Architecture `x86_64` is not compatible with `armv7`
+TRACE Architecture `x86_64` is not compatible with `powerpc64le`
+TRACE Architecture `x86_64` is not compatible with `riscv64gc`
+TRACE Architecture `x86_64` is not compatible with `s390x`
+TRACE Architecture `x86_64` is not compatible with `aarch64`
+TRACE Architecture `x86_64` is not compatible with `armv7`
+TRACE Architecture `x86_64` is not compatible with `armv7`
+TRACE Architecture `x86_64` is not compatible with `powerpc64le`
+TRACE Architecture `x86_64` is not compatible with `riscv64gc`
+TRACE Architecture `x86_64` is not compatible with `s390x`
+TRACE Architecture `x86_64` is not compatible with `aarch64`
+TRACE Architecture `x86_64` is not compatible with `armv7`
+TRACE Architecture `x86_64` is not compatible with `armv7`
+TRACE Architecture `x86_64` is not compatible with `powerpc64le`
+TRACE Architecture `x86_64` is not compatible with `riscv64gc`
+TRACE Architecture `x86_64` is not compatible with `s390x`
+TRACE Architecture `x86_64` is not compatible with `aarch64`
+TRACE Architecture `x86_64` is not compatible with `armv7`
+TRACE Architecture `x86_64` is not compatible with `armv7`
+TRACE Architecture `x86_64` is not compatible with `powerpc64le`
+TRACE Architecture `x86_64` is not compatible with `s390x`
+TRACE Architecture `x86_64` is not compatible with `aarch64`
+TRACE Architecture `x86_64` is not compatible with `armv7`
+TRACE Architecture `x86_64` is not compatible with `armv7`
+TRACE Architecture `x86_64` is not compatible with `powerpc64le`
+TRACE Architecture `x86_64` is not compatible with `s390x`
+TRACE Architecture `x86_64` is not compatible with `aarch64`
+TRACE Architecture `x86_64` is not compatible with `armv7`
+TRACE Architecture `x86_64` is not compatible with `armv7`
+TRACE Architecture `x86_64` is not compatible with `powerpc64le`
+TRACE Architecture `x86_64` is not compatible with `s390x`
+TRACE Architecture `x86_64` is not compatible with `aarch64`
+TRACE Architecture `x86_64` is not compatible with `armv7`
+TRACE Architecture `x86_64` is not compatible with `armv7`
+TRACE Architecture `x86_64` is not compatible with `powerpc64le`
+TRACE Architecture `x86_64` is not compatible with `s390x`
+TRACE Architecture `x86_64` is not compatible with `aarch64`
+TRACE Architecture `x86_64` is not compatible with `armv7`
+TRACE Architecture `x86_64` is not compatible with `armv7`
+TRACE Architecture `x86_64` is not compatible with `powerpc64le`
+TRACE Architecture `x86_64` is not compatible with `s390x`
+TRACE Architecture `x86_64` is not compatible with `aarch64`
+TRACE Architecture `x86_64` is not compatible with `powerpc64le`
+TRACE Architecture `x86_64` is not compatible with `s390x`
+TRACE Architecture `x86_64` is not compatible with `aarch64`
+TRACE Architecture `x86_64` is not compatible with `powerpc64le`
+TRACE Architecture `x86_64` is not compatible with `s390x`
+TRACE Architecture `x86_64` is not compatible with `aarch64`
+TRACE Architecture `x86_64` is not compatible with `powerpc64le`
+TRACE Architecture `x86_64` is not compatible with `s390x`
+TRACE Architecture `x86_64` is not compatible with `aarch64`
+TRACE Architecture `x86_64` is not compatible with `armv7`
+TRACE Architecture `x86_64` is not compatible with `armv7`
+TRACE Architecture `x86_64` is not compatible with `powerpc64le`
+TRACE Architecture `x86_64` is not compatible with `riscv64gc`
+TRACE Architecture `x86_64` is not compatible with `s390x`
+TRACE Architecture `x86_64` is not compatible with `aarch64`
+TRACE Architecture `x86_64` is not compatible with `armv7`
+TRACE Architecture `x86_64` is not compatible with `armv7`
+TRACE Architecture `x86_64` is not compatible with `powerpc64le`
+TRACE Architecture `x86_64` is not compatible with `riscv64gc`
+TRACE Architecture `x86_64` is not compatible with `s390x`
+TRACE Architecture `x86_64` is not compatible with `aarch64`
+TRACE Architecture `x86_64` is not compatible with `armv7`
+TRACE Architecture `x86_64` is not compatible with `armv7`
+TRACE Architecture `x86_64` is not compatible with `powerpc64le`
+TRACE Architecture `x86_64` is not compatible with `riscv64gc`
+TRACE Architecture `x86_64` is not compatible with `s390x`
+TRACE Architecture `x86_64` is not compatible with `aarch64`
+TRACE Architecture `x86_64` is not compatible with `armv7`
+TRACE Architecture `x86_64` is not compatible with `armv7`
+TRACE Architecture `x86_64` is not compatible with `powerpc64le`
+TRACE Architecture `x86_64` is not compatible with `s390x`
+TRACE Architecture `x86_64` is not compatible with `aarch64`
+TRACE Architecture `x86_64` is not compatible with `armv7`
+TRACE Architecture `x86_64` is not compatible with `armv7`
+TRACE Architecture `x86_64` is not compatible with `powerpc64le`
+TRACE Architecture `x86_64` is not compatible with `s390x`
+TRACE Architecture `x86_64` is not compatible with `aarch64`
+TRACE Architecture `x86_64` is not compatible with `powerpc64le`
+TRACE Architecture `x86_64` is not compatible with `s390x`
+TRACE Architecture `x86_64` is not compatible with `aarch64`
+TRACE Architecture `x86_64` is not compatible with `powerpc64le`
+TRACE Architecture `x86_64` is not compatible with `s390x`
+TRACE Architecture `x86_64` is not compatible with `aarch64`
+TRACE Architecture `x86_64` is not compatible with `powerpc64le`
+TRACE Architecture `x86_64` is not compatible with `s390x`
+TRACE Architecture `x86_64` is not compatible with `aarch64`
+TRACE Architecture `x86_64` is not compatible with `x86`
+TRACE Architecture `x86_64` is not compatible with `powerpc64le`
+TRACE Architecture `x86_64` is not compatible with `s390x`
+TRACE Architecture `x86_64` is not compatible with `aarch64`
+TRACE Architecture `x86_64` is not compatible with `x86`
+TRACE Architecture `x86_64` is not compatible with `powerpc64le`
+TRACE Architecture `x86_64` is not compatible with `s390x`
+TRACE Architecture `x86_64` is not compatible with `aarch64`
+TRACE Architecture `x86_64` is not compatible with `x86`
+TRACE Architecture `x86_64` is not compatible with `powerpc64le`
+TRACE Architecture `x86_64` is not compatible with `aarch64`
+TRACE Architecture `x86_64` is not compatible with `x86`
+TRACE Architecture `x86_64` is not compatible with `aarch64`
+TRACE Architecture `x86_64` is not compatible with `armv7`
+TRACE Architecture `x86_64` is not compatible with `armv7`
+TRACE Architecture `x86_64` is not compatible with `powerpc64le`
+TRACE Architecture `x86_64` is not compatible with `riscv64gc`
+TRACE Architecture `x86_64` is not compatible with `s390x`
+TRACE Architecture `x86_64` is not compatible with `aarch64`
+TRACE Architecture `x86_64` is not compatible with `armv7`
+TRACE Architecture `x86_64` is not compatible with `armv7`
+TRACE Architecture `x86_64` is not compatible with `powerpc64le`
+TRACE Architecture `x86_64` is not compatible with `riscv64gc`
+TRACE Architecture `x86_64` is not compatible with `s390x`
+TRACE Architecture `x86_64` is not compatible with `aarch64`
+TRACE Architecture `x86_64` is not compatible with `armv7`
+TRACE Architecture `x86_64` is not compatible with `armv7`
+TRACE Architecture `x86_64` is not compatible with `powerpc64le`
+TRACE Architecture `x86_64` is not compatible with `riscv64gc`
+TRACE Architecture `x86_64` is not compatible with `s390x`
+TRACE Architecture `x86_64` is not compatible with `aarch64`
+TRACE Architecture `x86_64` is not compatible with `armv7`
+TRACE Architecture `x86_64` is not compatible with `armv7`
+TRACE Architecture `x86_64` is not compatible with `powerpc64le`
+TRACE Architecture `x86_64` is not compatible with `s390x`
+TRACE Architecture `x86_64` is not compatible with `aarch64`
+TRACE Architecture `x86_64` is not compatible with `armv7`
+TRACE Architecture `x86_64` is not compatible with `armv7`
+TRACE Architecture `x86_64` is not compatible with `powerpc64le`
+TRACE Architecture `x86_64` is not compatible with `s390x`
+TRACE Architecture `x86_64` is not compatible with `aarch64`
+TRACE Architecture `x86_64` is not compatible with `x86`
+TRACE Architecture `x86_64` is not compatible with `powerpc64le`
+TRACE Architecture `x86_64` is not compatible with `s390x`
+TRACE Architecture `x86_64` is not compatible with `aarch64`
+TRACE Architecture `x86_64` is not compatible with `x86`
+TRACE Architecture `x86_64` is not compatible with `powerpc64le`
+TRACE Architecture `x86_64` is not compatible with `s390x`
+TRACE Architecture `x86_64` is not compatible with `aarch64`
+TRACE Architecture `x86_64` is not compatible with `x86`
+TRACE Architecture `x86_64` is not compatible with `powerpc64le`
+TRACE Architecture `x86_64` is not compatible with `aarch64`
+TRACE Architecture `x86_64` is not compatible with `x86`
+TRACE Architecture `x86_64` is not compatible with `aarch64`
+TRACE Architecture `x86_64` is not compatible with `x86`
+TRACE Architecture `x86_64` is not compatible with `aarch64`
+TRACE Architecture `x86_64` is not compatible with `x86`
+TRACE Architecture `x86_64` is not compatible with `aarch64`
+TRACE Architecture `x86_64` is not compatible with `x86`
+TRACE Architecture `x86_64` is not compatible with `aarch64`
+TRACE Architecture `x86_64` is not compatible with `x86`
+TRACE Architecture `x86_64` is not compatible with `aarch64`
+TRACE Architecture `x86_64` is not compatible with `x86`
+TRACE Architecture `x86_64` is not compatible with `aarch64`
+TRACE Architecture `x86_64` is not compatible with `x86`
+TRACE Architecture `x86_64` is not compatible with `aarch64`
+TRACE Architecture `x86_64` is not compatible with `x86`
+TRACE Architecture `x86_64` is not compatible with `aarch64`
+TRACE Architecture `x86_64` is not compatible with `x86`
+TRACE Architecture `x86_64` is not compatible with `aarch64`
+TRACE Architecture `x86_64` is not compatible with `armv7`
+TRACE Architecture `x86_64` is not compatible with `armv7`
+TRACE Architecture `x86_64` is not compatible with `powerpc64le`
+TRACE Architecture `x86_64` is not compatible with `riscv64gc`
+TRACE Architecture `x86_64` is not compatible with `s390x`
+TRACE Architecture `x86_64` is not compatible with `aarch64`
+TRACE Architecture `x86_64` is not compatible with `armv7`
+TRACE Architecture `x86_64` is not compatible with `armv7`
+TRACE Architecture `x86_64` is not compatible with `powerpc64le`
+TRACE Architecture `x86_64` is not compatible with `riscv64gc`
+TRACE Architecture `x86_64` is not compatible with `s390x`
+TRACE Architecture `x86_64` is not compatible with `aarch64`
+TRACE Architecture `x86_64` is not compatible with `armv7`
+TRACE Architecture `x86_64` is not compatible with `armv7`
+TRACE Architecture `x86_64` is not compatible with `powerpc64le`
+TRACE Architecture `x86_64` is not compatible with `riscv64gc`
+TRACE Architecture `x86_64` is not compatible with `s390x`
+TRACE Architecture `x86_64` is not compatible with `aarch64`
+TRACE Architecture `x86_64` is not compatible with `armv7`
+TRACE Architecture `x86_64` is not compatible with `armv7`
+TRACE Architecture `x86_64` is not compatible with `powerpc64le`
+TRACE Architecture `x86_64` is not compatible with `s390x`
+TRACE Architecture `x86_64` is not compatible with `aarch64`
+TRACE Architecture `x86_64` is not compatible with `armv7`
+TRACE Architecture `x86_64` is not compatible with `armv7`
+TRACE Architecture `x86_64` is not compatible with `powerpc64le`
+TRACE Architecture `x86_64` is not compatible with `s390x`
+TRACE Architecture `x86_64` is not compatible with `aarch64`
+TRACE Architecture `x86_64` is not compatible with `x86`
+TRACE Architecture `x86_64` is not compatible with `powerpc64le`
+TRACE Architecture `x86_64` is not compatible with `s390x`
+TRACE Architecture `x86_64` is not compatible with `aarch64`
+TRACE Architecture `x86_64` is not compatible with `x86`
+TRACE Architecture `x86_64` is not compatible with `powerpc64le`
+TRACE Architecture `x86_64` is not compatible with `s390x`
+TRACE Architecture `x86_64` is not compatible with `aarch64`
+TRACE Architecture `x86_64` is not compatible with `x86`
+TRACE Architecture `x86_64` is not compatible with `powerpc64le`
+TRACE Architecture `x86_64` is not compatible with `aarch64`
+TRACE Architecture `x86_64` is not compatible with `x86`
+TRACE Architecture `x86_64` is not compatible with `aarch64`
+TRACE Architecture `x86_64` is not compatible with `x86`
+TRACE Architecture `x86_64` is not compatible with `aarch64`
+TRACE Architecture `x86_64` is not compatible with `x86`
+TRACE Architecture `x86_64` is not compatible with `aarch64`
+TRACE Architecture `x86_64` is not compatible with `x86`
+TRACE Architecture `x86_64` is not compatible with `aarch64`
+TRACE Architecture `x86_64` is not compatible with `x86`
+TRACE Architecture `x86_64` is not compatible with `aarch64`
+TRACE Architecture `x86_64` is not compatible with `x86`
+TRACE Architecture `x86_64` is not compatible with `aarch64`
+TRACE Architecture `x86_64` is not compatible with `x86`
+TRACE Architecture `x86_64` is not compatible with `aarch64`
+TRACE Architecture `x86_64` is not compatible with `x86`
+TRACE Architecture `x86_64` is not compatible with `x86`
+TRACE Architecture `x86_64` is not compatible with `x86`
+TRACE Architecture `x86_64` is not compatible with `x86`
+TRACE Architecture `x86_64` is not compatible with `aarch64`
+TRACE Architecture `x86_64` is not compatible with `aarch64`
+TRACE Architecture `x86_64` is not compatible with `aarch64`
+TRACE Architecture `x86_64` is not compatible with `aarch64`
+TRACE Architecture `x86_64` is not compatible with `x86`
+TRACE Architecture `x86_64` is not compatible with `aarch64`
+TRACE Architecture `x86_64` is not compatible with `x86`
+TRACE Architecture `x86_64` is not compatible with `aarch64`
+TRACE Architecture `x86_64` is not compatible with `x86`
+TRACE Architecture `x86_64` is not compatible with `aarch64`
+TRACE Architecture `x86_64` is not compatible with `x86`
+TRACE Architecture `x86_64` is not compatible with `aarch64`
+TRACE Architecture `x86_64` is not compatible with `x86`
+TRACE Architecture `x86_64` is not compatible with `x86`
+TRACE Architecture `x86_64` is not compatible with `x86`
+TRACE Architecture `x86_64` is not compatible with `x86`
+TRACE Architecture `x86_64` is not compatible with `x86`
+TRACE Architecture `x86_64` is not compatible with `x86`
+TRACE Architecture `x86_64` is not compatible with `aarch64`
+TRACE Architecture `x86_64` is not compatible with `x86`
+TRACE Architecture `x86_64` is not compatible with `aarch64`
+TRACE Architecture `x86_64` is not compatible with `x86`
+TRACE Architecture `x86_64` is not compatible with `aarch64`
+TRACE Architecture `x86_64` is not compatible with `x86`
+TRACE Architecture `x86_64` is not compatible with `aarch64`
+TRACE Architecture `x86_64` is not compatible with `x86`
+TRACE Architecture `x86_64` is not compatible with `s390x`
+TRACE Architecture `x86_64` is not compatible with `aarch64`
+TRACE Architecture `x86_64` is not compatible with `x86`
+TRACE Architecture `x86_64` is not compatible with `s390x`
+TRACE Architecture `x86_64` is not compatible with `aarch64`
+TRACE Architecture `x86_64` is not compatible with `x86`
+TRACE Architecture `x86_64` is not compatible with `s390x`
+TRACE Architecture `x86_64` is not compatible with `aarch64`
+TRACE Architecture `x86_64` is not compatible with `x86`
+TRACE Architecture `x86_64` is not compatible with `s390x`
+TRACE Architecture `x86_64` is not compatible with `aarch64`
+TRACE Architecture `x86_64` is not compatible with `x86`
+TRACE Architecture `x86_64` is not compatible with `s390x`
+TRACE Architecture `x86_64` is not compatible with `aarch64`
+TRACE Architecture `x86_64` is not compatible with `x86`
+TRACE Architecture `x86_64` is not compatible with `s390x`
+TRACE Architecture `x86_64` is not compatible with `aarch64`
+TRACE Architecture `x86_64` is not compatible with `x86`
+TRACE Architecture `x86_64` is not compatible with `s390x`
+TRACE Architecture `x86_64` is not compatible with `aarch64`
+TRACE Architecture `x86_64` is not compatible with `x86`
+TRACE Architecture `x86_64` is not compatible with `s390x`
+TRACE Architecture `x86_64` is not compatible with `aarch64`
+TRACE Architecture `x86_64` is not compatible with `x86`
+TRACE Architecture `x86_64` is not compatible with `s390x`
+TRACE Architecture `x86_64` is not compatible with `aarch64`
+TRACE Architecture `x86_64` is not compatible with `x86`
+TRACE Architecture `x86_64` is not compatible with `s390x`
+TRACE Architecture `x86_64` is not compatible with `aarch64`
+TRACE Architecture `x86_64` is not compatible with `x86`
+TRACE Architecture `x86_64` is not compatible with `s390x`
+TRACE Architecture `x86_64` is not compatible with `aarch64`
+TRACE Architecture `x86_64` is not compatible with `x86`
+TRACE Architecture `x86_64` is not compatible with `s390x`
+TRACE Architecture `x86_64` is not compatible with `aarch64`
+TRACE Architecture `x86_64` is not compatible with `x86`
+TRACE Architecture `x86_64` is not compatible with `s390x`
+TRACE Architecture `x86_64` is not compatible with `aarch64`
+TRACE Architecture `x86_64` is not compatible with `x86`
+TRACE Architecture `x86_64` is not compatible with `s390x`
+DEBUG No installation found for request `graalpy (graalpy-any-linux-x86_64-gnu)`
+DEBUG Found download `graalpy-3.11.0-linux-x86_64-gnu` for request `graalpy (graalpy-any-linux-x86_64-gnu)`
+DEBUG Using request timeout of 30s
+DEBUG Downloading https://github.com/oracle/graalpython/releases/download/graal-24.2.2/graalpy-24.2.2-linux-amd64.tar.gz
+DEBUG Extracting graalpy-24.2.2-linux-amd64.tar.gz to temporary location: /home/grub4k/.local/share/uv/python/.temp/.tmpndAeIK
+TRACE Handling request for https://github.com/oracle/graalpython/releases/download/graal-24.2.2/graalpy-24.2.2-linux-amd64.tar.gz with authentication policy auto
+TRACE Request for https://github.com/oracle/graalpython/releases/download/graal-24.2.2/graalpy-24.2.2-linux-amd64.tar.gz is unauthenticated, checking cache
+TRACE No credentials in cache for URL https://github.com/oracle/graalpython/releases/download/graal-24.2.2/graalpy-24.2.2-linux-amd64.tar.gz
+TRACE Attempting unauthenticated request for https://github.com/oracle/graalpython/releases/download/graal-24.2.2/graalpy-24.2.2-linux-amd64.tar.gz
+Downloading graalpy-3.11.0-linux-x86_64-gnu (download) (296.1MiB)
+TRACE Considering retry of error: ExtractError("graalpy-24.2.2-linux-amd64.tar.gz", Io(Custom { kind: Other, error: TarError { desc: "failed to unpack `/home/grub4k/.local/share/uv/python/.temp/.tmpndAeIK/graalpy-24.2.2-linux-amd64/lib/libpythonvm.so`", io: Custom { kind: Other, error: TarError { desc: "failed to unpack `graalpy-24.2.2-linux-amd64/lib/libpythonvm.so` into `/home/grub4k/.local/share/uv/python/.temp/.tmpndAeIK/graalpy-24.2.2-linux-amd64/lib/libpythonvm.so`", io: Custom { kind: Other, error: reqwest::Error { kind: Decode, source: reqwest::Error { kind: Body, source: hyper::Error(Body, Error { kind: Reset(StreamId(1), PROTOCOL_ERROR, Remote) }) } } } } } } }))
+TRACE Cannot retry IO error `other error`, not a retryable IO error kind
+TRACE Cannot retry IO error `other error`, not a retryable IO error kind
+TRACE Cannot retry IO error `other error`, not a retryable IO error kind
+error: Failed to install graalpy-3.11.0-linux-x86_64-gnu
+  Caused by: Failed to extract archive: graalpy-24.2.2-linux-amd64.tar.gz
+  Caused by: I/O operation failed during extraction
+  Caused by: failed to unpack `/home/grub4k/.local/share/uv/python/.temp/.tmpndAeIK/graalpy-24.2.2-linux-amd64/lib/libpythonvm.so`
+  Caused by: failed to unpack `graalpy-24.2.2-linux-amd64/lib/libpythonvm.so` into `/home/grub4k/.local/share/uv/python/.temp/.tmpndAeIK/graalpy-24.2.2-linux-amd64/lib/libpythonvm.so`
+  Caused by: error decoding response body
+  Caused by: request or response body error
+  Caused by: error reading a body from connection
+  Caused by: stream error received: unspecific protocol error detected
+DEBUG Released lock at `/home/grub4k/.local/share/uv/python/.lock`
+```
+</details>
+
+The same happens when downloading through a browser though (`Failed - Unknown server error. Please try again, or contact the server administrator.`), so I doubt it's on `uv` to fix this case?
+
+---
+
+_Comment by @zanieb on 2025-08-14 04:23_
+
+Thanks for the details! Yeah it's unlikely we can do much about that. It _might_ be helpful to get some RUST_LOG=debug logs which will include details from the http stack, but all I'll be able to do is forward that to someone who focuses on that domain.
+
+---
+
+_Comment by @Grub4K on 2025-08-14 16:28_
+
+Output of `RUST_LOG=debug uv -vv python install graalpy` on 0.8.10 as a file: [`uv_debug.log`](https://github.com/user-attachments/files/21776835/uv_debug.log)
+
+Sadly, doesn't really give any more insight:
+```
+DEBUG received frame=Data { stream_id: StreamId(1) }
+DEBUG received frame=Reset { stream_id: StreamId(1), error_code: PROTOCOL_ERROR }
+error: Failed to install graalpy-3.11.0-linux-x86_64-gnu
+  Caused by: Failed to extract archive: graalpy-24.2.2-linux-amd64.tar.gz
+  Caused by: I/O operation failed during extraction
+  Caused by: failed to unpack `/home/grub4k/.local/share/uv/python/.temp/.tmpLYAvEu/graalpy-24.2.2-linux-amd64/lib/libpythonvm.so`
+  Caused by: failed to unpack `graalpy-24.2.2-linux-amd64/lib/libpythonvm.so` into `/home/grub4k/.local/share/uv/python/.temp/.tmpLYAvEu/graalpy-24.2.2-linux-amd64/lib/libpythonvm.so`
+  Caused by: error decoding response body
+  Caused by: request or response body error
+  Caused by: error reading a body from connection
+  Caused by: stream error received: unspecific protocol error detected
+DEBUG Released lock at `/home/grub4k/.local/share/uv/python/.lock`
+```
+
+If you need me to test anything else do let me know!
+
+---
+
+_Comment by @zanieb on 2025-08-14 18:42_
+
+Yeah alas that's very opaque. I think that's basically what Sean said above
+
+> Unfortunately, stream resets don't come with any extra info (in the spec), but figured I'd mention it in case that helps understanding the environment.
+
+Is there anything server-side?
+
+---
+
+_Comment by @WystanW on 2025-12-04 02:50_
+
+Hi team. I have the same issue here. Any solution?
+
+---
+
+_Comment by @zanieb on 2025-12-04 03:01_
+
+@WystanW please provide more information, e.g., about the server you're using.
+
+It's not possible for us to get more information client-side.
+
+---
+
+_Comment by @WystanW on 2025-12-04 09:12_
+
+@zanieb  After changing the proxy this issue was fixed. Thanks for reply~
+
+---
+
+_Closed by @zanieb on 2025-12-04 14:32_
+
+---

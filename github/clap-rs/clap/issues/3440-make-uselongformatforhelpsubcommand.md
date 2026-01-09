@@ -1,0 +1,67 @@
+---
+number: 3440
+title: "Make `UseLongFormatForHelpSubcommand` unconditionally on"
+type: issue
+state: closed
+author: epage
+labels:
+  - C-bug
+  - M-breaking-change
+  - A-help
+  - E-easy
+assignees: []
+created_at: 2022-02-10T18:31:46Z
+updated_at: 2022-02-11T19:10:53Z
+url: https://github.com/clap-rs/clap/issues/3440
+synced_at: 2026-01-07T13:12:19-06:00
+---
+
+# Make `UseLongFormatForHelpSubcommand` unconditionally on
+
+---
+
+_Issue opened by @epage on 2022-02-10 18:31_
+
+As a user, when I see `help` I think of `--help` and would expect it to be the same output.
+
+I also think is important to err on the side of more information, than less.
+
+---
+
+_Label `M-breaking-change` added by @epage on 2022-02-10 18:31_
+
+---
+
+_Label `A-help` added by @epage on 2022-02-10 18:31_
+
+---
+
+_Label `E-easy` added by @epage on 2022-02-10 18:31_
+
+---
+
+_Added to milestone `4.0` by @epage on 2022-02-10 18:31_
+
+---
+
+_Label `C-bug` added by @epage on 2022-02-10 18:31_
+
+---
+
+_Referenced in [clap-rs/clap#2717](../../clap-rs/clap/issues/2717.md) on 2022-02-10 18:32_
+
+---
+
+_Comment by @epage on 2022-02-11 18:41_
+
+See https://github.com/clap-rs/clap/issues/2435 for the issue that led to this attribute being added.
+
+---
+
+_Referenced in [clap-rs/clap#3451](../../clap-rs/clap/pulls/3451.md) on 2022-02-11 18:51_
+
+---
+
+_Closed by @epage on 2022-02-11 19:10_
+
+---

@@ -1,0 +1,161 @@
+---
+number: 8255
+title: "Discussion: Support statement or policy for python"
+type: issue
+state: open
+author: inoa-jboliveira
+labels:
+  - question
+assignees: []
+created_at: 2024-10-16T13:49:04Z
+updated_at: 2025-05-21T19:56:12Z
+url: https://github.com/astral-sh/uv/issues/8255
+synced_at: 2026-01-07T13:12:17-06:00
+---
+
+# Discussion: Support statement or policy for python
+
+---
+
+_Issue opened by @inoa-jboliveira on 2024-10-16 13:49_
+
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with uv.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
+* The current uv platform.
+* The current uv version (`uv --version`).
+-->
+Hi, I wish there was a "discussion" tab here on uv's Github. I don't think this fits as an "issue".
+
+Initially uv would not work with Python 3.7 ([EOL](https://devguide.python.org/versions/) June 2023), but now it not only works but is installable. Python 3.8 ended life support 2 days ago. Is there assurance that new versions of uv will still be able to both install and run these interpreters? I also saw accidental removal of downloadable versions of Python [here](https://github.com/astral-sh/uv/pull/8216), so:
+
+**I am interested in knowing what is the policy for Astral supporting installation and usage of Python interpreters past their EOL.** If you can produce a statement on the docs page for this.
+
+One of the advantages of having a rust app that bootstraps python without depending on it (most of the time) is to be able to run old versions of user applications that still rely on outdated python. I know there could be slight issues with changes on virtual environments over the years, different env variables, and other small things that may or may not be slightly different, but as long as you define a cutting point, you would be able to still support running a version for many years past its EOL.
+
+"But isn't that a security issue?" -- you may ask
+
+I do not support that a python version should be used on a production environment past its expiration date. But I support being able to revive old software in a modern OS with modern tools. It happens all the time, e.g.:
+
+1. Get old OS/toolchain/interpreter that is still capable of running old version of software.
+2. Update the software for the maximum version supported by OS/toolchain/interpreter.
+3. If you still cannot run it on modern OS/toolchain/interpreter, upgrade to next version and go back to item 1
+4. Finally on modern OS/toolchain/interpreter, update the code to work with latest versions of things.
+
+Sometimes you still have dependencies that are not fit for the full upgrade and you may need to keep things in a mixed state for longer than you want, to test things in the older version vs the new version in parallel to guarantee behavior has not changed and so on.
+
+If newer uv version guarantees that I will be able to still install and run Python 3.8 in e.g. 2030, I know that I can revive any software written since 2020 (that is not a great amount of time!) in a modern system.
+
+
+I see all the time libraries dropping support of a Python version not because they need a feature, but because they were told that version is "too old". Nowadays we see a change in direction, with Linux getting [Super-long-term support](https://en.wikipedia.org/wiki/Linux_kernel_version_history) (SLTS) versions of 12-13 years and [GCC undeprecating platforms](https://www.phoronix.com/news/GCC-15-Undeprecates-Itanium) so people can rely on them for much longer and guarantee software can still be mended, upgraded, ported etc.
+
+I don't ask for Astral to support Python past its EOL, but to keep it working, even if with big warnings and small hurdles that allow people to keep doing their job and using the one tool to rule the python ecosystem.
+
+
+---
+
+_Comment by @charliermarsh on 2024-10-16 13:49_
+
+(It's okay to use issues for discussions here, don't worry about it.)
+
+---
+
+_Label `question` added by @charliermarsh on 2024-10-16 13:49_
+
+---
+
+_Assigned to @zanieb by @zanieb on 2024-10-16 14:05_
+
+---
+
+_Comment by @paveldikov on 2024-10-16 17:00_
+
+This is actually a pretty solid and relatable use case IMO. Although I can equally see how adopting aspects of the LTS/SLTS support model may add complexity and impede the project's otherwise impeccable velocity.
+
+Currently the adoption path for `uv` for legacy projects involves upgrading Python _first_, and only then adopting `uv`. I do think this is sub-optimal because `uv` actually makes the experience of bumping Python versions considerably easier, in large part thanks to `uv.lock`. By keeping a lockfile, your project's dependency resolution should be backwards/forwards compatible within the extent of your project's `requires-python`. So in the happy case, upgrading to non-EOL Python should be as simple as 'use a newer interpreter and rebuild your venv'.
+
+Also worth noting that, AIUI, the vast majority of `uv` functionality is decoupled from the 'actual' Python interpreter binary (apart from breaking changes in a few key APIs such as `pyvenv.cfg`, the `site-packages` layout and a number of `sys.` structs, IIRC). So, in lieu of breaking API changes, it should be possible to sustain 3.7/3.8 compatibility near-indefinitely.
+
+---
+
+_Comment by @zanieb on 2024-10-16 17:06_
+
+I'm happy to formalize our plans for support.
+
+I'll use this issue to talk through some thoughts before writing up a document. 
+
+A notable problem that comes up for long-term support is that building Python distributions is expensive — `python-build-standalone` has a huge matrix that takes many hours to run already. We need to drop support for old Python versions there to keep things at a manageable level. Supporting old distributions from `python-build-standalone` is not trivial in uv because we make improvements to the distributions themselves and those changes are not propagated to old distributions so we end up needing to support multiple distribution formats here.
+
+---
+
+_Comment by @inoa-jboliveira on 2024-10-16 19:45_
+
+Hi @zanieb 
+Is it necessary to rebuild versions over and over with each release of [python-build-standalone](https://github.com/indygreg/python-build-standalone)? 
+
+There are many optimizations that can be done to the build process, such as releasing each python mainline individually to name one. Considering is that Github Actions is free for open source projects, the multiple releases could even happen in parallel without much hassle.
+
+Regarding building older versions, it could be done in a best efforts basis, which older versions (e.g. 3.7) not being rebuilt past their EOL unless there is an issue with newer OS that can be overcome by a new sporadic build (once every year, lets say).
+
+uv would try to download, install and run older the latest build of each mainline. I think it already does that somehow since there is no new build of 3.7.
+
+
+
+
+
+---
+
+_Comment by @zanieb on 2024-10-16 19:54_
+
+> Is it necessary to rebuild versions over and over with each release of [python-build-standalone](https://github.com/indygreg/python-build-standalone)?
+
+Yeah, since we make other changes to the distributions. For example, we update the standalone dependencies (like OpenSSL) for security patches.
+
+> ...by a new sporadic build...
+
+This isn't really feasible, because then we need to maintain all the code to support the old versions still and if we're not testing them we'll certainly break something without knowing.
+
+> uv would try to download, install and run older the latest build of each mainline. 
+
+Yes we do this, but this creates additional maintenance overhead for uv. It's not trivial to support multiple versions of distributions indefinitely.
+
+
+---
+
+_Referenced in [astral-sh/python-build-standalone#342](../../astral-sh/python-build-standalone/issues/342.md) on 2024-10-20 15:20_
+
+---
+
+_Referenced in [astral-sh/uv#8649](../../astral-sh/uv/pulls/8649.md) on 2024-10-29 12:38_
+
+---
+
+_Comment by @jsiverskog on 2025-01-14 14:50_
+
+a question related to this: if we stay on an older version of uv (let's say the current - 0.5.18) - will we be able to install e.g. python 3.7 using that "indefinitely" - or will that version of uv use the same release list as newer versions?
+
+we have a use case where we need to support old python versions for a long time (much longer than they are supported by python.org). we do not expect uv to support all python historical versions, but if we can solve our use case by staying on older uv versions we should be fine.
+
+---
+
+_Comment by @zanieb on 2025-01-14 14:52_
+
+@jsiverskog The Python distribution list is hard-coded into each uv release right now, so older versions of uv can install the same versions of Python indefinitely.
+
+---
+
+_Comment by @inoa-jboliveira on 2025-05-21 19:56_
+
+FYI @jsiverskog, some of this discussion is also on the PR that removed Python 3.7 on v0.7 of uv
+
+https://github.com/astral-sh/uv/pull/13022
+
+The staying on an old version may be a solution today (for me also), but impossible soon as uv changes quickly
+
+One point Astral team may still not see is that people will simply realize the tool does not support the workflow and the user will not open an issue for it, he or she will just move on to another project that works. I wish for a one-stop shop in the python ecosystem and it may require catering for the long tail.
+
+---

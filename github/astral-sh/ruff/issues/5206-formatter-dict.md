@@ -1,0 +1,36 @@
+---
+number: 5206
+title: "Formatter: `Dict`"
+type: issue
+state: closed
+author: MichaReiser
+labels:
+  - formatter
+assignees: []
+created_at: 2023-06-20T07:57:49Z
+updated_at: 2023-06-20T09:25:09Z
+url: https://github.com/astral-sh/ruff/issues/5206
+synced_at: 2026-01-07T13:12:15-06:00
+---
+
+# Formatter: `Dict`
+
+---
+
+_Issue opened by @MichaReiser on 2023-06-20 07:57_
+
+_No description provided._
+
+---
+
+_Referenced in [astral-sh/ruff#4798](../../astral-sh/ruff/issues/4798.md) on 2023-06-20 07:57_
+
+---
+
+_Label `formatter` added by @MichaReiser on 2023-06-20 07:58_
+
+---
+
+_Closed by @MichaReiser on 2023-06-20 09:25_
+
+---

@@ -1,0 +1,173 @@
+---
+number: 8705
+title: uv sync cannot resolve pandas and numpy dependencies even though they should be compatible
+type: issue
+state: closed
+author: mmarinriera
+labels:
+  - question
+assignees: []
+created_at: 2024-10-30T18:18:09Z
+updated_at: 2024-10-31T11:57:04Z
+url: https://github.com/astral-sh/uv/issues/8705
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# uv sync cannot resolve pandas and numpy dependencies even though they should be compatible
+
+---
+
+_Issue opened by @mmarinriera on 2024-10-30 18:18_
+
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with uv.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
+* The current uv platform.
+* The current uv version (`uv --version`).
+-->
+
+- Command: `uv run`, `uv sync`
+- Platform: MacOS Sonoma 14.6.1
+- uv version:uv 0.4.28 (debe67ffd 2024-10-28)`
+
+Hi,
+
+I am working on a project that has [`picassosr`](https://github.com/jungmannlab/picasso) as a dependency. I am able to install the package and run the CLI via `uvx`,
+
+```bash
+uvx -p 3.10 --from "picasso==0.7.3" picasso --help
+```
+and that works. However if I try to `uv run` a project that has `picassosr` as a dependency, I get a "no solution found" error.
+
+To reproduce this behaviour, create a project with:
+
+```
+uv init --app --package project
+```
+
+just add "picassosr==0.7.3" to `dependencies` in the `pyproject.toml`,
+
+and when I run it with,
+
+```
+uv run -p 3.10 project
+```
+
+I get the following output,
+
+```
+% uv run -p 3.10 project
+Using CPython 3.10.15
+Creating virtual environment at: .venv
+  × No solution found when resolving dependencies for split (python_full_version >= '3.12'):
+  ╰─▶ Because only the following versions of numpy{python_full_version >= '3.12'} are available:
+          numpy{python_full_version >= '3.12'}<=2.0.2
+          numpy{python_full_version >= '3.12'}>=2.1.0
+      and pandas==2.1.1 depends on numpy{python_full_version >= '3.12'}>=1.26.0, we can conclude that pandas==2.1.1 depends on one of:
+          numpy>=1.26.0,<=2.0.2
+          numpy>=2.1.0
+
+      And because picassosr==0.7.3 depends on numpy==1.24.3, we can conclude that pandas==2.1.1 and picassosr==0.7.3 are incompatible.
+      And because picassosr==0.7.3 depends on pandas==2.1.1 and your project depends on picassosr==0.7.3, we can conclude that your project's
+      requirements are unsatisfiable.
+```
+
+(Find attached below the verbose output of the same command).
+
+Running `uv sync` leads to the same error.
+
+The conflict seems to be with "pandas==2.1.1" and "numpy==1.24.3". The same error persists if I only include these two dependencies in the project.
+
+This seems rather weird, since `uvx` seems to be able to solve these dependencies, and if you inspect pandas requirements, under python 3.10, "numpy==1.24.3" should be compatible, e.g.
+
+```
+% uvx -p 3.10 --with "pandas==2.1.1" --with "numpy==1.24.3" pipdeptree
+Installed 9 packages in 102ms
+pandas==2.1.1
+├── numpy [required: >=1.22.4, installed: 1.24.3]
+├── python-dateutil [required: >=2.8.2, installed: 2.9.0.post0]
+│   └── six [required: >=1.5, installed: 1.16.0]
+├── pytz [required: >=2020.1, installed: 2024.2]
+└── tzdata [required: >=2022.1, installed: 2024.2]
+pipdeptree==2.23.4
+├── packaging [required: >=24.1, installed: 24.1]
+└── pip [required: >=24.2, installed: 24.3.1]
+```
+
+I hope you can look into this issue.
+
+Finally, just want to say that I and the rest of my team are very excited about the `uv` project and we are currently integrating it into our development workflow. Thank you so much for you great work! :)
+
+Output of : `uv run -p 3.10 --verbose project`
+[out.txt](https://github.com/user-attachments/files/17577262/out.txt)
+
+
+---
+
+_Comment by @charliermarsh on 2024-10-30 19:10_
+
+Basically: this project can't resolve on Python 3.12, but on Pandas has the following dependencies:
+
+```
+Requires-Dist: numpy>=1.22.4; python_version < "3.11"
+Requires-Dist: numpy>=1.23.2; python_version == "3.11"
+Requires-Dist: numpy>=1.26.0; python_version >= "3.12"
+```
+
+So on Python 3.12, Pandas requires _at least_ NumPy 1.26.0 -- but you require exactly Pandas 2.1.1 and NumPy 1.24.3, so there's no valid resolution on Python 3.12.
+
+In uv, when you give us a Python requirement, we try to solve for all versions in the supported range, not _just_ the current Python version.
+
+One way you can work around this is to tell uv that you _only_ care about Python 3.10, with:
+
+```toml
+[tool.uv]
+environments = ["python_version == '3.10'"]
+```
+
+That tells uv to _only_ solve for Python 3.10.
+
+
+---
+
+_Label `question` added by @charliermarsh on 2024-10-30 19:10_
+
+---
+
+_Comment by @zanieb on 2024-10-30 19:46_
+
+And as another note, it works in `uvx` because there we only solve for a single Python version.
+
+Glad you're excited about the project :)
+
+---
+
+_Comment by @mmarinriera on 2024-10-31 10:31_
+
+I understand now. Thanks @charliermarsh. The workaround you suggested works great.
+
+I also realized that another solution would be to constrain the `requires-python` field in the `pyproject.toml` to 3.10 only, like this.
+
+```
+requires-python = ">=3.10,<3.11"
+```
+
+That works too.
+
+Thank you @zanieb , that was going to be my follow-up question :)
+
+---
+
+_Comment by @charliermarsh on 2024-10-31 11:57_
+
+Thanks for following up :)
+
+---
+
+_Closed by @charliermarsh on 2024-10-31 11:57_
+
+---

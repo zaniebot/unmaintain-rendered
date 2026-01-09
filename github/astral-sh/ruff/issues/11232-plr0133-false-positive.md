@@ -1,0 +1,86 @@
+---
+number: 11232
+title: "PLR0133: False Positive"
+type: issue
+state: closed
+author: colin99d
+labels:
+  - needs-info
+assignees: []
+created_at: 2024-05-01T14:32:07Z
+updated_at: 2024-05-01T14:50:20Z
+url: https://github.com/astral-sh/ruff/issues/11232
+synced_at: 2026-01-07T13:12:15-06:00
+---
+
+# PLR0133: False Positive
+
+---
+
+_Issue opened by @colin99d on 2024-05-01 14:32_
+
+* A minimal code snippet that reproduces the bug.
+```
+x = 5
+x or 0 > 0
+```
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+`ruff check .`
+* The current Ruff version (`ruff --version`).
+`ruff 0.4.2`
+
+
+---
+
+_Comment by @MichaReiser on 2024-05-01 14:41_
+
+It's not clear to me why you consider this a false positive. The `0 > 0` is a constant comparison. Could you mind explaining your reasoning in more detail?
+
+---
+
+_Label `needs-info` added by @MichaReiser on 2024-05-01 14:41_
+
+---
+
+_Comment by @colin99d on 2024-05-01 14:45_
+
+According to the ruff docs, the reason for this rule is that:
+
+`Comparing two constants will always resolve to the same value, so the comparison is redundant. Instead, the expression should be replaced with the result of the comparison.`
+
+However, given that x is of type None | int, then this will not always yield the same result. In our code, we often use or statements to handle None values. So the usage is basically "if x is None, compare with 0 instead". Given that x or 0 is not a constant, I don't think this rule is helpful here.
+
+---
+
+_Comment by @trag1c on 2024-05-01 14:48_
+
+@colin99d You're not taking operator precedence into account here; `x or 0 > 0` is correctly flagged as it's actually `x or (0 > 0)`, as `>` has higher precedence than `or` (see https://docs.python.org/3.12/reference/expressions.html#operator-precedence).
+```pycon
+>>> print(ast.dump(ast.parse("x or 0 > 0"), indent=2))
+Module(
+  body=[
+    Expr(
+      value=BoolOp(
+        op=Or(),
+        values=[
+          Name(id='x', ctx=Load()),
+          Compare(
+            left=Constant(value=0),
+            ops=[
+              Gt()],
+            comparators=[
+              Constant(value=0)])]))],
+  type_ignores=[])
+```
+
+---
+
+_Comment by @colin99d on 2024-05-01 14:50_
+
+Oh wow nice catch @trag1c. Will close.
+
+---
+
+_Closed by @colin99d on 2024-05-01 14:50_
+
+---

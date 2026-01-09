@@ -1,0 +1,65 @@
+---
+number: 19013
+title: Disallow suppressing CancelledError
+type: issue
+state: open
+author: Dreamsorcerer
+labels:
+  - rule
+  - needs-decision
+assignees: []
+created_at: 2025-06-28T17:33:51Z
+updated_at: 2025-07-28T15:17:47Z
+url: https://github.com/astral-sh/ruff/issues/19013
+synced_at: 2026-01-07T13:12:16-06:00
+---
+
+# Disallow suppressing CancelledError
+
+---
+
+_Issue opened by @Dreamsorcerer on 2025-06-28 17:33_
+
+### Summary
+
+Disallow suppressing a CancelledError in most cases.
+
+i.e.
+
+```
+try:
+    ...
+except asyncio.CancelledError:
+    ...  # Code without an unconditional (re-)raise.
+```
+
+### Reasoning
+
+Suppressing cancellations is difficult to get right, and a developer should, at the very least, confirm they've understood the implications and different situations that a cancellation may occur.
+
+A noqa comment can be used by the developer to confirm they've understood this. Alternatively, a couple of safe code patterns may be allowed without needing the noqa. Probably, if there is both an `if task.done():` condition and an `if asyncio.current_task().cancelling()` check in the handler, then the warning is not needed (also, if there is an unconditional raise).
+
+Documentation could link to https://superfastpython.com/asyncio-task-cancellation-best-practices/#Practice_1_Do_Not_Consume_CancelledError for example.
+
+Possibly a separate rule could be to ensure that code which does suppress the exception also calls .uncancel():
+https://superfastpython.com/asyncio-cancel-task-cancellation/
+
+---
+
+_Referenced in [wemake-services/wemake-python-styleguide#2835](../../wemake-services/wemake-python-styleguide/issues/2835.md) on 2025-06-28 17:40_
+
+---
+
+_Label `rule` added by @ntBre on 2025-06-28 17:44_
+
+---
+
+_Label `needs-decision` added by @ntBre on 2025-06-28 17:44_
+
+---
+
+_Comment by @Dreamsorcerer on 2025-07-28 15:17_
+
+Looks like this is basically covered by ASYNC103 in flake8-async, but not currently implemented in ruff. The above description also includes some potential improvements on that rule.
+
+---

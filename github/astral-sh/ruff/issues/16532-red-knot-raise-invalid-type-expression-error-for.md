@@ -1,0 +1,55 @@
+---
+number: 16532
+title: "[red-knot] Raise \"invalid type expression\" error for literal types"
+type: issue
+state: closed
+author: dhruvmanila
+labels:
+  - help wanted
+  - ty
+assignees: []
+created_at: 2025-03-06T12:01:37Z
+updated_at: 2025-03-17T11:56:18Z
+url: https://github.com/astral-sh/ruff/issues/16532
+synced_at: 2026-01-07T13:12:16-06:00
+---
+
+# [red-knot] Raise "invalid type expression" error for literal types
+
+---
+
+_Issue opened by @dhruvmanila on 2025-03-06 12:01_
+
+The task is to raise a `invalid-type-form` error that states "Invalid type expression" for the following three literal types:
+
+https://github.com/astral-sh/ruff/blob/44aec36e341dafa3932b11f856f368b0e14b9ec6/crates/red_knot_python_semantic/src/types/infer.rs#L5661-L5666
+
+The reason is that those literal types are handled appropriately in the relevant context like `typing.Literal`, `typing.Annotated`.
+
+This will also require fixing / updating the tests w.r.t. this change.
+
+---
+
+_Label `help wanted` added by @dhruvmanila on 2025-03-06 12:01_
+
+---
+
+_Label `red-knot` added by @dhruvmanila on 2025-03-06 12:01_
+
+---
+
+_Referenced in [astral-sh/ruff#16493](../../astral-sh/ruff/pulls/16493.md) on 2025-03-06 12:01_
+
+---
+
+_Referenced in [astral-sh/ruff#16765](../../astral-sh/ruff/pulls/16765.md) on 2025-03-15 17:46_
+
+---
+
+_Closed by @AlexWaygood on 2025-03-17 11:56_
+
+---
+
+_Closed by @AlexWaygood on 2025-03-17 11:56_
+
+---

@@ -1,0 +1,64 @@
+---
+number: 2508
+title: "Question: how to reproduce current venv other than `uv pip freeze`?"
+type: issue
+state: closed
+author: shenxiangzhuang
+labels:
+  - question
+assignees: []
+created_at: 2024-03-18T12:42:08Z
+updated_at: 2024-03-18T15:14:31Z
+url: https://github.com/astral-sh/uv/issues/2508
+synced_at: 2026-01-07T13:12:17-06:00
+---
+
+# Question: how to reproduce current venv other than `uv pip freeze`?
+
+---
+
+_Issue opened by @shenxiangzhuang on 2024-03-18 12:42_
+
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with uv.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
+* The current uv platform.
+* The current uv version (`uv --version`).
+-->
+
+Hi, `uv` works very well in venv creation and package installation but I have some questions about the venv reproduction. 
+
+I see there is no `.lock` or `.toml` file when we run `uv venv` or `uv pip install xxx`.  I don't want to use the package list created by `pip freeze`, which lists packages in `package==version` format, compared to the `xxx = "^0.1.7"` format in `poetry`.
+
+So how can we reproduce current venv other than `uv pip freeze`? 
+
+
+
+---
+
+_Comment by @T-256 on 2024-03-18 13:55_
+
+Related to #1968 
+
+use `uv pip freeze | uv pip compile - -o requirements.txt` to create lock file for your current environment. then install lock file into new environment.
+
+
+---
+
+_Comment by @charliermarsh on 2024-03-18 14:56_
+
+Yeah we don't support Poetry-style dependencies, which are custom to Poetry and aren't standardized in any way. So if you're trying to convert from PEP 508-style requirements to Poetry-style requirements, I don't think uv can help you. There may be other tools that can facilitate that conversion.
+
+---
+
+_Closed by @charliermarsh on 2024-03-18 14:56_
+
+---
+
+_Label `question` added by @charliermarsh on 2024-03-18 14:56_
+
+---

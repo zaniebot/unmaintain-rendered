@@ -1,0 +1,102 @@
+---
+number: 18985
+title: "F401: unused imports not found with absolute imports from same namespace"
+type: issue
+state: closed
+author: TimotheusBachinger
+labels:
+  - question
+assignees: []
+created_at: 2025-06-27T14:03:39Z
+updated_at: 2025-06-27T16:00:14Z
+url: https://github.com/astral-sh/ruff/issues/18985
+synced_at: 2026-01-07T13:12:16-06:00
+---
+
+# F401: unused imports not found with absolute imports from same namespace
+
+---
+
+_Issue opened by @TimotheusBachinger on 2025-06-27 14:03_
+
+### Question
+
+Hi ruff-devs!
+
+Also from my side: `ruff` is great! Keep up the good work!
+
+I am unsure if this is a bug or just an expected behavior which is a result of pythons import machinery. 
+
+Currently, we have a lot of unused imports in our code base but `ruff` doesn't complain about it. 
+My minimal repro with no custom configuration looks like this:
+```
+$ cat foo.py
+import requests.exceptions
+import requests.utils
+requests.utils
+
+$ ruff -v check foo.py --select F401
+[2025-06-27][15:58:51][ruff::resolve][DEBUG] Using Ruff default settings
+[2025-06-27][15:58:51][ruff::commands::check][DEBUG] Identified files to lint in: 5.513106ms
+[2025-06-27][15:58:51][ruff::commands::check][DEBUG] Checked 1 files in: 73.419µs
+All checks passed!
+
+$ ruff --version
+ruff 0.11.11
+```
+
+Expected behavior:
+* `ruff` would complain about `requests.exceptions` being imported but unused
+
+Actual behavior:
+* `ruff` does not complain
+
+Side note:
+This does the right thing:
+```
+$ cat foo.py                                                                                                                                                                                                                 
+from requests import exceptions
+from requests import utils
+utils
+
+$ ruff -v check foo.py --select F401
+
+[2025-06-27][16:02:57][ruff::resolve][DEBUG] Using Ruff default settings
+[2025-06-27][16:02:57][ruff::commands::check][DEBUG] Identified files to lint in: 4.076666ms
+[2025-06-27][16:02:57][ruff::commands::check][DEBUG] Checked 1 files in: 117.9µs
+foo.py:1:22: F401 [*] `requests.exceptions` imported but unused
+  |
+1 | from requests import exceptions
+  |                      ^^^^^^^^^^ F401
+2 | from requests import utils
+3 | utils
+  |
+  = help: Remove unused import: `requests.exceptions`
+
+Found 1 error.
+[*] 1 fixable with the `--fix` option.
+```
+
+### Version
+```
+$ ruff --version
+ruff 0.11.11
+```
+
+
+---
+
+_Label `question` added by @TimotheusBachinger on 2025-06-27 14:03_
+
+---
+
+_Comment by @ntBre on 2025-06-27 16:00_
+
+Thanks for the report. I think this is a duplicate of #60 and more recently #18893.
+
+
+---
+
+_Closed by @ntBre on 2025-06-27 16:00_
+
+---

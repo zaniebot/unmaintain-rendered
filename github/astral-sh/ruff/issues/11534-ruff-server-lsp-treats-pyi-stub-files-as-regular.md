@@ -1,0 +1,50 @@
+---
+number: 11534
+title: "[ruff server] LSP treats pyi/stub files as regular python files instead of stub files. ruff-lsp does the right thing."
+type: issue
+state: closed
+author: akshetpandey
+labels:
+  - server
+assignees: []
+created_at: 2024-05-24T17:26:16Z
+updated_at: 2024-05-26T17:42:49Z
+url: https://github.com/astral-sh/ruff/issues/11534
+synced_at: 2026-01-07T13:12:15-06:00
+---
+
+# [ruff server] LSP treats pyi/stub files as regular python files instead of stub files. ruff-lsp does the right thing.
+
+---
+
+_Issue opened by @akshetpandey on 2024-05-24 17:26_
+
+version: 0.4.5
+
+Tried the new `ruff-server`, noticed that it was giving me lint warning about pyi files that were not reported by `ruff check`.
+
+Going back to `ruff-lsp` fixed it.
+
+---
+
+_Label `server` added by @charliermarsh on 2024-05-24 17:28_
+
+---
+
+_Comment by @charliermarsh on 2024-05-24 17:28_
+
+Thanks, will take a look.
+
+---
+
+_Assigned to @snowsignal by @snowsignal on 2024-05-24 18:56_
+
+---
+
+_Referenced in [astral-sh/ruff#11535](../../astral-sh/ruff/pulls/11535.md) on 2024-05-24 21:17_
+
+---
+
+_Closed by @charliermarsh on 2024-05-26 17:42_
+
+---

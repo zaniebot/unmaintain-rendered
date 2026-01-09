@@ -1,0 +1,61 @@
+---
+number: 5360
+title: "`--link-mode=symlink` and `--no-cache` are incompatible"
+type: issue
+state: closed
+author: charliermarsh
+labels:
+  - bug
+  - cli
+assignees: []
+created_at: 2024-07-23T18:09:28Z
+updated_at: 2024-08-23T15:21:48Z
+url: https://github.com/astral-sh/uv/issues/5360
+synced_at: 2026-01-07T13:12:17-06:00
+---
+
+# `--link-mode=symlink` and `--no-cache` are incompatible
+
+---
+
+_Issue opened by @charliermarsh on 2024-07-23 18:09_
+
+We end up persisting to a directory that we then remove. You end up with errors like:
+
+```
+error: Failed to read metadata for: uv==0.2.27
+  Caused by: failed to open file `/Users/crmarsh/Library/Application Support/uv/tools/hatch/lib/python3.12/site-packages/uv-0.2.27.dist-info/METADATA`
+  Caused by: No such file or directory (os error 2)
+```
+
+---
+
+_Label `bug` added by @charliermarsh on 2024-07-23 18:09_
+
+---
+
+_Label `cli` added by @charliermarsh on 2024-07-23 18:09_
+
+---
+
+_Comment by @charliermarsh on 2024-07-23 18:10_
+
+We should actually just reject this combination, there's no way to make it work.
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2024-07-28 18:07_
+
+---
+
+_Referenced in [astral-sh/uv#5519](../../astral-sh/uv/pulls/5519.md) on 2024-07-28 18:13_
+
+---
+
+_Closed by @charliermarsh on 2024-07-28 19:01_
+
+---
+
+_Closed by @charliermarsh on 2024-07-28 19:01_
+
+---

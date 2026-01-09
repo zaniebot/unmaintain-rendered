@@ -1,0 +1,143 @@
+---
+number: 13545
+title: Requests should retry with backoff on 429
+type: issue
+state: closed
+author: zanieb
+labels:
+  - bug
+assignees: []
+created_at: 2025-05-19T21:22:40Z
+updated_at: 2025-10-29T11:16:12Z
+url: https://github.com/astral-sh/uv/issues/13545
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# Requests should retry with backoff on 429
+
+---
+
+_Issue opened by @zanieb on 2025-05-19 21:22_
+
+I saw this fail on https://github.com/astral-sh/uv/actions/runs/15123326059/job/42510461194?pr=13537
+
+```
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ Snapshot Summary ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Snapshot: require_hashes_find_links_valid_hash
+Source: crates/uv/tests/it/pip_sync.rs:4675
+────────────────────────────────────────────────────────────────────────────────
+Expression: snapshot
+────────────────────────────────────────────────────────────────────────────────
+-old snapshot
++new results
+────────────┬───────────────────────────────────────────────────────────────────
+    0       │-success: true
+    1       │-exit_code: 0
+          0 │+success: false
+          1 │+exit_code: 2
+    2     2 │ ----- stdout -----
+    3     3 │ 
+    4     4 │ ----- stderr -----
+    5       │-Resolved 1 package in [TIME]
+    6       │-Prepared 1 package in [TIME]
+    7       │-Installed 1 package in [TIME]
+    8       │- + example-a-961b4c22==1.0.0
+          5 │+error: Failed to read `--find-links` URL: https://raw.githubusercontent.com/astral-test/astral-test-hash/main/valid-hash/simple-html/example-a-961b4c22/index.html
+          6 │+  Caused by: Failed to fetch: `[https://raw.githubusercontent.com/astral-test/astral-test-hash/main/valid-hash/simple-html/example-a-961b4c22/index.html`](https://raw.githubusercontent.com/astral-test/astral-test-hash/main/valid-hash/simple-html/example-a-961b4c22/index.html%60)
+          7 │+  Caused by: HTTP status client error (429 Too Many Requests) for url (https://raw.githubusercontent.com/astral-test/astral-test-hash/main/valid-hash/simple-html/example-a-961b4c22/index.html)
+```
+
+The test failed in 7s, so... I don't think we're doing a retry here? I haven't confirmed that we didn't yet. I wonder if we should be? At the very least, we should with opt-in?
+
+---
+
+_Label `bug` added by @zanieb on 2025-05-19 21:22_
+
+---
+
+_Label `needs-mre` added by @zanieb on 2025-05-19 21:22_
+
+---
+
+_Comment by @konstin on 2025-05-20 11:47_
+
+I think we should retry, but with a warning about the too many requests and a higher backoff (several seconds?).
+
+---
+
+_Comment by @zanieb on 2025-05-20 13:08_
+
+The response should include a retry after time, we can respect that with a fallback and fail if it exceeds some configurable threshold?
+
+---
+
+_Comment by @zanieb on 2025-05-21 01:43_
+
+Given https://github.com/astral-sh/uv/pull/13033#discussion_r2098880148 I presume we _are_ retrying here already in some cases? Should be simple to add a test case for this with wiremock as a first step if someone is interested.
+
+---
+
+_Label `help wanted` added by @zanieb on 2025-05-21 01:43_
+
+---
+
+_Label `help wanted` removed by @konstin on 2025-05-21 08:34_
+
+---
+
+_Label `needs-mre` removed by @konstin on 2025-05-21 08:34_
+
+---
+
+_Comment by @konstin on 2025-05-21 08:35_
+
+MRE:
+
+```python
+from http.server import HTTPServer, BaseHTTPRequestHandler
+
+
+class TooManyRequestsHandler(BaseHTTPRequestHandler):
+    def _send_429(self):
+        self.send_response(500)
+        self.send_header('Content-type', 'text/plain')
+        self.end_headers()
+        self.wfile.write(b'Too Many Requests')
+
+    def do_GET(self):
+        self._send_429()
+
+    def do_POST(self):
+        self._send_429()
+
+
+if __name__ == '__main__':
+    server_address = ('', 8000)
+    httpd = HTTPServer(server_address, TooManyRequestsHandler)
+    print('Server running on port 8000...')
+    httpd.serve_forever()
+```
+
+```
+uv pip install tqdm --index-url http://localhost:8000 -v
+```
+
+We are retrying, but we're missing reporting and the logic by which we do seems off.
+
+---
+
+_Comment by @konstin on 2025-06-24 10:04_
+
+I'm pretty sure this is fixed now by reporting that we retry.
+
+---
+
+_Comment by @konstin on 2025-10-29 11:16_
+
+This should be solved by https://github.com/astral-sh/uv/blob/51e8da2d1c7a15cd30901de565fba2c19413f6da/crates/uv-client/src/base_client.rs#L1338
+
+---
+
+_Closed by @konstin on 2025-10-29 11:16_
+
+---

@@ -1,0 +1,245 @@
+---
+number: 14941
+title: "0.7.14 makes `pip compile` fail when non-default index doesn't contain package."
+type: issue
+state: closed
+author: claudeviool
+labels:
+  - bug
+assignees: []
+created_at: 2025-07-28T13:34:05Z
+updated_at: 2025-07-31T21:00:02Z
+url: https://github.com/astral-sh/uv/issues/14941
+synced_at: 2026-01-07T13:12:19-06:00
+---
+
+# 0.7.14 makes `pip compile` fail when non-default index doesn't contain package.
+
+---
+
+_Issue opened by @claudeviool on 2025-07-28 13:34_
+
+### Summary
+
+E.g., having a custom index `corp-pypi` as the second, non-default entry. 
+Fails when resolving public packages e.g. click with a 404 error on the custom index.
+
+```
+Resolving requirements with uv...
+⠦ Resolving dependencies...                                                                                                                                                                     error: Request failed after 1 retries
+  Caused by: Failed to fetch: `https://pypi.corp.com/simple/click/`
+  Caused by: HTTP status client error (404 Not Found) for url (https://pypi.corp.com/simple/click/)
+```
+
+### Platform
+
+macOS 15
+
+### Version
+
+Breaks from 0.7.14 (e7f596711 2025-06-23), including 0.8.3
+
+### Python version
+
+Python 3.13
+
+---
+
+_Label `bug` added by @claudeviool on 2025-07-28 13:34_
+
+---
+
+_Comment by @charliermarsh on 2025-07-28 13:46_
+
+Can you please include the `--verbose` logs? We may need a reproduction to help you here unfortunately. The general case of what you're describing is not broken, so it might be something very specific to your registry.
+
+---
+
+_Comment by @frazar on 2025-07-30 12:00_
+
+This reproduces for me also with uv version 0.8.3 (in particular `ghcr.io/astral-sh/uv:0.8.3@sha256:ef11ed817e6a5385c02cd49fdcc99c23d02426088252a8eace6b6e6a2a511f36`). Given the configuration file `~/.config/uv/uv.toml` populated with
+
+```toml
+index-url = "https://pypi.org/simple"
+extra-index-url = ["https://pypi.corp.com/artifactory/api/pypi/pypi/simple"]
+allow-insecure-host = ["pypi.corp.com"]
+index-strategy = "first-index"
+```
+
+running the following Dockerfile command 
+
+```
+RUN --mount=type=secret,id=netrc,target=/root/.netrc \
+    --mount=type=secret,id=uv.toml,dst=/root/.config/uv/uv.toml \
+    --mount=type=cache,target=/root/.cache/uv \
+    uv venv "$UV_PROJECT_ENVIRONMENT" --no-python-downloads && \
+    uv -vvv pip sync requirements.txt dev-requirements.txt
+```
+
+yields the logs in the attached file: [logs.txt](https://github.com/user-attachments/files/21509119/logs.txt)
+
+ Here are the last few errors for reference
+
+```
+#15 0.853 TRACE Http::connect; scheme=Some("https"), host=Some("pypi.corp.com"), port=None
+#15 0.859 DEBUG connected to 151.101.192.223:443
+#15 0.869 DEBUG connected to 151.101.192.223:443
+#15 0.869 TRACE checkout dropped for ("https", pypi.corp.com)
+#15 0.869 DEBUG Transient request failure for https://pypi.corp.com/artifactory/api/pypi/pypi/simple/iniconfig/, retrying: error sending request for url (https://pypi.corp.com/artifactory/api/pypi/pypi/simple/iniconfig/)
+#15 0.869   Caused by: client error (Connect)
+#15 0.869   Caused by: dns error
+#15 0.869   Caused by: failed to lookup address information: Name does not resolve
+#15 0.869 WARN Retry attempt #1. Sleeping 627.605159ms before the next attempt
+#15 0.870 TRACE checkout dropped for ("https", pypi.corp.com)
+#15 0.870 DEBUG Transient request failure for https://pypi.corp.com/artifactory/api/pypi/pypi/simple/lxml/, retrying: error sending request for url (https://pypi.corp.com/artifactory/api/pypi/pypi/simple/lxml/)
+#15 0.870   Caused by: client error (Connect)
+#15 0.870   Caused by: dns error
+#15 0.870   Caused by: failed to lookup address information: Name does not resolve
+#15 0.870 WARN Retry attempt #1. Sleeping 1.516160903s before the next attempt
+#15 0.873 TRACE Handling request for https://pypi.corp.com/artifactory/api/pypi/pypi/simple/opentelemetry-instrumentation-requests/ with authentication policy auto
+#15 0.873 TRACE Request for https://pypi.corp.com/artifactory/api/pypi/pypi/simple/opentelemetry-instrumentation-requests/ is unauthenticated, checking cache
+#15 0.873 TRACE No credentials in cache for URL https://pypi.corp.com/artifactory/api/pypi/pypi/simple/opentelemetry-instrumentation-requests/
+#15 0.873 TRACE Attempting unauthenticated request for https://pypi.corp.com/artifactory/api/pypi/pypi/simple/opentelemetry-instrumentation-requests/
+#15 0.873 TRACE checkout waiting for idle connection: ("https", pypi.corp.com)
+#15 0.873 DEBUG starting new connection: https://pypi.corp.com/
+#15 0.873 TRACE Http::connect; scheme=Some("https"), host=Some("pypi.corp.com"), port=None
+#15 0.883 TRACE Considering retry of response HTTP 404 Not Found for https://pypi.corp.com/artifactory/api/pypi/pypi/simple/opentelemetry-instrumentation-wsgi/
+#15 0.883 TRACE Cannot retry error: not an IO error
+#15 0.883 TRACE checkout dropped for ("https", pypi.corp.com)
+#15 0.883 TRACE checkout dropped for ("https", pypi.org)
+#15 0.883 TRACE checkout dropped for ("https", pypi.org)
+#15 0.883 TRACE checkout dropped for ("https", pypi.org)
+#15 0.883 DEBUG Released lock at `/venv/.lock`
+#15 0.893 error: Request failed after 1 retries
+#15 0.893   Caused by: Failed to fetch: `https://pypi.corp.com/artifactory/api/pypi/pypi/simple/opentelemetry-instrumentation-wsgi/`
+#15 0.893   Caused by: HTTP status client error (404 ) for url (https://pypi.corp.com/artifactory/api/pypi/pypi/simple/opentelemetry-instrumentation-wsgi/)
+#15 ERROR: process "/bin/sh -c uv venv \"$UV_PROJECT_ENVIRONMENT\" --no-python-downloads &&     uv -vvv pip sync requirements.txt dev-requirements.txt" did not complete successfully: exit code: 2
+```
+
+I've also noticed that, for some reason, the log line
+
+```
+HTTP status client error (404 ) for url (https://pypi.corp.com/artifactory/api/pypi/pypi/simple/opentelemetry-instrumentation-wsgi/)
+```
+reports error code with a trailing space (`404 ` instead of `404`).
+
+---
+
+_Comment by @charliermarsh on 2025-07-31 02:12_
+
+So all the requests are failing due to a DNS error (prior to even returning a 404)?
+
+---
+
+_Comment by @frazar on 2025-07-31 05:00_
+
+> So all the requests are failing due to a DNS error (prior to even returning a 404)?
+
+Yes, for the specific package leading to the error, `opentelemetry-instrumentation-wsgi`, this seems to be the case. 
+
+---
+
+_Comment by @zanieb on 2025-07-31 11:53_
+
+Sounds like https://github.com/astral-sh/uv/issues/8450 ?
+
+---
+
+_Comment by @frazar on 2025-07-31 12:33_
+
+Thanks zanieb! That is indeed the cause of the DNS resolution errors. 
+
+However, the DNS errors do not fully explain my issue. The last request to `pypi.corp.com` seems to succeed in its DNS resolution. It then receives a 404 response, and only _then_ the `uv sync` command fails (in a similar way to the initial error report of this issue).
+
+---
+
+_Comment by @zanieb on 2025-07-31 12:57_
+
+I'm not sure — the index gave us a 404 and we're reporting it. You can access that same URL without credentials with something like `curl`?
+
+---
+
+_Comment by @charliermarsh on 2025-07-31 13:20_
+
+Hard for me to understand how that error message is even possible but it doesn't come from uv, it comes from reqwest: https://github.com/seanmonstar/reqwest/blob/21226a5bc3059a378b95267f2d743fbea44d4c3e/src/error.rs#L296. `Status` takes `StatusCode`, which is a `NonZeroU16`, and if it's 404, it should then print `"Not found"`.
+
+---
+
+_Comment by @charliermarsh on 2025-07-31 13:25_
+
+I could believe that there's a bug in uv whereby if we retry a request, and it returns a 404, we consider it a failure rather than handling the "Not found" case, though.
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2025-07-31 13:27_
+
+---
+
+_Comment by @charliermarsh on 2025-07-31 13:27_
+
+Yeah, I see something that "looks like" that in the code.
+
+---
+
+_Comment by @frazar on 2025-07-31 13:33_
+
+> I'm not sure — the index gave us a 404 and we're reporting it. 
+
+Yes, and that's expected. But not sure if this is enough to fail the whole command, considering that the main index (`index-url = "https://pypi.org/simple"` as specified by config.toml) contains it?
+
+> You can access that same URL without credentials with something like curl?
+
+Yes, and it returns 404 for this URL. 
+
+```
+$ curl --netrc -vk https://pypi.corp.com/artifactory/api/pypi/pypi/simple/opentelemetry-instrumentation-wsgi/
+... snip ...
+* Request completely sent off
+* TLSv1.3 (IN), TLS handshake, Newsession Ticket (4):
+* TLSv1.3 (IN), TLS handshake, Newsession Ticket (4):
+< HTTP/1.1 404
+< Date: Thu, 31 Jul 2025 13:28:01 GMT
+< Content-Type: application/json
+< Transfer-Encoding: chunked
+< Connection: keep-alive
+< X-JFrog-Version: Artifactory/7.111.10 81110900
+< X-Artifactory-Id: come id
+< X-Artifactory-Node-Id: other-server.corp.com
+< X-Content-Type-Options: nosniff
+<
+{
+  "errors" : [ {
+    "status" : 404,
+    "message" : "Not found"
+  } ]
+* Connection #0 to host pypy.corp.com left intact
+}
+```
+
+This is expected because the `opentelemetry-instrumentation-wsgi` package is not present in the "extra" index `pypy.corp.com`. Instead (in my expectation) it should be fetched from the main index, `pypi.org`. So I would expect this particular 404 error should be ignored by `uv`.
+
+---
+
+_Comment by @charliermarsh on 2025-07-31 13:40_
+
+Yeah, I think there's a real bug here in which we fail hard if we hit a 404 after a retry (but handle it correctly when no such retries are required).
+
+---
+
+_Comment by @zanieb on 2025-07-31 13:43_
+
+Ah I see, thanks for the details! 
+
+---
+
+_Referenced in [astral-sh/uv#14989](../../astral-sh/uv/issues/14989.md) on 2025-07-31 14:24_
+
+---
+
+_Referenced in [astral-sh/uv#14996](../../astral-sh/uv/pulls/14996.md) on 2025-07-31 14:54_
+
+---
+
+_Closed by @charliermarsh on 2025-07-31 21:00_
+
+---

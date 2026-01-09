@@ -1,0 +1,107 @@
+---
+number: 10807
+title: "`UV_PROJECT_ENVIRONMENT` is being ignored while creating venv"
+type: issue
+state: closed
+author: guesswh0
+labels:
+  - question
+  - needs-decision
+assignees: []
+created_at: 2025-01-21T06:38:59Z
+updated_at: 2025-05-14T06:56:08Z
+url: https://github.com/astral-sh/uv/issues/10807
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# `UV_PROJECT_ENVIRONMENT` is being ignored while creating venv
+
+---
+
+_Issue opened by @guesswh0 on 2025-01-21 06:38_
+
+<img width="372" alt="Image" src="https://github.com/user-attachments/assets/db1e96f0-dfc1-431d-8a55-79e15ddf5673" />
+
+`uv venv` is ignoring `UV_PROJECT_ENVIRONMENT` environment variable while creating venv.
+
+
+
+
+
+---
+
+_Label `needs-decision` added by @konstin on 2025-01-21 08:26_
+
+---
+
+_Comment by @konstin on 2025-01-21 08:27_
+
+`uv venv` takes the location as first argument, but it might makes sense to support `UV_PROJECT_ENVIRONMENT` as override for the default branch for consistency.
+
+---
+
+_Referenced in [astral-sh/uv#1495](../../astral-sh/uv/issues/1495.md) on 2025-02-17 10:19_
+
+---
+
+_Comment by @zanieb on 2025-02-20 13:49_
+
+This is already the case
+
+```
+❯ uv init example
+Initialized project `example` at `/Users/zb/workspace/uv/example`
+❯ cd example
+❯ UV_PROJECT_ENVIRONMENT=foo uv venv
+Using CPython 3.13.0
+Creating virtual environment at: foo
+Activate with: source foo/bin/activate
+```
+
+We just only use this logic if you're in the root of a project — not for arbitrary virtual environment creation.
+
+---
+
+_Label `question` added by @zanieb on 2025-02-20 13:49_
+
+---
+
+_Comment by @guesswh0 on 2025-02-24 05:21_
+
+It is, i see.
+
+> [UV_PROJECT_ENVIRONMENT](https://docs.astral.sh/uv/configuration/environment/#uv_project_environment)
+>
+> Specifies the path to the directory to use for a project virtual environment.
+>
+> See the [project documentation](https://docs.astral.sh/uv/concepts/projects/config/#project-environment-path) for more details.
+
+BUT it turns out that without a project there is no way to configure virtual environment default path 
+
+---
+
+_Comment by @zanieb on 2025-02-24 17:51_
+
+Yeah, I don't think we'll change that. Perhaps we'd add a option to the config file, but we'd need to see more demand and justification.
+
+Going to close this, as the described issue is addressed.
+
+---
+
+_Closed by @zanieb on 2025-02-24 17:51_
+
+---
+
+_Comment by @callumforrester on 2025-05-14 06:56_
+
+Hi @zanieb, I've just got here after following a trail of Github threads, trying to figure out why one of my terminals is respecting `${UV_PROJECT_ENVIRONMENT}` and one isn't. Mystery solved: Different working directories. 
+
+However, this kind of inconsistency leads to a confusing user experience. I would say that is a form of justification, if not to change it then at least to document it, ideally [here](https://docs.astral.sh/uv/configuration/environment/#uv_project_environment) and/or [here](https://docs.astral.sh/uv/concepts/projects/config/#project-environment-path). Especially since the former says "uv defines and _respects_ the following environment variables:".
+
+I'm happy to raise a PR to the docs if there's interest. At a minimum it will make it clear that not every uv command respects `${UV_PROJECT_ENVIRONMENT}` all the time. There's this thread, there's also [`uv pip install`](https://github.com/astral-sh/uv/issues/7380) and presumably other examples (?). 
+
+I would also be happy to include a more general statement that uv, as a project, has a very strong preference regarding the venv location (`<working directory>/.venv`) and doesn't recommend changing it. That's the impression I've got from my trail, if correct I think this is also worth documenting as it will save someone like me a lot of trouble.
+
+Finally, sorry if there are docs for all of this and I've just missed them, which is entirely possible!
+
+---

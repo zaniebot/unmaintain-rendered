@@ -1,0 +1,62 @@
+---
+number: 11974
+title: Installation is restricted due to regional limitations.
+type: issue
+state: closed
+author: lsp84ch83
+labels:
+  - enhancement
+assignees: []
+created_at: 2025-03-05T11:36:05Z
+updated_at: 2025-03-06T03:42:17Z
+url: https://github.com/astral-sh/uv/issues/11974
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# Installation is restricted due to regional limitations.
+
+---
+
+_Issue opened by @lsp84ch83 on 2025-03-05 11:36_
+
+### Summary
+
+The uv install command utilizes GitHub's download address, but in regions or countries where GitHub is blocked, this often results in timeouts. Even if uv performs exceptionally well, it becomes unusable under such circumstances. It is hoped that the download links can be optimized or accelerated to address this issue.
+
+### Example
+
+`uv venv test --python 3.8.20                                                                      ✔
+  × Failed to download
+  │ https://github.com/astral-sh/python-build-standalone/releases/download/20241002/cpython-3.8.20%2B20241002-aarch64-apple-darwin-install_only_stripped.tar.gz
+  ├─▶ Request failed after 3 retries
+  ├─▶ error sending request for url
+  │   (https://github.com/astral-sh/python-build-standalone/releases/download/20241002/cpython-3.8.20%2B20241002-aarch64-apple-darwin-install_only_stripped.tar.gz)
+  ├─▶ client error (Connect)
+  ├─▶ dns error: failed to lookup address information: nodename nor servname provided, or not known
+  ╰─▶ failed to lookup address information: nodename nor servname provided, or not known`
+
+<img width="943" alt="Image" src="https://github.com/user-attachments/assets/0c7904e5-2470-4713-8e06-c0706c157a2e" />
+
+_No response_
+
+---
+
+_Label `enhancement` added by @lsp84ch83 on 2025-03-05 11:36_
+
+---
+
+_Comment by @charliermarsh on 2025-03-05 13:40_
+
+Have you considered setting up a GitHub proxy or mirror? We support proxy URLs here: https://docs.astral.sh/uv/configuration/environment/#uv_python_install_mirror
+
+---
+
+_Comment by @lsp84ch83 on 2025-03-05 13:41_
+
+您好，很抱歉无法在第一时间给您回复，看到来信时我会尽快给您回复。
+
+---
+
+_Closed by @lsp84ch83 on 2025-03-06 03:42_
+
+---

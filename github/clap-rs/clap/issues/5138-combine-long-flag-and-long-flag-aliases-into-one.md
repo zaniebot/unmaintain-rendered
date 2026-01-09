@@ -1,0 +1,67 @@
+---
+number: 5138
+title: Combine long_flag and long_flag_aliases into one API?
+type: issue
+state: open
+author: SUPERCILEX
+labels:
+  - C-enhancement
+  - M-breaking-change
+  - A-builder
+  - S-waiting-on-design
+assignees: []
+created_at: 2023-09-25T20:16:00Z
+updated_at: 2023-09-25T20:48:56Z
+url: https://github.com/clap-rs/clap/issues/5138
+synced_at: 2026-01-07T13:12:20-06:00
+---
+
+# Combine long_flag and long_flag_aliases into one API?
+
+---
+
+_Issue opened by @SUPERCILEX on 2023-09-25 20:16_
+
+Clap currently has https://docs.rs/clap/latest/clap/struct.Command.html#method.long_flag and https://docs.rs/clap/latest/clap/struct.Command.html#method.long_flag_aliases where `long_flag_aliases` does nothing without `long_flag` being specified. One could add a runtime warning/crash, but it's usually better to make bad states unrepresentable. ~~The proposed solution is to unify these APIs into a `long_flags` method.~~
+
+Actually, the reason the "alias" method variants exist is to allow having hidden long flags that don't show up in help. I think the next best solution to use a builder pattern to only allow calling the alias variants after having specified the base long flag.
+
+---
+
+_Label `A-builder` added by @epage on 2023-09-25 20:45_
+
+---
+
+_Label `C-enhancement` added by @epage on 2023-09-25 20:45_
+
+---
+
+_Label `M-breaking-change` added by @epage on 2023-09-25 20:45_
+
+---
+
+_Label `S-waiting-on-decision` added by @epage on 2023-09-25 20:45_
+
+---
+
+_Label `S-waiting-on-decision` removed by @epage on 2023-09-25 20:45_
+
+---
+
+_Label `S-waiting-on-design` added by @epage on 2023-09-25 20:45_
+
+---
+
+_Comment by @epage on 2023-09-25 20:48_
+
+Not finding an issue for this but I believe there has been a request to have a subcommand flag without a name.  This would mean we need a canonical `long_flag`.
+
+> I think the next best solution to use a builder pattern to only allow calling the alias variants after having specified the base long flag.
+
+Without what I stated above, hidden doesn't really make a difference.  The desire to force a visible flag when dealing with invisible aliases applies just as much to Args.
+
+> I think the next best solution to use a builder pattern to only allow calling the alias variants after having specified the base long flag.
+
+Relying on the type state pattern in a build API can severely complicate it especially for a runtime-focused API like clap's.
+
+---

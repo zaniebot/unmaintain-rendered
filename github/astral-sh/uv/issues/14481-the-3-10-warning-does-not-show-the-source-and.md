@@ -1,0 +1,109 @@
+---
+number: 14481
+title: "The `==3.10` warning does not show the source and might be misleading in case of invalid spec"
+type: issue
+state: open
+author: potiuk
+labels:
+  - bug
+  - error messages
+assignees: []
+created_at: 2025-07-07T08:48:33Z
+updated_at: 2025-07-09T19:28:57Z
+url: https://github.com/astral-sh/uv/issues/14481
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# The `==3.10` warning does not show the source and might be misleading in case of invalid spec
+
+---
+
+_Issue opened by @potiuk on 2025-07-07 08:48_
+
+### Summary
+
+This is related to #14422 - but this is a different issue.
+
+In order to make lives of our contributors easier with the warning reported by `uv  0.7.19` that produces huge number of warnings, I attempted to temporarily apply the "recommendations" and get rid of all the `~=` and `==X.Y`. https://github.com/apache/airflow/pull/52967 - hoping that it will be eventually reverted.
+
+However when I attempted to do so, I got a misterious warning that came literally out of the blue - because I did not have `==3.10` defined anywhere in the project, and that warning was not telling which project in the workspace caused it:
+
+After a bit of guessing - it turned out that I made a mistake when I applied the >=, < pattern and by mistake in `dev/breeze/pyproject.toml` I put `<=3.10,<4`.
+
+For whatever reason that (invalid of course) python-requires, produced misleading and non-actionable warning:
+
+<img width="2131" height="62" alt="Image" src="https://github.com/user-attachments/assets/5ac4c614-3059-473e-be0d-af3db9ad9002" />
+
+
+# How to reproduce
+
+1. Check-out my PR https://github.com/apache/airflow/pull/52967
+2. Modify `dev/breeze/pyproject.toml` so that requires-python looks like that:
+```
+requires-python = "<=3.10,<4"
+```
+3. Run `uv sync`
+
+You will see the misleading warning generated.
+
+
+
+### Platform
+
+Linux Mint 22.1
+
+### Version
+
+uv 0.7.19
+
+### Python version
+
+Python 3.10.0
+
+---
+
+_Label `bug` added by @potiuk on 2025-07-07 08:48_
+
+---
+
+_Renamed from "The `==.3.10` warning does not show the source and might be misleading in case of invalid spec" to "The `==3.10` warning does not show the source and might be misleading in case of invalid spec" by @potiuk on 2025-07-07 08:49_
+
+---
+
+_Assigned to @zanieb by @konstin on 2025-07-07 09:15_
+
+---
+
+_Label `error messages` added by @zanieb on 2025-07-07 13:26_
+
+---
+
+_Comment by @zanieb on 2025-07-07 13:26_
+
+Thanks!
+
+---
+
+_Comment by @Aditya-PS-05 on 2025-07-09 18:14_
+
+Hey @zanieb , can I work on this issue?
+
+---
+
+_Comment by @zanieb on 2025-07-09 18:15_
+
+Sure
+
+---
+
+_Comment by @potiuk on 2025-07-09 19:28_
+
+Yeah. It will be gret to get the warning more informative and actionable in the right way - following the wider community understanding of the problem.
+
+I've personally learned a lot from the whole discussion. and happy to provide a feedback on  propoosed improvements :)
+
+---
+
+_Referenced in [astral-sh/uv#14711](../../astral-sh/uv/issues/14711.md) on 2025-07-18 14:45_
+
+---

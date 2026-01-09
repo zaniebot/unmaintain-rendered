@@ -1,0 +1,40 @@
+---
+number: 4965
+title: "Feature: Exporting report to a file"
+type: issue
+state: closed
+author: victorcrrd
+labels: []
+assignees: []
+created_at: 2023-06-08T16:52:50Z
+updated_at: 2023-06-08T16:58:03Z
+url: https://github.com/astral-sh/ruff/issues/4965
+synced_at: 2026-01-07T13:12:15-06:00
+---
+
+# Feature: Exporting report to a file
+
+---
+
+_Issue opened by @victorcrrd on 2023-06-08 16:52_
+
+I'm wondering if it's possible to export the generated report to a file given as an option to the command? Something like `ruff check --format json --output report.json .` I have seen nothing like that reading the docs.
+If not, is it already an idea to implement in the future? Would you accept contributions to add that feature?
+
+---
+
+_Comment by @JonathanPlasse on 2023-06-08 16:56_
+
+- There is a PR open #4950 
+
+---
+
+_Comment by @victorcrrd on 2023-06-08 16:58_
+
+Thank you! I'm closing the issue then :)
+
+---
+
+_Closed by @victorcrrd on 2023-06-08 16:58_
+
+---

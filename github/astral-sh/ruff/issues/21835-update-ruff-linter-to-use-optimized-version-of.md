@@ -1,0 +1,41 @@
+---
+number: 21835
+title: Update ruff_linter to use optimized version of parenthesized_ranges
+type: issue
+state: closed
+author: denyszhak
+labels: []
+assignees: []
+created_at: 2025-12-08T00:54:17Z
+updated_at: 2025-12-11T12:21:42Z
+url: https://github.com/astral-sh/ruff/issues/21835
+synced_at: 2026-01-07T13:12:16-06:00
+---
+
+# Update ruff_linter to use optimized version of parenthesized_ranges
+
+---
+
+_Issue opened by @denyszhak on 2025-12-08 00:54_
+
+PR #21738 for Issue #21510 added optimized version for `parenthesized_range`. Now we can replace usage of the old `parenthesized_range` with a new one that relies on `Tokens.`
+
+---
+
+_Comment by @denyszhak on 2025-12-08 00:54_
+
+cc @MichaReiser 
+
+---
+
+_Referenced in [astral-sh/ruff#21836](../../astral-sh/ruff/pulls/21836.md) on 2025-12-08 00:57_
+
+---
+
+_Closed by @MichaReiser on 2025-12-11 12:04_
+
+---
+
+_Renamed from "Update ruff_liner to use optimized version of parenthesized_ranges" to "Update ruff_linter to use optimized version of parenthesized_ranges" by @AlexWaygood on 2025-12-11 12:21_
+
+---

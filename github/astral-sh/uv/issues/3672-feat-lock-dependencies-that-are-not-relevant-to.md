@@ -1,0 +1,88 @@
+---
+number: 3672
+title: "feat: lock dependencies that are not relevant to the platform the compile is running on "
+type: issue
+state: closed
+author: rbtcollins
+labels:
+  - enhancement
+assignees: []
+created_at: 2024-05-20T17:03:41Z
+updated_at: 2024-07-02T04:22:52Z
+url: https://github.com/astral-sh/uv/issues/3672
+synced_at: 2026-01-07T13:12:17-06:00
+---
+
+# feat: lock dependencies that are not relevant to the platform the compile is running on 
+
+---
+
+_Issue opened by @rbtcollins on 2024-05-20 17:03_
+
+uv 0.1.44
+
+With this requirements input file:
+
+```foo.in
+jupyterlab==4.2.0
+```
+
+running this command: `uv pip compile     --generate-hashes     --no-header     --no-strip-extras     --python-version=3.11.9     -o foo.txt     foo.in` on a Linux host generates a `foo.txt` file that does not contain 'appnope'.
+
+`appnope` is a platform_system specific dependency of the ipykernel:
+
+https://github.com/ipython/ipykernel/blob/v6.29.4/pyproject.toml#L33
+`'appnope;platform_system=="Darwin"',`
+
+We want to lock our requirements, but having contributors run `uv pip compile` for every distinct platform seems like unnecessary toil. Even if a perfect job isn't possible, doing a usually-good-enough job would be fantastic.
+
+Concrete proposal:
+- when encountering a platform specific conditional dependency, include it, preserving the condition. And for its dependencies, whatever they are, inject the same condition unless an alternative path leads to their unconditional inclusion.
+
+---
+
+_Comment by @charliermarsh on 2024-05-20 17:07_
+
+You can do something like this to build a single requirements file for both platforms: https://github.com/astral-sh/uv/issues/2679#issuecomment-2068208602
+
+---
+
+_Comment by @charliermarsh on 2024-05-20 17:08_
+
+Unclear if we'll offer something like this in the `pip compile` API directly. We're already building platform-agnostic resolution support atop lockfiles. Perhaps as part of that we'll offer outputting a requirements file.
+
+---
+
+_Label `enhancement` added by @charliermarsh on 2024-05-20 20:34_
+
+---
+
+_Comment by @juledwar on 2024-07-02 02:25_
+
+> You can do something like this to build a single requirements file for both platforms: [#2679 (comment)](https://github.com/astral-sh/uv/issues/2679#issuecomment-2068208602)
+
+What about allowing the use of multiple `--platform` flags? Obviously it would need to do environment markers.
+
+---
+
+_Comment by @charliermarsh on 2024-07-02 02:28_
+
+By the way: we now support `--universal` which does this!
+
+(We may eventually support allowing multiple `--python-platform` flags as a less general solution.)
+
+---
+
+_Closed by @charliermarsh on 2024-07-02 02:28_
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2024-07-02 02:28_
+
+---
+
+_Comment by @juledwar on 2024-07-02 04:22_
+
+I noticed `--universal` but I don't want *everything* as it slows down the whole run. I've gone from 1 hour on pip-compile to 5 minutes with UV because of this!
+
+---

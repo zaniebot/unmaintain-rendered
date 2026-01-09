@@ -1,0 +1,144 @@
+---
+number: 15642
+title: Extend PEP 695 generic class and function rules
+type: issue
+state: open
+author: ntBre
+labels:
+  - rule
+assignees: []
+created_at: 2025-01-21T13:58:28Z
+updated_at: 2025-02-05T13:15:30Z
+url: https://github.com/astral-sh/ruff/issues/15642
+synced_at: 2026-01-07T13:12:16-06:00
+---
+
+# Extend PEP 695 generic class and function rules
+
+---
+
+_Issue opened by @ntBre on 2025-01-21 13:58_
+
+Follow up tasks from #15565
+
+- [ ] Handle generic methods
+- [ ] Handle `default` kwargs for Python >= 3.13
+- [ ] Unquote type variable forward reference annotations (see below)
+- [ ] Handle `TypeVarTuple` generics with `Unpack` instead of `*`: `class MultipleGenerics(Generic[S, T, Unpack[Ts], P]): ...` [^1]
+- [x] Allow multiple base classes for generic classes (https://github.com/astral-sh/ruff/pull/15659)
+- [x] Use string replacements for UP040's autofix too, instead of using the `ExprGenerator` (https://github.com/astral-sh/ruff/pull/15840)
+- [x] Rename private type variables in generics (don't make inline generics like `[_T]`) (https://github.com/astral-sh/ruff/pull/15862)
+
+Related: #4617, #12542
+
+[^1]: https://github.com/astral-sh/ruff/pull/15565#discussion_r1925489033
+
+---
+
+_Label `rule` added by @MichaReiser on 2025-01-21 14:02_
+
+---
+
+_Comment by @AlexWaygood on 2025-01-21 14:30_
+
+One other thing that might be nice would be to unquote annotations. E.g. old-style type variables often need to quote their `bound`s if the bound needs to use a forward reference to a name not yet defined
+
+```py
+from typing import Generic, TypeVar
+
+T = TypeVar("T", bound="list[T | None]")
+
+class Foo(Generic[T]):
+    var: T
+```
+
+But the bounds for PEP-695 type parameters are lazily evaluated, so there's no need to quote forward references:
+```pycon
+>>> class Foo[T: list[T | None]]:
+...     var: T
+...     
+>>> Foo.__type_params__[0].__bound__
+list[typing.Optional[T]]
+```
+
+---
+
+_Referenced in [astral-sh/ruff#15659](../../astral-sh/ruff/pulls/15659.md) on 2025-01-21 23:17_
+
+---
+
+_Referenced in [astral-sh/ruff#15565](../../astral-sh/ruff/pulls/15565.md) on 2025-01-22 15:26_
+
+---
+
+_Referenced in [astral-sh/ruff#4617](../../astral-sh/ruff/issues/4617.md) on 2025-01-22 16:40_
+
+---
+
+_Referenced in [astral-sh/ruff#12542](../../astral-sh/ruff/issues/12542.md) on 2025-01-22 16:42_
+
+---
+
+_Comment by @ntBre on 2025-01-22 22:50_
+
+I started working on renaming private type variables, but I think it's a bit more complicated than I thought. At first I was just going to do the rename as part of `DisplayTypeVar::fmt`, but I realized that you have to be pretty careful not to change the meaning of other instances of the type you're renaming. For example,
+
+
+```python
+class T: ...
+
+_T = TypeVar("_T")
+
+def generic(var: _T) -> _T:
+    x: T = T()
+    return var
+```
+
+You can't even just look at the signature or the parent scopes, you also have to look at the body of the class or function.
+
+Even if you restrict the fix to variables not in the parent scope, you then have to update the name of the type in the body of the class or function too:
+
+```python
+_G = TypeVar("_G")
+
+class SafePrivate(Generic[_G]):
+    var1: _G
+```
+
+This was the test case I was writing when I realized that I needed to rename the inner `_G` too, not just the one in the class signature. I found the [Renamer](https://github.com/astral-sh/ruff/blob/05abd642a8ddb3f3b6e7c78592995c6ccfca2520/crates/ruff_linter/src/renamer.rs#L12) API, which sounded very promising, but I'm running into some panics like this: `assertion failed: start.raw <= end.raw`, which I assume is because of the overlapping `Edit::replacement` from the existing UP046 code and the edits from `Renamer::rename`.
+
+Would I need a separate rule to do the `rename` in a separate pass from the initial replacement? Or is there another approach I'm missing?
+
+---
+
+_Comment by @AlexWaygood on 2025-01-22 23:03_
+
+> Would I need a separate rule to do the `rename` in a separate pass from the initial replacement? Or is there another approach I'm missing?
+
+This might be quite a good solution. It would allow us to use the `Renamer` API (which I agree is the easiest, most robust way to do this!), and would also allow us to complain about e.g. handwritten PEP-695 classes that use TypeVars with leading underscores, which I think is a bit of a stylistic antipattern since they're private to the class by default. For this, though, I think it does make sense to have one rule that would rename type parameters in type aliases, functions and classes, rather than a separate rule for each. (That doesn't mean that they all have to be tackled in one PR, however!)
+
+---
+
+_Referenced in [astral-sh/ruff#15840](../../astral-sh/ruff/pulls/15840.md) on 2025-01-30 22:54_
+
+---
+
+_Referenced in [astral-sh/ruff#15841](../../astral-sh/ruff/pulls/15841.md) on 2025-01-31 11:16_
+
+---
+
+_Referenced in [astral-sh/ruff#15862](../../astral-sh/ruff/pulls/15862.md) on 2025-01-31 22:04_
+
+---
+
+_Comment by @AlexWaygood on 2025-02-05 13:15_
+
+> One other thing that might be nice would be to unquote annotations. E.g. old-style type variables often need to quote their `bound`s if the bound needs to use a forward reference to a name not yet defined
+
+I suppose this could be done as an (initially preview-only) extension of UP037 and PYI020, rather than adding a new rule
+
+---
+
+_Referenced in [astral-sh/ruff#20656](../../astral-sh/ruff/issues/20656.md) on 2025-10-01 00:55_
+
+---

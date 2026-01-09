@@ -1,0 +1,447 @@
+---
+number: 1386
+title: "`uv venv` and github actions scripts / workflows"
+type: issue
+state: closed
+author: strickvl
+labels:
+  - documentation
+  - question
+  - virtualenv
+assignees: []
+created_at: 2024-02-15T23:37:23Z
+updated_at: 2025-04-20T23:42:40Z
+url: https://github.com/astral-sh/uv/issues/1386
+synced_at: 2026-01-07T13:12:16-06:00
+---
+
+# `uv venv` and github actions scripts / workflows
+
+---
+
+_Issue opened by @strickvl on 2024-02-15 23:37_
+
+Having trouble converting our pre-existing CI workflows / scripts to use `uv`, as you can see [here](https://github.com/zenml-io/zenml/actions/runs/7923609857/job/21633667697?pr=2442). Problem relates to the virtual environments which don't seem to be retained between workflow steps.
+
+[This](https://github.com/zenml-io/zenml/blob/e25abb47e0988e5acc268e99d9b79931e6943e95/.github/workflows/ci-fast.yml#L31) is maybe the easiest illustration of that:
+
+```yaml
+  steps:
+      - name: Checkout code
+        uses: actions/checkout@v4.1.1
+      - name: Set up Python
+        uses: actions/setup-python@v5.0.0
+        with:
+          python-version: '3.10'
+      - name: Install current package as editable
+        run: |
+          pip install uv
+          uv venv
+          uv pip install darglint
+      - name: Check docstrings
+        run: bash scripts/docstring.sh
+```
+
+One step installs it, and then the next step runs a script which in turn attempts to use the package, but it fails because the CI can't be found.
+
+I don't see any docs yet, so wondering how best to handle this?
+
+---
+
+_Comment by @zanieb on 2024-02-15 23:39_
+
+Hi! You need to activate virtual environments so set `VIRTUAL_ENV=./.venv` after creating.
+
+Related #1326 
+
+---
+
+_Label `question` added by @zanieb on 2024-02-15 23:39_
+
+---
+
+_Comment by @strickvl on 2024-02-15 23:57_
+
+Sorry maybe I'm being dumb here, but I've tried this and it still doesn't pick up the package.
+
+```yaml
+steps:
+      - name: Checkout code
+        uses: actions/checkout@v4.1.1
+      - name: Set up Python
+        uses: actions/setup-python@v5.0.0
+        with:
+          python-version: '3.10'
+      - name: Install current package as editable
+        run: |
+          pip install uv
+          uv venv
+          VIRTUAL_ENV=./.venv
+          uv pip install darglint
+      - name: Check docstrings
+        run: bash scripts/docstring.sh
+        env:
+          VIRTUAL_ENV: ./.venv
+```
+
+I even threw in a `source .venv/bin/activate` after the `uv venv` and that also did nothing. Am I doing what you suggested, or am I doing it wrong? 
+
+---
+
+_Comment by @ericbn on 2024-02-16 04:23_
+
+With GitHub Actions I think it makes more sense to install the dependencies globally in the virtual machine. uv does not support that yet. See #1374
+
+In your “Check docstrings” step shown above you’re missing also updating the PATH environment variable to include `“$VIRTUAL_ENV/bin”`. Or you can call `. .venv/bin/activate` at the beginning of the step, which will take care of the VIRTUAL_ENV and PATH environment variables for you.
+
+---
+
+_Comment by @dylanbstorey on 2024-02-16 05:54_
+
+Had a similar issue, got this working for me with the following snippet : 
+
+```
+ angreal-tests-linux:
+    name: "angreal run-tests linux"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: 1.67.0
+          override: true
+      - uses: Swatinem/rust-cache@v1
+      - uses: webfactory/ssh-agent@v0.7.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+      - uses: actions/setup-python@v4
+        with:
+          python-version: "3.12"
+      - run: echo "VIRTUAL_ENV=${Python_ROOT_DIR}" >> $GITHUB_ENV
+      - run: pip install uv
+      - run: uv pip install maturin pytest
+      - run: uv pip install angreal@.
+      - run: cargo test -v -- --nocapture --test-threads=1
+      - run: python -m pytest -svv
+```
+
+Its a bit of a hack, but basically you create the environment variable and set it to the root python and append it to the special github_env variable.
+
+This basically tells uv to just use the system python instead oa virtual env, should be good to go,
+
+
+
+---
+
+_Comment by @strickvl on 2024-02-16 06:30_
+
+@dylanbstorey that's a neat trick, and helpful it works across operating systems too. But would be good for `uv` to support installations globally too to make this unnecessary.
+
+---
+
+_Comment by @strickvl on 2024-02-16 06:37_
+
+Ok and key here is that the `- run: echo "VIRTUAL_ENV=${Python_ROOT_DIR}" >> $GITHUB_ENV` step runs as a separate step. i.e. you can't just run that bash command from within a step that has some other `uv` commands as then it won't pick up the Env var.
+
+---
+
+_Comment by @strickvl on 2024-02-16 08:46_
+
+Was running into race conditions here or at least issues with steps / jobs running in parallel attempting to access the same environment, it seems. I switched back to using `source ...` everywhere as it seemed more controlled.
+
+---
+
+_Referenced in [astral-sh/uv#1526](../../astral-sh/uv/issues/1526.md) on 2024-02-16 22:26_
+
+---
+
+_Referenced in [scikit-hep/pyhf#2444](../../scikit-hep/pyhf/pulls/2444.md) on 2024-02-16 22:28_
+
+---
+
+_Referenced in [open-webui/open-webui#758](../../open-webui/open-webui/pulls/758.md) on 2024-02-16 22:40_
+
+---
+
+_Comment by @adamtheturtle on 2024-02-17 12:55_
+
+Ideally for me there would be clear instructions on good practice for using `uv` in GitHub Actions, including on Windows, and including with a cache using `actions/cache`. 
+
+---
+
+_Referenced in [astral-sh/uv#1604](../../astral-sh/uv/issues/1604.md) on 2024-02-18 08:03_
+
+---
+
+_Comment by @adamtheturtle on 2024-02-18 11:56_
+
+Thank you @dylanbstorey .
+
+In my use of your trick, I quote `"$GITHUB_ENV"` as per examples in https://docs.github.com/en/actions/using-workflows/workflow-commands-for-github-actions#setting-an-environment-variable and as advised by shellcheck.
+
+```
+SC2086:info:1:42: Double quote to prevent globbing and word splitting [shellcheck]
+```
+
+Ideally for me any documented example will pass [`actionlint`](https://github.com/rhysd/actionlint).
+
+---
+
+_Comment by @kdeldycke on 2024-02-18 13:17_
+
+Can confirm @dylanbstorey's hack
+
+```yaml
+      - run: echo "VIRTUAL_ENV=${Python_ROOT_DIR}" >> $GITHUB_ENV
+```
+
+
+is working fine in my case:
+
+https://github.com/kdeldycke/workflows/blob/9e840d7c00ccb5a62272d437d2fe23c2cfbf866d/.github/workflows/lint.yaml#L68-L71
+
+---
+
+_Label `virtualenv` added by @zanieb on 2024-02-18 20:39_
+
+---
+
+_Comment by @AlexWaygood on 2024-02-19 13:10_
+
+The previous solutions suggested in this thread aren't cross-platform:
+- `echo` is a Unix-only command; you need different syntax to set an environment variable on Windows
+- Even if you set the environment variable correctly on Windows, setting `VIRTUAL_ENV` to the Python root dir without creating a virtual environment doesn't work on Windows, due to the fact that `python.exe` isn't in a `Scripts/` directory on Windows if you don't have a virtual environment activated, and `uv` isn't (yet?) aware of that.
+
+All that means that the previous suggested solutions won't work in a workflow job that runs on multiple operating systems in CI. After much debugging with @MichaReiser, here's a workflow job that I'm now [successfully using](https://github.com/AlexWaygood/typeshed-stats/blob/main/.github/workflows/test.yml) to run tests for my hobby project `typeshed-stats`. It runs on Linux, MacOS and Windows in CI:
+
+```yml
+jobs:
+  pytest-tests:
+    name: Run tests with pytest
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: ["ubuntu-latest", "windows-latest", "macos-latest"]
+        python-version: ["3.10", "3.11", "3.12"]
+      fail-fast: false
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python ${{ matrix.python-version }} on ${{ matrix.os }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          allow-prereleases: true
+      - name: Create and activate a virtual environment (Windows)
+        if: ${{ runner.os == 'Windows' }}
+        # uv doesn't (yet) allow us to install packages globally;
+        # we have to create and activate a virtual environment
+        run: |
+          irm https://astral.sh/uv/install.ps1 | iex
+          uv venv .venv
+          "VIRTUAL_ENV=.venv" | Out-File -FilePath $env:GITHUB_ENV -Append
+          "$PWD/.venv/Scripts" | Out-File -FilePath $env:GITHUB_PATH -Append
+      - name: Create and activate a virtual environment (Unix)
+        if: ${{ runner.os != 'Windows' }}
+        # uv doesn't (yet) allow us to install packages globally;
+        # we have to create and activate a virtual environment
+        run: |
+          curl -LsSf https://astral.sh/uv/install.sh | sh
+          uv venv .venv
+          echo "VIRTUAL_ENV=.venv" >> $GITHUB_ENV
+          echo "$PWD/.venv/bin" >> $GITHUB_PATH
+      - name: Install dependencies
+        run: uv pip install -e ".[pytest]"
+      - run: uv pip freeze
+      - name: Run tests under coverage
+        run: |
+          coverage run -m pytest
+          coverage report
+```
+
+---
+
+_Referenced in [astral-sh/uv#1639](../../astral-sh/uv/issues/1639.md) on 2024-02-19 13:12_
+
+---
+
+_Label `documentation` added by @AlexWaygood on 2024-02-19 13:13_
+
+---
+
+_Comment by @adamtheturtle on 2024-02-20 09:01_
+
+@AlexWaygood, @MichaReiser  Thank you for investigating this.
+
+If you want to use `echo` on Windows in GitHub Actions, you can set `shell: bash` on a GitHub Action.
+
+---
+
+_Comment by @AlexWaygood on 2024-02-20 09:05_
+
+> If you want to use `echo` on Windows in GitHub Actions, you can set `shell: bash` on a GitHub Action.
+
+@adamtheturtle we tried that but it caused other things to break ;) take a look at the test failures on https://github.com/AlexWaygood/typeshed-stats/pull/191.
+
+---
+
+_Comment by @strickvl on 2024-02-20 10:19_
+
+Had / having similar issues on our CI. Choosing to wait for a more stable way for this global install to happen which I believe will be worked on next week.
+
+---
+
+_Referenced in [astral-sh/uv#1779](../../astral-sh/uv/issues/1779.md) on 2024-02-20 21:22_
+
+---
+
+_Referenced in [mesa/mesa#2038](../../mesa/mesa/pulls/2038.md) on 2024-02-20 22:02_
+
+---
+
+_Comment by @mgaitan on 2024-02-21 04:51_
+
+The following worked [here](https://github.com/Shiphero/shbin/actions/runs/7984095247/job/21800352598). 
+
+```yaml
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.8", "3.9", "3.10", "3.11"]
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+      
+      - name: Install dependencies
+        run: |
+          python -m pip install uv
+          uv venv
+          uv pip install -e .[dev]
+      
+      - name: Activate virtualenv
+        run: |
+          . .venv/bin/activate
+          echo PATH=$PATH >> $GITHUB_ENV
+
+      - name: Test with pytest
+        run: pytest
+```
+
+---
+
+_Referenced in [actions/setup-python#822](../../actions/setup-python/issues/822.md) on 2024-02-21 19:17_
+
+---
+
+_Referenced in [astral-sh/uv#2000](../../astral-sh/uv/pulls/2000.md) on 2024-02-27 16:19_
+
+---
+
+_Comment by @danielhollas on 2024-02-27 18:08_
+
+> Ideally for me there would be clear instructions on good practice for using uv in GitHub Actions, including on Windows, and including with a cache using actions/cache.
+
+I'll just note that `setup-python` action also has a builtin cache. @alexwaygood have you done any testing to see if using this cache meaningfully speeds things up? Given how fast `uv` is, I wouldn't be surprised if there wasn't much difference. :-) 
+
+---
+
+_Comment by @AlexWaygood on 2024-02-27 18:11_
+
+> @AlexWaygood have you done any testing to see if using this cache meaningfully speeds things up?
+
+Nope! But it's a good point!
+
+> Given how fast `uv` is, I wouldn't be surprised if there wasn't much difference. :-)
+
+I think that would likely depend quite a lot on how complex it is to resolve the requirements set. But for simple requirements sets, I'd wager you're likely right.
+
+
+
+---
+
+_Comment by @danielhollas on 2024-02-27 18:47_
+
+> on how complex it is to resolve the requirements set. 
+
+The way I understand it, the cache does not really speeds up resolution itself, no? Well, unless you do not run `uv pip install` at all upon cache hit.
+
+---
+
+_Comment by @AlexWaygood on 2024-02-27 21:31_
+
+> The way I understand it, the cache does not really speeds up resolution itself, no? Well, unless you do not run `uv pip install` at all upon cache hit.
+
+oh I don't actually really know anything about how the caching works. Should probably not have implied that I did 😆
+
+---
+
+_Comment by @strickvl on 2024-03-03 09:53_
+
+Closing this issue as the `--system` flag has basically solved this issue for me. Thanks `uv` team!
+
+---
+
+_Closed by @strickvl on 2024-03-03 09:53_
+
+---
+
+_Comment by @zanieb on 2024-03-03 15:15_
+
+The cache _does_ improve resolution times because sometimes we need to build source distributions to determine their requirements during resolution which is generally slow — the cache contains these builds.
+
+---
+
+_Referenced in [astral-sh/uv#2231](../../astral-sh/uv/issues/2231.md) on 2024-03-24 20:15_
+
+---
+
+_Referenced in [aiidateam/aiida-core#6363](../../aiidateam/aiida-core/pulls/6363.md) on 2024-04-22 12:39_
+
+---
+
+_Comment by @zanieb on 2024-05-22 20:56_
+
+Hi! For those of you who are subscribed to this and are using `echo "VIRTUAL_ENV=${Python_ROOT_DIR}"` as a work-around — as of 0.2.0 this is no longer supported and we'd recommend using the `--system` flag or `--python <path>` instead.
+
+---
+
+_Comment by @elronbandel on 2024-06-27 16:53_
+
+Can anyone share an example of how to set up uv in GitHub actions with --system/--python?
+
+---
+
+_Comment by @zanieb on 2024-06-27 16:58_
+
+@elronbandel here's an example:
+
+- https://github.com/inventree/InvenTree/pull/7317
+
+
+---
+
+_Referenced in [shap/shap#3768](../../shap/shap/pulls/3768.md) on 2024-07-26 11:15_
+
+---
+
+_Referenced in [45spoons/seuranta#4](../../45spoons/seuranta/pulls/4.md) on 2024-08-24 17:54_
+
+---
+
+_Referenced in [shyndman/vantron-collectd-support#2](../../shyndman/vantron-collectd-support/pulls/2.md) on 2025-03-07 22:23_
+
+---
+
+_Comment by @yx-altera on 2025-04-20 23:42_
+
+Does [astral-sh/setup-uv@v5](https://github.com/astral-sh/setup-uv) support caching venv across workflow runs (not just in 1 job, but across workflow runs) ?
+
+---

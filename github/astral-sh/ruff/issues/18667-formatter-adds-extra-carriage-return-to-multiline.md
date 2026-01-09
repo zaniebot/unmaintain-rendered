@@ -1,0 +1,260 @@
+---
+number: 18667
+title: Formatter adds extra carriage return to multiline f-string debug replacements
+type: issue
+state: closed
+author: MeGaGiGaGon
+labels:
+  - bug
+  - formatter
+assignees: []
+created_at: 2025-06-13T19:22:49Z
+updated_at: 2025-06-15T05:53:07Z
+url: https://github.com/astral-sh/ruff/issues/18667
+synced_at: 2026-01-07T13:12:16-06:00
+---
+
+# Formatter adds extra carriage return to multiline f-string debug replacements
+
+---
+
+_Issue opened by @MeGaGiGaGon on 2025-06-13 19:22_
+
+### Summary
+
+I noticed this while messing around on the playground, but it looks like formatting adds an extra `\r` to multiline f-string debug replacements. In combination with another software/editor that normalizes `\r` to `\r\n`, this causes the file to grow on every formatting.
+
+The code I've been using to test this is 
+
+```py
+f"{
+1=
+}"
+```
+Where the line endings are `\r\n`
+
+One example of this is on the playground. If you keep copying the output to the input, it keeps growing.
+[first step](https://play.ruff.rs/5ed0391a-3252-4d29-bd01-c3a20ac44839)
+[second step](https://play.ruff.rs/5b073bce-059e-4e2c-b6a5-9446823aa285)
+[third step](https://play.ruff.rs/488d1abc-0031-45ff-b82c-78a87970a28e)
+
+Another example is inside VSCode, if you have line endings set to `CRLF`. After file modification and save inside VSC it normalizes the newlines, so by running `ruff format` -> do a edit like adding a `1` to the end of the file and save in VSC -> run `ruff format` -> repeat, the code grows every time.
+
+I also made a powershell script to demonstrate this, where it replaces `\r` with `\r\n` to show the growth. (I tried to make a bash script, but I'm both not familiar enough with bash and it feels like every built in tool/command nukes/normalizes newlines).
+
+
+<details>
+
+<summary> PS script </summary>
+
+```ps
+Set-Content "issue.py" -Value "f`"{`r`n1=`r`n}`""
+echo "issue.py content"
+Get-Content issue.py -Raw | ForEach-Object { $_ -replace "\n", "\n"} | ForEach-Object { $_ -replace "\r", "\r"}
+echo "Running ruff format"
+uvx ruff format issue.py
+echo "issue.py content"
+Get-Content issue.py -Raw | ForEach-Object { $_ -replace "\n", "\n"} | ForEach-Object { $_ -replace "\r", "\r"}
+echo "Newline normalization"
+$edited = Get-Content issue.py -Raw | ForEach-Object { $_ -replace "\r(?!\n)", "`r`n" }
+Set-Content "issue.py" $edited
+echo "issue.py content"
+Get-Content issue.py -Raw | ForEach-Object { $_ -replace "\n", "\n"} | ForEach-Object { $_ -replace "\r", "\r"}
+echo "Running ruff format"
+uvx ruff format issue.py
+echo "issue.py content"
+Get-Content issue.py -Raw | ForEach-Object { $_ -replace "\n", "\n"} | ForEach-Object { $_ -replace "\r", "\r"}
+echo "Newline normalization"
+$edited = Get-Content issue.py -Raw | ForEach-Object { $_ -replace "\r(?!\n)", "`r`n" }
+Set-Content "issue.py" $edited
+echo "issue.py content"
+Get-Content issue.py -Raw | ForEach-Object { $_ -replace "\n", "\n"} | ForEach-Object { $_ -replace "\r", "\r"}
+```
+
+</details>
+
+
+Output of script:
+```
+PS > ./issue.ps1
+issue.py content
+f"{\r\n1=\r\n}"\r\n
+Running ruff format
+1 file reformatted
+issue.py content
+f"{\r\r\n1=\r\r\n}"\r\n
+Newline normalization
+issue.py content
+f"{\r\n\r\n1=\r\n\r\n}"\r\n\r\n
+Running ruff format
+1 file reformatted
+issue.py content
+f"{\r\r\n\r\r\n1=\r\r\n\r\r\n}"\r\n
+Newline normalization
+issue.py content
+f"{\r\n\r\n\r\n\r\n1=\r\n\r\n\r\n\r\n}"\r\n\r\n
+```
+
+This only seems to happen when the f-string has a debug expression.
+
+This also happens with t-strings
+
+### Version
+
+ruff 0.11.13 (5faf72a4d 2025-06-05) + playground
+
+---
+
+_Label `bug` added by @ntBre on 2025-06-13 20:08_
+
+---
+
+_Label `formatter` added by @ntBre on 2025-06-13 20:08_
+
+---
+
+_Comment by @ntBre on 2025-06-13 20:24_
+
+Interesting. I think I can reproduce this in the playground even without CRLF (though I'm not 100% sure which line ending is present). I can't seem to reproduce it in a Linux shell either, but I can definitely reproduce in VS Code by continuously hitting Ctrl+Shift+I to format:
+
+![Image](https://github.com/user-attachments/assets/44b2304e-6875-45df-a926-a9a93c47bbc6)
+
+---
+
+_Comment by @MeGaGiGaGon on 2025-06-13 21:27_
+
+I think the playground normalizes both input and output to CRLF, so it wouldn't matter what you paste in. Editing my PS script it looks like it breaks with either CRLF or CR, but not just LF.
+
+LF line endings start:
+```
+PS > ./issue.ps1
+issue.py content
+f"{\n1=\n}"\r\n
+Running ruff format
+1 file reformatted
+issue.py content
+f"{\n1=\n}"\n
+Newline normalization
+issue.py content
+f"{\n1=\n}"\n\r\n
+Running ruff format
+1 file reformatted
+issue.py content
+f"{\n1=\n}"\n
+Newline normalization
+issue.py content
+f"{\n1=\n}"\n\r\n
+```
+
+CR line endings start:
+```
+PS > ./issue.ps1
+issue.py content
+f"{\r1=\r}"\r\n
+Running ruff format
+1 file reformatted
+issue.py content
+f"{\r1=\r}"\r
+Newline normalization
+issue.py content
+f"{\r\n1=\r\n}"\r\n\r\n
+Running ruff format
+1 file reformatted
+issue.py content
+f"{\r\r\n1=\r\r\n}"\r\n
+Newline normalization
+issue.py content
+f"{\r\n\r\n1=\r\n\r\n}"\r\n\r\n
+```
+
+---
+
+_Comment by @dylwil3 on 2025-06-13 21:40_
+
+I wonder if this is the relevant code? Debug text is formatted "verbatim":
+
+https://github.com/astral-sh/ruff/blob/89d915a1e34144051815dfcbe60ec2cdeb29909e/crates/ruff_python_formatter/src/verbatim.rs#L873-L893
+
+and:
+
+https://github.com/astral-sh/ruff/blob/89d915a1e34144051815dfcbe60ec2cdeb29909e/crates/ruff_formatter/src/format_element.rs#L198-L224
+
+---
+
+_Comment by @dylwil3 on 2025-06-13 22:16_
+
+Ok I think I see what's happening?
+
+The formatter writes the debug text "verbatim" by doing the following:
+
+1. Write text that appears between the `'{'` and the expression node.
+2. Write the expression node "verbatim" - which includes normalizing newlines.
+3. Write the text that appears after the expression node and the `'}'`.
+
+https://github.com/astral-sh/ruff/blob/89d915a1e34144051815dfcbe60ec2cdeb29909e/crates/ruff_python_formatter/src/other/interpolated_string_element.rs#L178-L185
+
+In particular, any normalization is omitted for the leading and trailing whitespace.
+
+Separately: I'm confused why we normalize given that we also have a `line-ending` option? Shouldn't we be using that?
+
+---
+
+_Comment by @MichaReiser on 2025-06-14 05:15_
+
+
+Pasting the example into Python gives us:
+
+```
+>>> f"{
+...
+... 1=
+...
+... }"
+'\n\n1=\n\n1'
+````
+
+That means, normalizing the newlines is okay from a semantic point of view.
+
+The formatter actually panics in debug builds with:
+
+```
+panicked at crates/ruff_formatter/src/builders.rs:405:5:
+The content '
+' contains an unsupported '\r' line terminator character but text must only use line feeds '\n' as line separator. Use '\n' instead of '\r' and '\r\n' to insert a line break in 
+```
+
+
+> Separately: I'm confused why we normalize given that we also have a line-ending option? Shouldn't we be using that?
+
+The formatter works in two stages:
+
+1. Generate IR
+2. Print the IR to a string
+
+The 1. step is responsible for normalizing all newlines in text to `\n` because the step 2. doesn't support `\r\n` or `\r` to simplify many hot code paths. Step 2 is responsible for replacing all `\n` with the configured line ending. 
+
+Step 1 only rarely needs to normalize line endings because it uses the `soft_line_break` or `hard_line_break` IR elements most of the time. It's really just in multiline text elements where the normalization is required.
+
+---
+
+_Assigned to @MichaReiser by @MichaReiser on 2025-06-14 05:40_
+
+---
+
+_Referenced in [astral-sh/ruff#18673](../../astral-sh/ruff/pulls/18673.md) on 2025-06-14 05:52_
+
+---
+
+_Comment by @MeGaGiGaGon on 2025-06-14 05:54_
+
+From what I've seen, Python basically always normalizes newlines unless you call internal methods, which lets you get odd looking results like this
+```py
+print(eval('ord("""\r\n""")')) # outputs 10 instead of error
+print(eval('ord("""\r""")')) # outputs 10 instead of 13
+```
+
+---
+
+_Closed by @MichaReiser on 2025-06-15 05:53_
+
+---

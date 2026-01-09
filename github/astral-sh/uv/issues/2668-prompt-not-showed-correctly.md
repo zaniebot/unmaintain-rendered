@@ -1,0 +1,187 @@
+---
+number: 2668
+title: Prompt not showed correctly.
+type: issue
+state: closed
+author: hodeinavarro
+labels:
+  - bug
+  - help wanted
+  - virtualenv
+assignees: []
+created_at: 2024-03-26T10:19:05Z
+updated_at: 2024-04-03T07:53:08Z
+url: https://github.com/astral-sh/uv/issues/2668
+synced_at: 2026-01-07T13:12:17-06:00
+---
+
+# Prompt not showed correctly.
+
+---
+
+_Issue opened by @hodeinavarro on 2024-03-26 10:19_
+
+**Description**
+When using `--prompt` the given text it is not showed on the terminal, but the environment directory name instead.
+
+**System**
+macOS Sonoma 14.4 M1 Max
+iTerm2
+zsh & oh-my-zsh with powerlevel10k plugin
+
+**Snippet**
+
+uv
+```bash
+uv venv with-uv --prompt "Prompt with uv"
+```
+<img width="492" alt="image" src="https://github.com/astral-sh/uv/assets/73967816/c166f93d-3c4f-4a1f-97fa-1f18b7bd358e">
+
+venv
+```bash
+python -m venv with-venv --prompt "Prompt with venv"
+```
+<img width="491" alt="image" src="https://github.com/astral-sh/uv/assets/73967816/18fe8bfb-b902-465e-9311-24aac8397473">
+
+
+**Issue/Solution?**
+So far doing some try/failure testing, it seems that the main difference is how `uv` sets the `VIRTUAL_ENV_PROMPT` variable.
+It appears to be important that the text inside of this is inside parentheses.
+
+uv
+```bash
+if [ "xPrompt with uv" != x ] ; then
+    VIRTUAL_ENV_PROMPT="Prompt with uv"
+else
+    VIRTUAL_ENV_PROMPT=$(basename "$VIRTUAL_ENV")
+fi
+export VIRTUAL_ENV_PROMPT
+```
+
+venv
+```bash
+if [ -z "${VIRTUAL_ENV_DISABLE_PROMPT:-}" ] ; then
+    _OLD_VIRTUAL_PS1="${PS1:-}"
+    PS1="(Prompt with venv) ${PS1:-}"
+    export PS1
+    VIRTUAL_ENV_PROMPT="(Prompt with venv) "
+    export VIRTUAL_ENV_PROMPT
+fi
+```
+
+If we add these parentheses I mentioned, it works perfectly.
+<img width="494" alt="image" src="https://github.com/astral-sh/uv/assets/73967816/67afb44e-2693-471a-9e07-fbd997a2068f">
+```bash
+if [ "xPrompt with uv" != x ] ; then
+    VIRTUAL_ENV_PROMPT="(Prompt with uv) "
+else
+    VIRTUAL_ENV_PROMPT=$(basename "$VIRTUAL_ENV")
+fi
+export VIRTUAL_ENV_PROMPT
+``` 
+
+
+Maybe is too specific to my terminal configuration, and I didn't have the time to go in depth about how VIRTUAL_ENV_PROMPT works with/without parentheses and zsh/ohmyzsh/powerlevel10k compatibility, but just in case this happens to someone else, there you go.
+
+---
+
+_Comment by @charliermarsh on 2024-03-26 13:14_
+
+Do you experience the same thing with the `virtualenv` library?
+
+---
+
+_Comment by @charliermarsh on 2024-03-26 13:16_
+
+I can't find that exact activation snippet in CPython, maybe it changed at some point: https://github.com/python/cpython/blob/4abca7e1e7e2764faf20c7e677ea5c9ea9dbffe2/Lib/venv/scripts/common/activate#L21
+
+---
+
+_Comment by @hodeinavarro on 2024-03-26 14:01_
+
+> Do you experience the same thing with the `virtualenv` library?
+
+Yes.
+
+<img width="852" alt="image" src="https://github.com/astral-sh/uv/assets/73967816/71f45d5d-3396-4952-b226-6d2534a92854">
+
+virtualenv
+```bash
+if [ "xPrompt with virtualenv" != x ] ; then
+    VIRTUAL_ENV_PROMPT="Prompt with virtualenv"
+else
+    VIRTUAL_ENV_PROMPT=$(basename "$VIRTUAL_ENV")
+fi
+export VIRTUAL_ENV_PROMPT
+``` 
+
+---
+
+_Label `bug` added by @zanieb on 2024-03-26 14:30_
+
+---
+
+_Label `virtualenv` added by @zanieb on 2024-03-26 14:30_
+
+---
+
+_Comment by @charliermarsh on 2024-03-26 21:03_
+
+We'll need to look into why the CPython activator and the virtualenv activator differ.
+
+---
+
+_Label `help wanted` added by @charliermarsh on 2024-03-26 21:03_
+
+---
+
+_Comment by @ChannyClaus on 2024-04-01 04:03_
+
+```
+$ zsh
+Restored session: Mon Apr  1 00:02:06 EDT 2024
+chankang@chans-Air uv % echo $0
+zsh
+chankang@chans-Air uv % uv --version
+uv 0.1.26 (7b685a815 2024-03-28)
+chankang@chans-Air uv % uv venv --prompt "Prompt with uv"
+Using Python 3.12.2 interpreter at: /Users/chankang/.pyenv/versions/3.12.2/bin/python3
+Creating virtualenv at: .venv
+Activate with: source .venv/bin/activate
+chankang@chans-Air uv % source .venv/bin/activate
+(Prompt with uv) chankang@chans-Air uv % echo 'test'
+test
+(Prompt with uv) chankang@chans-Air uv % 
+```
+it seems to work on my machine?
+```
+$ zsh --version
+zsh 5.9 (x86_64-apple-darwin23.0)
+```
+
+can you try reproducing it with the oh-my-zsh plugin turned off?
+
+---
+
+_Comment by @hodeinavarro on 2024-04-03 07:51_
+
+> it seems to work on my machine?
+> can you try reproducing it with the oh-my-zsh plugin turned off?
+
+Certainly, it seems it comes from the powerlevel10k theme and not UV.
+I've used pure zsh and got the same result as you, then I activated oh-my-zsh with no theme and the result was still correct.
+
+When activating the theme, the issue appears.
+
+Thank you for your time!
+
+
+---
+
+_Closed by @hodeinavarro on 2024-04-03 07:51_
+
+---
+
+_Referenced in [romkatv/powerlevel10k#2628](../../romkatv/powerlevel10k/issues/2628.md) on 2024-04-03 16:57_
+
+---

@@ -1,0 +1,102 @@
+---
+number: 17796
+title: "Formatting adds unnecessary parentheses to long patterns with `as` captures"
+type: issue
+state: closed
+author: brandtbucher
+labels:
+  - bug
+  - formatter
+assignees: []
+created_at: 2025-05-02T19:01:28Z
+updated_at: 2025-11-03T22:06:53Z
+url: https://github.com/astral-sh/ruff/issues/17796
+synced_at: 2026-01-07T13:12:16-06:00
+---
+
+# Formatting adds unnecessary parentheses to long patterns with `as` captures
+
+---
+
+_Issue opened by @brandtbucher on 2025-05-02 19:01_
+
+### Summary
+
+See this playground link, where I've put the expected formatting going in, and you can see the unexpected formatting coming out:
+
+https://play.ruff.rs/81f62f2d-6858-43eb-8a9b-67dcebdc56f6?secondary=Format
+
+It appears that "grouping" characters in patterns like `()`, `[]`, and `{}` aren't being used correctly when they are followed by a capture (`as name`). Instead of breaking on these, the entire pattern (including the capture) is wrapped in parentheses and indented.
+
+First encountered in https://github.com/python/cpython/pull/133123/files#r2071981099.
+
+
+### Version
+
+0.11.8
+
+---
+
+_Comment by @brandtbucher on 2025-05-02 19:04_
+
+My guess is that ruff tries to wrap in parens, *then* start exploding the patterns if that isn't enough. Maybe trying to explode first would help?
+
+---
+
+_Referenced in [python/cpython#133123](../../python/cpython/pulls/133123.md) on 2025-05-02 19:04_
+
+---
+
+_Label `formatter` added by @AlexWaygood on 2025-05-02 19:07_
+
+---
+
+_Comment by @brandtbucher on 2025-05-02 19:07_
+
+Or, maybe it *is* exploding from the outside in, and this is just how it tries to explode `as` patterns. That could be trickier.
+
+---
+
+_Comment by @brandtbucher on 2025-05-02 19:15_
+
+[Black does the expected thing here.](https://black.vercel.app/?version=stable&state=_Td6WFoAAATm1rRGAgAhARYAAAB0L-Wj4AQDAMNdAD2IimZxl1N_Wg09_vNkRMhK5tWzqqjBLs_dVanTwyECN_AIXR88-_hLSm_aDQarigInAf6QJxkog7UyjNDDvmUA5f9AVdkvmK5HqwLgJEQYg8GxO6JIcM-m2d4Vt3qTOOoBy3FadZeV7kY1Wz0_3Toe2IC5x91rjblu-RdckO0DnwpH__eyexiCK5_op8BmASkuMHIsZWTYu50juXU_19_ylEPQ5cP85PDSbExL1nYOex0l_mQFOpAG3xUdsHsn2Jpb9AAAH5v1gYqq2ZAAAd8BhAgAAEMjdXGxxGf7AgAAAAAEWVo=)
+
+---
+
+_Label `bug` added by @MichaReiser on 2025-05-02 19:25_
+
+---
+
+_Comment by @MichaReiser on 2025-05-02 19:27_
+
+Thanks for reporting this incorrect formatting. 
+
+We use some heuristics to decide if we can omit the parentheses and it seems that it's overly restrictive when using `as`. It should probably recurse here
+
+https://github.com/astral-sh/ruff/blob/424b720c192f8603123c1a105cf12f343e45de3f/crates/ruff_python_formatter/src/pattern/mod.rs#L290-L334
+
+
+and here
+
+https://github.com/astral-sh/ruff/blob/424b720c192f8603123c1a105cf12f343e45de3f/crates/ruff_python_formatter/src/pattern/mod.rs#L240
+
+But I'd have to think about if we can do this always or only sometimes.
+
+
+---
+
+_Referenced in [astral-sh/ruff#20482](../../astral-sh/ruff/issues/20482.md) on 2025-09-19 13:37_
+
+---
+
+_Referenced in [python/cpython#139591](../../python/cpython/pulls/139591.md) on 2025-10-05 20:15_
+
+---
+
+_Referenced in [astral-sh/ruff#21176](../../astral-sh/ruff/pulls/21176.md) on 2025-10-31 20:54_
+
+---
+
+_Closed by @ntBre on 2025-11-03 22:06_
+
+---

@@ -1,0 +1,139 @@
+---
+number: 2154
+title: "--no-binary flag not always correctly taken into acount across runs."
+type: issue
+state: closed
+author: tdejager
+labels:
+  - bug
+  - great writeup
+assignees: []
+created_at: 2024-03-04T13:36:33Z
+updated_at: 2024-09-29T17:34:54Z
+url: https://github.com/astral-sh/uv/issues/2154
+synced_at: 2026-01-07T13:12:17-06:00
+---
+
+# --no-binary flag not always correctly taken into acount across runs.
+
+---
+
+_Issue opened by @tdejager on 2024-03-04 13:36_
+
+In a fresh venv:
+Running:
+
+## Bug
+```bash
+$ uv pip install duckdb
+Resolved 1 package in 1ms
+Installed 1 package in 2ms
+ + duckdb==0.10.0
+```
+
+However after removing the package with.
+
+```bash
+$ uv uninstall duckdb
+Uninstalled 1 package in 4ms
+ - duckdb==0.10.0
+```
+
+Running it again with the `--no-binary` flag:
+```
+uv pip install duckdb --no-binary "duckdb"
+Resolved 1 package in 1ms
+Installed 1 package in 2ms
+ + duckdb==0.10.0
+```
+Resolves instantly. This is unexpected, it uses the cached wheel instead of the sdist like I would expect.
+
+## Expected behavior:
+Clearing the cache with `uv clean`
+Gives the expected result:
+```
+uv pip install duckdb --no-binary "duckdb"
+Resolved 1 package in 117ms
+Building duckdb==0.10.0
+```
+
+Here it uses the source distribution for building.
+
+## Detailed logs
+
+Detailed logs for `uv pip install duckdb --no-binary "duckdb" --verbose` with a warm cache:
+
+```bash
+ uv::requirements::from_source source=duckdb
+    0.000318s DEBUG uv_interpreter::python_environment Found a virtualenv named .venv at: /private/tmp/hallo/.venv
+    0.000481s DEBUG uv_interpreter::interpreter Cached interpreter info for Python 3.12.0, skipping probing: /private/tmp/hallo/.venv/bin/python
+    0.000489s DEBUG uv::commands::pip_install Using Python 3.12.0 environment at /private/tmp/hallo/.venv/bin/python
+    0.000731s DEBUG uv_client::registry_client Using registry request timeout of 300s
+ uv_client::flat_index::from_entries
+ uv_resolver::resolver::solve
+      0.146720s   0ms DEBUG uv_resolver::resolver Solving with target Python version 3.12.0
+   uv_resolver::resolver::choose_version package=root
+   uv_resolver::resolver::get_dependencies package=root, version=0a0.dev0
+        0.146767s   0ms DEBUG uv_resolver::resolver Adding direct dependency: duckdb*
+   uv_resolver::resolver::choose_version package=duckdb
+     uv_resolver::resolver::package_wait package_name=duckdb
+ uv_resolver::resolver::process_request request=Versions duckdb
+   uv_client::registry_client::simple_api package=duckdb
+     uv_client::cached_client::get_cacheable
+       uv_client::cached_client::read_and_parse_cache file=/Users/tdejager/Library/Caches/uv/simple-v3/pypi/duckdb.rkyv
+ uv_resolver::resolver::process_request request=Prefetch duckdb *
+ uv_client::cached_client::from_path_sync path="/Users/tdejager/Library/Caches/uv/simple-v3/pypi/duckdb.rkyv"
+          0.147327s   0ms DEBUG uv_client::cached_client Found fresh response for: https://pypi.org/simple/duckdb/
+   uv_resolver::version_map::from_metadata
+   uv_distribution::distribution_database::get_or_build_wheel_metadata dist=duckdb==0.10.0
+     uv_client::registry_client::wheel_metadata built_dist=duckdb==0.10.0
+       uv_client::cached_client::get_serde
+         uv_client::cached_client::get_cacheable
+           uv_client::cached_client::read_and_parse_cache file=/Users/tdejager/Library/Caches/uv/wheels-v0/pypi/duckdb/duckdb-0.10.0-cp312-cp312-macosx_10_9_universal2.msgpack
+ uv_client::cached_client::from_path_sync path="/Users/tdejager/Library/Caches/uv/wheels-v0/pypi/duckdb/duckdb-0.10.0-cp312-cp312-macosx_10_9_universal2.msgpack"
+        0.148020s   1ms DEBUG uv_resolver::resolver Searching for a compatible version of duckdb (*)
+        0.148034s   1ms DEBUG uv_resolver::resolver Selecting: duckdb==0.10.0 (duckdb-0.10.0-cp312-cp312-macosx_10_9_universal2.whl)
+   uv_resolver::resolver::get_dependencies package=duckdb, version=0.10.0
+     uv_resolver::resolver::distributions_wait package_id=duckdb-0.10.0
+              0.148117s   0ms DEBUG uv_client::cached_client Found fresh response for: https://files.pythonhosted.org/packages/da/62/3572db3f4f854c5f668dc477a989241ff72c8d7aadb605de798be702a8f6/duckdb-0.10.0-cp312-cp312-macosx_10_9_universal2.whl.metadata
+Resolved 1 package in 1ms
+    0.148702s DEBUG uv_installer::plan Requirement already cached: duckdb==0.10.0
+ uv_installer::installer::install num_wheels=1
+Installed 1 package in 2ms
+ + duckdb==0.10.0
+ ```
+
+
+---
+
+_Renamed from "--no-binary flag not always taken into acount." to "--no-binary flag not always correctly taken into acount across runs." by @tdejager on 2024-03-04 13:36_
+
+---
+
+_Comment by @zanieb on 2024-03-04 14:28_
+
+Hi! Thanks for the clear issue.
+
+I _think_ this is intentional but maybe it should change. cc @charliermarsh?
+
+---
+
+_Label `bug` added by @zanieb on 2024-03-04 14:32_
+
+---
+
+_Label `great writeup` added by @zanieb on 2024-03-04 14:32_
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2024-09-29 01:16_
+
+---
+
+_Referenced in [astral-sh/uv#7772](../../astral-sh/uv/pulls/7772.md) on 2024-09-29 01:41_
+
+---
+
+_Closed by @charliermarsh on 2024-09-29 17:34_
+
+---

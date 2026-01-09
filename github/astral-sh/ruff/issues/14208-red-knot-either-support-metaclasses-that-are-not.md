@@ -1,0 +1,76 @@
+---
+number: 14208
+title: "[red-knot] Either support metaclasses that are not subclasses of `type`, or emit a diagnostic when encountering them"
+type: issue
+state: closed
+author: AlexWaygood
+labels:
+  - ty
+assignees: []
+created_at: 2024-11-08T18:29:08Z
+updated_at: 2025-01-09T00:34:05Z
+url: https://github.com/astral-sh/ruff/issues/14208
+synced_at: 2026-01-07T13:12:16-06:00
+---
+
+# [red-knot] Either support metaclasses that are not subclasses of `type`, or emit a diagnostic when encountering them
+
+---
+
+_Issue opened by @AlexWaygood on 2024-11-08 18:29_
+
+Believe it or not, Python accepts arbitrary callables as metaclasses in `class` statements -- and those callables don't have to return instances of `type`. As long as the callable accepts the same arguments as `type.__new__`, it's an acceptable metaclass; the binding created by the class statement is set to whatever calling the metaclass returns:
+
+```pycon
+>>> def returns_int(*args: object) -> int:
+...     return 42
+...     
+>>> class A(metaclass=returns_int): ...
+... 
+>>> A
+42
+```
+
+Currently we don't understand this in red-knot: we think that the `class A` statement constitutes a class definition, when it does not. Mypy ["solves" this problem](https://mypy-play.net/?mypy=latest&python=3.12&gist=f27cb48434f3e879d42cb54615444755) by emitting a diagnostic saying that a dynamic metaclass like this isn't supported. Pyright doesn't emit a diagnostic, and [just gets it wrong](https://pyright-play.net/?strict=true&code=CYUwZgBATiAuCuUB2BnA%2BgSybAFAKgEMoBzFALggHsAjAKxAGNYBKCAWgD4ItYyAoCIOhxESCABYATHz4MANgRQoIAQRwBbOAXmKUAXhgJk6HswoA6SzJgA3EATlpYATwAOIHCuZ8gA).
+
+I think mypy's "solution" here is acceptable (metaclasses that are not subclasses of `type` are really very rare). But it also might not be too much work for us to just add an accurate understanding of the runtime semantics here, and infer that the `class A` statement binds the `A` symbol to an instance of `int` rather than a newly created class.
+
+---
+
+_Label `red-knot` added by @AlexWaygood on 2024-11-08 18:29_
+
+---
+
+_Renamed from "[red-knot] Either support metaclasses that are subclasses of `type`, or emit a diagnostic when encountering them" to "[red-knot] Either support metaclasses that are not subclasses of `type`, or emit a diagnostic when encountering them" by @AlexWaygood on 2024-11-08 23:52_
+
+---
+
+_Comment by @InSyncWithFoo on 2024-11-13 09:58_
+
+Pyright's behavior seems to be a deliberate design choice:
+
+> If a custom metaclass is present, pyright evaluates its `__call__` method to determine whether it returns an instance of the class. If not, it assumes that the metaclass has custom behavior that overrides `type.__call__`. Likewise, if a class provides a `__new__` method that returns a type other than the class being constructed (or a child class thereof), it assumes that `__init__` will not be called.
+> 
+> &mdash; [<i>Comparison with Mypy</i> &sect; Constructor Calls](https://github.com/microsoft/pyright/blob/HEAD/docs/mypy-comparison.md#constructor-calls)
+
+---
+
+_Comment by @AlexWaygood on 2024-11-13 11:16_
+
+> Pyright's behavior seems to be a deliberate design choice:
+
+Thanks, that's interesting! I still dislike pyright's behaviour here, though, even if it's deliberate. There's lots of potentially invalid metaclasses that pyright simply doesn't detect, and that I think it would be quite easily to statically detect.
+
+---
+
+_Referenced in [astral-sh/ruff#15138](../../astral-sh/ruff/pulls/15138.md) on 2024-12-25 00:30_
+
+---
+
+_Closed by @carljm on 2025-01-09 00:34_
+
+---
+
+_Closed by @carljm on 2025-01-09 00:34_
+
+---

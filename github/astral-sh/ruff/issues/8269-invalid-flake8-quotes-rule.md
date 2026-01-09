@@ -1,0 +1,116 @@
+---
+number: 8269
+title: Invalid flake8-quotes rule
+type: issue
+state: closed
+author: wu-clan
+labels:
+  - question
+assignees: []
+created_at: 2023-10-27T04:53:50Z
+updated_at: 2023-10-27T09:19:52Z
+url: https://github.com/astral-sh/ruff/issues/8269
+synced_at: 2026-01-07T13:12:15-06:00
+---
+
+# Invalid flake8-quotes rule
+
+---
+
+_Issue opened by @wu-clan on 2023-10-27 04:53_
+
+This is pyproject.toml for ruff:
+```toml
+[tool.ruff]
+line-length = 120
+cache-dir = "./.ruff_cache"
+
+[tool.ruff.isort]
+order-by-type = true
+
+[tool.ruff.flake8-quotes]
+inline-quotes = "single"
+multiline-quotes = "single"
+```
+
+When I change `[tool.ruff.flake8-quotes]` to `[tool.ruff.lint.flake8-quotes]`, `ruff check .` still doesn't work!
+
+When I use `[tool.ruff.format]`, `ruff format .` starts to work
+
+```toml
+[tool.ruff.format]
+quote-style = "single"
+```
+
+```
+> pdm run ruff --version
+ruff 0.1.2
+```
+
+---
+
+_Label `question` added by @MichaReiser on 2023-10-27 08:03_
+
+---
+
+_Comment by @dhruvmanila on 2023-10-27 08:03_
+
+Hey, thanks for opening this issue. Is it that the `ruff check` command isn't taking the `flake8-quotes` settings when performing a fix? Or is it a compatibility issue between the linter and formatter? If possible, can you please provide a minimal code snippet to test against?
+
+---
+
+_Comment by @wu-clan on 2023-10-27 08:57_
+
+Because I check the root directory, I want the settings to be applied automatically
+
+MRE:
+```py
+def mre_ruff_flake8_quotes():
+    """
+    Ruff flake8 quotes check
+    """
+    foo = "bar"
+
+    foo2 = """
+    bar
+    """
+
+    print(foo, foo2)
+```
+Then set up the rules in my description above
+
+---
+
+_Comment by @MichaReiser on 2023-10-27 09:09_
+
+There are two ways how you can enforce consistent quotes:
+
+* Formatter: Using `ruff format`. This seems to work for you, if I understood you correctly
+* Linter: Using `Q001-Q003`. 
+
+What's best for you depends on your desired setup. We recommend to either use the Formatter or the `flake8-quote`  rules, but not both together (the formatter makes the lint rules redundant). 
+
+To use the `flake8-quote` rules. I think what's missing is that you enable them using 
+
+```toml
+[tool.ruff.lint]
+extend-select = ["Q"]
+```
+
+You probably want to add `"I"` if you intend to use `isort`.
+
+---
+
+_Comment by @wu-clan on 2023-10-27 09:19_
+
+Wow, thank you, I ignored the select rules in the new environment
+
+In my opinion, format should be more dominant
+
+They were so fast that I didn't react to them
+
+---
+
+_Closed by @wu-clan on 2023-10-27 09:19_
+
+---

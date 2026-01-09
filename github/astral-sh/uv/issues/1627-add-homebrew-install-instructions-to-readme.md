@@ -1,0 +1,46 @@
+---
+number: 1627
+title: Add homebrew install instructions to readme
+type: issue
+state: closed
+author: tekumara
+labels:
+  - documentation
+assignees: []
+created_at: 2024-02-18T07:29:03Z
+updated_at: 2024-02-18T07:49:51Z
+url: https://github.com/astral-sh/uv/issues/1627
+synced_at: 2026-01-07T13:12:16-06:00
+---
+
+# Add homebrew install instructions to readme
+
+---
+
+_Issue opened by @tekumara on 2024-02-18 07:29_
+
+`brew install uv` will install uv on macos but isn't mentioned in README.md 
+
+---
+
+_Renamed from "Add homebrew install instructions to README" to "Add homebrew install instructions to readme" by @tekumara on 2024-02-18 07:29_
+
+---
+
+_Comment by @zanieb on 2024-02-18 07:43_
+
+Thanks for adding this @baod-rate! https://github.com/Homebrew/homebrew-core/pull/162901
+
+---
+
+_Label `documentation` added by @zanieb on 2024-02-18 07:43_
+
+---
+
+_Referenced in [astral-sh/uv#1629](../../astral-sh/uv/pulls/1629.md) on 2024-02-18 07:45_
+
+---
+
+_Closed by @zanieb on 2024-02-18 07:49_
+
+---

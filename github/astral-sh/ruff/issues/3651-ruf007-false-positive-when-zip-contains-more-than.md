@@ -1,0 +1,101 @@
+---
+number: 3651
+title: "RUF007 - False positive when `zip()` contains more than 2 arguments"
+type: issue
+state: closed
+author: MaxWinterstein
+labels:
+  - bug
+assignees: []
+created_at: 2023-03-21T16:07:38Z
+updated_at: 2023-03-21T22:17:34Z
+url: https://github.com/astral-sh/ruff/issues/3651
+synced_at: 2026-01-07T13:12:14-06:00
+---
+
+# RUF007 - False positive when `zip()` contains more than 2 arguments
+
+---
+
+_Issue opened by @MaxWinterstein on 2023-03-21 16:07_
+
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+RUF007 should only hit when `zip()` is called with no more than 2 arguments, as `pairwise()` does not support it. 
+
+Introduced with #3501 
+
+See
+- https://docs.python.org/3/library/itertools.html#itertools.pairwise
+- https://docs.python.org/3/library/functions.html#zip
+
+`pyproject.toml`
+```toml
+[tool.ruff]
+target-version = "py311"
+``` 
+
+`test.py`
+```python
+foo = [1, 2, 3, 4]
+
+bar = zip(foo[:-1], foo[1:], foo, strict=True)
+```
+
+`ruff test.py`
+```ruby
+test.py:5:7: RUF007 Prefer `itertools.pairwise()` over `zip()` when iterating over successive pairs
+Found 1 error.
+```
+
+`ruff --version`
+```bash
+ruff 0.0.257
+```
+
+---
+
+_Renamed from "RUF007 - False positive when zip contains more than 2 arguments" to "RUF007 - False positive when zip() contains more than 2 arguments" by @MaxWinterstein on 2023-03-21 16:08_
+
+---
+
+_Comment by @charliermarsh on 2023-03-21 16:08_
+
+Thanks!
+
+---
+
+_Renamed from "RUF007 - False positive when zip() contains more than 2 arguments" to "RUF007 - False positive when `zip()` contains more than 2 arguments" by @MaxWinterstein on 2023-03-21 16:08_
+
+---
+
+_Label `bug` added by @charliermarsh on 2023-03-21 16:08_
+
+---
+
+_Comment by @JonathanPlasse on 2023-03-21 17:08_
+
+I would like to work on it.
+
+---
+
+_Assigned to @JonathanPlasse by @charliermarsh on 2023-03-21 17:14_
+
+---
+
+_Referenced in [astral-sh/ruff#3654](../../astral-sh/ruff/pulls/3654.md) on 2023-03-21 19:34_
+
+---
+
+_Closed by @charliermarsh on 2023-03-21 22:17_
+
+---

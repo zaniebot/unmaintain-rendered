@@ -1,0 +1,86 @@
+---
+number: 10041
+title: "Request: better error message when there's missing wheels"
+type: issue
+state: closed
+author: thewh1teagle
+labels:
+  - error messages
+assignees: []
+created_at: 2024-12-19T21:36:35Z
+updated_at: 2025-01-21T18:29:50Z
+url: https://github.com/astral-sh/uv/issues/10041
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# Request: better error message when there's missing wheels
+
+---
+
+_Issue opened by @thewh1teagle on 2024-12-19 21:36_
+
+Hello!
+I'm trying to install [`modelscope`](https://github.com/modelscope/modelscope?tab=readme-ov-file#setup-local-python-environment) on macOS m1 aarch64 using the following command:
+
+```console
+uv pip install "modelscope[audio]" -f https://modelscope.oss-cn-beijing.aliyuncs.com/releases/repo.html
+```
+
+and it failed with very long error message:
+
+Summary:
+
+```console
+Because kwsbp==0.0.6 has no wheels with a matching Python ABI tag and only kwsbp<=0.0.6 is available, we can conclude that kwsbp>=0.0.6 cannot be used.
+And because modelscope[audio]==1.21.0 depends on kwsbp>=0.0.6, we can conclude that modelscope[audio]==1.21.0 cannot be used.
+And because we know from (108) that all of:
+    modelscope[audio]<1.21.0
+    modelscope[audio]>1.21.0
+are incompatible, we can conclude that all versions of modelscope[audio] are incompatible.
+And because you require modelscope[audio], we can conclude that your requirements are unsatisfiable.
+``
+[log.txt](https://github.com/user-attachments/files/18203431/log.txt)
+
+
+Environment:
+
+```console
+macOS 14.5 aarch64 m1
+.python-version: 3.13
+pyproject.toml: requires-python = ">=3.13"
+uv 0.4.29 (85f9a0d0e 2024-10-30)
+```
+
+It seems like the error happens simply because there's missing wheels. but it's hard to understand it from the error message.
+Can we improve the error message so it will be short and informative? Thanks!
+
+
+Update:
+it failed also on WIndows 11 and Ubuntu 22.04 x86-64
+
+Reproduce:
+
+```console
+uv venv
+uv pip install "modelscope[audio]" -f https://modelscope.oss-cn-beijing.aliyuncs.com/releases/repo.html
+```
+
+---
+
+_Renamed from "Request: better error message when of missing wheels" to "Request: better error message when there's missing wheels" by @thewh1teagle on 2024-12-19 21:38_
+
+---
+
+_Label `error messages` added by @charliermarsh on 2024-12-26 15:55_
+
+---
+
+_Comment by @charliermarsh on 2025-01-18 19:30_
+
+@zanieb -- Do you think this is done, now that we hint and include tags here?
+
+---
+
+_Closed by @zanieb on 2025-01-21 18:29_
+
+---

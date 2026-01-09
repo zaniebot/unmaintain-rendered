@@ -1,0 +1,87 @@
+---
+number: 13470
+title: Use an existing venv
+type: issue
+state: closed
+author: Oscaarjs
+labels:
+  - question
+assignees: []
+created_at: 2025-05-15T14:10:59Z
+updated_at: 2025-05-16T12:58:46Z
+url: https://github.com/astral-sh/uv/issues/13470
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# Use an existing venv
+
+---
+
+_Issue opened by @Oscaarjs on 2025-05-15 14:10_
+
+### Question
+
+I'm using CircleCI's self-hosted runners for our CI/CD tests. In order to optimize the speed of the tests I'm in the process of building a custom image that it runs on that has a majority of the dependencies pre-built/installed. My current Dockerfile for this looks something like this:
+
+```
+FROM nvidia/cuda:12.6.3-cudnn-runtime-ubuntu24.04
+
+CMD ["/bin/bash"]
+
+RUN apt-get update && \
+    apt-get install -y \
+        <deps>
+
+COPY --from=ghcr.io/astral-sh/uv:0.7.3 /uv /usr/local/bin/uv
+
+RUN uv python install 3.12.6
+
+ENV UV_LINK_MODE=copy
+
+COPY share/models /share/models
+COPY share/configs /share/configs
+COPY data /share/data
+
+WORKDIR /home/app/project
+
+COPY uv.lock ./
+COPY pyproject.toml ./
+
+RUN uv sync --all-groups --frozen
+```
+
+Due to the fact that CircleCI's "checkout" (git checkout) needs an empty dir I then in my CircleCI config checkout the code at `/home/app/project/source`. Thus, I now have my "pre-installed" venv at `/home/app/project/.venv` and my source code (including a `uv.lock` & `pyproject.toml`) in `/home/app/project/source` (also my working dir). Now from this working dir I'd like to be able to run e.g. `uv run pytest ...` but using the existing venv in `/home/app/project/.venv`. Is this possible and if so, whats the best way of doing this? Or, am I approaching this in the wrong way overall?
+
+I've looked at the documentation and tried (without success) both using `VIRTUAL_ENV`, `UV_PROJECT_ENVIRONMENT` etc. 
+
+Is there a proper way of achieving this?
+
+### Platform
+
+Ubuntu24.04
+
+### Version
+
+0.7.3
+
+---
+
+_Label `question` added by @Oscaarjs on 2025-05-15 14:11_
+
+---
+
+_Comment by @konstin on 2025-05-15 14:18_
+
+What isn't working about `UV_PROJECT_ENVIRONMENT`? Otherwise there's also the `--active` option
+
+---
+
+_Comment by @Oscaarjs on 2025-05-16 12:58_
+
+After trying again `UV_PROJECT_ENVIRONMENT` did indeed work perfectly fine. What I had accidently done was to mount an empty directory to `/home/app/project/.venv` which overwrote the existing venv. 
+
+---
+
+_Closed by @Oscaarjs on 2025-05-16 12:58_
+
+---

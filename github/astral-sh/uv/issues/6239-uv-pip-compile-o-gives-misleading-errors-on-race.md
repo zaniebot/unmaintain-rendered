@@ -1,0 +1,83 @@
+---
+number: 6239
+title: "`uv pip compile ... -o` gives misleading errors on race conditions"
+type: issue
+state: closed
+author: binarybana
+labels:
+  - bug
+assignees: []
+created_at: 2024-08-20T00:53:33Z
+updated_at: 2024-08-20T20:36:43Z
+url: https://github.com/astral-sh/uv/issues/6239
+synced_at: 2026-01-07T13:12:17-06:00
+---
+
+# `uv pip compile ... -o` gives misleading errors on race conditions
+
+---
+
+_Issue opened by @binarybana on 2024-08-20 00:53_
+
+I completely understand if this is a `closedwontfix` scenario since I was obviously using it wrong, but figured I'd report it anyways in case you wanted to lock output files more defensively to protect against (perhaps more legitimate) failure modes.
+
+But I recently triggered a situation where `uv compile requirements.in -o requirements.txt` was being triggered multiple times in parallel (by pre-commit hooks where I forgot to set `pass_filenames: false` if you're curious), and racing itself while reading the output file leading to misleading errors.
+
+I built a minimal repro script to demonstrate the output:
+```
+❯ cat run.sh
+#!/bin/bash
+
+for i in {1..200}; do
+    uv pip compile -q requirements.in -o requirements.txt &
+done
+
+wait
+
+❯ cat requirements.in
+torch>2
+
+❯ ./run.sh
+error: Unexpected '', expected '-c', '-e', '-r' or the start of a requirement at requirements.txt:4:1
+error: Unexpected '', expected '-c', '-e', '-r' or the start of a requirement at requirements.txt:2:1
+error: error: Unexpected '', expected '-c', '-e', '-r' or the start of a requirement at requirements.txt:12:1
+Unexpected '', expected '-c', '-e', '-r' or the start of a requirement at requirements.txt:13:1
+error: Unexpected '', expected '-c', '-e', '-r' or the start of a requirement at requirements.txt:1:1
+error: Couldn't parse requirement in `requirements.txt` at position 310
+  Caused by: after parsing '1.13.2', found '', which is not part of a valid version
+sympy==1.13.2
+     ^^^^^^^^
+error: Unexpected '', expected '-c', '-e', '-r' or the start of a requirement at requirements.txt:2:1
+```
+
+Anyways, thanks for the great project, we're using it now internally and it's been really nice so far. 
+
+---
+
+_Comment by @zanieb on 2024-08-20 02:10_
+
+Interesting. Thanks for the report. We probably could / should take a lock here? cc @charliermarsh 
+
+Glad to hear you like the project!
+
+---
+
+_Label `bug` added by @zanieb on 2024-08-20 02:10_
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2024-08-20 20:18_
+
+---
+
+_Referenced in [astral-sh/uv#6274](../../astral-sh/uv/pulls/6274.md) on 2024-08-20 20:30_
+
+---
+
+_Closed by @charliermarsh on 2024-08-20 20:36_
+
+---
+
+_Closed by @charliermarsh on 2024-08-20 20:36_
+
+---

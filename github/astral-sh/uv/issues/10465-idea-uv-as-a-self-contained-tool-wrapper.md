@@ -1,0 +1,91 @@
+---
+number: 10465
+title: "Idea: uv as a self-contained tool wrapper"
+type: issue
+state: open
+author: ceejatec
+labels:
+  - wish
+  - great writeup
+assignees: []
+created_at: 2025-01-10T10:45:03Z
+updated_at: 2025-01-10T15:13:01Z
+url: https://github.com/astral-sh/uv/issues/10465
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# Idea: uv as a self-contained tool wrapper
+
+---
+
+_Issue opened by @ceejatec on 2025-01-10 10:45_
+
+## tl;dr
+
+I think it would be really neat if you could save the `uv` binary as a different filename, and the following automatic command-line argument mappings would occur:
+
+    <name> [args...]                       -->  uv tool run name [args...]
+    <name> self <subcommand> [options...]  -->  uv tool <subcommand> [options...] <name>
+
+I would probably limit `<subcommand>` to the set `upgrade`, `uninstall`, possibly `dir`, and possibly `install` (see below).
+
+## Background
+
+There are a number of problems that can best be solved by having a single executable binary download. `uv` itself is such an example; one of the best things about it is that it's so easy to just stick on `$PATH`, or in a `Dockerfile`, etc. and it's fully-functional. For creating such single binary downloads for python programs, there have been a number of approaches, such as PyInstaller, PyApp, and so on.
+
+I was recently mulling over the fact that `uv` comes pretty close to being a single executable binary download for a big subset of Python tools, because `uv tool run <name>` already solves basically all of the problems faced by PyInstaller et al - handling the existence of a Python interpreter, grabbing all necessary dependencies, etc. It shunts them to runtime, similar to PyApp. And since `uv` is so fast and flexible, this ends up being a quite acceptable tradeoff.
+
+The remaining missing links are that the single download is named `uv` rather than `<name>`, and that the client invocation is `uv tool run <name>` rather than just `<name>`. And I was thinking... what if `uv` behaved differently if it was saved as a binary named something other than `uv`?
+
+With the above translations in place, I could distribute `uv` as, say, `cbdep` (a Python tool I maintain), and the following things would Just Work(tm) on any platform:
+
+    cbdep --version         # normal invocation of the cbdep command
+    cbdep self upgrade      # get the latest version of cbdep
+    cbdep self uninstall    # remove all artifacts
+
+So it could be a drop-in replacement for anything previously done with PyInstaller, with the added benefit of built-in upgrade potential, and the extra benefit of not having to maintain the gnarly scripting to build PyInstaller binaries.
+
+## Why part of `uv`?
+
+You can get all of the above functionality today with PyApp, and considerably more besides. Indeed, I see this proposal as a limited, runtime-only cousin of PyApp. The main benefits for incorporating this into `uv` rather than using PyApp would be:
+
+* No need to compile anything, or support any kind of build/deployment infrastructure for your tool
+* Lower disk usage, if you're already using `uv` anyway - currently pyapp binaries can use `uv` to manage venvs, but they don't share python downloads
+* With a bit more thinking, `uv self update` could be incorporated into the binary (possibly as a side-effect of `<name> self upgrade`?) so the tool itself could get upgrades "in the field"
+* Many different commands could use the same `uv` via symlinks or hardlinks - pyapp binaries are bespoke for a particular python program
+
+I grant that those are not _massively_ compelling arguments. On the flip side, though, looking at the implementation of `uvx`, I think that this could be done in no more than a couple hundred lines of code, because it's literally just re-organizing the command line arguments before passing things off to the existing command-line parser. I think there would need to be very little custom code here aside from the argument remapping.
+
+## Limitations
+
+There are a number of limitations to this approach, most of which come down to the inability to pass arguments to `uv tool run` such as `--default-index`, `--python`, and so on. Many of those limitations could be eased by adding `install` to the list of `uv tool` subcommands. That would allow users to download the program and then "bootstrap" it with a single call like `cbdep self install --default-index my-private-index`. After that, all the normal invocations would work as expected, including `cbdep self upgrade` and `cbdep self uninstall`. It's not a fantastic solution, but it's trivial to implement.
+
+One limitation that it'd be nice to work around is packages that install multiple commands, such as `ansible-core`. It's great that `uv tool install ansible-core` works these days and brings in `ansible`, `ansible-playbook`, and friends automatically. But you still can't run `uv tool run ansible-playbook`, and so you couldn't take `uv` and rename it `ansible-playbook` and have it work. I can't think of a way around that, other than possibly having some baked-in special cases for common ones like `ansible-playbook`. I see this proposed feature as primarily useful for self-managed tools, though - things that are written by an employee for use through an enterprise, for instance. So the authors of such tools could design them to ensure that they worked within the limitations of this feature.
+
+## Alternatives
+
+PyApp is obviously one alternative; it does something quite similar to this already, but it bakes the configuration into a bespoke command. It's more comprehensive than this, but requires a separate tool to be built and maintained.
+
+If this functionality wasn't baked into `uv` itself, it would be pretty easy to write a new Rust tool that just provided a different CLI, using the `uv` crates. That would serve nearly the same purpose as my proposal here; the main downside would be there would be no easy way to implement the equivalent of `uv self update`. But at least it wouldn't require recompiling it for each tool you wanted to support; you'd only need to re-compile it whenever you wanted to pick up a `uv` upgrade.
+
+Hmm... that actually suggests a third alternative: all this could be a separate executable built as part of the `uv` project, which would mean it would be available every time there was a `uv` update. In that case, something like `uv self update` would be fairly straightforward. Doing it that way would require a little more work on the part of the `uv` delivery team, but it would mean that it could live separate from the `uv` binary and hence imply zero risk for the main `uv` deliverable.
+
+Anyway, thank you for coming to my Ted Talk!
+
+---
+
+_Referenced in [astral-sh/uv#5802](../../astral-sh/uv/issues/5802.md) on 2025-01-10 10:49_
+
+---
+
+_Referenced in [astral-sh/uv#10452](../../astral-sh/uv/issues/10452.md) on 2025-01-10 10:53_
+
+---
+
+_Label `wish` added by @zanieb on 2025-01-10 15:13_
+
+---
+
+_Label `great writeup` added by @zanieb on 2025-01-10 15:13_
+
+---

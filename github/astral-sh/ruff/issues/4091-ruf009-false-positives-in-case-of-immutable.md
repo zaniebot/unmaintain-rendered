@@ -1,0 +1,99 @@
+---
+number: 4091
+title: "RUF009: False positives in case of immutable objects"
+type: issue
+state: closed
+author: aberres
+labels:
+  - bug
+assignees: []
+created_at: 2023-04-25T08:38:33Z
+updated_at: 2023-04-28T01:23:07Z
+url: https://github.com/astral-sh/ruff/issues/4091
+synced_at: 2026-01-07T13:12:14-06:00
+---
+
+# RUF009: False positives in case of immutable objects
+
+---
+
+_Issue opened by @aberres on 2023-04-25 08:38_
+
+I'd argue the following code is ok, as all default parameters are immutable.
+
+```python
+import datetime as dt
+from dataclasses import dataclass
+from pathlib import Path
+
+MyId = int
+
+@dataclass
+class Example:
+    timedelta: dt.datetime = dt.timedelta(hours=1)
+
+    date: dt.date = dt.date(2042, 1, 1)
+
+    id: MyId = MyId(5)
+
+    path: Path = Path()
+
+e = Example()
+```
+
+`ruff` is not happy though:
+
+```
+ruff009.py:9:30: RUF009 Do not perform function call `dt.timedelta` in dataclass defaults
+ruff009.py:11:21: RUF009 Do not perform function call `dt.date` in dataclass defaults
+ruff009.py:13:16: RUF009 Do not perform function call `MyId` in dataclass defaults
+ruff009.py:15:18: RUF009 Do not perform function call `Path` in dataclass defaults
+```
+
+Isn't there a similar case for default values of method parameters? I think this rule had a list of (at least some) allowed calls.
+
+EDIT: Here is the list: https://github.com/charliermarsh/ruff/blob/main/crates/ruff/src/rules/flake8_bugbear/rules/function_call_argument_default.rs
+
+---
+
+_Renamed from "RUFF009: False positives in case of immutable objects" to "RUF009: False positives in case of immutable objects" by @aberres on 2023-04-25 08:46_
+
+---
+
+_Comment by @charliermarsh on 2023-04-25 15:11_
+
+I agree.
+
+---
+
+_Label `bug` added by @charliermarsh on 2023-04-25 15:11_
+
+---
+
+_Comment by @charliermarsh on 2023-04-26 17:15_
+
+We should just add the same immutable-type checks as we do for the bugbear rules. \cc @mosauter if this is interesting to you.
+
+---
+
+_Referenced in [astral-sh/ruff#4122](../../astral-sh/ruff/pulls/4122.md) on 2023-04-26 17:48_
+
+---
+
+_Comment by @mosauter on 2023-04-26 17:54_
+
+I created a PR for this. But have to say the type-alias `MyId` is AFAIK not something that ruff can detect (yet?). This would mean resolving the actual type behind a generic call. 
+
+Which would in turn also enable us to detect a `NamedTuple` type which would technically also be a RUF009-False-Positive at this point in time.
+
+Please correct me if I'm wrong on that.
+
+---
+
+_Closed by @charliermarsh on 2023-04-28 01:23_
+
+---
+
+_Referenced in [astral-sh/ruff#4451](../../astral-sh/ruff/issues/4451.md) on 2023-05-16 14:41_
+
+---

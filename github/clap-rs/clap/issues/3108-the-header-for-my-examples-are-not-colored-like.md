@@ -1,0 +1,219 @@
+---
+number: 3108
+title: The header for my examples are not colored like the others
+type: issue
+state: closed
+author: epage
+labels:
+  - C-bug
+  - A-help
+  - S-blocked
+assignees: []
+created_at: 2021-12-09T12:37:51Z
+updated_at: 2023-03-28T02:45:25Z
+url: https://github.com/clap-rs/clap/issues/3108
+synced_at: 2026-01-07T13:12:19-06:00
+---
+
+# The header for my examples are not colored like the others
+
+---
+
+_Issue opened by @epage on 2021-12-09 12:37_
+
+### Please complete the following tasks
+
+- [X] I have searched the [discussions](https://github.com/clap-rs/clap/discussions)
+- [X] I have searched the existing issues
+
+### Rust Version
+
+rustc 1.55.0 (c8dfcfe04 2021-09-06)
+
+### Clap Version
+
+v3.0.0-rc.0
+
+### Minimal reproducible code
+
+```rust
+use clap::Parser;
+
+const AFTER_TEST: &str = "
+Examples:
+    foo --hello
+";
+
+#[derive(Parser, Debug)]
+#[clap(author, about)]
+#[clap(after_help = AFTER_TEST)]
+struct Opt {}
+
+fn main() {
+    let opt = Opt::parse();
+    dbg!(opt);
+}
+
+```
+
+
+### Steps to reproduce the bug with the above code
+
+cargo run -- --help
+
+### Actual Behaviour
+
+`Examples` isn't colored:
+```
+test-clap 
+
+Me
+
+From Cargo.toml
+
+USAGE:
+    test-clap
+
+OPTIONS:
+    -h, --help    Print help information
+
+
+Examples:
+    foo --hello
+```
+
+### Expected Behaviour
+
+`Examples` is colored
+
+### Additional Context
+
+Inspired by help2man in #3096.
+
+Including example commands is a really useful pattern and now that we color by default, doing this stands out.
+
+Something like #1790 could help.  Alternatively, we could have `after_help` take a section name, maybe as an `Option`.  Like with `override_usage`, we'd probably want the indentation to be user-defined.
+
+### Debug Output
+
+_No response_
+
+---
+
+_Label `C-bug` added by @epage on 2021-12-09 12:37_
+
+---
+
+_Label `A-help` added by @epage on 2021-12-09 12:37_
+
+---
+
+_Comment by @pksunkara on 2021-12-09 13:40_
+
+What's the reason behind categorising this as bug? I would think this would be more of an enhancement, right?
+
+---
+
+_Comment by @epage on 2021-12-09 14:29_
+
+Sometimes, its an arbitrary distinction.  From a users perspective, its a bug in the application
+
+---
+
+_Comment by @epage on 2021-12-09 19:52_
+
+#1433 has a similar use case for help templates and has a different proposed solution.
+
+---
+
+_Referenced in [clap-rs/clap#1790](../../clap-rs/clap/issues/1790.md) on 2021-12-09 21:23_
+
+---
+
+_Label `S-waiting-on-design` added by @epage on 2021-12-13 22:37_
+
+---
+
+_Referenced in [clap-rs/clap#3174](../../clap-rs/clap/pulls/3174.md) on 2021-12-14 18:02_
+
+---
+
+_Comment by @epage on 2022-01-20 21:17_
+
+https://github.com/clap-rs/clap/issues/2389 might be the path to us exposing some formatting control.
+
+---
+
+_Comment by @gaborcsardi on 2022-01-20 21:54_
+
+Yet another way to solve this relatively painlessly is to allow calling `before_help()` and `after_help()` (and maybe `about()`) multiple times, each time possibly with a heading. The individual calls would be concatenated to create the final output.
+
+---
+
+_Comment by @epage on 2022-08-18 13:36_
+
+My plan is for the API to accept ANSI colored strings.  When we output, we use a special stdout/stderr that adapt the ANSI color codes to the capabilities of the terminal.
+
+Blocked on https://github.com/epage/anstyle/issues/5
+
+---
+
+_Label `S-waiting-on-design` removed by @epage on 2022-08-18 13:36_
+
+---
+
+_Label `S-blocked` added by @epage on 2022-08-18 13:36_
+
+---
+
+_Referenced in [clap-rs/clap#4110](../../clap-rs/clap/pulls/4110.md) on 2022-08-24 15:27_
+
+---
+
+_Referenced in [clap-rs/clap#4114](../../clap-rs/clap/pulls/4114.md) on 2022-08-25 18:44_
+
+---
+
+_Referenced in [clap-rs/clap#4132](../../clap-rs/clap/issues/4132.md) on 2022-08-27 00:59_
+
+---
+
+_Added to milestone `4.x` by @epage on 2022-08-30 21:21_
+
+---
+
+_Referenced in [clap-rs/clap#3234](../../clap-rs/clap/issues/3234.md) on 2022-10-07 15:36_
+
+---
+
+_Referenced in [exograph/exograph#552](../../exograph/exograph/pulls/552.md) on 2022-10-26 18:13_
+
+---
+
+_Referenced in [clap-rs/clap#2389](../../clap-rs/clap/issues/2389.md) on 2022-11-03 02:07_
+
+---
+
+_Referenced in [clap-rs/clap#4444](../../clap-rs/clap/pulls/4444.md) on 2022-11-03 02:08_
+
+---
+
+_Referenced in [clap-rs/clap#3198](../../clap-rs/clap/issues/3198.md) on 2022-11-13 03:47_
+
+---
+
+_Referenced in [clap-rs/clap#4611](../../clap-rs/clap/issues/4611.md) on 2023-01-09 16:06_
+
+---
+
+_Referenced in [clap-rs/clap#4765](../../clap-rs/clap/pulls/4765.md) on 2023-03-17 14:48_
+
+---
+
+_Closed by @epage on 2023-03-28 02:45_
+
+---
+
+_Referenced in [jj-vcs/jj#5716](../../jj-vcs/jj/pulls/5716.md) on 2025-02-16 02:18_
+
+---

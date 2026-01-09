@@ -1,0 +1,156 @@
+---
+number: 6525
+title: COM812 Appears to Still Not Quite Be Right
+type: issue
+state: closed
+author: benjamin-kirkbride
+labels: []
+assignees: []
+created_at: 2023-08-12T18:18:49Z
+updated_at: 2024-01-29T05:18:14Z
+url: https://github.com/astral-sh/ruff/issues/6525
+synced_at: 2026-01-07T13:12:15-06:00
+---
+
+# COM812 Appears to Still Not Quite Be Right
+
+---
+
+_Issue opened by @benjamin-kirkbride on 2023-08-12 18:18_
+
+It seems that COM812 does not like when arguments overflow to a new line, but are still on a single line. It wants a trailing comma, which then activates [black's magic trailing comma](https://black.readthedocs.io/en/stable/the_black_code_style/current_style.html#the-magic-trailing-comma).
+
+My expectation is that it would not have a problem with this.
+
+![image](https://github.com/astral-sh/ruff/assets/3373830/91da8cbe-2a5d-4cab-ab41-5d69b3aef566)
+
+```python3
+long_variable_name_ayyyyyyyy = 1
+other_long_variable_nameeeee = 2
+
+hhhhhhhhhhh, jjjjjjjj, kkkkkkkk, llllllllll = range(
+    long_variable_name_ayyyyyyyy, other_long_variable_nameeeee
+)
+```
+
+Related to #3303
+
+
+
+---
+
+_Comment by @zanieb on 2023-08-12 18:20_
+
+@benjamin-kirkbride would you mind fixing the formatting of your post (i.e. render the image) and including a minimal reproducible example as well as a description of what's happening vs what you expect?
+
+---
+
+_Comment by @benjamin-kirkbride on 2023-08-12 18:28_
+
+@zanieb done :)
+
+---
+
+_Comment by @charliermarsh on 2023-08-13 01:38_
+
+I believe this is working as intended -- it's the same behavior and reasoning as https://github.com/asottile/add-trailing-comma.
+
+---
+
+_Comment by @benjamin-kirkbride on 2023-08-13 01:46_
+
+```diff
+ x(
+     arg,
+-    arg
++    arg,
+ )
+```
+
+This makes sense to me^
+
+```
+ x = [
+-    1, 2, 3
++    1, 2, 3,
+ ]
+```
+
+This conflicts with `black`^
+
+I guess disabling it is easy enough though, if this is truly intended behavior.
+
+---
+
+_Comment by @charliermarsh on 2023-08-13 02:38_
+
+Yeah I think this is as-expected -- I believe the rule is intended to add trailing commas to any call that spans multiple lines in the interest of consistency and generating clear diffs, regardless of whether the arguments _themselves_ are wrapped over multiple lines. It's not necessarily intended to adhere to Black's preferences in any specific way.
+
+---
+
+_Closed by @charliermarsh on 2023-08-13 02:38_
+
+---
+
+_Comment by @benjamin-kirkbride on 2023-08-13 03:10_
+
+Thanks for taking a look!
+
+---
+
+_Comment by @steve-mavens on 2023-11-01 17:13_
+
+Is it worth documenting when rules intentionally conflict with black? I (and I suspect many others) use both black and ruff, and it would be nice not to have to look through ruff issues to establish that the conflict is a feature, not a bug :-)
+
+The motivation and example at https://docs.astral.sh/ruff/rules/missing-trailing-comma/ are entirely clear when you're putting one comma-separated item per line of source. Neither the motivation nor the example address the case where black puts multiple comma-separated items on a single source line.
+
+Although black states, "Black makes code review faster by producing the smallest diffs possible.", and therefore you would think black would agree with this rule: actually in this case diff size has taken second place in priority, to some concern like "fewer lines is more readable than more lines". Unusually so for black, which ordinarily prioritizes consistency over readability.
+
+---
+
+_Comment by @charliermarsh on 2023-11-01 17:33_
+
+@steve-mavens - Our documentation on rules that conflict with Ruff's formatter should be accurate for Black too: https://docs.astral.sh/ruff/formatter/#conflicting-lint-rules
+
+---
+
+_Referenced in [astral-sh/ruff#8555](../../astral-sh/ruff/issues/8555.md) on 2023-11-08 11:04_
+
+---
+
+_Comment by @anilsg on 2024-01-29 05:18_
+
+I can't help posting here again despite the years of discussion since I find the particular scenario (below) undesirable and I don't see recognition of its merits recognised explicitly enough for me to believe it's been properly considered.
+
+[I interpret issue #8555 as not coincident with this scenario since #8555 is being discussed as applicable to situations only where a function call is initially formatted across multiple lines, therefore I post here instead of there.]
+
+I have a function call with multiple arguments initially formatted on one line, where `black` reformats the arguments on a single line without a trailing comma which triggers COM812:
+
+```python
+    some_kind_of_date: datetime.date = Field(
+        datetime.date.min, description="We normally expect fairly lengthy sentences of words here."
+    )
+```
+
+If I were to add a trailing comma `black` takes this as an indication to format the arguments on one line each which also deals with the COM812:
+
+```python
+    some_kind_of_date: datetime.date = Field(
+        datetime.date.min,
+        description="We normally expect fairly lengthy sentences of words here.",
+    )
+```
+
+It seems to me that `black` is respecting the programmer's intention to format with less vertical space but still supports both approaches. This does not seem to be a 'black' "preference". These are two distinct formats triggered by hints from the programmer derived from the input formatting (all on one line, no trailing comma supplied).
+
+I evaluate Ruff's behaviour against the stated goals of COM812 which are "consistency" and "generating clear diffs", or just ["diff size"](https://docs.astral.sh/ruff/rules/missing-trailing-comma/).
+
+I felt it's not been acknowledged that the addition of a trailing comma in the single line scenario does *not* support "clearer diffs" as is usually meant, since the addition of another argument on a single line already alters that line so no diff lines are saved. The trailing comma only saves diff lines if the arguments are also placed on multiple lines. To be consistent, if Ruff is going to insist on a trailing comma (because clearer diffs) then Ruff should also force multiple line arguments.
+
+Otherwise, I'm personally not clear what other scenarios "consistency" refers to since that is a relative term and this scenario is somewhat different from multiple lines of single arguments or what-have-you.
+
+I would expect behaviour in accordance with the stated goals would be to not insist on a trailing comma where multiple arguments all fit on a single line and programmer has hinted that vertical space should be minimised.
+
+If this argument is valid I'd be happy to formulate this specific scenario as an issue for consideration.
+
+---

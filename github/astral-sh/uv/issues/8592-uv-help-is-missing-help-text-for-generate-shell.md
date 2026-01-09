@@ -1,0 +1,68 @@
+---
+number: 8592
+title: "`uv --help` is missing help text for `generate-shell-completion`"
+type: issue
+state: closed
+author: drmikehenry
+labels:
+  - question
+assignees: []
+created_at: 2024-10-26T13:46:36Z
+updated_at: 2024-10-26T15:04:47Z
+url: https://github.com/astral-sh/uv/issues/8592
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# `uv --help` is missing help text for `generate-shell-completion`
+
+---
+
+_Issue opened by @drmikehenry on 2024-10-26 13:46_
+
+`uv --help` is missing help text for `generate-shell-completion`, though it's in `uv help`, e.g.:
+
+```
+$ diff --ignore-space-change -u <(uv help) <(uv --help)
+--- /dev/fd/63  2024-10-26 09:43:19.426055525 -0400
++++ /dev/fd/62  2024-10-26 09:43:19.431055482 -0400
+@@ -20,7 +20,6 @@
+   cache                      Manage uv's cache
+   self                       Manage the uv executable
+   version                    Display uv's version
+-  generate-shell-completion  Generate shell completion
+   help                       Display documentation for a command
+ 
+ Cache options:
+@@ -45,5 +44,4 @@
+   -h, --help                       Display the concise help for this command
+   -V, --version                    Display the uv version
+ 
+-Use `uv help <command>` for more information on a specific command.
+-
++Use `uv help` for more details.
+```
+
+This is for `uv` version 0.4.27 on Ubuntu Linux 24.04.
+
+
+---
+
+_Comment by @zanieb on 2024-10-26 14:51_
+
+This is intentional because of the length of the command.
+
+---
+
+_Label `question` added by @zanieb on 2024-10-26 14:52_
+
+---
+
+_Comment by @drmikehenry on 2024-10-26 15:04_
+
+Understood; that's reasonable.  I thought it might have been an oversight.  Thanks for the quick reply.
+
+---
+
+_Closed by @drmikehenry on 2024-10-26 15:04_
+
+---

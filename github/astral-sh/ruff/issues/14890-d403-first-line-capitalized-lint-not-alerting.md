@@ -1,0 +1,95 @@
+---
+number: 14890
+title: "`D403` first-line-capitalized lint not alerting when the first line is after a newline"
+type: issue
+state: closed
+author: yoav-alexander
+labels:
+  - bug
+  - docstring
+  - help wanted
+assignees: []
+created_at: 2024-12-10T12:36:13Z
+updated_at: 2024-12-16T15:09:29Z
+url: https://github.com/astral-sh/ruff/issues/14890
+synced_at: 2026-01-07T13:12:16-06:00
+---
+
+# `D403` first-line-capitalized lint not alerting when the first line is after a newline
+
+---
+
+_Issue opened by @yoav-alexander on 2024-12-10 12:36_
+
+My Ruff version is **0.8.2**.
+
+When using [`first-line-capitalized (D403)`](https://docs.astral.sh/ruff/rules/first-line-capitalized/)  in conjunction with  [`multi-line-summary-second-line (D213)`](https://docs.astral.sh/ruff/rules/multi-line-summary-second-line/)
+ruff fails to alert about the first line missing capitalization:
+
+```python
+def fibonacci(n: int) -> int:
+    """
+    calculate the nth Fibonacci number.
+
+    The Fibonacci sequence is defined as:
+        F(0) = 0, F(1) = 1
+        F(n) = F(n-1) + F(n-2) for n > 1
+
+    Args:
+        n (int): The position in the Fibonacci sequence (must be non-negative).
+    ...
+    """
+```
+
+The ruff output is :
+
+```
+All checks passed!
+```
+
+I think the correct action would be to alert the user about the missing capitalization since the lint is basically useless when using `D213`.
+Moreover, and most importantly, this is a deviation from how pydocstyle works, from which both of those alerts are
+derived.
+
+pydocstyle:
+
+```
+main.py:3 in public function `fibonacci`:
+        D403: First word of the first line should be properly capitalized ('Calculate', not 'calculate')
+```
+
+If this change is accepted I think there are merits to renaming `first-line-capitalized (D403)`
+to something like `docstring-start-capitalized` to avoid confusion with `multi-line-summary-second-line (D213)`
+and `multi-line-summary-first-line (D212)` which are all derived from pydocstyle.
+
+
+
+---
+
+_Label `docstring` added by @AlexWaygood on 2024-12-10 13:38_
+
+---
+
+_Label `bug` added by @AlexWaygood on 2024-12-10 13:39_
+
+---
+
+_Label `help wanted` added by @AlexWaygood on 2024-12-10 13:39_
+
+---
+
+_Assigned to @dylwil3 by @dylwil3 on 2024-12-13 21:42_
+
+---
+
+_Referenced in [astral-sh/ruff#14963](../../astral-sh/ruff/pulls/14963.md) on 2024-12-13 22:19_
+
+---
+
+_Closed by @dylwil3 on 2024-12-16 15:09_
+
+---
+
+_Closed by @dylwil3 on 2024-12-16 15:09_
+
+---

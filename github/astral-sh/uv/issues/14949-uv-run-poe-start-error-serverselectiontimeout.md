@@ -1,0 +1,105 @@
+---
+number: 14949
+title: "uv run poe start error: ServerSelectionTimeout"
+type: issue
+state: closed
+author: LorenzaMNF
+labels:
+  - question
+  - external
+assignees: []
+created_at: 2025-07-29T09:18:45Z
+updated_at: 2025-07-29T12:56:55Z
+url: https://github.com/astral-sh/uv/issues/14949
+synced_at: 2026-01-07T13:12:19-06:00
+---
+
+# uv run poe start error: ServerSelectionTimeout
+
+---
+
+_Issue opened by @LorenzaMNF on 2025-07-29 09:18_
+
+### Question
+
+Hi, I've just installed the nomad-dev package, and everything went well until "uv run poe setup";
+when I try to go on and start the uv environment, with uv run poe start, I get an error:
+uv run poe start error: ServerSelectionTimeout:Error("localhost:27017": [Error 111]
+
+thanks in advance for any support
+Lorenza
+
+### Platform
+
+_No response_
+
+### Version
+
+_No response_
+
+---
+
+_Label `question` added by @LorenzaMNF on 2025-07-29 09:18_
+
+---
+
+_Comment by @zanieb on 2025-07-29 12:23_
+
+I think you need to report this to poe, sorry — I can't think of how this would relate to uv.
+
+---
+
+_Label `external` added by @zanieb on 2025-07-29 12:23_
+
+---
+
+_Comment by @LorenzaMNF on 2025-07-29 12:41_
+
+Thanks for the clarification!
+Lorenza
+
+
+On Tue, Jul 29, 2025 at 2:24 PM Zanie Blue ***@***.***> wrote:
+
+> *zanieb* left a comment (astral-sh/uv#14949)
+> <https://github.com/astral-sh/uv/issues/14949#issuecomment-3132254109>
+>
+> I think you need to report this to poe, sorry — I can't think of how this
+> would relate to uv.
+>
+> —
+> Reply to this email directly, view it on GitHub
+> <https://github.com/astral-sh/uv/issues/14949#issuecomment-3132254109>,
+> or unsubscribe
+> <https://github.com/notifications/unsubscribe-auth/BL2NIURVEXD2ZNWE57V3J5D3K5RWVAVCNFSM6AAAAACCTJURS6VHI2DSMVQWIX3LMV43OSLTON2WKQ3PNVWWK3TUHMZTCMZSGI2TIMJQHE>
+> .
+> You are receiving this because you authored the thread.Message ID:
+> ***@***.***>
+>
+
+
+-- 
+Lorenza Ferrario, PhD - Fondazione Bruno Kessler
++39 0461314463 - ***@***.***
+
+-- 
+--
+Le informazioni contenute nella presente comunicazione sono di natura 
+privata e come tali sono da considerarsi riservate ed indirizzate 
+esclusivamente ai destinatari indicati e per le finalità strettamente 
+legate al relativo contenuto. Se avete ricevuto questo messaggio per 
+errore, vi preghiamo di eliminarlo e di inviare una comunicazione 
+all’indirizzo e-mail del mittente.
+
+--
+The information transmitted is 
+intended only for the person or entity to which it is addressed and may 
+contain confidential and/or privileged material. If you received this in 
+error, please contact the sender and delete the material.
+
+
+---
+
+_Closed by @zanieb on 2025-07-29 12:56_
+
+---

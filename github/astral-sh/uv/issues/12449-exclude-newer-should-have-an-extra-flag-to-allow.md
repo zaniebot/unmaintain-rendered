@@ -1,0 +1,129 @@
+---
+number: 12449
+title: "exclude-newer should have an extra flag to allow it to skip over packages that don't have publish date information."
+type: issue
+state: open
+author: anrooo
+labels:
+  - enhancement
+  - configuration
+assignees: []
+created_at: 2025-03-24T19:57:13Z
+updated_at: 2025-10-14T15:24:34Z
+url: https://github.com/astral-sh/uv/issues/12449
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# exclude-newer should have an extra flag to allow it to skip over packages that don't have publish date information.
+
+---
+
+_Issue opened by @anrooo on 2025-03-24 19:57_
+
+### Summary
+
+Today the utility of this flag is greatly diminished as if any of your packages don't have publish data it will fail to update requirements.
+
+### Example
+
+_No response_
+
+---
+
+_Label `enhancement` added by @anrooo on 2025-03-24 19:57_
+
+---
+
+_Comment by @zanieb on 2025-03-24 20:13_
+
+The flag is intended for reproducible builds, and it does not accomplish its intent if it can install arbitrary packages.
+
+We could definitely consider adding a flag for this, but that's the reason it's not that way today.
+
+---
+
+_Label `configuration` added by @zanieb on 2025-03-24 20:13_
+
+---
+
+_Comment by @herebebeasties on 2025-03-24 21:07_
+
+>The flag is intended for reproducible builds, and it does not accomplish its intent if it can install arbitrary packages.
+>
+> We could definitely consider adding a flag for this, but that's the reason it's not that way today.
+
+Although I understand the rationale behind that, one typically (hopefully) only needs this to work around things for a single package or two in situations like today's setuptools 78.0.1 fiasco, where you might reasonably expect the deps in question to be pinned / reproducible anyway (e.g. torch).
+
+---
+
+_Comment by @anrooo on 2025-03-25 02:12_
+
+I'm on the fence after hearing your feedback. It seems if we fix the `build-constraint-dependencies` propagation for `uv sycn` we'll have the right lever of control to fix issues like the `setuptools` regression and keep CI systems happy, which is what I'm really after here.
+
+It's unfortunate that packages don't all have publish dates available. The vast majority do, but a single bad package spoils the entire process. `--exclude-newer-non-strict` is a mouthful but would do the job. I'll leave it up to y'all if you feel this usability change would be in line with the direction you want the project to take!
+
+Thanks for engaging!
+
+---
+
+_Comment by @notatallshaw on 2025-03-25 02:30_
+
+> It's unfortunate that packages don't all have publish dates available. The vast majority do, but a single bad package spoils the entire process.
+
+All packages on PyPI have an upload date, the issue is most third party indexes (torch, internal artifactory indexes, Azure etc.) don't support the required standards. 
+
+https://packaging.python.org/en/latest/specifications/simple-repository-api/#project-detail (the `upload-time` field).
+
+It would be good if there would be people who reached out to the relevant indexes to request support, it would make a better Python ecosystem if such indexes would follow or interact with the standards process. 
+
+---
+
+_Comment by @charliermarsh on 2025-03-25 13:18_
+
+Yeah, the "real" fix here, I think, is to fix `uv sync`.
+
+---
+
+_Comment by @sanmai-NL on 2025-03-26 08:38_
+
+GitLab Package Registry also appears not to support it ... A single distribution package we depend on is published there. We need to publish it outside PyPI for it to remain private, which [isn't supported by PyPI](https://pypi.org/help/#private-indices).
+
+---
+
+_Comment by @charliermarsh on 2025-03-26 13:12_
+
+One thing to note is that there is no support for upload times in the HTML API (IIRC). So if you're trying to see if a registry supports it, you need to query via the JSON API.
+
+---
+
+_Comment by @bradbeattie on 2025-09-18 14:28_
+
+As an alternative, consider an `exclude-newer` flag that can be placed on `tool.uv.index` entries. That way you could exclude newer packages from public registries like pypi, while also permitting unrestricted packages from your private package registry.
+
+I suspect that might satisfy most use cases here.
+
+---
+
+_Comment by @zanieb on 2025-09-18 14:39_
+
+That sounds nice to me.
+
+---
+
+_Referenced in [mlflow/mlflow#17976](../../mlflow/mlflow/pulls/17976.md) on 2025-09-26 15:15_
+
+---
+
+_Comment by @ncoghlan on 2025-10-14 15:24_
+
+I just ran into this with the custom `torch` registries. Since `torch` is explicitly pinned in my use case (and I use `sources`, so it's the *only* package retrieved from the custom registry), a `supports-exclude-newer = false` option in the relevant `tool.uv.index` entries would definitely work as a resolution.
+
+---
+
+_Referenced in [lmstudio-ai/venvstacks#10](../../lmstudio-ai/venvstacks/issues/10.md) on 2025-10-14 15:43_
+
+---
+
+_Referenced in [pypa/pip#13520](../../pypa/pip/pulls/13520.md) on 2025-10-15 13:35_
+
+---

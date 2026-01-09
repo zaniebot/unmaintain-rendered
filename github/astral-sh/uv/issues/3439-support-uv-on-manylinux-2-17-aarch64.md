@@ -1,0 +1,215 @@
+---
+number: 3439
+title: support uv on manylinux_2_17_aarch64
+type: issue
+state: closed
+author: njzjz
+labels:
+  - releases
+assignees: []
+created_at: 2024-05-07T21:41:02Z
+updated_at: 2024-05-17T08:54:45Z
+url: https://github.com/astral-sh/uv/issues/3439
+synced_at: 2026-01-07T13:12:17-06:00
+---
+
+# support uv on manylinux_2_17_aarch64
+
+---
+
+_Issue opened by @njzjz on 2024-05-07 21:41_
+
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with uv.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
+* The current uv platform.
+* The current uv version (`uv --version`).
+-->
+
+While uv on other architectures only requires glibc 2.17, uv on aarch64 requires glibc 2.28.
+
+![image](https://github.com/astral-sh/uv/assets/9496702/7e4a5222-d86c-40d2-baad-f3a5c45f9a81)
+
+Installing uv in a glibc 2.17 environment is not possible.
+
+```
+    Downloading uv-0.1.40.tar.gz (787 kB)
+       ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 787.0/787.0 kB 21.3 MB/s eta 0:00:00
+    Installing build dependencies: started
+    Installing build dependencies: finished with status 'done'
+    Getting requirements to build wheel: started
+    Getting requirements to build wheel: finished with status 'done'
+    Preparing metadata (pyproject.toml): started
+    Preparing metadata (pyproject.toml): finished with status 'error'
+    error: subprocess-exited-with-error
+    
+    × Preparing metadata (pyproject.toml) did not run successfully.
+    │ exit code: 1
+    ╰─> [6 lines of output]
+        
+        Cargo, the Rust package manager, is not installed or is not on PATH.
+        This package requires Rust and Cargo to compile extensions. Install it through
+        the system's package manager or via https://rustup.rs/
+        
+        Checking for Rust toolchain....
+        [end of output]
+    
+    note: This error originates from a subprocess, and is likely not a problem with pip.
+  error: metadata-generation-failed
+```
+
+---
+
+_Comment by @charliermarsh on 2024-05-07 23:54_
+
+We can try reducing the glibc requirement. I think we had trouble compiling on aarch manylinux_2_17 for unknown reasons.
+
+---
+
+_Referenced in [astral-sh/uv#3444](../../astral-sh/uv/pulls/3444.md) on 2024-05-07 23:58_
+
+---
+
+_Comment by @charliermarsh on 2024-05-08 00:01_
+
+Yeah not sure, some error compiling ring -- see here: https://github.com/astral-sh/uv/pull/3444
+
+---
+
+_Label `release` added by @charliermarsh on 2024-05-08 00:01_
+
+---
+
+_Comment by @njzjz on 2024-05-08 00:13_
+
+> Yeah not sure, some error compiling ring -- see here: #3444
+
+Got it. I found the root cause is https://github.com/briansmith/ring/issues/1728
+
+---
+
+_Comment by @konstin on 2024-05-08 09:11_
+
+Note that in the meantime, using the standalone installer (`curl -LsSf https://astral.sh/uv/install.sh | sh`) should work; it will fallback to the statically compiled (musl) version, which works independent of glibc version.
+
+---
+
+_Referenced in [pypa/manylinux#1607](../../pypa/manylinux/issues/1607.md) on 2024-05-09 07:54_
+
+---
+
+_Comment by @mayeut on 2024-05-09 08:03_
+
+If the installer falls back to using the statically compiled version, is there any interest in providing also a dynamically link (gnu) version ?
+The fact that the 2 variants are provided is misleading: one would assume it only works on one or the other no ?
+
+If the statically compiled musl version  works everywhere, then why not use this one for the wheel ?
+
+On aarch64 at least, the binary is smaller with musl (despite the fact that libc is statically linked) so it would be a win across the board (unless there are also performance implications): less wheels (less storage on PyPI) & better compatbility as it could be tagged `manylinux_2_17_aarch64.musllinux_1_1_aarch64`
+
+---
+
+_Comment by @charliermarsh on 2024-05-09 13:37_
+
+Separately, this is now supported: https://github.com/astral-sh/uv/pull/3444
+
+---
+
+_Closed by @charliermarsh on 2024-05-09 13:37_
+
+---
+
+_Reopened by @charliermarsh on 2024-05-14 14:50_
+
+---
+
+_Comment by @charliermarsh on 2024-05-14 14:50_
+
+We had to revert this as it led to SSL failures (see #3576)
+
+---
+
+_Comment by @henryiii on 2024-05-14 15:32_
+
+What about trying https://github.com/astral-sh/uv/issues/3439#issuecomment-2102159802?
+
+This will block https://github.com/pypa/manylinux/pull/1614 (though reverting for now is the correct short term fix).
+
+---
+
+_Comment by @charliermarsh on 2024-05-14 16:54_
+
+@konstin - wdyt?
+
+---
+
+_Comment by @henryiii on 2024-05-14 17:42_
+
+This should be really easy to test later, I just need to use my AS machine and try it.
+
+---
+
+_Comment by @konstin on 2024-05-14 17:48_
+
+I hope i'm understanding the suggestion correctly, but i think we can add manylinux tags to the musllinux wheels, as long as they are lower than the main manylinux image, the should only be used in this small range.
+
+We could also go further and only build statically linked wheels and tag them both musllinux and manylinux, dropping the "real" manylinux image with dynamically linked glibc altogether.
+
+---
+
+_Comment by @henryiii on 2024-05-14 18:36_
+
+Yes, it works:
+
+```bash
+pipx run wheel tags --platform-tag +manylinux_2_17_aarch64.manylinux2014_aarch64 uv-0.1.43-py3-none-musllinux_1_1_aarch64.whl
+```
+
+And the following Dockerfile:
+
+```Dockerfile
+ARG PYTHON_VERSION=3.11
+FROM python:${PYTHON_VERSION}-slim as base
+
+RUN apt-get update
+RUN apt-get install -y curl build-essential cmake
+
+ADD ./uv-0.1.43-py3-none-manylinux2014_aarch64.manylinux_2_17_aarch64.musllinux_1_1_aarch64.whl \
+      uv-0.1.43-py3-none-manylinux2014_aarch64.manylinux_2_17_aarch64.musllinux_1_1_aarch64.whl
+RUN pip install ./uv-0.1.43-py3-none-manylinux2014_aarch64.manylinux_2_17_aarch64.musllinux_1_1_aarch64.whl
+
+ADD ./scripts/requirements/compiled/black.txt /requirements.txt
+
+ENV RUST_LOG=trace
+RUN uv pip install -r /requirements.txt --system -v
+```
+
+Works, while the previous dynamic wheel did not. This would reduce the number of wheels built and hosted, too.
+
+Also checked with the manylinux image:
+
+```Dockerfile
+FROM quay.io/pypa/manylinux2014_aarch64 as base
+
+ADD ./uv-0.1.43-py3-none-manylinux2014_aarch64.manylinux_2_17_aarch64.musllinux_1_1_aarch64.whl uv-0.1.43-py3-none-manylinux2014_aarch64.manylinux_2_17_aarch64.musllinux_1_1_aarch64.whl
+RUN pipx install ./uv-0.1.43-py3-none-manylinux2014_aarch64.manylinux_2_17_aarch64.musllinux_1_1_aarch64.whl
+
+ADD ./scripts/requirements/compiled/black.txt /requirements.txt
+
+ENV RUST_LOG=trace
+RUN uv pip install --python python3.12 -r /requirements.txt -v
+```
+
+---
+
+_Referenced in [astral-sh/uv#3624](../../astral-sh/uv/pulls/3624.md) on 2024-05-16 06:51_
+
+---
+
+_Closed by @konstin on 2024-05-17 08:54_
+
+---

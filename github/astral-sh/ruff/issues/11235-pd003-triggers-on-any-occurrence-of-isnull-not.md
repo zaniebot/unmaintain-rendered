@@ -1,0 +1,48 @@
+---
+number: 11235
+title: "PD003 triggers on any occurrence of `.isnull()`, not necessarily on a pandas dataframe"
+type: issue
+state: closed
+author: deepyaman
+labels: []
+assignees: []
+created_at: 2024-05-01T23:20:24Z
+updated_at: 2024-05-02T14:31:01Z
+url: https://github.com/astral-sh/ruff/issues/11235
+synced_at: 2026-01-07T13:12:15-06:00
+---
+
+# PD003 triggers on any occurrence of `.isnull()`, not necessarily on a pandas dataframe
+
+---
+
+_Issue opened by @deepyaman on 2024-05-01 23:20_
+
+* List of keywords you searched for before creating this issue: "isnull", "pandas-vet" (read through some of the issues, including one that says `pandas-vet` is like training wheels; that said, I think it's reasonable to expect it not to flag issues on non-pandas code)
+* A minimal code snippet that reproduces the bug: https://github.com/ibis-project/ibis-ml/blob/87889d9857237425544a3a5dc41fce9e1ca7fe5d/ibisml/steps/impute.py#L13 (sorry, I'll try to update this to something more minimal later, but I think you can trigger it by calling `.isnull()` on literally anything)
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag: Ran though pre-commit hook.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`): `PD` is selected.
+* The current Ruff version (`ruff --version`): v0.3.2
+
+I did also try type hinting my function (marking `col` as type `ir.Column`), but it didn't matter. Looking at the implementation of the rule, it seems to be a naive string match.
+
+
+---
+
+_Referenced in [ibis-project/ibis-ml#80](../../ibis-project/ibis-ml/pulls/80.md) on 2024-05-01 23:29_
+
+---
+
+_Comment by @charliermarsh on 2024-05-02 14:30_
+
+Thanks for the clear issue. I think we should just merge this into https://github.com/astral-sh/ruff/issues/6432 though -- it's the same underlying issue, we aren't correctly inferring that something is or isn't a DataFrame.
+
+---
+
+_Closed by @charliermarsh on 2024-05-02 14:31_
+
+---
+
+_Referenced in [astral-sh/ruff#14671](../../astral-sh/ruff/pulls/14671.md) on 2024-11-29 07:33_
+
+---

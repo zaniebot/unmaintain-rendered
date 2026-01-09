@@ -1,0 +1,50 @@
+---
+number: 20113
+title: strict modules
+type: issue
+state: open
+author: ctcjab
+labels:
+  - rule
+  - type-inference
+  - needs-decision
+assignees: []
+created_at: 2025-08-27T13:53:08Z
+updated_at: 2025-08-27T14:18:21Z
+url: https://github.com/astral-sh/ruff/issues/20113
+synced_at: 2026-01-07T13:12:16-06:00
+---
+
+# strict modules
+
+---
+
+_Issue opened by @ctcjab on 2025-08-27 13:53_
+
+### Summary
+
+This idea is inspired by [Cinder's "strict modules"](https://github.com/facebookincubator/cinder?tab=readme-ov-file#strict-modules), i.e. a module whose top-level code will not have side effects visible outside that module.
+
+If ruff provided rule(s) that users could enable to catch when a module performs side effectful things at import time (like make network calls, write files to disk, modify os.environ, etc.), it would be really impactful. I've seen outages caused by a Python module that DDoS'd an internal service because it performed network requests at import time.
+
+Even a crude, low-cost initial implementation that checked top-level code against a deny-list of forbidden API calls (`write`, `connect`, etc.) might provide an outsized return. What do you think?
+
+---
+
+_Comment by @ntBre on 2025-08-27 14:18_
+
+This sounds related to https://github.com/astral-sh/ruff/issues/8149, which also mentions side effect detection. I think #8149 is more focused on supporting existing rules like F401, whereas this sounds like it might still be a separate rule, though.
+
+---
+
+_Label `rule` added by @ntBre on 2025-08-27 14:18_
+
+---
+
+_Label `needs-decision` added by @ntBre on 2025-08-27 14:18_
+
+---
+
+_Label `type-inference` added by @ntBre on 2025-08-27 14:18_
+
+---

@@ -1,0 +1,134 @@
+---
+number: 9324
+title: uv sync produces a large (9.5GB) docker layer upon build
+type: issue
+state: closed
+author: fortminors
+labels:
+  - question
+assignees: []
+created_at: 2024-11-21T15:08:57Z
+updated_at: 2024-11-22T15:11:57Z
+url: https://github.com/astral-sh/uv/issues/9324
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# uv sync produces a large (9.5GB) docker layer upon build
+
+---
+
+_Issue opened by @fortminors on 2024-11-21 15:08_
+
+I have the following pyproject.toml:
+```toml
+[project]
+name = "cv_tests"
+version = "0.1.0"
+description = "cv_tests"
+authors = [
+    {name="me", email="me@me.com"},
+]
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "circle-fit>=0.2.1",
+    "einops>=0.8.0",
+    "fastapi>=0.115.4",
+    "imutils>=0.5.4",
+    "matplotlib>=3.9.2",
+    "open-clip-torch>=2.29.0",
+    "opencv-contrib-python>=4.10.0.84",
+    "opencv-python>=4.10.0.84",
+    "pyrealsense2>=2.55.1.6486",
+    "safetensors>=0.4.5",
+    "scikit-image>=0.24.0",
+    "scikit-learn>=1.5.2",
+    "scipy>=1.14.1",
+    "shapely>=2.0.6",
+    "transformers>=4.46.1",
+    "ultralytics>=8.3.27",
+    "uvicorn>=0.32.0",
+    "xformers>=0.0.28.post3",
+    "sam-2",
+    "setuptools>=75.3.0",
+    "torch-tensorrt>=2.5.0",
+    "pre-commit>=4.0.1",
+    "lakefs>=0.7.1",
+]
+
+[tool.uv.sources]
+sam-2 = { git = "https://github.com/facebookresearch/segment-anything-2.git", rev = "c2ec8e14a185632b0a5d8b161928ceb50197eddc" }
+```
+
+and the following Dockerfile:
+```Dockerfile
+FROM nvcr.io/nvidia/cuda:12.6.2-cudnn-devel-ubuntu22.04
+
+# https://docs.docker.com/reference/dockerfile/#shell-and-exec-form
+# https://manpages.ubuntu.com/manpages/noble/en/man1/sh.1.html
+SHELL ["/bin/sh", "-exc"]
+
+ARG DEBIAN_FRONTEND=noninteractive
+ARG python_version=3.11
+
+COPY --link --from=ghcr.io/astral-sh/uv:0.5.2 /uv /usr/local/bin/uv
+
+RUN apt-get update --quiet && \
+    apt-get upgrade -y && \
+    apt-get install --quiet --no-install-recommends -y build-essential git ca-certificates \
+    libgl1 libglib2.0-0 libusb-1.0-0-dev && \
+    # Forcing http 1.1 to fix https://stackoverflow.com/q/59282476
+    git config --global http.version HTTP/1.1 && \
+    uv python install $python_version
+
+ENV UV_PYTHON="python$python_version" \
+    UV_PYTHON_DOWNLOADS=never \
+    UV_PROJECT_ENVIRONMENT=/app \
+    UV_LINK_MODE=copy \
+    PYTHONFAULTHANDLER=1 \
+    PYTHONUNBUFFERED=1 \
+    UV_COMPILE_BYTECODE=1 \
+    PYTHONOPTIMIZE=1
+
+WORKDIR /project
+COPY pyproject.toml uv.lock README.md /project
+
+# Building deps
+RUN --mount=type=cache,target=/root/.cache/uv \
+    uv sync --no-dev --no-install-project --frozen
+
+```
+
+It builds successfully, however when the last RUN command is executed, it creates a huge layer of size 9.5 GB.
+I inspected it with [dive](https://github.com/wagoodman/dive), to find that it is all taken by /app/lib/python3.11/site-packages
+![image](https://github.com/user-attachments/assets/7a93f3a7-3c8c-4888-92e7-13e3b5a16433)
+![image](https://github.com/user-attachments/assets/b399d76c-daab-468a-b287-61e9dc1fec23)
+
+I thought that whenever I do `RUN --mount=type=cache,target=/root/.cache/uv`, the packages are cached internally in a local docker instance and it is not a part of the current image that I am building. Is there anything I can do about that? I thought of building a base (reusable) image with thick packages like pytorch and then inheriting from it and installing the other packages, so to split the installation in several layers, but then I would need several .toml project configurations and lock files. So I am curious what is the best way to do that? I am not sure if multi-stage build would help me here, but I might be mistaken.
+
+
+---
+
+_Comment by @zanieb on 2024-11-22 14:48_
+
+I don't quite follow the issue. `uv sync` installs the packages. If the layer is big because of installed packages, I'm not sure what we could do differently. 
+
+Using a cache mount can speed up installation, but won't remove the installed packages from the image because then it'd be broken.
+
+You could try `--no-install-package <big-package>` to separate that one out from the rest.
+
+---
+
+_Label `question` added by @zanieb on 2024-11-22 14:48_
+
+---
+
+_Comment by @fortminors on 2024-11-22 15:11_
+
+Thank you for the suggestion. I thought that if I use `RUN --mount=type=cache,target=/root/.cache/uv`, it will mount the packages and cache to the image, but now that I think of it, `RUN --mount` invokes a temporary mount during build time only, so launching scripts won't work - there will be no packages any longer.
+
+---
+
+_Closed by @fortminors on 2024-11-22 15:11_
+
+---

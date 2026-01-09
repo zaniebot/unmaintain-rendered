@@ -1,0 +1,129 @@
+---
+number: 14283
+title: "[Infinite loop] PLC0414 conflicts with I002 if a useless alias is required"
+type: issue
+state: closed
+author: dscorbett
+labels:
+  - bug
+assignees: []
+created_at: 2024-11-11T15:21:28Z
+updated_at: 2024-11-14T21:39:39Z
+url: https://github.com/astral-sh/ruff/issues/14283
+synced_at: 2026-01-07T13:12:16-06:00
+---
+
+# [Infinite loop] PLC0414 conflicts with I002 if a useless alias is required
+
+---
+
+_Issue opened by @dscorbett on 2024-11-11 15:21_
+
+[`useless-import-alias` (PLC0414)](https://docs.astral.sh/ruff/rules/useless-import-alias/) conflicts with [`missing-required-import` (I002)](https://docs.astral.sh/ruff/rules/missing-required-import/) in Ruff 0.7.3 if the latter rule is configured to require an alias that the former rule considers useless.
+
+```console
+$ echo 1 | ruff check --isolated --select I002,PLC0414 --config 'lint.isort.required-imports = ["import numpy as numpy"]' - --unsafe-fixes --fix
+
+error: Failed to converge after 100 iterations.
+
+This indicates a bug in Ruff. If you could open an issue at:
+
+    https://github.com/astral-sh/ruff/issues/new?title=%5BInfinite%20loop%5D
+
+...quoting the contents of `-`, the rule codes I002, along with the `pyproject.toml` settings and executed command, we'd be very appreciative!
+
+import numpy
+import numpy
+import numpy
+import numpy
+import numpy
+import numpy
+import numpy
+import numpy
+import numpy
+import numpy
+import numpy
+import numpy
+import numpy
+import numpy
+import numpy
+import numpy
+import numpy
+import numpy
+import numpy
+import numpy
+import numpy
+import numpy
+import numpy
+import numpy
+import numpy
+import numpy
+import numpy
+import numpy
+import numpy
+import numpy
+import numpy
+import numpy
+import numpy
+import numpy
+import numpy
+import numpy
+import numpy
+import numpy
+import numpy
+import numpy
+import numpy
+import numpy
+import numpy
+import numpy
+import numpy
+import numpy
+import numpy
+import numpy
+import numpy
+import numpy
+1
+-:1:1: I002 Missing required import: `import numpy as numpy`
+Found 101 errors (100 fixed, 1 remaining).
+[*] 1 fixable with the --fix option.
+```
+
+---
+
+_Label `bug` added by @AlexWaygood on 2024-11-11 15:47_
+
+---
+
+_Label `help wanted` added by @AlexWaygood on 2024-11-11 15:47_
+
+---
+
+_Referenced in [astral-sh/ruff#14287](../../astral-sh/ruff/pulls/14287.md) on 2024-11-11 22:29_
+
+---
+
+_Comment by @dylwil3 on 2024-11-11 22:31_
+
+Thanks for this!
+
+I think the simplest-to-implement fix is to let the user-specified config win and use I002 (that's what I do in the linked PR).
+
+But it feels a little awkward because surely they wouldn't have meant to put that as the required import... Maybe in some future iteration a warning could be emitted in this case. At the moment, such a warning isn't quite precedented since it involves actually checking that the supplied config has a useless alias (as opposed to just reporting that two rules are known to always conflict, say). So I imagine some thought would have to go into it.
+
+---
+
+_Label `help wanted` removed by @dylwil3 on 2024-11-11 22:50_
+
+---
+
+_Closed by @dylwil3 on 2024-11-14 21:39_
+
+---
+
+_Closed by @dylwil3 on 2024-11-14 21:39_
+
+---
+
+_Referenced in [astral-sh/ruff#18365](../../astral-sh/ruff/issues/18365.md) on 2025-05-29 10:14_
+
+---

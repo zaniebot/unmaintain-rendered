@@ -1,0 +1,162 @@
+---
+number: 3202
+title: default_value may not be included in possible_values and only checked in a runtime
+type: issue
+state: open
+author: Gordon01
+labels:
+  - C-enhancement
+  - A-builder
+  - E-easy
+assignees: []
+created_at: 2021-12-21T12:36:47Z
+updated_at: 2023-07-18T20:01:55Z
+url: https://github.com/clap-rs/clap/issues/3202
+synced_at: 2026-01-07T13:12:19-06:00
+---
+
+# default_value may not be included in possible_values and only checked in a runtime
+
+---
+
+_Issue opened by @Gordon01 on 2021-12-21 12:36_
+
+### Please complete the following tasks
+
+- [X] I have searched the [discussions](https://github.com/clap-rs/clap/discussions)
+- [X] I have searched the existing issues
+
+### Clap Version
+
+3.0.0-rc.7
+
+### Describe your use case
+
+A configuration when a `default_value` is not listed in `possible_values` is valid and i only get error in runtime.
+
+example
+`#[clap(short, long, default_value_t = 64, possible_values = ["16", "32"])]`
+this also works:
+`#[clap(short, long, default_value = "64", possible_values = ["16", "32"])]`
+
+### Describe the solution you'd like
+
+I want to get error at compile time.
+Maybe implementing a https://github.com/clap-rs/clap/issues/3201 may automatically resolve this issue.
+
+```
+#[clap(short, long, default_value_t = 128, possible_values = ["12", "16", "32"])]
+fat: u8,
+
+error: default value is not in range of possible values
+```
+
+### Alternatives, if applicable
+
+_No response_
+
+### Additional Context
+
+_No response_
+
+---
+
+_Label `C-enhancement` added by @Gordon01 on 2021-12-21 12:36_
+
+---
+
+_Comment by @epage on 2021-12-21 14:24_
+
+It would help if you included a fully working code sample and the current runtime error output.  I have some guesses as to which errors you are seeing but I'd have to recreate a working sample to verify.  This is needed to triage this for how important it is for resolving.
+
+---
+
+_Label `S-triage` added by @epage on 2021-12-21 14:24_
+
+---
+
+_Comment by @Gordon01 on 2021-12-22 19:05_
+
+```rust
+use clap::Parser;
+
+#[derive(Parser)]
+#[clap(author, version, about)]
+struct Cli {
+    #[clap(default_value = "4", possible_values = ["1", "3", "5"])]
+    count: u8,
+}
+
+fn main() {
+    let cli = Cli::parse();
+
+    println!("Count: {}", cli.count);
+}
+```
+
+cargo run -q
+
+> error: "4" isn't a valid value for '\<COUNT\>'
+>         [possible values: 1, 3, 5]
+
+So yeah, this is just an ergonomic issue, but it would be great if this error could be checked at compile time.
+
+---
+
+_Comment by @epage on 2021-12-22 19:19_
+
+Thanks!  i'm surprised we leave this to being an error from the validators.
+
+The first priority would be to add a debug assert for this.  That will catch it in all of our APIs.  In our migration guide, we've recommended making tests out of the debug asserts.  We should also add that to the regular documentation.
+
+#2740 proposed porting our debug asserts to run at compile time.  Not all of them thoroughly can (#3133) so even if we ignored the builder API, we'd still need the debug asserts in some cases.  This is one that wouldn't run into that problem.  When considering the builder API, we also have to deal with code duplication and code drift.  That makes it unlikely for us to duplicate the debug asserts at compile time.
+
+If we haven't, we should probably also have a debug assert that validates the default value against the validator function, if present.
+
+---
+
+_Label `S-triage` removed by @epage on 2021-12-22 19:19_
+
+---
+
+_Label `A-builder` added by @epage on 2021-12-22 19:19_
+
+---
+
+_Label `E-easy` added by @epage on 2021-12-22 19:19_
+
+---
+
+_Added to milestone `3.1` by @epage on 2022-02-02 20:11_
+
+---
+
+_Referenced in [clap-rs/clap#3423](../../clap-rs/clap/pulls/3423.md) on 2022-02-08 20:42_
+
+---
+
+_Closed by @epage on 2022-02-08 21:01_
+
+---
+
+_Referenced in [clap-rs/clap#4405](../../clap-rs/clap/issues/4405.md) on 2022-10-19 22:18_
+
+---
+
+_Referenced in [clap-rs/clap#4643](../../clap-rs/clap/issues/4643.md) on 2023-01-16 16:46_
+
+---
+
+_Referenced in [clap-rs/clap#5017](../../clap-rs/clap/pulls/5017.md) on 2023-07-18 19:12_
+
+---
+
+_Comment by @epage on 2023-07-18 20:01_
+
+Because of #4643, #5017  reverted the fix for this
+
+---
+
+_Reopened by @epage on 2023-07-18 20:01_
+
+---

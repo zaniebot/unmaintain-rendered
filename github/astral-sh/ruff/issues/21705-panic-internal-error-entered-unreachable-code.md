@@ -1,0 +1,67 @@
+---
+number: 21705
+title: "panic: `internal error: entered unreachable code: IPython escape command expression is only allowed for % and !`"
+type: issue
+state: open
+author: correctmost
+labels:
+  - bug
+  - parser
+  - notebook
+assignees: []
+created_at: 2025-11-30T18:01:51Z
+updated_at: 2025-11-30T23:55:43Z
+url: https://github.com/astral-sh/ruff/issues/21705
+synced_at: 2026-01-07T13:12:16-06:00
+---
+
+# panic: `internal error: entered unreachable code: IPython escape command expression is only allowed for % and !`
+
+---
+
+_Issue opened by @correctmost on 2025-11-30 18:01_
+
+### Summary
+
+I ran some follow-up tests for #21465 and found a similar notebook crash:
+
+```
+panic: Panicked at crates/ruff_python_parser/src/parser/expression.rs:2782:13 when checking `/home/user/crash.ipynb`: `internal error: entered unreachable code: IPython escape command expression is only allowed for % and !`
+```
+
+**crash.ipynb**
+```json
+{
+  "cells": [
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "outputs": [],
+      "source": [
+        "{]\n,"
+      ]
+    }
+  ],
+  "metadata": {},
+  "nbformat": 4,
+  "nbformat_minor": 2
+}
+```
+
+### Version
+
+ruff 0.14.7
+
+---
+
+_Label `bug` added by @AlexWaygood on 2025-11-30 23:55_
+
+---
+
+_Label `notebook` added by @AlexWaygood on 2025-11-30 23:55_
+
+---
+
+_Label `parser` added by @AlexWaygood on 2025-11-30 23:55_
+
+---

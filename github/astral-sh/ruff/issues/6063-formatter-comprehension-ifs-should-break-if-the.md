@@ -1,0 +1,158 @@
+---
+number: 6063
+title: "Formatter: Comprehension ifs should break if the comprehension breaks"
+type: issue
+state: closed
+author: konstin
+labels:
+  - good first issue
+  - formatter
+assignees: []
+created_at: 2023-07-25T10:46:23Z
+updated_at: 2024-02-13T00:00:17Z
+url: https://github.com/astral-sh/ruff/issues/6063
+synced_at: 2026-01-07T13:12:15-06:00
+---
+
+# Formatter: Comprehension ifs should break if the comprehension breaks
+
+---
+
+_Issue opened by @konstin on 2023-07-25 10:46_
+
+Black breaks the `if` into its own line if the comprehension breaks
+```python
+a = (
+    aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+    for f in bbbbbbbbbbbbbbb
+    if f not in ccccccccccc
+)
+```
+while we don't 
+```python
+a = (
+    aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+    for f in bbbbbbbbbbbbbbb if f not in ccccccccccc
+)
+```
+
+Conversely, parentheses should not require the target breaking
+
+black:
+```python
+aaaaaaaaaaaaaaaaaaaaa = (
+    o for o in self.registry.values if o.__class__ is not ModelAdmin
+)
+```
+ours:
+```python
+aaaaaaaaaaaaaaaaaaaaa = (
+    o
+    for o in self.registry.values if o.__class__ is not ModelAdmin
+)
+```
+
+
+Fixing this requires changing the grouping strategy for comprehensions and generator expressions.
+
+---
+
+_Label `good first issue` added by @konstin on 2023-07-25 10:46_
+
+---
+
+_Label `formatter` added by @konstin on 2023-07-25 10:46_
+
+---
+
+_Referenced in [astral-sh/ruff#6069](../../astral-sh/ruff/issues/6069.md) on 2023-07-25 11:22_
+
+---
+
+_Comment by @AbhinavMir on 2023-07-27 16:48_
+
+Happy to work on this. Where would the source for this be? I tried looking in [comprehensions](https://github.com/astral-sh/ruff/blob/main/crates/ruff_python_formatter/src/other/comprehension.rs) and a few other places, but couldn't find the grouping strat. Thx.
+
+---
+
+_Comment by @MichaReiser on 2023-07-28 06:18_
+
+> Happy to work on this. Where would the source for this be? I tried looking in [comprehensions](https://github.com/astral-sh/ruff/blob/main/crates/ruff_python_formatter/src/other/comprehension.rs?rgh-link-date=2023-07-27T16%3A48%3A44Z) and a few other places, but couldn't find the grouping strat. Thx.
+
+You're in the right file. The grouping of the `if`s and adding the line break before it happens here. It may already be sufficient to just move the line break outside of the `group`. 
+
+https://github.com/astral-sh/ruff/blob/cd4147423cdcea141bd57143d6c4d930935fa4bd/crates/ruff_python_formatter/src/other/comprehension.rs#L83-L89
+
+---
+
+_Assigned to @AbhinavMir by @MichaReiser on 2023-07-28 06:18_
+
+---
+
+_Comment by @konstin on 2023-07-28 09:20_
+
+Additionally, you might need to look at `expr_list_comp.rs`/`expr_dict_comp.rs`/`expr_set_comp.rs` (they follow the same structure so i can fix one and then copy that to the others once one works). I think i tried and moving a single `group` wasn't enough, but it should still be doable by shuffling `group()`s in the right way.
+
+---
+
+_Comment by @AbhinavMir on 2023-07-28 12:14_
+
+Thanks @konstin will get to that too!
+@MichaReiser quick question: how does `soft_line_break_or_space()` decide between line break or space? I assume by moving the line break outside you meant something like this?
+
+```
+write!(
+            f,
+            [
+                text("for"),
+                // ADD in line break here!
+                trailing_comments(before_target_comments),
+                group(&format_args!(
+                    Spacer(target),
+                    ExprTupleWithoutParentheses(target),
+                    in_spacer,
+                    leading_comments(before_in_comments),
+                    text("in"),
+                    trailing_comments(trailing_in_comments),
+                    Spacer(iter),
+                    iter.format(),
+                )),
+            ]
+        )?;
+```
+
+---
+
+_Comment by @MichaReiser on 2023-07-28 12:41_
+
+`soft_line_break_or_space` renders a `space` if its enclosing group fits on a line and it renders a line break if it does not. 
+
+A group fits on a line if all its content (including nested groups) can be printed on a line without exceeding the configured line width. The way this is determined is by measuring if the groups content and any content coming after the group up to the first line break (soft or hard doesn't matter) doesn't exceed the line width. 
+
+You may also want to take a look at the documentation of the different builder methdos (like `soft_line_break_or_space`). Each of them comes with examples.
+
+> moving the line break outside you meant something like this?
+
+Yeah, that's what I had in mind but it may not work (always hard to tell with formatting)
+
+---
+
+_Added to milestone `Formatter: Alpha` by @MichaReiser on 2023-07-31 16:08_
+
+---
+
+_Referenced in [astral-sh/ruff#6203](../../astral-sh/ruff/issues/6203.md) on 2023-07-31 17:12_
+
+---
+
+_Referenced in [astral-sh/ruff#6321](../../astral-sh/ruff/pulls/6321.md) on 2023-08-03 23:15_
+
+---
+
+_Closed by @charliermarsh on 2023-08-04 14:00_
+
+---
+
+_Unassigned @AbhinavMir by @AbhinavMir on 2024-02-13 00:00_
+
+---

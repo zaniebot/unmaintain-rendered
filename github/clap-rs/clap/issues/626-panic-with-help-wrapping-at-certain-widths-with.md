@@ -1,0 +1,222 @@
+---
+number: 626
+title: Panic with help wrapping at certain widths with non-English characters
+type: issue
+state: closed
+author: mac-book-pro
+labels:
+  - C-bug
+  - A-help
+assignees: []
+created_at: 2016-08-24T02:32:43Z
+updated_at: 2018-08-02T03:29:52Z
+url: https://github.com/clap-rs/clap/issues/626
+synced_at: 2026-01-07T13:12:19-06:00
+---
+
+# Panic with help wrapping at certain widths with non-English characters
+
+---
+
+_Issue opened by @mac-book-pro on 2016-08-24 02:32_
+
+Hello,
+
+First of all, thank you for your work. This is the best-looking argument parser for Rust, and I say this because I've tried all the others.
+
+Here is my problem: I am writing a program whose messages are in French, and "clap" has a major problem with non-English letters. When a line contains a French accent (like "é" in "café"), then **the next lines will often have a missing letter and sometimes the program will even crash**!
+
+Steps to reproduce the problem:
+1. Take the "My Super Program" example in the "clap" documentation.
+2. Replace:
+
+```
+                          .arg(Arg::with_name("config")
+                               .short("c")
+                               .long("config")
+                               .value_name("FILE")
+                               .help("Sets a custom config file")
+                               .takes_value(true))
+```
+
+with:
+
+```
+                          .arg(Arg::with_name("cafe")
+                               .short("c")
+                               .long("cafe")
+                               .value_name("FILE")
+                               .help("A coffeehouse, coffee shop, or café is an establishment which primarily serves hot coffee, related coffee beverages (e.g., café latte, cappuccino, espresso), tea, and other hot beverages. Some coffeehouses also serve cold beverages such as iced coffee and iced tea. Many cafés also serve some type of food, such as light snacks, muffins, or pastries.")
+                               .takes_value(true))
+```
+
+Now, here is the output when I run "my_super_program -h". **Notice the missing letters**:
+
+```
+OPTIONS:
+    -c, --cafe <FILE>    A coffeehouse, coffee shop, or café is an
+                         establishment which primarily serves hot
+                         coffee, related coffee beverages (e.g., caf
+                          latte, cappuccino, espresso), tea, and 
+                         ther hot beverages. Some coffeehouses 
+                         lso serve cold beverages such as iced coffe
+                          and iced tea. Many cafés also serve 
+                         ome type of food, such as light snacks, 
+                         uffins, or pastries.
+```
+
+If I replace all occurrences of "café" with "cafe", then the problem disappears:
+
+```
+OPTIONS:
+    -c, --cafe <FILE>    A coffeehouse, coffee shop, or cafe is an
+                         establishment which primarily serves hot
+                         coffee, related coffee beverages (e.g.,
+                         cafe latte, cappuccino, espresso), tea, and
+                         other hot beverages. Some coffeehouses also
+                         serve cold beverages such as iced coffee
+                         and iced tea. Many cafes also serve some
+                         type of food, such as light snacks,
+                         muffins, or pastries.
+```
+
+
+---
+
+_Comment by @mac-book-pro on 2016-08-24 02:51_
+
+P.S. Crashes are more difficult to reproduce, cause they happen only with certain strings and only at certain Terminal widths. I managed to get a crash with this string:
+
+> La culture du café est très développée dans de nombreux pays à climat chaud d'Amérique, d'Afrique et d'Asie, dans des plantations qui sont cultivées pour les marchés d'exportation. Le café est souvent une contribution majeure aux exportations des régions productrices.
+
+at a Terminal width of 53.
+
+Here is the crash message:
+
+> thread 'main' panicked at 'index 27 and/or 278 in `La culture du café est très développée dans de nombreux pays à climat chaud d'Amérique, d'Afrique et d'Asie, dans des plantations qui sont cultivées pour les marchés d'exportation. Le café est souvent une contribution majeure aux exportations des`[...] do not lie on character boundary', src/libcore/str/mod.rs:1694
+> note: Run with `RUST_BACKTRACE=1` for a backtrace.
+
+and here is the backtrace:
+
+```
+   1:        0x108be1f0b - std::sys::backtrace::tracing::imp::write::h46e546df6e4e4fe6
+   2:        0x108be39ba - std::panicking::default_hook::_$u7b$$u7b$closure$u7d$$u7d$::h077deeda8b799591
+   3:        0x108be35ea - std::panicking::default_hook::heb8b6fd640571a4f
+   4:        0x108bd9b18 - std::panicking::rust_panic_with_hook::hd7b83626099d3416
+   5:        0x108be3f96 - std::panicking::begin_panic::h941ea76fc945d925
+   6:        0x108bda418 - std::panicking::begin_panic_fmt::h30280d4dd3f149f5
+   7:        0x108be3bef - rust_begin_unwind
+   8:        0x108c05a00 - core::panicking::panic_fmt::h2d3cc8234dde51b4
+   9:        0x108c07263 - core::str::slice_error_fail::h52e7d9a886dfadad
+  10:        0x108b6a00c - core::str::traits::_<impl core..ops..Index<core..ops..RangeFrom<usize>> for str>::index::hae3efe4d2fd41a44
+  11:        0x108b95fcc - _<collections..string..String as core..ops..Index<core..ops..RangeFrom<usize>>>::index::h2776c932194621d4
+  12:        0x108b90be1 - clap::app::help::Help::help::h4e736e23b2bf6767
+  13:        0x108b8ae36 - clap::app::help::Help::write_arg::h6b1c5590812eb874
+  14:        0x108bae3e9 - clap::app::help::Help::write_args::h7f76616531e7ab78
+  15:        0x108b9ed0f - clap::app::help::Help::write_all_args::hff215fca3a458728
+  16:        0x108b8a385 - clap::app::help::Help::write_default_help::h1911ba4266439bc3
+  17:        0x108b85f1d - clap::app::help::Help::write_help::h4ab97c1c6d787508
+  18:        0x108b85af1 - clap::app::help::Help::_write_parser_help::hb389450f764af0bb
+  19:        0x108b668fe - clap::app::help::Help::write_parser_help::he57c8864e7dfa953
+  20:        0x108b22325 - clap::app::parser::Parser::_help::h909f2da6702da918
+  21:        0x108b6649c - clap::app::parser::Parser::check_for_help_and_version_char::h4bc041acdba1d9c1
+  22:        0x108b1873a - clap::app::parser::Parser::parse_short_arg::h88cdbf6fe8ff0e76
+  23:        0x108af64ff - clap::app::parser::Parser::get_matches_with::h06a01c2e0bb5e937
+  24:        0x108af4657 - clap::app::App::get_matches_from_safe_borrow::h7f35299f8c8987a4
+  25:        0x108af2a1f - clap::app::App::get_matches_from::h79b7a634eb603528
+  26:        0x108af291d - clap::app::App::get_matches::ha8c731e902ab9263
+  27:        0x108ad95a5 - my_super_program::main::h55e4153564d8d093
+  28:        0x108be31cd - std::panicking::try::call::hca715a47aa047c49
+  29:        0x108be406b - __rust_try
+  30:        0x108be4005 - __rust_maybe_catch_panic
+  31:        0x108be2ff1 - std::rt::lang_start::h162055cb2e4b9fe7
+  32:        0x108ae4eb9 - main
+```
+
+
+---
+
+_Comment by @kbknapp on 2016-08-24 23:14_
+
+Thank you for taking the time to file this and with such detail! I think I know the root cause of this and will have to play with some additional dependencies to get this right. I'll post back here with what I find or any additional questions. 
+
+
+---
+
+_Label `T: bug` added by @kbknapp on 2016-08-24 23:14_
+
+---
+
+_Label `P2: need to have` added by @kbknapp on 2016-08-24 23:14_
+
+---
+
+_Label `C: help message` added by @kbknapp on 2016-08-24 23:14_
+
+---
+
+_Label `D: intermediate` added by @kbknapp on 2016-08-24 23:14_
+
+---
+
+_Label `W: 2.x` added by @kbknapp on 2016-08-24 23:14_
+
+---
+
+_Comment by @kbknapp on 2016-08-25 01:55_
+
+Both of these issues are fixed with #628 
+
+
+---
+
+_Closed by @homu on 2016-08-25 02:42_
+
+---
+
+_Comment by @mac-book-pro on 2016-08-25 04:50_
+
+Thank you for patching and for writing such complete tester functions!
+
+The problem with the stripped characters has been solved in v2.10.3.
+
+However, **the panics continue**. The tester function didn't catch them, because the panics now happen at Terminal widths different from v2.10.2.
+
+Steps to reproduce the panics:
+1. Open "/tests/help.rs"
+2. In function "issue_626_panic()", replace:
+
+`.set_term_width(53)`
+
+with:
+
+`.set_term_width(52)`
+
+
+---
+
+_Comment by @kbknapp on 2016-08-25 12:03_
+
+Interesting, thanks for letting me know!
+
+
+---
+
+_Reopened by @kbknapp on 2016-08-25 12:03_
+
+---
+
+_Renamed from "Major problem with French accents" to "Panic with help wrapping at certain widths with non-English characters" by @kbknapp on 2016-08-25 21:56_
+
+---
+
+_Comment by @kbknapp on 2016-08-25 22:52_
+
+This should be fixed for good with #629 :wink: 
+
+
+---
+
+_Closed by @homu on 2016-08-26 00:05_
+
+---

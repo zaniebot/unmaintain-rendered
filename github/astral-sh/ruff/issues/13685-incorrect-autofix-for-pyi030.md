@@ -1,0 +1,65 @@
+---
+number: 13685
+title: "Incorrect autofix for `PYI030`"
+type: issue
+state: closed
+author: yut23
+labels:
+  - bug
+  - fixes
+  - help wanted
+assignees: []
+created_at: 2024-10-08T19:49:38Z
+updated_at: 2024-10-13T10:33:04Z
+url: https://github.com/astral-sh/ruff/issues/13685
+synced_at: 2026-01-07T13:12:15-06:00
+---
+
+# Incorrect autofix for `PYI030`
+
+---
+
+_Issue opened by @yut23 on 2024-10-08 19:49_
+
+Running Ruff 0.6.9 as `ruff check --isolated --select PYI030 --fix test.py` deletes any subscripted types in a union with the offending Literals:
+```python
+from typing import IO, Literal
+
+InlineOption = Literal["a"] | Literal["b"] | IO[str]
+```
+becomes
+```python
+from typing import IO, Literal
+
+InlineOption = Literal["a", "b"]
+```
+
+Glancing through the code, it looks like this `if` block is just missing `else { other_exprs.push(expr); }`: https://github.com/astral-sh/ruff/blob/93eff7f1744cc428d615d5f8a3cb9f75b1768f42/crates/ruff_linter/src/rules/flake8_pyi/rules/unnecessary_literal_union.rs#L66-L83
+
+---
+
+_Label `bug` added by @zanieb on 2024-10-08 19:52_
+
+---
+
+_Label `fixes` added by @zanieb on 2024-10-08 19:52_
+
+---
+
+_Label `help wanted` added by @MichaReiser on 2024-10-08 20:57_
+
+---
+
+_Referenced in [astral-sh/ruff#13727](../../astral-sh/ruff/pulls/13727.md) on 2024-10-13 05:36_
+
+---
+
+_Comment by @diceroll123 on 2024-10-13 05:37_
+
+Good catch, that was exactly the fix! 😄 
+
+---
+
+_Closed by @AlexWaygood on 2024-10-13 10:33_
+
+---

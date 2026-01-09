@@ -1,0 +1,105 @@
+---
+number: 3750
+title: ruff check --statistics is very slow
+type: issue
+state: closed
+author: JonathanPlasse
+labels:
+  - performance
+assignees: []
+created_at: 2023-03-26T20:36:59Z
+updated_at: 2023-03-26T22:46:45Z
+url: https://github.com/astral-sh/ruff/issues/3750
+synced_at: 2026-01-07T13:12:14-06:00
+---
+
+# ruff check --statistics is very slow
+
+---
+
+_Issue opened by @JonathanPlasse on 2023-03-26 20:36_
+
+Running `--statistics` on Ruff fixtures.
+```console
+❯ hyperfine 'cargo run -p ruff_cli -- check --no-cache --statistics --select=ALL . || true'
+Benchmark 1: cargo run -p ruff_cli -- check --no-cache --statistics --select=ALL . || true
+ ⠇ Current estimate: 28.531 s ██████████████████████████████████████████████████████████████████████████████████████████████████████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ ETA 00:02:23
+❯ hyperfine 'cargo run -p ruff_cli -- check --no-cache --select=ALL . || true'
+Benchmark 1: cargo run -p ruff_cli -- check --no-cache --select=ALL . || true
+  Time (mean ± σ):     799.9 ms ±   7.0 ms    [User: 4226.7 ms, System: 97.1 ms]
+  Range (min … max):   788.4 ms … 809.4 ms    10 runs
+```
+
+---
+
+_Comment by @charliermarsh on 2023-03-26 20:39_
+
+I think it's quadratic, because for each rule we iterate over all rules. We should rewrite to do a group-by once.
+
+---
+
+_Comment by @charliermarsh on 2023-03-26 20:40_
+
+Notably, here:
+
+```rust
+let statistics = violations
+    .iter()
+    .map(|rule| ExpandedStatistics {
+        code: rule.noqa_code().to_string(),
+        count: diagnostics
+            .messages
+            .iter()
+            .filter(|message| message.kind.rule() == *rule)
+            .count(),
+        message: diagnostics
+            .messages
+            .iter()
+            .find(|message| message.kind.rule() == *rule)
+            .map(|message| message.kind.body.clone())
+            .unwrap(),
+        fixable: diagnostics
+            .messages
+            .iter()
+            .find(|message| message.kind.rule() == *rule)
+            .iter()
+            .any(|message| message.kind.fixable),
+    })
+    .collect::<Vec<_>>();
+```
+
+---
+
+_Comment by @JonathanPlasse on 2023-03-26 20:42_
+
+That is what I thought.
+
+---
+
+_Label `performance` added by @charliermarsh on 2023-03-26 20:42_
+
+---
+
+_Comment by @JonathanPlasse on 2023-03-26 20:47_
+
+Can I work on it?
+
+---
+
+_Comment by @charliermarsh on 2023-03-26 20:54_
+
+Of course, go for it!
+
+---
+
+_Assigned to @JonathanPlasse by @charliermarsh on 2023-03-26 20:54_
+
+---
+
+_Referenced in [astral-sh/ruff#3751](../../astral-sh/ruff/pulls/3751.md) on 2023-03-26 21:08_
+
+---
+
+_Closed by @charliermarsh on 2023-03-26 22:46_
+
+---

@@ -1,0 +1,74 @@
+---
+number: 5224
+title: "Support specifying mirror for `indygreg/python-build-standalone` in `uv python` "
+type: issue
+state: closed
+author: Vigilans
+labels:
+  - good first issue
+  - help wanted
+  - configuration
+assignees: []
+created_at: 2024-07-19T15:29:19Z
+updated_at: 2024-08-08T01:34:20Z
+url: https://github.com/astral-sh/uv/issues/5224
+synced_at: 2026-01-07T13:12:17-06:00
+---
+
+# Support specifying mirror for `indygreg/python-build-standalone` in `uv python` 
+
+---
+
+_Issue opened by @Vigilans on 2024-07-19 15:29_
+
+Simliar to nodejs `nvm`'s [`NVM_NODEJS_ORG_MIRROR`](https://github.com/nvm-sh/nvm/blob/master/README.md#use-a-mirror-of-node-binaries) environment variable, `uv` may provide variable like `UV_PYTHON_INSTALL_MIRROR` to allow user to specify a mirror for `indygreg/python-build-standalone`'s github release.
+
+### Proposal
+
+A new env variable `UV_PYTHON_INSTALL_MIRROR`, to replace `python-build-standalone`'s github-release download url:
+* Before: `https://github.com/indygreg/python-build-standalone/releases/download/20240713/cpython-3.12.4%2B20240713-aarch64-apple-darwin-install_only.tar.gz`
+* After: `${UV_PYTHON_INSTALL_MIRROR}/20240713/cpython-3.12.4%2B20240713-aarch64-apple-darwin-install_only.tar.gz`
+
+### Use case
+
+Allows stable network when building container images from areas with restricted access or poor link quality to GitHub (e.g. private environment, or users from China).
+
+Source of mirrors could be:
+* Dedicated mirror sites
+* Self-hosted github-release proxy like [hunshcn/gh-proxy](https://github.com/hunshcn/gh-proxy)
+
+---
+
+_Comment by @charliermarsh on 2024-07-19 15:31_
+
+Seems reasonable to me.
+
+---
+
+_Label `good first issue` added by @zanieb on 2024-07-19 16:01_
+
+---
+
+_Label `configuration` added by @zanieb on 2024-07-19 16:01_
+
+---
+
+_Label `help wanted` added by @charliermarsh on 2024-07-21 23:16_
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2024-08-02 02:25_
+
+---
+
+_Referenced in [astral-sh/uv#5719](../../astral-sh/uv/pulls/5719.md) on 2024-08-02 02:37_
+
+---
+
+_Closed by @charliermarsh on 2024-08-08 01:34_
+
+---
+
+_Referenced in [pypa/hatch#1885](../../pypa/hatch/issues/1885.md) on 2025-01-13 17:13_
+
+---

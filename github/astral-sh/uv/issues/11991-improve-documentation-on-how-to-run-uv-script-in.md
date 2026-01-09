@@ -1,0 +1,97 @@
+---
+number: 11991
+title: Improve documentation on how to run uv script in a cron
+type: issue
+state: open
+author: CedricRaison
+labels:
+  - question
+assignees: []
+created_at: 2025-03-05T22:02:26Z
+updated_at: 2025-12-02T20:52:37Z
+url: https://github.com/astral-sh/uv/issues/11991
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# Improve documentation on how to run uv script in a cron
+
+---
+
+_Issue opened by @CedricRaison on 2025-03-05 22:02_
+
+### Summary
+
+I wanted to use uv in a cron to run a task. It's really the "classic" usage.
+
+I have my project in `/root/my_project`.
+There is inside a .venv folder containing all dependencies.
+There is a file `/root/my_project/task.py` in my project that import a few libraries (ex: requests) and do things.
+
+I wanted to run the command `uv run /root/my_project/task.py` in a cronjob to run my task but it didn’t activate the virtual environment so I had a import error.
+
+The solution I found to run my command in my cron was to use `/root/my_project/.venv/bin/python3 /root/my_project/tasks.py`.
+
+It's really the everyday usage and I'm pretty sure it's possible to use with the command `uv run`.
+
+So if it's the case that would be great to improve the documentation on this specific case.
+
+
+---
+
+_Label `enhancement` added by @CedricRaison on 2025-03-05 22:02_
+
+---
+
+_Comment by @charliermarsh on 2025-03-06 13:57_
+
+You might be looking for `uv run --project /root/my_project /root/my_project/task.py`?
+
+---
+
+_Label `question` added by @charliermarsh on 2025-03-06 13:57_
+
+---
+
+_Label `external` added by @charliermarsh on 2025-03-06 13:57_
+
+---
+
+_Label `enhancement` removed by @charliermarsh on 2025-03-06 13:57_
+
+---
+
+_Label `external` removed by @charliermarsh on 2025-03-06 13:57_
+
+---
+
+_Comment by @CedricRaison on 2025-03-06 14:52_
+
+Yes exactly ! This is what I was looking for. 
+It would be great to an example with `--project` in the documentation here https://docs.astral.sh/uv/guides/scripts/#running-a-script-with-dependencies
+
+---
+
+_Comment by @tobi-or-not on 2025-11-18 18:40_
+
+> You might be looking for `uv run --project /root/my_project /root/my_project/task.py`?
+
+That was really helpful. Thanks! For future reference, I combined @charliermarsh's answer and @CedricRaison's question to the complete solution that worked for me:
+`/home/username/.local/bin/uv run --project /home/username/project/ /home/username/project/task.py`
+
+---
+
+_Comment by @rwkopcke on 2025-12-02 20:52_
+
+I want to emphasize tobi-or-not's comment. 
+**The only syntax that reliably works for me is to supply the full path to uv, to the project's folder, and to the project's entry point.** For example, to run my uv project named `chron_scrape` with entry point `main.py` at 3:30 pm every day, I add the following line to `crontab`
+
+`30 15 * * * /Users/name/.local/bin/uv run --project /Users/name/Python_Projects/chron_scrape /Users/name/Python_Projects/chron_scrape/main.py`
+
+`30 15 * * *` *the time to run the project*
+`/Users/name/.local/bin/uv run --project` *the path to uv to run the project*
+`/Users/name/Python_Projects/chron_scrape` *the path to the project folder*
+`/Users/name/Python_Projects/chron_scrape/main.py` *the path to the entry point to launch the project*
+
+
+
+---

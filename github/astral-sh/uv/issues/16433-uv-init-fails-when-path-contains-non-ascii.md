@@ -1,0 +1,141 @@
+---
+number: 16433
+title: "`uv init` fails when path contains non-ASCII characters"
+type: issue
+state: closed
+author: zsdadisscy
+labels:
+  - bug
+  - error messages
+assignees: []
+created_at: 2025-10-24T08:35:42Z
+updated_at: 2025-11-03T00:26:10Z
+url: https://github.com/astral-sh/uv/issues/16433
+synced_at: 2026-01-07T13:12:19-06:00
+---
+
+# `uv init` fails when path contains non-ASCII characters
+
+---
+
+_Issue opened by @zsdadisscy on 2025-10-24 08:35_
+
+### Summary
+
+When I try to create a virtual environment in my path, uv throws an error because the path contains non-English characters. I hope uv can support more characters. 
+Sincerely thank you for considering this suggestion.
+
+<img width="1089" height="41" alt="Image" src="https://github.com/user-attachments/assets/1989a630-7aac-4f66-8ca0-2d47fcdf989a" />
+
+### Example
+
+_No response_
+
+---
+
+_Label `enhancement` added by @zsdadisscy on 2025-10-24 08:35_
+
+---
+
+_Comment by @konstin on 2025-10-24 08:37_
+
+Can you share a reproducible example? uv does support non-ASCII paths, but it requires that package and extra names follow the rules from the PEPs, but that shouldn't restrict your paths.
+
+---
+
+_Label `enhancement` removed by @konstin on 2025-10-24 08:38_
+
+---
+
+_Label `needs-mre` added by @konstin on 2025-10-24 08:38_
+
+---
+
+_Comment by @zsdadisscy on 2025-10-24 09:01_
+
+> Can you share a reproducible example? uv does support non-ASCII paths, but it requires that package and extra names follow the rules from the PEPs, but that shouldn't restrict your paths.
+
+I'm so sorry. I figured out the problem. My path contained non-ASCII characters, and when I used uv init , it was written to pyproject.toml , which violated the rules. I've since used uv venv instead.
+I'm so sorry I filed this issue without much research and wasted your valuable time.
+
+---
+
+_Closed by @zsdadisscy on 2025-10-24 09:01_
+
+---
+
+_Renamed from "Support paths in languages other than English" to "`uv init` fails when path contains non-ASCII characters" by @konstin on 2025-10-24 10:48_
+
+---
+
+_Label `needs-mre` removed by @konstin on 2025-10-24 10:48_
+
+---
+
+_Label `bug` added by @konstin on 2025-10-24 10:48_
+
+---
+
+_Comment by @konstin on 2025-10-24 10:49_
+
+Oh that's a bug actually, uv init should not do that:
+
+```
+$ mkdir püthon
+$ cd püthon/
+$ uv init 
+error: Not a valid package or extra name: "püthon". Names must start and end with a letter or digit and may only contain -, _, ., and alphanumeric characters.
+```
+
+We should at least show a better error message.
+
+---
+
+_Reopened by @konstin on 2025-10-24 10:49_
+
+---
+
+_Label `error messages` added by @konstin on 2025-10-24 10:49_
+
+---
+
+_Comment by @zsdadisscy on 2025-10-25 09:00_
+
+> Oh that's a bug actually, uv init should not do that:
+> 
+> ```
+> $ mkdir püthon
+> $ cd püthon/
+> $ uv init 
+> error: Not a valid package or extra name: "püthon". Names must start and end with a letter or digit and may only contain -, _, ., and alphanumeric characters.
+> ```
+> 
+> We should at least show a better error message.
+
+Thank you for your careful observation, UV will become better because of you
+
+---
+
+_Comment by @charliermarsh on 2025-10-28 23:46_
+
+@konstin -- What improvement do you want to make to the error message? Tell them to provide a different name?
+
+---
+
+_Comment by @konstin on 2025-10-29 11:50_
+
+Something like this:
+
+```
+error: The current directory (`püthon`) is not a valid package name. Please provide a package name with with `--name`
+```
+
+---
+
+_Referenced in [astral-sh/uv#16554](../../astral-sh/uv/pulls/16554.md) on 2025-11-02 22:08_
+
+---
+
+_Closed by @charliermarsh on 2025-11-03 00:26_
+
+---

@@ -1,0 +1,46 @@
+---
+number: 5996
+title: "feat(help): Prefix argument long and short aliases in output with `--` and `-`"
+type: pull_request
+state: merged
+author: cenviity
+labels: []
+assignees: []
+merged: true
+base: master
+head: push-kynozmuuzzuy
+created_at: 2025-05-10T14:13:05Z
+updated_at: 2025-06-05T08:44:52Z
+url: https://github.com/clap-rs/clap/pull/5996
+synced_at: 2026-01-07T13:12:20-06:00
+---
+
+# feat(help): Prefix argument long and short aliases in output with `--` and `-`
+
+---
+
+_Pull request opened by @cenviity on 2025-05-10 14:13_
+
+Fixes #5997.
+
+---
+
+_@epage reviewed on 2025-05-11 00:45_
+
+---
+
+_Review comment by @epage on `tests/builder/arg_aliases_short.rs`:197 on 2025-05-11 00:45_
+
+With this change, I wonder if we should merge the alias lists
+
+---
+
+_Review comment by @cenviity on `tests/builder/arg_aliases_short.rs`:197 on 2025-05-11 10:36_
+
+Makes sense. I've sent #5999 for this.
+
+---
+
+_@cenviity reviewed on 2025-05-11 10:36_
+
+---

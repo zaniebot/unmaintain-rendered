@@ -1,0 +1,37 @@
+---
+number: 61
+title: Skip nodes with missing commits
+type: pull_request
+state: closed
+author: zanieb
+labels: []
+assignees: []
+base: main
+head: zb/fix-missing-commit
+created_at: 2025-05-05T13:45:25Z
+updated_at: 2025-05-05T14:16:41Z
+url: https://github.com/zanieb/rooster/pull/61
+synced_at: 2026-01-07T13:12:14-06:00
+---
+
+# Skip nodes with missing commits
+
+---
+
+_Pull request opened by @zanieb on 2025-05-05 13:45_
+
+_No description provided._
+
+---
+
+_Renamed from "zb/fix missing commit" to "Skip nodes with missing commits" by @zanieb on 2025-05-05 13:57_
+
+---
+
+_Merged by @zanieb on 2025-05-05 14:16_
+
+---
+
+_Closed by @zanieb on 2025-05-05 14:16_
+
+---

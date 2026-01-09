@@ -1,0 +1,58 @@
+---
+number: 16876
+title: Update packse to 0.3.54
+type: pull_request
+state: closed
+author: konstin
+labels:
+  - internal
+assignees: []
+draft: true
+base: main
+head: konsti/packse-0.3.54
+created_at: 2025-11-27T14:52:20Z
+updated_at: 2025-12-08T12:53:38Z
+url: https://github.com/astral-sh/uv/pull/16876
+synced_at: 2026-01-07T13:12:19-06:00
+---
+
+# Update packse to 0.3.54
+
+---
+
+_Pull request opened by @konstin on 2025-11-27 14:52_
+
+Add https://github.com/astral-sh/packse/pull/293 for https://github.com/astral-sh/uv/pull/16824#discussion_r2556176057
+
+Beware of https://github.com/mitsuhiko/insta/issues/833 when working with packse for the time being (i.e., `cargo binstall cargo-insta@1.42.1 --force`).
+
+
+---
+
+_Label `internal` added by @konstin on 2025-11-27 14:52_
+
+---
+
+_Comment by @konstin on 2025-11-27 15:52_
+
+Windows adds an extra hint, I need to change the packse scenario do use fictional platforms instead.
+
+---
+
+_Converted to draft by @konstin on 2025-11-27 15:52_
+
+---
+
+_Referenced in [astral-sh/packse#299](../../astral-sh/packse/pulls/299.md) on 2025-12-08 12:49_
+
+---
+
+_Comment by @konstin on 2025-12-08 12:53_
+
+I'm removing this test for now in https://github.com/astral-sh/packse/pull/299, this is too complex to fix rn for a single test case and it's blocking packse updates.
+
+---
+
+_Closed by @konstin on 2025-12-08 12:53_
+
+---

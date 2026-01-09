@@ -1,0 +1,124 @@
+---
+number: 18657
+title: TD003 detection improvement
+type: issue
+state: open
+author: FlorinBuffet
+labels:
+  - rule
+  - configuration
+assignees: []
+created_at: 2025-06-13T07:08:49Z
+updated_at: 2025-10-02T15:14:39Z
+url: https://github.com/astral-sh/ruff/issues/18657
+synced_at: 2026-01-07T13:12:16-06:00
+---
+
+# TD003 detection improvement
+
+---
+
+_Issue opened by @FlorinBuffet on 2025-06-13 07:08_
+
+### Summary
+
+On Github i use: https://github.com/alstr/todo-to-issue-action
+Now the issue is, that it does enter the URL like that: # Issue URL: https://
+Unfortunately this does not pass TD003 as the link is not directly after the #
+It seems like no too big change to do for ruff, so i request changement here
+
+---
+
+_Comment by @FlorinBuffet on 2025-06-13 07:09_
+
+Here the issue in the Action:
+https://github.com/alstr/todo-to-issue-action/issues/272#issuecomment-2969314606
+
+---
+
+_Comment by @MichaReiser on 2025-06-13 07:16_
+
+Can you share a code example? It would me help understand what you're looking for.
+
+---
+
+_Comment by @FlorinBuffet on 2025-06-13 07:21_
+
+```
+self.assertEqual(context["invoice_items"][1]["quantity"], "2.00")  # TODO: Adjust to dynamic quantity
+                                                                   # Issue URL: https://github.com/Buffet-IT-Services/CycleInvoice/issues/35
+```
+https://github.com/Buffet-IT-Services/CycleInvoice/pull/25/commits/57421d51b154e395cbd7d3a34f2252f398a15ebd
+
+---
+
+_Label `rule` added by @MichaReiser on 2025-06-13 07:30_
+
+---
+
+_Label `configuration` added by @MichaReiser on 2025-06-13 07:30_
+
+---
+
+_Comment by @FlorinBuffet on 2025-06-13 13:32_
+
+if i'd take a look myself at this and open a PR, what would be the chance to get it to merge?
+
+---
+
+_Comment by @MichaReiser on 2025-06-16 06:28_
+
+I think the challenge here is to come up with a good regex that avoids too many false negatives but also avoids hardcoding your specific pattern. What pattern would you suggest adding here:
+
+https://github.com/astral-sh/ruff/blob/c713e76e4db7f5001c5954e8e25abeb6a308a2a4/crates/ruff_linter/src/rules/flake8_todos/rules/todos.rs#L234-L241
+
+---
+
+_Comment by @FlorinBuffet on 2025-06-16 08:34_
+
+I would suggest something like this:
+`^#.{0,20}(http|https)://.*`
+It just allows any 20 chars before the url, this then already includes some spaces or tabs.
+
+---
+
+_Comment by @MichaReiser on 2025-06-16 09:04_
+
+> It just allows any 20 chars before the url, this then already includes some spaces or tabs.
+
+I see how this solves this specific issue. What's unclear is if this is too permitting for false positives: 
+
+```py
+# TODO: Some comment
+# For more information see: https://link-to-specification
+```
+
+
+
+---
+
+_Comment by @FlorinBuffet on 2025-06-16 09:15_
+
+AFAIK, the current regex would also allow other links, just without the text before.
+We could also do 15 signs to limit the text before even more (your example already is over the 20 chars i suggested).
+
+As an alternative we could make a fourth entry:
+`^#(?=(.{0,20}?[iI]ssue)).{0,20}(http|https)://.*`
+This allows the 20 chars only if it contains Issue or issue.
+
+
+---
+
+_Comment by @FlorinBuffet on 2025-06-20 08:11_
+
+@MichaReiser what do you think about it?
+
+---
+
+_Comment by @mike386 on 2025-10-02 15:14_
+
+Currently, the regexes don’t cover the popular [Google Python Style Guide](https://google.github.io/styleguide/pyguide.html#312-todo-comments). In particular, they don’t allow links without a scheme (http/https), and `ISSUE_LINK_TODO_LINE_REGEX_SET` only supports issue references in the form `#\d+`, but not `[A-Z]+-?\d+`.
+
+It would be great if both `ISSUE_LINK_OWN_LINE_REGEX_SET` and `ISSUE_LINK_TODO_LINE_REGEX_SET` could be extended with additional regex patterns from the config.
+
+---

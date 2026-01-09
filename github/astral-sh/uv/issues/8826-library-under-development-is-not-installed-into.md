@@ -1,0 +1,89 @@
+---
+number: 8826
+title: Library under development is not installed into virtual environment in CI
+type: issue
+state: closed
+author: fleimgruber
+labels: []
+assignees: []
+created_at: 2024-11-05T08:25:54Z
+updated_at: 2024-11-05T19:29:27Z
+url: https://github.com/astral-sh/uv/issues/8826
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# Library under development is not installed into virtual environment in CI
+
+---
+
+_Issue opened by @fleimgruber on 2024-11-05 08:25_
+
+Using a CI setup such as
+
+```yaml
+variables:
+  UV_VERSION: 0.4
+  PYTHON_VERSION: 3.9
+  BASE_LAYER: bookworm-slim
+
+image: ghcr.io/astral-sh/uv:$UV_VERSION-python$PYTHON_VERSION-$BASE_LAYER
+
+...
+
+doc:
+  stage: build
+  script:
+    - uv sync
+    - uv run sphinx-build -b html docs docs/_build/html
+```
+
+The `uv run sphinx-build -b html docs docs/_build/html` fails because uv does not install the library under development into the virtual environment in the `uv sync` step.
+
+The uv.lock file shows
+
+```lock
+[[package]]
+name = "libunderdev"
+version = "2024.1"
+source = { virtual = "." }
+...
+```
+
+In local dev, `uv sync` installs the library into the virtual environment.
+
+
+---
+
+_Comment by @zanieb on 2024-11-05 13:20_
+
+I don't think it does install it locally if it's marked as "virtual".
+
+What's your `pyproject.toml` look like?
+
+Have you read the [build system documentation](https://docs.astral.sh/uv/concepts/projects/#build-systems)?
+
+---
+
+_Comment by @fleimgruber on 2024-11-05 19:28_
+
+Thanks for the quick response and pointers. Indeed I was looking at the wrong Terminal and thus pyproject.toml.
+
+Having
+```toml
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+```
+in pyproject.toml works as expected. Sorry for the noise.
+
+---
+
+_Closed by @fleimgruber on 2024-11-05 19:28_
+
+---
+
+_Comment by @charliermarsh on 2024-11-05 19:29_
+
+No prob, thank you for following up.
+
+---

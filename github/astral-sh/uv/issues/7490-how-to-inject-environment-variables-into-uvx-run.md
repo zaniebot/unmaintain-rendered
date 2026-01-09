@@ -1,0 +1,68 @@
+---
+number: 7490
+title: How to inject environment variables into uvx run
+type: issue
+state: open
+author: Zethson
+labels:
+  - enhancement
+  - needs-design
+  - uv tool
+assignees: []
+created_at: 2024-09-18T11:32:09Z
+updated_at: 2024-09-19T22:32:36Z
+url: https://github.com/astral-sh/uv/issues/7490
+synced_at: 2026-01-07T13:12:17-06:00
+---
+
+# How to inject environment variables into uvx run
+
+---
+
+_Issue opened by @Zethson on 2024-09-18 11:32_
+
+Dear everyone,
+
+I could not find this information in the https://docs.astral.sh/uv/guides/tools/ documentation. I need to run a specific tool using `uvx` but it requires a specific matplotlib backend. Therefore, I need to run it as `MPLBACKEND=agg uvx cellxgene-schema validate anndata_human_immune_cells_cxg.h5ad`. However, it's a bit annoying to have to specify the environment variable like this. What is the best way to set this environment variable for the tool environment?
+
+Thanks!
+
+---
+
+_Comment by @zanieb on 2024-09-18 13:02_
+
+We don't support anything beyond what you're doing now. Could be cool to add though! 
+
+---
+
+_Label `enhancement` added by @zanieb on 2024-09-18 13:02_
+
+---
+
+_Label `uv tool` added by @zanieb on 2024-09-18 13:02_
+
+---
+
+_Comment by @nathanmusser on 2024-09-19 21:51_
+
+Adding my support to this issue. My use case is a bit different but I think that any solution for this issue would cover mine. 
+
+I'm using uv in package mode false to manage an ansible orchestration project. There are some ansible environment variables I would like to have set when I run `uvx`. It would be really nice to be able to define them in the `pyproject.toml` so that they're built into the venv and easily versioned as part of the project. 
+
+---
+
+_Comment by @zanieb on 2024-09-19 22:22_
+
+@nathanmusser different than #1384 ?
+
+---
+
+_Comment by @nathanmusser on 2024-09-19 22:29_
+
+Ah I didn't find that issue when I was searching, but that seems to cover my needs. 
+
+---
+
+_Label `needs-design` added by @zanieb on 2024-09-19 22:32_
+
+---

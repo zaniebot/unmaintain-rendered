@@ -1,0 +1,77 @@
+---
+number: 2523
+title: RUF005 autofix causes an endless loop
+type: issue
+state: closed
+author: bluetech
+labels:
+  - bug
+assignees: []
+created_at: 2023-02-03T10:34:30Z
+updated_at: 2023-02-03T18:05:57Z
+url: https://github.com/astral-sh/ruff/issues/2523
+synced_at: 2026-01-07T13:12:14-06:00
+---
+
+# RUF005 autofix causes an endless loop
+
+---
+
+_Issue opened by @bluetech on 2023-02-03 10:34_
+
+The following code
+
+```py
+[] + x + [
+]
+```
+
+causes an endless loop when run with `ruff --select RUF005 --fix --isolated x.py` and no `pyproject.toml`.
+
+ruff 0.0.240
+
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+
+---
+
+_Renamed from "RUF005 fix endless loop" to "RUF005 autofix causes an endless loop" by @bluetech on 2023-02-03 10:35_
+
+---
+
+_Label `bug` added by @charliermarsh on 2023-02-03 12:40_
+
+---
+
+_Comment by @charliermarsh on 2023-02-03 13:19_
+
+Thanks!
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2023-02-03 14:52_
+
+---
+
+_Comment by @charliermarsh on 2023-02-03 17:05_
+
+Wow it actually hangs. I thought you meant an autofix loop :joy:
+
+---
+
+_Referenced in [astral-sh/ruff#2549](../../astral-sh/ruff/pulls/2549.md) on 2023-02-03 17:51_
+
+---
+
+_Closed by @charliermarsh on 2023-02-03 18:05_
+
+---

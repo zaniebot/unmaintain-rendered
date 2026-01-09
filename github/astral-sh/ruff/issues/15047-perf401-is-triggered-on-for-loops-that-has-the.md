@@ -1,0 +1,106 @@
+---
+number: 15047
+title: PERF401 is triggered on for-loops that has the walrus operator inside
+type: issue
+state: closed
+author: Majsvaffla
+labels:
+  - bug
+  - documentation
+  - fixes
+assignees: []
+created_at: 2024-12-18T16:06:10Z
+updated_at: 2024-12-19T12:56:47Z
+url: https://github.com/astral-sh/ruff/issues/15047
+synced_at: 2026-01-07T13:12:16-06:00
+---
+
+# PERF401 is triggered on for-loops that has the walrus operator inside
+
+---
+
+_Issue opened by @Majsvaffla on 2024-12-18 16:06_
+
+PERF401 is triggered on code that has the walrus operator inside. The walrus operator is not available in the list-comprehension if-shorthand and it can not be recreated within a single list-comprehension.
+
+# Minimal example
+```py
+items = []
+
+for i in range(5):
+    if j := i:
+        items.append(j)
+```
+
+This code can obviously be refactored to not include the walrus operator but there are more complex scenarios where it is impossible to do so without using multiple list-comprehensions or duplicating code.
+
+# More complex example
+```py
+import re
+
+items = []
+
+for s in ["abc", "cde", "efg"]:
+    if match := re.match(r"e[a-z]+", s):
+        items.append(match.group(0))
+```
+
+
+---
+
+_Label `bug` added by @AlexWaygood on 2024-12-18 18:11_
+
+---
+
+_Comment by @AlexWaygood on 2024-12-18 18:12_
+
+Nice catch. If you use `--fix --unsafe-fixes`, the autofix also introduces a syntax error, which is very bad...
+
+---
+
+_Comment by @AlexWaygood on 2024-12-18 18:13_
+
+Although it does work if you parenthesize the walrus:
+
+```pycon
+>>> [i for i in range(5) if (j := i)]
+[1, 2, 3, 4]
+```
+
+So maybe the rule is correct in emitting a diagnostic here -- maybe we just need to add a clarification to the docs (that says you'll need to parenthesize the `if` condition if it has a walrus in it) and make sure the autofix doesn't introduce a syntax error?
+
+---
+
+_Label `fixes` added by @AlexWaygood on 2024-12-18 18:37_
+
+---
+
+_Label `documentation` added by @AlexWaygood on 2024-12-18 18:38_
+
+---
+
+_Assigned to @dylwil3 by @dylwil3 on 2024-12-18 21:15_
+
+---
+
+_Referenced in [astral-sh/ruff#15050](../../astral-sh/ruff/pulls/15050.md) on 2024-12-18 21:33_
+
+---
+
+_Comment by @Majsvaffla on 2024-12-19 07:56_
+
+> Although it does work if you parenthesize the walrus:
+
+Oh, I didn't realize that but it's obvious now 😄 
+
+Then I agree with you that the documentation could include something about it 👍 
+
+---
+
+_Closed by @dylwil3 on 2024-12-19 12:56_
+
+---
+
+_Referenced in [python/typeshed#13312](../../python/typeshed/pulls/13312.md) on 2024-12-26 23:39_
+
+---

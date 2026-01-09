@@ -1,0 +1,480 @@
+---
+number: 8085
+title: "uv sync: support `--system` to not install dependencies into venv"
+type: issue
+state: open
+author: jgehrcke
+labels:
+  - documentation
+  - question
+assignees: []
+created_at: 2024-10-10T12:14:15Z
+updated_at: 2025-09-17T02:41:07Z
+url: https://github.com/astral-sh/uv/issues/8085
+synced_at: 2026-01-07T13:12:17-06:00
+---
+
+# uv sync: support `--system` to not install dependencies into venv
+
+---
+
+_Issue opened by @jgehrcke on 2024-10-10 12:14_
+
+`uv sync` is documented with
+
+> If the project virtual environment (.venv) does not exist, it will be created.
+
+That's great behavior, most of the times.
+
+I want to use `uv sync` to install dependencies in CI. So I wondered: how can I install into "system python" directly? And so I discovered the lovely discussion in https://github.com/astral-sh/uv/issues/1526 and was super happy to read
+
+> Calling this complete! `--system` exists.
+
+Then I found that this flag does not exist for `uv sync`. 
+
+I have the following pretty common use case in mind for github actions:
+
+```yaml
+    - name: set up python
+      uses: actions/setup-python@v5
+      with:
+        python-version: "3.11"
+    - name: install uv
+      uses: astral-sh/setup-uv@v3
+    - name: uv-install dependencies
+      shell: bash
+      # Install all dependencies as defined in uv.lock.
+      # Straight into current/"system" python, which at this point
+      # is the Python installed via actions/setup-python.
+      run: uv sync --system
+```
+
+What do we think?
+
+I think that https://github.com/astral-sh/uv/issues/7659 might have a similar motivation. 
+
+
+---
+
+_Referenced in [astral-sh/uv#1526](../../astral-sh/uv/issues/1526.md) on 2024-10-10 12:15_
+
+---
+
+_Comment by @charliermarsh on 2024-10-10 12:15_
+
+The top-level uv APIs don't support the `--system` flag. You can use [`UV_PROJECT_ENVIRONMENT`](https://docs.astral.sh/uv/concepts/projects/#configuring-the-project-environment-path) if you're committed to installing into the system Python.
+
+---
+
+_Label `question` added by @charliermarsh on 2024-10-10 12:15_
+
+---
+
+_Comment by @jgehrcke on 2024-10-10 12:23_
+
+Thanks for the blazingly fast reply and your work on uv! I have been in the ecosystem since before 2010 and certainly did not follow each packaging hype. These days I find myself advocating for uv at work, it's lovely.
+
+>  you can use [UV_PROJECT_ENVIRONMENT](https://docs.astral.sh/uv/concepts/projects/#configuring-the-project-environment-path) if you're committed to installing into the system Python.
+
+Thanks!
+
+Yeah right. I looked at the environment variables.  We can also do `source .venv/bin/activate` right after `uv sync` certainly, which is what I did so far.
+
+Can I ask: given the GitHub Actions workflow I have shown above: how would _you_ do the third step?
+
+I actually care about running `uv sync --locked`, and do not care about running the `uv pip` interface. And subsequent steps in the same github actions job should not need to activate the venv.
+
+
+
+
+
+---
+
+_Comment by @jgehrcke on 2024-10-10 14:01_
+
+Want to connect some dots here. Related:
+
+https://github.com/astral-sh/uv/issues/5964
+https://github.com/astral-sh/uv/issues/7344
+https://github.com/astral-sh/uv/pull/6834
+
+Someone proposed:
+```
+ln -sf $(/path/to/target/python -c 'import sys; print(sys.prefix)') .venv 
+uv sync
+```
+Works, but not nice.
+
+Another person's wording:
+
+> I upvote for the optional synchronization with the host system rather than with venv-only. Not only for CI/CD
+
+In https://github.com/astral-sh/uv/issues/5964#issuecomment-2289833609 a user answered my
+
+> how would you do the third step?
+
+and they do:
+
+```
+      - run: uv sync --locked --extra dev
+      - run: echo "$PWD/.venv/bin" >> $GITHUB_PATH
+```
+
+So, this is very much "my" use case. They thought about it, and wrestled it, and decided to mutate GITHUB_PATH **to affect the following steps**. This is not complete "virtual env activation", so I am not too happy with that either.
+
+Doing `source .venv/bin/activate` in each individual subsequent step isn't great either.
+
+Setting `UV_PROJECT_ENVIRONMENT` in a way that it affects all steps: interesting challenge. If we take this route, we would set it to something like  `$(command -v python)/../..`. Looks weird, not nicely maintainable.
+
+Still not quite sure which workaround I like.
+
+I still think a way to tell `uv sync` to 'brutally' install into system python directories would be a thought worth following.
+
+I understand the caveat
+
+>  More generally, uv sync will remove packages from the environment by default. This means that if the system environment contains any packages relevant to the operation of the system (that are not dependencies of your project), uv sync will break it. I'd only use this in Docker or CI, if anywhere
+
+expressed in https://github.com/astral-sh/uv/pull/6834#issue-2495678347 (thanks @zanieb for working on this).
+
+But yeah, that's it exactly: this is for CI, and in the context of github actions it's often nice to have a simple/elegant solution, for adoption.
+
+I want to note that maybe I am a little blind right now, maybe there _is_ a reasonable way to do this today, a more or less explicit way that doesn't require changing subsequent github action steps. Will look into this again soon.
+
+Edit:
+
+> Setting UV_PROJECT_ENVIRONMENT in a way that it affects all steps: interesting challenge
+
+Writing to a file [`GITHUB_ENV`](https://docs.github.com/en/actions/writing-workflows/choosing-what-your-workflow-does/store-information-in-variables#passing-values-between-steps-and-jobs-in-a-workflow) can be used for that:
+
+> If you generate a value in one step of a job, you can use the value in subsequent steps of the same job by assigning the value to an existing or new environment variable and then writing this to the GITHUB_ENV environment file.
+
+So, an additional step using a combination of `GITHUB_ENV` and `UV_PROJECT_ENVIRONMENT` will probably also work. But I will keep looking for something more elegant, ideally w/o requiring an extra step.
+
+
+
+
+
+---
+
+_Comment by @jgehrcke on 2024-10-11 06:49_
+
+Same problem/question, shorter GHA-focused perspective. 
+
+In a GitHub Actions job, after doing an `actions/setup-python` step: how can we _in the next step_ install dependencies given a `uv.lock` file so that _in all steps thereafter_ these dependencies are available by just invoking `python` (without modifying said subsequent steps)?
+
+Edit:
+
+After running `actions/setup-python` the environment variable `pythonLocation` is set globally (for subsequent steps), [docs](https://github.com/actions/setup-python/blob/main/docs/advanced-usage.md#environment-variables). It corresponds to `sys.prefix` (I tested that).
+
+That is, this should work:
+```
+      run: |
+          export UV_PROJECT_ENVIRONMENT="${pythonLocation}"
+          uv sync --locked
+```
+
+---
+
+_Assigned to @zanieb by @zanieb on 2024-10-21 22:04_
+
+---
+
+_Label `documentation` added by @zanieb on 2024-10-21 22:04_
+
+---
+
+_Comment by @memark on 2024-10-25 15:43_
+
+I'm trying to set `UV_PROJECT_ENVIRONMENT` as suggested above, but I can't get it to work with `uv sync`.
+
+Trying some different directories I get:
+
+>error: Project virtual environment directory `/usr/local/bin/` cannot be used because because it is not a valid Python environment (no Python executable was found)
+
+>error: Project virtual environment directory `/usr/local/bin/python3.12` cannot be used because expected directory but found a file
+
+>error: Project virtual environment directory `/usr/local/lib/python3.12/` cannot be used because because it is not a valid Python environment (no Python executable was found)
+
+>error: Project virtual environment directory `/usr/local/lib/python3.12/site-packages` cannot be used because because it is not a valid Python environment (no Python executable was found)
+
+All of the executables and directories exist. What am I supposed to put in that env var?
+
+---
+
+_Comment by @zanieb on 2024-10-25 16:23_
+
+@memark did you do `UV_PROJECT_ENVIRONMENT=/usr/local/`?
+
+---
+
+_Comment by @memark on 2024-10-26 08:35_
+
+@zanieb I didn't. Until now. That works all the way. Thanks!
+
+I still find the error messages a bit unhelpful then:
+- it says `/usr/local/bin` doesn't contain a Python executable, but it does.
+- `/usr/local` doesn't contain any executables, but works.
+
+What we really need to specify in the env var is then
+"a directory that contains the `bin` subdir that contains the Python executable"?
+
+---
+
+_Comment by @zanieb on 2024-10-26 16:39_
+
+We expect to receive a path to a Python environment, i.e., a directory which contains a Python environment. Generally, this is the path to a virtual environment e.g.
+
+```
+❯ tree .venv -L2
+.venv
+├── CACHEDIR.TAG
+├── bin
+│   ├── activate
+│   ├── activate.bat
+│   ├── activate.csh
+│   ├── activate.fish
+│   ├── activate.nu
+│   ├── activate.ps1
+│   ├── activate_this.py
+│   ├── deactivate.bat
+│   ├── pydoc.bat
+│   ├── python -> /opt/homebrew/Cellar/python@3.11/3.11.10/Frameworks/Python.framework/Versions/3.11/bin/python3.11
+│   ├── python3 -> python
+│   └── python3.11 -> python
+├── lib
+│   └── python3.11
+└── pyvenv.cfg
+```
+
+but it could be an installation environment directory
+
+```
+❯ tree -L2 /opt/homebrew/Cellar/python@3.11/3.11.10/Frameworks/Python.framework/Versions/3.11/
+/opt/homebrew/Cellar/python@3.11/3.11.10/Frameworks/Python.framework/Versions/3.11/
+├── Headers -> include/python3.11
+├── Python
+├── Resources
+│   ├── Info.plist
+│   └── Python.app
+├── _CodeSignature
+│   └── CodeResources
+├── bin
+│   ├── 2to3-3.11
+│   ├── idle3.11
+│   ├── pip3
+│   ├── pip3.11
+│   ├── pydoc3.11
+│   ├── python3.11
+│   └── python3.11-config
+├── include
+│   └── python3.11
+├── lib
+│   ├── libpython3.11.dylib -> ../Python
+│   ├── pkgconfig
+│   └── python3.11
+└── share
+    └── doc
+```
+
+In both, we're just looking for `bin/python` (or `Scripts/python.exe` on Windows).
+
+---
+
+_Comment by @pnovotnak on 2025-03-07 23:54_
+
+I think a different command might be appropriate, at least in my case.
+
+What brought me to this issue is that I want to install system-wide in container artifacts (basically `pip install` with no venv activated). This makes the container environment unambiguous when debugging, and because I am producing a slimed down artifact, sharing the system python doesn't matter. Furthermore, I don't really have any interest in having uv in the process tree in production. It might screw up signals etc.
+
+What I want is to _add whatever is in the local environment to the system environment, tweaking versions as necessary_.
+
+To that end, the following works, though it is a bit ugly and probably slightly slower than a built-in command:
+
+```
+uv export | uv pip install -r -
+```
+
+Apologies if this is being discussed elsewhere... I dug around a bit but the issue tracker is quite busy these days 😅 
+
+---
+
+_Comment by @zanieb on 2025-03-08 01:26_
+
+You can also probably just get away with a virtual environment
+
+```
+uv sync
+export PATH="$(pwd)/.venv/bin:$PATH"
+```
+
+as demoed in https://github.com/astral-sh/uv-docker-example/blob/c16a61fb3e6ab568ac58d94b73a7d79594a5d570/Dockerfile#L25-L34
+
+I don't think the virtual environment itself will add much size to your artifact, but understand the desire for zero ambiguity :)
+
+Setting `UV_PROJECT_ENVIRONMENT` to the system environment should also work, without the `export` and `pip` hacks — no need to have uv around after that.
+
+---
+
+_Comment by @MrCreosote on 2025-05-01 22:55_
+
+I'm trying `uv` in a new project (thanks!) and switching from `pipenv`. In `pipenv`, i habitually install deps in containers via:
+
+```
+pipenv sync --system
+```
+
+It'd be nice to have the same simplicity / lack of ambiguity here
+
+---
+
+_Comment by @rsyring on 2025-05-23 17:39_
+
+Here is a complete example for what I did for a project that runs on Lambda:
+
+[Important Note](url): the Python install in this case is in **`/var/lang`** b/c it's the Lambda image.  You'd more typically set it to `/usr/local`, see docs for [UV_PROJECT_ENVIRONMENT](https://docs.astral.sh/uv/concepts/projects/config/#project-environment-path).
+
+```Dockerfile
+from public.ecr.aws/lambda/python:3.12 as app
+
+# env
+env FLASK_DEBUG=0
+# System install
+env UV_PROJECT_ENVIRONMENT=/var/lang/
+# Optimize startup time
+env UV_COMPILE_BYTECODE=1
+# Hardlinks don't work in docker images anyway, so don't warn me or take time trying
+env UV_LINK_MODE=copy
+
+# uv install
+# grab /uvx too if you need it
+copy --from=ghcr.io/astral-sh/uv:latest /uv /usr/local/bin/
+
+##  App
+workdir /app
+
+# Build / deps
+copy pyproject.toml hatch.toml readme.md uv.lock .
+copy src/poster/version.py src/poster/version.py
+run --mount=type=cache,target=/root/.cache/uv \
+    uv sync --frozen --no-dev --inexact
+
+# Source files after the build for better caching/speed when deps haven't changed
+copy src/poster src/poster
+copy src/lambda_handler.py src
+
+# The lamba runtime environment will use this dotted path as the entry point to our app when
+# the lambda function is invoked.  It must be a function, it doesn't handle class methods.
+cmd ["lambda_handler.entry"]
+```
+
+---
+
+_Comment by @pszponder on 2025-07-27 23:25_
+
+Adding `--system` as an option to `uv sync` would be awesome! I just ran into a situation where I am trying to dockerize my Apache Airflow application and using `RUN uv sync --system` would have been perfect!
+
+For now these two lines seem to work:
+
+```
+RUN uv sync --no-dev --no-cache
+RUN export PATH="$(pwd)/.venv/bin:$PATH"
+```
+
+---
+
+_Comment by @RodriGoncaDeeployer on 2025-08-29 12:52_
+
+I found myself using the following approach.
+
+```
+# Install python dependencies
+COPY pyproject.toml uv.lock /app/
+RUN uv export --format requirements.txt -o requirements.txt
+RUN uv pip install --system -r requirements.txt
+```
+
+I do this in a multi stage build process, that way the requirements.txt file is ephemeral and does not interfere in my workflow.
+
+```
+# ---------------------------------------------------------------------------------------------------
+# Stage 1: Base Build Stage
+# ---------------------------------------------------------------------------------------------------
+FROM python:3.13-slim AS builder
+
+# Create the app directory
+RUN mkdir /app
+
+# Set the working directory
+WORKDIR /app
+
+# Install uv
+RUN pip install --no-cache-dir uv
+
+# Install python dependencies
+COPY pyproject.toml uv.lock /app/
+RUN uv export --format requirements.txt -o requirements.txt
+RUN uv pip install --system -r requirements.txt
+
+# Install playwright dependencies
+RUN playwright install
+RUN playwright install-deps
+
+# ---------------------------------------------------------------------------------------------------
+# Stage 2: Production Stage
+# ---------------------------------------------------------------------------------------------------
+FROM python:3.13-slim
+
+# Create the app directory
+RUN mkdir /app
+
+# Set the working directory
+WORKDIR /app
+
+# Copy system dependencies
+COPY --from=builder /usr /usr
+COPY --from=builder /etc /etc
+COPY --from=builder /root/.cache/ms-playwright /root/.cache/ms-playwright
+
+# Copy application code
+COPY . /app
+
+# Set environment variables to optimize the Python runtime
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
+
+# Specify the entrypoint to run the FastAPI app
+ENTRYPOINT ["gunicorn", "-c", "gunicorn.conf.py", "main:app"]
+
+```
+
+---
+
+_Comment by @vivodi on 2025-09-16 13:27_
+
+> I think a different command might be appropriate, at least in my case.
+> 
+> What brought me to this issue is that I want to install system-wide in container artifacts (basically `pip install` with no venv activated). This makes the container environment unambiguous when debugging, and because I am producing a slimed down artifact, sharing the system python doesn't matter. Furthermore, I don't really have any interest in having uv in the process tree in production. It might screw up signals etc.
+> 
+> What I want is to _add whatever is in the local environment to the system environment, tweaking versions as necessary_.
+> 
+> To that end, the following works, though it is a bit ugly and probably slightly slower than a built-in command:
+> 
+> ```
+> uv export | uv pip install -r -
+> ```
+> 
+> Apologies if this is being discussed elsewhere... I dug around a bit but the issue tracker is quite busy these days 😅
+
+I suspect what you want is 
+  - https://github.com/astral-sh/uv/issues/13129
+
+Using `pip install --root <directory> <packages>` allows the final artifact of a multi-stage Docker build to have a system environment containing only the packages you want. The issue at https://github.com/astral-sh/uv/issues/13129 proposes giving `uv sync` a similar capability.
+
+
+
+
+---
+
+_Referenced in [astral-sh/uv#13129](../../astral-sh/uv/issues/13129.md) on 2025-09-16 13:48_
+
+---

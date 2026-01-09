@@ -1,0 +1,85 @@
+---
+number: 13532
+title: "Expand PGH003 / create another rule to only allow `# pyright: ignore[diagnosticRuleName]` comments"
+type: issue
+state: open
+author: kkom
+labels:
+  - rule
+  - configuration
+assignees: []
+created_at: 2024-09-27T09:26:55Z
+updated_at: 2024-09-28T14:20:27Z
+url: https://github.com/astral-sh/ruff/issues/13532
+synced_at: 2026-01-07T13:12:15-06:00
+---
+
+# Expand PGH003 / create another rule to only allow `# pyright: ignore[diagnosticRuleName]` comments
+
+---
+
+_Issue opened by @kkom on 2024-09-27 09:26_
+
+[blanket-type-ignore](https://docs.astral.sh/ruff/rules/blanket-type-ignore/#blanket-type-ignore-pgh003) bans blanket `# type: ignore` comments, however that's not entirely helpful for Pyright users.
+
+The docs suggest to use `# type: ignore[diagnosticRuleName]` instead, which Pyright sadly doesn't understand – it only accepts `# pyright: ignore[diagnosticRuleName]`
+
+Would it be possible to expand this rule / create another one to only allow `# pyright: ignore[diagnosticRuleName]` comments?
+
+### Pyright materials on `# type: ignore` vs `# pyright: ignore`
+
+https://github.com/microsoft/pyright/issues/2877#issuecomment-1065299211
+
+https://github.com/microsoft/pyright/blob/main/docs/comments.md#line-level-diagnostic-suppression
+
+### Example
+
+Incorrect diagnostic rule caught by Pyright:
+
+<img width="1438" alt="Screenshot 2024-09-27 at 10 22 41" src="https://github.com/user-attachments/assets/1a794a98-bc99-47a0-bf98-8cef9c846569">
+
+`# type: ignore[ruleThatDoesNotExist]` interpreted as `# type: ignore` by Pyright:
+
+<img width="838" alt="Screenshot 2024-09-27 at 10 22 51" src="https://github.com/user-attachments/assets/2f005463-e77e-4925-a875-9b8c8397a2f9">
+
+
+---
+
+_Label `rule` added by @MichaReiser on 2024-09-27 09:40_
+
+---
+
+_Label `configuration` added by @zanieb on 2024-09-27 13:24_
+
+---
+
+_Comment by @kkom on 2024-09-27 17:40_
+
+I guess we could have two rules:
+
+One that bans blanket type ignore comments (regardless of whether it's the vanilla or pyright one) -- the one I referred to could be expanded like this
+
+Another that bans the vanilla "type: ignore" comment, in favour of the pyright version -- that would need to be new I think
+
+That is, if you're happy to have some Pyright specific rules in Ruff!
+
+---
+
+_Comment by @MichaReiser on 2024-09-28 14:17_
+
+Extending `blanked-type-ignore` to also lint for `pyright: ignore` without a rule code seems reasonable. 
+
+ > Another that bans the vanilla "type: ignore" comment, in favour of the pyright version -- that would need to be new I think
+
+Isn't this covered by by using a combination of `blanked-type-ignore` (which flags all blank ignore codes) and running pyright (which flags a type error everywhere where someone uses `type: ignore[code]`)? Or does pyright ignore all codes when using `type: ignore[code]`?
+
+---
+
+_Comment by @kkom on 2024-09-28 14:20_
+
+Yeah, the problem is that Pyright treats both of these as a blanket ignore:
+
+* type: ignore
+* type: ignore[whateverTextHere]
+
+---

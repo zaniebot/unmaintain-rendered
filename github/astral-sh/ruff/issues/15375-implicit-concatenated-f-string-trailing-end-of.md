@@ -1,0 +1,133 @@
+---
+number: 15375
+title: "Implicit concatenated f-string: Trailing end-of-line comment is moved"
+type: issue
+state: closed
+author: joostlek
+labels:
+  - bug
+  - formatter
+assignees: []
+created_at: 2025-01-09T14:38:17Z
+updated_at: 2025-01-10T18:21:35Z
+url: https://github.com/astral-sh/ruff/issues/15375
+synced_at: 2026-01-07T13:12:16-06:00
+---
+
+# Implicit concatenated f-string: Trailing end-of-line comment is moved
+
+---
+
+_Issue opened by @joostlek on 2025-01-09 14:38_
+
+Hey!
+
+So I just started bumping ruff in Home Assistant core to 0.9.0 to match the 2025 python guidelines and I encountered a bug.
+
+https://github.com/home-assistant/core/blob/a10d5c435a4b48c9c2549db28f966f2c08ba3a96/homeassistant/components/knx/climate.py#L212-L217
+
+`ruff` moved the `noqa: SLF001` to the next line, but the next run it starts to complain about that we access a private member.
+
+2024:
+```py
+        self._attr_unique_id = (
+            f"{self._device.temperature.group_address_state}_"
+            f"{self._device.target_temperature.group_address_state}_"
+            f"{self._device.target_temperature.group_address}_"
+            f"{self._device._setpoint_shift.group_address}"  # noqa: SLF001
+        )
+```
+
+2025:
+```py
+        self._attr_unique_id = (
+            f"{self._device.temperature.group_address_state}_"
+            f"{self._device.target_temperature.group_address_state}_"
+            f"{self._device.target_temperature.group_address}_"
+            f"{self._device._setpoint_shift.group_address}"
+        )  # noqa: SLF001
+```
+
+```
+homeassistant/components/knx/climate.py:216:16: SLF001 Private member accessed: `_setpoint_shift`
+    |
+214 |             f"{self._device.target_temperature.group_address_state}_"
+215 |             f"{self._device.target_temperature.group_address}_"
+216 |             f"{self._device._setpoint_shift.group_address}"
+    |                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ SLF001
+217 |         )  # noqa: SLF001
+218 |         self.default_hvac_mode: HVACMode = config[
+    |
+
+Found 1 error.
+```
+
+---
+
+_Referenced in [home-assistant/core#135197](../../home-assistant/core/pulls/135197.md) on 2025-01-09 14:39_
+
+---
+
+_Comment by @joostlek on 2025-01-09 14:44_
+
+Found another one
+
+2024
+```py
+        return (
+            f"Exception in {call_back_name} when handling msg on "
+            f"'{msg.topic}': '{msg.payload}'"  # type: ignore[str-bytes-safe]
+        )
+```
+
+2025
+```py
+        return (
+            f"Exception in {call_back_name} when handling msg on "
+            f"'{msg.topic}': '{msg.payload}'"
+        )  # type: ignore[str-bytes-safe]
+```
+
+---
+
+_Label `bug` added by @MichaReiser on 2025-01-09 14:47_
+
+---
+
+_Label `formatter` added by @MichaReiser on 2025-01-09 14:47_
+
+---
+
+_Comment by @MichaReiser on 2025-01-09 14:48_
+
+Wow, you're quick with upgrading. I haven't been able to finish the release just yet :) Yes, this looks like a bug
+
+---
+
+_Comment by @joostlek on 2025-01-09 14:49_
+
+It looked breaking and exciting so I couldn't hold myself ;)
+
+---
+
+_Assigned to @MichaReiser by @MichaReiser on 2025-01-09 15:02_
+
+---
+
+_Comment by @MichaReiser on 2025-01-09 15:07_
+
+Okay, I think I know how to fix this one. Thanks for reporting
+
+---
+
+_Renamed from "noqa gets moved to the new line" to "Implicit concatenated f-string: Trailing end-of-line comment is moved" by @MichaReiser on 2025-01-09 15:09_
+
+---
+
+_Referenced in [astral-sh/ruff#15378](../../astral-sh/ruff/pulls/15378.md) on 2025-01-09 17:50_
+
+---
+
+_Closed by @MichaReiser on 2025-01-10 18:21_
+
+---

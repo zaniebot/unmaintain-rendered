@@ -1,0 +1,235 @@
+---
+number: 9910
+title: Enforcing docstring length (not the code snippets)
+type: issue
+state: open
+author: ma-sadeghi
+labels:
+  - docstring
+  - formatter
+assignees: []
+created_at: 2024-02-09T13:02:29Z
+updated_at: 2024-10-03T12:11:49Z
+url: https://github.com/astral-sh/ruff/issues/9910
+synced_at: 2026-01-07T13:12:15-06:00
+---
+
+# Enforcing docstring length (not the code snippets)
+
+---
+
+_Issue opened by @ma-sadeghi on 2024-02-09 13:02_
+
+Is it possible to enforce docstring length (I know this possible for code snippets, but I mean the strings). Here's an example: Enforce docstring line length of 75:
+
+```python
+def f(a, b):
+	"""
+	Very long long long long long long long long long long long long long long long long long description.
+
+	Parameters
+	----------
+	a: int
+		First number to add
+	b: int
+		Second number to add
+
+	Returns
+	-------
+	int
+		Another long long long long long long long long long long long long long long long long description.
+	"""
+```
+
+```python
+def f(a, b):
+	"""
+	Very long long long long long long long long long long long long long long
+    long long long description.
+
+	Parameters
+	----------
+	a: int
+		First number to add
+	b: int
+		Second number to add
+
+	Returns
+	-------
+	int
+		Another long long long long long long long long long long long long
+        long long long long description.
+	"""
+```
+
+
+---
+
+_Label `question` added by @MichaReiser on 2024-02-09 13:05_
+
+---
+
+_Label `formatter` added by @MichaReiser on 2024-02-09 13:05_
+
+---
+
+_Comment by @MichaReiser on 2024-02-09 13:06_
+
+Hy @ma-sadeghi 
+
+Not yet. We want to add docstring (the comment content) formatting in the future and are also thinking about string formatting in general (automatically splitting or collapsing them) but this isn't supported today.
+
+---
+
+_Comment by @ma-sadeghi on 2024-02-09 18:19_
+
+@MichaReiser thanks for your quick reply. Looking forward to it!
+
+---
+
+_Comment by @Peque on 2024-04-12 15:04_
+
+Not sure if this is also what you had in mind @ma-sadeghi, but I'd suggest not only convert this:
+
+```python
+def foo():
+    """
+    Foo foo foo foo foo foo foo foo foo foo one two three four five six seven eight nine ten.
+    """
+    return "foo"
+```
+
+Into:
+
+```python
+def foo():
+    """
+    Foo foo foo foo foo foo foo foo foo foo one two three four five six
+    seven eight nine ten.
+    """
+    return "foo"
+```
+
+But also:
+
+```python
+def foo():
+    """
+    Foo foo foo foo foo foo foo foo foo foo
+    one two three four five six seven eight
+    nine ten.
+    """
+    return "foo"
+```
+
+Into:
+
+```python
+def foo():
+    """
+    Foo foo foo foo foo foo foo foo foo foo one two three four five six
+    seven eight nine ten.
+    """
+    return "foo"
+```
+
+---
+
+_Comment by @ma-sadeghi on 2024-04-17 19:04_
+
+@Peque Yep, that makes sense!
+
+---
+
+_Comment by @nataziel on 2024-04-23 04:35_
+
++1 to this request
+
+---
+
+_Label `question` removed by @dhruvmanila on 2024-04-24 06:43_
+
+---
+
+_Label `docstring` added by @dhruvmanila on 2024-04-24 06:43_
+
+---
+
+_Comment by @cheriimoya on 2024-10-03 12:07_
+
+I came across this and it's really annoying. With the following config, I get errors from `ruff check` that `ruff format` can't fix:
+
+pyproject.toml:
+
+```toml
+[tool.ruff]
+line-length = 120
+
+[tool.ruff.lint]
+extend-select = [ "E" ]
+
+[tool.ruff.format]
+docstring-code-format = true
+docstring-code-line-length = 70
+# Proposed:
+# docstring-format: bool = true
+# docstring-line-length: int = [tool.ruff].line-length
+```
+
+example.py
+
+```py
+"""This is doing nothing really! It shall only show, how to confuse ruff in a way that it throws an error it cannot fix itself... Which I find kind of annoying."""
+
+
+def main():
+    """aaaaaaaaaaaa aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"""
+```
+
+---
+
+Using these files, I get this when running `ruff check`:
+```plain
+example.py:1:121: E501 Line too long (163 > 120)
+  |
+1 | """This is doing nothing really! It shall only show, how to confuse ruff in a way that it throws an error it cannot fix itself... Which I find kind of annoying."""
+  |                                                                                                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ E501
+  |
+
+example.py:5:121: E501 Line too long (134 > 120)
+  |
+4 | def main():
+5 |     """aaaaaaaaaaaa aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"""
+  |                                                                                                                         ^^^^^^^^^^^^^^ E501
+  |
+
+Found 2 errors.
+```
+yet, `ruff format` outputs `1 file left unchanged`.
+
+`ruff 0.6.8`
+
+---
+
+_Comment by @cheriimoya on 2024-10-03 12:11_
+
+Funny addition, don't know if it's a bug:
+
+When running `ruff check` against this change, it says `All checks passed!`
+
+```diff
+diff --git a/example.py b/example.py
+index 4752a9e..5726fe6 100644
+--- a/example.py
++++ b/example.py
+@@ -1,5 +1,5 @@
+-"""This is doing nothing really! It shall only show, how to confuse ruff in a way that it throws an error it cannot fix itself... Which I find kind of annoying."""
++"""Thisisdoingnothingreally!Itshallonlyshow,howtoconfuseruffinawaythatitthrowsanerroritcannotfixitself...WhichIfindkindofannoying."""
+
+
+ def main():
+-    """aaaaaaaaaaaa aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"""
++    """aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"""
+```
+
+---

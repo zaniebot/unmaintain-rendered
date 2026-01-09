@@ -1,0 +1,50 @@
+---
+number: 19351
+title: Linter diff test helper for testing different options
+type: issue
+state: open
+author: MichaReiser
+labels:
+  - help wanted
+  - linter
+  - testing
+assignees: []
+created_at: 2025-07-15T11:04:40Z
+updated_at: 2025-07-15T11:04:40Z
+url: https://github.com/astral-sh/ruff/issues/19351
+synced_at: 2026-01-07T13:12:16-06:00
+---
+
+# Linter diff test helper for testing different options
+
+---
+
+_Issue opened by @MichaReiser on 2025-07-15 11:04_
+
+Our current approach to testing preview behavior (or any configurable rule behavior) is to create two tests: One with preview disabled and one with preview enabled. However, both tests run on the same input file. 
+
+This makes it very hard to spot differences between preview on/off. That's why it would be helpful to have a helper that: given an input file, runs the rule on that file with preview off, then with preview on and only snapshots the diagnostics that were removed or added in preview. This should help to drastically reduce the snapshot sizes for our preview tests.
+
+This concept can be extended to testing differences between arbitrary settings where the base run uses the default settings and the second run uses whatever settings the user provided (preview, a custom option, etc)
+
+---
+
+_Label `help wanted` added by @MichaReiser on 2025-07-15 11:04_
+
+---
+
+_Label `linter` added by @MichaReiser on 2025-07-15 11:04_
+
+---
+
+_Label `testing` added by @MichaReiser on 2025-07-15 11:04_
+
+---
+
+_Referenced in [astral-sh/ruff#19390](../../astral-sh/ruff/pulls/19390.md) on 2025-07-28 14:35_
+
+---
+
+_Referenced in [astral-sh/ruff#19715](../../astral-sh/ruff/pulls/19715.md) on 2025-08-03 22:23_
+
+---

@@ -1,0 +1,59 @@
+---
+number: 4779
+title: "respect `target-version` in pyupgrade rules"
+type: issue
+state: closed
+author: trim21
+labels: []
+assignees: []
+created_at: 2023-06-01T07:59:48Z
+updated_at: 2023-06-01T08:12:00Z
+url: https://github.com/astral-sh/ruff/issues/4779
+synced_at: 2026-01-07T13:12:14-06:00
+---
+
+# respect `target-version` in pyupgrade rules
+
+---
+
+_Issue opened by @trim21 on 2023-06-01 07:59_
+
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+It would be nice if pyupgrade can automaticly disable based on target-version
+
+for example:
+
+```toml
+extend-select = ["UP"]
+target-version = "py310"
+```
+
+then these rules should be disabled automaticly, or become noop
+
+```
+UP035 `typing.List` is deprecated, use `list` instead
+UP007 [*] Use `X | Y` for type annotations
+UP006 [*] Use `list` instead of `List` for type annotation
+```
+
+---
+
+_Comment by @trim21 on 2023-06-01 08:11_
+
+Oh, sorry, didn't notice this is support in python310...
+
+---
+
+_Closed by @trim21 on 2023-06-01 08:12_
+
+---

@@ -1,0 +1,54 @@
+---
+number: 2042
+title: uv pip without venv
+type: issue
+state: closed
+author: combiz
+labels: []
+assignees: []
+created_at: 2024-02-28T10:55:32Z
+updated_at: 2024-02-28T12:23:00Z
+url: https://github.com/astral-sh/uv/issues/2042
+synced_at: 2026-01-07T13:12:16-06:00
+---
+
+# uv pip without venv
+
+---
+
+_Issue opened by @combiz on 2024-02-28 10:55_
+
+We often use docker-based dev containers. In these, we typically skip creating a venv; with pip we can install the packages and freeze them without one. With uv, working with a venv seems to be enforced -- is this the case?
+
+```
+$ pip freeze
+absl-py==2.1.0
+agate==1.7.1
+[...]
+$ uv pip freeze
+error: Failed to locate a virtualenv or Conda environment (checked: `VIRTUAL_ENV`, `CONDA_PREFIX`, and `.venv`). Run `uv venv` to create a virtualenv.
+```
+
+---
+
+_Comment by @carlosjourdan on 2024-02-28 11:38_
+
+I ran into the same issue, and as a work arround I had to create and activate a virtual env within the docker file with code that looks like the snippet below. Maybe it can serve you too.
+
+```docker
+ENV VIRTUAL_ENV=/bin/venv
+RUN uv venv $VIRTUAL_ENV
+ENV PATH="$VIRTUAL_ENV/bin:$PATH"
+```
+
+---
+
+_Comment by @AlexWaygood on 2024-02-28 12:23_
+
+Thanks! We're aware this is an issue. Closing as a duplicate of https://github.com/astral-sh/uv/issues/1526 :)
+
+---
+
+_Closed by @AlexWaygood on 2024-02-28 12:23_
+
+---

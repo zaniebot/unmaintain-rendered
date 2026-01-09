@@ -1,0 +1,46 @@
+---
+number: 3572
+title: Add logging when retrying on transient request failures
+type: issue
+state: closed
+author: konstin
+labels:
+  - enhancement
+  - help wanted
+  - tracing
+assignees: []
+created_at: 2024-05-14T10:42:07Z
+updated_at: 2024-06-04T13:39:17Z
+url: https://github.com/astral-sh/uv/issues/3572
+synced_at: 2026-01-07T13:12:17-06:00
+---
+
+# Add logging when retrying on transient request failures
+
+---
+
+_Issue opened by @konstin on 2024-05-14 10:42_
+
+We use `request_middleware`s `RetryTransientMiddleware` to retry transient failures. We should log (debug level) whenever we retry a failure. This should help debugging issues such as #3514.
+
+---
+
+_Label `enhancement` added by @konstin on 2024-05-14 10:42_
+
+---
+
+_Label `tracing` added by @zanieb on 2024-05-14 12:17_
+
+---
+
+_Label `help wanted` added by @zanieb on 2024-05-14 12:17_
+
+---
+
+_Referenced in [astral-sh/uv#3933](../../astral-sh/uv/pulls/3933.md) on 2024-05-31 09:48_
+
+---
+
+_Closed by @konstin on 2024-06-04 13:39_
+
+---

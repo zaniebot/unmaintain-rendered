@@ -1,0 +1,313 @@
+---
+number: 5065
+title: "Error message APIs for `TypedValueParser`"
+type: issue
+state: open
+author: 9999years
+labels:
+  - C-enhancement
+  - A-builder
+  - E-easy
+assignees: []
+created_at: 2023-08-03T22:50:40Z
+updated_at: 2025-08-28T08:53:05Z
+url: https://github.com/clap-rs/clap/issues/5065
+synced_at: 2026-01-07T13:12:20-06:00
+---
+
+# Error message APIs for `TypedValueParser`
+
+---
+
+_Issue opened by @9999years on 2023-08-03 22:50_
+
+## Clap Version
+
+4.3.19
+
+## Describe your use case
+
+I'm implementing `TypedValueParser` and `ValueParserFactory` so that I can use `clap` to parse custom types, ideally without explicitly annotating the `value_parser` to use (most recently I'm using [`humantime::parse_duration`](https://docs.rs/humantime/latest/humantime/fn.parse_duration.html) to parse a string like `500ms` into a `Duration` value, but I have a few different implementations).
+
+However, I've noticed that the error messages I return from `TypedValueParser::parse_ref` don't include the context, like when I use a function as a `value_parser`. This ultimately goes back to the fact that there's no public method on `clap::Error` to set the inner `source` error. For example, the `Error::raw` constructor sets a string message (which is not integrated into context added with `Error::insert` when formatting):
+
+https://github.com/clap-rs/clap/blob/ca855c651c4fbd89accc40b20d442967f1e79942/clap_builder/src/error/mod.rs#L89
+
+We can see that the (private) `Error::value_validation` constructor calls the (private) `Error::set_source` method to set the source:
+
+https://github.com/clap-rs/clap/blob/ca855c651c4fbd89accc40b20d442967f1e79942/clap_builder/src/error/mod.rs#L637
+
+And indeed, all of the `TypedValueParser` implementations use this and other private methods to construct their errors:
+
+https://github.com/clap-rs/clap/blob/ca855c651c4fbd89accc40b20d442967f1e79942/clap_builder/src/builder/value_parser.rs#L860
+
+Here's an example showing how context information is ignored in `clap::Error`'s public APIs today, and how exporting `Error::set_source` would let users construct error messages in the same style as clap's internal `TypedValueParser` implementations:
+
+```rust
+use clap::Command;
+use clap::Error;
+use clap::error::ErrorKind;
+use clap::error::ContextKind;
+use clap::error::ContextValue;
+
+// Add context and a command to an error.
+fn add_context(mut err: Error) -> Error {
+    err.insert(ContextKind::InvalidArg, ContextValue::String("--duration".into()));
+    err.insert(ContextKind::InvalidValue, ContextValue::String("0.5sec".into()));
+    err.with_cmd(&Command::new("my-command"))
+}
+
+// Here's what's possible with clap today.
+// Note how even though we add context and a command to the error message, it's
+// ignored when we display the error message:
+let err = Error::raw(
+    ErrorKind::ValueValidation,
+    "Decimals are not supported in durations"
+);
+assert_eq!(
+    add_context(err).to_string(),
+    "error: Decimals are not supported in durations"
+);
+
+// If `Error::set_source` was public, you could use it to preserve the context
+// information and format error messages in the same style that clap's provided
+// `TypedValueParser`s use.
+//
+// Note how this example includes the context information (the argument and
+// value, as well as the help command).
+let mut err = Error::new(ErrorKind::ValueValidation)
+    .set_source("Decimals are not supported in durations".into());
+assert_eq!(
+    add_context(err).to_string(),
+    "error: invalid value '0.5sec' for '--duration': \
+    Decimals are not supported in durations\n\n\
+    For more information, try '--help'.\n"
+);
+```
+
+## Describe the solution you'd like
+
+The easiest and smallest-footprint solution would be to simply make the existing `Error::set_source` method public.
+
+When searching for relevant discussions and issues I happened upon #4362, which suggests using `TypedValueParser::try_map`. Unfortunately, this is not suitable for `ValueParserFactory` implementations that automatically register a `TypedValueParser` for a given type, as the `TryMapValueParser` type returned from `try_map` is not public. I've made this type public in #5066.
+
+## Alternatives, if applicable
+
+There's several other `Error` constructors that would be useful to make public for `TypedValueParser` implementers:
+
+- `Error::empty_value`
+- `Error::invalid_value`
+- `Error::value_validation`
+
+Making these public would obviate most of the need for making `Error::set_source` public, or we could provide them separately as helper functions.
+
+Additionally, we might consider updating the `clap::Error` constructors to take an `Option<&clap::Arg>` instead of a `String` as well, because currently ~~most~~ all of the use-sites do this:
+
+https://github.com/clap-rs/clap/blob/ca855c651c4fbd89accc40b20d442967f1e79942/clap_builder/src/builder/value_parser.rs#L857-L860
+
+I've implemented this (along with tests and documentation) in #5067, but I'm open to alternatives if anyone has other ideas.
+
+## Additional Context
+
+I'm using `clap` for a project where I implement `TypedValueParser` and `ValueParserFactory` for several types. Most recently I used [`humantime::parse_duration`](https://docs.rs/humantime/latest/humantime/fn.parse_duration.html) to parse a string like `500ms` into a `Duration` value:
+
+<details><summary><code>DurationValueParser</code> code</summary>
+
+```rust
+use std::time::Duration;
+
+use clap::builder::StringValueParser;
+use clap::builder::TypedValueParser;
+use clap::builder::ValueParserFactory;
+use humantime::DurationError;
+use miette::LabeledSpan;
+use miette::MietteDiagnostic;
+use miette::Report;
+
+/// Adapter for parsing [`Duration`] with a [`clap::builder::Arg::value_parser`].
+#[derive(Default, Clone)]
+pub struct DurationValueParser {
+    inner: StringValueParser,
+}
+
+impl TypedValueParser for DurationValueParser {
+    type Value = Duration;
+
+    fn parse_ref(
+        &self,
+        cmd: &clap::Command,
+        arg: Option<&clap::Arg>,
+        value: &std::ffi::OsStr,
+    ) -> Result<Self::Value, clap::Error> {
+        self.inner.parse_ref(cmd, arg, value).and_then(|str_value| {
+            humantime::parse_duration(&str_value).map_err(|err| {
+                let diagnostic = Report::new(MietteDiagnostic {
+                    // ...
+                })
+                .with_source_code(str_value);
+                clap::Error::raw(
+                    clap::error::ErrorKind::ValueValidation,
+                    format!("{diagnostic:?}"),
+                )
+                .with_cmd(cmd)
+            })
+        })
+    }
+}
+
+struct DurationValueParserFactory;
+
+impl ValueParserFactory for DurationValueParserFactory {
+    type Parser = DurationValueParser;
+
+    fn value_parser() -> Self::Parser {
+        Self::Parser::default()
+    }
+}
+```
+
+</details>
+
+This works OK, but when I tested it I noticed that the error messages don't include any context, like which argument failed to validate:
+
+```ShellSession
+$ ./target/release/my-bin --duration 0.5s
+error:   × Invalid character
+   ╭────
+ 1 │ 0.5s
+   ·  ┬
+   ·  ╰── Invalid character
+   ╰────
+  help: Decimals are not supported
+```
+
+In contrast, when an argument fails to validate for an `EnumValue` I get a nice error message that shows which argument failed and gives a short grammar snippet:
+
+```ShellSession
+$ ./target/release/my-bin --backtrace bad_value
+error: invalid value 'bad_value' for '--backtrace <BACKTRACE>'
+  [possible values: 0, 1, full]
+
+For more information, try '--help'.
+```
+
+We should make it possible for `TypedValueParser` implementers to create the same error messages that clap's internal `TypedValueParser` implementations take advantage of.
+
+
+---
+
+_Referenced in [clap-rs/clap#5066](../../clap-rs/clap/pulls/5066.md) on 2023-08-03 22:52_
+
+---
+
+_Referenced in [clap-rs/clap#5067](../../clap-rs/clap/pulls/5067.md) on 2023-08-03 23:33_
+
+---
+
+_Comment by @epage on 2023-08-04 01:06_
+
+This issue jumps straight for solutions but to understand them, I need to understand your problems.  For example, what problem is trying to be solved with `TryMapValueParser` that can't be solved with `try_map`?  This would be covered when using the standard issue template
+
+EDIT: I see that information was provided further on.  Howeverr, my time for working with these issues is limited.    Before we move forward, I would ask to switch this to the issue template.
+
+---
+
+_Comment by @9999years on 2023-08-04 02:05_
+
+Okay, I've rewritten my issue using the feature request template. Let me know if you'd like more information. The solution here feels very obvious to me — the code is already written, just not exported for third parties to use — but I'm open to other designs.
+
+> What problem is trying to be solved with `TryMapValueParser` that can't be solved with `try_map`?
+
+`try_map` is of limited utility in its current state because it can't be referenced in a `ValueParserFactory` implementation:
+
+```rust
+struct MyValueParserFactory;
+
+impl ValueParserFactory for MyValueParserFactory {
+    // Can't write this because `TryMapValueParser` isn't public!
+    type Parser = TryMapValueParser<...>;
+
+    fn value_parser() -> Self::Parser {
+        StringValueParser::new().try_map(...)
+    }
+}
+```
+
+`TryMapValueParser` _is_ actually public in `value_parser.rs`, but `value_parser.rs` isn't public and `TryMapValueParser` isn't exported from `clap::builder`, which makes me suspect that it was intended to be made public but for whatever reason it never got exported (it's a little weird that the private-type-in-public-API check doesn't trigger on the `try_map` declaration).
+
+https://github.com/clap-rs/clap/blob/ca855c651c4fbd89accc40b20d442967f1e79942/clap_builder/src/builder/value_parser.rs#L2037
+
+---
+
+_Comment by @epage on 2023-08-08 01:00_
+
+> try_map is of limited utility in its current state because it can't be referenced in a ValueParserFactory implementation:
+
+Technically, you could still use `TryMapValueParser` but its a pain.  I'm fine moving forward with #5066.  In general, I would recommend a solution to use `TryMapValueParser`.
+
+I'm also fine moving forward with `set_source` as that is a gap in our API for dealing manually constructing errors.
+
+However, I do not want to move make the constructors public.  That is a lot larger of a scope of an under taking and there is a lot more of the details that could evolve / change over time that I don't want to limit ourselves in how we evolve them; that is the point of the more general manual error construction API.
+
+---
+
+_Label `C-enhancement` added by @epage on 2023-08-08 01:00_
+
+---
+
+_Label `A-builder` added by @epage on 2023-08-08 01:00_
+
+---
+
+_Label `E-easy` added by @epage on 2023-08-08 01:00_
+
+---
+
+_Comment by @epage on 2023-08-08 01:01_
+
+btw #5066 said it was only a partial fix.  What is missing?
+
+---
+
+_Comment by @epage on 2023-08-08 01:01_
+
+btw thank you for taking the time to communicate all of this; it was a big help to have things focusing on the core of the issue
+
+---
+
+_Comment by @9999years on 2023-08-08 03:51_
+
+> btw #5066 said it was only a partial fix. What is missing?
+
+Nothing is missing for `TryMapValueParser`, but #5066 is only a partial fix for this issue — to me, the key feature is `Error::set_source`, which will bring user-defined `TypedValueParser`s and `ValueParserFactory`s up to parity with the built-in `TypedValueParser`s.
+
+---
+
+_Comment by @dacut on 2023-08-17 17:21_
+
+I was curious if [`Command::error`](https://docs.rs/clap/latest/clap/struct.Command.html#method.error) should be used here, since `TypedValueParser::parse_ref()` has `&Command` available. However, the signature doesn't work out: `Command:error()` wants `&mut self` (i.e. `&mut Command`) for some reason, which seems peculiar to me.
+
+---
+
+_Comment by @epage on 2023-08-17 17:50_
+
+> However, the signature doesn't work out: Command:error() wants &mut self (i.e. &mut Command) for some reason, which seems peculiar to me.
+
+That is because `Command::error` requires the `Command` to be built which for most cases isn't guaranteed, so we build it if needed.  #2911 is for tracking how we could improve things generally.
+
+---
+
+_Referenced in [clap-rs/clap#5288](../../clap-rs/clap/issues/5288.md) on 2024-01-08 13:34_
+
+---
+
+_Comment by @Kobzol on 2025-08-28 08:53_
+
+Ran into this today. I want to implement a `TypedValueParser` that can parse either `all`, `none` or a list of comma-separated values from a `ValueEnum`. So I implemented the custom `parse_ref` function, but the errors that are generated with `Error::new/raw` lack the context of the executed command. I can't style the error because it requires a mutable access to `Command`, and I can't use the more advanced `Error` constructors from `clap` as they are not public.
+
+I managed to resolve it by cloning the Command though. Not the prettiest option, but works:
+```rust
+return Err(Error::raw(ErrorKind::InvalidValue, error).format(&mut cmd.clone()))
+```
+
+---

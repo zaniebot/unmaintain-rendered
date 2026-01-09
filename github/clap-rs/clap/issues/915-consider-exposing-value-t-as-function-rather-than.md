@@ -1,0 +1,167 @@
+---
+number: 915
+title: Consider exposing value_t as function rather than macro
+type: issue
+state: closed
+author: TedDriggs
+labels: []
+assignees: []
+created_at: 2017-03-23T17:23:12Z
+updated_at: 2018-08-02T03:30:04Z
+url: https://github.com/clap-rs/clap/issues/915
+synced_at: 2026-01-07T13:12:19-06:00
+---
+
+# Consider exposing value_t as function rather than macro
+
+---
+
+_Issue opened by @TedDriggs on 2017-03-23 17:23_
+
+### Rust Version
+
+rustc 1.17.0-nightly (6eb9960d3 2017-03-19)
+
+### Affected Version of clap
+
+2.21.2
+
+### Expected Behavior Summary
+
+Be able to get a typed value for an argument using standard functions (and thus also through local type inference).
+
+### Actual Behavior Summary
+
+A macro must be used, which also _requires_ explicitly stating the desired type.
+
+### Sample Implementation
+
+```rust
+pub trait TypedGet {
+    fn parse<S: AsRef<str>, T: FromStr>(&self, name: S) -> Result<T, String>
+        where T::Err: fmt::Display;
+}
+
+impl<'a> TypedGet for ArgMatches<'a> {
+    fn parse<S: AsRef<str>, T: FromStr>(&self, name: S) -> Result<T, String>
+        where T::Err: fmt::Display
+    {
+        let raw = self.value_of(name).ok_or("parameter not found".to_string())?;
+        T::from_str(raw).map_err(|e| e.to_string())
+    }
+}
+```
+
+In this case, I used `parse` for its alignment with the function exposed on strings.
+
+---
+
+_Comment by @kbknapp on 2017-03-25 02:39_
+
+Interesting. I like this idea! I'll need some time to play with this idea and see if it leads to any strange edge cases or breakage, but looks pretty straight forward!
+
+---
+
+_Label `C: matches` added by @kbknapp on 2017-03-25 02:40_
+
+---
+
+_Label `D: intermediate` added by @kbknapp on 2017-03-25 02:40_
+
+---
+
+_Label `P3: want to have` added by @kbknapp on 2017-03-25 02:40_
+
+---
+
+_Label `T: new feature` added by @kbknapp on 2017-03-25 02:40_
+
+---
+
+_Label `T: RFC / question` added by @kbknapp on 2017-03-25 02:40_
+
+---
+
+_Label `W: 2.x` added by @kbknapp on 2017-03-25 02:40_
+
+---
+
+_Comment by @kbknapp on 2017-03-25 02:45_
+
+Three quick thoughts:
+
+* I'd probably make  the trait `TypedValue` to go along with the `value_of` methods 
+* There should also be an `OsStr` equivilant, or we'll need to decide how this'll work with the `value_of_os` and `value_of_lossy` methods.
+* We'd need to also figure out multiple values (`values_of` and their `_os` and `_lossy` counterparts).
+
+---
+
+_Comment by @TedDriggs on 2017-04-12 23:11_
+
+I've forked the repro to start looking at adding this. The macro doesn't currently support `OsStr`, so I'm not planning on doing that in method form. I am looking at `values_of`, since there is a `values_t!` macro today. 
+
+I have some questions about the desired return type.
+
+## Error Type
+There are 3 options for the error type:
+
+1. `clap::Error` - this is consistent with the current `values_t!` macro, but completely suppresses the error returned by the invoked `FromStr` impl. That seems suboptimal.
+1. `T::Err` - this would expose the error returned by the parser, but doesn't account for the possibility of failures in clap's conversion from `OsStr` to `&str`.
+1. `String` - this can pipe either kind of error back through, but is impossible to match on or otherwise handle, and it requires that `T::Err: std::fmt::Display`, which may not always be true.
+
+I don't have a good answer here, especially since `clap::ErrorKind` doesn't have a `__Hidden__` variant and therefore extending it could break existing users who depend on an exhaustive match.
+
+## Return Structure (Fail-fast)
+1. `Result<Vec<T>, __>` - the method would abort on first error.
+1. `Vec<Result<T, _>>` - the method would process all arguments and return the collection of successes and failures.
+
+For the return structure, I'm leaning towards option 1: The caller can invoke `values_of` and map those through `FromStr::from_str` if they want to provide more detailed errors to the caller.
+
+---
+
+_Comment by @kbknapp on 2017-04-18 00:03_
+
+@TedDriggs thanks for taking a swing at this! Apologies for the late reply, I was travelling the past week. As for your questions, here's my thoughts:
+
+> Error Type
+
+I would lean option 1 because we could also add an impl to resolve the error [as we do with errors arising from `std::fmt`](https://github.com/kbknapp/clap-rs/blob/3f44dd4b91d15ec9287eb236e2d3a2fd068afad1/src/errors.rs#L880-L884).
+
+> I don't have a good answer here, especially since clap::ErrorKind doesn't have a __Hidden__ variant and therefore extending it could break existing users who depend on an exhaustive match.
+
+There's two options. 
+
+ 1. Re-use the `ErrorKind::ValueValidation` or perhaps more appropriately `ErrorKind::InvalidValue` which is correct-ish provided the docs are updated as well. 
+ 2. We add the variant, being that I would unbelievably surprised if someone was actually relying on exhaustive matching here being that it would mean they're handling each of clap's error types manually. I believe this is the type of breaking change that is also in line with Rust precedents of allowing a minor breaking change that no code in the wild is using or likely to use.
+
+In fact, doing a quick ripgrep through all the crates on crates.io and looking through Github yields none. I know this doesn't represent 100% coverage especially considering clap is made for binaries and not libs, and not all projects use Github but I still think it's telling.
+
+Having said this, I also don't want to go this route unless all other options have worse downsides.
+
+Technically there's a third option of waiting until 3x (which I'm actively working on as we speak, but don't have a good idea for release candidates yet. I'm planning on within the next 2 months, but life can always throw curveballs....in fact I'm typing this at about 1/8th normal speed due to a cast on my hand).
+
+> Return Structure (Fail-fast)
+
+> For the return structure, I'm leaning towards option 1: The caller can invoke values_of and map those through FromStr::from_str if they want to provide more detailed errors to the caller.
+
+I 100% agree. 👍 
+
+---
+
+_Referenced in [clap-rs/clap#933](../../clap-rs/clap/pulls/933.md) on 2017-04-18 01:23_
+
+---
+
+_Comment by @kbknapp on 2018-07-22 01:31_
+
+Closing this in favor of the Custom Derive `structopt` style use which will be primary in v3
+
+---
+
+_Closed by @kbknapp on 2018-07-22 01:31_
+
+---
+
+_Referenced in [clap-rs/clap#1809](../../clap-rs/clap/issues/1809.md) on 2020-04-12 00:12_
+
+---

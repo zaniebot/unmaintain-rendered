@@ -1,0 +1,40 @@
+---
+number: 15552
+title: "`TC001`, `TC002`, `TC003` - documentation mentions import cycles which is misleading"
+type: issue
+state: open
+author: DetachHead
+labels:
+  - documentation
+assignees: []
+created_at: 2025-01-17T14:41:16Z
+updated_at: 2025-01-17T14:56:11Z
+url: https://github.com/astral-sh/ruff/issues/15552
+synced_at: 2026-01-07T13:12:16-06:00
+---
+
+# `TC001`, `TC002`, `TC003` - documentation mentions import cycles which is misleading
+
+---
+
+_Issue opened by @DetachHead on 2025-01-17 14:41_
+
+the documentation for these three rules all mention import cycles:
+
+- https://docs.astral.sh/ruff/rules/typing-only-first-party-import/
+- https://docs.astral.sh/ruff/rules/typing-only-third-party-import/
+- https://docs.astral.sh/ruff/rules/typing-only-standard-library-import/
+
+> Unused imports add a performance overhead at runtime, and risk creating import cycles. If an import is only used in typing-only contexts, it can instead be imported conditionally under an `if TYPE_CHECKING:` block to minimize runtime overhead.
+
+for `TC002` and `TC003`, mentioning import cycles isn't relevant because standard library or third party modules will never import from the source code that imported it, so i think the mention of import cycles should be removed from the documentation for these two rules.
+
+for `TC001`, import cycles are a relevant concern because the imported module is part of your source code and therefore could have a circular dependency on the current file. however it's a common (and dangerous) misconception that import cycles are only an issue at runtime. it almost always means there's a problem with how your project is structured regardless of whether the import is `TYPE_CHECKING` only so it's misleading to suggest that a `TYPE_CHECKING` import is a suitable solution. [see this discussion for an example](https://github.com/DetachHead/basedpyright/issues/960#issuecomment-2552777922).
+
+perhaps the `TC001` documentation can include a warning mentioning that `TYPE_CHECKING` imports are not the best solution to import cycles
+
+---
+
+_Label `documentation` added by @MichaReiser on 2025-01-17 14:56_
+
+---

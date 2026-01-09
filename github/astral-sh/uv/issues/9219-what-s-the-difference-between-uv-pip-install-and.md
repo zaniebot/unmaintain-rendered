@@ -1,0 +1,487 @@
+---
+number: 9219
+title: "What's the difference between `uv pip install` and `uv add`"
+type: issue
+state: closed
+author: lucharo
+labels:
+  - question
+assignees: []
+created_at: 2024-11-19T10:20:15Z
+updated_at: 2025-09-27T07:37:07Z
+url: https://github.com/astral-sh/uv/issues/9219
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# What's the difference between `uv pip install` and `uv add`
+
+---
+
+_Issue opened by @lucharo on 2024-11-19 10:20_
+
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with uv.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
+* The current uv platform.
+* The current uv version (`uv --version`).
+-->
+
+I've been using `uv` for a while and I really enjoy it. I keep stumbling onto the same confusion though. I never quite know whether do to:
+
+```sh
+uv init 
+uv venv 
+uv add polars marimo
+uv run hello.py
+```
+
+or 
+
+```sh
+uv init 
+uv venv 
+source .venv/bin/activate
+pip install polars marimo
+python hello.py
+```
+
+are these two above equivalent? 
+
+---
+
+also are these two equivalent?
+```
+uv add polars 
+```
+
+```
+uv pip install polars
+```
+
+---
+
+_Comment by @FishAlchemist on 2024-11-19 12:24_
+
+``uv add`` choose universal or cross-platform dependencies , and ``uv add`` is a project API.
+https://docs.astral.sh/uv/concepts/projects/
+This is my understanding, but the more correct interpretation should be based on the documentation and the uv team's explanation.
+> Suppose a dependency has versions 1.0.0 and 1.1.0 on Windows, but versions 1.0.0, 1.1.0, and 1.2.0 on Linux. If you're using uv on Linux, uv pip install would typically install the latest version (1.2.0), while uv add would select version 1.1.0, ensuring compatibility across Windows and Linux.
+
+
+The explanation in the document should be here:
+* uv add
+> uv's lockfile (uv.lock) is created with a universal resolution and is portable across platforms. This ensures that dependencies are locked for everyone working on the project, regardless of operating system, architecture, and Python version. The uv lockfile is created and modified by project commands such as uv lock, uv sync, and uv add.
+
+https://docs.astral.sh/uv/concepts/resolution/#universal-resolution
+* uv pip install
+> By default, uv tries to use the latest version of each package. For example, uv pip install flask>=2.0.0 will install the latest version of Flask, e.g., 3.0.0. If flask>=2.0.0 is a dependency of the project, only flask 3.0.0 will be used. This is important, for example, because running tests will not check that the project is actually compatible with its stated lower bound of flask 2.0.0.
+
+https://docs.astral.sh/uv/concepts/resolution/#resolution-strategy
+
+
+---
+
+_Comment by @charliermarsh on 2024-11-20 01:59_
+
+They are two separate APIs for managing your Python project and environment.
+
+The `uv pip` APIs are meant to resemble the pip CLI. You can think of this as a slightly "lower-level" API: you tell `uv pip` to install a specific package, or remove a specific package, and so on. The `uv pip` API came first, and it's partly motivated by a desire to make it easy for folks to adopt uv without changing their existing projects or workflows dramatically.
+
+`uv add`, `uv run`, `uv sync`, and `uv lock` are what we call the "project APIs". These are "higher-level": you define your dependencies in `pyproject.toml`, and uv ensures that your environment is always in-sync with those dependencies.
+
+The project APIs are more opinionated (you _must_ use `pyproject.toml`, since they're designed around "projects"), while the `uv pip` APIs are more flexible (you can manipulate a virtual environment however you want -- there aren't really any "rules"). The project APIs are more recent, and they tend to reflect the "uv-native" workflow.
+
+If you're starting a new project, we recommend using the project APIs. If you're working with existing projects, it's often easier to use the `uv pip` APIs, if those projects already have established workflows based on pip (since you can just replace `pip install` with `uv pip install`, etc.).
+
+---
+
+_Comment by @charliermarsh on 2024-11-20 02:00_
+
+So concretely:
+
+```
+uv init 
+uv venv 
+uv add polars marimo
+uv run hello.py
+```
+
+This makes a lot of sense (although you can omit `uv venv` -- we'll create it automatically). You're creating a new project, adding some dependencies, then running a command with those dependencies installed.
+
+```
+uv init 
+uv venv 
+source .venv/bin/activate
+pip install polars marimo
+python hello.py
+```
+
+This is also reasonable, though you could omit `uv init` -- there's no need to make a project, since you're not taking advantage of the "project" capabilities (you're not adding `polars` and `marimo` to the project itself -- just to the virtual environment).
+
+---
+
+_Label `question` added by @charliermarsh on 2024-11-20 02:01_
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2024-11-20 02:01_
+
+---
+
+_Closed by @charliermarsh on 2024-11-20 02:01_
+
+---
+
+_Comment by @charliermarsh on 2024-11-20 02:01_
+
+I hope that's helpful. Let me know if you have any follow-up questions.
+
+---
+
+_Comment by @rxy1212 on 2024-11-22 13:24_
+
+@charliermarsh When I use 'uv add' how to set another source like 'pip install -i' do?
+
+---
+
+_Comment by @FishAlchemist on 2024-11-22 13:33_
+
+@rxy1212  Actually, ``uv add`` has related flags, but it's better to write the source in pyproject.toml. Otherwise, when you update and lock lockfile next time, you'll need to bring in the related flags again.
+```
+      --index <INDEX>                        The URLs to use when resolving dependencies, in addition to the default
+                                             index [env: UV_INDEX=]
+      --default-index <DEFAULT_INDEX>        The URL of the default package index (by default:
+                                             <https://pypi.org/simple>) [env: UV_DEFAULT_INDEX=]
+  -i, --index-url <INDEX_URL>                (Deprecated: use `--default-index` instead) The URL of the Python package
+                                             index (by default: <https://pypi.org/simple>) [env: UV_INDEX_URL=]
+      --extra-index-url <EXTRA_INDEX_URL>    (Deprecated: use `--index` instead) Extra URLs of package indexes to use,
+                                             in addition to `--index-url` [env: UV_EXTRA_INDEX_URL=]
+```
+``--index`` and ``--default-index``
+https://docs.astral.sh/uv/configuration/indexes/
+
+---
+
+_Comment by @rxy1212 on 2024-11-22 13:39_
+
+@FishAlchemist That's what I need. Thank you!
+
+---
+
+_Comment by @charliermarsh on 2024-11-22 14:10_
+
+Thanks @FishAlchemist, you're super helpful!
+
+---
+
+_Comment by @lucharo on 2024-11-25 22:43_
+
+Hey @charliermarsh, thank you so much for the clarifications. I do have some other questions. 
+
+I am confused about how `uv` and virtual  environments interact. what would happen in the following scenarios?
+
+```bash
+uv venv
+uv add polars
+## or
+uv venv
+uv pip install polars 
+```
+
+Do these install in the venv directly or do I need to `source  .venv/bin/activate`?
+
+Using pip "traditionally", I would check `which pip` to see where I'd be installing my package but in `uv` I cannot really do that or can I? 
+
+
+Also if I go for the `uv` API fully, I would never really run `python script.py` correct? It'd always be `uv run script.py`?
+
+---
+
+_Comment by @zanieb on 2024-11-25 22:59_
+
+Yes `uv pip install polars` will modify the `.venv` in the working directory unless you've activated another one. You can use `uv python find` to see which Python environment will be modified by a given `uv pip` operation. And yes, you'd `uv run script.py` in most cases.
+
+---
+
+_Referenced in [langflow-ai/langflow#5237](../../langflow-ai/langflow/pulls/5237.md) on 2024-12-12 18:47_
+
+---
+
+_Comment by @dmi3kno on 2024-12-13 10:33_
+
+I know this issue is closed, but I am still slightly confused about the need to (re-)activate a project environment after i add new packages. Lets say i set up my environment like this
+
+```{python}
+uv init
+uv add polars
+uv run my_script.py
+```
+But then I realized I need a plotting library, so I changed my script and now I want to add it to dependencies
+
+```{python}
+uv add plotnine
+# do i need to source .venv/bin/activate here?
+uv run my_script.py
+```
+Do I need to re-activate the environment for the libraries to become available to my script? It seems like I did not have to do it the first time. 
+
+In other words, when if ever, would one need to `source .venv/bin/activate` if one sticks to project API (i.e. modifies environment only through `uv add`, `uv remove`, `uv sync` and such)?
+
+
+
+
+---
+
+_Comment by @FishAlchemist on 2024-12-13 11:01_
+
+@dmi3kno When using ``uv run``, you don't need to explicitly enter the virtual environment. It will automatically locate the correct one. But, are you asking because you've encountered a problem?
+
+**Note:** If you're running scripts with inline script metadata, uv will create a temporary virtual environment to execute them.
+https://packaging.python.org/en/latest/specifications/inline-script-metadata/
+https://docs.astral.sh/uv/guides/scripts/#declaring-script-dependencies
+
+---
+
+_Comment by @akupiectdc on 2025-01-24 16:45_
+
+> I hope that's helpful. Let me know if you have any follow-up questions.
+
+I do, but they might sound silly. 
+1. In the second option - is there a difference between uv pip install and pip install?
+2. Also in the second option - what is the difference between uv run script.py and python script.py?
+
+---
+
+_Comment by @zanieb on 2025-01-24 17:13_
+
+1. `pip install` will only install into its own environment, `uv pip install` can target other environments.
+2. `uv run script.py` will activate a virtual environment if necessary, and read PEP 723 inline metadata or sync your project if necessary, then call `python script.py` — the latter just uses your current environment as-is.
+
+---
+
+_Referenced in [stfc/janus-core#396](../../stfc/janus-core/pulls/396.md) on 2025-01-31 11:06_
+
+---
+
+_Referenced in [marimo-team/marimo#3904](../../marimo-team/marimo/issues/3904.md) on 2025-02-25 00:55_
+
+---
+
+_Referenced in [FoundationAgents/OpenManus#338](../../FoundationAgents/OpenManus/pulls/338.md) on 2025-03-10 09:29_
+
+---
+
+_Referenced in [readthedocs/readthedocs.org#11766](../../readthedocs/readthedocs.org/issues/11766.md) on 2025-03-18 23:12_
+
+---
+
+_Referenced in [Davina0316/open-source-python#4](../../Davina0316/open-source-python/pulls/4.md) on 2025-03-22 04:01_
+
+---
+
+_Referenced in [Shounak-Ghosh/ospsd-hw1-python#2](../../Shounak-Ghosh/ospsd-hw1-python/pulls/2.md) on 2025-03-22 04:02_
+
+---
+
+_Referenced in [WMD-group/SMACT#404](../../WMD-group/SMACT/pulls/404.md) on 2025-04-02 22:59_
+
+---
+
+_Referenced in [marimo-team/marimo#4407](../../marimo-team/marimo/pulls/4407.md) on 2025-04-07 01:51_
+
+---
+
+_Comment by @jingyugao on 2025-04-18 02:00_
+
+what is the different of `uv pip` and `uv run pip`? 
+```
+➜  ~ uv run pip --version
+pip 24.3.1 from /Users/dev/.local/share/uv/python/cpython-3.12.9-macos-aarch64-none/lib/python3.12/site-packages/pip (python 3.12)
+➜  ~ uv pip --version
+uv-pip 0.6.12 (Homebrew 2025-04-02)
+```
+
+---
+
+_Referenced in [CAREamics/careamics#464](../../CAREamics/careamics/issues/464.md) on 2025-04-30 17:43_
+
+---
+
+_Comment by @lmBored on 2025-06-05 05:58_
+
+> what is the different of `uv pip` and `uv run pip`?
+> 
+> ```
+> ➜  ~ uv run pip --version
+> pip 24.3.1 from /Users/dev/.local/share/uv/python/cpython-3.12.9-macos-aarch64-none/lib/python3.12/site-packages/pip (python 3.12)
+> ➜  ~ uv pip --version
+> uv-pip 0.6.12 (Homebrew 2025-04-02)
+> ```
+
+`uv-pip` is a package from Homebrew, it's not `uv pip`. If you do brew uninstall uv-pip, then `uv run pip -V` again, you should get the same pip version
+
+---
+
+_Referenced in [cocoindex-io/cocoindex#612](../../cocoindex-io/cocoindex/issues/612.md) on 2025-06-11 12:59_
+
+---
+
+_Referenced in [usnistgov/microcal-daq#14](../../usnistgov/microcal-daq/issues/14.md) on 2025-08-02 22:45_
+
+---
+
+_Comment by @ishaanjain on 2025-08-03 13:20_
+
+> So concretely:
+> 
+> ```
+> uv init 
+> uv venv 
+> uv add polars marimo
+> uv run hello.py
+> ```
+> 
+> This makes a lot of sense (although you can omit `uv venv` -- we'll create it automatically). You're creating a new project, adding some dependencies, then running a command with those dependencies installed.
+> 
+> ```
+> uv init 
+> uv venv 
+> source .venv/bin/activate
+> pip install polars marimo
+> python hello.py
+> ```
+> 
+> This is also reasonable, though you could omit `uv init` -- there's no need to make a project, since you're not taking advantage of the "project" capabilities (you're not adding `polars` and `marimo` to the project itself -- just to the virtual environment).
+
+@charliermarsh I believe the `pip install polars marimo` command would not work, right? Because `uv venv` does not include pip by default.
+
+---
+
+_Referenced in [tursodatabase/turso#2645](../../tursodatabase/turso/pulls/2645.md) on 2025-08-20 12:53_
+
+---
+
+_Referenced in [Memory-Experience/momento#5](../../Memory-Experience/momento/pulls/5.md) on 2025-08-20 18:32_
+
+---
+
+_Comment by @gigberg on 2025-08-28 09:36_
+
+> uv init 
+> uv venv 
+> source .venv/bin/activate
+> pip install polars marimo
+> python hello.py
+
+**Updated at  2025-09-27 !**
+Because `uv venv` not install `python -m pip`(traditional pip command) itself, and subcommand `uv pip` is not equal (but functionally similar) to `python -m pip`. So their is two workflow (or interface) in uv:
+1.First, for pure uv user, you are supposed to use uv project workflow: 
+1)`uv init` to generate scaffold  files, like `.pyproject.toml` and `.git`,
+~~2)`uv venv --python 3.12` to generate `.venv` folder, (like other python virtualenv tools do), (can be ignored)~~
+3)`uv add xxx` to modify  `.pyproject.toml` in order to install new python packages (dependicies) to this `.venv`.
+4)`uv run xxx.py` to execute python scripts with (in) this `.venv` (not `uv python xxx.py` which is illegal usage)
+
+*`uv venv` can be ignored since `uv add` would trigger this automaticly*
+**the uv project workflow never activate `.venv` explicitly (so does not interfere with system $PATH). Moreover, the uv project workflow has nothing to do with `python -m pip` or `uv pip`; it uses its own built-in `dependency resolution`, `package downloading`, and `package installation` functionality."**
+
+2.Second, for traditional `python -m pip` command user, a python-pip-compatible workflow called `uv pip` is provided (Unlike the project concept and `.pyproject` uv.lock file which are designed specifically for making PyPI packages,  `uv pip`  is more suitable for instant use.):
+1)`uv venv --python 3.12` to generate `.venv` folder, 
+2)`uv pip install xxx` to  install new python packages to this `.venv`. (similar function  to `python pip` but different internals)
+3)`source activate .venv/bin/activate` to activate the `.venv` and modify system $PATH
+4)`python xxx.py` to execute python scripts with (in) this `.venv`
+
+**The uv pip interface is designed to help users who are accustomed to `python virtualenv` and `python pip` transition smoothly to the uv tool. It still requires creating, activating a virtual environment and modifies the $PATH environment variable as these old tools does. 
+The key difference is that it uses uv's own `uv pip` subcommand instead of the standard `python pip` (and similarly, use `uv venv` subcommand instead of `python virtualenv`). The advantage of `uv pip` is that it leverages uv’s internal, more efficient `dependency resolution`, `package downloading`, and `package installation` mechanisms**.
+
+------------------------original reply----------------------------------------
+yes, `pip install polars marimo` will call pip in system-wide, if you are in ubuntu22.04, it's `/usr/bin/pip`, and therefore `pip install polars marimo` will try to install packages to system-wide path (or fallbacked to user-wide path since pip is not run with sudo)!! which is not in current directory's .venv dir as your espect. 
+
+And since u are not run with sudo privilege, the error message will raise "**Defaulting to user installation because normal site-packages is not writeable**", which means `pip install polars marimo`  fallbacked to `pip install --user polars marimo`, which install packages to `/home/your_user_name/.local/lib/python3.10/site-packages/`. 
+
+By the way, ubuntu default `pip install` in global and user site-packages path are isolated and can have same packages, so when  ubuntu default `python xxx.py` will search both site-packages directory and select the first find, usually user package prior to global package.
+
+
+
+---
+
+_Comment by @ishaanjain on 2025-08-28 18:33_
+
+Makes sense. So it seems
+```
+uv init
+uv venv
+source .venv/bin/activate
+pip install polars marimo
+python hello.py
+```
+is not really a sensible workflow. Better would be
+```
+uv venv
+uv pip install polars marimo
+source .venv/bin/activate
+python hello.py
+```
+
+---
+
+_Comment by @lmBored on 2025-09-02 11:24_
+
+> Makes sense. So it seems
+> 
+> ```
+> uv init
+> uv venv
+> source .venv/bin/activate
+> pip install polars marimo
+> python hello.py
+> ```
+> 
+> is not really a sensible workflow. Better would be
+> 
+> ```
+> uv venv
+> uv pip install polars marimo
+> source .venv/bin/activate
+> python hello.py
+> ```
+
+It was recommended above to use `uv add` instead of `uv pip install` since `uv add` manages lockfile and allow you to use `uv sync` and `uv lock -U` to sync dependencies between laptops
+
+---
+
+_Comment by @robotrapta on 2025-09-26 23:01_
+
+I found this discussion super elucidating.  It explains a lot of why `uv` sometimes "just works" and sometimes gets confusing and rat-hole-ish.
+
+I think the main-page docs would be well-served to be more opinionated and say "We recommend you use projects, and then these are probably the only commands you'll need: `uv add`, `uv run`, `uv sync`, and `uv lock`."
+Then under the `pip` section say "We recommend letting `uv` manage everything for you with the project commands, but if you know what you're doing, and need more control, here's a lower layer of commands..."
+
+---
+
+_Comment by @dmi3kno on 2025-09-27 05:40_
+
+> I think the main-page docs would be well-served to be more opinionated and say
+
+This is actually a very good suggestion. I support 💯
+
+---
+
+_Comment by @ishaanjain on 2025-09-27 06:32_
+
+I agree the docs could be more opinionated. I wrote a brief blog post sharing my understanding of when to use `uv add` vs `uv pip install`, in case it's useful to others:
+https://ishaanjain.hashnode.dev/uv
+Happy to adjust if I’ve misunderstood anything.
+
+---
+
+_Referenced in [andrew-codechimp/HA-Battery-Notes#3907](../../andrew-codechimp/HA-Battery-Notes/pulls/3907.md) on 2025-10-29 15:35_
+
+---
+
+_Referenced in [pouvoirdasha/rutabaga#3](../../pouvoirdasha/rutabaga/issues/3.md) on 2025-12-06 12:17_
+
+---

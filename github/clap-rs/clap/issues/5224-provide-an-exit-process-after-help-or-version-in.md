@@ -1,0 +1,95 @@
+---
+number: 5224
+title: Provide an exit process after --help or --version in derive config
+type: issue
+state: closed
+author: ogesaku
+labels:
+  - C-enhancement
+assignees: []
+created_at: 2023-11-26T21:58:26Z
+updated_at: 2024-09-30T15:58:20Z
+url: https://github.com/clap-rs/clap/issues/5224
+synced_at: 2026-01-07T13:12:20-06:00
+---
+
+# Provide an exit process after --help or --version in derive config
+
+---
+
+_Issue opened by @ogesaku on 2023-11-26 21:58_
+
+### Please complete the following tasks
+
+- [X] I have searched the [discussions](https://github.com/clap-rs/clap/discussions)
+- [X] I have searched the [open](https://github.com/clap-rs/clap/issues) and [rejected](https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed) issues
+
+### Clap Version
+
+4.4.8
+
+### Describe your use case
+
+I would like to exit program after printing help/version when user passes `--version` or `--help` flag using derive config:
+
+```rs
+/// Simple program to initialize Databases.
+#[derive(Parser, Debug)]
+#[command(author, version, about, long_about = None)]
+pub struct Args {
+    /// DB type to intialize
+    #[arg(short, long, default_value = "all", value_name = "DB")]
+    database: String,
+
+    /// Scylla connection URI
+    #[arg(short, long, default_value = "127.0.0.1:9042", value_name = "URI")]
+    scylla_uri: String,
+
+    /// Number of items to generate
+    #[arg(short, long, default_value_t = 1000, value_name = "COUNT")]
+    items: usize,
+}
+
+```
+
+### Describe the solution you'd like
+
+I would like to opt-in for process exit after printing help/version.
+
+### Alternatives, if applicable
+
+_No response_
+
+### Additional Context
+
+_No response_
+
+---
+
+_Label `C-enhancement` added by @ogesaku on 2023-11-26 21:58_
+
+---
+
+_Comment by @ogesaku on 2023-11-26 22:17_
+
+My bad, misconfigured ...
+
+---
+
+_Closed by @ogesaku on 2023-11-26 22:17_
+
+---
+
+_Comment by @chettoy on 2024-09-30 15:45_
+
+I had the same problem.
+It should be a very common problem and should be written in the documentation. But after searching for a long time I found this issue and now I know it can be implemented, but I still don't know how to configure it.
+
+---
+
+_Comment by @chettoy on 2024-09-30 15:58_
+
+I know that now.
+Its default behavior consists of exiting the program.
+
+---

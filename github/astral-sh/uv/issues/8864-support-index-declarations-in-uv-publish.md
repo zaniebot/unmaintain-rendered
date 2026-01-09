@@ -1,0 +1,63 @@
+---
+number: 8864
+title: Support index declarations in uv publish
+type: issue
+state: closed
+author: konstin
+labels:
+  - enhancement
+assignees: []
+created_at: 2024-11-06T16:06:19Z
+updated_at: 2024-12-10T21:17:49Z
+url: https://github.com/astral-sh/uv/issues/8864
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# Support index declarations in uv publish
+
+---
+
+_Issue opened by @konstin on 2024-11-06 16:06_
+
+We want to support `uv publish --index example` with:
+
+```toml
+[[index]]
+name = "example"
+url = "https://pypi.org/simple"
+publish-url = "https://upload.pypi.org/legacy"
+```
+
+This avoids setting the options on the CLI, moving them into configuration stored with the project instead.
+
+It requires changing `uv publish` so that if `--index <name>` is given, we discover (and require) `pyproject.toml` to be present.
+
+See also https://github.com/astral-sh/uv/pull/8531#issuecomment-2442698889
+
+Todo list:
+- [x] Add `publish-url` option to `[[index]]`
+- [x] Add `--index` option, conflicting with `--publish-url` and `--check-url`.
+- [x] When using `--index`, perform workspace discovery, find a matching index and use that
+- [x] Update the docs
+
+---
+
+_Label `enhancement` added by @konstin on 2024-11-06 16:06_
+
+---
+
+_Referenced in [astral-sh/uv#7839](../../astral-sh/uv/issues/7839.md) on 2024-11-06 16:06_
+
+---
+
+_Referenced in [astral-sh/uv#8817](../../astral-sh/uv/issues/8817.md) on 2024-11-08 10:08_
+
+---
+
+_Referenced in [astral-sh/uv#9694](../../astral-sh/uv/pulls/9694.md) on 2024-12-06 19:20_
+
+---
+
+_Closed by @konstin on 2024-12-10 21:17_
+
+---

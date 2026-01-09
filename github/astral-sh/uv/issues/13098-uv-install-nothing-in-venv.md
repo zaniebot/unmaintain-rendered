@@ -1,0 +1,371 @@
+---
+number: 13098
+title: uv install nothing in venv .
+type: issue
+state: closed
+author: eromoe
+labels:
+  - question
+assignees: []
+created_at: 2025-04-25T05:09:52Z
+updated_at: 2025-04-26T04:28:21Z
+url: https://github.com/astral-sh/uv/issues/13098
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# uv install nothing in venv .
+
+---
+
+_Issue opened by @eromoe on 2025-04-25 05:09_
+
+### Summary
+
+I am using mamba as default python. 
+
+```
+git clone https://github.com/chroma-core/chroma-mcp
+cd chroma-mcp
+uv sync
+uv run pip install -e .
+```
+
+But `uv run pip list|grep chroma` show nothing.
+
+![Image](https://github.com/user-attachments/assets/95468d6e-009e-4d37-98fa-1cc7a018afc5)
+
+enter `venv` , then `pip list|grep chroma` show nothing too.
+
+![Image](https://github.com/user-attachments/assets/669d35d3-22d6-4560-87e9-609167af6e2d)
+
+pip list : 
+```
+(chroma-mcp) E:\Workspace\github_me\chroma-mcp>pip list
+Package                 Version
+----------------------- ----------
+archspec                0.2.2
+boltons                 23.1.1
+Brotli                  1.1.0
+certifi                 2023.11.17
+cffi                    1.16.0
+charset-normalizer      3.3.2
+colorama                0.4.6
+conda                   23.11.0
+conda-libmamba-solver   23.12.0
+conda-package-handling  2.2.0
+conda_package_streaming 0.9.0
+distlib                 0.3.9
+distro                  1.8.0
+filelock                3.18.0
+idna                    3.6
+jsonpatch               1.33
+jsonpointer             2.4
+libmambapy              1.5.5
+mamba                   1.5.5
+menuinst                2.0.1
+packaging               23.2
+pip                     23.3.2
+platformdirs            4.1.0
+pluggy                  1.3.0
+pycosat                 0.6.6
+pycparser               2.21
+PySocks                 1.7.1
+requests                2.31.0
+ruamel.yaml             0.18.5
+ruamel.yaml.clib        0.2.7
+setuptools              68.2.2
+tqdm                    4.66.1
+truststore              0.8.0
+urllib3                 2.1.0
+virtualenv              20.30.0
+virtualenvwrapper-win   1.2.7
+wheel                   0.42.0
+win-inet-pton           1.1.0
+zstandard               0.22.0
+```
+
+but uv pip list
+```
+(chroma-mcp) E:\Workspace\github_me\chroma-mcp>uv pip list
+Package                                  Version         Editable project location
+---------------------------------------- --------------- ---------------------------------
+aiohappyeyeballs                         2.6.1
+aiohttp                                  3.11.16
+aiolimiter                               1.2.1
+aiosignal                                1.3.2
+annotated-types                          0.7.0
+anyio                                    4.9.0
+asgiref                                  3.8.1
+async-timeout                            5.0.1
+attrs                                    25.3.0
+backoff                                  2.2.1
+bcrypt                                   4.3.0
+build                                    1.2.2.post1
+cachetools                               5.5.2
+certifi                                  2025.1.31
+charset-normalizer                       3.4.1
+chroma-hnswlib                           0.7.6
+chroma-mcp                               0.2.2           E:\Workspace\github_me\chroma-mcp
+chromadb                                 1.0.3
+click                                    8.1.8
+cohere                                   5.14.2
+colorama                                 0.4.6
+coloredlogs                              15.0.1
+deprecated                               1.2.18
+distro                                   1.9.0
+durationpy                               0.9
+exceptiongroup                           1.2.2
+fastapi                                  0.115.9
+fastavro                                 1.10.0
+filelock                                 3.18.0
+flatbuffers                              25.2.10
+frozenlist                               1.5.0
+fsspec                                   2025.3.2
+google-auth                              2.38.0
+googleapis-common-protos                 1.69.2
+grpcio                                   1.71.0
+h11                                      0.14.0
+httpcore                                 1.0.7
+httptools                                0.6.4
+httpx                                    0.28.1
+httpx-sse                                0.4.0
+huggingface-hub                          0.30.1
+humanfriendly                            10.0
+idna                                     3.10
+importlib-metadata                       8.6.1
+importlib-resources                      6.5.2
+iniconfig                                2.1.0
+jiter                                    0.9.0
+jsonschema                               4.23.0
+jsonschema-specifications                2024.10.1
+kubernetes                               32.0.1
+markdown-it-py                           3.0.0
+mcp                                      1.6.0
+mdurl                                    0.1.2
+mmh3                                     5.1.0
+monotonic                                1.6
+mpmath                                   1.3.0
+multidict                                6.3.2
+numpy                                    2.2.4
+oauthlib                                 3.2.2
+onnxruntime                              1.21.0
+openai                                   1.70.0
+opentelemetry-api                        1.31.1
+opentelemetry-exporter-otlp-proto-common 1.31.1
+opentelemetry-exporter-otlp-proto-grpc   1.31.1
+opentelemetry-instrumentation            0.52b1
+opentelemetry-instrumentation-asgi       0.52b1
+opentelemetry-instrumentation-fastapi    0.52b1
+opentelemetry-proto                      1.31.1
+opentelemetry-sdk                        1.31.1
+opentelemetry-semantic-conventions       0.52b1
+opentelemetry-util-http                  0.52b1
+orjson                                   3.10.16
+overrides                                7.7.0
+packaging                                24.2
+pillow                                   11.1.0
+pluggy                                   1.5.0
+posthog                                  3.23.0
+propcache                                0.3.1
+protobuf                                 5.29.4
+pyasn1                                   0.6.1
+pyasn1-modules                           0.4.2
+pydantic                                 2.11.2
+pydantic-core                            2.33.1
+pydantic-settings                        2.8.1
+pygments                                 2.19.1
+pypika                                   0.48.9
+pyproject-hooks                          1.2.0
+pyreadline3                              3.5.4
+pytest                                   8.3.5
+pytest-asyncio                           0.26.0
+python-dateutil                          2.9.0.post0
+python-dotenv                            1.1.0
+pyyaml                                   6.0.2
+referencing                              0.36.2
+requests                                 2.32.3
+requests-oauthlib                        2.0.0
+rich                                     14.0.0
+rpds-py                                  0.24.0
+rsa                                      4.9
+shellingham                              1.5.4
+six                                      1.17.0
+sniffio                                  1.3.1
+sse-starlette                            2.2.1
+starlette                                0.45.3
+sympy                                    1.13.3
+tenacity                                 9.1.2
+tokenizers                               0.21.1
+tomli                                    2.2.1
+tqdm                                     4.67.1
+typer                                    0.15.2
+types-requests                           2.32.0.20250328
+typing-extensions                        4.13.1
+typing-inspection                        0.4.0
+urllib3                                  2.3.0
+uvicorn                                  0.34.0
+voyageai                                 0.3.2
+watchfiles                               1.0.4
+websocket-client                         1.8.0
+websockets                               15.0.1
+wrapt                                    1.17.2
+yarl                                     1.18.3
+zipp                                     3.21.0
+```
+
+
+
+What's the problem ?
+
+### Platform
+
+Window 10
+
+### Version
+
+uv 0.6.16 (d8ad9d3cd 2025-04-22)
+
+### Python version
+
+Python 3.10.13
+
+---
+
+_Label `bug` added by @eromoe on 2025-04-25 05:09_
+
+---
+
+_Comment by @eromoe on 2025-04-25 07:09_
+
+OK , I find uv get wrong pip 
+```
+E:\Workspace\github_me\chroma-mcp>uv run which pip
+/c/Users/Kasim/miniforge3/Scripts/pip
+```
+
+This is wrong , uv should overwrite the env settings. 
+
+
+---
+
+_Comment by @konstin on 2025-04-25 07:57_
+
+The correct command is `uv pip`, not `uv run pip`; by default, uv-created venvs don't have regular pip installed.
+
+---
+
+_Label `bug` removed by @konstin on 2025-04-25 07:57_
+
+---
+
+_Label `question` added by @konstin on 2025-04-25 07:57_
+
+---
+
+_Comment by @eromoe on 2025-04-25 08:08_
+
+So I can only use uv pip list to check the installed packages ?
+
+I also tried in .venv , the installed packages doesn't look right
+```
+(chroma-mcp) E:\Workspace\github_me\chroma-mcp>which python
+/e/Workspace/github_me/chroma-mcp/.venv/Scripts/python
+
+(chroma-mcp) E:\Workspace\github_me\chroma-mcp>python
+Python 3.12.9 | packaged by conda-forge | (main, Mar  4 2025, 22:37:18) [MSC v.1943 64 bit (AMD64)] on win32
+Type "help", "copyright", "credits" or "license" for more information.
+>>> import pkg_resources
+<stdin>:1: DeprecationWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html
+>>> installed_packages = [d for d in pkg_resources.working_set]
+>>> for package in installed_packages:
+...     print(package)
+...
+Brotli 1.1.0
+PySocks 1.7.1
+archspec 0.2.5
+boltons 24.0.0
+certifi 2025.1.31
+cffi 1.17.1
+charset-normalizer 3.4.1
+colorama 0.4.6
+conda 24.11.3
+conda-libmamba-solver 24.9.0
+conda-package-handling 2.4.0
+conda-package-streaming 0.11.0
+distro 1.9.0
+frozendict 2.4.6
+h2 4.2.0
+hpack 4.1.0
+hyperframe 6.1.0
+idna 3.10
+jsonpatch 1.33
+jsonpointer 3.0.0
+libmambapy 1.5.12
+mamba 1.5.12
+menuinst 2.2.0
+packaging 24.2
+pip 25.0.1
+platformdirs 4.3.6
+pluggy 1.5.0
+pycosat 0.6.6
+pycparser 2.22
+requests 2.32.3
+ruamel.yaml 0.18.10
+ruamel.yaml.clib 0.2.8
+setuptools 75.8.2
+tqdm 4.67.1
+truststore 0.10.1
+urllib3 2.3.0
+wheel 0.45.1
+win-inet-pton 1.1.0
+zstandard 0.23.0
+autocommand 2.2.2
+backports.tarfile 1.2.0
+importlib-metadata 8.0.0
+inflect 7.3.1
+jaraco.collections 5.1.0
+jaraco.context 5.3.0
+jaraco.functools 4.0.1
+jaraco.text 3.12.1
+more-itertools 10.3.0
+tomli 2.0.1
+typeguard 4.3.0
+typing-extensions 4.12.2
+zipp 3.19.2
+```
+
+---
+
+_Comment by @charliermarsh on 2025-04-25 12:52_
+
+Can you explain why they don't "look right"? I think you have some confusion around the relationship between `uv` and `pip`. If you run `uv sync`, then `uv run pip list`, `pip` won't be installed in the environment, so there's no telling what is going to get invoked -- probably some global `pip` somewhere else on your machine?
+
+This works as expected:
+```shell
+❯ git clone https://github.com/chroma-core/chroma-mcp
+❯ cd chroma-mcp
+❯ uv sync
+❯ uv pip list | grep chroma
+chroma-hnswlib                           0.7.6
+chroma-mcp                               0.2.2           /Users/crmarsh/workspace/uv/chroma-mcp
+chromadb                                 1.0.3
+```
+
+---
+
+_Comment by @zanieb on 2025-04-25 16:33_
+
+See also #12604 
+
+---
+
+_Comment by @eromoe on 2025-04-26 04:28_
+
+https://github.com/astral-sh/uv/issues/13101#issuecomment-2829857699
+@charliermarsh this is related to another problem let's continue there . 
+
+---
+
+_Closed by @eromoe on 2025-04-26 04:28_
+
+---

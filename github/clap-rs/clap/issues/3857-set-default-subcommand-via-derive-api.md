@@ -1,0 +1,357 @@
+---
+number: 3857
+title: Set default subcommand via Derive API
+type: issue
+state: closed
+author: dyc3
+labels:
+  - C-enhancement
+  - A-builder
+  - S-wont-fix
+assignees: []
+created_at: 2022-06-21T00:36:04Z
+updated_at: 2022-11-02T15:24:42Z
+url: https://github.com/clap-rs/clap/issues/3857
+synced_at: 2026-01-07T13:12:20-06:00
+---
+
+# Set default subcommand via Derive API
+
+---
+
+_Issue opened by @dyc3 on 2022-06-21 00:36_
+
+### Please complete the following tasks
+
+- [X] I have searched the [discussions](https://github.com/clap-rs/clap/discussions)
+- [X] I have searched the [open](https://github.com/clap-rs/clap/issues) and [rejected](https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed) issues
+
+### Clap Version
+
+3.1.18
+
+### Describe your use case
+
+I maintain [steamguard-cli](https://github.com/dyc3/steamguard-cli) and I recently upgraded clap to v3, and switched over to the derive API. A feature of the program is that whenever you don't supply a subcommand, it generates a code. 
+
+My current solution is to have the subcommands be optional, like so:
+
+https://github.com/dyc3/steamguard-cli/blob/2678961a4c938c153eac0b80b952999903d41861/src/cli.rs#L35-L49
+
+This is OK, but I wanted to add an `--offline` flag that would only be valid when generating a code. This means I need a new `Code` subcommand, but adding this in it's current form would break my backwards compatibility.
+
+### Describe the solution you'd like
+
+It's already possible to have a default subcommand, as shown in this example: https://github.com/clap-rs/clap/blob/731d18f300919a396eee62253f31239b9b02a943/examples/git.rs#L32-L39 All that needs to be done is expose this via the derive api.
+
+```
+#[clap(subcommand, default="Code")]
+sub: Subcommands
+```
+
+### Alternatives, if applicable
+
+`Option<Subcommands>` makes it so that subcommands are optional altogether, but that means any arguments you need in the `None` case must become global arguments, which can get confusing for end users.
+
+### Additional Context
+
+_No response_
+
+---
+
+_Label `C-enhancement` added by @dyc3 on 2022-06-21 00:36_
+
+---
+
+_Comment by @epage on 2022-06-21 01:09_
+
+> This is OK, but I wanted to add an --offline flag that would only be valid when generating a code. This means I need a new Code subcommand, but adding this in it's current form would break my backwards compatibility.
+
+Why would that break backwards compatibility?  Could you clarify how this is related to the default subcommands?
+
+> Option<Subcommands> makes it so that subcommands are optional altogether, but that means any arguments you need in the None case must become global arguments, which can get confusing for end users.
+
+How come you say they would need to be `global = true`? The stash example you referenced doesn't do that.
+
+What isn't quite clear is what the concerns are for users [implementing this with the existing primitives we offer](https://github.com/clap-rs/clap/blob/master/examples/git-derive.rs#L55) besides the extra boiler plate.
+
+> All that needs to be done is expose this via the derive api.
+
+Ideally we add new major features like this at the Builder API level so everyone can take advantage of it.  As we dig in, there might be some technical details that force us into it (like if we need any `debug_asserts`).
+
+The challenge we run into is we are trying to focus on providing users building blocks rather than baking in everything to help with
+- Keeping binary sizes down
+- Keeping compile times down
+- Minimizing the API surface so what we do have is more discoverable
+
+If there are challenges with doing this with the building blocks or if this becomes important enough across our user base, we can re-evaluate native support for it.
+
+---
+
+_Label `S-waiting-on-decision` added by @epage on 2022-06-21 01:09_
+
+---
+
+_Label `A-builder` added by @epage on 2022-06-21 01:09_
+
+---
+
+_Comment by @dyc3 on 2022-06-21 01:57_
+
+> Why would that break backwards compatibility? Could you clarify how this is related to the default subcommands?
+> How come you say they would need to be `global = true`?
+
+Ah, I didn't realize global had a specific meaning. Let me try again.
+
+Here's my understanding:
+
+Suppose we have my current implementation: 
+
+```rust
+#[derive(Parser)]
+struct Args {
+    sub: Option<Commands>
+}
+
+#[derive(Parser)]
+enum Commands {
+    Setup(ArgsSetup),
+}
+
+#[derive(Parser)]
+struct ArgsSetup;
+```
+
+When `sub == None`, it will generate a code. The match looks something like
+
+```rust
+match args.sub {
+    Some(Commands::Setup(subargs)) => run_setup(subargs),
+    None => generate_code(args),
+}
+```
+
+I want to add an `--offline` flag that is only valid when generating a code, which would have to look something like:
+
+```rust
+#[derive(Parser)]
+struct Args {
+    #[clap(long)]
+    offline: bool
+
+    sub: Option<Commands>
+}
+
+#[derive(Parser)]
+enum Commands {
+    Setup(ArgsSetup),
+}
+
+#[derive(Parser)]
+struct ArgsSetup;
+```
+
+Correct me if I'm wrong, but this would make `--offline` a valid argument regardless of the subcommand (as in it gets parsed and doesn't cause errors, even though it's ultimately unused).
+
+Ideally, I would like it to look something like this:
+
+```rust
+#[derive(Parser)]
+struct Args {
+    #[clap(subcommand, default = "Code")]
+    sub: Commands
+}
+
+#[derive(Parser)]
+enum Commands {
+    Setup(ArgsSetup),
+    Code(ArgsCode),
+}
+
+#[derive(Parser)]
+struct ArgsSetup;
+
+#[derive(Parser)]
+struct ArgsCode {
+    #[clap(long)]
+    offline: bool
+}
+```
+
+This way, `--offline` would only be valid in the context of the `Code` subcommand. `steamguard-cli code --offline` and `steamguard-cli --offline` would have the same effect. `args_conflicts_with_subcommands` was not listed in the derive API documentation, so I didn't even know it was accessible.
+
+Regardless, the git-derive example you linked feels really unintuitive to me. I have no idea how to apply it to my situation.
+
+
+---
+
+_Comment by @epage on 2022-06-21 14:07_
+
+> args_conflicts_with_subcommands was not listed in the derive API documentation, so I didn't even know it was accessible.
+
+The derive documentation delegates to the builder documentation with [this statement](https://github.com/clap-rs/clap/tree/master/examples/derive_ref#command-attributes)
+
+> **Raw attributes:** Any [Command method](https://docs.rs/clap/latest/clap/type.Command.html) can also be used as an attribute, see [Terminology](https://github.com/clap-rs/clap/tree/master/examples/derive_ref#terminology) for syntax.
+>
+> - e.g. `#[clap(arg_required_else_help(true))]` would translate to `cmd.arg_required_else_help(true)`
+
+> Regardless, the git-derive example you linked feels really unintuitive to me. I have no idea how to apply it to my situation.
+
+The key parts
+- Subcommands under `stash` are optional (`command: Option<StashCommands>,`), allowing someone to not provide one
+- We reuse arguments between `git stash` and `git stash push` via `#[clap(flatten)] push: StashPush,`
+- We prevent using `git stash` flags with any of the `git stash` subcommands with `#[clap(args_conflicts_with_subcommands = true)]`
+- We simplify the match code by treating the `git stash` args as if they were passed to `git stash push` via `let stash_cmd = stash.command.unwrap_or(StashCommands::Push(stash.push));`
+
+It sounds like doing similar what give you similar results
+```rust
+#[derive(Parser)]
+#[clap(args_conflicts_with_subcommands = true)]
+struct Args {
+    #[clap(subcommand)]
+    sub: Option<Commands>,
+
+    #[clap(flatten)]
+    code: ArgsCode,
+}
+
+#[derive(Parser)]
+enum Commands {
+    Setup(ArgsSetup),
+    Code(ArgsCode),
+}
+
+#[derive(Parser)]
+struct ArgsSetup;
+
+#[derive(Parser)]
+struct ArgsCode {
+    #[clap(long)]
+    offline: bool
+}
+```
+
+---
+
+_Comment by @dyc3 on 2022-06-21 23:29_
+
+That's a really good breakdown, thank you! I'm able to get the behavior I want. I still think having derive syntax for a default subcommand would be convenient and easier to work with. Purely as a nice to have though, not missing functionality. 
+
+---
+
+_Comment by @gregdhill on 2022-09-07 13:05_
+
+@epage what if some of the commands in `ArgsCode` are required?
+
+For example if we try `Args::parse()` here we get `MissingRequiredArgument`. 
+
+```rust
+#[derive(Parser)]
+struct Args {
+    #[clap(subcommand)]
+    sub: Option<Commands>,
+
+    #[clap(flatten)]
+    code: ArgsCode,
+}
+
+#[derive(Parser)]
+enum Commands {
+    Setup(ArgsSetup),
+    Code(ArgsCode),
+}
+
+#[derive(Parser)]
+struct ArgsSetup;
+
+#[derive(Parser)]
+struct ArgsCode {
+    #[clap(long)]
+    name: String,
+}
+```
+
+---
+
+_Comment by @epage on 2022-09-07 13:50_
+
+@gregdhill Your example would look like
+```rust
+#[derive(Parser)]
+#[clap(args_conflicts_with_subcommands = true)]
+struct Args {
+    #[clap(subcommand)]
+    sub: Option<Commands>,
+
+    #[clap(flatten)]
+    code: ArgsCode,
+}
+
+#[derive(Parser)]
+enum Commands {
+    Setup(ArgsSetup),
+    Code(ArgsCode),
+}
+
+#[derive(Parser)]
+struct ArgsSetup;
+
+#[derive(Parser)]
+struct ArgsCode {
+    #[clap(long, required = true)]
+    name: Option<String>,
+}
+```
+- `args_conflicts_with_subcommands ` will override `required = true`
+- `name` needs to be `Option<T>` so we have something to put in its place when it isn't required
+- Because `name` is `Option<T>`, `required = true` isn't being set for us and we need to do it ourselves.
+
+---
+
+_Comment by @epage on 2022-09-07 13:51_
+
+btw another discussion on default subcommands: https://github.com/clap-rs/clap/discussions/4134
+
+---
+
+_Comment by @epage on 2022-09-07 13:56_
+
+I'm closing this because
+- We have shown that this is possible today with existing primitives
+- This seems uncommon enough that it doesn't warrant built-in behavior
+
+If someone wants to continue the discussion to see if a solution aligns well enough with clap that we can merge it anyways, some points to consider
+- The derive API is built on top of the builder API and a design will need to include how it maps to the builder API
+- What is more likely to get supported is if you can find general primitives to make default subcommands easier but also help in other cases (e.g. instead of us merging 3-4 different `multicall` options, we simplified it down to just one style of `multicall` that all of the others can be built off of).
+
+---
+
+_Closed by @epage on 2022-09-07 13:56_
+
+---
+
+_Comment by @epage on 2022-09-08 17:18_
+
+[yargs supports default subcommands](https://github.com/yargs/yargs/blob/main/docs/advanced.md#default-commands)
+
+---
+
+_Referenced in [clap-rs/clap#4442](../../clap-rs/clap/issues/4442.md) on 2022-11-02 15:23_
+
+---
+
+_Label `S-waiting-on-decision` removed by @epage on 2022-11-02 15:24_
+
+---
+
+_Label `S-wont-fix` added by @epage on 2022-11-02 15:24_
+
+---
+
+_Closed by @epage on 2022-11-02 15:24_
+
+---
+
+_Referenced in [fastly/Viceroy#229](../../fastly/Viceroy/pulls/229.md) on 2023-02-27 22:11_
+
+---

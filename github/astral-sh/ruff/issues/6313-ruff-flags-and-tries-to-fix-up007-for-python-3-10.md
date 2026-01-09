@@ -1,0 +1,76 @@
+---
+number: 6313
+title: Ruff flags (and tries to fix) UP007 for python<3.10 in some cases
+type: issue
+state: closed
+author: FranzForstmayr
+labels: []
+assignees: []
+created_at: 2023-08-03T16:15:56Z
+updated_at: 2023-08-03T18:38:57Z
+url: https://github.com/astral-sh/ruff/issues/6313
+synced_at: 2026-01-07T13:12:15-06:00
+---
+
+# Ruff flags (and tries to fix) UP007 for python<3.10 in some cases
+
+---
+
+_Issue opened by @FranzForstmayr on 2023-08-03 16:15_
+
+Following code works without error when checked with
+`ruff .\test.py --isolated --select UP --target-version py39`
+```python
+# from __future__ import annotations
+
+from typing import Union
+
+class MyModel():
+    value: Union[bool, str]
+```
+
+
+
+When I uncomment the first line, `ruff` reports (and wants to fix) the `Union[bool, str]` to `bool | str` which is not compatible with python 3.9.
+
+```python
+from __future__ import annotations
+
+from typing import Union
+
+class MyModel():
+    value: Union[bool, str]
+```
+Same command
+`ruff .\test.py --isolated --select UP --target-version py39`
+
+```
+test.py:6:12: UP007 [*] Use `X | Y` for type annotations
+Found 1 error.
+[*] 1 potentially fixable with the --fix option.
+```
+
+---
+
+_Comment by @charliermarsh on 2023-08-03 16:20_
+
+I believe that code _is_ Python 3.9-compatible -- it will run without error (I just tried on 3.8), and all type checkers will support and understand it. `__future__` annotations effectively treats all annotations as strings, so analysis tools can support language features that don't exist at runtime.
+
+If you're relying on the annotations being _evaluated_ at runtime, for use with Pydantic or some other library, you may be looking for the [`keep-runtime-typing`](https://beta.ruff.rs/docs/settings/#pyupgrade-keep-runtime-typing) setting.
+
+---
+
+_Comment by @FranzForstmayr on 2023-08-03 18:37_
+
+Yes, this is a snippet of a bigger `pydantic` based model where I got the error. 
+You are right, python3.9 can run this snippet without error, but based on the error message I thought this is not supported yet.
+
+[PEP604](https://peps.python.org/pep-0604/) mentions also only 3.10+.
+
+Thanks anyway, `keep-runtime-typing` will solve my issue :)
+
+---
+
+_Closed by @FranzForstmayr on 2023-08-03 18:38_
+
+---

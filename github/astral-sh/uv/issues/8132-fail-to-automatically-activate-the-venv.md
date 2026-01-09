@@ -1,0 +1,74 @@
+---
+number: 8132
+title: Fail to automatically activate the venv
+type: issue
+state: closed
+author: ArcticOc
+labels:
+  - question
+assignees: []
+created_at: 2024-10-11T20:13:19Z
+updated_at: 2024-10-12T10:39:21Z
+url: https://github.com/astral-sh/uv/issues/8132
+synced_at: 2026-01-07T13:12:17-06:00
+---
+
+# Fail to automatically activate the venv
+
+---
+
+_Issue opened by @ArcticOc on 2024-10-11 20:13_
+
+Hi,
+
+After running `uv run hello.py`, it seems that uv failed to automatically activate the venv in the current project. But uv did find this venv. Only after manually activating it using `source .venv/bin/activate` can the venv be correctly recognized.
+
+```zsh
+arc in WordCloud via v3.9.6  
+➜ uv python find                                                   [ 04:53:17 ] 
+/Users/arc/Research/WordCloud/.venv/bin/python3
+
+arc in WordCloud via v3.9.6 
+➜ uv run hello.py                                                  [ 04:53:21 ] 
+Hello from wordcloud!
+
+arc in WordCloud via v3.9.6 
+➜ which python3                                                    [ 04:56:13 ] 
+/usr/bin/python3
+
+arc in WordCloud via v3.9.6 
+➜ source .venv/bin/activate                                        [ 04:56:20 ] 
+
+arc in WordCloud via v3.12.7 (WordCloud) 
+➜ which python3                                                    [ 04:59:13 ] 
+/Users/arc/Research/WordCloud/.venv/bin/python3                                                                                                                           
+```
+
+
+---
+
+_Comment by @charliermarsh on 2024-10-12 03:46_
+
+This is by design -- `uv run` can't activate the environment persisntely, since it can't modify your shell. So the command you run within `uv run` has access to the environment (i.e., in `uv run hello.py`, `hello.py` has access to the environment), but subsequent commands won't.
+
+---
+
+_Label `question` added by @charliermarsh on 2024-10-12 03:46_
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2024-10-12 03:46_
+
+---
+
+_Comment by @ArcticOc on 2024-10-12 05:23_
+
+> This is by design -- `uv run` can't activate the environment persisntely, since it can't modify your shell. So the command you run within `uv run` has access to the environment (i.e., in `uv run hello.py`, `hello.py` has access to the environment), but subsequent commands won't.
+
+Thanks, I get it.
+
+---
+
+_Closed by @ArcticOc on 2024-10-12 10:39_
+
+---

@@ -1,0 +1,43 @@
+---
+number: 12980
+title: An error occurred while installing an older version of PyTorch.
+type: issue
+state: closed
+author: wzr0108
+labels: []
+assignees: []
+created_at: 2025-04-19T09:46:53Z
+updated_at: 2025-04-19T11:25:29Z
+url: https://github.com/astral-sh/uv/issues/12980
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# An error occurred while installing an older version of PyTorch.
+
+---
+
+_Issue opened by @wzr0108 on 2025-04-19 09:46_
+
+The pip installation command is as follows:
+```pip install torch==1.6.0+cu101 torchvision==0.7.0+cu101 -f https://download.pytorch.org/whl/torch_stable.html```
+The uv command I used is as follows:
+```uv add torch==1.6.0+cu101 torchvision==0.7.0+cu101 --index https://download.pytorch.org/whl/torch_stable.html```
+However, an error occurred. The error message is as follows:
+```
+  × No solution found when resolving dependencies:
+  ╰─▶ Because there is no version of torch==1.6.0+cu101 and your project depends on torch==1.6.0+cu101, we can conclude that your project's requirements are unsatisfiable.
+  help: If you want to add the package regardless of the failed resolution, provide the `--frozen` flag to skip locking and syncing.
+```
+
+
+---
+
+_Comment by @wzr0108 on 2025-04-19 11:25_
+
+I used the wrong parameter. It should be `-f` instead of `--index`. 
+
+---
+
+_Closed by @wzr0108 on 2025-04-19 11:25_
+
+---

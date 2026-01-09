@@ -1,0 +1,185 @@
+---
+number: 13427
+title: "`uv init` cannot create `.git`"
+type: issue
+state: open
+author: gbaian10
+labels:
+  - needs-mre
+assignees: []
+created_at: 2025-05-13T08:55:16Z
+updated_at: 2025-05-27T13:11:28Z
+url: https://github.com/astral-sh/uv/issues/13427
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# `uv init` cannot create `.git`
+
+---
+
+_Issue opened by @gbaian10 on 2025-05-13 08:55_
+
+### Summary
+
+When I run `uv init temp --verbose`, it cannot generate the `.git` folder and `.gitignore` file.
+But if I explicitly specify the VCS with `uv init temp --verbose --vcs git`, then it does create them.
+
+I usually run this in another environment where this issue does not occur.
+Is it possible that something is causing it not to create git-related resources?
+
+```
+DEBUG uv 0.7.3
+DEBUG No Python version file found in ancestors of working directory: /home/gbaian10/temp
+DEBUG Checking for Python environment at `temp/.venv`
+DEBUG Searching for default Python interpreter in managed installations or search path
+DEBUG Searching for managed installations at `.local/share/uv/python`
+DEBUG Found `cpython-3.10.12-linux-x86_64-gnu` at `/usr/bin/python` (first executable in the search path)
+DEBUG `git rev-parse --is-inside-work-tree` failed but didn't contain `not a git repository` in stderr for `/home/gbaian10/temp`
+DEBUG No Python version file found in ancestors of working directory: /home/gbaian10/temp
+DEBUG Writing Python versions to `/home/gbaian10/temp/.python-version`
+Initialized project `temp` at `/home/gbaian10/temp`
+```
+
+
+
+### Platform
+
+Ubuntu 22.04
+
+### Version
+
+uv 0.7.3
+
+### Python version
+
+_No response_
+
+---
+
+_Label `bug` added by @gbaian10 on 2025-05-13 08:55_
+
+---
+
+_Comment by @konstin on 2025-05-13 09:12_
+
+What does this print when run before creating the `.git` folder?
+
+```
+git rev-parse --is-inside-work-tree
+```
+
+---
+
+_Comment by @gbaian10 on 2025-05-13 09:21_
+
+> What does this print when run before creating the `.git` folder?
+> 
+> ```
+> git rev-parse --is-inside-work-tree
+> ```
+
+```
+fatal: not a git repository (or any of the parent directories): .git
+```
+But when I run `uv init temp --verbose --vcs git`, it gets the same output verbose, but it successfully created a Git repository.
+
+---
+
+In another normal environment (where Git is generated correctly), I ran `uv init temp --verbose` and got the following output.
+```
+DEBUG uv 0.7.3
+DEBUG No Python version file found in ancestors of working directory: /home/vscode/temp
+DEBUG Checking for Python environment at `temp/.venv`
+DEBUG Searching for default Python interpreter in managed installations or search path
+DEBUG Searching for managed installations at `.local/share/uv/python`
+DEBUG Found managed installation `cpython-3.13.3-linux-x86_64-gnu`
+DEBUG Found `cpython-3.13.3-linux-x86_64-gnu` at `/home/vscode/.local/share/uv/python/cpython-3.13.3-linux-x86_64-gnu/bin/python3.13` (managed installations)
+DEBUG Not a Git repository `/home/vscode/temp`
+DEBUG No Python version file found in ancestors of working directory: /home/vscode/temp
+DEBUG Writing Python versions to `/home/vscode/temp/.python-version`
+Initialized project `temp` at `/home/vscode/temp`
+```
+
+---
+
+_Label `bug` removed by @konstin on 2025-05-13 09:25_
+
+---
+
+_Label `needs-mre` added by @konstin on 2025-05-13 09:25_
+
+---
+
+_Comment by @konstin on 2025-05-13 09:27_
+
+The only reason why Git would fail to initialize is when `git rev-parse --is-inside-work-tree` fails oddly, but I can't really tell why this fails as I can't reproduce the environment in which it fails.
+
+---
+
+_Comment by @gbaian10 on 2025-05-13 09:51_
+
+I reinstalling uv also had no effect and did not solve the problem.
+However, if I run it again in a clean Docker environment, I can get the correct result, and I am unable to reproduce this issue in a new environment myself.  
+It's possible that something on my local machine is causing this problem, but I haven't been able to pinpoint the source of the issue.
+
+---
+
+_Comment by @konstin on 2025-05-13 09:53_
+
+Did you change the `PATH` environment variable in a way that `git` wouldn't work or point to a non-Git executable? 
+
+---
+
+_Comment by @gbaian10 on 2025-05-13 10:15_
+
+When I run the following command, I only get two system-level paths.
+
+```sh
+where git
+```
+
+/usr/bin/git
+/bin/git
+
+
+---
+
+_Comment by @Shadow-Xin on 2025-05-22 17:27_
+
+The same issue also appeared on my newly purchased Mac Mini M4. I installed git and uv using Homebrew, and when I run the 'where git' command, the result is:
+```
+/opt/homebrew/bin/git
+/usr/bin/git
+```
+Could it be a bug?
+
+---
+
+_Comment by @konstin on 2025-05-22 19:07_
+
+@Shadow-Xin Do both those gits work and show the same output on stdout and stderr for `git rev-parse --is-inside-work-tree`?
+
+---
+
+_Comment by @Shadow-Xin on 2025-05-23 06:01_
+
+I got it: Because i have installed two gits.After i run `brew uninstall git`,the problem solved.
+@gbaian10 Maybe you should uninstall one of these gits.
+
+---
+
+_Comment by @gbaian10 on 2025-05-26 02:31_
+
+I deleted `/bin/git`, which caused `/usr/bin/git` to be deleted as well. As a result, my entire system no longer had git.  
+
+I used `sudo apt install --reinstall git` to reinstall git, but when I run `where git` I still get the same two paths, and the problem where uv cannot create the `.git` folder still persists.
+
+---
+
+_Comment by @Etyctmlrls on 2025-05-27 13:08_
+
+It is necessary to ensure that your command line can use the git command.
+
+![Image](https://github.com/user-attachments/assets/eda4532a-0536-4e60-8c86-2aacf8496bad)
+
+---

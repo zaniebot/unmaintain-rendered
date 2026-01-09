@@ -1,0 +1,65 @@
+---
+number: 8519
+title: Some links cannot be read because of the color contrast in dark mode
+type: issue
+state: closed
+author: etiennebacher
+labels:
+  - bug
+  - documentation
+assignees: []
+created_at: 2023-11-06T16:19:47Z
+updated_at: 2023-11-07T21:41:35Z
+url: https://github.com/astral-sh/ruff/issues/8519
+synced_at: 2026-01-07T13:12:15-06:00
+---
+
+# Some links cannot be read because of the color contrast in dark mode
+
+---
+
+_Issue opened by @etiennebacher on 2023-11-06 16:19_
+
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+In the [Vim & Neovim section](https://docs.astral.sh/ruff/integrations/#vim-neovim), some links are unreadable because of their color in dark mode:
+
+![image](https://github.com/astral-sh/ruff/assets/52219252/a4587c42-ac18-4cdb-bbfe-0da79d7fefcf)
+
+Note that everything's fine in light mode:
+
+![image](https://github.com/astral-sh/ruff/assets/52219252/cabfa660-ef63-454b-a899-665ac89656b7)
+
+
+---
+
+_Comment by @charliermarsh on 2023-11-07 04:44_
+
+Thank you!
+
+---
+
+_Label `bug` added by @charliermarsh on 2023-11-07 04:44_
+
+---
+
+_Label `documentation` added by @charliermarsh on 2023-11-07 04:44_
+
+---
+
+_Referenced in [astral-sh/ruff#8548](../../astral-sh/ruff/pulls/8548.md) on 2023-11-07 21:35_
+
+---
+
+_Closed by @charliermarsh on 2023-11-07 21:41_
+
+---

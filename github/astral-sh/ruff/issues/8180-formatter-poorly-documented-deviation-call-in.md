@@ -1,0 +1,134 @@
+---
+number: 8180
+title: "Formatter poorly(?) documented deviation: Call in right side of equality when call chain is on the left "
+type: issue
+state: closed
+author: henribru
+labels:
+  - documentation
+  - formatter
+assignees: []
+created_at: 2023-10-24T20:03:04Z
+updated_at: 2023-11-10T04:32:31Z
+url: https://github.com/astral-sh/ruff/issues/8180
+synced_at: 2026-01-07T13:12:15-06:00
+---
+
+# Formatter poorly(?) documented deviation: Call in right side of equality when call chain is on the left 
+
+---
+
+_Issue opened by @henribru on 2023-10-24 20:03_
+
+[Black formatting:](https://black.vercel.app/?version=stable&state=_Td6WFoAAATm1rRGAgAhARYAAAB0L-Wj4AGKALddAD2IimZxl1N_WlbvK5V9KEd0suDTtKdXsuSmecKIW8jmn5kH8_9id80T9Kr3nUt8Gxk5CcrlmBskY9FxtGhW6TeDwB60yFYy1_WyhF1d5I90slg9OTGQEaPnk8kdAY--vRr_eRFvxIwm6vPfkSX5T5elM57XYDYLgzDY2c3D62IPNH0yZvQ9yN9nCYxm3yNGZR4_jPexvgHF19UkLQ-3fCOJ1Wc1PhW_fzUJ_dgIw8A6GCaMWJiYYAAAinzk79VuUhMAAdMBiwMAAI8cgVKxxGf7AgAAAAAEWVo=)
+```
+def foo():
+    for _ in range(2):
+        assert AAAAAAAAAAAAAAAAAAAAAA.bbbbbb.fooo(
+            aaaaaaaaaaaa=aaaaaaaaaaaa
+        ).ccccc() == (len(aaaaaaaaaa) + 1) * fooooooooooo * (
+            foooooo + 1
+        ) * foooooo * len(
+            list(foo(bar(4, foo), foo))
+        )
+```
+
+[Ruff formatting:](https://play.ruff.rs/1d0d17b8-7545-49ef-8ba2-3451f287869d?secondary=Format)
+```
+def foo():
+    for _ in range(2):
+        assert AAAAAAAAAAAAAAAAAAAAAA.bbbbbb.fooo(
+            aaaaaaaaaaaa=aaaaaaaaaaaa
+        ).ccccc() == (len(aaaaaaaaaa) + 1) * fooooooooooo * (
+            foooooo + 1
+        ) * foooooo * len(list(foo(bar(4, foo), foo)))
+```
+
+This seems pretty similar to https://github.com/astral-sh/ruff/blob/main/docs/formatter/black.md#call-chain-calls-break-differently, so I'm guessing it might be intentional? But the call that's being changed isn't actually part of the call chain, so if it's intentional the documentation should perhaps be rewritten slightly.
+
+---
+
+_Comment by @charliermarsh on 2023-10-24 20:10_
+
+Yeah, I suspect this is the same thing. I'll try to improve the write-up a bit.
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2023-10-24 20:10_
+
+---
+
+_Label `documentation` added by @charliermarsh on 2023-10-24 20:10_
+
+---
+
+_Label `formatter` added by @charliermarsh on 2023-10-24 20:10_
+
+---
+
+_Comment by @henribru on 2023-10-24 20:11_
+
+This is another similar-ish example, this time it's not a call in the chain that's getting changed but an indexing after the call chain:
+https://black.vercel.app/?version=stable&state=_Td6WFoAAATm1rRGAgAhARYAAAB0L-Wj4AE7AJVdAD2IimZxl1N_WlbvK5V9KEd0suDTtKdXyXo2kcuBYPryJZ5G_dS0BQrsk0J72ctwrWi50MbcjSAgbd1pDRsO25yM0zEHl-Qp80HeK1J3JG-cjLbYLJtwuLmm5YYOfhKlmnoTZ6tl7avsmvD4jY7GxWGE-6rTP7XuF8nOCQP7pdeJDKHVTSXR58N3rXVmq6mhBAquOTsAAAAAAAzEPxgSbck6AAGxAbwCAADxGIN7scRn-wIAAAAABFla
+
+https://play.ruff.rs/a6144214-4043-43fd-8d6c-de08025a21dd?secondary=Format
+
+---
+
+_Comment by @henribru on 2023-10-24 20:30_
+
+Hmm, this one has no call chains nor calls, is it a completely different issue or still related?
+
+https://black.vercel.app/?version=stable&state=_Td6WFoAAATm1rRGAgAhARYAAAB0L-Wj4AD7AGZdAD2IimZxl1N_WlbvK5V9KEd0suDTtKdXyg7Vbzvz0jlNR2_bpXU07f205BRmTbXczRtImDQGwvxVeZ0igpjl1qY5GjsPOvWAo45rNmyDKffTMdBonyq7OakaQnjgdtL9VEwdljVCAAAAABNrGxsCFLuyAAGCAfwBAACWiz9gscRn-wIAAAAABFla
+
+https://play.ruff.rs/ca8b5351-00c1-4ddc-a1f3-fe9ee3aeeb7d?secondary=Format  
+
+---
+
+_Comment by @charliermarsh on 2023-10-24 20:33_
+
+That last one looks separate -- do you mind filing a new issue for it? I would've expected us to wrap there.
+
+---
+
+_Comment by @henribru on 2023-10-24 20:34_
+
+Will do!
+
+---
+
+_Comment by @henribru on 2023-10-24 20:35_
+
+Here's an example where it changes a call in the chain, but not the last call:
+
+https://black.vercel.app/?version=stable&state=_Td6WFoAAATm1rRGAgAhARYAAAB0L-Wj4AFAAJ9dAD2IimZxl1N_WlbvK5V8G17R4xukEnqcY6_V1Dl-sIzsksJnPtkyWorT7oP5VJ0HTTlXlmW8mqIHMCK-um5mxlp8fBO2lEBIirr6EpL7rOS9n9gkhszdKw9Z_6t9P76Zmk-DWur8klIiD5tLp9iRs_5uQjix160o4YhkqfxCzOpnA_fhc5V4Eh856r4r51IvxbNFd4_DQmGPIfeEci6HAAAANfFOPYGTZkAAAbsBwQIAANZDTUOxxGf7AgAAAAAEWVo=
+
+https://play.ruff.rs/b7af8c25-78e4-4fcd-ad2c-0f74db349da3?secondary=Format
+
+---
+
+_Comment by @henribru on 2023-10-24 21:00_
+
+Interestingly I found a case where Ruff splits a call in a chain which Black doesn't
+
+https://black.vercel.app/?version=stable&state=_Td6WFoAAATm1rRGAgAhARYAAAB0L-Wj4AHEALVdAD2IimZxl1N_WlbvK5V9KEd0suDTtKdXyXm39k-8r0kVpb5gKnZS64uu_-AbJ7XCI_oZS91LNEZjHTtI0qDEfK_9DztckbzC_cA3STrwTL1H75v0-A127RZ2ho-GRN0j-RFkhjHalceawulnq13ZcXyiq508tAjG33Uk4UlvIatbX1EKu1wwr1HQ8DVxuqcLUzw4iMvnNGaeMGd8HmRZG4luSVtzfIImtnVQzKoyH-QILZc-twAAAAAAogfqQW1z8GEAAdEBxQMAAIqSgmSxxGf7AgAAAAAEWVo=
+
+https://play.ruff.rs/dd119455-1ea0-464c-af99-49e704037612?secondary=Format
+
+---
+
+_Added to milestone `Formatter: Stable` by @MichaReiser on 2023-10-24 21:26_
+
+---
+
+_Referenced in [astral-sh/ruff#8388](../../astral-sh/ruff/issues/8388.md) on 2023-10-31 19:41_
+
+---
+
+_Referenced in [astral-sh/ruff#8597](../../astral-sh/ruff/pulls/8597.md) on 2023-11-10 04:24_
+
+---
+
+_Closed by @charliermarsh on 2023-11-10 04:32_
+
+---

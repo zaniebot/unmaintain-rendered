@@ -1,0 +1,155 @@
+---
+number: 2417
+title: "Implement `flake8-assertive`"
+type: issue
+state: open
+author: ngnpope
+labels:
+  - plugin
+assignees: []
+created_at: 2023-01-31T21:16:48Z
+updated_at: 2024-10-23T07:15:21Z
+url: https://github.com/astral-sh/ruff/issues/2417
+synced_at: 2026-01-07T13:12:14-06:00
+---
+
+# Implement `flake8-assertive`
+
+---
+
+_Issue opened by @ngnpope on 2023-01-31 21:16_
+
+[GitHub](https://github.com/jparise/flake8-assertive), [PyPI](https://pypi.org/project/flake8-assertive/).
+
+- [ ] `A500`: prefer {func} for ‘{op}’ comparisons
+- [ ] `A501`: prefer {func} for ‘{op}’ expressions
+- [ ] `A502`: prefer {func} instead of comparing to {obj}
+- [ ] `A503`: use {func} instead of the deprecated {name}
+- [ ] `A504`: prefer the ‘msg=’ kwarg for {func} diagnostics
+
+See the [table](https://github.com/jparise/flake8-assertive#flake8-unittest-assertion-checker) containing all of the rewrites.
+
+Most, if not all, of these would be perfect for autofixing.
+
+Configuration options:
+- [ ] [`assertive-snakecase`](): suggest snake_case assert method names (e.g. `assert_true()`) instead of the standard names (e.g. `assertTrue()`)
+- [ ] [`assertive-test-pattern`](): fnmatch pattern for identifying unittest test files (and all other files will be skipped)
+
+The plugin allows for converting between snake and camel case, but I wonder if it could be extended to support conversion to plain assert statements for pytest? Although that is probably handled by `PT009` / `unittest-assertion` already?
+
+---
+
+_Label `plugin` added by @charliermarsh on 2023-01-31 23:05_
+
+---
+
+_Comment by @leiserfg on 2023-04-01 21:58_
+
+@charliermarsh  is it fine if I implement the fixes for `PT009`? They are not part of the original plugin but I don't think we should add another rule for showing the same error.  
+
+---
+
+_Comment by @charliermarsh on 2023-04-02 02:15_
+
+@leiserfg - Just trying to understand, how would these map to PT009? Aren't the above rules focused on remapping _within_ unittest-style assertions, e.g., `assertLessEqual` in favor of `assertTrue(a <= b)`?
+
+---
+
+_Comment by @leiserfg on 2023-04-02 06:16_
+
+PT009 complains about using unitest assert functions like 'assertLessEqual' as one should use plain asserts like 'assert a <= b'. This goes about changing usages of  assertTrue where a better assert* can be used or optionally changing to plain asserts. That las one maps to pt009 and I'm interested on implementing that (as I'm in the middle of a tests migration to pytest).
+
+
+---
+
+_Comment by @leiserfg on 2023-04-02 07:21_
+
+:facepalm:  I didn't notice that PT009 already implements most of them and just the ones that are "Django only" are missing so, forget my comment :face_exhaling: 
+
+---
+
+_Comment by @charliermarsh on 2023-04-03 03:11_
+
+@leiserfg - oh no worries! By the way: would love to help you find something to work on if you’re interested in a new project, your contributions have been great :)
+
+---
+
+_Referenced in [wagtail/wagtail#10324](../../wagtail/wagtail/pulls/10324.md) on 2023-04-12 11:45_
+
+---
+
+_Comment by @tylerlaprade on 2023-07-25 06:48_
+
+@leiserfg, if you're still looking for similar improvements to make, I would love it if `assertAlmostEquals` and `assertDictEqual` could be auto-fixed 😃 
+
+---
+
+_Comment by @tylerlaprade on 2023-07-25 07:32_
+
+I just discovered https://pypi.org/project/pytestify/, which could be helpful for managing the conversions. (It's also helpful for me to know how to manually convert `assertAlmostEquals`!)
+
+---
+
+_Comment by @leiserfg on 2023-07-25 07:43_
+
+For what I see in their code `assertDictEqual` is not correctly implemented.
+Adding them in ruff will require creating two local variables to store the values because we have to do something like:
+
+```python
+#current code
+self.assertDictEqual(A, B)   #A and B are expressions
+
+#generated code
+
+#we need to store the values in variables to avoid re-computations
+a = A
+b = B
+assert isinstance(a, dict)
+assert isinstance(b, dict)
+assert a == b
+```
+For the assertAlmostEqual we need similar transformations because besides comparing the values we need to compare the difference between them.
+
+@charliermarsh  is there any tool in ruff internals to get an unused identifier, ideally one that one can pass a list of potential names like  (pseudocode) `fn gimme_identifier(candidates: vec<&str>) -> String` ?
+
+
+
+ 
+
+---
+
+_Referenced in [astral-sh/ruff#12851](../../astral-sh/ruff/issues/12851.md) on 2024-08-13 08:09_
+
+---
+
+_Comment by @jaap3 on 2024-10-21 14:57_
+
+Just today I found myself asking for changes covered by flake8-assertive on a pull request (specifically `A504`, adding a `msg` to `assertTrue`/`assertFalse`). We used to have that plugin enabled, and didn't realise ruff doesn't implement it. In the mean time a bunch of violations have crept in. Would love to see at least `A504` implemented.
+
+---
+
+_Comment by @tylerlaprade on 2024-10-22 17:21_
+
+Thanks @jaap3, I didn't know about that plugin. Are there any others you still use in Flake8 that aren't in Ruff yet? I currently only have `flake8-cognitive-complexity` and `flake8-cohesion`.
+
+---
+
+_Comment by @tylerlaprade on 2024-10-22 17:27_
+
+Also, @jaap3, [`PT009`](https://docs.astral.sh/ruff/rules/pytest-unittest-assertion/) seems to do what you're looking for.
+
+---
+
+_Comment by @jaap3 on 2024-10-23 07:15_
+
+@tylerlaprade We use the stdlib unittest library and runner (well, Django's wrappers) so I've not enabled these pytest rules. I don't think they are fully equivalent since we do want to use the `assert*` methods provided by `unittest`.
+
+---
+
+_Referenced in [Azure/azure-cli#30406](../../Azure/azure-cli/pulls/30406.md) on 2024-12-14 09:27_
+
+---
+
+_Referenced in [leukeleu/django-hidp#279](../../leukeleu/django-hidp/pulls/279.md) on 2025-01-30 09:46_
+
+---

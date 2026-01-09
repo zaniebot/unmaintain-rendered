@@ -1,0 +1,100 @@
+---
+number: 6614
+title: "`package.metadata.requires-dist` in `uv.lock` is incomplete for last added packages."
+type: issue
+state: closed
+author: kabouzeid
+labels:
+  - bug
+assignees: []
+created_at: 2024-08-25T18:56:16Z
+updated_at: 2024-08-25T21:04:26Z
+url: https://github.com/astral-sh/uv/issues/6614
+synced_at: 2026-01-07T13:12:17-06:00
+---
+
+# `package.metadata.requires-dist` in `uv.lock` is incomplete for last added packages.
+
+---
+
+_Issue opened by @kabouzeid on 2024-08-25 18:56_
+
+`package.metadata.requires-dist` in `uv.lock` isn't updated with the version specifier on `add`. only subsequent `add`, `lock`, or `sync` calls add it.
+
+```console
+➜ uv --version
+uv 0.3.3 (Homebrew 2024-08-23)
+
+➜ uv add ruff
+Using Python 3.12.5
+Creating virtualenv at: .venv
+Resolved 2 packages in 190ms
+   Built project @ file:///private/tmp/project
+Prepared 2 packages in 695ms
+Installed 2 packages in 2ms
+ + project==0.1.0 (from file:///private/tmp/project)
+ + ruff==0.6.2
+
+➜ cat uv.lock | grep requires-dist
+requires-dist = [{ name = "ruff" }]
+
+➜ uv add polars
+Resolved 3 packages in 5ms
+   Built project @ file:///private/tmp/project
+Prepared 2 packages in 139ms
+Uninstalled 1 package in 0.51ms
+Installed 2 packages in 2ms
+ + polars==1.5.0
+ ~ project==0.1.0 (from file:///private/tmp/project)
+
+➜ cat uv.lock | grep -A 3 requires-dist
+requires-dist = [
+    { name = "polars" },
+    { name = "ruff", specifier = ">=0.6.2" },
+]
+
+➜ uv sync
+Resolved 3 packages in 16ms
+Audited 3 packages in 0.05ms
+
+➜ cat uv.lock | grep -A 3 requires-dist
+requires-dist = [
+    { name = "polars", specifier = ">=1.5.0" },
+    { name = "ruff", specifier = ">=0.6.2" },
+]
+```
+
+
+---
+
+_Referenced in [astral-sh/uv#6607](../../astral-sh/uv/pulls/6607.md) on 2024-08-25 19:12_
+
+---
+
+_Comment by @charliermarsh on 2024-08-25 20:05_
+
+Thanks! Will take a look, looks wrong.
+
+---
+
+_Label `bug` added by @charliermarsh on 2024-08-25 20:05_
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2024-08-25 20:05_
+
+---
+
+_Comment by @charliermarsh on 2024-08-25 20:15_
+
+Oh this actually _does_ make sense (we update the `pyproject.toml` _after_ the resolution, to set the lower-bound specifier). Difficult to fix but we definitely need to.
+
+---
+
+_Referenced in [astral-sh/uv#6618](../../astral-sh/uv/pulls/6618.md) on 2024-08-25 20:43_
+
+---
+
+_Closed by @charliermarsh on 2024-08-25 21:04_
+
+---

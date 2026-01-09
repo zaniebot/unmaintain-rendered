@@ -1,0 +1,124 @@
+---
+number: 5449
+title: "Arg dynamic completion via `ValueHint::Execute(String)`"
+type: issue
+state: closed
+author: sigoden
+labels:
+  - C-enhancement
+  - M-breaking-change
+  - A-completion
+assignees: []
+created_at: 2024-04-09T03:39:36Z
+updated_at: 2024-04-09T15:44:03Z
+url: https://github.com/clap-rs/clap/issues/5449
+synced_at: 2026-01-07T13:12:20-06:00
+---
+
+# Arg dynamic completion via `ValueHint::Execute(String)`
+
+---
+
+_Issue opened by @sigoden on 2024-04-09 03:39_
+
+### Please complete the following tasks
+
+- [X] I have searched the [discussions](https://github.com/clap-rs/clap/discussions)
+- [X] I have searched the [open](https://github.com/clap-rs/clap/issues) and [rejected](https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed) issues
+
+### Clap Version
+
+master 
+
+### Describe your use case
+
+Add dynamic completion for `clap::Arg`
+
+### Describe the solution you'd like
+
+Add `ValueHint::Execute(String)` to generating possible completion candidates by exectuting the command.
+
+### Describe the solution you'd like
+
+Add `ValueHint::Execute(String)`  to generate possible completion candidates by executing the command.
+
+```rust
+Command::new("aichat")
+    .arg(
+        Arg::new("model")
+            .short('m')
+            .long("model")
+            .value_hint(ValueHint::Execute("aichat --list-models"))
+    )
+
+
+#[derive(Args, Debug, PartialEq)]
+struct AichatCli {
+    #[arg(long, value_hint = ValueHint::Execute("aichat --list-models"))]
+    model: Option<String>,
+}
+```
+
+```
+$ aichat -m <tab>
+openai:gpt-3.5-turbo
+openai:gpt-3.5-turbo-1106
+...
+```
+
+Each line of the command output is a possible completion candidate.
+
+Environment variabes `$COMP_LINE` and `$COMP_POINT` should passed when executing the command.
+
+
+### Alternatives, if applicable
+
+_No response_
+
+### Additional Context
+
+Similar issues:
+- #2396
+- #5424
+
+Solved issues:
+- #1232
+
+
+---
+
+_Label `C-enhancement` added by @sigoden on 2024-04-09 03:39_
+
+---
+
+_Referenced in [sigoden/aichat#393](../../sigoden/aichat/pulls/393.md) on 2024-04-09 04:38_
+
+---
+
+_Label `M-breaking-change` added by @epage on 2024-04-09 15:36_
+
+---
+
+_Label `A-completion` added by @epage on 2024-04-09 15:36_
+
+---
+
+_Comment by @epage on 2024-04-09 15:44_
+
+The given use case for this proposal is focused on "let me provide dynamic completions by teaching clap how to call back into myself to provide those completions".  This in effect is an alternative to #1232 which the issue acknowledges.
+
+I prefer issues to be organized around problems, rather than solutions.  This ensures we have a holistic conversation, rather than spreading the conversation out across multiple issues, making ti hard to follow.
+
+I feel this would be encouraging people to extend their CLIs in ways that don't make sense from a CLI perspective but just as a workaround for not having the proposed solution in #1232.
+
+This proposal also reuses something targeted at integrating in with shell logic but not for shell logic.
+
+This is also a breaking change since `ValueHint` is `Copy`.  This isn't a reason to say "no" to something on its own but that it raises the bar, making this not viable for a short term solution to a problem.
+
+For these reasons, I'm closing this out.  If you have a reason we should reconsider, let us know!
+
+---
+
+_Closed by @epage on 2024-04-09 15:44_
+
+---

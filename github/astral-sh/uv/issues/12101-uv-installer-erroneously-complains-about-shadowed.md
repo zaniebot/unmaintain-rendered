@@ -1,0 +1,124 @@
+---
+number: 12101
+title: uv installer erroneously complains about shadowed commands
+type: issue
+state: closed
+author: thatch
+labels:
+  - bug
+  - external
+assignees: []
+created_at: 2025-03-10T17:48:03Z
+updated_at: 2025-08-29T12:39:59Z
+url: https://github.com/astral-sh/uv/issues/12101
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# uv installer erroneously complains about shadowed commands
+
+---
+
+_Issue opened by @thatch on 2025-03-10 17:48_
+
+### Summary
+
+Apologies for the vague bugreport now -- I intend to try on more Linux docker images tonight and see if there's more of a pattern to where this shows up.
+
+On a fresh Raspbian 12 install, using the installer command at
+```
+curl -LsSf https://astral.sh/uv/install.sh | sh
+```
+
+prints this at the end
+
+```
+WARNING: The following commands are shadowed by other commands in your PATH: uv uvx
+```
+
+However, I don't think that's true -- `which -a uv` and trying to run it directly don't seem to indicate that it's currently available on $PATH (and notably, `~/.local/bin` is not on my path in that shell session yet).
+
+### Platform
+
+Raspbian 12
+
+### Version
+
+0.6.5
+
+### Python version
+
+Python 3.11.2
+
+---
+
+_Label `bug` added by @thatch on 2025-03-10 17:48_
+
+---
+
+_Comment by @konstin on 2025-03-10 21:23_
+
+This has been fixed by https://github.com/axodotdev/cargo-dist/pull/1735, we need to update the uv installer to pull that fix in.
+
+---
+
+_Label `external` added by @charliermarsh on 2025-03-17 01:50_
+
+---
+
+_Comment by @filippo1335 on 2025-03-30 22:45_
+
+still an issue
+
+---
+
+_Assigned to @Gankra by @zanieb on 2025-04-01 21:29_
+
+---
+
+_Comment by @zanieb on 2025-04-01 21:29_
+
+@Gankra adding you to this per our previous discussion
+
+---
+
+_Comment by @Gankra on 2025-04-04 13:29_
+
+This should ideally be fixed the next time we release uv, as astral-sh/cargo-dist has the patch.
+
+---
+
+_Closed by @Gankra on 2025-04-04 13:29_
+
+---
+
+_Comment by @kirschd on 2025-08-13 04:28_
+
+I just installed uv on MacOS Sonoma and got this same error message:
+
+WARN: The following commands are shadowed by other commands in your PATH: uv uvx
+
+---
+
+_Comment by @aquacode on 2025-08-29 12:22_
+
+Just installed using sh script on arch linux and got the warning that uv and uvx are being shadowed.
+I checked all dirs on my PATH and I don't find any other uv or uvx.
+Should this be fixed or do I perhaps indeed have multiple uv and uvx binaries?
+
+---
+
+_Comment by @zanieb on 2025-08-29 12:34_
+
+What does `where uv` show?
+
+---
+
+_Comment by @aquacode on 2025-08-29 12:39_
+
+uv: /usr/include/uv /home/mike/.local/bin/uv
+
+Looks like the /usr/include/uv is libuv, but it's not on my PATH
+
+I couldn't find any other references
+
+---

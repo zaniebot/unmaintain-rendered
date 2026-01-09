@@ -1,0 +1,83 @@
+---
+number: 16000
+title: How to enable tab completion in pdb in a uv environment
+type: issue
+state: open
+author: Zhaoyilunnn
+labels:
+  - bug
+assignees: []
+created_at: 2025-09-23T03:31:09Z
+updated_at: 2025-09-24T20:33:57Z
+url: https://github.com/astral-sh/uv/issues/16000
+synced_at: 2026-01-07T13:12:19-06:00
+---
+
+# How to enable tab completion in pdb in a uv environment
+
+---
+
+_Issue opened by @Zhaoyilunnn on 2025-09-23 03:31_
+
+### Question
+
+Hi Team, thanks a lot for building uv, it's amazing.
+
+I am a user switching from anaconda/miniconda to uv. Recently I found one issue that bothers me in a uv-created virtual python environment.
+
+I *think* it is quite easy to reproduce
+
+```
+uv venv
+python -m pdb <some-test-python-file>
+
+# try to use <Tab> completion in pdb
+```
+
+Then the `<Tab>` will output spaces rather than complete variable/function names. I understand there must be some configurations, e.g., maybe try using `.pdbrc`, to solve this issue. 
+
+However, when I use `conda` in the past, I never encounter this issue, seems that the tab-completion feature is out-of-box in conda-bundled python. 
+
+Is there any workaround to easily enable tab-completion of `pdb` in `uv`? 
+
+### Platform
+
+Ubuntu 22.04.5 LTS
+
+### Version
+
+uv 0.7.2
+
+---
+
+_Label `question` added by @Zhaoyilunnn on 2025-09-23 03:31_
+
+---
+
+_Comment by @konstin on 2025-09-23 11:07_
+
+Is this a readline problem @geofft?
+
+---
+
+_Comment by @nik-sm on 2025-09-24 18:40_
+
+I have the same issue:
+
+```shell
+$ uv --version
+uv 0.8.17 (10960bc13 2025-09-10)
+
+$ uname -orsm
+Darwin 24.6.0 arm64
+```
+
+---
+
+_Label `question` removed by @zanieb on 2025-09-24 20:33_
+
+---
+
+_Label `bug` added by @zanieb on 2025-09-24 20:33_
+
+---

@@ -1,0 +1,89 @@
+---
+number: 19699
+title: FURB164 fix changes behavior for negative NaN
+type: issue
+state: closed
+author: dscorbett
+labels:
+  - bug
+  - fixes
+  - help wanted
+assignees: []
+created_at: 2025-08-01T21:52:25Z
+updated_at: 2025-09-19T18:04:31Z
+url: https://github.com/astral-sh/ruff/issues/19699
+synced_at: 2026-01-07T13:12:16-06:00
+---
+
+# FURB164 fix changes behavior for negative NaN
+
+---
+
+_Issue opened by @dscorbett on 2025-08-01 21:52_
+
+### Summary
+
+When the argument to `Decimal.from_float` is negative NaN, the fix for [`unnecessary-from-float` (FURB164)](https://docs.astral.sh/ruff/rules/unnecessary-from-float/) should replace it with positive NaN to preserve the program’s behavior. [Example](https://play.ruff.rs/9ac93a35-6395-4766-be06-26af9938879d):
+```console
+$ cat >furb164_2.py <<'# EOF'
+from decimal import Decimal
+print(Decimal.from_float(float(" -Nan\n")))
+# EOF
+
+$ python furb164_2.py
+NaN
+
+$ ruff --isolated check furb164_2.py --select FURB164 --preview --fix
+Found 1 error (1 fixed, 0 remaining).
+
+$ cat furb164_2.py
+from decimal import Decimal
+print(Decimal("-nan"))
+# EOF
+
+$ python furb164_2.py
+-NaN
+```
+This was originally reported in #19460 and marked as fixed by #19468, but that PR added normalization for non-finite float strings, which is unnecessary and doesn’t fix the problem. [`verbose-decimal-constructor` (FURB157)](https://docs.astral.sh/ruff/rules/verbose-decimal-constructor/) handles this case correctly and with minimal normalization.
+
+### Version
+
+ruff 0.12.7 (c5ac99889 2025-07-29)
+
+---
+
+_Comment by @ntBre on 2025-08-04 22:42_
+
+That sounds like my bad with the normalization suggestion. Thanks for following up!
+
+---
+
+_Label `bug` added by @ntBre on 2025-08-04 22:43_
+
+---
+
+_Label `fixes` added by @ntBre on 2025-08-04 22:43_
+
+---
+
+_Label `help wanted` added by @ntBre on 2025-08-04 22:43_
+
+---
+
+_Comment by @TaKO8Ki on 2025-09-15 00:11_
+
+I will work on this.
+
+---
+
+_Referenced in [astral-sh/ruff#20391](../../astral-sh/ruff/pulls/20391.md) on 2025-09-15 00:47_
+
+---
+
+_Assigned to @TaKO8Ki by @ntBre on 2025-09-15 12:41_
+
+---
+
+_Closed by @dylwil3 on 2025-09-19 18:04_
+
+---

@@ -1,0 +1,89 @@
+---
+number: 6927
+title: "Implement `django-upgrade`"
+type: issue
+state: closed
+author: tjkuson
+labels:
+  - plugin
+  - needs-decision
+assignees: []
+created_at: 2023-08-27T23:21:09Z
+updated_at: 2024-02-06T16:29:04Z
+url: https://github.com/astral-sh/ruff/issues/6927
+synced_at: 2026-01-07T13:12:15-06:00
+---
+
+# Implement `django-upgrade`
+
+---
+
+_Issue opened by @tjkuson on 2023-08-27 23:21_
+
+I think [`django-upgrade`](https://github.com/adamchainz/django-upgrade) would be a good complement to the pre-existing Django-related ruff rules.
+
+---
+
+_Label `plugin` added by @charliermarsh on 2023-08-28 14:44_
+
+---
+
+_Label `needs-decision` added by @charliermarsh on 2023-08-28 14:44_
+
+---
+
+_Comment by @browniebroke on 2023-09-03 13:47_
+
+It will require adding a plugin specific setting as `django-upgrade` has a `--target-version` option for the Django version to target.
+
+---
+
+_Comment by @ulgens on 2024-02-05 04:26_
+
+I'd like to see `django-upgrade` too. It feels weird having `pyupgrade` but not `django-upgrade`.
+
+---
+
+_Comment by @adamchainz on 2024-02-05 22:01_
+
+As the django-upgrade author, I am a little concerned if Ruff reimplements it without dedicated developers who’ll update it for new fixers.
+
+The Django community is gradually getting used to django-upgrade, and @carltongibson has even suggested making it an official tool. A few times now, contributors to Django have been able to implement a parallel fixer in django-upgrade, reducing the migration cost for changes. It’s unlikely that most Django contributors would be able to do the same in Ruff, since it uses Rust.
+
+---
+
+_Comment by @carltongibson on 2024-02-06 06:42_
+
+Thanks for the ping Adam. 
+
+Yes, part of the whole idea is that PR authors can either implement fixers, or work closely with others who can, as the PR is being made. That seems to require close integration with Django, rather than moving further away. 
+
+Also, from a ruff POV, Django Upgrade is something you run once per major version of Django, so once every 8 months at most, rather than on every save, so Ruff's selling point of speed isn't relevant. From the outside it doesn't seem to fit. 
+
+---
+
+_Comment by @nijel on 2024-02-06 07:39_
+
+I don't think running once in 8 months is something reasonable to do. You want to have it applied to new code and anything what is not automated tends to be forgotten. Also django-upgrade is being improved at a different pace than Django releases. I'd love to see it included in ruff, but even if it is not, I would run it in pre-commit.
+
+---
+
+_Comment by @charliermarsh on 2024-02-06 16:28_
+
+Thanks @adamchainz and @carltongibson -- that makes sense! I wouldn't want to draw energy or attention away from an official resource like that, so we'll avoid re-implementing this one.
+
+I could imagine us adding a few of the rules that look helpful on a continuous basis though (like automatically adding the `on_delete` keyword argument), we could consider adding those to our existing Django rule set.
+
+---
+
+_Closed by @charliermarsh on 2024-02-06 16:29_
+
+---
+
+_Referenced in [cookiecutter/cookiecutter-django#4834](../../cookiecutter/cookiecutter-django/pulls/4834.md) on 2024-02-06 20:24_
+
+---
+
+_Referenced in [adamchainz/django-upgrade#450](../../adamchainz/django-upgrade/issues/450.md) on 2024-05-13 22:05_
+
+---

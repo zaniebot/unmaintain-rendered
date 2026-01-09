@@ -1,0 +1,141 @@
+---
+number: 266
+title: "Version flag doesn't work when loading from yaml."
+type: issue
+state: closed
+author: XAMPPRocky
+labels:
+  - C-bug
+  - A-builder
+assignees: []
+created_at: 2015-09-22T15:33:41Z
+updated_at: 2015-09-22T17:54:17Z
+url: https://github.com/clap-rs/clap/issues/266
+synced_at: 2026-01-07T13:12:19-06:00
+---
+
+# Version flag doesn't work when loading from yaml.
+
+---
+
+_Issue opened by @XAMPPRocky on 2015-09-22 15:33_
+
+When tokei is built with this [file](https://github.com/Aaronepower/tokei/blob/master/cli.yml#L5). The version flag prints out nothing.
+
+
+---
+
+_Label `T: bug` added by @Vinatorul on 2015-09-22 15:42_
+
+---
+
+_Label `P2: need to have` added by @Vinatorul on 2015-09-22 15:42_
+
+---
+
+_Label `C: app` added by @Vinatorul on 2015-09-22 15:42_
+
+---
+
+_Label `C: matches` added by @Vinatorul on 2015-09-22 15:42_
+
+---
+
+_Referenced in [XAMPPRocky/tokei#8](../../XAMPPRocky/tokei/issues/8.md) on 2015-09-22 15:50_
+
+---
+
+_Comment by @kbknapp on 2015-09-22 17:01_
+
+If you remove the single quote marks (`'`) does it work?
+
+
+---
+
+_Comment by @XAMPPRocky on 2015-09-22 17:02_
+
+I initially had it without the single quotes, and thought it wasn't working because 1.1.1 isn't a floating point number or something. But neither work.
+
+On Tue, Sep 22, 2015 at 6:01 PM, Kevin K. notifications@github.com
+wrote:
+
+> ## If you remove the single quote marks (`'`) does it work?
+> 
+> Reply to this email directly or view it on GitHub:
+> https://github.com/kbknapp/clap-rs/issues/266#issuecomment-142349036
+
+
+---
+
+_Comment by @kbknapp on 2015-09-22 17:07_
+
+Good to know, thanks for reporting this :smile: We'll report back here once it's fixed!
+
+
+---
+
+_Comment by @sru on 2015-09-22 17:20_
+
+@Aaronepower Interestingly enough, it works in the master branch.
+
+
+---
+
+_Comment by @XAMPPRocky on 2015-09-22 17:22_
+
+I know the version 1.1.1 of tokei definitely doesn't work if you want an example. It's using clap 1.4.0. Maybe I'll switch it to the master branch and see if it works then.
+
+On Tue, Sep 22, 2015 at 6:20 PM, SungRim Huh notifications@github.com
+wrote:
+
+> ## @Aaronepower Interestingly enough, it works in the master branch.
+> 
+> Reply to this email directly or view it on GitHub:
+> https://github.com/kbknapp/clap-rs/issues/266#issuecomment-142354452
+
+
+---
+
+_Comment by @sru on 2015-09-22 17:24_
+
+@Aaronepower I meant the master branch of clap.
+
+Probably because of [flushing the stream](https://github.com/kbknapp/clap-rs/blob/master/src/app/app.rs#L1857). It was added after clap 1.4.0.
+
+
+---
+
+_Comment by @kbknapp on 2015-09-22 17:24_
+
+@sru yep I just noticed the same thing while trying to reproduce. 
+
+Also, this should be a non-issue because I'm uploading a new version to crates.io...once that's done if @Aaronepower could confirm that the new version in crates.io fixes the issue and we'll close this isue
+
+
+---
+
+_Comment by @kbknapp on 2015-09-22 17:26_
+
+@Aaronepower  v1.4.1 is now in crates.io. If you could confirm that it's working for you, we'll close this issue.
+
+
+---
+
+_Assigned to @kbknapp by @kbknapp on 2015-09-22 17:36_
+
+---
+
+_Comment by @XAMPPRocky on 2015-09-22 17:54_
+
+Yep, works now.
+
+
+---
+
+_Closed by @XAMPPRocky on 2015-09-22 17:54_
+
+---
+
+_Referenced in [clap-rs/clap#239](../../clap-rs/clap/issues/239.md) on 2015-09-22 18:35_
+
+---

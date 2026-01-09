@@ -1,0 +1,162 @@
+---
+number: 3951
+title: Support hiding flags/subcommands/possible values/aliases for native compeletions
+type: issue
+state: closed
+author: epage
+labels:
+  - C-enhancement
+  - A-completion
+  - E-help-wanted
+  - E-easy
+  - ":money_with_wings: $20"
+assignees: []
+created_at: 2022-07-19T14:17:03Z
+updated_at: 2024-07-26T14:09:39Z
+url: https://github.com/clap-rs/clap/issues/3951
+synced_at: 2026-01-07T13:12:20-06:00
+---
+
+# Support hiding flags/subcommands/possible values/aliases for native compeletions
+
+---
+
+_Issue opened by @epage on 2022-07-19 14:17_
+
+We shouldn't offer hidden options by default but complete them if the user starts typing them
+
+See #3166 for more details on native completions
+
+- [code](https://github.com/clap-rs/clap/blob/master/clap_complete/src/dynamic.rs)
+- [tests](https://github.com/clap-rs/clap/blob/master/clap_complete/tests/dynamic.rs)
+
+---
+
+_Label `C-enhancement` added by @epage on 2022-07-19 14:17_
+
+---
+
+_Label `A-completion` added by @epage on 2022-07-19 14:17_
+
+---
+
+_Label `E-easy` added by @epage on 2022-07-19 14:17_
+
+---
+
+_Referenced in [clap-rs/clap#3166](../../clap-rs/clap/issues/3166.md) on 2022-07-19 14:17_
+
+---
+
+_Referenced in [clap-rs/clap#1335](../../clap-rs/clap/issues/1335.md) on 2022-07-19 14:17_
+
+---
+
+_Label `:money_with_wings: $20` added by @epage on 2022-09-13 14:36_
+
+---
+
+_Label `E-help-wanted` added by @epage on 2022-09-20 14:29_
+
+---
+
+_Referenced in [clap-rs/clap#4265](../../clap-rs/clap/issues/4265.md) on 2022-09-26 22:02_
+
+---
+
+_Referenced in [clap-rs/clap#4853](../../clap-rs/clap/issues/4853.md) on 2023-04-21 14:09_
+
+---
+
+_Referenced in [clap-rs/clap#5283](../../clap-rs/clap/pulls/5283.md) on 2024-01-04 18:40_
+
+---
+
+_Referenced in [clap-rs/clap#5412](../../clap-rs/clap/pulls/5412.md) on 2024-03-21 17:57_
+
+---
+
+_Comment by @shannmu on 2024-06-21 14:04_
+
+i will work on this later.
+
+---
+
+_Renamed from "Support hiding flags/subcommands/possible values for native compeletions" to "Support hiding flags/subcommands/possible values/aliases for native compeletions" by @epage on 2024-06-21 14:07_
+
+---
+
+_Comment by @epage on 2024-06-21 14:09_
+
+Before we do this:
+- We should make sure subcommand visible aliases are supported
+
+In doing this, we should hide hidden items by default unless there are no other completions available.
+
+---
+
+_Comment by @epage on 2024-06-21 14:10_
+
+PR #5283 started work on this but it seemed to have stalled out
+
+Per usual, I would like to see
+- Tests added / updated in one commit, showing current behavior
+- As features are implemented, update the tests so they show the new behavior and the diff shows the change in behavior
+
+see also my comment from that PR:
+
+> There is one point I wasn't clear about in the expectations for this: we should probably keep a completion hidden unless there are no visible choices.
+> 
+> In reviewing this, I also noticed
+> 
+> * I didn't mention hidden aliases
+> 
+> * We aren't showing visible subcommand aliases
+> 
+> 
+> I do find it less than ideal how inconsistent we are with where we check `is_hide_set`. However, I assume cleaning that up would naturally fall out of the above as we'd need to start returning `(value, is_hidden, help)` (maybe turned into a struct? if so, ideally that refactor would be its own commit) so we can handle all of these cases.
+
+
+---
+
+_Referenced in [clap-rs/clap#5549](../../clap-rs/clap/pulls/5549.md) on 2024-06-25 08:23_
+
+---
+
+_Comment by @epage on 2024-07-05 14:11_
+
+Something @shannmu called out is our idea for showing hidden content is only if the user started it, we'll never be able to show hidden short flags or hidden short flag aliases.  We'll still need to make sure we can complete values for them.
+
+---
+
+_Referenced in [clap-rs/clap#5583](../../clap-rs/clap/pulls/5583.md) on 2024-07-17 09:07_
+
+---
+
+_Referenced in [clap-rs/clap#5584](../../clap-rs/clap/pulls/5584.md) on 2024-07-17 09:10_
+
+---
+
+_Referenced in [clap-rs/clap#5585](../../clap-rs/clap/pulls/5585.md) on 2024-07-17 09:12_
+
+---
+
+_Comment by @epage on 2024-07-19 16:35_
+
+@shannmu I went ahead and merged #5585 because it was complete-enough on its own but we still lack support for completing hidden aliases for PossibleValue.
+
+I'll make #5480 responsible for supporting visible aliases.
+
+---
+
+_Referenced in [clap-rs/clap#5480](../../clap-rs/clap/pulls/5480.md) on 2024-07-19 16:36_
+
+---
+
+_Referenced in [clap-rs/clap#5058](../../clap-rs/clap/issues/5058.md) on 2024-07-19 16:43_
+
+---
+
+_Closed by @epage on 2024-07-26 14:09_
+
+---

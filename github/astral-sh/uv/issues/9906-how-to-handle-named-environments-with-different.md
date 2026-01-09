@@ -1,0 +1,115 @@
+---
+number: 9906
+title: How to handle named environments with different python versions?
+type: issue
+state: open
+author: mhechthz
+labels:
+  - question
+assignees: []
+created_at: 2024-12-15T07:23:18Z
+updated_at: 2024-12-16T22:33:24Z
+url: https://github.com/astral-sh/uv/issues/9906
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# How to handle named environments with different python versions?
+
+---
+
+_Issue opened by @mhechthz on 2024-12-15 07:23_
+
+Since I'm new to uv I still did not get how to deal with different named venvs.
+
+I want to have a venv311 and a venv312 in the same project. The python version can be pinned only once and uv sync ignores pre-existing venvs with defined python versions.
+
+How to handle the case of testing different python versions on the same project?
+
+---
+
+_Comment by @nathanscain on 2024-12-15 16:56_
+
+Curious what the workflow is that is driving this?
+
+uv's cacheing tends to be good enough to flip back and forth without much delay since it is just relinking rather than recopying (especially if you provide `--frozen` to use the existing `uv.lock` resolution).
+
+I know that the `uv venv` command lets you create custom virtual environments to use with `uv pip ...`, but I don't know of a way to tell sync to use a custom environment. Possibly `--python venv311/bin/python`, but I'm not sure if that would have the intended function.
+
+---
+
+_Comment by @zanieb on 2024-12-15 17:01_
+
+I'd use `uv run --python <version> ...` to test different Python versions. I agree with @nathanscain I'd be curious to understand why you want multiple static environments around.
+
+Regardless, the workaround is 
+
+```
+UV_PROJECT_ENVIRONMENT=venv311 uv sync -p 3.11
+UV_PROJECT_ENVIRONMENT=venv312 uv sync -p 3.12
+```
+
+---
+
+_Label `question` added by @zanieb on 2024-12-15 17:01_
+
+---
+
+_Comment by @jayqi on 2024-12-16 04:15_
+
+I have a similar request to what the original poster asked.
+
+My use case in particular is for a project that is a Python library. I want to be able to run tests across all supported Python versions. I recognize that uv manages to make it easy and fast to delete and recreate environments, but this feels kind of weird and is unnecessary disk I/O? Not to mention that this could disrupt things if you want to have a stable primary environment. 
+
+Supporting multiple virtual environments is something lots of other Python project management tools like [Hatch](https://hatch.pypa.io/latest/config/environment/advanced/#matrix), [Poetry](https://python-poetry.org/docs/managing-environments/), and [PDM](https://pdm-project.org/en/latest/usage/venv/#create-a-virtualenv-yourself) all support. 
+
+What I want to have is a "dev" primary environment as the default one that gets used (this could be the `.venv` one that uv sort of considers the one and only environment right now), and then additional environments for tests for a matrix of Python versions. I believe this is a setup that these other tools have ended up making pretty common.
+
+---
+
+_Comment by @zanieb on 2024-12-16 20:33_
+
+You can use `--isolated` to avoid changing your default project environment.
+
+---
+
+_Comment by @jayqi on 2024-12-16 21:02_
+
+> You can use `--isolated` to avoid changing your default project environment.
+
+Awesome! This at least addresses my problem of clobbering the default project environment. Am I understanding correctly that an `--isolated` environment is completely throwaway and not reused? It feels wasteful to keep recreating the test environments, but I suppose uv is fast enough that I can live with this. 
+
+---
+
+_Comment by @zanieb on 2024-12-16 21:07_
+
+Yeah it's thrown away, we could consider changing that but I think we would need a concrete motivating example. It's a goal of uv to make environments disposable via speed.
+
+---
+
+_Comment by @axiomofjoy on 2024-12-16 22:14_
+
+I develop on a project that supports Python 3.9 through Python 3.13. When CI catches issues affecting a particular Python version, it would be convenient to be able to switch my interpreter in my IDE to a virtual environment corresponding to that version to debug without needing to delete my current environment and reinstall everything. This is something I would have previously done with `conda` by having distinct environments for different Python versions.
+
+---
+
+_Comment by @zanieb on 2024-12-16 22:27_
+
+Yeah but the same could be said for, e.g., the combination of all dependency groups / extras, which is 2^N environments. I think we need more generalized solutions to these things rather than just creating and storing a bunch of them indefinitely. For example, a uv integration with your IDE could just create the desired environment on request.
+
+---
+
+_Comment by @axiomofjoy on 2024-12-16 22:33_
+
+> Yeah but the same could be said for, e.g., the combination of all dependency groups / extras, which is 2^N environments. I think we need more generalized solutions to these things rather than just creating and storing a bunch of them indefinitely. For example, a uv integration with your IDE could just create the desired environment on request.
+
+I buy that. If it's fast and doesn't require a lot of manual commands to switch between configurations, I am all for a declarative approach.
+
+---
+
+_Referenced in [astral-sh/uv#10211](../../astral-sh/uv/issues/10211.md) on 2024-12-28 05:52_
+
+---
+
+_Referenced in [astral-sh/uv#11124](../../astral-sh/uv/issues/11124.md) on 2025-01-31 02:51_
+
+---

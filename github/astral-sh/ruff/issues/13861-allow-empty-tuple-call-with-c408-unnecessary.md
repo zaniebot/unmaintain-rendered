@@ -1,0 +1,109 @@
+---
+number: 13861
+title: "Allow empty `tuple()` call with C408 (unnecessary-collection-call)"
+type: issue
+state: closed
+author: LordAro
+labels:
+  - question
+assignees: []
+created_at: 2024-10-21T14:38:05Z
+updated_at: 2024-11-09T19:37:46Z
+url: https://github.com/astral-sh/ruff/issues/13861
+synced_at: 2026-01-07T13:12:16-06:00
+---
+
+# Allow empty `tuple()` call with C408 (unnecessary-collection-call)
+
+---
+
+_Issue opened by @LordAro on 2024-10-21 14:38_
+
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* List of keywords you searched for before creating this issue. Write them down here so that others can find this issue more easily and help provide feedback.
+  e.g. "RUF001", "unused variable", "Jupyter notebook"
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+It's totally valid but `()` is a bit of a strange syntax to actually spawn an empty tuple, especially when it's used within another call. e.g.
+
+```python3
+action = core.ClassName(core.ActCon.STUB, tuple())  # noqa: C408
+action = core.ClassName(core.ActCon.STUB, ())
+
+my_list.append(tuple(1, 2, 3))  # perfectly valid C408 warning
+my_list.append((1, 2, 3))
+my_list.append(tuple())  # noqa: C408
+my_list.append(())
+```
+
+I suggest adding a setting to allow empty tuples, but possibly just allowing it generally.
+
+
+Ruff version: 0.7.0
+
+
+---
+
+_Label `question` added by @MichaReiser on 2024-10-24 08:12_
+
+---
+
+_Comment by @MichaReiser on 2024-10-24 08:14_
+
+Hi @LordAro 
+
+I'm struggling to understand how your question relates to `C409` because the rule doesn't trigger for me with the given code example  (see [this playground](https://play.ruff.rs/199728fc-7494-435e-8f0d-a8bf894b90db)). However, your example raises `C408` and the rule recommends using literal syntax over function calls. 
+
+Raising `C408` for `tuple` is exactly the intent of the rule. That's why I don't think they should be excluded regardless of their position (see the rule documentation for the motivation). You can disable `C408` when you prefer the method form.
+
+
+
+---
+
+_Renamed from "Allow empty `tuple()` call with C409 (unnecessary-literal-within-tuple-call)" to "Allow empty `tuple()` call with C408 (unnecessary-collection-call)" by @LordAro on 2024-10-24 09:17_
+
+---
+
+_Comment by @LordAro on 2024-10-24 09:18_
+
+Ah, I screwed up the numbers when constructing this example didn't I? I've updated the original issue
+
+C408 pertains to all collection types - I'm saying that empty tuples specifically could be a special case because the syntax ( `()` ) is used for so much else
+
+---
+
+_Comment by @LordAro on 2024-10-24 09:25_
+
+Although tbh maybe it's more relevant for 1-length tuples, as `(foo)` isn't a tuple but `(foo, )` is
+
+---
+
+_Comment by @MichaReiser on 2024-10-24 09:36_
+
+Thanks for updating the issue. Glad to hear that we're talking about the same :)
+
+I agree, `()` is very unambiguous. I can see how `(foo,)` is harder to spot. But the rule isn't just about readability:
+
+> It's unnecessary to call, e.g., dict() as opposed to using an empty literal ({}). The former is slower because the name dict must be looked up in the global scope in case it has been rebound.
+
+That's why I still think we should keep flagging all tuples, including zero and one element tuples because it applies to them as well.
+
+---
+
+_Comment by @charliermarsh on 2024-11-09 19:37_
+
+I think it's reasonable for us to keep this as-is though understand and respect the motivation for thinking otherwise.
+
+---
+
+_Closed by @charliermarsh on 2024-11-09 19:37_
+
+---

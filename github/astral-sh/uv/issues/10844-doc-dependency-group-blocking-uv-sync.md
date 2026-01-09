@@ -1,0 +1,168 @@
+---
+number: 10844
+title: doc dependency group blocking uv sync
+type: issue
+state: closed
+author: JanEricNitschke
+labels:
+  - question
+assignees: []
+created_at: 2025-01-22T06:55:47Z
+updated_at: 2025-01-25T02:49:00Z
+url: https://github.com/astral-sh/uv/issues/10844
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# doc dependency group blocking uv sync
+
+---
+
+_Issue opened by @JanEricNitschke on 2025-01-22 06:55_
+
+### Question
+
+I have a pyproject.toml like
+
+
+```
+[project]
+
+requires-python = ">=3.9"
+dependencies = [
+    "typing-extensions>=4.0,<5.0",
+    "tomli>=1.1.0; python_version < '3.11'",
+    "click>=8.0.0",
+]
+
+[dependency-groups]
+dev = [
+    "pre-commit>=4.0.1",
+    "pylint>=3.3.3",
+    "pyright>=1.1.392.post0",
+    "pytest>=8.3.4",
+    "pytest-cov>=6.0.0",
+    "ruff>=0.9.2"
+]
+docs = [
+    "furo>=2023.9.10",
+    "readthedocs-sphinx-search==0.3.2",
+    "sphinx==8.1.3",
+    "sphinx-copybutton>=0.5.2",
+    "sphinx_rtd_theme==3.0.2",
+]
+```
+
+and get the following error when i do `uv sync --python 3.11`
+
+```
+uv sync --no-cache --python 3.11
+  x No solution found when resolving dependencies for split
+  | (python_full_version == '3.9.*'):
+  `-> Because the requested Python version (>=3.9) does not satisfy
+      Python>=3.10 and sphinx==8.1.3 depends on Python>=3.10, we can conclude
+      that sphinx==8.1.3 cannot be used.
+      And because pymend:docs depends on sphinx==8.1.3 and your project
+      requires pymend:docs, we can conclude that your project's requirements
+      are unsatisfiable.
+
+      hint: The `requires-python` value (>=3.9) includes Python versions
+      that are not supported by your dependencies (e.g., sphinx==8.1.3 only
+      supports >=3.10). Consider using a more restrictive `requires-python`
+      value (like >=3.10).
+
+```
+I also have no other mentions of "docs" in my pyproject.toml (e.g not in the default groups of tool.uv)
+What exactly am i doing wrong here?
+
+My runtime dependencies support down to python 3.9, but for development (or rather docs) i require at least 3.10 which i have available locally and at readthedocs.
+
+### Platform
+
+MINGW64_NT-10.0-19045 3.4.10-87d57229.x86_64 x86_64 Msys
+
+### Version
+
+uv 0.5.22 (4574ced37 2025-01-21)
+
+---
+
+_Label `question` added by @JanEricNitschke on 2025-01-22 06:55_
+
+---
+
+_Comment by @zanieb on 2025-01-22 07:08_
+
+We don't support different `requires-python` values for dependency groups and projects right now.
+
+Presumably your project is called `pymend`? I think the error message 
+
+
+      And because pymend:docs depends on sphinx==8.1.3 and your project
+      requires pymend:docs, we can conclude that your project's requirements
+      are unsatisfiable.
+
+
+is just a confusing way to describe how the group is being included in the resolution.
+
+---
+
+_Comment by @JanEricNitschke on 2025-01-22 07:14_
+
+Yeah, the project is called pymend. I would just like to be able to install it locally with `uv sync` and not have the docs group be included. Currently readthedocs still works best with just a separate requirements.txt file so i am using it there but already wanted to create the group in my pyproject.toml. I guess i can just remove it for now but i still dont quite understand how it is blocking it on a uv sync if i havent specified it as being used.
+
+---
+
+_Comment by @zanieb on 2025-01-22 15:32_
+
+We perform a lock for the entire project (regardless of selected groups) before syncing the subset you asked for.
+
+e.g., this fails on lock:
+
+```
+❯ uv lock
+  × No solution found when resolving dependencies for split (python_full_version == '3.9.*'):
+  ╰─▶ Because the requested Python version (>=3.9) does not satisfy Python>=3.10 and sphinx==8.1.3 depends on Python>=3.10, we can conclude that sphinx==8.1.3 cannot be used.
+      And because example:docs depends on sphinx==8.1.3 and your project requires example:docs, we can conclude that your project's requirements are unsatisfiable.
+
+      hint: The `requires-python` value (>=3.9) includes Python versions that are not supported by your dependencies (e.g., sphinx==8.1.3 only supports >=3.10). Consider using a more restrictive `requires-python` value (like >=3.10).
+```
+
+---
+
+_Comment by @zanieb on 2025-01-22 15:37_
+
+You can remove the pin on sphinx to get past this:
+
+
+```
+docs = [
+    "furo>=2023.9.10",
+    "readthedocs-sphinx-search==0.3.2",
+    "sphinx",
+    "sphinx-copybutton>=0.5.2",
+    "sphinx_rtd_theme==3.0.2",
+]
+```
+
+It'll be locked in the lockfile anyway. We'll split the version used on 3.10+ and 3.9 accordingly.
+
+---
+
+_Comment by @zanieb on 2025-01-22 15:49_
+
+Alternatively, you can clarify that the dependency won't be used on Python 3.9, with:
+```
+"sphinx==8.1.3; python_version >= '3.10'",
+```
+
+---
+
+_Comment by @charliermarsh on 2025-01-25 02:48_
+
+(Specifying the Python version via a marker seems like the right solution.)
+
+---
+
+_Closed by @charliermarsh on 2025-01-25 02:49_
+
+---

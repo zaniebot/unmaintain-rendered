@@ -1,0 +1,106 @@
+---
+number: 8765
+title: Incorrect explanation for PYI019
+type: issue
+state: closed
+author: henribru
+labels:
+  - documentation
+assignees: []
+created_at: 2023-11-19T11:14:06Z
+updated_at: 2023-11-20T09:21:05Z
+url: https://github.com/astral-sh/ruff/issues/8765
+synced_at: 2026-01-07T13:12:15-06:00
+---
+
+# Incorrect explanation for PYI019
+
+---
+
+_Issue opened by @henribru on 2023-11-19 11:14_
+
+The explanation for PYI019 at https://docs.astral.sh/ruff/rules/custom-type-var-return-type/ seems incorrect to me. The rationale there applies when you use a fixed class as the return type (like what PYI034 flags), but _not_ when you use a `TypeVar`. You can see that Mypy and Pyright both correctly infer return types on a subclass based on that example:
+
+https://mypy-play.net/?mypy=latest&python=3.11&gist=523f6373f5a85dd8f78e8b7038d9d74d
+
+https://pyright-play.net/?code=GYJw9gtgBALgngBwJYDsDmUkQWEMoAqiApgGoCGIAsAFC0D6AylALyEkUgAUAREzwEpatAMYAbcgGdJUAGJgwALlpRVUACbFgUevRTEA7rq7jJi2CQDaTALoAaKACpKaM1EkwQDx44DWBlzdUGAEoAFoAPh1GZRo1eKgAOmThOLVNbWAFLkliMWBzJgcXcwAjOBhiSVDI6NiEtWTE1PiAAXEpSQhiGAALMHUVdK0oUsoTMTd4BGJrRnsoEswUEPCopnqGpJS0htEJaSgAIXH5MAFzJtSQYgA3YnIxemniLhPuASEaG-vH55I3uMBIksmAuKUeIIvj8Hk8XoCQIkxtwAMyfIA
+
+The [PEP](https://peps.python.org/pep-0673/#motivation) for `Self` also shows the `TypeVar` variant as being equivalent, but describes `Self` as "more intuitive and succinct". flake8-pyi doesn't really explain the rationale for the rule in their [explanation](https://github.com/PyCQA/flake8-pyi/blob/main/ERRORCODES.md?plain=1#L25), but based on this I assume it's actually just meant to be stylistic. If so Ruff's explanation should reflect this.
+
+---
+
+_Comment by @charliermarsh on 2023-11-19 11:24_
+
+\cc @AlexWaygood - only if quick / easy for you, do you know if Y019 is about clearer style / intent, or correctness?
+
+---
+
+_Comment by @AlexWaygood on 2023-11-19 11:32_
+
+@henribru is correct — Y019 is purely concerned with style, not with correctness (though it is _slightly easier_ to be correct if you use the more modern syntax — in a `.py` file, you don't have to worry about binding the TypeVar to a forward reference etc :)
+
+The "use instead" snippet ruff gives in the docs also isn't _ideal_ — currently it's this:
+
+```py
+from typing import Self
+
+
+class Foo:
+    def __new__(cls: type[Self], *args: str, **kwargs: int) -> Self:
+        ...
+
+    def foo(self: Self, arg: bytes) -> Self:
+        ...
+
+    @classmethod
+    def bar(cls: type[Self], arg: int) -> Self:
+        ...
+```
+
+But part of the _point_ of `typing.Self` is that (unlike a normal TypeVar) you can skip the annotations on `cls` or `self` — so a better "use instead" snippet would be this:
+
+```py
+from typing import Self
+
+
+class Foo:
+    def __new__(cls, *args: str, **kwargs: int) -> Self:
+        ...
+
+    def foo(self, arg: bytes) -> Self:
+        ...
+
+    @classmethod
+    def bar(cls, arg: int) -> Self:
+        ...
+```
+
+---
+
+_Comment by @charliermarsh on 2023-11-19 12:40_
+
+Awesome, thanks @AlexWaygood for the characteristically clear + through answer! Will fix.
+
+---
+
+_Label `documentation` added by @charliermarsh on 2023-11-19 12:40_
+
+---
+
+_Referenced in [astral-sh/ruff#8766](../../astral-sh/ruff/pulls/8766.md) on 2023-11-19 14:02_
+
+---
+
+_Closed by @charliermarsh on 2023-11-19 14:15_
+
+---
+
+_Referenced in [PyCQA/flake8-pyi#450](../../PyCQA/flake8-pyi/pulls/450.md) on 2023-11-19 14:37_
+
+---
+
+_Comment by @AlexWaygood on 2023-11-20 09:21_
+
+I just overhauled our flake8-pyi docs in https://github.com/PyCQA/flake8-pyi/commit/504ef82a6b8e1e7da763e2e9fa3cbbdcb5f26cce, so hopefully it should be a bit clearer in the future to figure out what the motivation is for each of our rules :)
+
+---

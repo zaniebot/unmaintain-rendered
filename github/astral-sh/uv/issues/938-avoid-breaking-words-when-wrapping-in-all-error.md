@@ -1,0 +1,48 @@
+---
+number: 938
+title: Avoid breaking words when wrapping in all error messages
+type: issue
+state: closed
+author: zanieb
+labels:
+  - enhancement
+assignees: []
+created_at: 2024-01-16T14:07:24Z
+updated_at: 2024-01-18T13:37:27Z
+url: https://github.com/astral-sh/uv/issues/938
+synced_at: 2026-01-07T13:12:16-06:00
+---
+
+# Avoid breaking words when wrapping in all error messages
+
+---
+
+_Issue opened by @zanieb on 2024-01-16 14:07_
+
+https://github.com/astral-sh/puffin/blob/f63776b894d6a28971d87e085e48fe564ba27735/crates/puffin-cli/src/commands/pip_install.rs#L60-L65 needs to be used everywhere.
+
+---
+
+_Renamed from "Avoid wrapping in all error messages" to "Avoid breaking words when wrapping in all error messages" by @zanieb on 2024-01-16 14:07_
+
+---
+
+_Label `bug` added by @charliermarsh on 2024-01-16 19:41_
+
+---
+
+_Label `bug` removed by @charliermarsh on 2024-01-16 19:41_
+
+---
+
+_Label `enhancement` added by @charliermarsh on 2024-01-16 19:41_
+
+---
+
+_Referenced in [astral-sh/uv#962](../../astral-sh/uv/pulls/962.md) on 2024-01-18 10:05_
+
+---
+
+_Closed by @charliermarsh on 2024-01-18 13:37_
+
+---

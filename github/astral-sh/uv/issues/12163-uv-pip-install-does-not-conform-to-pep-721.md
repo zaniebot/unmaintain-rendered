@@ -1,0 +1,87 @@
+---
+number: 12163
+title: uv pip install does not conform to PEP-721
+type: issue
+state: closed
+author: calebbrown
+labels:
+  - bug
+assignees: []
+created_at: 2025-03-14T03:03:07Z
+updated_at: 2025-07-22T13:20:11Z
+url: https://github.com/astral-sh/uv/issues/12163
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# uv pip install does not conform to PEP-721
+
+---
+
+_Issue opened by @calebbrown on 2025-03-14 03:03_
+
+### Summary
+
+I was testing the behaviour of `pip` and `uv` when extracting a sdist package containing a symlink with an absolute path outside the destination.
+
+When I run `pip install package.tgz` I get the error:
+
+`ERROR: Invalid member in the tar file package.tgz: 'somefile' is a link to an absolute path` (where `somefile` is a symlink to say `/etc/profile`)
+
+However, when I run `uv pip install package.tgz` the package happily installs.
+
+According to PEP-721 and the spec (https://packaging.python.org/en/latest/specifications/source-distribution-format/#sdist-archive-features) the behavior of uv is not correct:
+
+> Tools that do not use the data filter directly (e.g. for backwards compatibility, allowing additional features, or not using Python) MUST follow this section. (At the time of this writing, the data filter also follows this section, but it may get out of sync in the future.)
+> 
+> The following files are invalid in an sdist archive. Upon encountering such an entry, tools SHOULD notify the user, MUST NOT unpack the entry, and MAY abort with a failure:
+> 
+> - Files that would be placed outside the destination directory.
+> - Links (symbolic or hard) pointing outside the destination directory.
+> - Device files (including pipes).
+
+
+
+
+### Platform
+
+Darwin 24.3.0 arm64
+
+### Version
+
+uv 0.6.6 (c1a0bb85e 2025-03-12)
+
+### Python version
+
+Python 3.13.0
+
+---
+
+_Label `bug` added by @calebbrown on 2025-03-14 03:03_
+
+---
+
+_Comment by @charliermarsh on 2025-03-14 15:00_
+
+Interesting, thanks! We can fix that. For reference, we do disallow symlinks that would result in _writing_ outside of the target directory (which would be exploitable).
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2025-03-14 15:03_
+
+---
+
+_Referenced in [astral-sh/tokio-tar#46](../../astral-sh/tokio-tar/pulls/46.md) on 2025-03-14 17:04_
+
+---
+
+_Referenced in [astral-sh/uv#12259](../../astral-sh/uv/pulls/12259.md) on 2025-03-18 02:27_
+
+---
+
+_Closed by @charliermarsh on 2025-07-22 13:20_
+
+---
+
+_Referenced in [astral-sh/uv#14897](../../astral-sh/uv/issues/14897.md) on 2025-07-25 18:37_
+
+---

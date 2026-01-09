@@ -1,0 +1,70 @@
+---
+number: 19173
+title: Update schemars to v1
+type: issue
+state: closed
+author: MichaReiser
+labels:
+  - internal
+  - help wanted
+assignees: []
+created_at: 2025-07-07T08:48:54Z
+updated_at: 2025-10-20T06:59:53Z
+url: https://github.com/astral-sh/ruff/issues/19173
+synced_at: 2026-01-07T13:12:16-06:00
+---
+
+# Update schemars to v1
+
+---
+
+_Issue opened by @MichaReiser on 2025-07-07 08:48_
+
+Upgrade the schemars crate to v1, see https://github.com/astral-sh/ruff/pull/19171
+
+There are some breaking changes (mainly to the schema type) that our code needs to be adopted to. 
+
+
+---
+
+_Label `internal` added by @MichaReiser on 2025-07-07 08:48_
+
+---
+
+_Label `help wanted` added by @MichaReiser on 2025-07-07 08:48_
+
+---
+
+_Comment by @CodeMan62 on 2025-07-24 17:49_
+
+I would like to do this task i am currently doing it 
+
+---
+
+_Referenced in [astral-sh/ruff#19533](../../astral-sh/ruff/pulls/19533.md) on 2025-07-24 17:55_
+
+---
+
+_Assigned to @CodeMan62 by @ntBre on 2025-07-24 19:51_
+
+---
+
+_Comment by @MichaReiser on 2025-08-08 13:12_
+
+Migration guide https://graham.cool/schemars/migrating/
+
+---
+
+_Comment by @CodeMan62 on 2025-08-08 14:40_
+
+Thanks for pointing the guide here i new about while I created the pr but something's left there the reason for delay is i am busy with a festival but this task will be done by tomorrow thanks for your patience🙏
+
+---
+
+_Referenced in [astral-sh/ruff#20942](../../astral-sh/ruff/pulls/20942.md) on 2025-10-17 15:41_
+
+---
+
+_Closed by @MichaReiser on 2025-10-20 06:59_
+
+---

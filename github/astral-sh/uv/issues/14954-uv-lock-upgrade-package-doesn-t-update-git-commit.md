@@ -1,0 +1,157 @@
+---
+number: 14954
+title: "uv lock --upgrade-package doesn't update git commit hash for individual subdirectory dependencies from the same repository"
+type: issue
+state: open
+author: redartera
+labels:
+  - bug
+assignees: []
+created_at: 2025-07-29T13:11:54Z
+updated_at: 2025-11-04T08:28:47Z
+url: https://github.com/astral-sh/uv/issues/14954
+synced_at: 2026-01-07T13:12:19-06:00
+---
+
+# uv lock --upgrade-package doesn't update git commit hash for individual subdirectory dependencies from the same repository
+
+---
+
+_Issue opened by @redartera on 2025-07-29 13:11_
+
+## Description
+
+When using `uv lock --upgrade-package` to update a specific git dependency that comes from a subdirectory of a repository, the commit hash in `uv.lock` is not updated unless **all** dependencies from the same repository are included in the upgrade command. This behavior is unexpected and makes it difficult to selectively update individual packages.
+
+The goal here is to keep updating a git-based dependency when new commits are pushed to its `main` branch.
+
+This issue is related to #4317 but focuses on a specific edge case with subdirectory dependencies.
+
+## Current Behavior
+
+Given a `pyproject.toml` with multiple dependencies from different subdirectories of the same git repository:
+
+```toml
+[project]
+name = "foobar"
+version = "0.1.0"
+requires-python = ">=3.11"
+dependencies = [
+    "package-a",
+    "package-b", 
+    "package-c",
+]
+
+[tool.uv.sources]
+package-a = { git = "https://github.com/example/monorepo.git", subdirectory = "libs/package-a" }
+package-b = { git = "https://github.com/example/monorepo.git", subdirectory = "libs/package-b" }
+package-c = { git = "https://github.com/example/monorepo.git", subdirectory = "libs/package-c" }
+```
+
+Running:
+```bash
+uv lock --upgrade-package package-a
+```
+
+Does **not** update the commit hash in `uv.lock` even if new commits exist in the repository.
+
+## Expected Behavior
+
+The command should update the commit hash for the specified package to the latest commit from the repository's default branch.
+
+## Workaround
+
+Currently, the only way to update the commit hash is to include ALL packages from the same repository:
+
+```bash
+uv lock --upgrade-package package-a --upgrade-package package-b --upgrade-package package-c
+```
+
+This is less invasive than `uv lock --upgrade` which would upgrade all dependencies in the project, but still requires knowing and listing all packages from the same repository.
+
+## Reproduction Steps
+
+1. Create a `pyproject.toml` with multiple dependencies from subdirectories of the same git repository
+2. Run `uv lock` to create initial lock file
+3. Wait for new commits to be pushed to the git repository
+4. Run `uv lock --upgrade-package <single-package-name>`
+5. Observe that the commit hash in `uv.lock` is not updated
+6. Run `uv lock --upgrade-package <package-a> --upgrade-package <package-b> --upgrade-package <package-c>` (all packages from the repo)
+7. Observe that now the commit hash is updated
+
+## Environment
+
+- uv version: 0.8.3
+- OS: Linux/macOS
+
+## Impact
+
+This behavior makes it difficult to:
+- Selectively update individual packages from a monorepo
+- Automate dependency updates in CI/CD pipelines
+- Maintain fine-grained control over dependency versions
+
+The current behavior seems to suggest that uv treats all subdirectory dependencies from the same repository as a single unit when determining whether to update the commit hash.
+
+---
+
+_Label `bug` added by @zanieb on 2025-07-29 17:13_
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2025-08-01 02:03_
+
+---
+
+_Comment by @charliermarsh on 2025-08-01 02:20_
+
+I was able to reproduce this, thanks.
+
+---
+
+_Unassigned @charliermarsh by @charliermarsh on 2025-08-01 02:26_
+
+---
+
+_Comment by @charliermarsh on 2025-08-01 02:27_
+
+I think the "optimal" semantics here are actually a little tricky. Like, if you add a new dependency that's a different subdirectory in the same Git repo, you probably _do_ want to reuse the the same Git SHA. So, like, you _only_ want to use a new SHA in this specific case with an explicit `--upgrade-package`.
+
+
+---
+
+_Referenced in [astral-sh/uv#14684](../../astral-sh/uv/issues/14684.md) on 2025-08-01 02:32_
+
+---
+
+_Comment by @charliermarsh on 2025-08-01 02:33_
+
+Would it be an improvement if `--upgrade-package package-a` caused all of `package-a`, `package-b`, and `package-c` to get upgraded...? I dunno, that also seems bad.
+
+---
+
+_Comment by @redartera on 2025-08-01 17:55_
+
+Personally as a user - It would be preferable for me to just upgrade `package-a` without affecting `package-b` or `package-c`. 
+
+There are some cases where `package-a` may need to use a repo's latest commit, but `package-b` may not want to have its `uv.lock` commit updated if for example some breaking changes were introduced to it in later commits. 
+
+I realize this gets a bit complicated, but as a user I'd prefer to manage the complexity myself of making sure I keep track of the commits used by the different libraries I'm consuming from a git repo. 
+
+I don't think too many users put themselves in this usage pattern, but those who do would probably want to have some control over the commits they're consuming for the different libs. 
+
+---
+
+_Referenced in [MountainGod2/chaturbate_poller#614](../../MountainGod2/chaturbate_poller/pulls/614.md) on 2025-08-18 23:38_
+
+---
+
+_Comment by @ZinkLu on 2025-11-04 08:28_
+
+I usually use workspace/monorepo to manage some utility packages and reference them in via github + subDirectory the main service (also workspace/monorepo). And I have encountered the same issue.
+
+I now have to use `uv lock --upgrade-package <all_packages_from_this_repo>` to update all packages in order to update the new commit hash in the lock file.
+
+I also think that the versions (hash commits) between different monorepos should not affect each other, that is, `uv lock --upgrade-package package-a` will not affect the hash commits of other monorepos.
+
+---

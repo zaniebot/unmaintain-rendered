@@ -1,0 +1,64 @@
+---
+number: 15029
+title: Fix for INP001 implicit-namespace-package
+type: issue
+state: closed
+author: kiyoon
+labels:
+  - fixes
+assignees: []
+created_at: 2024-12-17T01:57:39Z
+updated_at: 2024-12-17T12:25:32Z
+url: https://github.com/astral-sh/ruff/issues/15029
+synced_at: 2026-01-07T13:12:16-06:00
+---
+
+# Fix for INP001 implicit-namespace-package
+
+---
+
+_Issue opened by @kiyoon on 2024-12-17 01:57_
+
+Can there be a fix for the rule? I would like to add `__init__.py` files where missing.
+
+---
+
+_Comment by @kiyoon on 2024-12-17 03:57_
+
+In the meantime I generated a simple python script that checks the lint and adds the files:
+
+https://github.com/deargen/workflows/blob/e99efa3e0c7d415d56af820d3875c749365e8dea/scripts/gen_init_py.py
+
+---
+
+_Comment by @dhruvmanila on 2024-12-17 04:10_
+
+Our current fix infrastructure doesn't support modifying files on disk. I think this might be useful because language servers do provide refactoring ability to move snippets of code to another file.
+
+---
+
+_Label `fixes` added by @dhruvmanila on 2024-12-17 04:10_
+
+---
+
+_Comment by @InSyncWithFoo on 2024-12-17 10:52_
+
+This seems to be a duplicate of #4736.
+
+---
+
+_Comment by @dhruvmanila on 2024-12-17 10:59_
+
+Thank you!
+
+---
+
+_Closed by @dhruvmanila on 2024-12-17 11:00_
+
+---
+
+_Comment by @kiyoon on 2024-12-17 12:25_
+
+oops, sorry
+
+---

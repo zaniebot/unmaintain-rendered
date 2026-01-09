@@ -1,0 +1,113 @@
+---
+number: 8722
+title: uv sync groups from workspace member packages in a virtual workspace
+type: issue
+state: closed
+author: drmason13
+labels:
+  - bug
+assignees: []
+created_at: 2024-10-31T12:31:11Z
+updated_at: 2024-10-31T20:11:24Z
+url: https://github.com/astral-sh/uv/issues/8722
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# uv sync groups from workspace member packages in a virtual workspace
+
+---
+
+_Issue opened by @drmason13 on 2024-10-31 12:31_
+
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with uv.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
+* The current uv platform.
+* The current uv version (`uv --version`).
+-->
+uv 0.4.29
+
+I have a virtual workspace. I want to install a union of all my members' dependencies _including_ development dependencies.
+
+With dependency-groups I had hoped this would now be easy:
+
+```
+uv sync --group dev
+error: Group `dev` is not defined in the project's `dependency-group` table
+```
+
+but this simply complained saying that no group `dev` existed _in the workspace root_ (which is true, but I do have a dependency-group named dev in one of my members).
+
+I've tried two approaches to workaround this:
+
+1. Move all dev dependencies into the workspace root
+2. Duplicate all dev dependencies in workspace root and each member package
+
+Both have downsides, in the case of 1. (moving), my packages can no longer be tested independently since they lack their own development dependencies. In the case of 2. (duplicating), that is its own downside. To add development dependencies I am editing multiple pyproject.toml files, which is the kind of thing I hoped to avoid by using a virtual workspace.
+
+# Suggested solution
+
+Within a virtual workspace, I want `uv sync` to have visibility of each members' dependency-groups specified within pyproject.toml, as well as their dependencies.
+
+How to request that those groups be included or not could go one of two ways:
+
+## 1. Implicit
+* Have `uv sync --group dev` include dependencies from all members' dependency groups, and the root.
+
+## 2. Explicit
+* Have `uv sync --group dev` only see groups in the root project (behaviour unchanged).
+* Have `uv sync --group dev --include-dependency-groups-of-all-workspace-members` include dependencies from all members' dependency groups, and the root. Same as in the implicit case.
+
+`--include-dependency-groups-of-all-workspace-members` is obviously too long, pending a suitable alternative. I don't have a strong opinion on the name of the option. It could also/instead be a config file option.
+
+With 2. it would be natural to extend the request to list specific members to include the group from, though that's harder to think of syntax for. i.e. I want group `dev` from members `foo` and `bar` where `foo` and `bar` are the package names of an arbitrary subset of my workspace members. I don't have a good use case for this myself though.
+
+---
+
+_Comment by @drmason13 on 2024-10-31 14:33_
+
+Actually, I have discovered another workaround to improve 1. Move all dev dependencies into the workspace root
+
+I first `uv sync --only-group dev` to get all the development dependencies
+
+_because I have it so they are all listed in the virtual workspace pyproject.toml instead of the members. No members list any dev dependencies, which avoids duplication._
+
+Then, `uv run --package foo pytest` which will _additionally install_ `foo` and its dependencies but does not uninstall any dev dependencies. Previously this was a problem because I wanted to not have every other member installed while testing `foo`, but the `--only-group dev` option to uv sync fixes this 🙂 
+
+When testing the next package, I can `uv sync --only-group dev` again to effectively uninstall foo and its dependencies and revert back to just having dev dependencies. Then I `uv run --package bar pytest` and so on.
+
+Note: running `uv sync --package foo` would lose all the root dev dependencies, so I can't ever do that (while testing) but when _building_, I will do exactly that and everything should work out great.
+
+I think that removes the need for this feature, for me.
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2024-10-31 19:48_
+
+---
+
+_Label `bug` added by @charliermarsh on 2024-10-31 19:48_
+
+---
+
+_Comment by @charliermarsh on 2024-10-31 19:49_
+
+Sorry yeah -- this is a bug. I actually just noticed it in a separate context. Will fix it now.
+
+---
+
+_Referenced in [astral-sh/uv#8734](../../astral-sh/uv/pulls/8734.md) on 2024-10-31 20:05_
+
+---
+
+_Closed by @charliermarsh on 2024-10-31 20:11_
+
+---
+
+_Closed by @charliermarsh on 2024-10-31 20:11_
+
+---

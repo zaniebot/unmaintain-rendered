@@ -1,0 +1,56 @@
+---
+number: 1084
+title: Strip windows prefixes from paths in messages
+type: issue
+state: closed
+author: konstin
+labels:
+  - windows
+assignees: []
+created_at: 2024-01-24T21:28:16Z
+updated_at: 2024-01-25T16:44:23Z
+url: https://github.com/astral-sh/uv/issues/1084
+synced_at: 2026-01-07T13:12:16-06:00
+---
+
+# Strip windows prefixes from paths in messages
+
+---
+
+_Issue opened by @konstin on 2024-01-24 21:28_
+
+We should strip the UNC path prefix for paths we print, e.g.
+
+```console
+$ cargo run -q -- venv .venv
+Using Python 3.12.1 interpreter at \\?\C:\Users\ferris\AppData\Local\Programs\Python\Python312\python.exe
+Creating virtual environment at: .venv
+```
+
+You can edit this post to add cases of messages you find with UNC paths.
+
+The main source of UNC paths is `fs[_err]::canonicalize`. According to [stack overflow](https://stackoverflow.com/questions/50322817/how-do-i-remove-the-prefix-from-a-canonical-windows-path), our options are manually stripping the `\\?\` if it exists or using the [`dunce` (de-UNC) crate](https://docs.rs/dunce/latest/dunce/) over or on top of `fs[_err]::canonicalize`.
+
+---
+
+_Label `windows` added by @konstin on 2024-01-24 21:28_
+
+---
+
+_Comment by @charliermarsh on 2024-01-24 21:30_
+
+I can help with this.
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2024-01-24 21:30_
+
+---
+
+_Referenced in [astral-sh/uv#1086](../../astral-sh/uv/pulls/1086.md) on 2024-01-24 22:27_
+
+---
+
+_Closed by @charliermarsh on 2024-01-25 16:44_
+
+---

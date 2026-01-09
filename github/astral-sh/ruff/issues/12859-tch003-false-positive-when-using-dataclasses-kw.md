@@ -1,0 +1,109 @@
+---
+number: 12859
+title: TCH003 false-positive when using dataclasses.KW_ONLY
+type: issue
+state: closed
+author: flying-sheep
+labels:
+  - bug
+assignees: []
+created_at: 2024-08-13T12:54:45Z
+updated_at: 2024-09-19T10:41:49Z
+url: https://github.com/astral-sh/ruff/issues/12859
+synced_at: 2026-01-07T13:12:15-06:00
+---
+
+# TCH003 false-positive when using dataclasses.KW_ONLY
+
+---
+
+_Issue opened by @flying-sheep on 2024-08-13 12:54_
+
+Seen in Ruff 0.5.7
+
+In the following code, `from __future__ import annotations` causes the `KW_ONLY` to become a string.
+The dataclasses module can deal with that, but only if the object isn’t in a `if TYPE_CHECKING` block.
+Ruff supports this for things like `ClassVar`¹, i.e. if a `ClassVar` is used in a dataclass, Ruff knows the ` from typing import ClassVar` needs to come out of the `if TYPE_CHECKING` block. However the same doesn’t seem to be true here.
+
+```py
+from __future__ import annotations
+
+from dataclasses import KW_ONLY, dataclass
+
+@dataclass
+class Test:
+    a: int
+    _: KW_ONLY
+    b: str
+```
+
+----
+¹This is probably the place that should handle KW_ONLY
+https://github.com/astral-sh/ruff/blob/82a3e69b8a096b0cfceae71121ca5201e28cd192/crates/ruff_linter/src/rules/flake8_type_checking/helpers.rs#L108-L139
+    
+
+---
+
+_Comment by @charliermarsh on 2024-08-13 13:20_
+
+Wow TIL, I’ve never seen that feature before.
+
+---
+
+_Label `bug` added by @charliermarsh on 2024-08-13 13:20_
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2024-08-13 13:37_
+
+---
+
+_Comment by @charliermarsh on 2024-08-13 14:08_
+
+Ah, this requires:
+
+```toml
+[tool.ruff.flake8-type-checking]
+strict = true
+```
+
+So probably somewhat rare (but should be fixed).
+
+
+---
+
+_Referenced in [astral-sh/ruff#12863](../../astral-sh/ruff/pulls/12863.md) on 2024-08-13 15:24_
+
+---
+
+_Closed by @charliermarsh on 2024-08-13 18:34_
+
+---
+
+_Closed by @charliermarsh on 2024-08-13 18:34_
+
+---
+
+_Comment by @flying-sheep on 2024-08-14 14:17_
+
+Thank you!
+
+---
+
+_Comment by @flying-sheep on 2024-09-19 10:41_
+
+Btw.: I always do
+
+```toml
+[tool.ruff.lint.flake8-type-checking]
+exempt-modules = []
+strict = true
+```
+
+because that way I can use new `typing` features without having to pay attention that they are imported from `typing_extensions` or in a `if TYPE_CHECKING` block for backwards compatibility. They just always are in there.
+
+---
+
+_Referenced in [astral-sh/ruff#21121](../../astral-sh/ruff/issues/21121.md) on 2025-10-29 04:51_
+
+---

@@ -1,0 +1,121 @@
+---
+number: 7014
+title: uv fails to install gym 0.21.0
+type: issue
+state: closed
+author: locifazi
+labels:
+  - question
+assignees: []
+created_at: 2024-09-04T12:53:49Z
+updated_at: 2025-11-06T12:59:29Z
+url: https://github.com/astral-sh/uv/issues/7014
+synced_at: 2026-01-07T13:12:17-06:00
+---
+
+# uv fails to install gym 0.21.0
+
+---
+
+_Issue opened by @locifazi on 2024-09-04 12:53_
+
+I'm using `uv 0.4.2` on `AlmaLinux-8.9`, and encounter following problem:
+
+```
+$ uv pip install gym==0.21.0
+                                                                                                             
+error: Failed to download and build `gym==0.21.0`
+  Caused by: Build backend failed to determine extra requires with `build_wheel()` with exit status: 1
+--- stdout:
+
+--- stderr:
+/home/USER/.cache/uv/builds-v0/.tmpwd1OEy/lib/python3.11/site-packages/setuptools/_distutils/dist.py:261: UserWarning: Unknown distribution option: 'tests_require'
+  warnings.warn(msg)
+error in gym setup command: 'extras_require' must be a dictionary whose values are strings or lists of strings containing valid project/version requirement specifiers.
+---
+```
+
+
+---
+
+_Comment by @charliermarsh on 2024-09-04 13:21_
+
+Are you able to install the package with `uv pip install --use-pep517 gym==0.21.0`?
+
+---
+
+_Label `question` added by @charliermarsh on 2024-09-04 13:22_
+
+---
+
+_Comment by @locifazi on 2024-09-04 14:01_
+
+No, the flag `--use-pep517` isn't recognized by uv, but apparently uv follows [by default pep517](https://docs.astral.sh/uv/pip/compatibility/#pep-517-build-isolation).
+
+I can also mention that this package is successfully installed through `pip install gym==0.21.0` and `pip install gym==0.21.0 --use-pep517`
+
+---
+
+_Comment by @charliermarsh on 2024-09-04 14:02_
+
+(Sorry, I meant `pip install gym==0.21.0 --use-pep517`.)
+
+---
+
+_Comment by @locifazi on 2024-09-11 12:16_
+
+I found the cause: gym 0.21.0 has incorrect metadata, but I was able to install it using pip due to some custom configurations I've made to pip.
+
+Therefore uv's error message is valid.
+
+---
+
+_Closed by @locifazi on 2024-09-11 12:16_
+
+---
+
+_Comment by @seif9116 on 2025-11-05 19:47_
+
+😭😭😭 What are those custom configurations @locifazi 🥹🥹🥹. 
+
+I tried in a venv managed by uv (python 3.9). `uv pip install gym==0.21.0` as well as `pip install gym==0.21.0 --use-pep517`. Both times I get the error
+
+```
+  × Failed to build `gym==0.21.0`
+  ├─▶ The build backend returned an error
+  ╰─▶ Call to `setuptools.build_meta:__legacy__.build_wheel` failed (exit status: 1)
+
+      [stderr]
+      /home/seif/.cache/uv/builds-v0/.tmpyKq7Tf/lib/python3.9/site-packages/setuptools/_distutils/dist.py:289: UserWarning: Unknown distribution option: 'tests_require'
+        warnings.warn(msg)
+      error in gym setup command: 'extras_require' must be a dictionary whose values are strings or lists of strings containing valid project/version requirement specifiers.
+
+      hint: This usually indicates a problem with the package or the build environment.
+```
+
+---
+
+_Comment by @konstin on 2025-11-05 20:08_
+
+Usually I would recommend upgrading to a more recent version or reporting the problem upstream, but the gym package has been abandoned.
+
+---
+
+_Comment by @pelson on 2025-11-06 10:26_
+
+The problem with gym is that you have to build the wheel yourself... and build dependencies get resolved at build time (so something that used to be able to build, can get newer dependencies and no longer build). In this case, setuptools moved forwards... you have to pin back some of the dependencies:
+
+```
+$ cat foo.txt
+setuptools==65.*
+
+$ PIP_CONSTRAINT=foo.txt uv run --python=3.9 --with 'pip<24.1' pip wheel --no-binary=:all: gym==0.21.*
+```
+
+---
+
+_Comment by @zanieb on 2025-11-06 12:59_
+
+See also, https://docs.astral.sh/uv/reference/settings/#build-constraint-dependencies
+
+---

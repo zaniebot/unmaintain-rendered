@@ -1,0 +1,81 @@
+---
+number: 9925
+title: PERF101 false positive
+type: issue
+state: closed
+author: Skylion007
+labels:
+  - bug
+assignees: []
+created_at: 2024-02-10T20:39:48Z
+updated_at: 2024-02-12T17:17:57Z
+url: https://github.com/astral-sh/ruff/issues/9925
+synced_at: 2026-01-07T13:12:15-06:00
+---
+
+# PERF101 false positive
+
+---
+
+_Issue opened by @Skylion007 on 2024-02-10 20:39_
+
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+I was running ruff on Sympy, applied the experimental ruff PERF rules and hit a bug. When running it on this file at this commit:
+https://github.com/sympy/sympy/blob/b3d060459054d0cbd925a06fc7719a6f3b498a91/sympy/polys/galoistools.py#L1812 it recommends removing the list cast, but one can't do that because the inner while loop modifies the list that it is iterating over leading to an error. I tried to extract a smaller reproducer out of this, but was unable to.
+
+version used: ruff 0.2.0 
+`ruff --select PERF --show-source --fix file.py` leads to the invalid fix.
+```
+sympy/polys/galoistools.py:1812:18: PERF101 [*] Do not cast an iterable to `list` before iterating over it
+     |
+1811 |     for k in range(1, len(V)):
+1812 |         for f in list(factors):
+     |                  ^^^^^^^^^^^^^ PERF101
+1813 |             s = K.zero
+     |
+     = help: Remove `list()` cast
+```
+worse, this is a safe fix and it makes the file invalid.
+
+---
+
+_Renamed from "PERF401 false positive" to "PERF101 false positive" by @Skylion007 on 2024-02-10 20:39_
+
+---
+
+_Label `bug` added by @charliermarsh on 2024-02-10 20:56_
+
+---
+
+_Comment by @charliermarsh on 2024-02-10 21:02_
+
+Makes sense, thanks for filing!
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2024-02-11 03:22_
+
+---
+
+_Comment by @charliermarsh on 2024-02-11 20:09_
+
+I'll fix this today.
+
+---
+
+_Referenced in [astral-sh/ruff#9955](../../astral-sh/ruff/pulls/9955.md) on 2024-02-12 16:59_
+
+---
+
+_Closed by @charliermarsh on 2024-02-12 17:17_
+
+---

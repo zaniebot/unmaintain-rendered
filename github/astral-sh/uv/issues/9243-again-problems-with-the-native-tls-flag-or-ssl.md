@@ -1,0 +1,563 @@
+---
+number: 9243
+title: Again problems with the --native-tls flag or SSL_CERT_FILE
+type: issue
+state: open
+author: andreamoro
+labels:
+  - bug
+  - external
+assignees: []
+created_at: 2024-11-19T20:12:59Z
+updated_at: 2025-12-31T18:24:32Z
+url: https://github.com/astral-sh/uv/issues/9243
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# Again problems with the --native-tls flag or SSL_CERT_FILE
+
+---
+
+_Issue opened by @andreamoro on 2024-11-19 20:12_
+
+After a small period of joy, again today I'm experiencing problems in using the uv pip install.
+Whether using the `--native-tls` or setting the `SSL_CERT_FILE`, both the approach resolve in a "Failed to tech error".
+
+<img width="654" alt="image" src="https://github.com/user-attachments/assets/887ed237-b809-4308-ab8f-df2d6accfb03">
+
+When it comes to the SSL_CERT_FILE, read-only permissions on the file were given. Not sure this would be making any difference at this stage. 
+
+UV version tried, both the 0.4.28 and the 0.5.2
+
+Would someone so kind to provide some debugging steps?
+
+---
+
+_Comment by @zanieb on 2024-11-19 20:24_
+
+Can you share verbose logs? You can also use `RUST_LOG=debug` to get logs from the networking stack, it'll be very verbose.
+
+---
+
+_Label `question` added by @zanieb on 2024-11-19 20:24_
+
+---
+
+_Comment by @andreamoro on 2024-11-19 20:28_
+
+```
+DEBUG uv 0.5.2 (Homebrew 2024-11-14)
+DEBUG Searching for default Python interpreter in virtual environments
+DEBUG Found `cpython-3.12.1-macos-aarch64-none` at `/Users/andreamoro/.pyenv/versions/3.12.1/envs/DataAnalysis/bin/python3` (active virtual environment)
+Using Python 3.12.1 environment at .pyenv/versions/3.12.1/envs/DataAnalysis
+DEBUG Acquired lock for `.pyenv/versions/3.12.1/envs/DataAnalysis`
+DEBUG At least one requirement is not satisfied: seaborn
+DEBUG Using request timeout of 30s
+DEBUG Solving with installed Python version: 3.12.1
+DEBUG Solving with target Python version: >=3.12.1
+DEBUG Adding direct dependency: seaborn*
+DEBUG No cache entry for: https://pypi.org/simple/seaborn/
+DEBUG Transient request failure for https://pypi.org/simple/seaborn/, retrying: error sending request for url (https://pypi.org/simple/seaborn/)
+  Caused by: client error (Connect)
+  Caused by: invalid peer certificate: UnknownIssuer
+DEBUG Transient request failure for https://pypi.org/simple/seaborn/, retrying: error sending request for url (https://pypi.org/simple/seaborn/)
+  Caused by: client error (Connect)
+  Caused by: invalid peer certificate: UnknownIssuer
+DEBUG Transient request failure for https://pypi.org/simple/seaborn/, retrying: error sending request for url (https://pypi.org/simple/seaborn/)
+  Caused by: client error (Connect)
+  Caused by: invalid peer certificate: UnknownIssuer
+DEBUG Transient request failure for https://pypi.org/simple/seaborn/, retrying: error sending request for url (https://pypi.org/simple/seaborn/)
+  Caused by: client error (Connect)
+  Caused by: invalid peer certificate: UnknownIssuer
+DEBUG Released lock at `/Users/andreamoro/.pyenv/versions/3.12.1/envs/DataAnalysis/.lock`
+error: Failed to fetch: `https://pypi.org/simple/seaborn/`
+  Caused by: Request failed after 3 retries
+  Caused by: error sending request for url (https://pypi.org/simple/seaborn/)
+  Caused by: client error (Connect)
+  Caused by: invalid peer certificate: UnknownIssuer
+```
+
+---
+
+_Comment by @andreamoro on 2024-11-19 20:30_
+
+Or with the rust_log enabled
+
+```
+❯ uv pip install --native-tls seaborn --verbose
+DEBUG uv 0.5.2 (Homebrew 2024-11-14)
+DEBUG Searching for default Python interpreter in virtual environments
+DEBUG Found `cpython-3.12.1-macos-aarch64-none` at `/Users/andreamoro/.pyenv/versions/3.12.1/envs/DataAnalysis/bin/python3` (active virtual environment)
+Using Python 3.12.1 environment at .pyenv/versions/3.12.1/envs/DataAnalysis
+DEBUG Acquired lock for `.pyenv/versions/3.12.1/envs/DataAnalysis`
+DEBUG At least one requirement is not satisfied: seaborn
+DEBUG Using request timeout of 30s
+DEBUG Solving with installed Python version: 3.12.1
+DEBUG Solving with target Python version: >=3.12.1
+DEBUG Adding direct dependency: seaborn*
+INFO add_decision: root @ 0a0.dev0 without checking dependencies
+DEBUG No cache entry for: https://pypi.org/simple/seaborn/
+DEBUG starting new connection: https://pypi.org/
+DEBUG connecting to 151.101.192.223:443
+DEBUG connected to 151.101.192.223:443
+DEBUG Transient request failure for https://pypi.org/simple/seaborn/, retrying: error sending request for url (https://pypi.org/simple/seaborn/)
+  Caused by: client error (Connect)
+  Caused by: invalid peer certificate: UnknownIssuer
+WARN Retry attempt #0. Sleeping 425.833483ms before the next attempt
+DEBUG starting new connection: https://pypi.org/
+DEBUG connecting to 151.101.192.223:443
+DEBUG connected to 151.101.192.223:443
+DEBUG Transient request failure for https://pypi.org/simple/seaborn/, retrying: error sending request for url (https://pypi.org/simple/seaborn/)
+  Caused by: client error (Connect)
+  Caused by: invalid peer certificate: UnknownIssuer
+WARN Retry attempt #1. Sleeping 1.954031005s before the next attempt
+DEBUG starting new connection: https://pypi.org/
+DEBUG connecting to 151.101.192.223:443
+DEBUG connected to 151.101.192.223:443
+DEBUG Transient request failure for https://pypi.org/simple/seaborn/, retrying: error sending request for url (https://pypi.org/simple/seaborn/)
+  Caused by: client error (Connect)
+  Caused by: invalid peer certificate: UnknownIssuer
+WARN Retry attempt #2. Sleeping 1.038860859s before the next attempt
+DEBUG starting new connection: https://pypi.org/
+DEBUG connecting to 151.101.192.223:443
+DEBUG connected to 151.101.192.223:443
+DEBUG Transient request failure for https://pypi.org/simple/seaborn/, retrying: error sending request for url (https://pypi.org/simple/seaborn/)
+  Caused by: client error (Connect)
+  Caused by: invalid peer certificate: UnknownIssuer
+DEBUG Released lock at `/Users/andreamoro/.pyenv/versions/3.12.1/envs/DataAnalysis/.lock`
+error: Failed to fetch: `https://pypi.org/simple/seaborn/`
+  Caused by: Request failed after 3 retries
+  Caused by: error sending request for url (https://pypi.org/simple/seaborn/)
+  Caused by: client error (Connect)
+  Caused by: invalid peer certificate: UnknownIssuer
+```
+
+It looks like he doesn't like the certificate, but it's the same I used the other time I was able to get it through... generated from the system settings.
+
+---
+
+_Comment by @zanieb on 2024-11-19 20:33_
+
+Thanks! Yeah I'm not sure what to tell you here, it looks like the certificate is wrong — this usually has nothing to do with uv's implementation. You can get _more_ logs with `RUST_LOG=trace` but I doubt it'll show anything interesting. Does the cert work with other tools?
+
+---
+
+_Comment by @andreamoro on 2024-11-19 20:47_
+
+Yes it does :(
+But why the --native-tls is not going to work anymore? That one should look at the system settings, no?
+
+---
+
+_Comment by @zanieb on 2024-11-19 21:02_
+
+The behavior of that flag should not have changed, I'm assuming this stopped working without you changing your uv version? What kind of proxy are you using? Who runs it? How do you know the cert is up to date?
+
+---
+
+_Comment by @andreamoro on 2024-11-19 21:06_
+
+Update uv today after this was failing. Company is using Zscaler. Cert was verified against the Keychain file ... and just in case I made a new bundle seconds ago just to confirm this was updated, but yet not joy.
+
+In any case I validated the .pem file using the `openssl x509 -in "/Documents/ZscalerCertificate.pem" -text -noout` command with success.
+
+---
+
+_Comment by @zanieb on 2024-11-19 21:22_
+
+But you said this also fails on an old version of uv? What was the last working version?
+
+---
+
+_Comment by @andreamoro on 2024-11-20 10:03_
+
+That's a very good question. I might have ran a brew upgrade at some point, but I don't remember whether uv was upgraded and which version I had before. My bad.
+
+---
+
+_Comment by @solomchuk on 2024-11-29 11:55_
+
+I just tried using `uv` for the first time and went through the Getting Started section of the docs and immediately encountered this issue at the `uv add ruff` step.
+
+In my case it turned out to be a `pip` problem and not a `uv` problem, because updating `uv` or installing new Python versions worked fine. So I took a step back and troubleshooted my system pip setup (on Ubuntu 22.04 in WSL) until that worked. When I tried `uv add ruff` afterwards, the command completed successfully.
+
+For zscaler guidance specifically, see [here](https://help.zscaler.com/zia/adding-custom-certificate-application-specific-trust-store).
+
+Also have a look at pip docs, specifically the [HTTPS Certificates](https://pip.pypa.io/en/latest/topics/https-certificates/) section. Since you're using Python 3.12, if your pip is at v22.2+ you should be able to tell it to use system certificates.
+
+EDIT: Thinking about it a little more - since I don't know how `uv` operates in the background, it could be that my broken `pip` was not the cause of `uv` not working correctly; but whatever caused my `pip` to break also broke `uv`.
+
+Hope that helps.
+
+
+---
+
+_Comment by @andreamoro on 2024-12-01 14:20_
+
+Thanks @solomchuk so by setting all that global variable did the trick, but it's also true that today I got another upgrade from Apple?
+
+Is there any way at all to export variable when the pyenv is activated as far as you know?
+Adding variables at the bottom of the "activate" file for the given environment doesn't seem to work
+
+
+---
+
+_Comment by @solomchuk on 2024-12-01 18:25_
+
+@andreamoro I haven't tried playing around with this, but apparently you can use `UV_ENV_FILE` variable to load environment variables from a file when executing `ev run`. See [here](https://docs.astral.sh/uv/configuration/environment/#uv_env_file).
+
+---
+
+_Comment by @andreamoro on 2024-12-01 19:06_
+
+So far I can't get coexisting UV environment with pyenv, so it's not an option for me :(
+But thanks
+
+---
+
+_Referenced in [astral-sh/uv#11595](../../astral-sh/uv/issues/11595.md) on 2025-02-18 12:02_
+
+---
+
+_Comment by @amerry on 2025-04-03 15:32_
+
+I get something very similar when attempting to use native TLS to access an internal index:
+
+```
+❯ uv --version
+uv 0.6.12 (e4e03833f 2025-04-02)
+❯ UV_NATIVE_TLS="true" uv tool run --with some-internal-package --index "https://artifactory.<internal-network>/artifactory/api/pypi/virtual-pypi/simple" python --version
+⠧ Resolving dependencies...
+error: Failed to fetch: `https://artifactory.<internal-network>/artifactory/api/pypi/virtual-pypi/simple/some-internal-package/`
+  Caused by: Request failed after 3 retries
+  Caused by: error sending request for url (https://artifactory.<internal-network>/artifactory/api/pypi/virtual-pypi/simple/some-internal-package/)
+  Caused by: client error (Connect)
+  Caused by: invalid peer certificate: UnknownIssuer
+```
+
+I have the above **failure on both Windows and macOS**, where the correct CA certificate is installed into the system certificate stores (curl, for example, can use these system certs fine). It actually **works on Linux**.
+
+I get the same effect whether setting `UV_NATIVE_TLS` or using `--native-tls`.
+
+I've tried enabling the extra traces and debug output, but none of it says anything about _how_ certificates are being checked, only that they don't pass validation.
+
+I tried rolling back to some earlier versions of `uv` from the 0.6 and 0.5 series (based on some of the early comments on this issue), and it didn't help.
+
+---
+
+_Comment by @amerry on 2025-04-03 15:42_
+
+I've found a solution to my specific problem: our setup is that there is a "root CA" and an "issuing CA". The root CA signs the issuing CA, and the issuing CA signs the actual server certificates.
+
+Both CAs are in the System Keychain, but only the "root CA" is marked as trusted. This seems to be fine for most tools (trusting the root CA is effectively inherited by the entire chain), but not for the libraries that uv uses. If I explicitly trust the issuing CA, it works.
+
+This seems like a bug (in that the behaviour deviates from standard TLS libraries), but presumably in one of the upstream libraries of `uv` rather than in `uv` itself.
+
+---
+
+_Comment by @zanieb on 2025-04-03 16:15_
+
+@amerry thanks for the details! Perhaps https://github.com/rustls/rustls-native-certs is a good starting place for reporting that?
+
+---
+
+_Comment by @amerry on 2025-04-03 17:50_
+
+Yeah, I'm going to try to see if I can reproduce with the tests from that project, and if so submit a bug there.
+
+---
+
+_Comment by @NMertsch on 2025-04-07 09:40_
+
+Hi, I think I have the same issue. Adding our internal PyPI host to `allow-insecure-host` in `uv.toml` works for now, but Python's `requests` library and also all web browsers accept the host certificate, so I think `native-tls = true` should be enough.
+
+I think this one is related: https://github.com/rustls/rustls-native-certs/issues/131. It is closed because "`rustls-platform-verifier` is confirmed to work". I don't know what that means, but maybe it helps someone else here :)
+
+---
+
+_Comment by @amerry on 2025-04-08 08:02_
+
+It sounds like the upstream team are recommending replacing rustls-native-certs with rustls-platform-verifier. There is a ticket for this: seanmonstar/reqwest#2159. That ticket in turn is blocked on https://github.com/rustls/rustls-platform-verifier/issues/58 which is blocked on implementing support for additional root certs on Android.
+
+There's a note on [this comment](https://github.com/rustls/rustls-native-certs/issues/131#issuecomment-2335110993) that downstream users of reqwest can use rustls-platform-verifier already. I will attempt to see if that would solve the issue I noted above.
+
+---
+
+_Label `question` removed by @zanieb on 2025-04-08 18:01_
+
+---
+
+_Label `bug` added by @zanieb on 2025-04-08 18:01_
+
+---
+
+_Label `external` added by @zanieb on 2025-04-08 18:01_
+
+---
+
+_Assigned to @jtfmumm by @zanieb on 2025-04-18 14:59_
+
+---
+
+_Comment by @amerry on 2025-04-23 13:54_
+
+I couldn't figure out how to modify `uv` itself, but I did make a minimal example based on the `rustls-native-certs` and `rustls_platform_verifier` example code:
+
+<details><summary>Code</summary>
+
+```rust
+use clap::Parser;
+use rustls;
+use rustls_native_certs;
+use rustls_platform_verifier;
+use std::io::{Read, Write, stdout};
+use std::net::TcpStream;
+use std::sync::Arc;
+
+#[derive(Parser, Debug)]
+#[command(version, about, long_about = None)]
+struct Args {
+    /// Host to contact
+    host: String,
+
+    /// Whether to use rustls-platform-verifier
+    #[arg(short, long)]
+    verifier: bool,
+}
+
+fn main() {
+    let args = Args::parse();
+    let host = args.host;
+    let address = format!("{host}:443");
+
+    let config = if args.verifier {
+        use rustls_platform_verifier::ConfigVerifierExt;
+        rustls::ClientConfig::with_platform_verifier()
+    } else {
+        let mut roots = rustls::RootCertStore::empty();
+        for cert in rustls_native_certs::load_native_certs().expect("could not load platform certs")
+        {
+            roots.add(cert).unwrap();
+        }
+        rustls::ClientConfig::builder()
+            .with_root_certificates(roots)
+            .with_no_client_auth()
+    };
+
+    let mut conn =
+        rustls::ClientConnection::new(Arc::new(config), host.try_into().unwrap()).unwrap();
+    let mut sock = TcpStream::connect(address).expect("cannot connect");
+    let mut tls = rustls::Stream::new(&mut conn, &mut sock);
+    tls.write_all(
+        concat!(
+            "GET / HTTP/1.1\r\n",
+            "Host: google.com\r\n",
+            "Connection: close\r\n",
+            "Accept-Encoding: identity\r\n",
+            "\r\n"
+        )
+        .as_bytes(),
+    )
+    .expect("write failed");
+    let ciphersuite = tls
+        .conn
+        .negotiated_cipher_suite()
+        .expect("tls handshake failed");
+    writeln!(
+        &mut std::io::stderr(),
+        "Current ciphersuite: {:?}",
+        ciphersuite.suite()
+    )
+    .unwrap();
+    let mut plaintext = Vec::new();
+    tls.read_to_end(&mut plaintext).unwrap();
+    stdout().write_all(&plaintext).unwrap();
+}
+```
+
+</details>
+
+With this, I can confirm that accessing an address on the local network (where the root cert is trusted but the intermediate cert has no explicit trust set) doesn't work with `rustls-native-certs` but _does_ work with `rustls_platform_verifier`. So for me, at least, the issue should be resolved by switching to `rustls_platform_verifier`.
+
+---
+
+_Comment by @124C41p on 2025-05-24 11:19_
+
+I have the same issue at work (behind a corporate proxy). Based on the suggestions given here (using `rustls_platform_verifier`), I was able to patch uv so that it works in my company: https://github.com/124C41p/uv
+
+Please feel free to use this workaround until the issue is fixed properly.
+
+---
+
+_Unassigned @jtfmumm by @konstin on 2025-09-12 13:37_
+
+---
+
+_Comment by @romaingyh on 2025-10-06 13:29_
+
+Hi@124C41p, do you have time to make a PR with your fix?
+
+---
+
+_Comment by @124C41p on 2025-10-09 18:48_
+
+Hi @romaingyh, in principle yes - the patch isn't that big of a deal. But I don't have the impression that the uv team wants to have a workaround in their code fixing an issue of one of their dependencies (please correct me if I am wrong).
+
+---
+
+_Comment by @romaingyh on 2025-10-13 08:38_
+
+It's an issue in a dependency but this is issue is closed as not planned and considering this answer
+
+> I think this one is related: [rustls/rustls-native-certs#131](https://github.com/rustls/rustls-native-certs/issues/131). It is closed because "`rustls-platform-verifier` is confirmed to work"
+
+I think uv is stuck and your fix is the only way
+
+
+
+
+---
+
+_Comment by @amerry on 2025-10-13 12:51_
+
+> Hi [@romaingyh](https://github.com/romaingyh), in principle yes - the patch isn't that big of a deal. But I don't have the impression that the uv team wants to have a workaround in their code fixing an issue of one of their dependencies (please correct me if I am wrong).
+
+I wouldn't describe replacing a deprecated dependency with its official replacement a "workaround" - that sounds like the proper fix to me.
+
+---
+
+_Comment by @124C41p on 2025-10-13 14:54_
+
+I think [this](https://github.com/seanmonstar/reqwest/pull/2286) is the PR the uv team is waiting for to solve this issue. It is open since May 2024, and there doesn't seem to be much progress. I would also like to see an interim solution, and I would be happy to create a PR if the uv team agrees.
+
+@zanieb, @konstin  what do you think?
+
+---
+
+_Referenced in [seanmonstar/reqwest#2286](../../seanmonstar/reqwest/pulls/2286.md) on 2025-10-16 19:57_
+
+---
+
+_Comment by @djc on 2025-10-16 21:06_
+
+It's not that hard to wire up reqwest to use a custom rustls config, which could use rustls-platform-verifier.
+
+Here's how we do it in rustup:
+
+https://github.com/rust-lang/rustup/blob/main/src/download/mod.rs#L623
+
+---
+
+_Comment by @michael-o on 2025-11-18 19:40_
+
+Just hit this on Windows. `--native-tls` provided, still failing.
+Chain:
+```
+$ openssl s_client -connect dw-eng-rsc.innomotics.net:443
+CONNECTED(00000003)
+depth=2 C = DE, ST = Bayern, L = Muenchen, O = Siemens, serialNumber = ZZZZZZA1, OU = Siemens Trust Center, CN = Siemens Root CA V3.0 2016
+verify return:1
+depth=1 C = DE, ST = Bayern, L = Muenchen, O = Siemens, serialNumber = ZZZZZZE7, CN = Siemens Issuing CA Intranet Server 2022
+verify return:1
+depth=0 C = DE, O = Siemens, OU = IN HVM DW, CN = dw-eng-rsc.innomotics.net
+verify return:1
+---
+Certificate chain
+ 0 s:C = DE, O = Siemens, OU = IN HVM DW, CN = dw-eng-rsc.innomotics.net
+   i:C = DE, ST = Bayern, L = Muenchen, O = Siemens, serialNumber = ZZZZZZE7, CN = Siemens Issuing CA Intranet Server 2022
+---
+```
+Wrote a standalone application with reqwest just like uv uses it along with rustls-native-certs..well rustls-native-certs is pointless on Windows since it does not load intermediate CAs, only root ones, hence the leaf verification fails. Just like it is mentioned in https://github.com/rustls/rustls-native-certs/issues/131. I expected it to be as easy as providing the flag, that's it.
+
+---
+
+_Comment by @michael-o on 2025-11-19 08:24_
+
+> It's not that hard to wire up reqwest to use a custom rustls config, which could use rustls-platform-verifier.
+> 
+> Here's how we do it in rustup:
+> 
+> https://github.com/rust-lang/rustup/blob/main/src/download/mod.rs#L623
+
+I have tried to pick this up, this works:
+```rust
+use std::error::Error;
+
+use reqwest::blocking::Client;
+use rustls::ClientConfig;
+use rustls_platform_verifier::ConfigVerifierExt;
+
+fn main() -> Result<(), Box<dyn Error>> {
+    // Create a rustls ClientConfig using the platform-native verifier
+    let tls_config = ClientConfig::with_platform_verifier()?;
+
+    // Build a reqwest blocking client using the custom TLS config
+    let client = Client::builder()
+        .use_preconfigured_tls(tls_config)
+        .build()?;
+
+    // Make a request
+    let response = client
+        .get("https://dw-eng-rsc.innomotics.net/repos/")
+        .send()?
+        .text()?;
+
+    println!("{response}");
+    Ok(())
+}
+```
+while this:
+```patch
+PS C:\Entwicklung\Projekte\uv> git diff -U0 .\Cargo.toml crates/uv-client
+diff --git a/Cargo.toml b/Cargo.toml
+index c523ecec0..28bed1434 100644
+--- a/Cargo.toml
++++ b/Cargo.toml
+@@ -153 +153 @@ reqsign = { version = "0.18.0", features = ["aws", "default-context"], default-f
+-reqwest = { version = "0.12.22", default-features = false, features = ["json", "gzip", "deflate", "zstd", "stream", "system-proxy", "rustls-tls", "rustls-tls-native-roots", "socks", "multipart", "http2", "blocking"] }
++reqwest = { version = "0.12.22", default-features = false, features = ["json", "gzip", "deflate", "zstd", "stream", "system-proxy", "rustls-tls", "socks", "multipart", "http2", "blocking"] }
+@@ -219,0 +220 @@ rustls = { version = "0.23.29", default-features = false }
++rustls-platform-verifier = { version = "0.6.2" }
+diff --git a/crates/uv-client/Cargo.toml b/crates/uv-client/Cargo.toml
+index ffeb09151..75450bf08 100644
+--- a/crates/uv-client/Cargo.toml
++++ b/crates/uv-client/Cargo.toml
+@@ -59,0 +60,2 @@ rustc-hash = { workspace = true }
++rustls = { workspace = true }
++rustls-platform-verifier = { workspace = true }
+@@ -76 +77,0 @@ rcgen = { workspace = true }
+-rustls = { workspace = true }
+diff --git a/crates/uv-client/src/base_client.rs b/crates/uv-client/src/base_client.rs
+index c66c4a038..bed731a82 100644
+--- a/crates/uv-client/src/base_client.rs
++++ b/crates/uv-client/src/base_client.rs
+@@ -25,0 +26,4 @@ use reqwest_retry::{
++
++use rustls::ClientConfig;
++use rustls_platform_verifier::ConfigVerifierExt;
++
+@@ -467 +470,0 @@ impl<'a> BaseClientBuilder<'a> {
+-            .tls_built_in_root_certs(self.built_in_root_certs)
+@@ -475,0 +479 @@ impl<'a> BaseClientBuilder<'a> {
++        let tls_config = ClientConfig::with_platform_verifier();
+@@ -477 +481 @@ impl<'a> BaseClientBuilder<'a> {
+-            client_builder.tls_built_in_native_certs(true)
++            client_builder.use_preconfigured_tls(tls_config)
+```
+fails with
+```
+C:\Entwicklung\Projekte\kona [freebsd-wheels-index ≡]> &C:\Entwicklung\Projekte\uv\target\debug\uv.exe --native-tls sync
+
+thread 'main2' (21612) panicked at crates\uv-client\src\base_client.rs:509:14:
+Failed to build HTTP client.: reqwest::Error { kind: Builder, source: "Unknown TLS backend passed to `use_preconfigured_tls`" }
+```
+
+Given that my Rust knowledge is non-existing, I am (a bit) clueless here.
+
+---
+
+_Comment by @124C41p on 2025-12-31 18:24_
+
+Reqwest v0.13.1 has just been released. It has rustls and rustls-platform-verifier enabled by default. It seems to me that upgrading reqwest will solve this issue.
+
+---

@@ -1,0 +1,174 @@
+---
+number: 5683
+title: "Consider stripping `uv` release binaries"
+type: issue
+state: closed
+author: edmorley
+labels:
+  - releases
+assignees: []
+created_at: 2024-08-01T12:53:16Z
+updated_at: 2024-08-03T12:18:30Z
+url: https://github.com/astral-sh/uv/issues/5683
+synced_at: 2026-01-07T13:12:17-06:00
+---
+
+# Consider stripping `uv` release binaries
+
+---
+
+_Issue opened by @edmorley on 2024-08-01 12:53_
+
+Hi 👋 
+
+Thank you for a great project!
+
+I noticed that the `uv` release binaries (as distributed via GitHub releases) are currently quite large. 
+
+For example:
+
+```
+$ curl -sSfLO https://github.com/astral-sh/uv/releases/download/0.2.32/uv-aarch64-unknown-linux-gnu.tar.gz
+$ tar -zx --strip-components=1 -f uv-aarch64-unknown-linux-gnu.tar.gz
+$ du -ha uv uv-*
+35M	uv
+14M	uv-aarch64-unknown-linux-gnu.tar.gz
+```
+
+To put the size in perspective, 14 MB compressed and 35 MB uncompressed is very close to the size of our entire Python 3.12 install [archive](https://heroku-buildpack-python.s3.us-east-1.amazonaws.com/python-3.12.4-ubuntu-22.04-amd64.tar.zst), which has an archive size of 11MB and uncompressed install size of 41 MB (and this is even with that archive intentionally bundling `.pyc`s for the stdlib). For local installs the size doesn't really matter, however, in CI/CD/OCI image contexts cold caches can be prevalent and smaller OCI images are preferred (for end user UX it's not always desirable to exclude the package manager from the final run-image) etc, so large tool sizes are more noticeable.
+
+uv's focus should absolutely be speed+compatibility+features over binary size, so I'm not suggesting there should be any user-facing compromises made to reduce binary size - but it seems there might be some low hanging fruit to reduce the size?
+
+For example, stripping reduces the binary size in the example above by 25%:
+
+```
+$ strip uv
+$ du -ha uv
+26M	uv
+```
+
+And Cargo now supports stripping natively in a cross-platform way:
+https://doc.rust-lang.org/cargo/reference/profiles.html#strip
+
+```toml
+[profile.release]
+strip = true
+```
+
+I see this has been enabled already for the `uv-trampoline` crate:
+https://github.com/astral-sh/uv/blob/9a1a2118e1b6daa0a8c370a21a0ebb788f20acb4/crates/uv-trampoline/Cargo.toml#L28-L29
+
+...but not any of the others (in the release profile at least):
+https://github.com/search?q=repo%3Aastral-sh%2Fuv+strip+language%3ATOML&type=code&l=TOML
+
+---
+
+_Label `release` added by @zanieb on 2024-08-01 12:54_
+
+---
+
+_Comment by @charliermarsh on 2024-08-01 13:00_
+
+I thought we _were_ stripping binaries via `strip = true` in `pyproject.toml` but the result above suggests we aren't, will take a look...
+
+---
+
+_Comment by @konstin on 2024-08-01 13:08_
+
+I've checked locally and
+```shell
+RUST_LOG=debug uvx maturin build --release --locked --out dist --features self-update --target x86_64-unknown-linux-gnu
+```
+is correctly setting `-C link-arg=-s` and producing stripped binaries. @messense Any ideas what the maturin action is doing different that it could be ignoring the `tool.maturin.strip = true` that we set in `pyproject.toml`, while it works locally?
+
+---
+
+_Comment by @messense on 2024-08-02 03:35_
+
+No idea, can you try run maturin build with `--debug` on CI?
+
+---
+
+_Comment by @konstin on 2024-08-02 09:20_
+
+CI also says https://github.com/astral-sh/uv/actions/runs/10213117825/job/28257883122:
+```
+DEBUG build_wheels: maturin::compile: Running env -u CARGO "cargo" "rustc" "--features" "self-update" "--target" "x86_64-unknown-linux-gnu" "--message-format" "json-render-diagnostics" "--locked" "--manifest-path" "/home/runner/work/uv/uv/crates/uv/Cargo.toml" "--release" "--bin" "uv" "--" "-C" "link-arg=-s"
+```
+
+So the right arg is there. Could it be it's because we're not using mold in CI?
+
+---
+
+_Comment by @messense on 2024-08-02 09:37_
+
+Have you tried comparing build artifact size with and without `strip = true`? I suspect that it's just that the Rust `strip = true` isn't as aggressive as the `strip` command.
+
+---
+
+_Comment by @konstin on 2024-08-02 09:45_
+
+It's indeed the difference between using the standard linker and mold. If i deactivate mold locally i get the same 37MB semi-stripped binary with `strip = true` that we see on CI. (Without `strip = true`, the binary is 40MB, properly stripped we are at 31MB/30MB).
+
+So i think we have to configure mold for the linux build? `strip` doesn't seem to support stripping cross-compiled binaries, so we can't use it for the cross builds.
+
+---
+
+_Comment by @messense on 2024-08-02 09:56_
+
+`llvm-strip` might support stripping cross-compiled binaries.
+
+---
+
+_Comment by @edmorley on 2024-08-02 09:57_
+
+I'm curious, why is Maturin passing manual linker args via `"-C" "link-arg=-s"` rather than the rustc option`-C strip={none,debuginfo,symbols}` mentioned here?
+https://doc.rust-lang.org/rustc/codegen-options/index.html#strip
+
+Did the Maturin strip feature just predate rust-lang/rust#72110?
+
+---
+
+_Comment by @konstin on 2024-08-02 09:58_
+
+Yeah, the maturin option is older, we could change maturin to use the new option.
+
+---
+
+_Comment by @edmorley on 2024-08-02 10:12_
+
+> So i think we have to configure mold for the linux build? `strip` doesn't seem to support stripping cross-compiled binaries, so we can't use it for the cross builds.
+
+I just checked one of our Rust project's cross-compiled binaries (`aarch64-unknown-linux-musl-gcc` cross-compiled from `x86_64` Linux host using https://github.com/messense/homebrew-macos-cross-toolchains and Cargo's `strip = true`) and it's fully stripped, so it does seem like it is possible with `ld`?
+
+---
+
+_Referenced in [rust-lang/cargo#14346](../../rust-lang/cargo/issues/14346.md) on 2024-08-03 10:34_
+
+---
+
+_Comment by @konstin on 2024-08-03 10:35_
+
+Reported upstream: https://github.com/rust-lang/cargo/issues/14346
+
+---
+
+_Referenced in [astral-sh/uv#5745](../../astral-sh/uv/pulls/5745.md) on 2024-08-03 10:39_
+
+---
+
+_Closed by @konstin on 2024-08-03 11:11_
+
+---
+
+_Comment by @edmorley on 2024-08-03 12:18_
+
+> Reported upstream: [rust-lang/cargo#14346](https://github.com/rust-lang/cargo/issues/14346)
+
+Thank you!
+
+I took a quick look and this seems to be a regression from rust-lang/cargo#13257 in Rust 1.77.0.
+
+As a workaround in the meantime (and to avoid individual projects having to adjust their own Cargo.toml files), Maturin could set `CARGO_PROFILE_RELEASE_STRIP=true` rather than passing `-C link-arg=-s` or `-C strip=symbols`.
+
+---

@@ -1,0 +1,61 @@
+---
+number: 10565
+title: Name discrepancy in pip install --config-setting / --config-settings
+type: issue
+state: closed
+author: cpburnz
+labels:
+  - needs-decision
+  - cli
+assignees: []
+created_at: 2025-01-13T14:53:50Z
+updated_at: 2025-03-26T19:23:43Z
+url: https://github.com/astral-sh/uv/issues/10565
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# Name discrepancy in pip install --config-setting / --config-settings
+
+---
+
+_Issue opened by @cpburnz on 2025-01-13 14:53_
+
+Regular `pip install` has the option `--config-settings` (note that "settings" is plural) to pass settings to the build backend. Under the `uv pip install` "Build options" help section, the option is named `--config-setting` (note that "setting" is singular). After some experienting, uv appears to accept `--config-settings` despite it being undocumented. It would be helpful if the alternative name `--config-settings` in `uv pip install --help` was mentioned for pip compatibility.
+
+---
+
+_Comment by @charliermarsh on 2025-01-13 15:31_
+
+We do this for a variety of settings since it's a common footgun (same for `--constraint` and `--constraints`), but candidly I don't think it's worth including it in the command-line help for every setting. It's precious real estate and we already have a lot to show. \cc @zanieb in case you disagree.
+
+---
+
+_Label `needs-decision` added by @charliermarsh on 2025-01-13 15:31_
+
+---
+
+_Label `cli` added by @charliermarsh on 2025-01-13 15:31_
+
+---
+
+_Closed by @charliermarsh on 2025-02-16 18:56_
+
+---
+
+_Reopened by @charliermarsh on 2025-02-16 18:56_
+
+---
+
+_Closed by @charliermarsh on 2025-02-16 18:56_
+
+---
+
+_Comment by @zanieb on 2025-03-26 19:23_
+
+I'd be okay with rendering aliases in the CLI reference / long-help  e.g. `uv help`
+
+---
+
+_Referenced in [astral-sh/uv#12494](../../astral-sh/uv/issues/12494.md) on 2025-03-26 19:24_
+
+---

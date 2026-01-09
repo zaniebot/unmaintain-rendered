@@ -1,0 +1,36 @@
+---
+number: 17877
+title: "[ty] Support `generate-shell-completion`"
+type: issue
+state: closed
+author: InSyncWithFoo
+labels:
+  - ty
+assignees: []
+created_at: 2025-05-06T03:29:11Z
+updated_at: 2025-05-06T10:30:46Z
+url: https://github.com/astral-sh/ruff/issues/17877
+synced_at: 2026-01-07T13:12:16-06:00
+---
+
+# [ty] Support `generate-shell-completion`
+
+---
+
+_Issue opened by @InSyncWithFoo on 2025-05-06 03:29_
+
+Other Astral tools support this, and I think ty should too.
+
+---
+
+_Referenced in [astral-sh/ruff#17879](../../astral-sh/ruff/pulls/17879.md) on 2025-05-06 05:27_
+
+---
+
+_Label `ty` added by @AlexWaygood on 2025-05-06 10:30_
+
+---
+
+_Closed by @AlexWaygood on 2025-05-06 10:30_
+
+---

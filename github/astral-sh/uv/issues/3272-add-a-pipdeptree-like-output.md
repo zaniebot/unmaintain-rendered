@@ -1,0 +1,86 @@
+---
+number: 3272
+title: "Add a `pipdeptree` like output"
+type: issue
+state: closed
+author: mgaitan
+labels:
+  - enhancement
+  - wish
+assignees: []
+created_at: 2024-04-25T21:04:19Z
+updated_at: 2025-05-18T19:31:31Z
+url: https://github.com/astral-sh/uv/issues/3272
+synced_at: 2026-01-07T13:12:17-06:00
+---
+
+# Add a `pipdeptree` like output
+
+---
+
+_Issue opened by @mgaitan on 2024-04-25 21:04_
+
+[pipdeptree](https://github.com/tox-dev/pipdeptree) is a cool tool for visualizing the dependency tree of python packages. It allows users to see a structured "tree" of dependencies and, using its reverse mode, to understand why a particular dependency is required for our project.
+
+One particularly [useful use case](https://github.com/tox-dev/pipdeptree?tab=readme-ov-file#using-pipdeptree-to-write-requirementstxt-file) of `pipdeptree` is to filter out only the "top-level" packages. This helps in cleaning up `*.in` files by leaving the resolution of transitive dependencies to the compilation process.
+
+Would it be possible to support something similar to this as a built-in feature of `uv` ? something like `uv pip list --format=tree` ? 
+
+---
+
+_Label `enhancement` added by @charliermarsh on 2024-04-25 21:40_
+
+---
+
+_Comment by @charliermarsh on 2024-04-25 21:41_
+
+I like the idea of having a tree view for this. `cargo tree` is another good example -- really useful.
+
+---
+
+_Label `wish` added by @charliermarsh on 2024-04-25 21:41_
+
+---
+
+_Comment by @lczyk on 2024-04-27 10:28_
+
+Strong support for this(!) I was about to make a proposal similar to it, although i didn't know `pipdpeptree` so was going to use `pip-chill` as an example. I'd love to see alongside this functionality like `pip-autoremove` - remove given package and all the orphan packages it leaves behind.
+
+---
+
+_Comment by @samypr100 on 2024-04-28 14:39_
+
+For reference/design, poetry has `--tree` as part of `poetry show`
+
+---
+
+_Referenced in [astral-sh/uv#3859](../../astral-sh/uv/pulls/3859.md) on 2024-05-27 06:46_
+
+---
+
+_Closed by @ibraheemdev on 2024-06-21 19:48_
+
+---
+
+_Comment by @ibraheemdev on 2024-06-21 19:56_
+
+Opened https://github.com/astral-sh/uv/issues/4439 to track additional features that did not land in the initial PR.
+
+---
+
+_Referenced in [astral-sh/uv#1657](../../astral-sh/uv/issues/1657.md) on 2024-06-24 16:09_
+
+---
+
+_Comment by @dbux on 2025-03-07 15:20_
+
+For anybody else arriving here from a web search, the command is [`uv pip tree`](https://docs.astral.sh/uv/reference/cli/#uv-pip-tree)
+
+---
+
+_Comment by @RafalSkolasinski on 2025-05-18 19:31_
+
+1. would be nice if https://docs.astral.sh/uv/pip/inspection/ mentioned this
+2. would be nice if the output of the command was coloured
+
+---

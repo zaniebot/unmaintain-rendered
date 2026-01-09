@@ -1,0 +1,284 @@
+---
+number: 2572
+title: How i can change UV_HTTP_TIMEOUT ? 
+type: issue
+state: closed
+author: Technolog796
+labels:
+  - question
+assignees: []
+created_at: 2024-03-20T19:39:15Z
+updated_at: 2024-03-20T20:39:52Z
+url: https://github.com/astral-sh/uv/issues/2572
+synced_at: 2026-01-07T13:12:17-06:00
+---
+
+# How i can change UV_HTTP_TIMEOUT ? 
+
+---
+
+_Issue opened by @Technolog796 on 2024-03-20 19:39_
+
+I'm trying to install PyTorch, but I'm getting the following error:
+
+```
+> uv pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121 --verbose
+DEBUG Found a virtualenv through VIRTUAL_ENV at: D:\python_projects\RuSigLIP\venv
+DEBUG Cached interpreter info for Python 3.11.7, skipping probing: D:\python_projects\RuSigLIP\venv\Scripts\python.exe
+DEBUG Using Python 3.11.7 environment at D:\python_projects\RuSigLIP\venv\Scripts\python.exe
+DEBUG Using registry request timeout of 300s
+DEBUG Solving with target Python version 3.11.7
+DEBUG Adding direct dependency: torch*
+DEBUG Adding direct dependency: torchvision*
+DEBUG Adding direct dependency: torchaudio*
+DEBUG No cache entry for: https://download.pytorch.org/whl/cu121/torch/
+DEBUG No credentials found for: https://download.pytorch.org/whl/cu121/torch/
+DEBUG No cache entry for: https://download.pytorch.org/whl/cu121/torchvision/
+DEBUG No credentials found for already-seen URL: https://download.pytorch.org/whl/cu121/torchvision/
+DEBUG No credentials found for: https://download.pytorch.org/whl/cu121/torchvision/
+DEBUG No cache entry for: https://download.pytorch.org/whl/cu121/torchaudio/
+DEBUG No credentials found for already-seen URL: https://download.pytorch.org/whl/cu121/torchaudio/
+DEBUG No credentials found for: https://download.pytorch.org/whl/cu121/torchaudio/
+DEBUG Searching for a compatible version of torch (*)
+DEBUG Selecting: torch==2.2.1+cu121 (torch-2.2.1+cu121-cp311-cp311-win_amd64.whl)
+DEBUG Found stale response for: https://download.pytorch.org/whl/cu121/torch-2.2.1%2Bcu121-cp311-cp311-win_amd64.whl#sha256=5dfab54d4e28797c8f4f1f9543a0a2b3d27113fa40eb202f8f49af1d865f9573
+DEBUG Sending revalidation request for: https://download.pytorch.org/whl/cu121/torch-2.2.1%2Bcu121-cp311-cp311-win_amd64.whl#sha256=5dfab54d4e28797c8f4f1f9543a0a2b3d27113fa40eb202f8f49af1d865f9573        
+DEBUG No credentials found for already-seen URL: https://download.pytorch.org/whl/cu121/torch-2.2.1%2Bcu121-cp311-cp311-win_amd64.whl#sha256=5dfab54d4e28797c8f4f1f9543a0a2b3d27113fa40eb202f8f49af1d865f9573
+DEBUG No credentials found for: https://download.pytorch.org/whl/cu121/torch-2.2.1%2Bcu121-cp311-cp311-win_amd64.whl#sha256=5dfab54d4e28797c8f4f1f9543a0a2b3d27113fa40eb202f8f49af1d865f9573
+DEBUG Found stale response for: https://download.pytorch.org/whl/cu121/torchvision-0.17.1%2Bcu121-cp311-cp311-win_amd64.whl#sha256=517b6334f38ed60df0e47027b5122cae010107e870a145cb36083a638e40568a
+DEBUG Sending revalidation request for: https://download.pytorch.org/whl/cu121/torchvision-0.17.1%2Bcu121-cp311-cp311-win_amd64.whl#sha256=517b6334f38ed60df0e47027b5122cae010107e870a145cb36083a638e40568a 
+DEBUG No credentials found for already-seen URL: https://download.pytorch.org/whl/cu121/torchvision-0.17.1%2Bcu121-cp311-cp311-win_amd64.whl#sha256=517b6334f38ed60df0e47027b5122cae010107e870a145cb36083a638e40568a
+DEBUG No credentials found for: https://download.pytorch.org/whl/cu121/torchvision-0.17.1%2Bcu121-cp311-cp311-win_amd64.whl#sha256=517b6334f38ed60df0e47027b5122cae010107e870a145cb36083a638e40568a
+DEBUG Found not-modified response for: https://download.pytorch.org/whl/cu121/torch-2.2.1%2Bcu121-cp311-cp311-win_amd64.whl#sha256=5dfab54d4e28797c8f4f1f9543a0a2b3d27113fa40eb202f8f49af1d865f9573
+DEBUG Found fresh response for: https://download.pytorch.org/whl/cu121/torchaudio-2.2.1%2Bcu121-cp311-cp311-win_amd64.whl#sha256=44c431c29045ddc4ad68195d91833ada9dbc38e26bf0a1f12a3f6a46b356b45a
+DEBUG Adding transitive dependency: filelock*
+DEBUG Adding transitive dependency: typing-extensions>=4.8.0
+DEBUG Adding transitive dependency: sympy*
+DEBUG Adding transitive dependency: networkx*
+DEBUG Adding transitive dependency: jinja2*
+DEBUG Adding transitive dependency: fsspec*
+DEBUG Searching for a compatible version of torchvision (*)
+DEBUG Selecting: torchvision==0.17.1+cu121 (torchvision-0.17.1+cu121-cp311-cp311-win_amd64.whl)
+DEBUG No cache entry for: https://download.pytorch.org/whl/cu121/filelock/
+DEBUG No credentials found for already-seen URL: https://download.pytorch.org/whl/cu121/filelock/
+DEBUG No credentials found for: https://download.pytorch.org/whl/cu121/filelock/
+DEBUG No cache entry for: https://download.pytorch.org/whl/cu121/typing-extensions/
+DEBUG No credentials found for already-seen URL: https://download.pytorch.org/whl/cu121/typing-extensions/
+DEBUG No credentials found for: https://download.pytorch.org/whl/cu121/typing-extensions/
+DEBUG No cache entry for: https://download.pytorch.org/whl/cu121/jinja2/
+DEBUG No credentials found for already-seen URL: https://download.pytorch.org/whl/cu121/jinja2/
+DEBUG No credentials found for: https://download.pytorch.org/whl/cu121/jinja2/
+DEBUG No cache entry for: https://download.pytorch.org/whl/cu121/fsspec/
+DEBUG No credentials found for already-seen URL: https://download.pytorch.org/whl/cu121/fsspec/
+DEBUG No credentials found for: https://download.pytorch.org/whl/cu121/fsspec/
+DEBUG No cache entry for: https://download.pytorch.org/whl/cu121/networkx/
+DEBUG No credentials found for already-seen URL: https://download.pytorch.org/whl/cu121/networkx/
+DEBUG No credentials found for: https://download.pytorch.org/whl/cu121/networkx/
+DEBUG No cache entry for: https://download.pytorch.org/whl/cu121/sympy/
+DEBUG No credentials found for already-seen URL: https://download.pytorch.org/whl/cu121/sympy/
+DEBUG No credentials found for: https://download.pytorch.org/whl/cu121/sympy/
+DEBUG Found not-modified response for: https://download.pytorch.org/whl/cu121/torchvision-0.17.1%2Bcu121-cp311-cp311-win_amd64.whl#sha256=517b6334f38ed60df0e47027b5122cae010107e870a145cb36083a638e40568a
+DEBUG Adding transitive dependency: numpy*
+DEBUG Adding transitive dependency: torch==2.2.1+cu121
+DEBUG Adding transitive dependency: pillow>=5.3.0, <8.3.dev0 | >=8.4.dev0
+DEBUG Searching for a compatible version of torchaudio (*)
+DEBUG Selecting: torchaudio==2.2.1+cu121 (torchaudio-2.2.1+cu121-cp311-cp311-win_amd64.whl)
+DEBUG Adding transitive dependency: torch==2.2.1+cu121
+DEBUG No cache entry for: https://download.pytorch.org/whl/cu121/numpy/
+DEBUG No credentials found for already-seen URL: https://download.pytorch.org/whl/cu121/numpy/
+DEBUG No credentials found for: https://download.pytorch.org/whl/cu121/numpy/
+DEBUG No cache entry for: https://download.pytorch.org/whl/cu121/pillow/
+DEBUG No credentials found for already-seen URL: https://download.pytorch.org/whl/cu121/pillow/
+DEBUG No credentials found for: https://download.pytorch.org/whl/cu121/pillow/
+DEBUG Found stale response for: https://download.pytorch.org/whl/networkx-3.2.1-py3-none-any.whl#sha256=f18c69adc97877c42332c170849c96cefa91881c99a7cb3e95b7c659ebdc1ec2
+DEBUG Sending revalidation request for: https://download.pytorch.org/whl/networkx-3.2.1-py3-none-any.whl#sha256=f18c69adc97877c42332c170849c96cefa91881c99a7cb3e95b7c659ebdc1ec2
+DEBUG No credentials found for already-seen URL: https://download.pytorch.org/whl/networkx-3.2.1-py3-none-any.whl#sha256=f18c69adc97877c42332c170849c96cefa91881c99a7cb3e95b7c659ebdc1ec2
+DEBUG No credentials found for: https://download.pytorch.org/whl/networkx-3.2.1-py3-none-any.whl#sha256=f18c69adc97877c42332c170849c96cefa91881c99a7cb3e95b7c659ebdc1ec2
+DEBUG Found not-modified response for: https://download.pytorch.org/whl/networkx-3.2.1-py3-none-any.whl#sha256=f18c69adc97877c42332c170849c96cefa91881c99a7cb3e95b7c659ebdc1ec2
+DEBUG Searching for a compatible version of filelock (*)
+DEBUG Selecting: filelock==3.9.0 (filelock-3.9.0-py3-none-any.whl)
+DEBUG Found fresh response for: https://download.pytorch.org/whl/filelock-3.9.0-py3-none-any.whl#sha256=f58d535af89bb9ad5cd4df046f741f8553a418c01a7856bf0d173bbc9f6bd16d
+DEBUG Found fresh response for: https://download.pytorch.org/whl/fsspec-2023.4.0-py3-none-any.whl#sha256=f398de9b49b14e9d84d2c2d11b7b67121bc072fe97b930c4e5668ac3917d8307
+DEBUG Found fresh response for: https://download.pytorch.org/whl/Jinja2-3.1.2-py3-none-any.whl#sha256=6088930bfe239f0e6710546ab9c19c9ef35e29792895fed6e6e31a023a182a61
+DEBUG Searching for a compatible version of typing-extensions (>=4.8.0)
+DEBUG Selecting: typing-extensions==4.8.0 (typing_extensions-4.8.0-py3-none-any.whl)
+DEBUG Found stale response for: https://download.pytorch.org/whl/typing_extensions-4.8.0-py3-none-any.whl#sha256=8f92fc8806f9a6b641eaa5318da32b44d401efaac0f6678c9bc448ba3605faa0
+DEBUG Sending revalidation request for: https://download.pytorch.org/whl/typing_extensions-4.8.0-py3-none-any.whl#sha256=8f92fc8806f9a6b641eaa5318da32b44d401efaac0f6678c9bc448ba3605faa0
+DEBUG No credentials found for already-seen URL: https://download.pytorch.org/whl/typing_extensions-4.8.0-py3-none-any.whl#sha256=8f92fc8806f9a6b641eaa5318da32b44d401efaac0f6678c9bc448ba3605faa0
+DEBUG No credentials found for: https://download.pytorch.org/whl/typing_extensions-4.8.0-py3-none-any.whl#sha256=8f92fc8806f9a6b641eaa5318da32b44d401efaac0f6678c9bc448ba3605faa0
+DEBUG Found fresh response for: https://download.pytorch.org/whl/sympy-1.12-py3-none-any.whl#sha256=c3588cd4295d0c0f603d0f2ae780587e64e2efeedb3521e46b9bb1d08d184fa5
+DEBUG Found stale response for: https://download.pytorch.org/whl/pillow-10.2.0-cp311-cp311-win_amd64.whl#sha256=1da3b2703afd040cf65ec97efea81cfba59cdbed9c11d8efc5ab09df9509fc56
+DEBUG Sending revalidation request for: https://download.pytorch.org/whl/pillow-10.2.0-cp311-cp311-win_amd64.whl#sha256=1da3b2703afd040cf65ec97efea81cfba59cdbed9c11d8efc5ab09df9509fc56
+DEBUG No credentials found for already-seen URL: https://download.pytorch.org/whl/pillow-10.2.0-cp311-cp311-win_amd64.whl#sha256=1da3b2703afd040cf65ec97efea81cfba59cdbed9c11d8efc5ab09df9509fc56
+DEBUG No credentials found for: https://download.pytorch.org/whl/pillow-10.2.0-cp311-cp311-win_amd64.whl#sha256=1da3b2703afd040cf65ec97efea81cfba59cdbed9c11d8efc5ab09df9509fc56
+DEBUG Found stale response for: https://download.pytorch.org/whl/numpy-1.26.3-cp311-cp311-win_amd64.whl#sha256=39763aee6dfdd4878032361b30b2b12593fb445ddb66bbac802e2113eb8a6ac4
+DEBUG Sending revalidation request for: https://download.pytorch.org/whl/numpy-1.26.3-cp311-cp311-win_amd64.whl#sha256=39763aee6dfdd4878032361b30b2b12593fb445ddb66bbac802e2113eb8a6ac4
+DEBUG No credentials found for already-seen URL: https://download.pytorch.org/whl/numpy-1.26.3-cp311-cp311-win_amd64.whl#sha256=39763aee6dfdd4878032361b30b2b12593fb445ddb66bbac802e2113eb8a6ac4
+DEBUG No credentials found for: https://download.pytorch.org/whl/numpy-1.26.3-cp311-cp311-win_amd64.whl#sha256=39763aee6dfdd4878032361b30b2b12593fb445ddb66bbac802e2113eb8a6ac4
+DEBUG Found not-modified response for: https://download.pytorch.org/whl/typing_extensions-4.8.0-py3-none-any.whl#sha256=8f92fc8806f9a6b641eaa5318da32b44d401efaac0f6678c9bc448ba3605faa0
+DEBUG Searching for a compatible version of sympy (*)
+DEBUG Selecting: sympy==1.12 (sympy-1.12-py3-none-any.whl)
+DEBUG Adding transitive dependency: mpmath>=0.19
+DEBUG Searching for a compatible version of networkx (*)
+DEBUG Selecting: networkx==3.2.1 (networkx-3.2.1-py3-none-any.whl)
+DEBUG Searching for a compatible version of jinja2 (*)
+DEBUG Selecting: jinja2==3.1.2 (Jinja2-3.1.2-py3-none-any.whl)
+DEBUG Adding transitive dependency: markupsafe>=2.0
+DEBUG Searching for a compatible version of fsspec (*)
+DEBUG Selecting: fsspec==2023.4.0 (fsspec-2023.4.0-py3-none-any.whl)
+DEBUG Searching for a compatible version of numpy (*)
+DEBUG Selecting: numpy==1.26.3 (numpy-1.26.3-cp311-cp311-win_amd64.whl)
+DEBUG No cache entry for: https://download.pytorch.org/whl/cu121/mpmath/
+DEBUG No credentials found for already-seen URL: https://download.pytorch.org/whl/cu121/mpmath/
+DEBUG No credentials found for: https://download.pytorch.org/whl/cu121/mpmath/
+DEBUG No cache entry for: https://download.pytorch.org/whl/cu121/markupsafe/
+DEBUG No credentials found for already-seen URL: https://download.pytorch.org/whl/cu121/markupsafe/
+DEBUG No credentials found for: https://download.pytorch.org/whl/cu121/markupsafe/
+DEBUG Found not-modified response for: https://download.pytorch.org/whl/pillow-10.2.0-cp311-cp311-win_amd64.whl#sha256=1da3b2703afd040cf65ec97efea81cfba59cdbed9c11d8efc5ab09df9509fc56
+DEBUG Found not-modified response for: https://download.pytorch.org/whl/numpy-1.26.3-cp311-cp311-win_amd64.whl#sha256=39763aee6dfdd4878032361b30b2b12593fb445ddb66bbac802e2113eb8a6ac4
+DEBUG Searching for a compatible version of pillow (>=5.3.0, <8.3.dev0 | >=8.4.dev0)
+DEBUG Selecting: pillow==10.2.0 (pillow-10.2.0-cp311-cp311-win_amd64.whl)
+DEBUG Found stale response for: https://download.pytorch.org/whl/MarkupSafe-2.1.3-cp311-cp311-win_amd64.whl#sha256=134da1eca9ec0ae528110ccc9e48041e0828d79f24121a1a146161103c76e686
+DEBUG Sending revalidation request for: https://download.pytorch.org/whl/MarkupSafe-2.1.3-cp311-cp311-win_amd64.whl#sha256=134da1eca9ec0ae528110ccc9e48041e0828d79f24121a1a146161103c76e686
+DEBUG No credentials found for already-seen URL: https://download.pytorch.org/whl/MarkupSafe-2.1.3-cp311-cp311-win_amd64.whl#sha256=134da1eca9ec0ae528110ccc9e48041e0828d79f24121a1a146161103c76e686        
+DEBUG No credentials found for: https://download.pytorch.org/whl/MarkupSafe-2.1.3-cp311-cp311-win_amd64.whl#sha256=134da1eca9ec0ae528110ccc9e48041e0828d79f24121a1a146161103c76e686
+DEBUG Searching for a compatible version of mpmath (>=0.19)
+DEBUG Selecting: mpmath==1.3.0 (mpmath-1.3.0-py3-none-any.whl)
+DEBUG Found fresh response for: https://download.pytorch.org/whl/mpmath-1.3.0-py3-none-any.whl#sha256=a0b2b9fe80bbcd81a6647ff13108738cfb482d481d826cc0e02f5b35e5c88d2c
+DEBUG Searching for a compatible version of markupsafe (>=2.0)
+DEBUG Selecting: markupsafe==2.1.3 (MarkupSafe-2.1.3-cp311-cp311-win_amd64.whl)
+DEBUG Found not-modified response for: https://download.pytorch.org/whl/MarkupSafe-2.1.3-cp311-cp311-win_amd64.whl#sha256=134da1eca9ec0ae528110ccc9e48041e0828d79f24121a1a146161103c76e686
+Resolved 13 packages in 2.24s
+DEBUG Requirement already cached: filelock==3.9.0
+DEBUG Requirement already cached: fsspec==2023.4.0
+DEBUG Requirement already cached: jinja2==3.1.2
+DEBUG Requirement already cached: markupsafe==2.1.3
+DEBUG Requirement already satisfied: mpmath==1.3.0
+DEBUG Requirement already satisfied: networkx==3.2.1
+DEBUG Requirement already cached: numpy==1.26.3
+DEBUG Requirement already satisfied: pillow==10.2.0
+DEBUG Requirement already satisfied: sympy==1.12
+DEBUG Identified uncached requirement: torch ==2.2.1+cu121
+DEBUG Requirement already cached: torchaudio==2.2.1+cu121
+DEBUG Requirement already cached: torchvision==0.17.1+cu121
+DEBUG Requirement already cached: typing-extensions==4.8.0
+DEBUG Unnecessary package: albumentations==1.4.2
+DEBUG Unnecessary package: appdirs==1.4.4
+DEBUG Unnecessary package: certifi==2024.2.2
+DEBUG Unnecessary package: charset-normalizer==3.3.2
+DEBUG Unnecessary package: click==8.1.7
+DEBUG Unnecessary package: colorama==0.4.6
+DEBUG Unnecessary package: docker-pycreds==0.4.0
+DEBUG Unnecessary package: gitdb==4.0.11
+DEBUG Unnecessary package: gitpython==3.1.42
+DEBUG Unnecessary package: huggingface-hub==0.21.4
+DEBUG Unnecessary package: idna==3.6
+DEBUG Unnecessary package: imageio==2.34.0
+DEBUG Unnecessary package: joblib==1.3.2
+DEBUG Unnecessary package: lazy-loader==0.3
+DEBUG Unnecessary package: lightning-utilities==0.11.0
+DEBUG Unnecessary package: opencv-python==4.9.0.80
+DEBUG Unnecessary package: opencv-python-headless==4.9.0.80
+DEBUG Unnecessary package: packaging==24.0
+DEBUG Unnecessary package: pandas==2.2.1
+DEBUG Unnecessary package: protobuf==4.25.3
+DEBUG Unnecessary package: psutil==5.9.8
+DEBUG Unnecessary package: python-dateutil==2.9.0.post0
+DEBUG Unnecessary package: pytz==2024.1
+DEBUG Unnecessary package: pyyaml==6.0.1
+DEBUG Unnecessary package: regex==2023.12.25
+DEBUG Unnecessary package: requests==2.31.0
+DEBUG Unnecessary package: safetensors==0.4.2
+DEBUG Unnecessary package: scikit-image==0.22.0
+DEBUG Unnecessary package: scikit-learn==1.4.1.post1
+DEBUG Unnecessary package: scipy==1.12.0
+DEBUG Unnecessary package: sentencepiece==0.2.0
+DEBUG Unnecessary package: sentry-sdk==1.43.0
+DEBUG Unnecessary package: setproctitle==1.3.3
+DEBUG Unnecessary package: setuptools==69.2.0
+DEBUG Unnecessary package: six==1.16.0
+DEBUG Unnecessary package: smmap==5.0.1
+DEBUG Unnecessary package: threadpoolctl==3.4.0
+DEBUG Unnecessary package: tifffile==2024.2.12
+DEBUG Unnecessary package: tokenizers==0.15.2
+DEBUG Unnecessary package: torchinfo==1.8.0
+DEBUG Unnecessary package: torchmetrics==1.3.2
+DEBUG Unnecessary package: tqdm==4.66.2
+DEBUG Unnecessary package: transformers==4.40.0.dev0 (from git+https://github.com/huggingface/transformers@8dd4ce6f2cea1316cb5bd5ccbd348310ced17856)
+DEBUG Unnecessary package: tzdata==2024.1
+DEBUG Unnecessary package: urllib3==2.2.1
+DEBUG Unnecessary package: wandb==0.16.4
+DEBUG No cache entry for: https://download.pytorch.org/whl/cu121/torch-2.2.1%2Bcu121-cp311-cp311-win_amd64.whl#sha256=5dfab54d4e28797c8f4f1f9543a0a2b3d27113fa40eb202f8f49af1d865f9573
+DEBUG No credentials found for already-seen URL: https://download.pytorch.org/whl/cu121/torch-2.2.1%2Bcu121-cp311-cp311-win_amd64.whl#sha256=5dfab54d4e28797c8f4f1f9543a0a2b3d27113fa40eb202f8f49af1d865f9573
+DEBUG No credentials found for: https://download.pytorch.org/whl/cu121/torch-2.2.1%2Bcu121-cp311-cp311-win_amd64.whl#sha256=5dfab54d4e28797c8f4f1f9543a0a2b3d27113fa40eb202f8f49af1d865f9573
+error: Failed to download distributions
+  Caused by: Failed to fetch wheel: torch==2.2.1+cu121
+  Caused by: Failed to extract archive
+  Caused by: Failed to download distribution due to network timeout. Try increasing UV_HTTP_TIMEOUT (current value: 300s).
+```
+
+My current uv version is 0.1.22 and my current python version is 3.11.7
+```
+> uv --version
+uv 0.1.22 (9afb36052 2024-03-18)
+```
+```
+> python --version
+Python 3.11.7
+```
+
+
+
+
+---
+
+_Comment by @charliermarsh on 2024-03-20 19:41_
+
+It's an environment variable, so you can set it like `UV_HTTP_TIMEOUT=1000 uv pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121 --verbose`.
+
+---
+
+_Comment by @Technolog796 on 2024-03-20 19:48_
+
+I try to execute this command in windows powershell, but I get the following error:
+```+ UV_HTTP_TIMEOUT=10000 uv pip install torch torchvision torchaudio --i ...
++ ~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : ObjectNotFound: (UV_HTTP_TIMEOUT=10000:String) [], CommandNotFoundException
+    + FullyQualifiedErrorId : CommandNotFoundException
+ ```
+
+---
+
+_Comment by @MichaReiser on 2024-03-20 20:08_
+
+I think on powershell the syntax is 
+
+```pws
+$env:FOO = 'BAR'; ./myscript
+```
+
+So the above would be 
+
+```pws
+$env:UV_HTTP_TIMEOUT=1000; uv pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121 --verbose
+```
+
+---
+
+_Comment by @Technolog796 on 2024-03-20 20:33_
+
+Thank you - it worked! 
+
+---
+
+_Closed by @Technolog796 on 2024-03-20 20:33_
+
+---
+
+_Label `question` added by @zanieb on 2024-03-20 20:39_
+
+---
+
+_Referenced in [stitionai/devika#101](../../stitionai/devika/pulls/101.md) on 2024-03-24 20:11_
+
+---

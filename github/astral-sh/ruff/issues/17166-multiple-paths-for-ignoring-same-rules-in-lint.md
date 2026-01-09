@@ -1,0 +1,167 @@
+---
+number: 17166
+title: Multiple paths for ignoring same rules in lint.per-file-ignores
+type: issue
+state: closed
+author: VladimirPodolian
+labels:
+  - configuration
+  - wish
+assignees: []
+created_at: 2025-04-03T08:19:03Z
+updated_at: 2025-09-15T14:02:09Z
+url: https://github.com/astral-sh/ruff/issues/17166
+synced_at: 2026-01-07T13:12:16-06:00
+---
+
+# Multiple paths for ignoring same rules in lint.per-file-ignores
+
+---
+
+_Issue opened by @VladimirPodolian on 2025-04-03 08:19_
+
+### Summary
+
+Hi! I would like to reduce copy-pasting in Ruff configurations, specifically in the `lint.per-file-ignores` block. I have the same rules to ignore for `**/page_object/**`, `**/src/**`, and `**/data/**`  in `lint.per-file-ignores` block. However, it seems that it’s not possible to group these paths under a single rules block simultaneously. Correct me if I'm wrong
+
+Actual:
+```toml
+[lint.per-file-ignores]
+"**/tests/**" = [
+    "ANN001",  # Missing type annotation for test function argument
+    "ANN201",  # Missing return type annotation for public test function
+    "S101",  # Use of `assert` detected
+    "D103",  # Missing docstring in public function
+    "F811",  # Redefinition of "unused" fixture
+    "T201",  # Usage of print detected
+    "ARG001",  # Unused test function argument
+    "RET503",  # Missing explicit `return` at the end of function able to return non-`None` value
+    "PLR0913",  # Too many arguments in test function definition (6 > 5)
+]
+"**/page_object/**" = [
+    "ANN204",  # Missing return type annotation for special method `__init__`
+    "D101",  # Missing docstring in public class
+    "D104",  # Missing docstring in public package
+    "D105",  # Missing docstring in magic method
+    "D107",  # Missing docstring in `__init__`
+    "EM101",  # Exception must not use a string literal, assign to variable first
+    "N999",  # Invalid module name: 'WrapperMixin' (CamelCase error)
+    "TRY003",  # Avoid specifying long messages outside the exception class
+]
+"**/src/**" = [
+    "ANN204",  # Missing return type annotation for special method `__init__`
+    "D101",  # Missing docstring in public class
+    "D104",  # Missing docstring in public package
+    "D105",  # Missing docstring in magic method
+    "D107",  # Missing docstring in `__init__`
+    "EM101",  # Exception must not use a string literal, assign to variable first
+    "N999",  # Invalid module name: 'WrapperMixin' (CamelCase error)
+    "TRY003",  # Avoid specifying long messages outside the exception class
+]
+"**/data/**" = [
+    "ANN204",  # Missing return type annotation for special method `__init__`
+    "D101",  # Missing docstring in public class
+    "D104",  # Missing docstring in public package
+    "D105",  # Missing docstring in magic method
+    "D107",  # Missing docstring in `__init__`
+    "EM101",  # Exception must not use a string literal, assign to variable first
+    "N999",  # Invalid module name: 'WrapperMixin' (CamelCase error)
+    "TRY003",  # Avoid specifying long messages outside the exception class
+]
+```
+
+Expected:
+```toml
+[lint.per-file-ignores]
+"**/tests/**" = [
+    "ANN001",  # Missing type annotation for test function argument
+    "ANN201",  # Missing return type annotation for public test function
+    "S101",  # Use of `assert` detected
+    "D103",  # Missing docstring in public function
+    "F811",  # Redefinition of "unused" fixture
+    "T201",  # Usage of print detected
+    "ARG001",  # Unused test function argument
+    "RET503",  # Missing explicit `return` at the end of function able to return non-`None` value
+    "PLR0913",  # Too many arguments in test function definition (6 > 5)
+]
+"**/src/**, **/data/**, **/page_object/**" = [
+    "ANN204",  # Missing return type annotation for special method `__init__`
+    "D101",  # Missing docstring in public class
+    "D104",  # Missing docstring in public package
+    "D105",  # Missing docstring in magic method
+    "D107",  # Missing docstring in `__init__`
+    "EM101",  # Exception must not use a string literal, assign to variable first
+    "N999",  # Invalid module name: 'WrapperMixin' (CamelCase error)
+    "TRY003",  # Avoid specifying long messages outside the exception class
+]
+```
+
+---
+
+_Label `configuration` added by @MichaReiser on 2025-04-03 08:25_
+
+---
+
+_Label `wish` added by @MichaReiser on 2025-04-03 08:25_
+
+---
+
+_Comment by @MichaReiser on 2025-04-03 08:26_
+
+This does make sense. I always liked the syntax of node's globbing 
+
+```
+const imagesAlt = globSync('{css,public}/*.{png,jpeg}')
+```
+
+But I don't think this is supported by Rust's glob crate (CC: @BurntSushi)
+
+---
+
+_Comment by @BurntSushi on 2025-04-03 12:16_
+
+Yeah brace expansion isn't supported by `glob` but is supported by `globset`, but `globset` doesn't have the directory traversal APIs that `glob` has.
+
+---
+
+_Comment by @dylwil3 on 2025-04-04 18:09_
+
+I think we already use `globset` for this.
+
+```console
+❯ ruff check --output-format concise  .
+examples/example.py:1:8: F401 [*] `os` imported but unused
+tests/test.py:1:8: F401 [*] `os` imported but unused
+Found 2 errors.
+[*] 2 fixable with the `--fix` option.
+
+❯ ruff check --config "lint.per-file-ignores = {'{tests,examples}/*'=['F401']}" --output-format concise  .
+All checks passed!
+```
+
+@VladimirPodolian could you try using this brace syntax and let me know if it works for you?
+
+---
+
+_Comment by @CatBraaain on 2025-09-11 03:39_
+
+The Brace syntax works for me.
+It looks like Ruff uses globset for standard glob matching, while implementing custom support for negated patterns (using a leading !) and directory-only patterns (using a trailing /).
+
+Example:
+```toml
+[tool.ruff.lint.per-file-ignores]
+"!{src,tests}/**.py" = [
+    "T201", # flake8-print
+]
+```
+
+ref:
+- [globset document](https://docs.rs/globset/latest/globset/#syntax)
+- [ruff source code](https://github.com/astral-sh/ruff/blob/a3ec8ca9dfb484775f38712681d1174260d2bf4b/crates/ty_project/src/glob/exclude.rs)
+
+---
+
+_Closed by @MichaReiser on 2025-09-15 14:02_
+
+---

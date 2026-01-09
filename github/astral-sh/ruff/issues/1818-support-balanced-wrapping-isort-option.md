@@ -1,0 +1,95 @@
+---
+number: 1818
+title: "Support `balanced_wrapping` isort option"
+type: issue
+state: closed
+author: alex-way
+labels:
+  - isort
+assignees: []
+created_at: 2023-01-12T15:34:19Z
+updated_at: 2023-01-12T15:52:35Z
+url: https://github.com/astral-sh/ruff/issues/1818
+synced_at: 2026-01-07T13:12:14-06:00
+---
+
+# Support `balanced_wrapping` isort option
+
+---
+
+_Issue opened by @alex-way on 2023-01-12 15:34_
+
+Hey!
+
+Firstly thanks for creating & mantaining this project, really impressed so far.
+
+One thing I'd personally really like to see is the `balanced_wrapping` isort feature which turns the following imports:
+
+```python
+from pkg import (
+    mod1,
+    mod2,
+)
+```
+
+to:
+```python
+from pkg import mod1, mod2
+```
+
+
+Link to isort [documentation](https://pycqa.github.io/isort/docs/configuration/options.html#balanced-wrapping)
+
+
+---
+
+_Comment by @charliermarsh on 2023-01-12 15:41_
+
+I inevitably have to read through the source to really understand these options :joy:
+
+---
+
+_Label `isort` added by @charliermarsh on 2023-01-12 15:41_
+
+---
+
+_Comment by @alex-way on 2023-01-12 15:42_
+
+What can I do to help you? My rust is absolutely horrendous so I won't be able to pull together a PR unfortunately but I'm keep to help out in other ways if I'm able to
+
+---
+
+_Comment by @charliermarsh on 2023-01-12 15:45_
+
+I think a few more examples would be helpful. I'm also kind of wondering if you'll get the behavior you're looking for with:
+
+```toml
+[tool.ruff.isort]
+split-on-trailing-comma = false
+```
+
+Because we _do_ try to fit the import on a single line if it fits, but by default, we _don't_ remove "magic" trailing commas, which would prevent us from squeezing the import in the first case.
+
+
+---
+
+_Comment by @alex-way on 2023-01-12 15:48_
+
+Ah that actually does seem to do what I need it to! In that case, happy to close, thank you for the _blazingly_ fast reply :smile:
+
+---
+
+_Closed by @alex-way on 2023-01-12 15:48_
+
+---
+
+_Comment by @charliermarsh on 2023-01-12 15:52_
+
+Awesome, it's my pleasure :)
+
+Given that: I don't _think_ we need to implement `balanced_wrapping` specifically because we only really support `--profile=black`, and so we don't preserve formats like this (from the [docs](https://github.com/PyCQA/isort#intelligently-balanced-multi-line-imports)) anyway:
+
+![Screen Shot 2023-01-12 at 10 51 39 AM](https://user-images.githubusercontent.com/1309177/212114753-08cd40f0-e883-42ba-a304-0eee1306fc86.png)
+
+
+---

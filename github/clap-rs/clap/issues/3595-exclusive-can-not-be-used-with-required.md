@@ -1,0 +1,212 @@
+---
+number: 3595
+title: Exclusive can not be used with required
+type: issue
+state: closed
+author: FineFindus
+labels:
+  - C-bug
+  - E-medium
+  - A-validators
+assignees: []
+created_at: 2022-03-31T09:47:15Z
+updated_at: 2022-05-04T18:26:32Z
+url: https://github.com/clap-rs/clap/issues/3595
+synced_at: 2026-01-07T13:12:19-06:00
+---
+
+# Exclusive can not be used with required
+
+---
+
+_Issue opened by @FineFindus on 2022-03-31 09:47_
+
+### Please complete the following tasks
+
+- [X] I have searched the [discussions](https://github.com/clap-rs/clap/discussions)
+- [X] I have searched the [open](https://github.com/clap-rs/clap/issues) and [rejected](https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed) issues
+
+### Rust Version
+
+rustc 1.58.1 (db9d1b20b 2022-01-20)
+
+### Clap Version
+
+3.1.6
+
+### Minimal reproducible code
+
+```rust
+use clap::{Arg, Command};
+
+fn main() {
+    Command::new("bug")
+        .arg(
+            Arg::new("test")
+                .long("test")
+                .exclusive(true)
+        )
+        .arg(Arg::new("input").takes_value(true).required(true))
+        .get_matches();
+}
+```
+
+
+### Steps to reproduce the bug with the above code
+
+```bash
+cargo run -- --test
+```
+
+### Actual Behaviour
+
+According to the documentation of `required()`, it should be overridden by conflicting rules. This should include `exclusive`, since it states that it conflicts with all other arguments.
+
+### Expected Behaviour
+
+When not specifying the input argument the following error occurs:
+```bash
+error: The following required arguments were not provided:
+    <input>
+
+USAGE:
+    bug --test <input>
+
+For more information try --help
+```
+
+When specifying the required argument
+```bash
+cargo run -- required --test
+```
+the program will still throw an error because the exclusive argument is not exlusive.
+```bash
+error: The argument '--test' cannot be used with one or more of the other specified arguments
+
+USAGE:
+    bug [OPTIONS] <input>
+
+For more information try --help
+```
+
+### Additional Context
+
+_No response_
+
+### Debug Output
+
+    Finished dev [unoptimized + debuginfo] target(s) in 0.06s
+     Running `target/debug/bug --test`
+[        clap::build::command] 	App::_do_parse
+[        clap::build::command] 	App::_build
+[        clap::build::command] 	App::_propagate:bug
+[        clap::build::command] 	App::_check_help_and_version: bug
+[        clap::build::command] 	App::_check_help_and_version: Removing generated version
+[        clap::build::command] 	App::_propagate_global_args:bug
+[        clap::build::command] 	App::_derive_display_order:bug
+[  clap::build::debug_asserts] 	Command::_debug_asserts
+[  clap::build::debug_asserts] 	Arg::_debug_asserts:help
+[  clap::build::debug_asserts] 	Arg::_debug_asserts:test
+[  clap::build::debug_asserts] 	Arg::_debug_asserts:input
+[  clap::build::debug_asserts] 	Command::_verify_positionals
+[         clap::parse::parser] 	Parser::get_matches_with
+[         clap::parse::parser] 	Parser::get_matches_with: Begin parsing 'RawOsStr("--test")' ([45, 45, 116, 101, 115, 116])
+[         clap::parse::parser] 	Parser::get_matches_with: Positional counter...1
+[         clap::parse::parser] 	Parser::get_matches_with: Low index multiples...false
+[         clap::parse::parser] 	Parser::possible_subcommand: arg=RawOsStr("--test")
+[         clap::parse::parser] 	Parser::get_matches_with: sc=None
+[         clap::parse::parser] 	Parser::parse_long_arg
+[         clap::parse::parser] 	Parser::parse_long_arg: cur_idx:=1
+[         clap::parse::parser] 	Parser::parse_long_arg: Does it contain '='...
+[         clap::parse::parser] 	No
+[         clap::parse::parser] 	Parser::parse_long_arg: Found valid opt or flag '--test'
+[         clap::parse::parser] 	Parser::check_for_help_and_version_str
+[         clap::parse::parser] 	Parser::check_for_help_and_version_str: Checking if --RawOsStr("test") is help or version...
+[         clap::parse::parser] 	Neither
+[         clap::parse::parser] 	Parser::parse_long_arg: Presence validated
+[         clap::parse::parser] 	Parser::parse_flag
+[         clap::parse::parser] 	Parser::remove_overrides: id=test
+[    clap::parse::arg_matcher] 	ArgMatcher::inc_occurrence_of_arg: id=test
+[        clap::build::command] 	App::groups_for_arg: id=test
+[         clap::parse::parser] 	Parser::get_matches_with: After parse_long_arg ValuesDone
+[      clap::parse::validator] 	Validator::validate
+[         clap::parse::parser] 	Parser::add_defaults
+[         clap::parse::parser] 	Parser::add_defaults:iter:input:
+[         clap::parse::parser] 	Parser::add_value: doesn't have conditional defaults
+[         clap::parse::parser] 	Parser::add_value:iter:input: doesn't have default vals
+[         clap::parse::parser] 	Parser::add_value:iter:input: doesn't have default missing vals
+[      clap::parse::validator] 	Validator::validate_conflicts
+[      clap::parse::validator] 	Validator::validate_exclusive
+[      clap::parse::validator] 	Validator::validate_exclusive:iter:test
+[      clap::parse::validator] 	Validator::validate_conflicts::iter: id=test
+[      clap::parse::validator] 	Conflicts::gather_conflicts
+[      clap::parse::validator] 	Validator::validate_required: required=ChildGraph([Child { id: input, children: [] }])
+[      clap::parse::validator] 	Validator::gather_requires
+[      clap::parse::validator] 	Validator::gather_requires:iter:test
+[      clap::parse::validator] 	Validator::validate_required:iter:aog=input
+[      clap::parse::validator] 	Validator::validate_required:iter: This is an arg
+[      clap::parse::validator] 	Validator::is_missing_required_ok: input
+[      clap::parse::validator] 	Validator::validate_arg_conflicts: a="input"
+[      clap::parse::validator] 	Validator::missing_required_error; incl=[]
+[      clap::parse::validator] 	Validator::missing_required_error: reqs=ChildGraph([Child { id: input, children: [] }])
+[         clap::output::usage] 	Usage::get_required_usage_from: incls=[], matcher=true, incl_last=true
+[         clap::output::usage] 	Usage::get_required_usage_from: unrolled_reqs={input}
+[         clap::output::usage] 	Usage::get_required_usage_from:iter:input
+[         clap::output::usage] 	Usage::get_required_usage_from: ret_val=["<input>"]
+[      clap::parse::validator] 	Validator::missing_required_error: req_args=[
+    "<input>",
+]
+[         clap::output::usage] 	Usage::create_usage_with_title
+[         clap::output::usage] 	Usage::create_usage_no_title
+[         clap::output::usage] 	Usage::create_smart_usage
+[         clap::output::usage] 	Usage::get_required_usage_from: incls=[test], matcher=false, incl_last=true
+[         clap::output::usage] 	Usage::get_required_usage_from: unrolled_reqs={input}
+[         clap::output::usage] 	Usage::get_required_usage_from:iter:test
+[         clap::output::usage] 	Usage::get_required_usage_from:iter:input
+[         clap::output::usage] 	Usage::get_required_usage_from: ret_val=["--test", "<input>"]
+[        clap::build::command] 	App::color: Color setting...
+[        clap::build::command] 	Auto
+error: The following required arguments were not provided:
+    <input>
+
+USAGE:
+    bug --test <input>
+
+For more information try --help
+
+
+---
+
+_Label `C-bug` added by @FineFindus on 2022-03-31 09:47_
+
+---
+
+_Label `E-medium` added by @epage on 2022-03-31 19:06_
+
+---
+
+_Label `A-validators` added by @epage on 2022-03-31 19:06_
+
+---
+
+_Comment by @epage on 2022-03-31 19:13_
+
+Thanks for reporting this!  You are correct that exclusive is a form of a conflict and conflicts should override required.
+
+---
+
+_Added to milestone `3.x` by @epage on 2022-04-29 15:50_
+
+---
+
+_Referenced in [clap-rs/clap#3690](../../clap-rs/clap/pulls/3690.md) on 2022-05-04 17:26_
+
+---
+
+_Closed by @epage on 2022-05-04 18:26_
+
+---
+
+_Referenced in [clap-rs/clap#4462](../../clap-rs/clap/issues/4462.md) on 2022-11-07 16:17_
+
+---

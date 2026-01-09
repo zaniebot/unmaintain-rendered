@@ -1,0 +1,102 @@
+---
+number: 4151
+title: PYI033 False positive
+type: issue
+state: closed
+author: twoertwein
+labels:
+  - bug
+assignees: []
+created_at: 2023-04-29T14:47:03Z
+updated_at: 2023-04-29T22:41:05Z
+url: https://github.com/astral-sh/ruff/issues/4151
+synced_at: 2026-01-07T13:12:14-06:00
+---
+
+# PYI033 False positive
+
+---
+
+_Issue opened by @twoertwein on 2023-04-29 14:47_
+
+
+test.pyi :
+`# pyright: reportIncompleteStub = false`
+
+
+```sh
+$ ruff --version
+ruff 0.0.263
+
+$ ruff check --isolated --select PYI033 test.pyi
+test.pyi:1:1: PYI033 Don't use type comments in stub file
+Found 1 error.
+```
+
+xref https://github.com/pandas-dev/pandas/pull/52974
+
+---
+
+_Referenced in [pandas-dev/pandas#52974](../../pandas-dev/pandas/pulls/52974.md) on 2023-04-29 14:47_
+
+---
+
+_Label `bug` added by @charliermarsh on 2023-04-29 16:14_
+
+---
+
+_Comment by @charliermarsh on 2023-04-29 16:14_
+
+Thanks!
+
+---
+
+_Comment by @evanrittenhouse on 2023-04-29 19:10_
+
+Looks like our typing regex flags if the beginning is `type` or `pyright` (https://github.com/charliermarsh/ruff/blob/main/crates/ruff/src/rules/flake8_pyi/rules/type_comment_in_stub.rs#L53) but doesn't check if there's truly a Python type after it.
+
+---
+
+_Comment by @twoertwein on 2023-04-29 19:14_
+
+> Looks like our typing regex flags if the beginning is `type` or `pyright`
+
+flake8-pyi doesn't seem to search for `"pyright"`: https://github.com/PyCQA/flake8-pyi/search?q=pyright
+
+
+
+---
+
+_Comment by @evanrittenhouse on 2023-04-29 19:23_
+
+@charliermarsh I can raise a PR for this if we want to remove that check, but I'm not sure why we included it in the first place and don't want to unintentionally break something. 
+
+Alternatively, pyright sets flags via `=` - we could alter the regex to only emit if `type` is present or `pyright` is present and `=` is not. Please let me know which you'd prefer!
+
+---
+
+_Comment by @charliermarsh on 2023-04-29 19:25_
+
+I think it was a mistake to include `pyright` in this specific rule, since `# pyright: ` comments are only used for ignores and a few other directives, and not as "type comments".
+
+---
+
+_Comment by @charliermarsh on 2023-04-29 19:25_
+
+So we should just remove it.
+
+---
+
+_Comment by @evanrittenhouse on 2023-04-29 19:26_
+
+Perfect, that's what I was leaning towards as well. 
+
+---
+
+_Referenced in [astral-sh/ruff#4152](../../astral-sh/ruff/pulls/4152.md) on 2023-04-29 19:32_
+
+---
+
+_Closed by @charliermarsh on 2023-04-29 22:41_
+
+---

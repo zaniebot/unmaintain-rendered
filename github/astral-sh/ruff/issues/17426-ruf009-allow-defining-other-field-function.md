@@ -1,0 +1,58 @@
+---
+number: 17426
+title: RUF009 - allow defining other field function
+type: issue
+state: open
+author: CarliJoy
+labels:
+  - configuration
+  - wish
+  - needs-decision
+assignees: []
+created_at: 2025-04-16T11:24:05Z
+updated_at: 2025-04-23T06:27:01Z
+url: https://github.com/astral-sh/ruff/issues/17426
+synced_at: 2026-01-07T13:12:16-06:00
+---
+
+# RUF009 - allow defining other field function
+
+---
+
+_Issue opened by @CarliJoy on 2025-04-16 11:24_
+
+### Summary
+
+I am using [typed-settings](https://typed-settings.readthedocs.io) a framework allowing to load settings easier.
+
+It  provides an extended alias to `attrs.field` [`typed_settings.option`](https://typed-settings.readthedocs.io/en/latest/apiref.html#typed_settings.option).
+
+Using [`extend-immutable-calls`](https://docs.astral.sh/ruff/settings/#lint_flake8-bugbear_extend-immutable-calls) I can whitelist the complete function but this would prevent finding mutables when defined as `ts.option(default=[])`
+
+Could one extend the syntax for `extend-immutable-calls` i.e. that I can define `typed_settings.option(default=*)` and ruff checks the values of `default` to be immutable?
+
+---
+
+_Label `configuration` added by @ntBre on 2025-04-16 13:25_
+
+---
+
+_Comment by @ntBre on 2025-04-16 13:30_
+
+From looking into this a bit, it sounds like two options might be required:
+- a setting to extend the known `field` functions
+- a setting to extend the known dataclass kinds
+
+The second one is based on my quick skim of the `typed-settings` docs, which showed that they have aliases for `attrs` class decorators too.
+
+On the other hand, maybe type inference could resolve the aliases and the rest of the current implementation could work as normal.
+
+---
+
+_Label `wish` added by @MichaReiser on 2025-04-23 06:27_
+
+---
+
+_Label `needs-decision` added by @MichaReiser on 2025-04-23 06:27_
+
+---

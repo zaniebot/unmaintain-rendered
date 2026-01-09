@@ -1,0 +1,46 @@
+---
+number: 19897
+title: "FA102 doesn't follow inline script metadata (PEP 723)"
+type: issue
+state: closed
+author: kiyoon
+labels: []
+assignees: []
+created_at: 2025-08-13T15:31:14Z
+updated_at: 2025-08-13T15:43:34Z
+url: https://github.com/astral-sh/ruff/issues/19897
+synced_at: 2026-01-07T13:12:16-06:00
+---
+
+# FA102 doesn't follow inline script metadata (PEP 723)
+
+---
+
+_Issue opened by @kiyoon on 2025-08-13 15:31_
+
+### Summary
+
+<img width="1262" height="409" alt="Image" src="https://github.com/user-attachments/assets/ef283c6e-ccc4-4145-aa80-99c2aa48f34d" />
+
+The ruff.toml can be as simple as 
+
+```toml
+[lint]
+select = ["ALL"]
+```
+
+### Version
+
+ruff 0.12.0 (87f0feb21 2025-06-17)
+
+---
+
+_Comment by @ntBre on 2025-08-13 15:43_
+
+Thanks, this is a known issue.
+
+---
+
+_Closed by @ntBre on 2025-08-13 15:43_
+
+---

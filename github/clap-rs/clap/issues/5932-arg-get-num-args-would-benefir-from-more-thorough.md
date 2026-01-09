@@ -1,0 +1,92 @@
+---
+number: 5932
+title: "Arg::get_num_args would benefir from more thorough documentation"
+type: issue
+state: open
+author: nwalfield
+labels:
+  - C-enhancement
+assignees: []
+created_at: 2025-02-27T13:25:36Z
+updated_at: 2025-02-27T18:42:05Z
+url: https://github.com/clap-rs/clap/issues/5932
+synced_at: 2026-01-07T13:12:20-06:00
+---
+
+# Arg::get_num_args would benefir from more thorough documentation
+
+---
+
+_Issue opened by @nwalfield on 2025-02-27 13:25_
+
+### Please complete the following tasks
+
+- [x] I have searched the [discussions](https://github.com/clap-rs/clap/discussions)
+- [x] I have searched the [open](https://github.com/clap-rs/clap/issues) and [rejected](https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed) issues
+
+### Clap Version
+
+4.5.31
+
+### Describe your use case
+
+I'm trying to understand [`Arg::get_num_args`](https://docs.rs/clap/latest/clap/struct.Arg.html#method.get_num_args).  The documentation says:
+
+```
+Get the number of values for this argument.
+```
+
+It's unclear to me what `None` means.
+
+My guess is this method just returns whatever was set by `Arg::num_args`, and the defalt is `None`.  But then it remains unclear to me how to interpret `None`.
+
+I tried looking at the code.  [`Here`](https://github.com/clap-rs/clap/blob/a8f9885/clap_builder/src/builder/arg.rs#L4637) `None` is mapped to `1`:
+
+```
+let num_vals = self.get_num_args().unwrap_or_else(|| 1.into());
+```
+
+[Here](https://github.com/clap-rs/clap/blob/a8f9885/clap_builder/src/builder/arg.rs#L4637) it is `Default::default`:
+
+```
+if self.is_positional() && self.num_vals.unwrap_or_default().is_unbounded() 
+```
+
+which is [ValueRange::Single](https://docs.rs/clap_builder/4.5.27/clap_builder/builder/struct.ValueRange.html#associatedconstant.SINGLE).
+
+
+### Describe the solution you'd like
+
+It would be nice if `Arg::get_num_args` (as well as other methods) had more detailed documentation.
+
+### Alternatives, if applicable
+
+_No response_
+
+### Additional Context
+
+This is an issue for me, because I'm programmatically deriving our man pages from clap's data structures.
+
+---
+
+_Label `C-enhancement` added by @nwalfield on 2025-02-27 13:25_
+
+---
+
+_Comment by @epage on 2025-02-27 16:59_
+
+> My guess is this method just returns whatever was set by Arg::num_args, and the defalt is None.
+
+That is correct and true for all of the other `get` methods, not just `get_num_args`.
+
+> But then it remains unclear to me how to interpret None.
+
+Before `command.build()`, there is no definitive interpretation; its just unset.  After `command.build()`. it will never be `None`.  You'll also see a lot of `.expect("built")`s in our code.
+
+---
+
+_Comment by @nwalfield on 2025-02-27 18:42_
+
+Thanks for the explanation and the hint to call `Command::build` before examining the command.
+
+---

@@ -1,0 +1,164 @@
+---
+number: 5625
+title: "Usage: including positional arguments in a mutually-exclusive group renders them in the wrong order"
+type: issue
+state: open
+author: jrose-signal
+labels:
+  - C-bug
+  - A-help
+  - S-waiting-on-design
+assignees: []
+created_at: 2024-08-05T19:55:00Z
+updated_at: 2025-02-27T16:48:13Z
+url: https://github.com/clap-rs/clap/issues/5625
+synced_at: 2026-01-07T13:12:20-06:00
+---
+
+# Usage: including positional arguments in a mutually-exclusive group renders them in the wrong order
+
+---
+
+_Issue opened by @jrose-signal on 2024-08-05 19:55_
+
+### Please complete the following tasks
+
+- [X] I have searched the [discussions](https://github.com/clap-rs/clap/discussions)
+- [X] I have searched the [open](https://github.com/clap-rs/clap/issues) and [rejected](https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed) issues
+
+### Rust Version
+
+1.80.0
+
+### Clap Version
+
+4.5.11
+
+### Minimal reproducible code
+
+```rust
+use clap::*; // 4.5.11
+
+#[derive(Parser)]
+struct TopLevel {
+    first: String,
+    #[command(flatten)]
+    second: Inner,
+}
+
+// *** Note: the user can specify *either* a positional argument *or* a named argument
+#[derive(Args)]
+#[group(required = true, multiple = false)]
+struct Inner {
+    value: Option<String>,
+    #[arg(long)]
+    path: Option<String>,
+}
+
+fn main() {
+    let mut cmd = TopLevel::command();
+    _ = cmd.print_long_help();
+
+    let parsed = TopLevel::parse_from(["test", "a", "b"]);
+    assert_eq!(parsed.first, "a");
+    assert_eq!(parsed.second.value, "b");
+}
+```
+
+
+### Steps to reproduce the bug with the above code
+
+Run on play.rust-lang.org
+
+### Actual Behaviour
+
+```
+Usage: playground <VALUE|--path <PATH>> <FIRST>
+```
+
+even though the assertions show that the `FIRST` argument is in fact getting parsed first, as desired.
+
+
+### Expected Behaviour
+
+```
+Usage: playground <FIRST> <VALUE|--path <PATH>>
+```
+
+It does work to put the flag argument after the first positional argument, so this isn't even wrong, even if it's a little unconventional.
+
+### Additional Context
+
+I tried manually specifying `index` on the arguments, but it did not affect the help output.
+
+### Debug Output
+
+_No response_
+
+---
+
+_Label `C-bug` added by @jrose-signal on 2024-08-05 19:55_
+
+---
+
+_Label `A-help` added by @epage on 2024-08-05 20:00_
+
+---
+
+_Label `E-medium` added by @epage on 2024-08-05 20:00_
+
+---
+
+_Comment by @epage on 2024-08-05 20:01_
+
+The usage code generally assumes the mutually exclusive arguments are flags.  It'll be a bit messy to try to integrate positional support.
+
+In the mean time, `override_usage` can be used to manually specify something
+
+---
+
+_Renamed from "Help text: flattening Args containing both positional arguments and named flags results in incorrect "usage" order" to "Usage: including positional arguments in a mutually-exclusive group renders them in the wrong order" by @epage on 2025-02-27 16:44_
+
+---
+
+_Label `E-medium` removed by @epage on 2025-02-27 16:46_
+
+---
+
+_Label `S-waiting-on-design` added by @epage on 2025-02-27 16:46_
+
+---
+
+_Comment by @epage on 2025-02-27 16:47_
+
+Another workaround is to manually specify a group for the other positional
+```rust
+#[derive(Parser)]
+#[command(author, version, about, long_about = None)]
+#[command(group(
+    ArgGroup::new("download_dir")
+        .required(true)
+        .args(["download_dir"])))]
+#[command(group(
+    ArgGroup::new("lists")
+        .required(true)
+        .multiple(false)
+        .args(["list_file", "items"])
+))]
+```
+```
+Usage: myapp <DOWNLOAD_DIR> <--list-file <LIST_FILE>|--items <ITEM>...>
+```
+*([source](https://www.reddit.com/r/rust/comments/1izifj7/claps_usage_in_help_lists_arguments_and_options/mf31btl/))*
+
+---
+
+_Comment by @epage on 2025-02-27 16:48_
+
+If we had #4191, that might be a good workaround for this.
+
+---
+
+_Referenced in [gitext-rs/git-dive#152](../../gitext-rs/git-dive/issues/152.md) on 2025-10-14 17:50_
+
+---

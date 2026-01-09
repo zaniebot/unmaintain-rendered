@@ -1,0 +1,71 @@
+---
+number: 15113
+title: Copy-up of entry points breaks Python scripts in /usr/local/bin on Debian and Fedora
+type: issue
+state: open
+author: geofft
+labels:
+  - bug
+assignees: []
+created_at: 2025-08-06T18:20:31Z
+updated_at: 2025-08-06T18:20:31Z
+url: https://github.com/astral-sh/uv/issues/15113
+synced_at: 2026-01-07T13:12:19-06:00
+---
+
+# Copy-up of entry points breaks Python scripts in /usr/local/bin on Debian and Fedora
+
+---
+
+_Issue opened by @geofft on 2025-08-06 18:20_
+
+### Summary
+
+Starting with uv 0.8.0 (#14447), `uv run --with` creates an ephemeral virtual environment with a `_uv_ephemeral_overlay.pth` file to add the base virtual environment's import directory to `sys.path`. Starting with uv 0.8.1 (#14790), it also copies up detected entry points from the base environment into the ephemeral virtual environment's bin directory. The directory added to `sys.path` and the directory searched for entry points are taken from the default sysconfig scheme of the base interpreter.
+
+Distributions like Debian and Fedora (and their downstreams) configure their sysconfig scheme to report /usr/local/bin for `sysconfig.get_path('scripts')` and a subdirectory of /usr/local/lib(64)/python3.x for `sysconfig.get_path('purelib')` and `'platlib`, but Python itself is installed into /usr/bin, and OS-packaged Python packages are installed into /usr/lib(64)/python3.x. The reason for this is so that `sudo pip install` will put both entrypoints and modules into the admin-managed /usr/local/ directory tree, where it won't conflict with the OS-managed /usr/ tree.
+
+The combination of these two is that, on these distributions, the ephemeral environment searches /usr/local/bin/ for potential entrypoints and adds /usr/local/lib(64)/python3.x to `sys.path`, but does not add /usr/lib(64)/python3.x.
+
+This means that a script in /usr/local/bin/ that depends on system Python and system-packaged dependencies will get copied into the venv and have its shebang modified, and will no longer be able to find its dependencies:
+
+```
+$ cat /usr/local/bin/blah
+#!/usr/bin/python3
+
+import debian
+print(debian)
+$ blah
+<module 'debian' from '/usr/lib/python3/dist-packages/debian/__init__.py'>
+$ uv run --no-managed-python --with attrs blah
+Traceback (most recent call last):
+  File "/home/ubuntu/.cache/uv/builds-v0/.tmpA7lg6b/bin/blah", line 3, in <module>
+    import debian
+ModuleNotFoundError: No module named 'debian'
+```
+
+In my opinion, the fact that we're copying this up into the venv is itself a little weird and we should just not do that, but there are other ways to solve this bug, e.g. using `--system-site-packages` instead of attempting to add the system site packages directory ourselves via the .pth file.
+
+cc @zanieb 
+
+### Platform
+
+Ubuntu 24.04, Fedora 42
+
+### Version
+
+uv 0.8.5
+
+### Python version
+
+_No response_
+
+---
+
+_Label `bug` added by @geofft on 2025-08-06 18:20_
+
+---
+
+_Referenced in [astral-sh/uv#15121](../../astral-sh/uv/pulls/15121.md) on 2025-08-07 01:15_
+
+---

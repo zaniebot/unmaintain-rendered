@@ -1,0 +1,51 @@
+---
+number: 19253
+title: "Rule: Encourage parentheses when unpacking is used with binary expression"
+type: issue
+state: open
+author: NeilGirdhar
+labels:
+  - rule
+  - needs-decision
+assignees: []
+created_at: 2025-07-10T09:49:03Z
+updated_at: 2025-07-10T11:43:12Z
+url: https://github.com/astral-sh/ruff/issues/19253
+synced_at: 2026-01-07T13:12:16-06:00
+---
+
+# Rule: Encourage parentheses when unpacking is used with binary expression
+
+---
+
+_Issue opened by @NeilGirdhar on 2025-07-10 09:49_
+
+### Summary
+
+Consider:
+```python
+a = [1, 2, 3]
+b = [4, 5]
+c = [*a + b]  # [1, 2, 3, 4, 5]
+```
+I find it unintuitive that `*` binds less aggressively than all binary operators.  Looking at [the grammar](https://docs.python.org/3/reference/grammar.html), we have
+```
+star_expression:
+    | '*' bitwise_or 
+    | expression
+```
+If `bitwise_or` doesn't degrade to at least `await_primary`, consider suggesting to the user to parenthesize the expression.
+
+---
+
+_Renamed from "Encourage parentheses when unpacking is used with binary expression" to "Rule: Encourage parentheses when unpacking is used with binary expression" by @NeilGirdhar on 2025-07-10 09:49_
+
+---
+
+_Label `rule` added by @MichaReiser on 2025-07-10 11:43_
+
+---
+
+_Label `needs-decision` added by @MichaReiser on 2025-07-10 11:43_
+
+---

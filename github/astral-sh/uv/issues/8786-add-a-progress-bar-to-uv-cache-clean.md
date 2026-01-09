@@ -1,0 +1,41 @@
+---
+number: 8786
+title: "Add a progress bar to `uv cache clean`"
+type: issue
+state: closed
+author: charliermarsh
+labels:
+  - help wanted
+  - cli
+assignees: []
+created_at: 2024-11-04T00:28:39Z
+updated_at: 2024-11-06T16:43:44Z
+url: https://github.com/astral-sh/uv/issues/8786
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# Add a progress bar to `uv cache clean`
+
+---
+
+_Issue opened by @charliermarsh on 2024-11-04 00:28_
+
+Similar to `cargo clean`.
+
+---
+
+_Label `help wanted` added by @charliermarsh on 2024-11-04 00:28_
+
+---
+
+_Label `cli` added by @charliermarsh on 2024-11-04 00:28_
+
+---
+
+_Referenced in [astral-sh/uv#8857](../../astral-sh/uv/pulls/8857.md) on 2024-11-06 08:53_
+
+---
+
+_Closed by @charliermarsh on 2024-11-06 16:43_
+
+---

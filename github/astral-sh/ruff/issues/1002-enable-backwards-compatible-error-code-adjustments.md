@@ -1,0 +1,51 @@
+---
+number: 1002
+title: Enable backwards-compatible error code adjustments
+type: issue
+state: closed
+author: charliermarsh
+labels: []
+assignees: []
+created_at: 2022-12-02T21:56:43Z
+updated_at: 2022-12-04T03:43:01Z
+url: https://github.com/astral-sh/ruff/issues/1002
+synced_at: 2026-01-07T13:12:14-06:00
+---
+
+# Enable backwards-compatible error code adjustments
+
+---
+
+_Issue opened by @charliermarsh on 2022-12-02 21:56_
+
+E.g., for #957, I'd like the old codes to continue to work (at least for a few releases).
+
+---
+
+_Renamed from "Come up with a strategy for backwards-compatibility when changing error codes" to "Enable backwards-compatible error code adjustments" by @charliermarsh on 2022-12-02 21:57_
+
+---
+
+_Comment by @charliermarsh on 2022-12-02 21:58_
+
+It might be possible to support this solely by adding a hard-coded redirect map to `CheckCodePrefix`.
+
+---
+
+_Comment by @charliermarsh on 2022-12-02 21:59_
+
+Probably also need to add some special-casing for `noqa` stuff.
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2022-12-03 05:03_
+
+---
+
+_Referenced in [astral-sh/ruff#1019](../../astral-sh/ruff/pulls/1019.md) on 2022-12-04 03:41_
+
+---
+
+_Closed by @charliermarsh on 2022-12-04 03:43_
+
+---

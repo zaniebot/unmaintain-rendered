@@ -1,0 +1,161 @@
+---
+number: 16784
+title: hash mismatch when installing torch dependencies from cu126 index
+type: issue
+state: closed
+author: rbavery
+labels:
+  - external
+assignees: []
+created_at: 2025-11-20T06:54:55Z
+updated_at: 2025-12-11T15:49:08Z
+url: https://github.com/astral-sh/uv/issues/16784
+synced_at: 2026-01-07T13:12:19-06:00
+---
+
+# hash mismatch when installing torch dependencies from cu126 index
+
+---
+
+_Issue opened by @rbavery on 2025-11-20 06:54_
+
+### Summary
+
+Apologies if this isn't the correct place to raise this issue, not sure where to raise it after reading some past issues here related to hash mismatches.
+
+I have a simple toml that fails to solve due to hash mismatch
+
+```
+[project]
+name = "test-toml"
+version = "0.1.0"
+description = "model"
+readme = "README.md"
+requires-python = "==3.11.*"
+classifiers = [ "Programming Language :: Python :: 3 :: Only", "Programming Language :: Python :: 3.11" ]
+dependencies = [
+  "pytorch-triton",
+  "torch",
+  "torchvision",
+]
+
+[[tool.uv.index]]
+name = "pytorch-cu126"
+url = "https://download.pytorch.org/whl/cu126"
+```
+
+uv sync fails with
+
+```
+→ uv sync
+Resolved 31 packages in 16ms
+  × Failed to download `nvidia-nvtx-cu12==12.6.77`
+  ╰─▶ Hash mismatch for `nvidia-nvtx-cu12==12.6.77`
+
+      Expected:
+        sha256:6574241a3ec5fdc9334353ab8c479fe75841dbe8f4532a8fc97ce63503330ba1
+
+      Computed:
+        sha256:b90bed3df379fa79afbd21be8e04a0314336b8ae16768b58f2d34cb1d04cd7d2
+  help: `nvidia-nvtx-cu12` (v12.6.77) was included because `test-toml` (v0.1.0) depends on `torch`
+        (v2.9.1+cu126) which depends on `nvidia-nvtx-cu12`
+```
+
+Originally reported here, https://github.com/NVIDIA/NVTX/issues/129
+
+I've tried to globally uv cache clean, recreate venv, but same result.
+
+### Platform
+
+Ubuntu 22.04
+
+### Version
+
+0.9.10
+
+### Python version
+
+Python 3.11
+
+---
+
+_Label `bug` added by @rbavery on 2025-11-20 06:54_
+
+---
+
+_Comment by @rbavery on 2025-11-20 17:08_
+
+even using --no-cache fails
+
+```
+→ uv sync --no-cache           
+Resolved 66 packages in 14ms
+  × Failed to download `nvidia-nvtx-cu12==12.6.77`
+  ╰─▶ Hash mismatch for `nvidia-nvtx-cu12==12.6.77`
+
+      Expected:
+        sha256:6574241a3ec5fdc9334353ab8c479fe75841dbe8f4532a8fc97ce63503330ba1
+
+      Computed:
+        sha256:b90bed3df379fa79afbd21be8e04a0314336b8ae16768b58f2d34cb1d04cd7d2
+  help: `nvidia-nvtx-cu12` (v12.6.77) was included because `test` (v0.1.0) depends on `torch` (v2.8.0+cu126)
+        which depends on `nvidia-nvtx-cu12`
+```
+
+---
+
+_Comment by @konstin on 2025-11-20 17:13_
+
+I can confirm that the hash for for `nvidia_nvtx_cu12-12.6.77-py3-none-manylinux2014_x86_64.manylinux_2_17_x86_64.whl` is missing on https://download.pytorch.org/whl/nvidia-nvtx-cu12/, CC @atalman
+
+---
+
+_Label `bug` removed by @konstin on 2025-11-20 17:13_
+
+---
+
+_Label `external` added by @konstin on 2025-11-20 17:13_
+
+---
+
+_Comment by @atalman on 2025-11-20 19:02_
+
+Acknowledged looking into this now.
+
+---
+
+_Assigned to @atalman by @konstin on 2025-11-20 19:23_
+
+---
+
+_Comment by @sidphbot on 2025-11-26 11:43_
+
+I guess 
+https://download.pytorch.org/whl/cu126-full
+works
+
+cant find any docs as to if that is basically a fat index or something is different
+
+---
+
+_Comment by @atalman on 2025-12-11 15:47_
+
+@sidphbot @konstin @rbavery  this shoud be resolved now: https://download.pytorch.org/whl/nvidia-nvtx-cu12/
+Is pointing to:
+```
+<a href="https://pypi.nvidia.com/nvidia-nvtx-cu12/nvidia_nvtx_cu12-12.6.77-py3-none-manylinux2014_aarch64.manylinux_2_17_aarch64.whl#sha256=f44f8d86bb7d5629988d61c8d3ae61dddb2015dee142740536bc7481b022fe4b">nvidia_nvtx_cu12-12.6.77-py3-none-manylinux2014_aarch64.manylinux_2_17_aarch64.whl</a>
+....
+```
+
+
+---
+
+_Comment by @konstin on 2025-12-11 15:49_
+
+Thank you!
+
+---
+
+_Closed by @konstin on 2025-12-11 15:49_
+
+---

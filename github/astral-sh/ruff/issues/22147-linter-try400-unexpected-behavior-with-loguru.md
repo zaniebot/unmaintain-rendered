@@ -1,0 +1,93 @@
+---
+number: 22147
+title: "Linter: [TRY400] unexpected behavior with loguru"
+type: issue
+state: closed
+author: thisisarko
+labels:
+  - question
+assignees: []
+created_at: 2025-12-22T20:43:47Z
+updated_at: 2025-12-23T06:26:51Z
+url: https://github.com/astral-sh/ruff/issues/22147
+synced_at: 2026-01-07T13:12:16-06:00
+---
+
+# Linter: [TRY400] unexpected behavior with loguru
+
+---
+
+_Issue opened by @thisisarko on 2025-12-22 20:43_
+
+### Summary
+
+For the following reproducible snippet
+
+<details>
+<summary>test.py</summary>
+
+```python
+
+from loguru import logger
+
+def main():
+    try:
+        10 / 0
+    except ZeroDivisionError as e:
+        logger.error(f"An error occurred: {e}")
+
+if __name__ == "__main__":
+    main()
+```
+
+</details>
+
+1. `uvx --isolated tryceratops test.py`
+
+```sh
+[TRY400] Use logging '.exception' instead of '.error' - test.py:7:8
+Done processing!
+Processed 1 files
+Found 1 violations
+```
+
+2. `uvx --isolated ruff check test.py --select TRY400`
+
+```sh
+All checks passed!
+```
+
+
+### Version
+
+ruff 0.14.10
+
+---
+
+_Renamed from "`TRY400` fails with loguru" to "`TRY400` unexpected behavior with loguru" by @thisisarko on 2025-12-22 20:44_
+
+---
+
+_Renamed from "`TRY400` unexpected behavior with loguru" to "Linter: [TRY400] unexpected behavior with loguru" by @thisisarko on 2025-12-22 20:46_
+
+---
+
+_Comment by @ntBre on 2025-12-22 22:46_
+
+Thanks for the report! I think you may need to set your [logger-objects](https://docs.astral.sh/ruff/settings/#lint_logger-objects) to something like:
+
+```toml
+lint.logger-objects = ["loguru.logger"]
+```
+
+With that setting, the diagnostic is emitted as expected in the [playground](https://play.ruff.rs/19ad5d0c-1d66-4185-b56f-6e50ef8891b0).
+
+---
+
+_Label `question` added by @ntBre on 2025-12-22 22:46_
+
+---
+
+_Closed by @MichaReiser on 2025-12-23 06:26_
+
+---

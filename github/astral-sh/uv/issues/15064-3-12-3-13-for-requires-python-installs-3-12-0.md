@@ -1,0 +1,112 @@
+---
+number: 15064
+title: ">=3.12,<3.13 for requires-python installs 3.12.0"
+type: issue
+state: closed
+author: lexicalunit
+labels:
+  - question
+assignees: []
+created_at: 2025-08-04T18:33:14Z
+updated_at: 2025-08-04T19:20:50Z
+url: https://github.com/astral-sh/uv/issues/15064
+synced_at: 2026-01-07T13:12:19-06:00
+---
+
+# >=3.12,<3.13 for requires-python installs 3.12.0
+
+---
+
+_Issue opened by @lexicalunit on 2025-08-04 18:33_
+
+### Question
+
+It should use the latest point release, not `3.12.0`. How do I tell it to use the latest point release?
+
+### Platform
+
+Darwin 24.5.0 arm64 Darwin
+
+### Version
+
+uv 0.7.3 (Homebrew 2025-05-07)
+
+---
+
+_Label `question` added by @lexicalunit on 2025-08-04 18:33_
+
+---
+
+_Comment by @powercoconola on 2025-08-04 18:40_
+
+Please see https://github.com/astral-sh/uv/issues/9452
+
+---
+
+_Comment by @lexicalunit on 2025-08-04 18:53_
+
+I searched the the linked issue and found one mention of `requires-python`: https://github.com/astral-sh/uv/issues/4022 -- This did not address my question though.
+
+I then searched issues: https://github.com/astral-sh/uv/issues?q=is%3Aissue%20%20sort%3Arelevance-desc%20requires-python%20latest%20point%20release
+
+I found one issue that mentioned using `"^3.12"` but that does not work:
+
+```text
+error: Failed to parse: `pyproject.toml`
+  Caused by: TOML parse error at line 111, column 19
+    |
+111 | requires-python = "^3.12"
+```
+
+I also found an issue mentioning `==3.12.*` but that does not work. It still just uses `3.12.0`.
+
+I finally found this construction: `~=3.12` and that does seem to pick the latest version.
+
+This is a fairly complicated thing that doesn't seem to have any documentation.
+
+---
+
+_Comment by @konstin on 2025-08-04 18:54_
+
+Can you share the commands you can and the their verbose (`-v`) output? It is not expected that 3.12.0 would be installed, we're generally installing the latest version.
+
+---
+
+_Comment by @lexicalunit on 2025-08-04 19:10_
+
+Maybe I need more coffee? I have no idea why but I just retried the `">=3.12,<3.13"` construction and that seems to have used 3.12.8 (the latest version I have installed on my machine).
+
+I then tried `==3.12.*` and that too now seems to use 3.12.8. I can't seem to make it use `3.12.0` like it was before any longer.
+
+
+
+---
+
+_Comment by @powercoconola on 2025-08-04 19:14_
+
+> I searched the the linked issue and found one mention of `requires-python`: [#4022](https://github.com/astral-sh/uv/issues/4022) -- This did not address my question though.
+> 
+> I then searched issues: https://github.com/astral-sh/uv/issues?q=is%3Aissue%20%20sort%3Arelevance-desc%20requires-python%20latest%20point%20release
+> 
+> I found one issue that mentioned using `"^3.12"` but that does not work:
+> 
+> ```
+> error: Failed to parse: `pyproject.toml`
+>   Caused by: TOML parse error at line 111, column 19
+>     |
+> 111 | requires-python = "^3.12"
+> ```
+> 
+> I also found an issue mentioning `==3.12.*` but that does not work. It still just uses `3.12.0`.
+> 
+> I finally found this construction: `~=3.12` and that does seem to pick the latest version.
+> 
+> This is a fairly complicated thing that doesn't seem to have any documentation.
+
+Apologies, I meant for you to look at the section header "What information to include". In order to help or fix the issue, typically they have to re-create the issue on their machines so they need more information.
+
+---
+
+_Closed by @konstin on 2025-08-04 19:20_
+
+---

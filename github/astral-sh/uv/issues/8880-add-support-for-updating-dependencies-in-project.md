@@ -1,0 +1,55 @@
+---
+number: 8880
+title: Add support for updating dependencies in project
+type: issue
+state: closed
+author: diachkow
+labels: []
+assignees: []
+created_at: 2024-11-07T08:20:46Z
+updated_at: 2024-11-07T12:53:13Z
+url: https://github.com/astral-sh/uv/issues/8880
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# Add support for updating dependencies in project
+
+---
+
+_Issue opened by @diachkow on 2024-11-07 08:20_
+
+I am looking for something similar to the [`poetry update`](https://python-poetry.org/docs/cli/#update) command that is able to update the listed dependencies to the maximum possible version that meets the requirements from the `pyproject.toml` file.
+
+I'm now running uv version `0.4.29` and couldn't find anything like this in uv docs/uv --help.
+
+Having this feature will make it easier to maintain long running projects and stay up-to-date with the latest package versions for our web app
+
+---
+
+_Comment by @FishAlchemist on 2024-11-07 11:30_
+
+If you're using project-specific commands, there's actually an ``--upgrade`` parameter that can update the lock file to the latest version.
+
+https://docs.astral.sh/uv/concepts/projects/#upgrading-locked-package-versions
+
+---
+
+_Comment by @my1e5 on 2024-11-07 12:49_
+
+Duplicate of https://github.com/astral-sh/uv/issues/7681
+
+---
+
+_Comment by @diachkow on 2024-11-07 12:53_
+
+> If you're using project-specific commands, there's actually an `--upgrade` parameter that can update the lock file to the latest version.
+> 
+> https://docs.astral.sh/uv/concepts/projects/#upgrading-locked-package-versions
+
+Thank you! Seems that is what I was looking for. I was trying to search by `update` through the docs, but it happened to be `upgrade` not `update` 🤦‍♂️ 
+
+---
+
+_Closed by @diachkow on 2024-11-07 12:53_
+
+---

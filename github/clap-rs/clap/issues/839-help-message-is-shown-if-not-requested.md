@@ -1,0 +1,112 @@
+---
+number: 839
+title: Help message is shown if not requested
+type: issue
+state: closed
+author: weiznich
+labels:
+  - C-bug
+  - A-parsing
+assignees: []
+created_at: 2017-02-02T12:08:20Z
+updated_at: 2018-08-02T03:30:00Z
+url: https://github.com/clap-rs/clap/issues/839
+synced_at: 2026-01-07T13:12:19-06:00
+---
+
+# Help message is shown if not requested
+
+---
+
+_Issue opened by @weiznich on 2017-02-02 12:08_
+
+Building diesel_cli agains clap 2.20.1 will result in a build that shows only the help messages for each subcommand is shown. See the corresponding [diesel issue](https://github.com/diesel-rs/diesel/issues/602) for more informations.
+
+
+### Rust Version
+
+rustc 1.16.0-nightly (4ce7accaa 2017-01-17)
+
+### Affected Version of clap
+
+2.20.1
+
+rustc 1.16.0-nightly (4ce7accaa 2017-01-17)
+
+### Expected Behavior Summary
+
+`diesel migration run` should execute all pending migration, or show an error message if no migration directory was found
+
+
+### Actual Behavior Summary
+
+Help message is shown
+
+### Steps to Reproduce the issue
+```
+$ cargo install diesel_cli
+$ diesel migration run
+```
+### Sample Code or Link to Sample Code
+[diesel_cli](https://github.com/diesel-rs/diesel/tree/master/diesel_cli)
+
+
+### Debug output
+[Debug log](https://gist.github.com/weiznich/dbe3a03d3790dd47054f8112a0bb3f6e)
+
+
+---
+
+_Comment by @killercup on 2017-02-02 13:01_
+
+Can confirm. Setting `clap = "=2.19.3"` in `diesel_cli/Cargo.toml` fixes this problem.
+
+---
+
+_Label `C: parsing` added by @kbknapp on 2017-02-02 15:28_
+
+---
+
+_Label `C: settings` added by @kbknapp on 2017-02-02 15:28_
+
+---
+
+_Label `P1: urgent` added by @kbknapp on 2017-02-02 15:28_
+
+---
+
+_Label `Regression` added by @kbknapp on 2017-02-02 15:28_
+
+---
+
+_Label `T: bug` added by @kbknapp on 2017-02-02 15:28_
+
+---
+
+_Label `W: 2.x` added by @kbknapp on 2017-02-02 15:28_
+
+---
+
+_Added to milestone `2.20.2` by @kbknapp on 2017-02-02 15:28_
+
+---
+
+_Comment by @kbknapp on 2017-02-03 16:06_
+
+Found the issue, and am uploading the PR. I'll put out v2.20.2 once all tests pass
+
+---
+
+_Comment by @kbknapp on 2017-02-03 20:47_
+
+v2.20.2 is on crates.io
+
+---
+
+_Closed by @kbknapp on 2017-02-03 20:47_
+
+---
+
+_Referenced in [diesel-rs/diesel#615](../../diesel-rs/diesel/pulls/615.md) on 2017-02-03 23:22_
+
+---

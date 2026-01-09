@@ -1,0 +1,70 @@
+---
+number: 11389
+title: "Syncing UV with system python [follow up]"
+type: issue
+state: closed
+author: Ben-Epstein
+labels:
+  - question
+assignees: []
+created_at: 2025-02-10T16:13:25Z
+updated_at: 2025-02-10T20:44:43Z
+url: https://github.com/astral-sh/uv/issues/11389
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# Syncing UV with system python [follow up]
+
+---
+
+_Issue opened by @Ben-Epstein on 2025-02-10 16:13_
+
+### Question
+
+Similar to https://github.com/astral-sh/uv/pull/6834 I am trying to use uv in CI to sync my lockfile with the system python.
+
+I have a command like so
+`/bin/sh -c "UV_PROJECT_ENVIRONMENT=$(python -c \"import sysconfig; print(sysconfig.get_config_var('prefix'))\") uv sync"` where the python command evaluates to 
+```
+Using CPython 3.11.9
+error: Project virtual environment directory `/usr/local` cannot be used because it is not a compatible environment but cannot be recreated because it is not a virtual environment
+```
+Is there any more detail as to what this means or how to debug it?
+
+Thanks!
+
+### Platform
+
+Ubuntu 22.04
+
+### Version
+
+0.5.6
+
+---
+
+_Label `question` added by @Ben-Epstein on 2025-02-10 16:13_
+
+---
+
+_Comment by @zanieb on 2025-02-10 16:18_
+
+It's probably a Python version mismatch. What does your project require? Do you have a `.python-version` file?
+
+#11227 tracks improving the error here.
+
+---
+
+_Comment by @Ben-Epstein on 2025-02-10 20:44_
+
+that was exactly it, thanks @zanieb  -- i'll close this one out
+
+---
+
+_Closed by @Ben-Epstein on 2025-02-10 20:44_
+
+---
+
+_Referenced in [Future-House/aviary#196](../../Future-House/aviary/pulls/196.md) on 2025-02-18 23:38_
+
+---

@@ -1,0 +1,64 @@
+---
+number: 1518
+title: "Inconsistent behavior when `source .venv/Scripts/activate` on Windows"
+type: issue
+state: closed
+author: jfcherng
+labels:
+  - windows
+assignees: []
+created_at: 2024-02-16T17:33:51Z
+updated_at: 2024-02-17T23:08:08Z
+url: https://github.com/astral-sh/uv/issues/1518
+synced_at: 2026-01-07T13:12:16-06:00
+---
+
+# Inconsistent behavior when `source .venv/Scripts/activate` on Windows
+
+---
+
+_Issue opened by @jfcherng on 2024-02-16 17:33_
+
+When in git-bash (https://gitforwindows.org/) shell on Windows,
+
+## With `pip`
+
+```bash
+python -m venv .venv
+source .venv/Scripts/activate
+echo $PATH  # ".venv/Scripts" is added into PATH
+```
+
+## With `uv`
+
+```bash
+uv v
+source .venv/Scripts/activate
+echo $PATH  # ".venv/bin" is added into PATH, and this is wrong
+```
+
+---
+
+_Label `windows` added by @zanieb on 2024-02-16 17:47_
+
+---
+
+_Referenced in [astral-sh/uv#1577](../../astral-sh/uv/pulls/1577.md) on 2024-02-17 06:26_
+
+---
+
+_Closed by @dhruvmanila on 2024-02-17 16:39_
+
+---
+
+_Comment by @jfcherng on 2024-02-17 23:03_
+
+I can confirmed my issue is resolved in v0.1.4. Thanks!
+
+---
+
+_Comment by @charliermarsh on 2024-02-17 23:08_
+
+Awesome, thank you for following up!
+
+---

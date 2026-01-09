@@ -1,0 +1,158 @@
+---
+number: 11479
+title: "`PLR0915` unconditionally counts `pass` as a statement"
+type: issue
+state: open
+author: AlexBlandin
+labels:
+  - rule
+  - needs-decision
+assignees: []
+created_at: 2024-05-20T19:43:30Z
+updated_at: 2024-07-16T12:01:44Z
+url: https://github.com/astral-sh/ruff/issues/11479
+synced_at: 2026-01-07T13:12:15-06:00
+---
+
+# `PLR0915` unconditionally counts `pass` as a statement
+
+---
+
+_Issue opened by @AlexBlandin on 2024-05-20 19:43_
+
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* List of keywords you searched for before creating this issue. Write them down here so that others can find this issue more easily and help provide feedback.
+  e.g. "RUF001", "unused variable", "Jupyter notebook"
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+```cmd
+> ruff check foo.py
+foo.py:1:5: PLR0915 Too many statements (6 > 5)
+Found 1 error.
+```
+
+As seen below, the snippet `foo` has this warning under `ruff check`. pylint also reports `R0915` on this. [Replicated on the playground.](https://play.ruff.rs/78d3e134-421f-45c9-8b96-cd48160f7121)
+
+I checked all other reports under `PLR0915` (`is:issue PLR0915`) and it seems this hasn't been reported yet.
+
+`pass` [canonically does nothing](https://docs.python.org/3/reference/simple_stmts.html#pass), so is valued for exactly this, being an "empty" token (distinct from ellipsis, which has a value).
+In codebases, usually ones precluding rules like `PIE790` (or pylint's `W0107`, as is superseded), it is thereby used outside the obvious "placeholder" (for which ellipsis is usually preferred, as in type stubs) as a clear indicator that "nothing occurs", in particular, at the end of a block that doesn't have other delimiting control flow (`return`, `break`, etc).
+This means that, similar to the definition of a function not counting as a statement within itself, `pass` can be paired up in "closing" a prior statement, which is popular-enough that some editors even use it as a de facto delimiter to control auto-indentation (sometimes instead of other control flow statements).
+
+Whether this behaviour should be changed relative to pylint is one question, though perhaps not one worth bothering with. The better question, in my mind, is whether to have a toggle for those that want `max-statements` to include `pass` or not.
+
+The simplest toggle would simply discount `pass` as a statement, for it's one that does nothing, so is not indicative of difficulty with understandability or maintainability; indeed, it can make it more readable for some.
+
+A better toggle (or optional strategy) could check if `pass` is the last statement in a block, in which case it is discounted. This saves concerns over missing interstitial `pass` statements that should probably have been warned on (as mentioned, `PIE790` is typically precluded in these codebases). In that way, dealing with `pass` as ending a block would allow sequential `pass`, as in the snippet, to be counted for warning, which seems a good balance. Also, by checking for `pass` as the last token of a block, this way improves handling for certain codebases (i.e. where an unreachable `pass` is used *after* control flow like `break` or `return` due to limitations on editors or other parsers).
+
+Tested:
+- Ruff: 0.4.4
+- pylint: 3.2.2
+
+```python
+def foo(a):
+  pass
+  pass
+  pass
+  pass
+  pass
+  pass
+```
+
+For the sake of saving space on the issue, the limit was reduced as such:
+```toml
+[lint]
+select = ["PLR0915"]
+[lint.pylint]
+max-statements = 5
+```
+
+And, for `pylint`, the equivalent:
+```toml
+[DESIGN]
+max-statements=5
+```
+
+
+---
+
+_Renamed from "`PLR0915` counts `pass` as a statement" to "`PLR0915` unconditionally counts `pass` as a statement" by @AlexBlandin on 2024-05-21 09:11_
+
+---
+
+_Comment by @AlexBlandin on 2024-05-21 10:44_
+
+Just wanted to add, there does not seem to be substantial grounds for `pass`-ending-block to be overlooked as a syntactic form. Neither PEP 8 nor Black make any mention of `pass`, so while that means they (nor Ruff) do not auto-insert it when formatting, it also means that neither of them strip it out. As in PEP 20, "Explicit is better than implicit" and "Readability counts", which means that it is quite understandable to want explicit syntax to denote the end of a block, but such that they correspond to the statement of the block itself; pairing `pass` with either the (compound statement) control flow commencing it, e.g. `while`, or the (simple statement) preceding control flow that makes it unreachable (where `pass` is retained as hinting to an editor/parser).
+
+Of course, a casual survey of Python codebases suggests this approach is in the minority, and it's not actually one I hold myself to on personal codebases, though have encountered "in the wild" and do use (occasionally) for various reasons, including teaching to those used to languages with block-ending syntax, of which this use of `pass` is the de facto way to emulate, though obviously not de jure.
+
+In particular, I have found it useful for gradually integrating `match`-`case` on older codebases, particularly when the tooling available is not quite up-to-par with Python circa 2023 (typically due to not supporting the post-PEP 617 grammar), for which `pass` provides a handy way to create simplified support for these compound statements. This, however, is not a typical need, especially with the improved support for `ast`, `tree-sitter`, and such, sidestepping many instances where someone might hand-roll a parser (though, of course, many other scenarios do still benefit from such), especially given the general maturity of many "default picks" for tooling in the Python ecosystem at large (such as, of course, Ruff).
+
+Still, these codebases and tools remain, and many editors are aware of this and so do respect `pass` as a hint that the block has ended; and, of course, this editor support for `pass` is still naturally useful in the "traditional" use of `pass` as a placeholder for, say, an otherwise empty compound statement that would not parse otherwise (the classic `if ... : pass`). Some editors are unable to process multiple tokens that close/conclude blocks, and anecdotally I've seen a clear bias towards accepting `pass` as the canonical one (although some simply give up and only use `return`, which while simplistic is at least an understandable pick), so there is a clear harmony in allowing Ruff to be aware of this and not "punishing" code.
+
+For these reasons, I don't think it would do to make any changes to the default, but instead to provide either a toggle or a choice of "counting strategies" applicable to `PLR0915` (and potentially other "complexity" measures). In my opinion, the best approach for a toggle would only discount a `pass` statement that concludes a block. However, there is a clear gradation of strategies to "ignore `pass`" based on how many they discount:
+- None: Discount no `pass` statements, the current and default behaviour
+- Essential: Discount any `pass` that is deemed essential under `PIE790` (i.e. the clearest "placeholders")
+- Reachable: Discount any reachable `pass` that concludes a block (so, in `bar` below, the `pass` in `if b:` is discounted, but the `pass` after the `break` is not, as it is unreachable and may be worth warning about)
+- Closing: Discount any `pass` statement that concludes a block (including an unreachable `pass`)
+- Trailing: Discount any `pass` statements that conclude a block (i.e. consecutive `pass` statements, as in `baz` below)
+- All: Discount all `pass` statements
+
+The logic for each is simple, so weighing between providing these would have to be a matter of balancing the impact on the codebase and benefit for other aspects; while I opened this relative to `PLR0915` (as it was the warning encountered) this could be applicable to other parts of Ruff, in particular any other "complexity" measures (i.e. `C90`). Since this is not merely a 1-1 correspondence, a user cannot simply increase `max-statements` for the same effect as that partially defeats the purpose of `max-statements` and `PLR0915` to begin with, by permitting `pass`-free code that would otherwise breach the prior/default `max-statements`. Indeed, similar arguments apply for `C901` and `max-complexity`.
+
+Therefore, providing some opt-in form of this is a clear advantage that preserves the benefits of the existing rules without undermining them, either with a selection of discounting strategies, similar to those outlined above, or as a single toggle (likely similar to either Reachable, Closing, or Trailing, as above) should the impact on the Ruff codebase not warrant providing the full selection.
+
+In addition, such a toggle/strategy could also be added to `ruff format`, at least enabling a Reachable or Closing `pass` to be auto-inserted after a block, and similarly only on an opt-in basis. This would benefit existing codebases with migration to Ruff on gradual terms, without stepping on the existing behaviour, especially where it is clear that the existing tooling is otherwise a blocker/impediment to upgrading, yet is unable to (at present) be upgraded itself (or otherwise replaced).
+
+An example of this style is below, just to demonstrate.
+
+```python
+def bar(a):
+  for b in a:
+    if b:
+      print(b)
+      pass
+    elif b is None:
+      break
+      pass  # An unreachable hint useful for editors/parsers not robust to multiple available block-closing tokens
+    pass
+  pass
+
+
+def baz(a):
+  match a:
+    case int(n):
+      print(n)
+      pass
+    case str(s):
+      print(s)
+      pass
+      pass  # A simple trick for retrofitting match-case; usually only a single pass is required, with a little care, but not always
+  pass
+```
+
+```cmd
+> ruff check bar.py
+bar.py:1:5: PLR0915 Too many statements (8 > 5)
+bar.py:13:5: PLR0915 Too many statements (7 > 5)
+Found 2 errors.
+```
+
+
+---
+
+_Label `rule` added by @charliermarsh on 2024-05-21 19:07_
+
+---
+
+_Label `needs-decision` added by @charliermarsh on 2024-05-21 19:07_
+
+---

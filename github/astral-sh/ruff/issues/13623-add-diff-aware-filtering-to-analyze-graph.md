@@ -1,0 +1,52 @@
+---
+number: 13623
+title: "Add diff aware filtering to `analyze graph`"
+type: issue
+state: open
+author: mjclarke94
+labels:
+  - cli
+  - wish
+assignees: []
+created_at: 2024-10-04T10:46:34Z
+updated_at: 2024-10-07T08:16:13Z
+url: https://github.com/astral-sh/ruff/issues/13623
+synced_at: 2026-01-07T13:12:15-06:00
+---
+
+# Add diff aware filtering to `analyze graph`
+
+---
+
+_Issue opened by @mjclarke94 on 2024-10-04 10:46_
+
+This may be a post-`red-knot` issue (or even a `uv` issue), so happy to relocate this as needed.
+
+One of the really powerful features which `pants` offers is the ability to [leverage its dependency](https://www.pantsbuild.org/dev/docs/using-pants/advanced-target-selection#running-over-changed-files-with---changed-since) graph to only run tests/linting on files which are directly or indirectly impacted by changes. The multi-file (and presumably multi-package) analysis of red-knot plus the projects api of `uv` means that a lot of the components required to support this behaviour are being developed or are in place already.
+
+Copying pants' api for an example syntax:
+
+```
+ruff analyze graph --changed-since=origin/main --changed-dependents=transitive  .
+ruff check --changed-since=HEAD
+```
+
+Given how fast `ruff` is, this might seem unnecessary, but the real value here comes from being able to then leverage this using other tools like `pytest` to only run tests which are impacted by your changes.
+
+Another point I'd note here is that `pants` does the dependency graph at the file level, but `red-knot` could enable this down to the function level to allow even more granular test selection.
+
+---
+
+_Comment by @MichaReiser on 2024-10-07 08:16_
+
+This make sense to me but in a wider context. It would be great if any ruff command could only run over changed files. Related to https://github.com/astral-sh/ruff/issues/1149
+
+---
+
+_Label `cli` added by @MichaReiser on 2024-10-07 08:16_
+
+---
+
+_Label `wish` added by @MichaReiser on 2024-10-07 08:16_
+
+---

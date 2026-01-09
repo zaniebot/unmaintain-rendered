@@ -1,0 +1,87 @@
+---
+number: 16809
+title: "[red-knot] Refactor Red Knot to use the new `Diagnostic` type. Delete \"old\" diagnostic code."
+type: issue
+state: closed
+author: BurntSushi
+labels:
+  - ty
+  - diagnostics
+assignees: []
+created_at: 2025-03-17T15:07:19Z
+updated_at: 2025-04-22T16:08:04Z
+url: https://github.com/astral-sh/ruff/issues/16809
+synced_at: 2026-01-07T13:12:16-06:00
+---
+
+# [red-knot] Refactor Red Knot to use the new `Diagnostic` type. Delete "old" diagnostic code.
+
+---
+
+_Issue opened by @BurntSushi on 2025-03-17 15:07_
+
+With #16503, we added types defining a new `Diagnostic` data model. In #16711, we added a renderer based on that new data model. At present, Red Knot is still using the "old" diagnostic types. In this issue, we should move forward by using the new types in Red Knot.
+
+I expect that this will _mostly_ be a mechanical translation that doesn't impact the diagnostic output too much, but it might be hard to resist doing some improvements along the way.
+
+---
+
+_Referenced in [astral-sh/ruff#16504](../../astral-sh/ruff/issues/16504.md) on 2025-03-17 15:07_
+
+---
+
+_Referenced in [astral-sh/ruff#16808](../../astral-sh/ruff/issues/16808.md) on 2025-03-17 15:08_
+
+---
+
+_Assigned to @BurntSushi by @BurntSushi on 2025-03-17 15:08_
+
+---
+
+_Label `red-knot` added by @BurntSushi on 2025-03-17 15:09_
+
+---
+
+_Label `diagnostics` added by @BurntSushi on 2025-03-17 15:09_
+
+---
+
+_Renamed from "Refactor Red Knot to use the new `Diagnostic` type. Delete "old" diagnostic code." to "[red-knot] Refactor Red Knot to use the new `Diagnostic` type. Delete "old" diagnostic code." by @BurntSushi on 2025-03-17 15:09_
+
+---
+
+_Added to milestone `Red Knot Alpha` by @carljm on 2025-03-27 18:32_
+
+---
+
+_Removed from milestone `Red Knot Alpha` by @carljm on 2025-03-27 18:33_
+
+---
+
+_Added to milestone `Red Knot Q1 2025` by @carljm on 2025-03-27 18:33_
+
+---
+
+_Removed from milestone `Red Knot Q1 2025` by @carljm on 2025-03-27 18:33_
+
+---
+
+_Added to milestone `Red Knot Alpha` by @carljm on 2025-03-27 18:33_
+
+---
+
+_Referenced in [astral-sh/ruff#17130](../../astral-sh/ruff/pulls/17130.md) on 2025-04-01 18:59_
+
+---
+
+_Referenced in [astral-sh/ruff#17318](../../astral-sh/ruff/pulls/17318.md) on 2025-04-09 15:45_
+
+---
+
+_Referenced in [astral-sh/ruff#17554](../../astral-sh/ruff/pulls/17554.md) on 2025-04-22 15:00_
+
+---
+
+_Closed by @BurntSushi on 2025-04-22 16:08_
+
+---

@@ -1,0 +1,130 @@
+---
+number: 8206
+title: "Disable some rule in `format`"
+type: issue
+state: closed
+author: yasirroni
+labels: []
+assignees: []
+created_at: 2023-10-25T09:23:37Z
+updated_at: 2024-07-04T16:39:06Z
+url: https://github.com/astral-sh/ruff/issues/8206
+synced_at: 2026-01-07T13:12:15-06:00
+---
+
+# Disable some rule in `format`
+
+---
+
+_Issue opened by @yasirroni on 2023-10-25 09:23_
+
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+I'm using ruff 0.1.1. With the newest feature, we can use `ruff format .` As `autopep8` user, I don't want to implement all ruff format. Just some of it. For example, I want something like 'quote-style = "none"` to not implement that rule.
+
+That is because I use single quote for variable and word, but double quote for sentence and paragraphs.
+
+Thank you.
+
+---
+
+_Comment by @MichaReiser on 2023-10-25 09:43_
+
+Thanks for the feedback. 
+
+I close this as a duplicate. Would you mind upvoting (reacting) to this issue https://github.com/astral-sh/ruff/issues/7525 that asks for a new option to skip string normalization
+
+---
+
+_Closed by @MichaReiser on 2023-10-25 09:43_
+
+---
+
+_Renamed from "Disbale some rule in `format`" to "Disable some rule in `format`" by @yasirroni on 2023-10-25 09:43_
+
+---
+
+_Comment by @yasirroni on 2023-10-25 09:48_
+
+Thanks @MichaReiser for pointing that issue. But that is just one of it. I love ruff previous fix that support which rule to use and which is not. I would like that the formatter follow or at least provide some functionality when user don't want to implement specific format. Thus, not only skipping string normalization, but any formatter.
+
+---
+
+_Reopened by @MichaReiser on 2023-10-25 09:50_
+
+---
+
+_Comment by @MichaReiser on 2023-10-25 09:54_
+
+Oh I see and can understand that it is unlikely that we agree with all decisions the formatter makes for us. 
+
+For now, we don't plan to add as granular configuration options as YAPF. We may want to consider implementing different code styles eventually [discussion](https://github.com/astral-sh/ruff/discussions/7310#discussioncomment-7033187). Also see [this comment](https://github.com/astral-sh/ruff/issues/1904#issuecomment-1734178346) from @charliermarsh that gives some more context.
+
+---
+
+_Closed by @MichaReiser on 2023-10-25 09:54_
+
+---
+
+_Comment by @yasirroni on 2023-10-25 10:08_
+
+Thanks @MichaReiser, I've finished read that discussion and comment. But, my concern is far more simple than that. I just, not ready, to follow all rule or implement all format. Just let me choose which one while transitioning from `ruff check` to `ruff format`.
+
+This world should not be black and white. Committing to one fully. Just, just, let me chose which formatter (not library, like one that is already implemented that is to sort import or not), that I want ruff to implement.
+
+And this should be easy to maintain and or test, because, just "ignore formatting x".
+
+More like, 
+
+If not rule this: continue to next rule
+
+---
+
+_Reopened by @MichaReiser on 2023-10-25 10:21_
+
+---
+
+_Comment by @MichaReiser on 2023-10-25 10:23_
+
+Implementing partial formatting, e.g. based on the type of node isn't trivial because the formatting rules depend on each other. The formatting of binary expressions makes assumptions about how the operands will format. This knowledge is required to ensure that the formatted code doesn't contain any syntax errors.
+
+---
+
+_Comment by @yasirroni on 2023-10-25 10:57_
+
+I see. So, each format is already designed to depend on each other, thus implementing and testing just one rule at a time is not trivial task. Thanks for clarifying. But, I hope this kind of functionality will come. If it indeed implemented by ruff, I can be sure that every sane person will use ruff, at least some of its rule and did not need to worry to be forced to use all format or rule. Thank you.
+
+---
+
+_Closed by @MichaReiser on 2023-10-25 10:58_
+
+---
+
+_Comment by @MichaReiser on 2023-10-25 10:58_
+
+You're welcome
+
+---
+
+_Comment by @avylove on 2024-07-04 16:39_
+
+I finally went to try ruff today (it's been on my list for a while). But the formatter is  a non-starter without configurable rules. I understand that some are tied to each other and more difficult to implement, but others should be easier to ignore. In my case, removing the `u` prefix for unicode strings breaks backwards compatibility. There are other things I find annoying and might want to disable, but this is a functional change.
+
+---
+
+_Referenced in [astral-sh/ruff#14948](../../astral-sh/ruff/issues/14948.md) on 2024-12-13 07:36_
+
+---
+
+_Referenced in [astral-sh/ruff#15024](../../astral-sh/ruff/issues/15024.md) on 2024-12-17 04:33_
+
+---

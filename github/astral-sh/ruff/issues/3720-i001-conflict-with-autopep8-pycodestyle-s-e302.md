@@ -1,0 +1,213 @@
+---
+number: 3720
+title: "`I001` conflict with autopep8 / pycodestyle's `E302`"
+type: issue
+state: closed
+author: Avasam
+labels:
+  - question
+assignees: []
+created_at: 2023-03-24T19:07:55Z
+updated_at: 2023-03-25T16:16:24Z
+url: https://github.com/astral-sh/ruff/issues/3720
+synced_at: 2026-01-07T13:12:14-06:00
+---
+
+# `I001` conflict with autopep8 / pycodestyle's `E302`
+
+---
+
+_Issue opened by @Avasam on 2023-03-24 19:07_
+
+See this minimal reproduction:
+```py
+from typing import TypedDict, type_check_only
+
+
+@type_check_only
+class GCInputs(TypedDict):
+  pass
+```
+Ref: https://peps.python.org/pep-0008/#blank-lines and https://pycodestyle.pycqa.org/en/latest/intro.html?highlight=E302#error-codes
+
+`I001` wants 1 line, `E302` wants 2.
+
+I use the default [lines-after-imports](https://beta.ruff.rs/docs/settings/#lines-after-imports) (so it should be -1)
+Is there a way to ignore just `lines-after-imports` without ignoring the entirety of [I001](https://beta.ruff.rs/docs/rules/unsorted-imports/) ?
+
+I'd like to either let the non-ruff formatter take care of it. Or have Ruff implement `E302` (https://github.com/charliermarsh/ruff/issues/2402) so it's aware of it when linting imports.
+
+Temporary workaround, add a dangling `#`. May as well link to this issue while I'm at it:
+```py
+from typing import TypedDict, type_check_only
+
+# https://github.com/charliermarsh/ruff/issues/3720
+
+
+@type_check_only
+class GCInputs(TypedDict):
+  pass
+```
+
+---
+
+_Comment by @charliermarsh on 2023-03-24 21:04_
+
+Just trying to make sure I understand -- if I run Ruff over that file, it leaves the import as it is, and `pycodestyle` doesn't complain about it either. Is that not two lines, between the import and the function definition? What am I overlooking? :)
+
+---
+
+_Label `question` added by @charliermarsh on 2023-03-24 21:04_
+
+---
+
+_Comment by @Avasam on 2023-03-24 21:24_
+
+For me, ruff (0.0.259) formats
+```py
+from typing import TypedDict, type_check_only  # Import block is un-sorted or un-formatted Ruff(I001)
+
+
+@type_check_only
+class GCInputs(TypedDict):
+  pass
+```
+
+to
+
+```py
+from typing import TypedDict, type_check_only
+
+@type_check_only
+class GCInputs(TypedDict):
+  pass
+```
+
+Oh, you know what, it's a `.pyi` file, indeed it doesn't seem to happen in a `.py` file.
+
+Also, here's my complete ruff config `pyproject.toml`:
+```toml
+# https://beta.ruff.rs/docs/configuration
+[tool.ruff]
+line-length = 120
+select = ["ALL"]
+target-version = "py38"
+# https://beta.ruff.rs/docs/rules
+ignore = [
+  ###
+  # Not needed or wanted
+  ###
+  "D1", # pydocstyle Missing doctring
+  "D401", # pydocstyle: non-imperative-mood
+  "EM", # flake8-errmsg
+  "FBT", # flake8-boolean-trap
+  "INP", # flake8-no-pep420
+  "ISC003", # flake8-implicit-str-concat: explicit-string-concatenation
+  "TCH002", # flake8-type-checking: typing-only-third-party-import
+  # Short messages are still considered "long" messages
+  "TRY003", # tryceratops : raise-vanilla-args
+  # Don't remove commented code, also too inconsistant
+  "ERA001", # eradicate: commented-out-code
+  # contextlib.suppress is roughly 3x slower than try/except
+  "SIM105", # flake8-simplify: use-contextlib-suppress
+  # Checked by type-checker (pyright)
+  "ANN", # flake-annotations
+  "TCH003", # flake8-type-checking: typing-only-standard-library-import
+  # We want D213: multi-line-summary-second-line and D211: no-blank-line-before-class
+  "D203", # pydocstyle: one-blank-line-before-class
+  "D212", # pydocstyle: multi-line-summary-first-line
+]
+
+# https://beta.ruff.rs/docs/settings/#flake8-implicit-str-concat
+[tool.ruff.flake8-implicit-str-concat]
+allow-multiline = false
+
+# https://beta.ruff.rs/docs/settings/#isort
+[tool.ruff.isort]
+combine-as-imports = true
+required-imports = ["from __future__ import annotations"] # Safer with Python 3.8 and 3.9
+split-on-trailing-comma = false
+
+# https://beta.ruff.rs/docs/settings/#mccabe
+[tool.ruff.mccabe]
+# Hard limit, arbitrary to 4 bytes
+max-complexity = 31
+# Arbitrary to 2 bytes, same as SonarLint
+# max-complexity = 15
+
+[tool.ruff.pylint]
+# Arbitrary to 1 byte, same as SonarLint
+max-args = 7
+# At least same as max-complexity
+max-branches = 15
+
+# https://github.com/hhatto/autopep8#usage
+# https://github.com/hhatto/autopep8#more-advanced-usage
+[tool.autopep8]
+aggressive = 3
+ignore = [
+  # TODO Suggest "multi-line method invocation style" to Ruff.
+  # https://github.com/charliermarsh/ruff/issues/3713
+  "E124", # Closing bracket may not match multi-line method invocation style (enforced by add-trailing-comma)
+  "E402", # Allow imports at the bottom of file
+  "E70", # Allow ... on same line as def
+  "W503", # Linebreak before binary operator
+]
+max_line_length = 120
+recursive = true
+```
+
+---
+
+_Comment by @charliermarsh on 2023-03-24 21:25_
+
+Ahhh yes the rules are slightly different for `.pyi` files -- but I think we changed that to match Black's behavior...
+
+---
+
+_Comment by @charliermarsh on 2023-03-24 21:50_
+
+Yeah not sure what we can do here. Black reformats `.pyi` files this way, so using any other logic here would make Ruff incompatible with Black.
+
+---
+
+_Comment by @Avasam on 2023-03-24 23:51_
+
+Not sure either (other than allowing to disable `lines-after-imports`, since the non-Ruff formatter already takes care of it anyway, which you may or may not want to do). This was already an issue with AutoPep8 and isort anyway, so nothing new for me, but I figured since Ruff has full control over its own rules and checks, maybe something could be done.
+
+---
+
+_Comment by @JonathanPlasse on 2023-03-24 23:54_
+
+That is the standard for `.pyi` files, that is what `typeshed` use.
+
+---
+
+_Comment by @charliermarsh on 2023-03-25 15:43_
+
+Yeah unfortunately I think this has to be marked as wontfix. I understand the inconvenience but it's tough to retain compatibility when the tools conflict.
+
+---
+
+_Closed by @charliermarsh on 2023-03-25 15:43_
+
+---
+
+_Comment by @Avasam on 2023-03-25 16:14_
+
+I understand, thanks for considering!
+
+Black is great for stub files, because they don't have any logic. But I don't like it for regular python code because it too often makes some code (especially functional / method-chaining style) less consistent and less readable without any control. (personal preference y'know, that's why there's less opinionated options 😛)
+
+Granted I also don't particularly care about `E302` either, disabling it could lead to inconsistent 1 vs 2 lines above classes, but it still removes extra lines (3+, 2+ above non-classes).
+
+Since this conflict only affects `.pyi` files starting with both imports and classes, and that adding stubs to a non-stub, non-library project is pretty rare (either I'm patching a stub until it's fixed/published upstream, or I'm vendoring something really niche). The dangling comment after imports is a perfectly acceptable solution for me 😄 
+![image](https://user-images.githubusercontent.com/1350584/227728950-89aab228-4f10-41d4-a6ab-5715d055bebe.png)
+
+---
+
+_Comment by @charliermarsh on 2023-03-25 16:15_
+
+Thanks for your understanding and for bearing with me as we talked through this :)
+
+---

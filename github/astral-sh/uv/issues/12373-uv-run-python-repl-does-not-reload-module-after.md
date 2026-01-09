@@ -1,0 +1,193 @@
+---
+number: 12373
+title: "`uv run python`  REPL does not reload module after source code modification"
+type: issue
+state: closed
+author: IliasAarab
+labels:
+  - bug
+assignees: []
+created_at: 2025-03-21T17:11:45Z
+updated_at: 2025-03-21T17:57:06Z
+url: https://github.com/astral-sh/uv/issues/12373
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# `uv run python`  REPL does not reload module after source code modification
+
+---
+
+_Issue opened by @IliasAarab on 2025-03-21 17:11_
+
+### Summary
+
+**Issue Description: Module Not Reloading in REPL After Source Code Modification**
+
+**Setup:**
+
+1. **Project Initialization:**
+   ```bash
+   mkdir myprj
+   cd myprj
+   uv init --lib
+   ```
+
+2. **Create `hello` Function:**
+
+   ```bash
+   cat src/myprj/__init__.py
+   def hello() -> str:
+       return "Hello from myprj!"
+   ```
+
+**Reproduction Steps:**
+
+1. **Start REPL Session:**
+
+   ```bash
+   uv run python
+   ```
+
+   **REPL Interaction:**
+
+   ```python
+   >>> from myprj import hello
+   >>> hello()
+   'Hello from myprj!'
+   ```
+
+2. **Modify `hello` Function:**
+
+   Update `src/myprj/__init__.py`:
+
+   ```python
+   def hello() -> str:
+       return "Bye from myprj!"
+   ```
+
+3. **Test Modification in Existing REPL Session:**
+
+   ```python
+   >>> from myprj import hello
+   >>> hello()
+   'Hello from myprj!'
+   ```
+
+   *Expected Output:* `'Bye from myprj!'`
+
+4. **Test Modification in New REPL Session:**
+
+   Restart the REPL:
+
+   ```bash
+   uv run python
+   ```
+
+   ```python
+   >>> from myprj import hello
+   >>> hello()
+   'Bye from myprj!'
+   ```
+
+**Problem:**
+
+After modifying the `hello()` function in the source code, the changes are not reflected in the existing REPL session. The REPL continues to use the previous version of the function. Only by restarting the REPL do the changes take effect.
+
+**Expected Behavior:**
+
+Modifications to the source code should be recognized in the current REPL session without requiring a restart.
+
+
+
+### Platform
+
+MINGW64_NT-10.0-22621 3.4.10-bc1f6498.x86_64 x86_64 Msys
+
+### Version
+
+uv 0.6.5
+
+### Python version
+
+3.12.9
+
+---
+
+_Label `bug` added by @IliasAarab on 2025-03-21 17:11_
+
+---
+
+_Referenced in [astral-sh/uv#6548](../../astral-sh/uv/issues/6548.md) on 2025-03-21 17:12_
+
+---
+
+_Comment by @zanieb on 2025-03-21 17:18_
+
+This is equivalent to the `python` behavior without `uv run`, right? I think this is expected. You need something like a `--watch` feature, I think? Or `ipython` autoreloads?
+
+---
+
+_Comment by @Michallote on 2025-03-21 17:28_
+
+Yes. This is expected behavior in Python and is due to how Python's import system and module caching mechanism work by design.
+
+## Why This Happens:
+
+When you import a module in Python, it gets loaded and cached in the sys.modules dictionary. Any subsequent imports in the same session do not reload the source code—they simply return the already-loaded module from sys.modules. This is done for performance and consistency, avoiding unnecessary disk I/O and ensuring that all parts of a program refer to the same module instance.
+
+In your example:
+
+```python
+>>> from myprj import hello
+>>> hello()
+'Hello from myprj!'
+```
+
+Python compiles and loads myprj, then caches it. When you later modify `src/myprj/__init__.py`, that change is not detected or reloaded automatically. So:
+
+```python
+>>> from myprj import hello  # This just reuses the already-loaded module
+>>> hello()
+'Hello from myprj!'
+```
+
+The function still returns the old value because Python has no built-in way to detect file changes and reload them automatically in the REPL or during execution.
+
+## Why the Core Architecture Works This Way:
+
+This design is intentional and serves several purposes:
+
+- Efficiency: Importing from disk is relatively expensive. Caching modules improves runtime speed, especially in large applications with many imports.
+
+- Consistency: A module should behave consistently throughout the program’s lifecycle. Reloading it midway can create hard-to-debug inconsistencies, especially with stateful modules or circular imports.
+
+- Simplicity: The import system maintains a simple, predictable behavior. If dynamic reloading were automatic, it would add significant complexity and potential for subtle bugs.
+
+
+## What to Do Instead
+
+If you want changes to reflect in the same REPL session, you can explicitly reload the module using importlib.reload:
+
+import importlib
+import myprj
+importlib.reload(myprj)
+
+Then call myprj.hello() again to see the updated output.
+
+Summary
+
+This behavior is not a bug—it's the result of Python’s deliberate design around module imports and caching. For interactive development, tools like importlib.reload or frameworks like IPython (with %autoreload) help bridge the gap between static imports and dynamic iteration. As suggested by @zanieb 
+
+
+
+---
+
+_Comment by @IliasAarab on 2025-03-21 17:57_
+
+Ok clear to me, thank you! `uv run ipython` with `autoreload` accomplishes the expected behaviour indeed.
+
+---
+
+_Closed by @IliasAarab on 2025-03-21 17:57_
+
+---

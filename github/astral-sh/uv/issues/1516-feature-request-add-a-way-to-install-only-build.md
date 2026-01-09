@@ -1,0 +1,202 @@
+---
+number: 1516
+title: "Feature request: add a way to install only build dependencies"
+type: issue
+state: open
+author: stefanv
+labels:
+  - enhancement
+assignees: []
+created_at: 2024-02-16T17:14:21Z
+updated_at: 2025-03-24T07:03:27Z
+url: https://github.com/astral-sh/uv/issues/1516
+synced_at: 2026-01-07T13:12:16-06:00
+---
+
+# Feature request: add a way to install only build dependencies
+
+---
+
+_Issue opened by @stefanv on 2024-02-16 17:14_
+
+ref: https://github.com/pypa/pip/issues/11440#issuecomment-1615211774
+
+In our CI, we often need to install build-dependencies for a project, without installing the project itself.
+At the moment, there is no easy way of telling pip to do that.
+
+We've resorted to [compiling requirements files](https://github.com/pypa/pip/issues/11440#issuecomment-1791049862) from pyproject.toml, but it would be convenient if we could install dependencies directly.
+
+---
+
+_Label `enhancement` added by @zanieb on 2024-02-16 17:48_
+
+---
+
+_Referenced in [pypa/pip#11440](../../pypa/pip/issues/11440.md) on 2024-02-21 16:20_
+
+---
+
+_Comment by @webknjaz on 2024-02-22 13:04_
+
+> In our CI, we often need to install build-dependencies for a project, without installing the project itself.
+> At the moment, there is no easy way of telling pip to do that.
+
+May I suggest making the use case/motivation more detailed? You're jumping to the proposed solution here but it's not clear *why* you need this. Are you trying to have a manually managed PEP 517 build environment? An example would be helpful FTR.
+
+---
+
+_Comment by @stefanv on 2024-02-22 16:39_
+
+Like I wrote above, it's useful for a developer setup or CI where the need is to install dependencies without compiling the project. Think of the case, e.g., where you want to prepare a new environment for repeated builds, using no-build-isolation.
+
+---
+
+_Comment by @webknjaz on 2024-02-22 22:03_
+
+Okay, so it's indeed about PEP 517 / 660. I wasn't sure that it's not about PEP 735.
+Strictly speaking, the project itself is never installed into the build env in any of the build frontends I know of.
+
+---
+
+_Comment by @stefanv on 2024-02-23 21:12_
+
+PEP 735: "This is suitable for creating named groups of dependencies, similar to requirements.txt files." — since we [currently use `requirements.txt`](https://github.com/pypa/pip/issues/11440#issuecomment-1791049862) for this purpose, it seems related?
+
+---
+
+_Comment by @webknjaz on 2024-02-24 03:23_
+
+> it seems
+
+Well, that's what I'm trying to determine by asking to spell out the use case details.
+
+It could be viewed as related but it doesn't directly cover `[build-system]` due to focusing on a very specific table it defines — `[dependency-groups]`, effectively leaving it out.
+
+Though you raise a valid question — can the PEP 517 build deps be a special-cased dependency group. And if you ask me, I'd say: "It's complicated".
+This is because this section specifically targets packageable projects and dependency groups are more generic. Also, PEP 517 build deps aren't defined statically more often than not — for example, you can statically define a dependency on `setuptools` and that would be your single build dependency for building sdists. But as soon as you start producing wheels, another dependency appears — `wheel`. `setuptools` injects it dynamically through the corresponding PEP 517 hook. So special-casing such a dependency would inevitably open up a can of worms.
+
+Still, it might be useful to let the PEP author know so that it could be called out in the document.
+
+---
+
+_Comment by @konstin on 2024-02-26 16:15_
+
+@stefanv I've seen you linked scikit-image as an example, could you walk me through what the workflow there (or in another shareable repo) is? I'm trying to follow along what the need here workflow-wise is so we can add something to uv that fills that gap.
+
+I'm also inviting others to share their usage scenarios and pipelines, this would be extremely helpful for us for coming up with the right design and test case.
+
+---
+
+_Comment by @webknjaz on 2024-02-26 16:53_
+
+In my last year's rant I enumerated some of the dependency groups that may exist in various workflows: https://github.com/jazzband/pip-tools/issues/1326#issuecomment-1834517252. Might be useful FTR.
+
+---
+
+_Comment by @stefanv on 2024-02-26 23:26_
+
+> @stefanv I've seen you linked scikit-image as an example, could you walk me through what the workflow there (or in another shareable repo) is? I'm trying to follow along what the need here workflow-wise is so we can add something to uv that fills that gap.
+
+Sure thing. We have a pyproject.toml file that [declares build and other types of dependencies](https://github.com/scikit-image/scikit-image/blob/main/pyproject.toml#L45). When then have a pre-commit hook that ensures that `pyproject.toml` dependencies [are exported to `requirements.txt` files](https://github.com/scikit-image/scikit-image/blob/main/.pre-commit-config.yaml#L43).
+
+For simplicity, we declare all dependencies as optional package dependencies (including re-declaring build dependencies), but ideally there would be no duplication.
+
+The above configuration allows us to:
+
+1. Have one definitive place to define various types of dependencies.
+2. Install those dependencies by themselves, as needed. E.g., [in our CI](https://github.com/scikit-image/scikit-image/blob/main/tools/github/before_install.sh#L35) ([another example](https://github.com/scikit-image/scikit-image/blob/main/tools/github/script.sh#L16)).
+
+Another scenario where this is useful is for developing, say, NumPy. I want to create an environment, install all build dependencies, and then run the standard "in-place" developer build: `spin build`.
+
+Developer builds require that the environment already has dependencies installed. The only existing way I know of to get those dependencies installed is to install the package using "no build isolation", and to then uninstall it again.
+
+---
+
+_Comment by @webknjaz on 2024-02-27 03:05_
+
+> Developer builds require that the environment already has dependencies installed. The only existing way I know of to get those dependencies installed is to install the package using "no build isolation", and to then uninstall it again.
+
+Looking into https://github.com/scikit-image/scikit-image/blob/628adaa/tools/generate_requirements.py#L32-L34, it seems like you don't really want build deps in the terms of PEP 517 but runtime deps that happen to be needed too.  and the contents of `requirements/` confirms that suspicion...
+There's nothing in your scripts retrieving https://github.com/scikit-image/scikit-image/blob/628adaa/pyproject.toml#L120-L129. Yet, for some reason I can't fully comprehend, you think that "no build isolation" helps you get those deps. Is is that you want Cython for in-place builds or why?
+
+FWIW we also have something similar for the runtime deps: https://github.com/aio-libs/aiohttp/blob/6c3122f/Makefile#L187-L190 / https://github.com/aio-libs/aiohttp/blob/6c3122f/requirements/sync-direct-runtime-deps.py / https://github.com/aio-libs/aiohttp/blob/6c3122f/requirements/runtime-deps.in. While keeping all the "dependency groups" in separate requirements files that are then processed by pip-compile to produce constraints.
+
+In another project with a focus on maximum CI stability, I do indeed retrieve `[build-system].requires` that I then resolve into constraints and set to `PIP_CONSTRAINT` for package install reproducibility: https://github.com/cherrypy/cheroot/blob/0fd16f0/requirements/dist-build-constraints.txt.
+There, I made a pip wrapper (https://github.com/cherrypy/cheroot/blob/0fd16f0/bin/pip-wrapper / https://github.com/cherrypy/cheroot/blob/0fd16f0/bin/pip_constraint_helpers.py) integrated into tox (https://github.com/cherrypy/cheroot/blob/0fd16f0/tox.ini#L22-L29) that auto-selects a proper constraint file from the matrix for the current env and auto-injects it into the `pip install` command via `-c`. Dependency groups for the envs involved are hand-crafted (https://github.com/cherrypy/cheroot/tree/0fd16f0/requirements) with a subset of the constraints being auto-generated/updated via GHA that provides access to many different runtimes (https://github.com/cherrypy/cheroot/blob/0fd16f0/.github/workflows/pip-tools.yml#L51-L66), which addresses the problem with inability to cross-compile transitive deps that need to be built from source.
+
+---
+
+_Comment by @stefanv on 2024-02-27 06:58_
+
+> Looking into https://github.com/scikit-image/scikit-image/blob/628adaa/tools/generate_requirements.py#L32-L34, it seems like you don't really want build deps in the terms of PEP 517 but runtime deps that happen to be needed too.
+
+Both use-cases are important to us. See `requirements/build.txt` vs `requirements/optional.txt`.
+
+---
+
+_Comment by @webknjaz on 2024-02-27 15:15_
+
+@stefanv ah, I didn't realize that you maintain the entries in two places in sync.
+
+FWIW I recommended to document that this is explicitly out of the scope in PEP 735.
+
+I also noted that extending the build deps with the dependency group entries is something the build backends should eventually be able to implement eventually, making it a backend problem rather than frontend: https://discuss.python.org/t/pep-735-dependency-groups-in-pyproject-toml/39233/241. With that, you'd be able to keep the entries in dependency groups as the canonical location, not having to duplicate them in the build system section.
+
+---
+
+_Comment by @charliermarsh on 2024-06-06 17:50_
+
+@stefanv -- How much of this is covered by the fact that we support `pip install -r pyproject.toml` and `pip compile pyproject.toml`?
+
+---
+
+_Comment by @stefanv on 2024-06-10 00:05_
+
+> @stefanv -- How much of this is covered by the fact that we support `pip install -r pyproject.toml` and `pip compile pyproject.toml`?
+
+Hi @charliermarsh, thanks for pointing out that feature (BTW, I notice that the `--help` does not indicate that `pyproject.toml` is an acceptable file). That's useful for getting the environment ready for running a package in, but not for *building* the package. For that, we need to be able to install its build dependencies. Similarly, one may want to define the set of dependencies for building docs, etc.
+
+---
+
+_Comment by @charliermarsh on 2024-06-10 00:32_
+
+Sorry, yes, I forgot that this issue was about _build_ dependencies. I came here after reading the `--only-deps` issue in pip which seemed like it would be partially solved by `uv pip install -r pyproject.toml`.
+
+---
+
+_Referenced in [astral-sh/uv#5258](../../astral-sh/uv/issues/5258.md) on 2024-07-21 14:13_
+
+---
+
+_Referenced in [astral-sh/uv#7247](../../astral-sh/uv/issues/7247.md) on 2024-09-10 08:50_
+
+---
+
+_Comment by @kasvtv on 2024-11-07 00:16_
+
+We are also very much missing this feature. For example, wanting to run `ruff` in CI while respecting the version defined in any of `pyproject.toml`'s dependencies. Creating a separate dependency group with just ruff in there does not seem to suffice, because the group of dependencies cannot be installed without the default dependencies.
+
+It would be great if the `--no-group` option would allow for this.
+
+---
+
+_Comment by @charliermarsh on 2024-11-07 00:21_
+
+> ...because the group of dependencies cannot be installed without the default dependencies.
+
+Are you looking for `--only-group`?
+
+---
+
+_Comment by @goodseog on 2025-03-24 07:03_
+
+How about using `uv lock`?
+
+I found that running `uv sync` with a generated `uv.lock` file installs only the dependencies and completes the build without the `src` folder.
+
+
+---
+
+_Referenced in [sagemath/sage#40089](../../sagemath/sage/pulls/40089.md) on 2025-07-17 16:39_
+
+---

@@ -1,0 +1,57 @@
+---
+number: 10755
+title: "Should `ICN001` allow conventional imports with a leading underscore?"
+type: issue
+state: open
+author: lucascolley
+labels:
+  - rule
+  - linter
+assignees: []
+created_at: 2024-04-03T10:58:04Z
+updated_at: 2024-04-03T12:59:08Z
+url: https://github.com/astral-sh/ruff/issues/10755
+synced_at: 2026-01-07T13:12:15-06:00
+---
+
+# Should `ICN001` allow conventional imports with a leading underscore?
+
+---
+
+_Issue opened by @lucascolley on 2024-04-03 10:58_
+
+[PEP8](https://peps.python.org/pep-0008/#public-and-internal-interfaces) says:
+
+> Even with `__all__` set appropriately, internal interfaces (packages, modules, classes, functions, attributes or other names) should still be prefixed with a single leading underscore.
+> 
+> An interface is also considered internal if any containing namespace (package, module or class) is considered internal.
+
+In light of that, should `ICN001` allow things like `import numpy as _np`? Is that _conventional_, or not? If not, why not? Sure, it doesn't see much use, but is that really in line with PEP8?
+
+x-ref https://github.com/scipy/scipy/pull/20382
+
+---
+
+_Referenced in [scipy/scipy#20382](../../scipy/scipy/pulls/20382.md) on 2024-04-03 10:59_
+
+---
+
+_Comment by @lucascolley on 2024-04-03 12:55_
+
+I'm still not quite sure how to interpret PEP8 there. Does the second paragraph I have quoted above mean 'every interface contained in an internal namespace should be prefixed with a single leading underscore', or 'every interface contained in an internal namespace needn't be prefixed with a single leading underscore, in virtue of being contained in an internal namespace'? I think the latter makes much more sense, but the wording is far from clear.
+
+If it is the latter, then I suppose this can be resolved by importing from only internal modules in `__init__.py`.
+
+---
+
+_Label `rule` added by @AlexWaygood on 2024-04-03 12:59_
+
+---
+
+_Label `linter` added by @AlexWaygood on 2024-04-03 12:59_
+
+---
+
+_Referenced in [scipy/scipy#20856](../../scipy/scipy/pulls/20856.md) on 2024-09-21 22:42_
+
+---

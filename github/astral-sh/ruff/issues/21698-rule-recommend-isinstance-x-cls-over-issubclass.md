@@ -1,0 +1,171 @@
+---
+number: 21698
+title: "Rule: Recommend `isinstance(x, Cls)` over `issubclass(type(x), Cls)`"
+type: issue
+state: open
+author: KDruzhkin
+labels:
+  - rule
+  - needs-decision
+assignees: []
+created_at: 2025-11-29T19:35:03Z
+updated_at: 2025-12-03T05:13:17Z
+url: https://github.com/astral-sh/ruff/issues/21698
+synced_at: 2026-01-07T13:12:16-06:00
+---
+
+# Rule: Recommend `isinstance(x, Cls)` over `issubclass(type(x), Cls)`
+
+---
+
+_Issue opened by @KDruzhkin on 2025-11-29 19:35_
+
+### Summary
+
+Consider the following pair of expressions:
+(a) `issubclass(type(x), MyClass)`
+(b) `isinstance(x, MyClass)`
+
+The expression **(a)** has the same truth conditions as **(b)**. But the equivalence is not obvious to mypy and other tools. 
+
+----
+
+Recently I saw this snippet:
+
+```python
+class MyClass:
+    def __init__(self, d: dict):
+        pass
+
+
+def coerce_list(xs: list[MyClass | dict]) -> list[MyClass]:
+    result = []
+    for x in xs:
+        if issubclass(type(x), MyClass):
+            result.append(x)
+        else:
+            result.append(MyClass(x))
+    return result
+```
+
+In the `else` branch, `x` can only be a dict. But mypy does not [infer](https://mypy.readthedocs.io/en/stable/type_narrowing.html) it.
+
+```bash
+❯ uvx mypy@1.19.0 .
+error: Argument 1 to "MyClass" has incompatible type "MyClass | dict[Any, Any]"; expected "dict[Any, Any]"
+error: Incompatible return value type (got "list[MyClass | dict[Any, Any]]", expected "list[MyClass]")
+```
+
+But if I just change **(a)** to **(b)**, then `mypy` reports success.
+
+---
+
+_Comment by @MichaReiser on 2025-12-01 07:46_
+
+Thanks for opening this issue. I'm, unfortunately, not sure what you're asking for in this issue. Is this a request for a new rule? Is it an issue with an existing rule? Is it an issue with mypy? Would you mind explaining in more detail how the `issubclass`/`isinstance` distinction relates to Ruff, and what change you would like to see?
+
+---
+
+_Label `needs-info` added by @MichaReiser on 2025-12-01 07:46_
+
+---
+
+_Comment by @KDruzhkin on 2025-12-01 09:13_
+
+This is a request for a new rule.
+
+---
+
+_Comment by @MichaReiser on 2025-12-01 09:24_
+
+And the pattern that the rule would flag is any usage where the value passed to `issubclass` is `type(x)`. 
+
+It seems there are some wrinkles to it: the two are only equivalent as long as `__instancecheck__`, `__subclasscheck__`, and `__class__` are not overridden in an inconsistent way. 
+
+---
+
+_Label `needs-info` removed by @MichaReiser on 2025-12-01 09:24_
+
+---
+
+_Label `rule` added by @MichaReiser on 2025-12-01 09:24_
+
+---
+
+_Label `needs-decision` added by @MichaReiser on 2025-12-01 09:24_
+
+---
+
+_Renamed from "`issubclass(type(x), Cls)` → `isinstance(x, Cls)`" to "Rule: Recommend `isinstance(x, Cls)` over `issubclass(type(x), Cls)`" by @MichaReiser on 2025-12-01 09:24_
+
+---
+
+_Comment by @KDruzhkin on 2025-12-01 09:44_
+
+```
+/// ## What it does
+/// Searches for expressions of the form `issubclass(type(x), Cls)`
+/// and suggests replacing them with `isinstance(x, Cls)`.
+/// Both forms have the same truth conditions.
+///
+/// ## Why is this bad?
+/// Mypy and similar tools use type narrowing (https://mypy.readthedocs.io/en/stable/type_narrowing.html):
+/// they can infer that after a statement or inside a branch the type of a variable
+/// is more specific than before that statement or outside that branch.
+/// 
+/// But type narrowing only works with simple patterns. So under the condition `if isinstance(x, Cls)`
+/// `x` is inferred to be an instance of `Cls`, but under the condition `issubclass(type(x), Cls)`
+/// inference breaks.
+///
+/// ## Example
+/// ```python
+/// def coerce_list(xs: list[MyClass | dict]) -> list[MyClass]:
+///     result = []
+///     for x in xs:
+///         if issubclass(type(x), MyClass):
+///             result.append(x)
+///         else:
+///             result.append(MyClass(x))
+///     return result
+/// ```
+///
+/// In the else branch, `x` can only be a dict. But mypy does not infer it.
+///
+/// ```
+/// $ uvx mypy@1.19.0 .
+/// error: Argument 1 to "MyClass" has incompatible type "MyClass | dict[Any, Any]"; expected "dict[Any, Any]"
+/// error: Incompatible return value type (got "list[MyClass | dict[Any, Any]]", expected "list[MyClass]")
+/// ```
+```
+
+---
+
+_Comment by @KDruzhkin on 2025-12-01 09:45_
+
+> It seems there are some wrinkles to it: the two are only equivalent as long as `__instancecheck__`, `__subclasscheck__`, and `__class__` are not overridden in an inconsistent way.
+
+Oh, this makes the suggested rule unsafe.
+
+---
+
+_Comment by @MichaReiser on 2025-12-01 09:56_
+
+> Oh, this makes the suggested rule unsafe.
+
+Only the fix. We can still flag it, but it's then up to the user to decide if making this change is "okay" in this specific instance (which it almost always should)
+
+---
+
+_Comment by @amyreese on 2025-12-01 18:28_
+
+Seems like a reasonable rule. I was curious how prevalent this is in wider ecosystem to decide whether it's worth implementing. I did not expect github search to flag 40k+ occurrences... 😅
+
+https://github.com/search?q=%22issubclass%28type%28%22&type=code
+
+---
+
+_Comment by @Avasam on 2025-12-03 05:12_
+
+The fix wouldn't always be safe. But the rule suggestion itself sounds reasonable to me given https://docs.astral.sh/ruff/rules/type-comparison/ already exists.
+
+---

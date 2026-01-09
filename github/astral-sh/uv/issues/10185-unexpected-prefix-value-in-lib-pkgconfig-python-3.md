@@ -1,0 +1,145 @@
+---
+number: 10185
+title: "Unexpected `prefix` value in `.../lib/pkgconfig/python-3.<minor>.pc`"
+type: issue
+state: closed
+author: Matiiss
+labels:
+  - bug
+  - compatibility
+assignees: []
+created_at: 2024-12-26T23:02:34Z
+updated_at: 2025-01-13T08:36:53Z
+url: https://github.com/astral-sh/uv/issues/10185
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# Unexpected `prefix` value in `.../lib/pkgconfig/python-3.<minor>.pc`
+
+---
+
+_Issue opened by @Matiiss on 2024-12-26 23:02_
+
+I am aware that this is a documented quirk:
+> On Linux, our distributions are built in containers. The container has a custom build of Clang in a custom filesystem location. And Python is installed to the prefix /install. So you may see references to /install in Linux distributions.
+
+\- https://gregoryszorc.com/docs/python-build-standalone/main/quirks.html#references-to-build-time-paths
+
+Nonetheless, I was asked to open this issue as it seems it might get resolved for once 🥳
+
+I was trying to compile a C extension using `meson` and it kept throwing an error that it couldn't find `Python.h` for the specified Python version and upon closer inspection it looked like it was not including the correct directory because the directory it was attempting to include started with `/install` which is not a path on my machine, so I went to the file mentioned in the title and found that it contains this (the `<minor>` was actually the version I had, in this case `3.12`):
+
+```
+# See: man pkg-config
+prefix=/install
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
+
+Name: Python
+Description: Build a C extension for Python
+Requires:
+Version: 3.<minor>
+Libs.private: -lpthread -ldl  -lutil
+Libs: -L${libdir} 
+Cflags: -I${includedir}/python3.<minor>
+```
+
+So the `prefix=/install` was unexpected, what I would have expected would have been (in my particular case)
+```
+prefix=/home/matiiss/.local/share/uv/python/cpython-3.12.8-linux-x86_64-gnu
+```
+
+After editing the file manually and trying to run `meson` again, it worked.
+
+---
+
+_Renamed from "Unexpected `prefix` in `.../lib/pkgconfig/python-3.<minor>.pc`" to "Unexpected `prefix` value in `.../lib/pkgconfig/python-3.<minor>.pc`" by @Matiiss on 2024-12-26 23:09_
+
+---
+
+_Comment by @charliermarsh on 2024-12-26 23:16_
+
+I think we need to solve this in uv by patching `pkgconfig`, like we do with `sysconfig`, so I'm gonna transfer to the uv repo.
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2024-12-26 23:16_
+
+---
+
+_Label `bug` added by @charliermarsh on 2024-12-26 23:16_
+
+---
+
+_Label `compatibility` added by @charliermarsh on 2024-12-26 23:16_
+
+---
+
+_Referenced in [astral-sh/uv#10189](../../astral-sh/uv/pulls/10189.md) on 2024-12-27 00:35_
+
+---
+
+_Closed by @charliermarsh on 2024-12-27 00:50_
+
+---
+
+_Comment by @neutrinoceros on 2025-01-03 09:55_
+
+I'm encountering a very similar, possibly same, issue with uv 0.5.14
+
+setup:
+```
+$ git clone https://github.com/numpy/numpy
+$ cd numpy
+$ git submodule update --init
+```
+then
+```
+$ uv build
+Building source distribution...
++ /Users/clm/.cache/uv/builds-v0/.tmpcUq9Nd/bin/python /private/tmp/numpy/vendored-meson/meson/meson.py setup /private/tmp/numpy /private/tmp/numpy/.mesonpy-xqqxtm9n -Dbuildtype=release -Db_ndebug=if-release -Db_vscrt=md --native-file=/private/tmp/numpy/.mesonpy-xqqxtm9n/meson-python-native-file.ini
+The Meson build system
+Version: 1.5.2
+Source dir: /private/tmp/numpy
+Build dir: /private/tmp/numpy/.mesonpy-xqqxtm9n
+Build type: native build
+Project name: NumPy
+Project version: 2.3.0.dev0+git20241226.a07c6c5
+C compiler for the host machine: cc (clang 16.0.0 "Apple clang version 16.0.0 (clang-1600.0.26.6)")
+C linker for the host machine: cc ld64 1115.7.3
+C++ compiler for the host machine: c++ (clang 16.0.0 "Apple clang version 16.0.0 (clang-1600.0.26.6)")
+C++ linker for the host machine: c++ ld64 1115.7.3
+Cython compiler for the host machine: cython (cython 3.0.11)
+Host machine cpu family: aarch64
+Host machine cpu: aarch64
+Program python found: YES (/Users/clm/.cache/uv/builds-v0/.tmpcUq9Nd/bin/python)
+Found pkg-config: YES (/opt/homebrew/bin/pkg-config) 2.3.0
+Run-time dependency python found: YES 3.13
+Has header "Python.h" with dependency python-3.13: NO
+
+../meson.build:44:2: ERROR: Problem encountered: Cannot compile `Python.h`. Perhaps you need to install python-dev|python-devel
+
+A full log can be found at /private/tmp/numpy/.mesonpy-xqqxtm9n/meson-logs/meson-log.txt
+  × Failed to build `/private/tmp/numpy`
+  ├─▶ The build backend returned an error
+  ╰─▶ Call to `mesonpy.build_sdist` failed (exit status: 1)
+      hint: This usually indicates a problem with the package or the build environment.
+```
+I made sure to reinstall Python 3.13 after I upgraded uv to 0.5.14.
+
+I already had this issue with earlier versions of uv but didn't have time to report it at the time. I found this issue from uv 0.5.14's release notes.
+
+
+
+---
+
+_Referenced in [astral-sh/uv#10558](../../astral-sh/uv/issues/10558.md) on 2025-01-13 08:36_
+
+---
+
+_Comment by @neutrinoceros on 2025-01-13 08:36_
+
+I opened a separate issue at https://github.com/astral-sh/uv/issues/10558
+
+---

@@ -1,0 +1,73 @@
+---
+number: 17304
+title: "[red-knot] `Literal[type]` should be assignable to `(object, /) -> type`"
+type: issue
+state: closed
+author: sharkdp
+labels:
+  - bug
+  - ty
+assignees: []
+created_at: 2025-04-09T07:51:02Z
+updated_at: 2025-05-07T15:19:51Z
+url: https://github.com/astral-sh/ruff/issues/17304
+synced_at: 2026-01-07T13:12:16-06:00
+---
+
+# [red-knot] `Literal[type]` should be assignable to `(object, /) -> type`
+
+---
+
+_Issue opened by @sharkdp on 2025-04-09 07:51_
+
+Not sure if this is because we have missing support for overloads, or if it's just something that needs to be modeled in the subtype relationships for `Callable`, but it seems like this should succeed:
+
+```py
+from typing import Callable
+
+# Object of type `Literal[type]` is not assignable to `(object, /) -> type`
+c: Callable[[object], type] = type
+```
+(https://playknot.ruff.rs/2bb9ea2a-722c-49c1-90c2-6ed7b6b93817)
+
+
+
+---
+
+_Label `bug` added by @sharkdp on 2025-04-09 07:51_
+
+---
+
+_Label `red-knot` added by @sharkdp on 2025-04-09 07:51_
+
+---
+
+_Comment by @dhruvmanila on 2025-04-09 20:21_
+
+I think it's overloads because the `__init__` method is overloaded in typeshed.
+
+https://github.com/python/typeshed/blob/87f599dc8312ac67b941b5f2b47274534a1a2d3a/stdlib/builtins.pyi#L194-L197
+
+---
+
+_Comment by @carljm on 2025-04-09 20:36_
+
+I think we simply don't have any arm in `is_subtype_of` or `is_assignable_to` handling subtyping or assignability of a class literal or subclass-of type (or, as of yesterday, generic-alias type) to a callable type, at all, so that's the most basic problem. Overloads might still be an issue once that's added, but that's the first thing that would be needed here.
+
+---
+
+_Comment by @dhruvmanila on 2025-04-10 21:46_
+
+(Opened https://github.com/astral-sh/ty/issues/129)
+
+---
+
+_Comment by @sharkdp on 2025-05-02 10:34_
+
+This has been fixed in the meantime.
+
+---
+
+_Closed by @sharkdp on 2025-05-02 10:34_
+
+---

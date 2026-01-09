@@ -1,0 +1,140 @@
+---
+number: 12625
+title: Unexpected Dependency Conflict with uv lock in Python 3.11.11
+type: issue
+state: closed
+author: nordicsushi
+labels:
+  - question
+assignees: []
+created_at: 2025-04-02T14:58:17Z
+updated_at: 2025-04-02T16:13:50Z
+url: https://github.com/astral-sh/uv/issues/12625
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# Unexpected Dependency Conflict with uv lock in Python 3.11.11
+
+---
+
+_Issue opened by @nordicsushi on 2025-04-02 14:58_
+
+### Summary
+
+## Description
+When installing dependencies with uv in a Python 3.11.11 environment, the resolver incorrectly enforces numpy>=1.26.0 due to pandas==2.2.2, even though this requirement should only apply to Python 3.12+. This results in an unnecessary conflict with numpy==1.24.4, which should be valid under Python 3.11.
+
+## Steps to Reproduce
+1. Define the following dependencies in pyproject.toml:
+
+```toml
+dependencies = [
+    "pandas[performance, parquet]==2.2.2",
+    "numpy==1.24.4",
+]
+```
+
+2. Run: 
+```bash
+uv pip install -r pyproject.toml
+```
+✅ Installs successfully without issues.
+
+3. Attempt to generate a lock file:
+
+```sh
+uv lock
+```
+❌ Fails with the following error:
+
+```
+× No solution found when resolving dependencies for split (python_full_version >= '3.12'):
+╰─▶ Because only the following versions of numpy{python_full_version >= '3.12'} are available:
+      numpy{python_full_version >= '3.12'}<=1.26.0
+      ...
+    and pandas==2.2.2 depends on numpy{python_full_version >= '3.12'}>=1.26.0,
+    we can conclude that pandas==2.2.2 depends on numpy>=1.26.0.
+    And because your project depends on numpy==1.24.4 and pandas[performance]==2.2.2,
+    we can conclude that your project's requirements are unsatisfiable.
+```
+## Expected Behavior
+uv lock should correctly recognize that for Python 3.11, pandas==2.2.2 only requires numpy>=1.23.2, meaning numpy==1.24.4 should be a valid choice.
+
+## Additional Context
+The pyproject.toml of pandas==2.2.2 explicitly defines different numpy requirements based on Python versions:
+
+```toml
+dependencies = [
+  "numpy>=1.22.4; python_version<'3.11'",
+  "numpy>=1.23.2; python_version=='3.11'",
+  "numpy>=1.26.0; python_version>='3.12'",
+  ...
+]
+```
+Since numpy==1.24.4 satisfies numpy>=1.23.2 for Python 3.11, this should not be a conflict.
+
+Moreover, pip-compile successfully generates a lock file without any issues, reinforcing that this is specific to uv’s resolver.
+
+Would appreciate any insights on this! 🚀
+
+### Platform
+
+Linux 5.15.0-1064-azure x86_64 GNU/Linux
+
+### Version
+
+uv 0.6.11
+
+### Python version
+
+python 3.11.11
+
+---
+
+_Label `bug` added by @nordicsushi on 2025-04-02 14:58_
+
+---
+
+_Comment by @zanieb on 2025-04-02 15:04_
+
+> the resolver incorrectly enforces numpy>=1.26.0 due to pandas==2.2.2, even though this requirement should only apply to Python 3.12+.
+
+In the uv lockfile, we solve for all Python versions not just your current one. See https://docs.astral.sh/uv/concepts/resolution/#universal-resolution
+
+---
+
+_Label `bug` removed by @zanieb on 2025-04-02 15:04_
+
+---
+
+_Label `question` added by @zanieb on 2025-04-02 15:04_
+
+---
+
+_Comment by @nordicsushi on 2025-04-02 15:09_
+
+@zanieb  Thank you for your quick answer, Zanie. I am a newbie to uv. i'll read the document you provided here :) You may close this issue. 
+
+---
+
+_Comment by @zanieb on 2025-04-02 15:13_
+
+Let me know if you have more questions!  I'd recommend unpinning the versions in your pyproject.toml and allowing a range instead. The lockfile will pin a specific version appropriate for each Python version you might use.
+
+---
+
+_Closed by @zanieb on 2025-04-02 15:13_
+
+---
+
+_Comment by @nordicsushi on 2025-04-02 15:56_
+
+@zanieb  we're actually building an application and have to pin the versions and also specify the exact python version we would like to use. I solved this issue by specifying "requires-python = "==3.11.11" in my pyproject.toml, though i'm not sure if this is the best practice... :( 
+
+---
+
+_Comment by @zanieb on 2025-04-02 16:13_
+
+It'd be more "proper" to use `uv.lock` and `.python-version` to pin your versions unless you need them to be pinned in the distribution, but 🤷‍♀. Setting `requires-python` like that is fine. 
+
+---

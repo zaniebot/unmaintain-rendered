@@ -1,0 +1,60 @@
+---
+number: 12629
+title: Support multiple requires-python versions for dev versus deployment
+type: issue
+state: closed
+author: dpranke
+labels:
+  - enhancement
+assignees: []
+created_at: 2025-04-02T16:07:45Z
+updated_at: 2025-04-02T16:14:32Z
+url: https://github.com/astral-sh/uv/issues/12629
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# Support multiple requires-python versions for dev versus deployment
+
+---
+
+_Issue opened by @dpranke on 2025-04-02 16:07_
+
+### Summary
+
+Hi,
+
+I have a package ([json5](https://pypi.org/project/json5/)) that has no runtime dependencies and runs on 3.8 or later, so my package has a `requires-python = ">= 3.8.0"` in its pyproject.toml.
+
+I also have a `dev` environment configured for the package that contains all the tools I need to work on the package (uv, ruff, mypy, etc.).
+
+As tools are gradually dropping support for 3.8, I can no longer run the latest version of everything and still run the dev environment on 3.8.
+
+It would be great if there was some way to specify that the dev environment required 3.9 or later, but the actual package only required 3.8 (i.e., I could have a 3.13 environment that would be able to build a package for 3.8). AFAICT, there isn't currently a way to do this except perhaps to use multiple pyproject.tomls, which kind of defeats the point. I don't know if it would be possible to implement this in uv or if it'd actually need changes upstream to the pyproject spec et al?
+
+### Example
+
+_No response_
+
+---
+
+_Label `enhancement` added by @dpranke on 2025-04-02 16:07_
+
+---
+
+_Closed by @zanieb on 2025-04-02 16:11_
+
+---
+
+_Comment by @zanieb on 2025-04-02 16:11_
+
+We're tracking this idea in https://github.com/astral-sh/uv/issues/11606
+
+Ideally it'd be added to the specification, but we can try it first.
+
+---
+
+_Comment by @dpranke on 2025-04-02 16:14_
+
+Ah, thanks, I had looked for an existing bug but didn't see one. I'm not surprised that there's already one on file :).
+
+---

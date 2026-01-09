@@ -1,0 +1,135 @@
+---
+number: 12528
+title: "Linter: possibly W291 false positive"
+type: issue
+state: closed
+author: minusf
+labels:
+  - question
+assignees: []
+created_at: 2024-07-26T12:42:04Z
+updated_at: 2024-07-29T09:24:43Z
+url: https://github.com/astral-sh/ruff/issues/12528
+synced_at: 2026-01-07T13:12:15-06:00
+---
+
+# Linter: possibly W291 false positive
+
+---
+
+_Issue opened by @minusf on 2024-07-26 12:42_
+
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* List of keywords you searched for before creating this issue. Write them down here so that others can find this issue more easily and help provide feedback.
+  e.g. "RUF001", "unused variable", "Jupyter notebook"
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+I think this is a nice corner case, so perhaps not a bug at all. It is somewhat confusing though, please comment.
+
+In ruff 0.5.5 I see a `Trailing whitespace` (W291) https://docs.astral.sh/ruff/rules/trailing-whitespace/#trailing-whitespace-w291 note for this tricky yaml inside a multiline `"""` python string:
+
+```py
+in_yaml = """
+
+Key: "␣␣^M"  
+
+"""
+```
+`^M` is the control character for `0x0d` and the string is actually all on one line (in nvim). I think in this case the warning is a false positive as the default value for
+https://docs.astral.sh/ruff/settings/#format_line-ending is `auto` and in all these files that would be native unix: `0x0a`.
+
+Copy pasting it, etc however can turn it into
+```
+in_yaml = """
+
+Key: "␣␣
+"
+
+"""
+```
+in which case `ruff` would be correct.
+
+The pure python version fails even more completely:
+```py
+text = " ^M"
+```
+```
+   │ ├╴E SyntaxError: missing closing quote in string literal Ruff  [1, 8]
+   │ ├╴E SyntaxError: Expected a statement Ruff  [1, 10]
+   │ ├╴E SyntaxError: missing closing quote in string literal Ruff  [2, 1]
+   │ ├╴E SyntaxError: Expected a statement Ruff  [2, 2]
+   │ └╴W Trailing whitespace Ruff (W291) [1, 9]
+```
+
+---
+
+_Comment by @MichaReiser on 2024-07-29 06:14_
+
+Hi. 
+
+Thanks for the nice write-up. I'm trying to get my head around this issue, so I'll write down what I understand and add some notes:
+
+* `^M` is the ASCII character `0x0D` which is a `carriage return` 
+* `would be native unix: 0x0a.: `0x0A` is a line feed
+
+> [docs.astral.sh/ruff/settings#format_line-ending](https://docs.astral.sh/ruff/settings/#format_line-ending) is auto 
+
+The `format` option `line-ending` doesn't apply to `W291`. It only applies to `ruff format`, but not `ruff check`. It also is determined depending on the first line-ending in the file. You want to use `native` if you want to enforce `ln` on linux. 
+
+> The newline style is detected automatically on a file per file basis. Files with mixed line endings will be converted to the first detected line ending. Defaults to \n for files that contain no line endings.
+
+
+Can you tell me more about why you think the following snippet should not raise a trailing whitespace error? 
+
+```python
+text = " ^M"
+```
+
+What I understand is that the snippet is equivalent to
+
+```python
+text = " \r"
+```
+
+where the string literal's first line ends with trailing whitespace
+
+or without using any control character it's equivalent to (assuming `\r` line endings)
+
+```python
+text = """␣␣
+"""
+```
+
+which also raises W291
+
+---
+
+_Comment by @minusf on 2024-07-29 07:24_
+
+Thank you for looking into this. I was not sure if `line-ending` was used or not, but I mentioned it for completeness.
+
+> Can you tell me more about why you think the following snippet should not raise a trailing whitespace error?
+
+Very good question. I think it basically boils down to:
+
+Because my editor/my source code files uses `\n` as new line, not `\r`, the control character `^M` is a single character on a single line, followed by a `"`. The last character on the line is `"`, so "technically" there is no trailing whitespace.
+
+But in the end I think I should just use `\r` instead of `^M` for obvious reasons 😄 
+
+---
+
+_Closed by @MichaReiser on 2024-07-29 09:24_
+
+---
+
+_Label `question` added by @MichaReiser on 2024-07-29 09:24_
+
+---

@@ -1,0 +1,360 @@
+---
+number: 10052
+title: ".h not found when building with `uv` but found when using pip and a virtual env"
+type: issue
+state: closed
+author: MalcolmMielle
+labels:
+  - compatibility
+assignees: []
+created_at: 2024-12-20T10:33:12Z
+updated_at: 2025-08-29T07:40:03Z
+url: https://github.com/astral-sh/uv/issues/10052
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# .h not found when building with `uv` but found when using pip and a virtual env
+
+---
+
+_Issue opened by @MalcolmMielle on 2024-12-20 10:33_
+
+I am trying to install the package `petsc4py`. When trying to build using uv I have the error:
+
+```bash
+$uv add petsc4py
+× Failed to download and build `petsc4py==3.22.1`
+  ╰─▶ Build backend failed to build wheel through `build_wheel` (exit status: 1)
+
+      [stdout]
+      running bdist_wheel
+      running build
+      running build_src
+      running build_py
+      copying src/petsc4py/PETSc.py -> build/lib.linux-x86_64-cpython-312/petsc4py
+      copying src/petsc4py/__init__.py -> build/lib.linux-x86_64-cpython-312/petsc4py
+      copying src/petsc4py/__main__.py -> build/lib.linux-x86_64-cpython-312/petsc4py
+      copying src/petsc4py/typing.py -> build/lib.linux-x86_64-cpython-312/petsc4py
+      copying src/petsc4py/lib/__init__.py -> build/lib.linux-x86_64-cpython-312/petsc4py/lib
+      copying src/petsc4py/__init__.pyi -> build/lib.linux-x86_64-cpython-312/petsc4py
+      copying src/petsc4py/__main__.pyi -> build/lib.linux-x86_64-cpython-312/petsc4py
+      copying src/petsc4py/py.typed -> build/lib.linux-x86_64-cpython-312/petsc4py
+      copying src/petsc4py/PETSc.pxd -> build/lib.linux-x86_64-cpython-312/petsc4py
+      copying src/petsc4py/PETSc.h -> build/lib.linux-x86_64-cpython-312/petsc4py
+      copying src/petsc4py/PETSc_api.h -> build/lib.linux-x86_64-cpython-312/petsc4py
+      copying src/petsc4py/include/petsc4py/numpy.h ->
+      build/lib.linux-x86_64-cpython-312/petsc4py/include/petsc4py
+      copying src/petsc4py/include/petsc4py/petsc4py.h ->
+      build/lib.linux-x86_64-cpython-312/petsc4py/include/petsc4py
+      copying src/petsc4py/include/petsc4py/pybuffer.h ->
+      build/lib.linux-x86_64-cpython-312/petsc4py/include/petsc4py
+      copying src/petsc4py/include/petsc4py/pyscalar.h ->
+      build/lib.linux-x86_64-cpython-312/petsc4py/include/petsc4py
+      copying src/petsc4py/include/petsc4py/petsc4py.i ->
+      build/lib.linux-x86_64-cpython-312/petsc4py/include/petsc4py
+      copying src/petsc4py/lib/__init__.pyi -> build/lib.linux-x86_64-cpython-312/petsc4py/lib
+      copying src/petsc4py/lib/__init__.pyi -> build/lib.linux-x86_64-cpython-312/petsc4py/lib
+      copying src/petsc4py/lib/petsc.cfg -> build/lib.linux-x86_64-cpython-312/petsc4py/lib
+      running build_ext
+      PETSC_DIR:    /home/malcolm/.cache/uv/builds-v0/.tmpIYB9qQ/lib64/python3.12/site-packages/petsc
+      PETSC_ARCH:
+      version:      3.22.1 release
+      integer-size: 32-bit
+      scalar-type:  real
+      precision:    double
+      language:     CONLY
+      compiler:     gcc
+      linker:       gcc
+      building 'PETSc' extension
+      gcc -fPIC -Wall -Wwrite-strings -Wno-unknown-pragmas -Wno-lto-type-mismatch -Wno-stringop-overflow
+      -fstack-protector -Wall -Wwrite-strings -Wno-unknown-pragmas -Wno-lto-type-mismatch -Wno-stringop-overflow
+      -fstack-protector -g -O -fPIC -fno-strict-overflow -Wsign-compare -DDYNAMIC_ANNOTATIONS_ENABLED=1 -DNDEBUG
+      -fcf-protection -fexceptions -fcf-protection -fexceptions -fcf-protection -fexceptions -DMPICH_SKIP_MPICXX=1
+      -DOMPI_SKIP_MPICXX=1 -DNPY_NO_DEPRECATED_API=NPY_1_7_API_VERSION -Isrc -Isrc/petsc4py/include
+      -I/home/malcolm/.cache/uv/builds-v0/.tmpIYB9qQ/lib64/python3.12/site-packages/numpy/_core/include
+      -I/home/malcolm/.cache/uv/sdists-v6/pypi/petsc/3.22.1/wE68-1CFx8eRBCppGL6ik/src/build/bdist.linux-x86_64/wheel/petsc/include
+      -I/home/malcolm/.cache/uv/builds-v0/.tmpIYB9qQ/include -I/usr/include/python3.12 -c src/petsc4py/PETSc.c -o
+      build/temp.linux-x86_64-cpython-312/src/petsc4py/PETSc.o
+
+      [stderr]
+      src/petsc4py/PETSc.c:1222:10: fatal error: petsc.h: No such file or directory
+       1222 | #include <petsc.h>
+            |          ^~~~~~~~~
+      compilation terminated.
+      error: command '/usr/bin/gcc' failed with exit code 1
+
+      hint: This error likely indicates that you need to install a library that provides "petsc.h" for
+      `petsc4py@3.22.1`
+  help: `petsc4py` (v3.22.1) was included because `your-package` (v0.1.0) depends on `petsc4py`
+```
+
+On the other hand, using `pip install --use-pep517 --force-reinstall --no-cache  petsc4py` in a python 3.12 environment works just fine:
+
+```bash
+$pip install --use-pep517 --force-reinstall --no-cache  petsc4py 
+Collecting petsc4py
+  Downloading petsc4py-3.22.1.tar.gz (428 kB)
+  Installing build dependencies ... done
+  Getting requirements to build wheel ... done
+  Installing backend dependencies ... done
+  Preparing metadata (pyproject.toml) ... done
+Collecting numpy>=1.19 (from petsc4py)
+  Downloading numpy-2.2.0-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (62 kB)
+Collecting petsc<3.23,>=3.22 (from petsc4py)
+  Downloading petsc-3.22.1.tar.gz (16.8 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 16.8/16.8 MB 2.6 MB/s eta 0:00:00
+  Installing build dependencies ... done
+  Getting requirements to build wheel ... done
+  Preparing metadata (pyproject.toml) ... done
+Downloading numpy-2.2.0-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (16.1 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 16.1/16.1 MB 4.3 MB/s eta 0:00:00
+Building wheels for collected packages: petsc4py, petsc
+  Building wheel for petsc4py (pyproject.toml) ... done
+  Created wheel for petsc4py: filename=petsc4py-3.22.1-cp312-cp312-linux_x86_64.whl size=9602637 sha256=ec793de0818cd5906d6e93efd16fd1731c870c7f8ae9a583a28c403816dcf4ce
+  Stored in directory: /tmp/pip-ephem-wheel-cache-p_h_edn5/wheels/a7/75/c4/ec901515d0c5d403c7a6427a4901783c107199972d0db5e327
+  Building wheel for petsc (pyproject.toml) ... done
+  Created wheel for petsc: filename=petsc-3.22.1-py3-none-linux_x86_64.whl size=71577168 sha256=8b6c91557f6fcdd00b2ee82e7eb8cf3db9bfc5a066dfbab6445b05ef218eec9a
+  Stored in directory: /tmp/pip-ephem-wheel-cache-p_h_edn5/wheels/1f/d8/38/baccdf720fb3f9fba2099a252677d5e2ceca92c4c9c6045aa3
+Successfully built petsc4py petsc
+Installing collected packages: petsc, numpy, petsc4py
+  Attempting uninstall: petsc
+    Found existing installation: petsc 3.22.1
+    Uninstalling petsc-3.22.1:
+      Successfully uninstalled petsc-3.22.1
+  Attempting uninstall: numpy
+    Found existing installation: numpy 2.2.0
+    Uninstalling numpy-2.2.0:
+      Successfully uninstalled numpy-2.2.0
+  Attempting uninstall: petsc4py
+    Found existing installation: petsc4py 3.22.1
+    Uninstalling petsc4py-3.22.1:
+      Successfully uninstalled petsc4py-3.22.1
+Successfully installed numpy-2.2.0 petsc-3.22.1 petsc4py-3.22.1
+
+[notice] A new release of pip is available: 24.2 -> 24.3.1
+[notice] To update, run: pip install --upgrade pip
+```
+
+My system is:
+
+* Fedora 41
+* uv: 0.5.11
+* python 3.12
+
+---
+
+_Comment by @samypr100 on 2024-12-22 00:56_
+
+I also had a similar outcome. I haven't really looked at the documentation or the recommended ways to build it, but it's interesting that it does work with build isolation with `pip` and not `uv pip`.
+
+```shell
+~ uv pip install petsc4py==3.22.1
+Resolved 3 packages in 3m 17s
+  × Failed to build `petsc4py==3.22.1`
+  ├─▶ The build backend returned an error
+  ╰─▶ Call to `setuptools.build_meta.build_wheel` failed (exit status: 1)
+
+      [stdout]
+      running bdist_wheel
+      running build
+      running build_src
+      using Cython 3.0.11
+      cythonizing 'petsc4py/PETSc.pyx' -> 'petsc4py/PETSc.c'
+      running build_py
+      creating build/lib.linux-x86_64-cpython-312/petsc4py
+      copying src/petsc4py/__init__.py -> build/lib.linux-x86_64-cpython-312/petsc4py
+      copying src/petsc4py/PETSc.py -> build/lib.linux-x86_64-cpython-312/petsc4py
+      copying src/petsc4py/typing.py -> build/lib.linux-x86_64-cpython-312/petsc4py
+      copying src/petsc4py/__main__.py -> build/lib.linux-x86_64-cpython-312/petsc4py
+      creating build/lib.linux-x86_64-cpython-312/petsc4py/lib
+      copying src/petsc4py/lib/__init__.py -> build/lib.linux-x86_64-cpython-312/petsc4py/lib
+      copying src/petsc4py/__init__.pyi -> build/lib.linux-x86_64-cpython-312/petsc4py
+      copying src/petsc4py/__main__.pyi -> build/lib.linux-x86_64-cpython-312/petsc4py
+      copying src/petsc4py/py.typed -> build/lib.linux-x86_64-cpython-312/petsc4py
+      copying src/petsc4py/PETSc.pxd -> build/lib.linux-x86_64-cpython-312/petsc4py
+      copying src/petsc4py/PETSc.h -> build/lib.linux-x86_64-cpython-312/petsc4py
+      copying src/petsc4py/PETSc_api.h -> build/lib.linux-x86_64-cpython-312/petsc4py
+      creating build/lib.linux-x86_64-cpython-312/petsc4py/include/petsc4py
+      copying src/petsc4py/include/petsc4py/pyscalar.h -> build/lib.linux-x86_64-cpython-312/petsc4py/include/petsc4py
+      copying src/petsc4py/include/petsc4py/pybuffer.h -> build/lib.linux-x86_64-cpython-312/petsc4py/include/petsc4py
+      copying src/petsc4py/include/petsc4py/numpy.h -> build/lib.linux-x86_64-cpython-312/petsc4py/include/petsc4py
+      copying src/petsc4py/include/petsc4py/petsc4py.h -> build/lib.linux-x86_64-cpython-312/petsc4py/include/petsc4py
+      copying src/petsc4py/include/petsc4py/petsc4py.i -> build/lib.linux-x86_64-cpython-312/petsc4py/include/petsc4py
+      copying src/petsc4py/lib/__init__.pyi -> build/lib.linux-x86_64-cpython-312/petsc4py/lib
+      copying src/petsc4py/lib/__init__.pyi -> build/lib.linux-x86_64-cpython-312/petsc4py/lib
+      copying src/petsc4py/lib/petsc.cfg -> build/lib.linux-x86_64-cpython-312/petsc4py/lib
+      running build_ext
+      PETSC_DIR:    /root/.cache/uv/builds-v0/.tmpYkB4Yy/lib/python3.12/site-packages/petsc
+      PETSC_ARCH:
+      version:      3.22.1 release
+      integer-size: 32-bit
+      scalar-type:  real
+      precision:    double
+      language:     CONLY
+      compiler:     clang
+      linker:       clang
+      building 'PETSc' extension
+      creating build/temp.linux-x86_64-cpython-312/src/petsc4py
+      clang -fPIC -Wall -Wwrite-strings -Wno-unknown-pragmas -Wconversion -Wno-sign-conversion -Wno-float-conversion
+      -Wno-implicit-float-conversion -fstack-protector -Qunused-arguments -Wall -Wwrite-strings
+      -Wno-unknown-pragmas -Wconversion -Wno-sign-conversion -Wno-float-conversion -Wno-implicit-float-conversion
+      -fstack-protector -Qunused-arguments -g -O3 -fPIC -fno-strict-overflow -Wsign-compare -DNDEBUG -g -O3
+      -Wall -DMPICH_SKIP_MPICXX=1 -DOMPI_SKIP_MPICXX=1 -DNPY_NO_DEPRECATED_API=NPY_1_7_API_VERSION -Isrc
+      -Isrc/petsc4py/include -I/root/.cache/uv/builds-v0/.tmpYkB4Yy/lib/python3.12/site-packages/numpy/_core/include
+      -I/root/.cache/uv/sdists-v6/pypi/petsc/3.22.1/hJkKH1sasJwoixz03FvId/src/build/bdist.linux-x86_64/wheel/petsc/include
+      -I/root/.cache/uv/builds-v0/.tmpYkB4Yy/include -I/usr/local/include/python3.12 -c src/petsc4py/PETSc.c -o
+      build/temp.linux-x86_64-cpython-312/src/petsc4py/PETSc.o
+
+      [stderr]
+      src/petsc4py/PETSc.c:1222:10: fatal error: 'petsc.h' file not found
+      #include <petsc.h>
+               ^~~~~~~~~
+      1 error generated.
+      error: command '/usr/bin/clang' failed with exit code 1
+
+      hint: This error likely indicates that you need to install a library that provides "petsc.h" for
+      `petsc4py@3.22.1`
+```
+
+---
+
+_Comment by @samypr100 on 2024-12-22 03:35_
+
+Looking at their [setup.py](https://gitlab.com/petsc/petsc/-/blob/d592c015e24ee7043a1fb8aad411190b0638a646/setup.py#L194-L217) I notice they leverage `PEP517_BUILD_BACKEND` environment variable being set to patch the include files (this variable seems to be [set by pip](https://github.com/pypa/pip/blob/c10dda5172c48f3abb285fec02360a982fdce350/src/pip/_vendor/pyproject_hooks/_impl.py#L298)). I think this would be set to `setuptools.build_meta` for this project and `using_build_backend` will be `True` in their build script. When using `uv` this would be `False` as those environment variables will not be set.
+
+TL;DR try setting `PEP517_BUILD_BACKEND=setuptools.build_meta` before your commands.
+
+CC @konstin
+
+
+---
+
+_Label `compatibility` added by @samypr100 on 2024-12-22 03:35_
+
+---
+
+_Comment by @MalcolmMielle on 2024-12-23 16:50_
+
+I'll have a try when I'm back from holidays. Thanks!
+
+---
+
+_Referenced in [astral-sh/uv#6088](../../astral-sh/uv/issues/6088.md) on 2025-01-09 03:49_
+
+---
+
+_Comment by @samypr100 on 2025-01-09 03:52_
+
+@zanieb I think we can close this and https://github.com/astral-sh/uv/issues/6088
+
+I'm not sure we should be setting this env var in uv at all despite it's usage in pip and across different packages for PEP517 detection, so this would likely need a decision.
+
+It's also worthy to mention `PEP517_BUILD_BACKEND` got renamed by @pradyunsg to `_PYPROJECT_HOOKS_BUILD_BACKEND` in https://github.com/pypa/pyproject-hooks/pull/166, although pip still uses the old name due to vendoring for the time being.
+
+I'm curious on the rationale of projects like `petsc4py` relying on `PEP517_BUILD_BACKEND` being set and making the build process behave differently.
+
+---
+
+_Comment by @zanieb on 2025-01-09 14:59_
+
+Thanks!
+
+---
+
+_Closed by @zanieb on 2025-01-09 14:59_
+
+---
+
+_Comment by @lucsorel on 2025-08-28 14:28_
+
+it seems that petsc4py can read both environment variables now (https://gitlab.com/search?search=PEP517&nav_source=navbar&project_id=13882401&group_id=5422456&search_code=true&repository_ref=main): `_PYPROJECT_HOOKS_BUILD_BACKEND` and `PEP517_BUILD_BACKEND`.
+
+However, I'm still facing the same error message:
+
+```sh
+uv add petsc4py                 
+Resolved 73 packages in 5m 57s
+      Built petsc==3.23.6                                                                                                                                            × Failed to build `petsc4py==3.23.6`
+  ├─▶ The build backend returned an error
+  ╰─▶ Call to `setuptools.build_meta.build_wheel` failed (exit status: 1)
+
+      [stdout]
+      running bdist_wheel
+      running build
+      running build_src
+      using Cython 3.1.3
+      cythonizing 'petsc4py/PETSc.pyx' -> 'petsc4py/PETSc.c'
+      running build_py
+      creating build/lib.linux-x86_64-cpython-312/petsc4py
+      copying src/petsc4py/__init__.py -> build/lib.linux-x86_64-cpython-312/petsc4py
+      copying src/petsc4py/typing.py -> build/lib.linux-x86_64-cpython-312/petsc4py
+      copying src/petsc4py/__main__.py -> build/lib.linux-x86_64-cpython-312/petsc4py
+      copying src/petsc4py/PETSc.py -> build/lib.linux-x86_64-cpython-312/petsc4py
+      creating build/lib.linux-x86_64-cpython-312/petsc4py/lib
+      copying src/petsc4py/lib/__init__.py -> build/lib.linux-x86_64-cpython-312/petsc4py/lib
+      creating build/lib.linux-x86_64-cpython-312/petsc4py/lib/_pytypes
+      copying src/petsc4py/lib/_pytypes/__init__.py -> build/lib.linux-x86_64-cpython-312/petsc4py/lib/_pytypes
+      creating build/lib.linux-x86_64-cpython-312/petsc4py/lib/_pytypes/viewer
+      copying src/petsc4py/lib/_pytypes/viewer/__init__.py -> build/lib.linux-x86_64-cpython-312/petsc4py/lib/_pytypes/viewer
+      copying src/petsc4py/lib/_pytypes/viewer/petscpyvista.py -> build/lib.linux-x86_64-cpython-312/petsc4py/lib/_pytypes/viewer
+      copying src/petsc4py/__init__.pyi -> build/lib.linux-x86_64-cpython-312/petsc4py
+      copying src/petsc4py/__main__.pyi -> build/lib.linux-x86_64-cpython-312/petsc4py
+      copying src/petsc4py/py.typed -> build/lib.linux-x86_64-cpython-312/petsc4py
+      copying src/petsc4py/PETSc.pxd -> build/lib.linux-x86_64-cpython-312/petsc4py
+      copying src/petsc4py/PETSc_api.h -> build/lib.linux-x86_64-cpython-312/petsc4py
+      copying src/petsc4py/PETSc.h -> build/lib.linux-x86_64-cpython-312/petsc4py
+      creating build/lib.linux-x86_64-cpython-312/petsc4py/include/petsc4py
+      copying src/petsc4py/include/petsc4py/pybuffer.h -> build/lib.linux-x86_64-cpython-312/petsc4py/include/petsc4py
+      copying src/petsc4py/include/petsc4py/petsc4py.h -> build/lib.linux-x86_64-cpython-312/petsc4py/include/petsc4py
+      copying src/petsc4py/include/petsc4py/numpy.h -> build/lib.linux-x86_64-cpython-312/petsc4py/include/petsc4py
+      copying src/petsc4py/include/petsc4py/pyscalar.h -> build/lib.linux-x86_64-cpython-312/petsc4py/include/petsc4py
+      copying src/petsc4py/include/petsc4py/petsc4py.i -> build/lib.linux-x86_64-cpython-312/petsc4py/include/petsc4py
+      copying src/petsc4py/lib/__init__.pyi -> build/lib.linux-x86_64-cpython-312/petsc4py/lib
+      copying src/petsc4py/lib/__init__.pyi -> build/lib.linux-x86_64-cpython-312/petsc4py/lib
+      copying src/petsc4py/lib/petsc.cfg -> build/lib.linux-x86_64-cpython-312/petsc4py/lib
+      running build_ext
+      PETSC_DIR:    /home/{...}/.cache/uv/builds-v0/.tmprLWR8u/lib/python3.12/site-packages/petsc
+      PETSC_ARCH:
+      version:      3.23.6 release
+      integer-size: 32-bit
+      scalar-type:  real
+      precision:    double
+      language:     CONLY
+      compiler:     gcc
+      linker:       gcc
+      building 'PETSc' extension
+      creating build/temp.linux-x86_64-cpython-312/src/petsc4py
+      gcc -pthread -fPIC -Wall -Wwrite-strings -Wno-unknown-pragmas -Wno-lto-type-mismatch -Wno-stringop-overflow -fstack-protector -g -O -fPIC -fno-strict-overflow
+      -Wsign-compare -Wunreachable-code -DNDEBUG -g -O3 -Wall -fPIC -DMPICH_SKIP_MPICXX=1 -DOMPI_SKIP_MPICXX=1 -DNPY_NO_DEPRECATED_API=NPY_1_7_API_VERSION
+      -Isrc -Isrc/petsc4py/include -I/home/{...}/.cache/uv/builds-v0/.tmprLWR8u/lib/python3.12/site-packages/numpy/_core/include
+      -I/home/lsorelgiffo/.cache/uv/sdists-v9/pypi/petsc/3.23.6/Vt-PYoiHFRpY792HYGxub/src/build/bdist.linux-x86_64/wheel/petsc/include
+      -I/home/{...}/.cache/uv/builds-v0/.tmprLWR8u/include -I/home/{...}/.local/share/uv/python/cpython-3.12.9-linux-x86_64-gnu/include/python3.12 -c
+      src/petsc4py/PETSc.c -o build/temp.linux-x86_64-cpython-312/src/petsc4py/PETSc.o
+
+      [stderr]
+      src/petsc4py/PETSc.c:1121:10: fatal error: petsc.h: No such file or directory
+       1121 | #include <petsc.h>
+            |          ^~~~~~~~~
+      compilation terminated.
+      error: command '/usr/bin/gcc' failed with exit code 1
+
+      hint: This error likely indicates that you need to install a library that provides "petsc.h" for `petsc4py@3.23.6`
+```
+
+---
+
+_Comment by @zanieb on 2025-08-28 14:50_
+
+I don't think they should be relying on those variables. They're not a part of the spec — they're just relying on `pip`-specific behavior.
+
+---
+
+_Comment by @lucsorel on 2025-08-29 07:40_
+
+Thank you @zanieb for your answer.
+
+I would like to make the petsc project move forward on this issue, what would you suggest they should use to specify the build backend instead of these 2 environment variables?
+
+Have a nice day.
+
+---

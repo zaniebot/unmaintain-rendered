@@ -1,0 +1,56 @@
+---
+number: 15485
+title: Automated typeshed sync failed on Wed Jan 15 2025
+type: issue
+state: closed
+author: github-actions
+labels:
+  - ci
+assignees: []
+created_at: 2025-01-15T05:09:05Z
+updated_at: 2025-01-15T10:21:02Z
+url: https://github.com/astral-sh/ruff/issues/15485
+synced_at: 2026-01-07T13:12:16-06:00
+---
+
+# Automated typeshed sync failed on Wed Jan 15 2025
+
+---
+
+_Issue opened by @github-actions on 2025-01-15 05:09_
+
+Runs are listed here: https://github.com/astral-sh/ruff/actions/workflows/sync_typeshed.yaml
+
+---
+
+_Comment by @dhruvmanila on 2025-01-15 05:11_
+
+cc @AlexWaygood, I tried re-running but that failed as well. The specific workflow job is https://github.com/astral-sh/ruff/actions/runs/12778917699/job/35630616320
+
+---
+
+_Label `ci` added by @dhruvmanila on 2025-01-15 05:11_
+
+---
+
+_Referenced in [astral-sh/ruff#15484](../../astral-sh/ruff/issues/15484.md) on 2025-01-15 05:12_
+
+---
+
+_Assigned to @AlexWaygood by @AlexWaygood on 2025-01-15 06:33_
+
+---
+
+_Comment by @sharkdp on 2025-01-15 10:01_
+
+Looks like this is related to https://github.com/cli/cli/issues/10188 which has been fixed upstream in the meantime. I suggest we do one manual sync (#15492) and then simply wait for this runner update: https://github.com/actions/runner-images/pull/11377.
+
+---
+
+_Referenced in [astral-sh/ruff#15492](../../astral-sh/ruff/pulls/15492.md) on 2025-01-15 10:09_
+
+---
+
+_Closed by @sharkdp on 2025-01-15 10:21_
+
+---

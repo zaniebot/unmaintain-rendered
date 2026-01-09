@@ -1,0 +1,106 @@
+---
+number: 9194
+title: "`uv add textract` fails with parse error on requires"
+type: issue
+state: closed
+author: DRMacIver
+labels:
+  - compatibility
+assignees: []
+created_at: 2024-11-18T13:34:25Z
+updated_at: 2024-11-18T14:43:22Z
+url: https://github.com/astral-sh/uv/issues/9194
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# `uv add textract` fails with parse error on requires
+
+---
+
+_Issue opened by @DRMacIver on 2024-11-18 13:34_
+
+Running `uv add textract==1.6.4` on uv version `0.3.2` (on OSX if relevant) produces the following error:
+
+```
+⠹ textract==1.6.4                                                                                                                                                                                                     error: Failed to download and build `textract==1.6.4`
+  Caused by: Build backend failed to determine extra requires with `build_wheel()` with exit status: 1
+--- stdout:
+
+--- stderr:
+error in textract setup command: 'install_requires' must be a string or iterable of strings containing valid project/version requirement specifiers; .* suffix can only be used with `==` or `!=` operators
+    extract-msg<=0.29.*
+               ~~~~~~~^
+---
+```
+
+The package in question pip installs fine.
+
+This is presumably just the uv requirement parser being stricter than pip's, and this particular requirements construct is just sufficiently unusual to see in the wild that it hasn't come up before.
+
+---
+
+_Renamed from ".* suffix can only be used with `==` or `!=` operators" to "`uv add textract` fails with ".* suffix can only be used with `==` or `!=` operators"" by @DRMacIver on 2024-11-18 13:34_
+
+---
+
+_Renamed from "`uv add textract` fails with ".* suffix can only be used with `==` or `!=` operators"" to "`uv add textract` fails with parse error on requires" by @DRMacIver on 2024-11-18 13:35_
+
+---
+
+_Comment by @charliermarsh on 2024-11-18 13:38_
+
+Yeah that is an invalid specifier -- wildcards are only allowed on `==` and `!=` specifiers. We have a "fixup" system that can handle cases like that, though. I guess it's intended to be `<=0.29`.
+
+---
+
+_Label `compatibility` added by @charliermarsh on 2024-11-18 13:38_
+
+---
+
+_Comment by @charliermarsh on 2024-11-18 13:42_
+
+Oh sorry, I think this is actually `setuptools` raising the error, and not uv, in which case... there isn't much we can do about it. I think the best you can do is add `--build-constraint constraints.txt`, and set a constraint to use an older version of setuptools. Sorry!
+
+---
+
+_Closed by @charliermarsh on 2024-11-18 13:42_
+
+---
+
+_Comment by @DRMacIver on 2024-11-18 13:56_
+
+If the error is purely setuptools related, why does pip install work with the same package specifier?
+
+---
+
+_Comment by @charliermarsh on 2024-11-18 13:58_
+
+Are pip and uv using the same version of Python? Is the package already cached by pip from some other install on your machine? Do you see the same behavior with `pip install --use-pep517 --no-cache --force-reinstall`?
+
+---
+
+_Comment by @DRMacIver on 2024-11-18 14:03_
+
+Same version of Python. Also correctly installs with `uv pip install`. Not cached. But indeed `--use-pep517` does cause pip to exhibit the same error.
+
+---
+
+_Comment by @charliermarsh on 2024-11-18 14:17_
+
+Okay thanks, got it. That means the package is indeed broken with that version of setuptools, and the same breakage will occur in future versions of PEP, once `--use-pep517` is made the default.
+
+---
+
+_Comment by @konstin on 2024-11-18 14:25_
+
+For me locally, `pip install textract==1.6.4` errors on both Python 3.10 and Python 3.13 on ubuntu 24.04. My guess would be that the package is still in the pip cache, and was built before https://github.com/pypa/packaging/pull/407, which was released a `packaging` [22.0](https://github.com/pypa/packaging/releases/tag/22.0) which was merged in `setuptools` [67.0.0](https://setuptools.pypa.io/en/latest/history.html#v67-0-0 ). Before packaging 22.0 pip and setuptools were much more lenient with version specifiers, afterwards they started only accepting spec-compliant versions.
+
+---
+
+_Comment by @DRMacIver on 2024-11-18 14:43_
+
+Fair enough. In fact, I went to file a bug at textract and discovered this is already filed with them as an issue: https://github.com/deanmalmgren/textract/issues/533 (I didn't think to check there first because it seemed to work with pip).
+
+Not that this necessarily matters to you, but it doesn't look very likely that's going to be fixed any time soon, as the package appears... lightly maintained. It would be good to have some way to work around this problem for similar issues, but that probably has to be on the setuptools side.
+
+---

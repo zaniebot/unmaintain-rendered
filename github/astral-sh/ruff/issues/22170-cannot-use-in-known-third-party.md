@@ -1,0 +1,90 @@
+---
+number: 22170
+title: "Cannot use `**` in `known-third-party`"
+type: issue
+state: open
+author: felixfontein
+labels:
+  - documentation
+assignees: []
+created_at: 2025-12-24T08:01:39Z
+updated_at: 2025-12-24T19:12:41Z
+url: https://github.com/astral-sh/ruff/issues/22170
+synced_at: 2026-01-07T13:12:16-06:00
+---
+
+# Cannot use `**` in `known-third-party`
+
+---
+
+_Issue opened by @felixfontein on 2025-12-24 08:01_
+
+### Summary
+
+When trying to use [`**`](https://docs.rs/globset/latest/globset/#syntax) in [`known-third-party`](https://docs.astral.sh/ruff/settings/#lint_isort_known-third-party), I get an error.
+
+`ruff.toml`:
+```toml
+[lint.isort]
+known-third-party = [
+    "ansible_collections.community.internal_test_tools.**",
+]
+```
+
+Output:
+```
+ruff failed
+  Cause: invalid known third-party pattern: Pattern syntax error near position 49: recursive wildcards must form a single path component
+  Cause: Pattern syntax error near position 49: recursive wildcards must form a single path component
+```
+
+This seems to indicate that the glob patterns used for `known-third-party` do not use `.` as a directory separator, and thus `*` does the same I would expect `**` to do. So maybe this is more a documentation issue than an actual bug.
+
+
+### Version
+
+ruff 0.14.9 (3f63ea4b5 2025-12-11)
+
+---
+
+_Comment by @ntBre on 2025-12-24 14:57_
+
+Thanks for the report! Yeah, I think we need to update the documentation here. I don't see a way to avoid this error in the `glob` docs.
+
+A bit of an aside, but these [patterns](https://github.com/astral-sh/ruff/blob/741896447084e90ab2d2985f14ed2f0f0b149017/crates/ruff_linter/src/rules/isort/categorize.rs#L286) are actually from the `glob` crate, not the `globset` crate as the setting documentation suggests, but I believe the syntax is the same.
+
+---
+
+_Label `documentation` added by @ntBre on 2025-12-24 14:57_
+
+---
+
+_Comment by @MichaReiser on 2025-12-24 17:38_
+
+We could parse the glob ourselves and replace any (not escaped `.`) with `\.` I'd have to think about what we should do with `.` that are already escaped and if we need a special meaning for `**` (which would include `.` whereas `*` only includes one path segment. 
+
+This would be similar to what glob does internally. In the end, it's all about mapping some well-defined syntax to a regex.
+
+---
+
+_Comment by @ntBre on 2025-12-24 17:49_
+
+This isn't actually about `.` itself, it's about `**` needing to follow or precede a path separator `/` in the globs. But path separators obviously aren't valid for Python module names, so `**` is essentially not allowed in the configuration for these globs.
+
+But in general I agree, we could just turn `**` into `*` if we want to process the globs a bit. That might be nicer than just documenting the issue.
+
+Globs don't really feel right here, so we could also consider just using regexes instead.
+
+---
+
+_Comment by @felixfontein on 2025-12-24 18:13_
+
+Replacing `.` by `/` in both the pattern and the module name to match would also work, but would break backwards compatibility when users already expect `*` to match multiple parts separated by periods.
+
+---
+
+_Comment by @MichaReiser on 2025-12-24 19:12_
+
+Yeah I think we would have to establish our own glob syntax where we map `*` (unless it's escaped) to `.*` (excluding `.`), etc.
+
+---

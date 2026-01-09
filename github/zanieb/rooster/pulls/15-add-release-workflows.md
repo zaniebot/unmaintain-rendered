@@ -1,0 +1,42 @@
+---
+number: 15
+title: Add release workflows
+type: pull_request
+state: closed
+author: zanieb
+labels:
+  - test-build
+assignees: []
+base: main
+head: zb/release
+created_at: 2024-02-22T20:40:33Z
+updated_at: 2024-02-22T20:47:32Z
+url: https://github.com/zanieb/rooster/pull/15
+synced_at: 2026-01-07T13:12:14-06:00
+---
+
+# Add release workflows
+
+---
+
+_Pull request opened by @zanieb on 2024-02-22 20:40_
+
+Closes https://github.com/zanieb/rooster/issues/9
+
+---
+
+_Label `test-build` added by @zanieb on 2024-02-22 20:42_
+
+---
+
+_Marked ready for review by @zanieb on 2024-02-22 20:46_
+
+---
+
+_Merged by @zanieb on 2024-02-22 20:47_
+
+---
+
+_Closed by @zanieb on 2024-02-22 20:47_
+
+---

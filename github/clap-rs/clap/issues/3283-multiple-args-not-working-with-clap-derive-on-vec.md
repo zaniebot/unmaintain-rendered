@@ -1,0 +1,99 @@
+---
+number: 3283
+title: "multiple args not working with clap derive on Vec<Foo> type"
+type: issue
+state: closed
+author: tdudz
+labels:
+  - C-bug
+  - A-derive
+  - S-duplicate
+assignees: []
+created_at: 2022-01-11T22:11:49Z
+updated_at: 2022-01-11T22:23:51Z
+url: https://github.com/clap-rs/clap/issues/3283
+synced_at: 2026-01-07T13:12:19-06:00
+---
+
+# multiple args not working with clap derive on Vec<Foo> type
+
+---
+
+_Issue opened by @tdudz on 2022-01-11 22:11_
+
+### Please complete the following tasks
+
+- [X] I have searched the [discussions](https://github.com/clap-rs/clap/discussions)
+- [X] I have searched the existing issues
+
+### Rust Version
+
+1.57.0
+
+### Clap Version
+
+3.0.6
+
+### Minimal reproducible code
+
+```rust
+
+#[derive(Parser)]
+struct Args {
+    #[clap(long, short)]
+    foo: Foo,
+    #[clap(long, short)]
+    bars: Vec<Bar>,
+}
+
+fn main() {
+    let args = Args::parse();
+}
+```
+
+
+### Steps to reproduce the bug with the above code
+
+`cargo run -f foo1 -b bar1 bar2`
+
+### Actual Behaviour
+
+error: Found argument `'bar2'` which wasn't expected, or isn't valid in this context
+
+### Expected Behaviour
+
+it should parse `bar1` and `bar2` and place them into a `Vec<Bar>`
+
+### Additional Context
+
+_No response_
+
+### Debug Output
+
+_No response_
+
+---
+
+_Label `C-bug` added by @tdudz on 2022-01-11 22:11_
+
+---
+
+_Comment by @epage on 2022-01-11 22:23_
+
+In clap 3, we changed `Vec` from `multiple` to `multiple_occurrences`.  This is called out in the [CHANGELOG's breaking changes since structopt](https://github.com/clap-rs/clap/blob/master/CHANGELOG.md#breaking-changes).  This was planned in https://github.com/clap-rs/clap/issues/1772.
+
+For reference, we also have https://github.com/clap-rs/clap/issues/3248 for this.
+
+---
+
+_Closed by @epage on 2022-01-11 22:23_
+
+---
+
+_Label `A-derive` added by @epage on 2022-01-11 22:23_
+
+---
+
+_Label `S-duplicate` added by @epage on 2022-01-11 22:23_
+
+---

@@ -1,0 +1,211 @@
+---
+number: 12404
+title: "RuntimeError: Found no NVIDIA driver on your system"
+type: issue
+state: closed
+author: aleenprd
+labels:
+  - needs-mre
+assignees: []
+created_at: 2025-03-23T22:26:54Z
+updated_at: 2025-07-10T10:28:55Z
+url: https://github.com/astral-sh/uv/issues/12404
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# RuntimeError: Found no NVIDIA driver on your system
+
+---
+
+_Issue opened by @aleenprd on 2025-03-23 22:26_
+
+### Summary
+
+I am trying different ways to install torch and have it use CUDA but I always end up with errors about nvidia driver. Of course, I do have a driver, and Torch works just fine if I use it outsive uv virtual environment.
+
+For example, `uv pip install --pre torch torchvision torchaudio --index-url https://download.pytorch.org/whl/nightly/cu128` will run with:
+```
+(project) user@pc:/media/alnprd/New Volume/repos/learn/torch-learn$ uv pip install --pre torch torchvision torchaudio --index-url https://download.pytorch.org/whl/nightly/cu128
+Resolved 29 packages in 1.86s
+Prepared 7 packages in 22.16s
+░░░░░░░░░░░░░░░░░░░░ [0/29] Installing wheels...                                                                                                                                                                                                                                        warning: Failed to hardlink files; falling back to full copy. This may lead to degraded performance.
+         If the cache and target directories are on different filesystems, hardlinking may not be supported.
+         If this is intentional, set `export UV_LINK_MODE=copy` or use `--link-mode=copy` to suppress this warning.
+Installed 29 packages in 33.69s
+ + filelock==3.16.1
+ + fsspec==2024.10.0
+ + jinja2==3.1.4
+ + markupsafe==2.1.5
+ + mpmath==1.3.0
+ + networkx==3.4.2
+ + numpy==2.1.2
+ + nvidia-cublas-cu12==12.8.3.14
+ + nvidia-cuda-cupti-cu12==12.8.57
+ + nvidia-cuda-nvrtc-cu12==12.8.61
+ + nvidia-cuda-runtime-cu12==12.8.57
+ + nvidia-cudnn-cu12==9.8.0.87
+ + nvidia-cufft-cu12==11.3.3.41
+ + nvidia-cufile-cu12==1.13.0.11
+ + nvidia-curand-cu12==10.3.9.55
+ + nvidia-cusolver-cu12==11.7.2.55
+ + nvidia-cusparse-cu12==12.5.7.53
+ + nvidia-cusparselt-cu12==0.6.3
+ + nvidia-nccl-cu12==2.26.2
+ + nvidia-nvjitlink-cu12==12.8.61
+ + nvidia-nvtx-cu12==12.8.55
+ + pillow==11.0.0
+ + pytorch-triton==3.3.0+git96316ce5
+ + setuptools==70.2.0
+ + sympy==1.13.3
+ + torch==2.8.0.dev20250323+cu128
+ + torchaudio==2.6.0.dev20250323+cu128
+ + torchvision==0.22.0.dev20250323+cu128
+ + typing-extensions==4.12.2
+```
+The toml file:
+```
+[project]
+name = "project"
+version = "0.1.0"
+requires-python = ">=3.12.0"
+```
+
+Trying to run:
+```
+import torch
+print(torch.__version__)
+print(torch.version.cuda)
+print(torch.cuda.is_available())
+print(torch.zeros(1).cuda())
+```
+results in:
+```
+2.8.0.dev20250323+cu128
+12.8
+False
+Traceback (most recent call last):
+  File "/media/alnprd/New Volume/repos/learn/torch-learn/test.py", line 6, in <module>
+    print(torch.zeros(1).cuda())
+          ^^^^^^^^^^^^^^^^^^^^^
+  File "/media/alnprd/New Volume/repos/learn/torch-learn/.venv/lib/python3.12/site-packages/torch/cuda/__init__.py", line 372, in _lazy_init
+    torch._C._cuda_init()
+RuntimeError: No CUDA GPUs are available
+```
+
+### Platform
+
+Ubuntu 22.04.5 LTS
+
+### Version
+
+uv 0.6.6
+
+### Python version
+
+Python 3.12.9
+
+---
+
+_Label `bug` added by @aleenprd on 2025-03-23 22:26_
+
+---
+
+_Comment by @charliermarsh on 2025-03-23 22:28_
+
+Sorry, I would need more information to help you here. How are you installing Torch? What is the exact set of commands you're running? Are you using any configuration? (uv-or-not shouldn't matter here. It's just the Torch version that matters.)
+
+---
+
+_Label `bug` removed by @charliermarsh on 2025-03-23 22:28_
+
+---
+
+_Label `needs-mre` added by @charliermarsh on 2025-03-23 22:28_
+
+---
+
+_Comment by @aleenprd on 2025-03-23 22:32_
+
+> Sorry, I would need more information to help you here. How are you installing Torch? What is the exact set of commands you're running? Are you using any configuration? (uv-or-not shouldn't matter here. It's just the Torch version that matters.)
+
+hey I just edited my response. To mention, again, I installed Torch directly with pip in the machine (so the same command minus uv) and it works just fine, from the same location on my pc.
+
+Also, I am trying to run, of course, from the activated environment.
+
+---
+
+_Comment by @zanieb on 2025-03-23 22:35_
+
+What's the torch version pip installs?
+
+---
+
+_Comment by @aleenprd on 2025-03-23 22:39_
+
+> What's the torch version pip installs?
+
+2.8.0.dev20250323+cu128
+
+---
+
+_Comment by @samypr100 on 2025-03-24 00:19_
+
+What are the steps followed with `pip` and what packages does it install? Are you using a fresh isolated pip environment?
+
+---
+
+_Comment by @aleenprd on 2025-03-24 07:00_
+
+> What are the steps followed with `pip` and what packages does it install? Are you using a fresh isolated pip environment?
+
+Didn't I post everything? 
+
+---
+
+_Comment by @zanieb on 2025-04-01 18:28_
+
+@aleenprd you showed `uv pip` but not `pip`?
+
+---
+
+_Comment by @aleenprd on 2025-04-01 18:43_
+
+I said it works with pip but not uv pip. Anyhow, changed the entire rig, not experiencing this issue anymore 
+
+---
+
+_Comment by @zanieb on 2025-04-01 19:56_
+
+Yeah but we want the logs of it "working" so we can see the difference. It's working on a different machine?
+
+---
+
+_Comment by @aleenprd on 2025-04-01 22:02_
+
+I see. My bad. If I remember I will try again in that machine and let you know here. Thanks 😊 
+
+---
+
+_Comment by @zanieb on 2025-04-01 22:04_
+
+Thanks!
+
+Closing for now. Feel free to let us know if you need more help.
+
+---
+
+_Closed by @zanieb on 2025-04-01 22:04_
+
+---
+
+_Comment by @linaMallek on 2025-07-10 10:25_
+
+did u found any solution ??
+
+---
+
+_Comment by @aleenprd on 2025-07-10 10:28_
+
+Hey no I just changed the entire hardware
+
+---

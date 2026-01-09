@@ -1,0 +1,88 @@
+---
+number: 11708
+title: "Authentication fails with `uv add` command because the authentication information for the index URL is removed from pyproject.toml"
+type: issue
+state: open
+author: Di-Is
+labels:
+  - question
+assignees: []
+created_at: 2025-02-22T12:26:43Z
+updated_at: 2025-02-23T23:53:32Z
+url: https://github.com/astral-sh/uv/issues/11708
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# Authentication fails with `uv add` command because the authentication information for the index URL is removed from pyproject.toml
+
+---
+
+_Issue opened by @Di-Is on 2025-02-22 12:26_
+
+
+## Overview
+When adding a package from a private GitLab registry using uv add with a PAT embedded in the index URL (and storing credentials in the keyring), the package is initially installed successfully. However, running uv sync later results in a dependency resolution error due to missing authentication credentials.
+
+## Reproduction Steps
+
+### Adding the Package
+The following command was used to add the package. It includes the PAT (`__token__` in the URL) and stores the credentials in the keyring.
+
+```
+$ uv add private-package --keyring-provider "subprocess" --index gitlab=https://__token__@gitlab.com/api/v4/projects/xxxxxxxx/packages/pypi/simple
+``` 
+
+### Syncing the Environment
+After the package was added, executing the command below to update the environment resulted in the following error:
+
+```bash
+$ uv sync -U --keyring-provider "subprocess"
+  × No solution found when resolving dependencies:
+  ╰─▶ Because private-package was not found in the package registry and your project depends on private-package, we can conclude that your project's requirements are unsatisfiable.
+      hint: An index URL (https://gitlab.com/api/v4/projects/xxxxxxxx/packages/pypi/simple) could not be queried due to a lack of valid authentication credentials (401 Unauthorized).
+```
+
+### Identifying the Cause
+Upon examining the generated pyproject.toml, it was found that the authentication token (`__token__`) was removed from the index URL, which prevents the keyring from providing the necessary credentials:
+
+```toml
+[project]
+name = "app"
+version = "0.1.0"
+requires-python = ">=3.12"
+dependencies = [
+    "private-package",
+]
+
+[tool.uv.sources]
+private-package = { index = "gitlab" }
+
+[[tool.uv.index]]
+name = "gitlab"
+url = "https://gitlab.com/api/v4/projects/xxxxxxxx/packages/pypi/simple"
+```
+
+### Question
+Is this behavior intended?
+If so, it would be helpful to display a warning message indicating that the credentials have been removed, so that users are aware of the change.
+(Apologies if this is already documented or has been reported in another issue.)
+
+### Platform
+
+Darwin 23.5.0 arm64
+
+### Version
+
+uv 0.6.2 (6d3614eec 2025-02-19)
+
+---
+
+_Label `question` added by @Di-Is on 2025-02-22 12:26_
+
+---
+
+_Comment by @charliermarsh on 2025-02-23 23:53_
+
+Yes, it's correct. We never write plaintext credentials to a `pyproject.toml` or `uv.lock`. You can provide them via environment variables or similar. See: https://docs.astral.sh/uv/configuration/indexes/#providing-credentials.
+
+---

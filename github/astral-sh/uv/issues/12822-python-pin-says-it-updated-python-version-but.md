@@ -1,0 +1,66 @@
+---
+number: 12822
+title: "python pin says it updated .python-version but didn't"
+type: issue
+state: open
+author: avilaton
+labels:
+  - question
+assignees: []
+created_at: 2025-04-10T19:03:22Z
+updated_at: 2025-04-11T18:34:02Z
+url: https://github.com/astral-sh/uv/issues/12822
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# python pin says it updated .python-version but didn't
+
+---
+
+_Issue opened by @avilaton on 2025-04-10 19:03_
+
+### Summary
+
+I don't know how this could possibly happen, but it is very clearly incorrect
+```
+> uv python pin 3.13.2
+Updated `.python-version` from `3.13.3` -> `3.13.2`
+> cat backend/.python-version
+3.13.3
+```
+
+### Platform
+
+Darwin 24.3.0 arm64
+
+### Version
+
+uv 0.6.14 (a4cec56dc 2025-04-09)
+
+### Python version
+
+_No response_
+
+---
+
+_Label `bug` added by @avilaton on 2025-04-10 19:03_
+
+---
+
+_Assigned to @Gankra by @Gankra on 2025-04-10 20:11_
+
+---
+
+_Comment by @Gankra on 2025-04-10 20:13_
+
+Is there a `.python-version` in the current working directory too, which got the update? (the displayed name there should be a relative path to the file edited)
+
+---
+
+_Label `bug` removed by @Gankra on 2025-04-11 18:34_
+
+---
+
+_Label `question` added by @Gankra on 2025-04-11 18:34_
+
+---

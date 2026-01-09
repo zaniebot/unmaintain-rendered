@@ -1,0 +1,196 @@
+---
+number: 1332
+title: "[feature-request] enhanced first-party detection"
+type: issue
+state: open
+author: smackesey
+labels:
+  - isort
+  - core
+assignees: []
+created_at: 2022-12-22T11:55:03Z
+updated_at: 2023-08-03T19:56:54Z
+url: https://github.com/astral-sh/ruff/issues/1332
+synced_at: 2026-01-07T13:12:14-06:00
+---
+
+# [feature-request] enhanced first-party detection
+
+---
+
+_Issue opened by @smackesey on 2022-12-22 11:55_
+
+Probably the most common use-case for marking a package as a "known first party" import is when you have an associated test package. In the world of `pytest`, the associated test package is typically called `<TARGET_PKG>_tests`. It would be cool if auto-first-party detection was smart enough to understand this.
+
+For example:
+
+```
+### foo_tests/test_foo.py
+
+from foo import bar  # this import should be first-party because it's from `foo`
+```
+
+This could be implemented by a `tool.ruff.isort` option called something like `first-party-grouping-suffixes` (certainly not wedded to the name). The idea would be that any package matching a suffix is treated identically to its "stem" for purposes of first-party grouping. So:
+
+```
+[tool.ruff.isort]
+
+# This causes any package matching "<STEM>_tests" to be treated identically to "<STEM>" for the purposes of first-party grouping.
+first-party-grouping-suffixes = ["_tests"]
+```
+
+IMO `["_tests"]` would be a reasonable default for this option. There might also be other suffixes to include used by other test frameworks.
+
+
+---
+
+_Label `enhancement` added by @charliermarsh on 2022-12-23 03:56_
+
+---
+
+_Comment by @andersk on 2022-12-26 01:48_
+
+`foo` is detected as first-party anyway as long as it exists in one of the paths in [`src`](https://github.com/charliermarsh/ruff#src) (defaults to `["."]`, for the typical case where `foo` is in the same directory as `pyproject.toml`). Is that not sufficient? It seems better for this classification to rely on facts than heuristics.
+
+---
+
+_Comment by @smackesey on 2022-12-26 13:35_
+
+Hi @andersk, we disagree here.
+
+>foo is detected as first-party anyway as long as it exists in one of the paths in [src](https://github.com/charliermarsh/ruff#src)
+
+Unless something changed very recently, this is only true if the package is a direct child of one of the paths on src.
+
+>the typical case where foo is in the same directory as pyproject.toml
+
+While this might be typical, it is not necessarily the most common design for large projects using monorepos. I work on the large monorepo [Dagster](https://github.com/dagster-io/dagster). Our python packages are not siblings of `pyproject.toml`.
+
+> It seems better for this classification to rely on facts than heuristics.
+
+There's nothing ambiguous about a setting that tells ruff to classify packages as first-party depending on a suffix.
+
+Also, I think by your definition Ruff is already using a heuristic that works 99% of the time for first-party detection (i.e. for non-namespace packages), which is to trace `__init__.py` files up the directory hierarchy to identify the root package for a module, and match against this root package to determine first-party status. The feature requested here is an addition to that functionality.
+
+FWIW, I requested that functionality specifically to support situations where there are many python packages in a monorepo but one doesn't want to add a `pyproject.toml` for each one. I can understand an argument in favor of requiring explicit config here, but that is just a philosophical difference-- in the vast majority of cases, if I have `foo_tests` next to `foo`, `foo` should be first-party in `foo_tests`. It makes sense to achieve this with minimal configuration using a clear rule, given that first-party auto-detection already happens.
+
+---
+
+_Comment by @andersk on 2022-12-26 19:27_
+
+My goal here isn’t to agree or disagree, just to figure out whether the existing mechanisms are sufficient and where they fall short.
+
+Looking at your monorepo, it seems to me that you should be able to configure
+
+```toml
+[tool.ruff]
+src = [
+    "docs/dagit-screenshot",
+    "examples/*",
+    "helm/dagster/schema",
+    "integration_tests/python_modules/*",
+    "python_modules/*",
+    "python_modules/libraries/*",
+]
+```
+
+which seems manageable?
+
+Meanwhile, your proposed `_tests` heuristic would fail to capture that `foo` should also be first-party within _itself_.
+
+---
+
+_Comment by @smackesey on 2022-12-27 21:31_
+
+The `src` config you posted would have the effect of making all packages captured by `src` first-party in every other package, which I'm trying to avoid-- only `foo` should be first-party inside of `foo`.
+
+>Meanwhile, your proposed _tests heuristic would fail to capture that foo should also be first-party within itself.
+
+See my previous comment-- ruff already detects `foo` is first-party within itself:
+
+>I think by your definition Ruff is already using a heuristic that works 99% of the time for first-party detection (i.e. for non-namespace packages), which is to trace __init__.py files up the directory hierarchy to identify the root package for a module, and match against this root package to determine first-party status. The feature requested here is an addition to that functionality.
+
+
+---
+
+_Comment by @andersk on 2022-12-27 21:53_
+
+Ah, my apologies for misreading—I hadn’t noticed that update (#1266).
+
+It seems to me that if we’re going to trace up the `__init__.py` chain to find `project-root/foo`, then we might as well detect `project-root/*.py` and `project-root/*/__init__.py` as first-party, not just `project-root/foo` itself. That would solve your issue, right?
+
+---
+
+_Label `enhancement` removed by @charliermarsh on 2022-12-31 18:13_
+
+---
+
+_Label `core` added by @charliermarsh on 2022-12-31 18:13_
+
+---
+
+_Comment by @condemil on 2023-03-02 06:29_
+
+I have a similar problem with bazel monorepo setup, where `pyproject.toml` file is located in the root of the monorepo. I don't have `__init__.py` files, but project root could be identified by `BUILD` or `BUILD.bazel` files. Probably the solution could be a configuration variable in `pyproject.toml` that allows to specify filenames that marks project root?
+
+Example (variable name could be better):
+
+```toml
+[tool.ruff]
+root-file = ["BUILD", "BUILD.bazel"]
+```
+
+Example structure:
+
+```
+.
+├── app
+│   └── project1
+│       └── backend
+│           ├── BUILD.bazel
+│           └── main.py
+├── lib
+│   └── util
+│       ├── BUILD.bazel
+│       └── log.py
+└── pyproject.toml
+```
+
+---
+
+_Comment by @charliermarsh on 2023-03-02 16:10_
+
+@condemil - Oh yeah that's an interesting use-case. Is it possible to solve with `src`, and wildcarding? Like:
+
+```
+[tool.ruff]
+src = [
+  "app/*",
+  "lib/*",
+]
+```
+
+---
+
+_Comment by @condemil on 2023-03-02 16:56_
+
+Unfortunately, the solution you mentioned isn't working. I don't know the exact reason, but I may guess it is because of the following:
+
+1. The `"app/*"` wildcard doesn't support folding, and in monorepo the project could be under `app/project1/subproject`. Folding could be solved by introducing some wildcard pattern like `"app/**/*"`.
+2. When projects is specified under `src`, all of those is threated as a first-party imports for each other instead of being threated as a third-party imports.
+
+---
+
+_Comment by @charliermarsh on 2023-03-02 17:05_
+
+Ah yeah that makes sense -- I didn't realize that you wanted each package to consider each other package as third-party (which is reasonable but not always the case for monorepos). Lemme try a few things out before I make any other suggestions.
+
+---
+
+_Referenced in [astral-sh/ruff#6190](../../astral-sh/ruff/issues/6190.md) on 2023-07-31 09:46_
+
+---
+
+_Label `isort` added by @charliermarsh on 2023-08-03 19:56_
+
+---

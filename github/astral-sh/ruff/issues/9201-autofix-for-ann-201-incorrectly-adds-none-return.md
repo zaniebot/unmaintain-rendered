@@ -1,0 +1,71 @@
+---
+number: 9201
+title: "Autofix for ANN 201 incorrectly adds `None` Return Type"
+type: issue
+state: closed
+author: max-muoto
+labels:
+  - bug
+assignees: []
+created_at: 2023-12-19T17:57:24Z
+updated_at: 2023-12-20T21:22:32Z
+url: https://github.com/astral-sh/ruff/issues/9201
+synced_at: 2026-01-07T13:12:15-06:00
+---
+
+# Autofix for ANN 201 incorrectly adds `None` Return Type
+
+---
+
+_Issue opened by @max-muoto on 2023-12-19 17:57_
+
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+
+Let's say we have a function that has no ability to return:
+
+```python
+def foo():
+    raise ValueError
+```
+
+The correct return type for this would be [`NoReturn`](https://docs.python.org/3/library/typing.html#typing.NoReturn). However, the autofix for ANN 201, adds `None` here as the return type instead.
+
+Ruff Version: `0.1.8`
+Command: `ruff check . --fix --unsafe-fixes`.
+
+
+---
+
+_Comment by @charliermarsh on 2023-12-19 21:06_
+
+Nice, makes sense. Thank you!
+
+---
+
+_Label `bug` added by @charliermarsh on 2023-12-19 21:06_
+
+---
+
+_Referenced in [astral-sh/ruff#9206](../../astral-sh/ruff/pulls/9206.md) on 2023-12-20 04:50_
+
+---
+
+_Closed by @charliermarsh on 2023-12-20 05:06_
+
+---
+
+_Comment by @max-muoto on 2023-12-20 21:22_
+
+Thanks @charliermarsh! Really appreciate the quick fix!
+
+---

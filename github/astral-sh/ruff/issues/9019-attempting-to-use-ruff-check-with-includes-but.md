@@ -1,0 +1,83 @@
+---
+number: 9019
+title: "Attempting to use `ruff check` with includes, but without specifying a directory, picks up nested projects"
+type: issue
+state: open
+author: eli-schwartz
+labels: []
+assignees: []
+created_at: 2023-12-06T02:25:22Z
+updated_at: 2025-04-16T10:03:38Z
+url: https://github.com/astral-sh/ruff/issues/9019
+synced_at: 2026-01-07T13:12:15-06:00
+---
+
+# Attempting to use `ruff check` with includes, but without specifying a directory, picks up nested projects
+
+---
+
+_Issue opened by @eli-schwartz on 2023-12-06 02:25_
+
+... such as git worktree clones.
+
+
+Given a .ruff.toml with the contents:
+
+```
+include = ["mesonbuild/**/*.py"]
+```
+
+```
+$ git worktree add -d bisect/
+$ ruff check
+```
+
+Every possible error is listed twice, once for the mesonbuild/ directory and once for the bisect/mesonbuild/ directory.
+
+This only seems to happen if the worktree has a .ruff.toml as well (which it will if it is tracked in git).
+
+Using `ruff check mesonbuild/` the traditional way continues to work fine.
+
+---
+
+_Comment by @MichaReiser on 2023-12-06 02:36_
+
+Can you try using `include = ["/mesonbuild/**/*.py"] to make it explicit, that the pattern should only match `mesonbuild` directories at the root?
+
+---
+
+_Comment by @charliermarsh on 2023-12-06 02:43_
+
+This _sort of_ makes sense given that `include` is only applied at the file level... So we visit each file within `bisect/mesonbuild`, and each of those files will resolve to the configuration at `bisect/mesonbuild/.ruff.toml`, which says that they should be included. (I'm not saying it's the right behavior, but I can at least understand why it's happening.)
+
+---
+
+_Comment by @eli-schwartz on 2023-12-06 02:48_
+
+That's actually the first thing I tried as a wild guess.
+
+```
+warning: No Python files found under the given path(s)
+```
+
+Afterwards I realized that it was conditional on the subdirectory also having a .ruff.toml, which made me rethink whether that was related at all.
+
+---
+
+_Referenced in [astral-sh/ruff#12757](../../astral-sh/ruff/issues/12757.md) on 2024-08-08 16:39_
+
+---
+
+_Comment by @AAraKKe on 2025-04-16 07:50_
+
+I think it would make a lot of sense when ruff navigates the files to format/lint to allow excluding worktrees. Those should be very easily detectable since we just need to check the `.git` folder or even ask git about them. People use worktrees often to navigate from one state of the project to another one and it seems rather straightforward to have ruff detecting them.
+
+I cannot think of an usecase where you would like to format every python file in all your worktrees but, in case this is something you might want to do, this could be configurable with the default being to ignore them as they are, in essence, separate projects.
+
+---
+
+_Comment by @johnslavik on 2025-04-16 10:03_
+
+What I do is put my worktrees in a folder that's git-ignored (globally, via [excludesfile](https://git-scm.com/docs/gitignore)). But I use worktrees only to peep into other branches, not to work on them.
+
+---

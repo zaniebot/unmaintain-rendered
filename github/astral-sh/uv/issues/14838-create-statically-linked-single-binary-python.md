@@ -1,0 +1,49 @@
+---
+number: 14838
+title: "create statically linked single binary python applications similar to bun & deno"
+type: issue
+state: closed
+author: kskarthik
+labels:
+  - enhancement
+assignees: []
+created_at: 2025-07-23T07:42:07Z
+updated_at: 2025-07-23T08:02:57Z
+url: https://github.com/astral-sh/uv/issues/14838
+synced_at: 2026-01-07T13:12:19-06:00
+---
+
+# create statically linked single binary python applications similar to bun & deno
+
+---
+
+_Issue opened by @kskarthik on 2025-07-23 07:42_
+
+### Summary
+
+I believe this would be a great addition. It solves the distribution problem of python applications.
+
+The python interpreter & the application dependencies can be bundled together in a single binary
+
+Bun & Deno compile commands are a good examples to loot at.
+
+### References
+
+- https://bun.sh/docs/bundler/executables
+- https://docs.deno.com/runtime/reference/cli/compile/
+
+---
+
+_Label `enhancement` added by @kskarthik on 2025-07-23 07:42_
+
+---
+
+_Closed by @konstin on 2025-07-23 08:02_
+
+---
+
+_Comment by @konstin on 2025-07-23 08:02_
+
+Duplicate of #5802
+
+---

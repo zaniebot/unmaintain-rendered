@@ -1,0 +1,44 @@
+---
+number: 10134
+title: Is it possible to use jfrog remote repository to install python
+type: issue
+state: closed
+author: shireenrao
+labels:
+  - question
+assignees: []
+created_at: 2024-12-24T00:57:11Z
+updated_at: 2024-12-24T01:12:50Z
+url: https://github.com/astral-sh/uv/issues/10134
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# Is it possible to use jfrog remote repository to install python
+
+---
+
+_Issue opened by @shireenrao on 2024-12-24 00:57_
+
+Is there a way to configure where python is getting installed from? It would be great if there was a way to tell uv to use a [jfrog artifactory remote repository](https://jfrog.com/help/r/jfrog-artifactory-documentation/remote-repositories) to install different versions of python similar to how one can set the index-url either in the pyproject.toml or uv.toml file for pip packages.
+
+---
+
+_Comment by @zanieb on 2024-12-24 00:59_
+
+There is [`UV_PYTHON_INSTALL_MIRROR`](https://docs.astral.sh/uv/reference/settings/#python-install-mirror)
+
+---
+
+_Label `question` added by @zanieb on 2024-12-24 00:59_
+
+---
+
+_Comment by @shireenrao on 2024-12-24 01:12_
+
+That is exactly what I was looking for. Thank you. I will close the issue.
+
+---
+
+_Closed by @shireenrao on 2024-12-24 01:12_
+
+---

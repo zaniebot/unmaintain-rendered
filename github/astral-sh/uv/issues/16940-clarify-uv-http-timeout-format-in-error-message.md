@@ -1,0 +1,144 @@
+---
+number: 16940
+title: Clarify UV_HTTP_TIMEOUT format in error message
+type: issue
+state: open
+author: wrp
+labels:
+  - good first issue
+  - error messages
+assignees: []
+created_at: 2025-12-02T19:43:18Z
+updated_at: 2025-12-15T02:24:27Z
+url: https://github.com/astral-sh/uv/issues/16940
+synced_at: 2026-01-07T13:12:19-06:00
+---
+
+# Clarify UV_HTTP_TIMEOUT format in error message
+
+---
+
+_Issue opened by @wrp on 2025-12-02 19:43_
+
+# Feature Request: Clarify UV_HTTP_TIMEOUT format in error message
+
+## Problem
+
+The error message for network timeouts is misleading about the expected format:
+
+```
+Failed to download distribution due to network timeout.
+Try increasing UV_HTTP_TIMEOUT (current value: 30s).
+```
+
+This suggests users should set values like `120s` or `180s`, but the actual required format is a plain integer representing seconds.
+
+## Current Behavior
+
+**Error message shows:**
+```
+current value: 30s
+```
+
+**Users naturally try:**
+```bash
+export UV_HTTP_TIMEOUT=120s  # Doesn't work
+```
+
+**But must use:**
+```bash
+export UV_HTTP_TIMEOUT=120  # Correct - integer seconds
+```
+
+## Proposed Solution
+
+### Option 1: Clarify the error message (recommended)
+```
+Failed to download distribution due to network timeout (30s).
+Try increasing UV_HTTP_TIMEOUT to a larger integer value (in seconds).
+Example: export UV_HTTP_TIMEOUT=120
+```
+
+### Option 2: Support duration suffixes
+Accept values with suffixes:
+- `120` or `120s` (seconds)
+- `2m` (minutes = 120 seconds)
+
+This follows common CLI conventions (Docker timeout flags, curl --max-time, etc.)
+
+## Impact
+
+The misleading format causes user confusion - the error displays `30s` which implies the `s` suffix is part of the format, leading users to try `UV_HTTP_TIMEOUT=120s` which fails.
+
+## Environment
+
+- uv version: (latest as of 2025-11-29)
+- OS: Multiple (affects all platforms)
+
+
+---
+
+_Label `good first issue` added by @zanieb on 2025-12-02 19:49_
+
+---
+
+_Label `error messages` added by @zanieb on 2025-12-02 19:49_
+
+---
+
+_Comment by @anoop-rehman on 2025-12-02 22:02_
+
+Hi! I'm a first-time contributor and I'd love to take this on. I'll create a quick pr for Option 1 right now.
+
+---
+
+_Comment by @zanieb on 2025-12-02 22:43_
+
+I think I'd either strip the trailing `s` at parse time (i.e., just accept it) or emit a special error message when the value ends in `s`. I don't think we should accept arbitrary time units, though it'd probably be easy with Jiff I think the complexity isn't merited here.
+
+We could also improve the original hint, yeah, I'd probably style it different for consistency with the rest of uv... maybe
+
+> Try increasing UV_HTTP_TIMEOUT to a larger integer value (in seconds), e.g., `UV_HTTP_TIMEOUT=60`.
+
+---
+
+_Comment by @anoop-rehman on 2025-12-02 22:50_
+
+Thanks @zanieb for the advice! ~~Would you prefer stripping the trailing ``s`` or emitting the improved error message you suggested (or both)? I'm leaning towards just emitting the improved error message as it seems like the simplest fix.~~
+
+EDIT: Ohh I think I misunderstood your comment - what I'm envisioning now is two changes:
+- Update the original hint from ``Try increasing UV_HTTP_TIMEOUT (current value: {}s).`` to ``Try increasing UV_HTTP_TIMEOUT to a larger integer value (in seconds), e.g., UV_HTTP_TIMEOUT=60``
+- At parse time, emit a special error message if the UV_HTTP_TIMEOUT value ends in ``s``
+
+Please let me know if there's anything I'm not quite understanding correctly!
+
+
+---
+
+_Comment by @samypr100 on 2025-12-03 03:37_
+
+@anoop-rehman if it helps, might be worth starting with adjusting the existing error message item 1 and we can follow up / iterate on item 2 separately
+
+---
+
+_Referenced in [astral-sh/uv#16952](../../astral-sh/uv/pulls/16952.md) on 2025-12-03 03:53_
+
+---
+
+_Referenced in [astral-sh/uv#16953](../../astral-sh/uv/pulls/16953.md) on 2025-12-03 04:03_
+
+---
+
+_Comment by @anoop-rehman on 2025-12-03 04:31_
+
+@samypr100 Good point! I've opened a pr #16953 for just item 1 by itself for now. It passed all the checks, please let me know if it looks ok.
+
+Should I open a separate issue to discuss how to best do item 2? I have a draft pr for it that I was working on here: #16952
+
+---
+
+_Comment by @tysoncung on 2025-12-15 02:24_
+
+I noticed this issue. Have you tried checking the error logs or console output? That might help narrow down the root cause. I'd be happy to help investigate if you can share more details about your environment (OS, version, etc.).
+
+---

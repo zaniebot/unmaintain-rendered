@@ -1,0 +1,85 @@
+---
+number: 1053
+title: "`flake8-annotations` rules do not ignore functions with type overloads"
+type: issue
+state: closed
+author: joouha
+labels:
+  - bug
+assignees: []
+created_at: 2022-12-05T12:03:05Z
+updated_at: 2022-12-06T17:46:40Z
+url: https://github.com/astral-sh/ruff/issues/1053
+synced_at: 2026-01-07T13:12:14-06:00
+---
+
+# `flake8-annotations` rules do not ignore functions with type overloads
+
+---
+
+_Issue opened by @joouha on 2022-12-05 12:03_
+
+Hello,
+
+Checking the following using flake8-annotations gives no output when a function is typed using overloads:
+
+```python
+from typing import overload
+
+@overload
+def myfunc(i: int) -> "int":
+    ...
+
+@overload
+def myfunc(i: "str") -> "str":
+    ...
+
+def myfunc(i):
+    return i
+```
+
+However, ruff warns of missing types in the overloaded function:
+
+```bash
+$ ruff --select=ANN example.py
+
+Found 2 error(s).
+example.py:14:1: ANN201 Missing return type annotation for public function `myfunc`
+example.py:14:12: ANN001 Missing type annotation for function argument `i`
+```
+
+**Edit:** It looks like ANN201 : ANN206 are affected by this
+
+---
+
+_Label `enhancement` added by @charliermarsh on 2022-12-05 14:10_
+
+---
+
+_Label `enhancement` removed by @charliermarsh on 2022-12-05 14:44_
+
+---
+
+_Label `bug` added by @charliermarsh on 2022-12-05 14:44_
+
+---
+
+_Comment by @charliermarsh on 2022-12-05 14:44_
+
+Gonna call this a bug since flake8-annotations seems to handle it just fine.
+
+---
+
+_Comment by @charliermarsh on 2022-12-06 05:13_
+
+Will fix this tomorrow.
+
+---
+
+_Referenced in [astral-sh/ruff#1110](../../astral-sh/ruff/pulls/1110.md) on 2022-12-06 17:46_
+
+---
+
+_Closed by @charliermarsh on 2022-12-06 17:46_
+
+---

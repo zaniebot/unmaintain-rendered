@@ -1,0 +1,100 @@
+---
+number: 3242
+title: Allow the name of PossibleValue derived by ArgEnum to be specified
+type: issue
+state: closed
+author: pwinckles
+labels:
+  - C-enhancement
+  - A-derive
+assignees: []
+created_at: 2022-01-02T15:36:17Z
+updated_at: 2022-01-11T18:22:35Z
+url: https://github.com/clap-rs/clap/issues/3242
+synced_at: 2026-01-07T13:12:19-06:00
+---
+
+# Allow the name of PossibleValue derived by ArgEnum to be specified
+
+---
+
+_Issue opened by @pwinckles on 2022-01-02 15:36_
+
+### Please complete the following tasks
+
+- [X] I have searched the [discussions](https://github.com/clap-rs/clap/discussions)
+- [X] I have searched the existing issues
+
+### Clap Version
+
+3.0.0
+
+### Describe your use case
+
+I have an enum that I'd like to derive with `ArgEnum`. However, `ArgEnum` only allows the possible value names to be derived from the name of the enum variant. This is problematic because the values I'd like to use are not valid enum variant names. Furthermore, the `alias` mechanism does allow me to specify the values I want, but the values do not appear in the generated documentation.
+
+Contrived example:
+
+```rust
+#[derive(ArgEnum)]
+enum Example {
+    #[clap(alias = "1")]
+    One,
+    #[clap(alias = "2")]
+    Two,
+}
+```
+
+### Describe the solution you'd like
+
+I would like to be able to specify the name of the variant, and it is these values that should appear in the documentation. Something like the following:
+
+```rust
+#[derive(ArgEnum)]
+enum Example {
+    #[clap(name = "1")]
+    One,
+    #[clap(name = "2")]
+    Two,
+}
+```
+
+### Alternatives, if applicable
+
+Currently, I'm solving the problem by using `strum` derives, but it would be nice if this worked out of the box.
+
+### Additional Context
+
+_No response_
+
+---
+
+_Label `C-enhancement` added by @pwinckles on 2022-01-02 15:36_
+
+---
+
+_Comment by @epage on 2022-01-03 12:35_
+
+`name` is supported.  I went ahead and added it to the [derive ref](https://github.com/clap-rs/clap/tree/master/examples/derive_ref#possible-value-attributes) because technically it is a "magic" attribute because we default it but any `PossibleValue` method can be used inside of the attribute.
+
+---
+
+_Comment by @pwinckles on 2022-01-03 12:52_
+
+@epage Great! Thank you! I should have tried it. I assumed it wouldn't work because I didn't see it in the docs and I didn't see a `name()` method in the [PossibleValue docs](https://docs.rs/clap/latest/clap/struct.PossibleValue.html) either.
+
+---
+
+_Comment by @epage on 2022-01-03 13:48_
+
+Oh, right.  This is purely a magic attribute because we map `name` to `new`.  I forgot because `Arg` and `App` also have a `name` method.
+
+---
+
+_Closed by @epage on 2022-01-03 13:48_
+
+---
+
+_Label `A-derive` added by @epage on 2022-01-11 18:22_
+
+---

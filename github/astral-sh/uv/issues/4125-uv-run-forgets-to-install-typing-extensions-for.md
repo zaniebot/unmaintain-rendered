@@ -1,0 +1,121 @@
+---
+number: 4125
+title: "`uv run` forgets to install typing_extensions for pydantic"
+type: issue
+state: closed
+author: konstin
+labels:
+  - bug
+  - preview
+assignees: []
+created_at: 2024-06-07T07:08:10Z
+updated_at: 2024-06-10T12:40:53Z
+url: https://github.com/astral-sh/uv/issues/4125
+synced_at: 2026-01-07T13:12:17-06:00
+---
+
+# `uv run` forgets to install typing_extensions for pydantic
+
+---
+
+_Issue opened by @konstin on 2024-06-07 07:08_
+
+```toml
+[project]
+name = "foo"
+version = "0.4.0"
+requires-python = ">=3.12"
+dependencies = [
+    "pydantic >=2.7.1",
+]
+```
+
+foo.py:
+
+```python
+from pydantic import BaseModel
+
+print(BaseModel)
+```
+
+```console
+$ uv run --no-cache-dir foo.py
+warning: `uv run` is experimental and may change without warning.
+Resolved 5 packages in 558ms
+   Built foo @ file:///home/konsti/projects/github-wikidata-bot/foo
+Downloaded 4 packages in 995ms
+Installed 4 packages in 1ms
+ + annotated-types==0.7.0
+ + foo==0.4.0 (from file:///home/konsti/projects/github-wikidata-bot/foo)
+ + pydantic==2.7.3
+ + pydantic-core==2.18.4
+Traceback (most recent call last):
+  File "/home/konsti/projects/github-wikidata-bot/foo/foo.py", line 1, in <module>
+    from pydantic import BaseModel
+  File "/home/konsti/projects/github-wikidata-bot/foo/.venv/lib/python3.12/site-packages/pydantic/__init__.py", line 380, in <module>
+    _getattr_migration = getattr_migration(__name__)
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/konsti/projects/github-wikidata-bot/foo/.venv/lib/python3.12/site-packages/pydantic/_migration.py", line 260, in getattr_migration
+    from .errors import PydanticImportError
+  File "/home/konsti/projects/github-wikidata-bot/foo/.venv/lib/python3.12/site-packages/pydantic/errors.py", line 6, in <module>
+    from typing_extensions import Literal, Self
+ModuleNotFoundError: No module named 'typing_extensions'
+```
+
+`uv pip` correctly installs them
+
+---
+
+_Label `bug` added by @konstin on 2024-06-07 07:08_
+
+---
+
+_Label `preview` added by @konstin on 2024-06-07 07:08_
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2024-06-07 14:42_
+
+---
+
+_Comment by @charliermarsh on 2024-06-07 18:02_
+
+I think this @BurntSushi is a good example of why we need to track markers on dependencies. The lockfile contains:
+
+```toml
+[[distribution]]
+name = "typing-extensions"
+version = "4.12.1"
+source = "registry+https://pypi.org/simple"
+marker = "python_version < '3.9'"
+sdist = { url = "https://files.pythonhosted.org/packages/e8/fb/4217a963512b9646274fe4ce0aebc8ebff09bbb86c458c6163846bb65d9d/typing_extensions-4.12.1.tar.gz", hash = "sha256:915f5e35ff76f56588223f15fdd5938f9a1cf9195c0de25130c627e4d597f6d1", size = 84923 }
+wheels = [{ url = "https://files.pythonhosted.org/packages/b6/53/84a859aaddfe7378a6e5820e864a2d75763e82b6fcbda1a00e92ec620bb7/typing_extensions-4.12.1-py3-none-any.whl", hash = "sha256:6024b58b69089e5a89c347397254e35f1bf02a907728ec7fee9bf0fe837d203a", size = 37250 }]
+```
+
+Because `typing-extensions` is only required for `python_version < '3.9'` _when requested by `annotated-types`_. However, `pydantic` needs it unconditionally.
+
+---
+
+_Referenced in [astral-sh/uv#4137](../../astral-sh/uv/issues/4137.md) on 2024-06-07 18:04_
+
+---
+
+_Referenced in [astral-sh/uv#4136](../../astral-sh/uv/issues/4136.md) on 2024-06-07 21:21_
+
+---
+
+_Referenced in [astral-sh/uv#4157](../../astral-sh/uv/issues/4157.md) on 2024-06-08 01:13_
+
+---
+
+_Referenced in [astral-sh/uv#4166](../../astral-sh/uv/pulls/4166.md) on 2024-06-08 18:08_
+
+---
+
+_Closed by @charliermarsh on 2024-06-10 12:40_
+
+---
+
+_Closed by @charliermarsh on 2024-06-10 12:40_
+
+---

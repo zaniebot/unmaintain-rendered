@@ -1,0 +1,58 @@
+---
+number: 13660
+title: Build ruff fails on FreeBSD
+type: issue
+state: closed
+author: donnex
+labels:
+  - question
+assignees: []
+created_at: 2024-10-07T11:55:29Z
+updated_at: 2024-10-07T13:14:59Z
+url: https://github.com/astral-sh/ruff/issues/13660
+synced_at: 2026-01-07T13:12:15-06:00
+---
+
+# Build ruff fails on FreeBSD
+
+---
+
+_Issue opened by @donnex on 2024-10-07 11:55_
+
+Right now it's not possible to compile `ruff` on FreeBSD.
+
+The build fails on `tikv-jemalloc-sys`.
+
+This is problematic since `pip` tries to download and compile `ruff` if it's listed as a project dependency and this fails on FreeBSD.
+
+This is probably the same issue that was recently fixed in `uv` at https://github.com/astral-sh/uv/pull/7780
+
+[ruff-freebsd-build.log](https://github.com/user-attachments/files/17278006/ruff-freebsd-build.log) 
+
+---
+
+_Comment by @MichaReiser on 2024-10-07 12:29_
+
+It seems that we intentionally enabled jemalloc on freebsd in the past. See https://github.com/astral-sh/ruff/pull/2965
+
+---
+
+_Comment by @MichaReiser on 2024-10-07 12:32_
+
+I wonder if the error your seeing is because `gmake` isn't installed. Can you try running /installing `gmake` ?
+
+---
+
+_Label `question` added by @MichaReiser on 2024-10-07 12:32_
+
+---
+
+_Comment by @donnex on 2024-10-07 13:14_
+
+You are absolutely correct. The fault was all mine because of `gmake` missing from my systems. Thanks :pray: 
+
+---
+
+_Closed by @donnex on 2024-10-07 13:14_
+
+---

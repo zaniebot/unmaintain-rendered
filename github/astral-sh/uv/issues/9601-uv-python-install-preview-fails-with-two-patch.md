@@ -1,0 +1,100 @@
+---
+number: 9601
+title: uv python install --preview fails with two patch versions in the same minor version
+type: issue
+state: closed
+author: jooon
+labels:
+  - bug
+assignees: []
+created_at: 2024-12-03T09:44:16Z
+updated_at: 2024-12-03T15:33:20Z
+url: https://github.com/astral-sh/uv/issues/9601
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# uv python install --preview fails with two patch versions in the same minor version
+
+---
+
+_Issue opened by @jooon on 2024-12-03 09:44_
+
+```
+$ uv --version
+uv 0.5.5 (b7564f403 2024-12-03)
+$ uv python uninstall --all
+Searching for Python installations
+No Python installations found
+$ ls -l ~/.local/bin/python*
+ls: cannot access '/home/jon/.local/bin/python*': No such file or directory
+$ uv python install --preview 3.12.7 3.12.6
+Installed 2 versions in 7.15s
+ + cpython-3.12.6-linux-x86_64-gnu (python3.12)
+ + cpython-3.12.7-linux-x86_64-gnu
+error: Failed to install cpython-3.12.7-linux-x86_64-gnu
+  Caused by: Executable already exists at `/home/jon/.local/bin/python3.12` but is not managed by uv; use `--force` to replace it
+```
+
+
+---
+
+_Comment by @jooon on 2024-12-03 11:44_
+
+Correct behavior IMHO is to pick the highest patch version within the minor version. This matches what happens when you install them one by one.
+
+Install symlink for 3.12.6, then upgrade the symlink to 3.12.7
+```
+$ uv python uninstall --all
+Searching for Python installations
+No Python installations found
+$ uv python install --preview 3.12.6
+Installed Python 3.12.6 in 4.01s
+ + cpython-3.12.6-linux-x86_64-gnu (python3.12)
+$ uv python install --preview 3.12.7
+Installed Python 3.12.7 in 3.91s
+ + cpython-3.12.7-linux-x86_64-gnu (python3.12)
+```
+
+Install symlink for 3.12.7, then keep it when installing 3.12.6
+```
+$ uv python uninstall --all
+Searching for Python installations
+Uninstalled 2 versions in 58ms
+ - cpython-3.12.6-linux-x86_64-gnu
+ - cpython-3.12.7-linux-x86_64-gnu (python3.12)
+$ uv python install --preview 3.12.7
+Installed Python 3.12.7 in 3.69s
+ + cpython-3.12.7-linux-x86_64-gnu (python3.12)
+$ uv python install --preview 3.12.6
+Installed Python 3.12.6 in 3.64s
+ + cpython-3.12.6-linux-x86_64-gnu
+```
+
+
+---
+
+_Renamed from "uv python install --preview fails with same minor version" to "uv python install --preview fails with two patch versions in the same minor version" by @jooon on 2024-12-03 11:45_
+
+---
+
+_Assigned to @zanieb by @zanieb on 2024-12-03 14:52_
+
+---
+
+_Comment by @zanieb on 2024-12-03 14:52_
+
+Thanks!
+
+---
+
+_Label `bug` added by @zanieb on 2024-12-03 14:52_
+
+---
+
+_Referenced in [astral-sh/uv#9607](../../astral-sh/uv/pulls/9607.md) on 2024-12-03 15:11_
+
+---
+
+_Closed by @zanieb on 2024-12-03 15:33_
+
+---

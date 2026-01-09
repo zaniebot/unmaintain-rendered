@@ -1,0 +1,121 @@
+---
+number: 13872
+title: "[red-knot] Compare expression inference - Instance (+ Rich Comparison, Membership Test)"
+type: issue
+state: closed
+author: cake-monotone
+labels:
+  - ty
+assignees: []
+created_at: 2024-10-22T05:49:30Z
+updated_at: 2024-10-26T18:19:58Z
+url: https://github.com/astral-sh/ruff/issues/13872
+synced_at: 2026-01-07T13:12:16-06:00
+---
+
+# [red-knot] Compare expression inference - Instance (+ Rich Comparison, Membership Test)
+
+---
+
+_Issue opened by @cake-monotone on 2024-10-22 05:49_
+
+ - Related to #13618
+ - Continuing work from https://github.com/astral-sh/ruff/pull/13635#issuecomment-2427388114
+
+The item mentioned in #13618, "Bug with defined method but other type that doesn't match the signature," might complicate the upcoming PR too much. For now, I’ll focus solely on the implementation of Rich Comparison.
+
+---
+
+_Label `red-knot` added by @MichaReiser on 2024-10-22 06:11_
+
+---
+
+_Renamed from "[red-knot] Compare expression inference - Instance (Rich Comparison)" to "[red-knot] Compare expression inference - Instance (+ Rich Comparison, Membership Test)" by @cake-monotone on 2024-10-22 09:37_
+
+---
+
+_Comment by @cake-monotone on 2024-10-22 09:42_
+
+I realized that this issue should also include the "membership test" [docs](https://docs.python.org/3/reference/datamodel.html#object.__contains__)
+
+The "membership test" involves logic for checking `__contains__`, `__iter__`, and `__getitem__`.
+
+---
+
+_Comment by @AlexWaygood on 2024-10-22 12:45_
+
+The algorithm you'll want to use for this will be similar in many ways to the one we implemented for binary arithmetic here (but there are some important differences, including the one you already noted for membership testing): https://github.com/astral-sh/ruff/blob/7dbd8f0f8e725d05cc1d15e6ef1c6cc2ed2b2090/crates/red_knot_python_semantic/src/types/infer.rs#L2704-L2736
+
+See also:
+- Our tests for binary arithmetic between arbitrary instances at https://github.com/astral-sh/ruff/blob/main/crates/red_knot_python_semantic/resources/mdtest/binary/instances.md
+- https://snarky.ca/unravelling-rich-comparison-operators/
+
+---
+
+_Comment by @AlexWaygood on 2024-10-22 12:47_
+
+Very happy to give additional clarifications if you need any further pointers!
+
+---
+
+_Referenced in [astral-sh/ruff#13618](../../astral-sh/ruff/issues/13618.md) on 2024-10-22 13:31_
+
+---
+
+_Comment by @cake-monotone on 2024-10-23 07:08_
+
+
+Thank you!!! Your input was very helpful during the implementation.
+
+BTW, I’m a bit confused about something, and I’d like to discuss it.
+
+The part I’m struggling with is: how type mismatches between a dunder function signature and argument types are handled.
+
+From my understanding, when there’s a type mismatch, the dunder method should return `NotImplemented`, as shown in the following example:
+
+```py
+class A:
+    def __lt__(self, other: int) -> bool:
+        if not isinstance(other, int):
+            return NotImplemented
+        else:
+            return True
+
+A() < 3  # No issues
+A() < "qwr"  # runtime error: not supported operator
+
+# also in builtins
+42 < 3.14  # No issues
+(42).__lt__(3.14)  # NotImplemented
+(3.14).__gt__(42)  # bool
+```
+With this assumption,` __eq__` and `__ne__` should be handled separately.
+
+According to the [Python docs](https://docs.python.org/3/reference/datamodel.html#object.__ne__), when `NotImplemented` is returned from `__eq__` or `__ne__`, it falls back to `is` and `is not`, respectively.
+
+```py
+from __future__ import annotations
+from typing import reveal_type
+
+class A:
+    def __eq__(self, other: int) -> A:
+        ...
+
+class B:
+    def __eq__(self, other: int) -> B:
+        ...
+
+reveal_type(A() == B())  # revealed: bool? or Unknown?
+```
+
+I think it should reveal `bool`. However, I'm not sure if this understanding is correct.. What do you think about it?
+
+---
+
+_Referenced in [astral-sh/ruff#13903](../../astral-sh/ruff/pulls/13903.md) on 2024-10-24 10:04_
+
+---
+
+_Closed by @AlexWaygood on 2024-10-26 18:19_
+
+---

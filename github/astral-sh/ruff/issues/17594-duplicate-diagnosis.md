@@ -1,0 +1,209 @@
+---
+number: 17594
+title: duplicate diagnosis
+type: issue
+state: closed
+author: cnjackhu
+labels:
+  - question
+assignees: []
+created_at: 2025-04-23T20:49:52Z
+updated_at: 2025-12-13T06:20:53Z
+url: https://github.com/astral-sh/ruff/issues/17594
+synced_at: 2026-01-07T13:12:16-06:00
+---
+
+# duplicate diagnosis
+
+---
+
+_Issue opened by @cnjackhu on 2025-04-23 20:49_
+
+### Summary
+
+i am using nvim with setting pyright as lsp and ruff as linter.
+with the code in the image i get duplicate ruff and Ruff messages, how to solve this? why there is a ruff and Ruff?
+
+<img width="1546" alt="Image" src="https://github.com/user-attachments/assets/90d43bd6-f690-42c3-a579-d280f91832b8" />
+
+my setting in nvim is:
+  inside nvim-lint plugin setting:
+```
+lint.linters_by_ft = {
+        python = { "ruff", "mypy" },
+      }
+```
+inside lsp setting:
+```
+pyright = {
+        settings = {
+          pyright = {
+            -- Using Ruff's import organizer
+            disableOrganizeImports = true,
+          },
+          python = {
+            analysis = {
+              -- Ignore all files for analysis to exclusively use Ruff for linting
+              ignore = { "*" },
+              typeCheckingMode = "off", -- Using mypy
+            },
+          },
+        },
+      },
+
+```
+
+
+
+
+### Version
+
+_No response_
+
+---
+
+_Label `question` added by @dhruvmanila on 2025-04-23 21:40_
+
+---
+
+_Comment by @dhruvmanila on 2025-04-23 21:40_
+
+I think you might be also running the Ruff language server via `nvim-lspconfig`. Can you confirm?
+
+---
+
+_Comment by @cnjackhu on 2025-04-24 10:27_
+
+i double check in the `nvim-lspconfig`, i didn't set ruff lsp, **the way i use ruff is**: using mason UI to download ruff, ruff exist in mason both as linter and lsp, does this cause any conflict?
+after download ruff using mason UI, i set the linters as:
+```
+lint.linters_by_ft = {
+        python = { "ruff", "mypy" },
+      }
+```
+my config for lsp is here: [lsp](https://github.com/cnjackhu/nvim/blob/master/lua/plugins/lsp.lua)
+my config for linting is here:  [linting](https://github.com/cnjackhu/nvim/blob/master/lua/plugins/linting.lua)
+
+then i get the duplicate diagnosis as above, also with pyright and ruff both exist, it cause conflict. 
+the message is: **Client pyright quit with exit code 0 and signal 9.**
+
+the following are the log messges:
+does my .vscode-server setting will affect the ruff inside neovim?
+
+[ERROR][2025-04-24 13:15:56] .../vim/lsp/rpc.lua:770	"rpc"	"/home/huj0b/.local/share/andr/mason/bin/ruff"	"stderr"	"2025-04-24 13:15:56.565255584  WARN The top-level linter settings are deprecated in favour of their 
+counterparts in the `lint` section. Please update the following options in `.vscode-server/extensions/donjayamanne.python-
+environment-manager-1.2.4/pythonFiles/pyproject.toml`:\n  - 'ignore' -> 'lint.ignore' 
+log.target=\"ruff_workspace::configuration\" log.module_path=\"ruff_workspace::configuration\" 
+log.file=\"crates/ruff_workspace/src/configuration.rs\" log.line=1582\n"
+
+some other recent lsp log for shut down:
+
+<img width="1325" alt="Image" src="https://github.com/user-attachments/assets/6b6ff3e3-080d-4093-98da-1547d0c1593a" />
+ 
+
+
+---
+
+_Comment by @dhruvmanila on 2025-04-24 12:26_
+
+> using mason UI to download ruff, ruff exist in mason both as linter and lsp, does this cause any conflict?
+
+Probably yes. I'm not exactly sure what you are doing but you should only use Ruff either as a linter or the LSP. The LSP will provide diagnostics from the linter.
+
+> then i get the duplicate diagnosis as above, also with pyright and ruff both exist, it cause conflict. 
+> the message is: **Client pyright quit with exit code 0 and signal 9.**
+
+I don't think this is related to what the original issue is here. You should look at the logs created by Pyright to check why it quits.
+
+> the following are the log messges:
+> does my .vscode-server setting will affect the ruff inside neovim?
+> 
+> [ERROR][2025-04-24 13:15:56] .../vim/lsp/rpc.lua:770	"rpc"	"/home/huj0b/.local/share/andr/mason/bin/ruff"	"stderr"	"2025-04-24 13:15:56.565255584  WARN The top-level linter settings are deprecated in favour of their 
+> counterparts in the `lint` section. Please update the following options in `.vscode-server/extensions/donjayamanne.python-
+> environment-manager-1.2.4/pythonFiles/pyproject.toml`:\n  - 'ignore' -> 'lint.ignore' 
+> log.target=\"ruff_workspace::configuration\" log.module_path=\"ruff_workspace::configuration\" 
+> log.file=\"crates/ruff_workspace/src/configuration.rs\" log.line=1582\n"
+
+
+I don't know what ".vscode-server" is but the logs do suggest that you're also running the ruff language server. You could check that via the `LspInfo` command which lists all the configured LSP and the ones that are currently running in the buffer.
+
+
+---
+
+_Closed by @MichaReiser on 2025-05-12 08:24_
+
+---
+
+_Comment by @alveifbklsiu259 on 2025-12-13 06:18_
+
+I had the same issue as the OP, and I have the similar configurations:
+- using `pyright` as python LSP.
+- using `ruff` as python linter in `nvim-lint` plugin.
+
+At first I thought ruff is only run as linter + formatter, not an LSP, and as of the time of writing, Mason does have two ruff packages:
+- `ruff`
+- `ruff-lsp` (deprecated)
+
+So whenever people said running ruff as LSP, I thought they were talking about the `ruff-lsp` package, and since I didn't have it installed, it had nothing to do with me. But after checking `LspInfo`, I did see:
+
+```
+- ruff (id: 2)
+  - Version: 0.14.7
+  - Root directory: ~/test/j-test
+  - Command: { "ruff", "server" }
+  - Settings: {}
+  - Attached buffers: 6
+```
+For some reason it just runs `ruff` as an LSP even though I don't have it configured in my `neovim/nvim-lspconfig` plugin.
+
+And since I had `ruff` configured as linter in `nvim-lint`,  it showed duplicate diagnostic messages for `ruff`, one from the `ruff` LSP, one from `ruff` in  `nvim-lint`.
+
+Anyway, the solution for me to solve the duplicate diagnostic messages problem is to remove ruff from `nvim-lint`, and run `ruff` as LSP alongside `pyright`.
+
+```lua
+-- Autocmd to disable Ruff hover
+vim.api.nvim_create_autocmd("LspAttach", {
+  group = vim.api.nvim_create_augroup("lsp_attach_disable_ruff_hover", { clear = true }),
+  callback = function(args)
+    local client = vim.lsp.get_client_by_id(args.data.client_id)
+    if client and client.name == "ruff" then
+      client.server_capabilities.hoverProvider = false
+    end
+  end,
+  desc = "LSP: Disable hover capability from Ruff",
+})
+
+return {
+  {
+    "mason-org/mason-lspconfig.nvim",
+    opts = {
+      ensure_installed = {
+        "pyright",
+        "ruff",
+      },
+    },
+  },
+  {
+    "neovim/nvim-lspconfig",
+    opts = {
+      servers = {
+        pyright = {
+          settings = {
+            pyright = {
+              disableOrganizeImports = true, -- let Ruff handle imports
+            },
+            python = {
+              pythonPath = "./.venv/bin/python", -- direct interpreter path
+              venvPath = ".", -- project root
+              venv = ".venv", -- venv folder name
+            },
+          },
+        },
+        ruff = {},
+      },
+    },
+  },
+}
+```
+
+---

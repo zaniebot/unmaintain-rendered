@@ -1,0 +1,110 @@
+---
+number: 5702
+title: Improve ordering of top-level commands
+type: issue
+state: closed
+author: zanieb
+labels:
+  - cli
+assignees: []
+created_at: 2024-08-01T18:24:51Z
+updated_at: 2024-08-06T21:18:06Z
+url: https://github.com/astral-sh/uv/issues/5702
+synced_at: 2026-01-07T13:12:17-06:00
+---
+
+# Improve ordering of top-level commands
+
+---
+
+_Issue opened by @zanieb on 2024-08-01 18:24_
+
+With https://github.com/astral-sh/uv/pull/5700, the ordering is all over the place in the documentation and help menu.
+
+---
+
+_Label `cli` added by @zanieb on 2024-08-01 18:24_
+
+---
+
+_Comment by @T-256 on 2024-08-01 19:00_
+
+In my point of view, I see these groups:
+```
+Workspace:
+      init     Initialize a project
+      add      Add one or more packages to the project requirements
+      remove   Remove one or more packages from the project requirements
+      run      Run a command in the project environment
+      sync     Sync the project's dependencies with the environment
+      lock     Resolve the project requirements into a lockfile
+      tree     Display the dependency tree for the project
+Standalone:
+      tool     Run and manage executable Python packages
+      python   Manage Python installations
+      pip      Resolve and install Python packages
+      venv     Create a virtual environment
+Internal:
+      cache    Manage the cache
+      version  Display uv's version
+      help     Display documentation for a command
+```
+
+---
+
+_Comment by @zanieb on 2024-08-01 19:18_
+
+Does clap support subcommand help headings?
+
+---
+
+_Comment by @eth3lbert on 2024-08-03 15:13_
+
+> Does clap support subcommand help headings?
+
+No, although there's a `subcommand_help_heading`, it's not for multiple groups of `subcommands` .
+
+track: https://github.com/clap-rs/clap/issues/1553
+
+---
+
+_Comment by @zanieb on 2024-08-03 21:40_
+
+Thanks! I didn't think so. I think the proposed ordering above is fine (without the grouping),  but `uv run` should be at the top.
+
+---
+
+_Comment by @T-256 on 2024-08-04 09:38_
+
+it's lgtm:
+```
+      run      Run a command in the project environment
+      init     Initialize a project
+      add      Add one or more packages to the project requirements
+      remove   Remove one or more packages from the project requirements
+      sync     Sync the project's dependencies with the environment
+      lock     Resolve the project requirements into a lockfile
+      tree     Display the dependency tree for the project
+      tool     Run and manage executable Python packages
+      python   Manage Python installations
+      pip      Resolve and install Python packages
+      venv     Create a virtual environment
+      self     Manage the uv executable <OPTIONAL>
+      cache    Manage the cache
+      version  Display uv's version
+      help     Display documentation for a command
+```
+
+---
+
+_Referenced in [astral-sh/uv#5830](../../astral-sh/uv/pulls/5830.md) on 2024-08-06 20:45_
+
+---
+
+_Closed by @zanieb on 2024-08-06 21:18_
+
+---
+
+_Closed by @zanieb on 2024-08-06 21:18_
+
+---

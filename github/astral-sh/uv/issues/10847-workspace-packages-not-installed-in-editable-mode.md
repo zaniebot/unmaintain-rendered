@@ -1,0 +1,78 @@
+---
+number: 10847
+title: Workspace packages not installed in editable mode
+type: issue
+state: closed
+author: jeroenvdhoven
+labels:
+  - question
+assignees: []
+created_at: 2025-01-22T10:15:49Z
+updated_at: 2025-01-22T13:15:35Z
+url: https://github.com/astral-sh/uv/issues/10847
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# Workspace packages not installed in editable mode
+
+---
+
+_Issue opened by @jeroenvdhoven on 2025-01-22 10:15_
+
+### Summary
+
+Hey, first of all: UV's been great so far! Its speed really is something different.
+
+I was looking into a workspace setup for a project I'm currently working on, and noticed the workspace packages weren't being installed in editable mode. Installing all packages in the workspace and then changing one of the python files in a package would result in the old version of the code still being run.
+
+Interestingly, reinstalling the local packages also wouldn't update any changed files since the cached version of the package would be used, so running `uv pip install --no-cache` was required to fix that. I checked the version, updated it as well, but it unfortunately persisted. 
+
+**Example**
+Git repo with an example, based on the same structure as https://docs.astral.sh/uv/concepts/projects/workspaces/:
+https://github.com/jeroenvdhoven/uv-example
+Instructions on running it are in the included README
+
+
+Please let me know if you want more information, I'm more than willing to help out.
+
+### Platform
+
+macOS 15
+
+### Version
+
+uv 0.5.22 (4574ced37 2025-01-21)  (also tried  0.4.20)
+
+### Python version
+
+3.11.10
+
+---
+
+_Label `bug` added by @jeroenvdhoven on 2025-01-22 10:15_
+
+---
+
+_Comment by @konstin on 2025-01-22 12:40_
+
+`uv pip install -e .` only installs `.` in editable mode, and its dependencies in regular mode. I recommend `uv sync` over `uv pip install` for workspaces, it integrates much better with `pyproject.toml`, the workspaces concept and other advanced uv features.
+
+---
+
+_Label `bug` removed by @konstin on 2025-01-22 12:40_
+
+---
+
+_Label `question` added by @konstin on 2025-01-22 12:40_
+
+---
+
+_Comment by @jeroenvdhoven on 2025-01-22 13:15_
+
+Thank you, `uv sync` indeed helped solve this issue. I'll close the issue and switch to sync from now on.
+
+---
+
+_Closed by @jeroenvdhoven on 2025-01-22 13:15_
+
+---

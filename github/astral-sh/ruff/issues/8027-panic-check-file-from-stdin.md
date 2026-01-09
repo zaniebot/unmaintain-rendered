@@ -1,0 +1,108 @@
+---
+number: 8027
+title: "[Panic] check file from stdin"
+type: issue
+state: closed
+author: JMarkin
+labels:
+  - bug
+assignees: []
+created_at: 2023-10-17T21:21:24Z
+updated_at: 2023-10-18T01:50:41Z
+url: https://github.com/astral-sh/ruff/issues/8027
+synced_at: 2026-01-07T13:12:15-06:00
+---
+
+# [Panic] check file from stdin
+
+---
+
+_Issue opened by @JMarkin on 2023-10-17 21:21_
+
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+Hello, If I try check file from stdin ruff crashed, but it printed errors.
+```sh
+error: Ruff crashed. If you could open an issue at:
+
+    https://github.com/astral-sh/ruff/issues/new?title=%5BPanic%5D
+
+...quoting the executed command, along with the relevant file contents and `pyproject.toml` settings, we'd be very appreciative!
+
+thread 'main' panicked at 'assertion failed: total > 0', crates/ruff_cli/src/printer.rs:470:5
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+-:1:19: F401 [*] `.vars.TokenVar` imported but unused
+-:1:29: F401 [*] `.vars.UserVar` imported but unused
+```
+ 
+example file   
+```python
+from .vars import TokenVar, UserVar
+```
+
+example config
+```toml
+[tool.ruff]
+line-length = 120
+show-fixes = true
+select = [
+  # default
+  "F",
+  "E",
+  # flake8-bugbear
+  "B",
+  # flake8-quotes
+  "Q",
+  # isort
+  "I",
+  # flake8-comprehensions
+  "C",
+]
+ignore = ["B008"]
+
+[tool.ruff.per-file-ignores]
+"__init__.py" = ["F401"]
+
+[tool.ruff.pydocstyle]
+convention = "google"
+
+[tool.ruff.flake8-comprehensions]
+allow-dict-calls-with-keyword-arguments = true
+
+```
+
+command: `cat src/__init__.py | ruff check -`
+
+
+---
+
+_Comment by @charliermarsh on 2023-10-17 22:37_
+
+Thanks -- it looks like a bug related to `show-fixes = true`.
+
+---
+
+_Label `bug` added by @charliermarsh on 2023-10-17 22:37_
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2023-10-17 22:40_
+
+---
+
+_Referenced in [astral-sh/ruff#8029](../../astral-sh/ruff/pulls/8029.md) on 2023-10-17 23:41_
+
+---
+
+_Closed by @charliermarsh on 2023-10-18 01:50_
+
+---

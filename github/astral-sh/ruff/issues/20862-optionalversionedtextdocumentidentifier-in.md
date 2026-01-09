@@ -1,0 +1,116 @@
+---
+number: 20862
+title: OptionalVersionedTextDocumentIdentifier in TextDocumentEdit should include the version.
+type: issue
+state: closed
+author: pyscripter
+labels:
+  - help wanted
+  - server
+assignees: []
+created_at: 2025-10-14T12:06:32Z
+updated_at: 2025-11-06T00:49:45Z
+url: https://github.com/astral-sh/ruff/issues/20862
+synced_at: 2026-01-07T13:12:16-06:00
+---
+
+# OptionalVersionedTextDocumentIdentifier in TextDocumentEdit should include the version.
+
+---
+
+_Issue opened by @pyscripter on 2025-10-14 12:06_
+
+### Summary
+
+In https://github.com/astral-sh/ruff/blob/ac2c5303775bcf52d40eea406939a6961774e6af/crates/ruff_server/src/edit.rs#L146 there is a TODO item that has not been addressed:
+
+```rust
+                document_edits.push(lsp_types::TextDocumentEdit {
+                    text_document: lsp_types::OptionalVersionedTextDocumentIdentifier {
+                        uri,
+                        // TODO(jane): Re-enable versioned edits after investigating whether it could work with notebook cells
+                        version: None,
+                    },
+                    edits: edits.into_iter().map(lsp_types::OneOf::Left).collect(),
+                });
+```
+
+This is a problem because we get null for version in TextDocumentEdit responses as in the example below: 
+
+Request:
+
+```json
+{
+"jsonrpc": "2.0",
+"id": 1811,
+"method": "workspace/executeCommand",
+"params": {
+    "command": "ruff.applyAutofix",
+    "arguments": [
+        {
+            "uri": "file:///C:/Temp/Python/ruffdemo.py",
+            "version": 1
+        }
+    ],
+    "workDoneToken": null
+}
+```
+
+Response:
+
+```json
+{
+"jsonrpc": "2.0",
+"id": 1,
+"method": "workspace/applyEdit",
+"params": {
+    "edit": {
+        "documentChanges": [
+            {
+                "edits": [
+                    {
+                        "newText": "",
+                        "range": {
+                            "end": {
+                                "character": 0,
+                                "line": 5
+                            },
+                            "start": {
+                                "character": 0,
+                                "line": 1
+                            }
+                        }
+                    }
+                ],
+                "textDocument": {
+                    "uri": "file:///C:/Temp/Python/ruffdemo.py",
+                    "version": null
+                }
+            }
+        ]
+    },
+    "label": "Ruff: Fix all auto-fixable problems"
+}
+```
+
+Although this is not strictly speaking a bug since null is allowed, it reduces the usefulness of the text document edit responses, since they cannot be safely applied.
+
+Please address the Todo item in the code.
+
+### Version
+
+0.14
+
+---
+
+_Label `help wanted` added by @MichaReiser on 2025-10-14 12:34_
+
+---
+
+_Label `server` added by @MichaReiser on 2025-10-14 12:34_
+
+---
+
+_Closed by @MichaReiser on 2025-11-06 00:49_
+
+---

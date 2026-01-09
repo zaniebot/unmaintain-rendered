@@ -1,0 +1,62 @@
+---
+number: 14545
+title: "[red-knot] understand type[a.X] in a type expression"
+type: issue
+state: closed
+author: carljm
+labels:
+  - ty
+assignees: []
+created_at: 2024-11-22T22:20:10Z
+updated_at: 2024-12-06T22:14:52Z
+url: https://github.com/astral-sh/ruff/issues/14545
+synced_at: 2026-01-07T13:12:16-06:00
+---
+
+# [red-knot] understand type[a.X] in a type expression
+
+---
+
+_Issue opened by @carljm on 2024-11-22 22:20_
+
+We understand [the `type[C]` special form](https://typing.readthedocs.io/en/latest/spec/special-types.html#type) in an annotation. This spells the type consisting of the class `C` itself (not instances of the class, but the class object itself) and all of its subclasses.
+
+There are a limited number of syntactic forms allowed inside `type[...]`. We can use `type[C]` or `type[a.C]` to directly reference the class object `C`. We can use `type[A | B]` (or e.g. `type[a.A | A.B]`) as syntactic shorthand for `type[A] | type[B]`. We can't use e.g. `type[foo()]`, even if `foo` were a function returning a class object.
+
+Currently we only support the case where the subscript to `type[...]` is a `Name` AST node. That is, we support `type[C]` but not `type[a.C]`. This issue is to add support for the latter; that is, for the `Attribute` AST node.
+
+We should support this (and test it) in the case where `a` is a module, and also the case `A.B` where `A` is a class and `B` is a nested class. We should also test a multi-level example `type[A.B.C]`. These should all be added as mdtests.
+
+---
+
+_Label `red-knot` added by @carljm on 2024-11-22 22:20_
+
+---
+
+_Assigned to @carljm by @carljm on 2024-11-22 22:20_
+
+---
+
+_Referenced in [astral-sh/ruff#14172](../../astral-sh/ruff/issues/14172.md) on 2024-11-22 22:22_
+
+---
+
+_Assigned to @dcreager by @dcreager on 2024-12-06 18:30_
+
+---
+
+_Unassigned @carljm by @dcreager on 2024-12-06 18:30_
+
+---
+
+_Referenced in [astral-sh/ruff#14825](../../astral-sh/ruff/pulls/14825.md) on 2024-12-06 19:03_
+
+---
+
+_Closed by @dcreager on 2024-12-06 22:14_
+
+---
+
+_Closed by @dcreager on 2024-12-06 22:14_
+
+---

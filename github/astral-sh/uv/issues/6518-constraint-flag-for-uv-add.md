@@ -1,0 +1,320 @@
+---
+number: 6518
+title: "Constraint flag for `uv add`"
+type: issue
+state: closed
+author: yehoshuadimarsky
+labels:
+  - enhancement
+assignees: []
+created_at: 2024-08-23T14:04:30Z
+updated_at: 2025-07-01T00:25:43Z
+url: https://github.com/astral-sh/uv/issues/6518
+synced_at: 2026-01-07T13:12:17-06:00
+---
+
+# Constraint flag for `uv add`
+
+---
+
+_Issue opened by @yehoshuadimarsky on 2024-08-23 14:04_
+
+Hi, can we instead add a new flag `-c / --constraint` to `uv add`, so that you can pass in constraint files directly? I think currently you can do this by adding a constraint to a `requirements.txt` file, then running `uv add --requirements requirements.txt`, but this would embed it directly in the command.
+
+My specific use case is using Apache Airflow which only supports `pip` (not Poetry etc) because it basically **requires** constraint files, see https://github.com/apache/airflow/blob/main/README.md#installing-from-pypi
+
+That way, I can do (copying from their example):
+```
+uv add 'apache-airflow==2.10.0' \
+ --constraint "https://raw.githubusercontent.com/apache/airflow/constraints-2.10.0/constraints-3.8.txt"
+```
+
+Thanks.
+
+---
+
+_Referenced in [astral-sh/uv#6275](../../astral-sh/uv/issues/6275.md) on 2024-08-23 14:04_
+
+---
+
+_Comment by @yehoshuadimarsky on 2024-08-23 14:05_
+
+https://github.com/astral-sh/uv/issues/6275#issuecomment-2307069060
+
+> You need to add that constraint file to tool.uv.constraint_dependencies? It needs to be tracked in the project. uv add --constraint could perhaps do that for you, but it's going to apply to all of your dependencies.
+
+That's fine, in fact that's probably the best behavior, that the constraint applies to all dependencies. But in line with my Airflow use case, it'd be great if we can specify a URL for `tool.uv.constraint_dependencies`, not just a file that we have to download and save
+
+---
+
+_Comment by @yehoshuadimarsky on 2024-08-23 14:07_
+
+cc @potiuk
+
+---
+
+_Comment by @zanieb on 2024-08-23 14:08_
+
+Can you not specify a URL in `constraint_dependencies`? I presumed that'd just work.
+
+---
+
+_Label `enhancement` added by @zanieb on 2024-08-23 14:09_
+
+---
+
+_Comment by @yehoshuadimarsky on 2024-08-23 14:15_
+
+Sorry I don't think `tool.uv.constraint_dependencies` is a valid section yet (if it is, apologies for my mistake). I'm just saying that if/when it becomes a valid section, it'd be great if it could specify not only dependencies, but a URL that points to a valid constraint file (like Airflow's). If this is already assumed/included, please disregard.
+
+---
+
+_Comment by @zanieb on 2024-08-23 14:22_
+
+Sorry — `constraint-dependencies`. We're missing documentation for this one for some reason.
+
+---
+
+_Comment by @yehoshuadimarsky on 2024-08-23 15:28_
+
+How? I tried running `uv lock` after adding this to `pyproject.toml`,
+
+```toml
+[tool.uv]
+constraint-dependencies = ["https://raw.githubusercontent.com/apache/airflow/constraints-2.10.0/constraints-3.8.txt"]
+```
+
+but got 
+
+```
+warning: Failed to parse `pyproject.toml` during settings discovery:
+  TOML parse error at line 16, column 27
+     |
+  16 | constraint-dependencies = ["https://raw.githubusercontent.com/apache/airflow/constraints-2.10.0/constraints-3.8.txt"]
+     |                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  URL requirement must be preceded by a package name. Add the name of the package before the URL (e.g., `package_name @ https://...`).
+  https://raw.githubusercontent.com/apache/airflow/constraints-2.10.0/constraints-3.8.txt
+  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: Failed to parse: `pyproject.toml`
+  Caused by: TOML parse error at line 16, column 27
+   |
+16 | constraint-dependencies = ["https://raw.githubusercontent.com/apache/airflow/constraints-2.10.0/constraints-3.8.txt"]
+   |                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+URL requirement must be preceded by a package name. Add the name of the package before the URL (e.g., `package_name @ https://...`).
+https://raw.githubusercontent.com/apache/airflow/constraints-2.10.0/constraints-3.8.txt
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+```
+
+---
+
+_Comment by @zanieb on 2024-08-23 15:44_
+
+Ah sorry I misunderstood — yes this requires the constraints to be unpacked into a list. I'm not sure it makes sense to use a remote file here? We'd need to download it on every uv operation. Could we just unpack it into this setting on `uv add`?
+
+---
+
+_Comment by @yehoshuadimarsky on 2024-08-23 18:56_
+
+> I'm not sure it makes sense to use a remote file here? We'd need to download it on every uv operation.
+
+I get the overhead hit, but is it any different from `uv pip install -c https://raw.githubusercontent.com/apache/airflow/constraints-2.10.0/constraints-3.8.txt apache-airflow`, which works and is valid? I think it's acceptable to allow a URL here
+
+> Could we just unpack it into this setting on `uv add`?
+
+Yes, that could be a good fallback, if you decide not to support saving the URL itself in `pyproject.toml`. I guess would be good to at least auto-generate a comment saying `"constraints packages were obtained from the user supplied URL <URL>"` or something like that, so they can trace it back to the source
+
+---
+
+_Comment by @zanieb on 2024-08-23 19:06_
+
+Yes, it's different because you `uv pip install` once, but with the project interface we check if the environment is up-to-date on _every_ invocation of `uv run` so we can't have dynamic metadata like this (and, if we cache it, people complain when it's not checked).
+
+---
+
+_Comment by @yehoshuadimarsky on 2024-08-23 19:12_
+
+I see, that makes sense. So can we at least add the flag `--constraint` to `uv add` that would
+1. read the URL
+2. populate `tool.uv.constraint-dependencies`, along with a comment indicating where it came from
+3. then proceed as normal?
+
+I guess there are some outstanding questions about what the expected behavior should be in these scenarios:
+- `uv add -c <url1> -c <url2>` - what happens if they conflict?
+- `uv add -c <url1>`, then `uv add -c <url2>` - what happens if they conflict? Or, does the second invocation wipe out (replace) the first constraints, or just add to it?
+
+---
+
+_Comment by @zanieb on 2024-08-23 19:22_
+
+Yeah that sounds nice. We should probably support it for local files first. I'm a little hesitant on automatically tracking the URL but maybe it'd be okay.
+
+I think they'd be combined as we would normally combine constraint files when they overlap (which I think means we'd raise an error if it results in unsolvable dependencies).
+
+---
+
+_Referenced in [astral-sh/uv#6596](../../astral-sh/uv/pulls/6596.md) on 2024-08-25 08:19_
+
+---
+
+_Referenced in [astral-sh/uv#6644](../../astral-sh/uv/issues/6644.md) on 2024-08-26 17:44_
+
+---
+
+_Referenced in [astral-sh/uv#7336](../../astral-sh/uv/issues/7336.md) on 2024-09-12 16:57_
+
+---
+
+_Comment by @torran-g on 2024-10-10 09:56_
+
+FWIW I have exactly the same use case as @yehoshuadimarsky and I'd be very pleased to see his suggestion implemented.
+
+I'd add that running `uv run` or `uv lock` would need to adhere to the remote constraint file for all of the other dependencies in the tree that aren't specified in the `pyproject.toml` file; so that our local environment matches the constrained Airflow environment.
+
+Currently, I am specifing a minimal list of dependencies in `pyproject.toml` without specifying versions for the packages which are included in Airflow's constraints file, then using the `uv pip compile` command with the `--constraint` flag specified to generate a compatible `requirements.txt` file. I can then reference the `requirements.txt` file when using the `uv pip sync` and `uv pip install` commands to install them in a local environment. But I'd prefer it if `uv` managed the package and local environment itself, and `uv.lock` adhered to the constraints, so I can use `uv run` to run my test suite.
+
+
+<details><summary>The specific commands I'm using currently.</summary>
+<p>
+
+```shell
+> uv pip compile pyproject.toml --constraint https://raw.githubusercontent.com/apache/airflow/constraints-2.9.2/constraints-3.11.txt --no-strip-extras --emit-index-url --all-extras --output-file requirements.txt -q
+> uv pip sync requirements.txt
+> uv pip install --requirement requirements.txt
+``` 
+
+</p>
+</details> 
+
+A separate, but related, feature request, would be an option to write the constraint file used to the top of the requirements.txt file. As described in point 3 of [these MWAA docs](https://docs.aws.amazon.com/mwaa/latest/userguide/best-practices-dependencies.html).
+
+---
+
+_Referenced in [astral-sh/uv#8090](../../astral-sh/uv/issues/8090.md) on 2024-10-12 19:55_
+
+---
+
+_Referenced in [astral-sh/uv#9508](../../astral-sh/uv/issues/9508.md) on 2024-11-28 18:52_
+
+---
+
+_Referenced in [astral-sh/uv#10486](../../astral-sh/uv/issues/10486.md) on 2025-01-11 10:59_
+
+---
+
+_Comment by @slumbi on 2025-01-11 11:16_
+
+This is a **workaround**, but at my company , in our airflow project we use [Taskfile](https://taskfile.dev)  (  _makefile alternative_ ) to manage the constrained airflow dependencies, and do not rely on `uv add`. 
+
+`requirements.in` contains the dependencies and constraints,  like 
+```txt
+-c https://raw.githubusercontent.com/apache/airflow/constraints-2.10.4/constraints-3.10.txt
+
+boto3                                    >1.34, <1.36
+botocore                                 >1.34, <1.36
+s3transfer == 0.10.4
+
+apache-airflow==2.10.4
+apache-airflow-providers-amazon==9.1.0
+```
+
+and `Taskfile.yml` contains the commands for dependency management:
+```yaml
+# https://taskfile.dev
+version: '3'
+
+vars:
+  REQIN: requirements.in
+  REQOUT: requirements.txt.out
+
+tasks:
+  default:
+    cmds:
+      - task -l
+    silent: true
+
+  install:
+    desc: Compile and install requirements
+    deps: [compile]
+    aliases: [i]
+    cmds:
+      - uv pip install -r {{ .REQOUT }}
+
+  compile:
+    desc: Compile python requirements
+    aliases: [c]
+    cmds:
+      - uv pip compile {{ .REQIN }}  > {{ .REQOUT }}
+
+  sync:
+    desc: Sync installed packages with requirements file
+    aliases: [s]
+    cmds:
+      - uv pip sync {{ .REQOUT }}
+```
+
+Then instead of  `uv sync`  we simply do :
+ * `task c` or `task compile`  which will compile dependencies
+ * `task i` or `task install`  which will compile + install dependencies
+ * `task s` or `task sync`  wihch will sync compiled requirements with virtual env
+
+---
+
+_Comment by @zanieb on 2025-04-02 15:39_
+
+We now support constraints on `uv add`, but they're not persisted to the `pyproject.toml` (just the `uv.lock`) and I don't think it _quite_ resolves the Airflow use-case.
+
+---
+
+_Closed by @zanieb on 2025-04-02 15:39_
+
+---
+
+_Referenced in [plone/cookieplone-templates#192](../../plone/cookieplone-templates/issues/192.md) on 2025-04-02 15:56_
+
+---
+
+_Comment by @potiuk on 2025-04-05 07:44_
+
+> We now support constraints on `uv add`, but they're not persisted to the `pyproject.toml` (just the `uv.lock`) and I don't think it _quite_ resolves the Airflow use-case.
+
+I hope soon we will ba able to use PEP-751 lockfile.toml for similar purpose - so i'd say investing more in `--constraint` workflow might not be needed/ good idea.
+
+That was TL;DR: 
+
+More context - if you are interested (and might also be useful thing for @zanieb  and others who are involved in all the - fantastic - work that both packaging team in PyPA, pip maintainers and `uv` team are doing to bring Python packaging ecosystem to a much higher, and modern level.
+
+We have plans for airflow development to switch to `uv.lock` to drive our constraints (soon). However in a few months (?) time we have high hopes that both `uv` and `pip` will soon support https://peps.python.org/pep-0751/  for the installation side (and likely uv for automated generation of it from the `uv.lock` and as soon as `pip` supports it in "production"  
+
+Both uv - as explained by @charliermarsh in https://github.com/astral-sh/uv/issues/12584 (for generation out of uv.lock, and using it for installation) and `pip` https://github.com/pypa/pip/pull/13213 where the prototype of `pip lock` is waiting fore review and merge and @pfmoore commented that `pip install --lockfile pylock.toml` will be in the works. 
+
+That is something that we - in airflow - look forward to a lot and (as usual recently) - we are happy to help with testing it with our "scale and complexity" - both in the development workflows and with enabling it for our users to replace the `--constraints` workflow.
+
+The `--constraints` workflow in Airflow was implemented and promoted by us for years, mostly because the tooling / packaging was not really ready for what we needed. But we are super happy to be at the forefront of all those changes.
+
+We recently migrated to `uv workspaces` fully for development (and I hope eventually workspaces will also get standardized and our support for workspaces will not be `uv-only`) - with more than 100 Python distribution packages hosted in a single monorepo, and it helped us enormously in our - new term I've heard that I am trying to promote -  "Contributor Journey optimisation". 
+
+And "enormously" is an understatement. We removed 1000s lines of code from our tooling already and for years I had the goal to get development environment for airflow to be up and running  in under 10 minutes, that was very difficult to achieve - mostly because of python, container etc. setup.  But now - with all the modernisation and `uv` we got it now under 5 minutes (!) from clean system (no Python etc. ) from `git clone`, to running successfully al tests and very soon we will have the same for doc building, mypy and others - which currently take a bit longer.  
+
+And other tools like `hatch`, `pdm` and others are catching up as well, so likely soon that  will be a similar case for other tools, not only `uv` - I am actually working with @ofek on PEP https://peps.python.org/pep-0752/ - which is a bit unrelated - but likely after the Airlfow 3 frenzy we are at - I might be able to help with implementing workspace feature for hatch that will be eqivalent to the `uv` workspaces (airflow being a very good testing ground for it) and possibly some day we will turn it into a PEP and accepted as standard ... Which would be great.
+
+So  - similarly to 'Contributor Journey Optimisation" - we would love to get  "User Journey Optimisation" - and we hope PEP-751 and it's implementation will vastly help with that - I would really love to replace our custom `--constraint` based mechanism with remotely hosted `pylock.toml` files that our users will be able to use to install airflow reproducibly
+
+
+---
+
+_Comment by @tmct on 2025-04-10 10:20_
+
+Hello - #7336 was closed as a duplicate of this ticket, and this ticket has since been closed, but I can't see any way to configure a remote constraints file (at a URL) in uv config files. Have I missed something? Is there any plan to make the `UV_CONSTRAINT` behaviour configurable without use of the environment variable?
+
+---
+
+_Comment by @zach-overflow on 2025-07-01 00:25_
+
+^ I'm also curious how to configure the constraints to point to a file (either via a local file URL, or a remote URL). Likewise I've been unable to find any clear answer or docs regarding if that is possible / how to configure it.
+
+---
+
+_Referenced in [astral-sh/uv#16508](../../astral-sh/uv/issues/16508.md) on 2025-10-30 07:30_
+
+---

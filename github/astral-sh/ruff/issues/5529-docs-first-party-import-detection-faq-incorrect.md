@@ -1,0 +1,326 @@
+---
+number: 5529
+title: "[docs] First party import detection FAQ incorrect"
+type: issue
+state: closed
+author: smackesey
+labels:
+  - documentation
+assignees: []
+created_at: 2023-07-05T11:14:59Z
+updated_at: 2023-07-26T22:39:03Z
+url: https://github.com/astral-sh/ruff/issues/5529
+synced_at: 2026-01-07T13:12:15-06:00
+---
+
+# [docs] First party import detection FAQ incorrect
+
+---
+
+_Issue opened by @smackesey on 2023-07-05 11:14_
+
+Recently updated to `0.0.276` (though can't be sure when this behavior was introduced), and noticed the following. Here is a project layout with two packages, `foo` and `bar`:
+
+```
+├── bar
+│   └── bar
+│       └── __init__.py
+├── examples
+│   └── foo
+│       ├── foo
+│       │   ├── __init__.py
+│       │   └── sub.py
+│       └── pyproject.toml
+└── pyproject.toml
+```
+
+Here are the two `pyproject.toml` files:
+
+```
+### pyproject.toml (root)
+
+[tool.ruff]
+
+select = [
+  "I001"
+]
+
+### examples/foo/pyproject.toml
+
+[tool.ruff]
+
+extend = "../../pyproject.toml"
+```
+
+According to the Ruff FAQ:
+
+>If the src field is omitted, Ruff will default to using the "project root" as the only first-party source... If your pyproject.toml, ruff.toml, or .ruff.toml extends another configuration file, Ruff will still use the "extended" configuration file's directory as the project root.
+
+This leads me to expect that the root directory here is the "project root". Because neither the `foo` nor `bar` packages reside directly in this directory, they should be treated the same. However, instead I find that inside of `examples/foo/__init__.py`, `foo` is first-party and `bar` is third-party. I assessed this by looking at the import order that ruff targets:
+
+```
+### examples/foo/foo/__init__.py (after running `ruff --fix`)
+
+from bar import alpha
+
+from foo.sub import beta
+```
+
+If I comment out `[tool.ruff]` in `examples/foo/pyproject.toml`, then `foo` and `bar` become "equal":
+
+```
+from bar import alpha
+from foo.sub import beta
+```
+
+If I then introduce a third `pyproject.toml`, but this time under `examples`, then it separates `foo` and `bar` again:
+
+```
+### examples/pyproject.toml
+
+[tool.ruff]
+extend = "../pyproject.toml"
+```
+
+From all this it looks like the current FAQ answer on third-party detection is incorrect. I also think it should be more detailed, since it doesn't mention the need for a `[tool.ruff]` section.
+
+FWIW I prefer the current behavior that clashes with the behavior described in the FAQ, but am scratching my head as to the actual resolution logic.
+
+---
+
+_Label `documentation` added by @charliermarsh on 2023-07-05 13:37_
+
+---
+
+_Comment by @charliermarsh on 2023-07-05 13:37_
+
+(Thanks, will clarify via updating the docs and see if it answers the above question...)
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2023-07-05 13:37_
+
+---
+
+_Comment by @charliermarsh on 2023-07-10 03:08_
+
+Okay, a couple things from looking at this:
+
+> If the src field is omitted, Ruff will default to using the "project root" as the only first-party source... If your pyproject.toml, ruff.toml, or .ruff.toml extends another configuration file, Ruff will still use the "extended" configuration file's directory as the project root.
+
+First, this is poorly worded. In this case, the stuff in `foo` uses `examples/foo` as the project root. It's referring to `examples/foo/pyproject.toml` when it says `"extended" configuration file`.
+
+Second, in the cases in which you see:
+
+```python
+from bar import alpha
+from foo.sub import beta
+```
+
+What's happening is that _both_ modules are being classified as first-party (as opposed to both being classified as third-party). You can use `--verbose` to see how each module is classified along with a "reason".
+
+One thing that isn't mentioned in the docs is that, apart from the `src`-based lookups, we _also_ consider an import first-party if it appears to be in the same package. So in this case, when we look at `examples/foo/foo`, we walk up looking for `__init__.py` files and determine that the package root is `examples/foo/foo`. If we then see any imports like `import foo` in files within that package, we immediately label them as first-party. (I actually think you suggested this at some point in the past haha.)
+
+I'll document all of this.
+
+
+---
+
+_Comment by @smackesey on 2023-07-10 13:22_
+
+Thanks for engaging here-- I think this is a really important part of the docs to get super-clear, since it's very easy to end up with confusing import-sorting behavior unless this is spelled out exactly.
+
+> In this case, the stuff in foo uses examples/foo as the project root. It's referring to examples/foo/pyproject.toml when it says "extended" configuration file.
+
+I see-- maybe tricky to describe accurately, but if `examples/foo/pyproject.toml` has a directive to `extend: "../../pyproject.toml`, then I definitely interpret the _target_ of that directive as the "extended configuration file".
+
+>One thing that isn't mentioned in the docs is that, apart from the src-based lookups, we also consider an import first-party if it appears to be in the same package... I actually think you suggested this at some point in the past haha
+
+I did, and I think it's the right behavior.
+
+>What's happening is that both modules are being classified as first-party (as opposed to both being classified as third-party). 
+
+What I find most confusing is this statement in the docs "If the src field is omitted, Ruff will default to using the "project root" as the only first-party source". Basically it's unclear what it means to use a directory as a "first-party source".
+
+Currently in the docs, you have an example that sets `src` (i.e. "first-party source" dirs) to `["src", "tests"]`. In that example, these two directories are actual python packages (directories that have a direct child `__init__.py`). But I'm pretty sure you don't need to specify actual python packages to get first-party discovery behavior, since the project root almost never is itself a python package, and this is the default value in the absence of an explicit `src` setting.
+
+So is the rule that python packages are recursively discovered from each first-party source directory? That seems likely, but there are two points of confusion:
+
+- In the example, you show `import module1` as being a valid import statement, but it has a sibiling `__init__.py`. That implies that `import __init__` is valid (since if `src` were discoverable it would be `import src.module1`), but that can't be right.
+- This would render the "if it appears to be in the same package, it's first-party" rule moot, since there will always be a source root that contains the current package. i.e. Since the current package is always contained by at least one source root, and any package contained by a source root is first-party, then no additional logic is needed to determine if an import is targeting the same package containing the import statement.
+
+Basically, I can imagine three meanings of "source root":
+
+1. A python package.
+2. A directory containing python modules/packages as direct children (this would be similar to an entry of Python's `sys.path`).
+3. A directory containing python modules/packages anywhere in its descendant tree.
+
+Pretty sure the meaning is (3), but it would help to have that spelled out explicitly and have the example reflect that.
+
+---
+
+_Comment by @charliermarsh on 2023-07-10 13:37_
+
+> But I'm pretty sure you don't need to specify actual python packages to get first-party discovery behavior, since the project root almost never is itself a python package, and this is the default value in the absence of an explicit src setting.
+
+Yeah this is completely right. The way `src` is used is that if we see an import like `import foo`, we just iterate over the source directories and see if any source directory contains either a directory `foo` or a file `foo.py`. So the directories listed in `src` itself shouldn't be actual Python packages, they should be directories that _contain_ Python packages. I'll clarify this.
+
+Separately from the `src` / project root concept, for every Python file, we also find its "package root", by traversing up parent directories as long as they contain `__init__.py` files (or are marked as namespace packages in the Ruff configuration). These package roots are used for that "same-package" heuristic. I believe the meaning of "source root" is actually (2) in your enumeration.
+
+
+---
+
+_Comment by @smackesey on 2023-07-10 14:43_
+
+> I believe the meaning of "source root" is actually (2) in your enumeration.
+
+If this is true, then how should I conceptualize a scenario in which `src` is not set and the project root doesn't contain any python modules/packages as direct children? This is common (and is how the dagster repo is structured):
+
+```
+<root>
+├── python_modules
+│   ├── dagster
+│   │   └── dagster
+│   │       └── __init__.py
+│   └── dagster-graphql
+│       └── dagster_graphql
+│           └── __init__.py
+└── pyproject.toml
+```
+
+- The "project root" here is the root directory (`<root>`), since that contains `pyproject.toml`
+- `pyproject.toml` does not set `src`
+- So `src` defaults to `[<root>]`
+- But `<root>` doesn't contain any python packages/modules as direct children.
+
+So is it fair to say that in this scheme, none of the packages are "contained by" (e.g. discoverable via) any source root? And instead that first/third-party determination is done purely by: "if it's the same package then first-party, else third-party"?
+
+
+
+---
+
+_Comment by @charliermarsh on 2023-07-10 14:46_
+
+> So is it fair to say that in this scheme, none of the packages are "contained" (e.g. discoverable via) any source root? And instead that first/third-party determination is done purely by: "if it's the same package then first-party, else third-party"?
+
+Yes, this sounds right to me based on the layout above. Does it match the behavior you're seeing in practice?
+
+(Typically, I think you'd add `src = ["python_modules/*"]` to your configuration to ensure that all of those packages are treated as first-party.)
+
+---
+
+_Comment by @smackesey on 2023-07-10 14:51_
+
+>Yes, [the packages not being discovered via any source root] sounds right to me based on the layout above. Does it match the behavior you're seeing in practice?
+
+Hmm-- that appears to be inconsistent with the behavior in the OP and with your explanation:
+
+>What's happening is that both modules are being classified as first-party
+
+The OP matches this scenario once `[tool.ruff]` in `examples/foo/pyproject.toml` is commented out. The root dir is now the project root, and neither of the two packages `foo` or `bar` is a direct child of the project root.  So then they should never both be classified as first-party-- each one should only treat itself as first-party.
+
+---
+
+_Comment by @charliermarsh on 2023-07-10 14:56_
+
+> The root dir is now the project root, and neither of the two packages foo or bar is a direct child of the project root. So then they should never both be classified as first-party-- each one should only treat itself as first-party.
+
+I think the explanation is that you have a `bar` directory in the top-level, even though it's not actually the package itself (you have `./bar/bar`). So when it sees `from bar import alpha`, it looks for a directory named `bar` at the top-level, and matches `./bar` (rather than `./bar/bar`).
+
+(I'm not arguing that this is _correct_, but I believe that's what's happening.)
+
+---
+
+_Comment by @charliermarsh on 2023-07-10 14:56_
+
+(And then `from foo.sub import beta` is classified as first-party due to the same-package heuristic.)
+
+---
+
+_Comment by @charliermarsh on 2023-07-10 15:00_
+
+I guess arguably it should look for `./bar/__init__.py` or `./bar.py` instead of `./bar` or `./bar.py`, for consistency.
+
+(As an aside, I've ported Pyright's module resolver to Rust, so we will likely be able to improve our resolution rules quite a bit in the future. E.g., we shouldn't need to rely on that kind of crude directory matching. Instead, we can just attempt to resolve `from bar import alpha` as Pyright would.)
+
+
+---
+
+_Comment by @smackesey on 2023-07-10 15:21_
+
+>I think the explanation is that you have a bar directory in the top-level, even though it's not actually the package itself (you have ./bar/bar). So when it sees from bar import alpha, it looks for a directory named bar at the top-level, and matches ./bar (rather than ./bar/bar).
+
+Just confirmed that this is correct by changing the name of top-level `bar`-- thanks.
+
+>I guess arguably it should look for ./bar/__init__.py or ./bar.py instead of ./bar or ./bar.py, for consistency.
+
+Exactly, unless bar is a namespace package.
+
+>(As an aside, I've ported Pyright's module resolver to Rust, so we will likely be able to improve our resolution rules quite a bit in the future. E.g., we shouldn't need to rely on that kind of crude directory matching. Instead, we can just attempt to resolve from bar import alpha as Pyright would.)
+
+That's good news! One thing to keep in mind is that Pyright's module resolver does not support monorepos well, so depending on your aims for ruff, you may want to modify it somewhat.
+
+The specific problem is that pyright runs with the assumption of a single python environment, which is an assumption that can easily be violated in monorepos. Dagster includes 70-80 python packages, and they can't all be installed in the same environment due to conflicting dependencies (certain examples are a problem).
+
+This means to run pyright on our entire repo requires multiple runs. The simplest way to do this would be to run pyright once per package, but this 
+
+- (a) would perform a huge amount of redundant computation as every run is going to need to fully load/analyze `dagster`, which is the bulk of our codebase
+- (b) would leave us without a suitable configuration for use in a language server; one wants to be able to jump between packages in-editor and have the LSP diagnostics reflect CLI/CI results, but, with if we wanted to use the same config as is used for package-scoped pyright CI/CLI runs, this would mean we'd be running up to 80 pyright/pylance LSP instances in-editor, which would destroy performance
+
+The imperfect solution I came up with was to manually partition our packages into N sets that can be installed in the same environment. In CLI/CI we run once for each set and merge the results. In the editor, we just use the largest set's config for a single editor pyright/pylance instance. This works pretty well but it's fragile and overly complex-- you get false positive diagnostics in the editor once you stray outside the largest set.
+
+Ideally you should be able to run a _single_ pyright/pylance instance capable of resolving each source file to one of multiple possible python environments. This would greatly simplify working the tool in a monorepo, and I'd suggest ruff should aim at this since you're just now getting into the import resolution game.
+
+I discussed with the pyright maintainer here: https://github.com/microsoft/pyright/issues/4329
+
+---
+
+_Comment by @charliermarsh on 2023-07-10 15:27_
+
+Awesome, thanks for mentioning this. I believe we should be able to support it (via something like the API you sketched out in that issue, allowing you to specify separate virtual environment paths for separate execution environments).
+
+
+---
+
+_Comment by @charliermarsh on 2023-07-22 14:39_
+
+Hijacking this thread for a second. Is the current sorting on `dagster` main roughly what you want? Or are there any known incorrect categorizations? I'm testing out migrating our import classifier to our module resolver (#5954), and while the behavior is stable in most projects I've tested, it differs a lot on dagster, so I want to make sure I have a solution for dagster's setup and configuration before moving forward.
+
+
+---
+
+_Comment by @smackesey on 2023-07-24 12:19_
+
+>Hijacking this thread for a second. Is the current sorting on dagster main roughly what you want?
+
+Yes, with `dagster` being first-party only within `dagster` itself. But the most important thing IMO is just that the rules be very explicit and well-documented, as well as flexibly configurable.
+
+For example, the current docs text for `src` reads:
+
+>The source code paths to consider, e.g., when resolving first- vs. third-party imports.
+
+That "e.g." would give me pause when trying to set up first-vs-third party. `src` feels like a very "basic" setting, and I'd be wondering what else it does. I forget, what else does it do? I think it's good to have a way to tune first-vs-third party imports without side effects.
+
+---
+
+_Comment by @charliermarsh on 2023-07-25 16:11_
+
+Yup understood. Mostly trying to ensure that we have a solution that _can_ support Dagster's requirements. Am I right that within (e.g.) `python_modules/libraries/dagster-airbyte`, other packages like `dagster_managed_elements` should be considered third-party?
+
+---
+
+_Comment by @smackesey on 2023-07-25 20:06_
+
+>Am I right that within (e.g.) python_modules/libraries/dagster-airbyte, other packages like dagster_managed_elements should be considered third-party?
+
+yes
+
+---
+
+_Referenced in [astral-sh/ruff#6107](../../astral-sh/ruff/pulls/6107.md) on 2023-07-26 22:01_
+
+---
+
+_Closed by @charliermarsh on 2023-07-26 22:39_
+
+---

@@ -1,0 +1,77 @@
+---
+number: 4274
+title: "`uv.lock` has superfluous changes after running `uv run`"
+type: issue
+state: closed
+author: BurntSushi
+labels:
+  - bug
+assignees: []
+created_at: 2024-06-12T15:15:16Z
+updated_at: 2024-06-12T15:46:17Z
+url: https://github.com/astral-sh/uv/issues/4274
+synced_at: 2026-01-07T13:12:17-06:00
+---
+
+# `uv.lock` has superfluous changes after running `uv run`
+
+---
+
+_Issue opened by @BurntSushi on 2024-06-12 15:15_
+
+To reproduce:
+
+```
+$ git clone https://github.com/zanieb/packse
+$ git checkout 0e8dd5f0a0b6738b4d007d7093c737f38183a0fe
+$ uv run --all-extras packse serve scenarios/ --no-hash
+$ git diff
+diff --git a/uv.lock b/uv.lock
+index a0596b9..c2cda5f 100644
+--- a/uv.lock
++++ b/uv.lock
+@@ -589,11 +589,6 @@ source = "registry+https://pypi.org/simple"
+
+ [distribution.optional-dependencies]
+
+-[[distribution.optional-dependencies.index]]
+-name = "pypiserver"
+-version = "2.1.1"
+-source = "registry+https://pypi.org/simple"
+-
+ [[distribution.optional-dependencies.serve]]
+ name = "pypiserver"
+ version = "2.1.1"
+@@ -604,6 +599,11 @@ name = "watchfiles"
+ version = "0.22.0"
+ source = "registry+https://pypi.org/simple"
+
++[[distribution.optional-dependencies.index]]
++name = "pypiserver"
++version = "2.1.1"
++source = "registry+https://pypi.org/simple"
++
+ [distribution.dev-dependencies]
+
+ [[distribution.dev-dependencies.dev]]
+```
+
+It looks like the order of `optional-dependencies` is changing. I do not think there should be any diff here. Perhaps hashmap iteration is being used during serialization?
+
+---
+
+_Label `bug` added by @BurntSushi on 2024-06-12 15:15_
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2024-06-12 15:16_
+
+---
+
+_Referenced in [astral-sh/uv#4275](../../astral-sh/uv/pulls/4275.md) on 2024-06-12 15:31_
+
+---
+
+_Closed by @charliermarsh on 2024-06-12 15:46_
+
+---

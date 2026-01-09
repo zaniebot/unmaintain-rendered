@@ -1,0 +1,62 @@
+---
+number: 11975
+title: uv freezes while downloading
+type: issue
+state: open
+author: Marco-Sulla
+labels:
+  - bug
+  - needs-mre
+assignees: []
+created_at: 2025-03-05T13:45:48Z
+updated_at: 2025-03-11T21:11:32Z
+url: https://github.com/astral-sh/uv/issues/11975
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# uv freezes while downloading
+
+---
+
+_Issue opened by @Marco-Sulla on 2025-03-05 13:45_
+
+### Summary
+
+Sometimes `uv` stops downloading packages. It's not 100% reproducible. How can I debug it?
+
+### Platform
+
+Windows 11 x86_64
+
+### Version
+
+0.6.3
+
+### Python version
+
+3.11
+
+---
+
+_Label `bug` added by @Marco-Sulla on 2025-03-05 13:45_
+
+---
+
+_Comment by @zanieb on 2025-03-05 18:48_
+
+If you use `-vvv` you'll get more logs, which might give you insight into what's happening.
+
+
+---
+
+_Label `needs-mre` added by @zanieb on 2025-03-05 18:48_
+
+---
+
+_Comment by @Marco-Sulla on 2025-03-11 21:11_
+
+Here is the output. It's very verbose, I don't understand what's happened.
+
+[uv.zip](https://github.com/user-attachments/files/19198107/uv.zip)
+
+---

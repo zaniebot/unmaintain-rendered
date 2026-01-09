@@ -1,0 +1,82 @@
+---
+number: 18105
+title: "Rule proposal: subclasses of a `@dataclass` should be a `@dataclass`"
+type: issue
+state: open
+author: netanel-haber
+labels:
+  - rule
+  - type-inference
+assignees: []
+created_at: 2025-05-14T19:17:10Z
+updated_at: 2025-05-18T21:29:03Z
+url: https://github.com/astral-sh/ruff/issues/18105
+synced_at: 2026-01-07T13:12:16-06:00
+---
+
+# Rule proposal: subclasses of a `@dataclass` should be a `@dataclass`
+
+---
+
+_Issue opened by @netanel-haber on 2025-05-14 19:17_
+
+### Summary
+
+The following situation is almost certainly a user oversight [although legal]: 
+subclasses not annotated with `@dataclass` of superclasses that *are* annotated with `@dataclass`.
+
+The 5 tools I checked didn't provide a diagnostic/warning for this: mypy, ruff, ty, pylint, flake8.
+
+```python
+from dataclasses import dataclass
+
+@dataclass(kw_only=True, frozen=True)
+class Base:
+    x: int
+
+# The user almost certainly forgot to annotate Child with `@dataclass(kw_only=True, frozen=True)`
+class Child(Base):
+    y: int  # Just a class attribute, not a dataclass field
+
+Child(x=1,y=2)         # TypeError: Base.__init__() got an unexpected keyword argument 'y'
+Child.__init__         # "Signature: Child.__init__(self, *, x: int) -> None"
+```
+
+Would it make sense for me to try to create a rule for this?
+It should also be discussed whether the rule should additionally enforce that the annotations provide identical arguments (e.g. kw_only etc.) as well, but this is less important than the warning about a complete absence of the annotation as that is easy to miss across files, and additionally it might be more complex to eke out whether the user actually *did* intent to provide disparate arguments.
+
+Related to: https://docs.astral.sh/ruff/rules/implicit-class-var-in-dataclass/.
+
+---
+
+_Renamed from "warning for subclasses not annotated with `@dataclass` of superclasses that *are* annotated with `@dataclass`" to "Rule proposal: warning for subclasses not annotated with `@dataclass` of superclasses that *are* annotated with `@dataclass`" by @netanel-haber on 2025-05-14 19:19_
+
+---
+
+_Renamed from "Rule proposal: warning for subclasses not annotated with `@dataclass` of superclasses that *are* annotated with `@dataclass`" to "Rule proposal: subclasses of a `@dataclass` should be a `@dataclass`" by @netanel-haber on 2025-05-14 19:25_
+
+---
+
+_Comment by @ntBre on 2025-05-14 20:19_
+
+I don't think it would make sense to try to add a _ruff_ rule for this since you'd be limited to analyzing a single file at a time. So you'd need the type inference/multi-file analysis from ty. But I don't think we're quite ready to add type-inference-powered lint rules there either.
+
+In short, it sounds like a good idea, but I don't think it would be doable to implement it right now.
+
+Somewhat related: https://github.com/astral-sh/ruff/issues/5837
+
+---
+
+_Label `rule` added by @ntBre on 2025-05-14 20:19_
+
+---
+
+_Label `type-inference` added by @ntBre on 2025-05-14 20:19_
+
+---
+
+_Comment by @netanel-haber on 2025-05-15 13:50_
+
+I assume the model for those will be similar to typescript-eslint, a ruff plugin that uses ty for type-informed linting rules.
+
+---

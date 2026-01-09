@@ -1,0 +1,107 @@
+---
+number: 1029
+title: UP006 autofixes but does not remove the redundant imports if file is __init__.py
+type: issue
+state: closed
+author: LefterisJP
+labels: []
+assignees: []
+created_at: 2022-12-04T10:19:36Z
+updated_at: 2022-12-05T18:06:55Z
+url: https://github.com/astral-sh/ruff/issues/1029
+synced_at: 2026-01-07T13:12:14-06:00
+---
+
+# UP006 autofixes but does not remove the redundant imports if file is __init__.py
+
+---
+
+_Issue opened by @LefterisJP on 2022-12-04 10:19_
+
+This is with `ruff==0.0.155`
+
+Consider the following file as an `__init.py__` somewhere in a code
+
+```python
+from typing import Dict, List, Tuple
+
+
+def foo(a: Dict) -> None:
+    pass
+
+def boo(b: List) -> None:
+    pass
+
+def goo(c: Tuple) -> None:
+    pass
+```
+
+Running `ruff --fix` turns it into 
+
+```python
+from typing import Dict, List, Tuple
+
+
+def foo(a: dict) -> None:
+    pass
+
+def boo(b: list) -> None:
+    pass
+
+def goo(c: tuple) -> None:
+    pass
+```
+
+with the output:
+
+```
+Found 3 error(s) (3 fixed).
+__init__.py:1:20: F401 `typing.Dict` imported but unused and missing from `__all__`
+__init__.py:1:26: F401 `typing.List` imported but unused and missing from `__all__`
+__init__.py:1:32: F401 `typing.Tuple` imported but unused and missing from `__all__`
+```
+
+
+If the file is not named `__init__.py` it correctly also removes the unused import. I suspect it has something to do with the internals and how `__all__` works in `__init__.py`
+
+---
+
+_Comment by @charliermarsh on 2022-12-04 14:46_
+
+Yeah, this was an intentional change but I think this behavior should be configurable and perhaps opt-in.
+
+---
+
+_Label `enhancement` added by @charliermarsh on 2022-12-04 14:47_
+
+---
+
+_Comment by @charliermarsh on 2022-12-04 15:21_
+
+More context: https://github.com/charliermarsh/ruff/issues/484
+
+---
+
+_Comment by @charliermarsh on 2022-12-04 15:21_
+
+I'll just make it a setting, seems easier.
+
+---
+
+_Comment by @LefterisJP on 2022-12-04 15:45_
+
+> Yeah, this was an intentional change but I think this behavior should be configurable and perhaps opt-in.
+
+I see. Reading 484 I kind of get how this happened. Happened only once for me and then fixed it, so not a big deal. Configuration option sounds cool
+
+---
+
+_Comment by @charliermarsh on 2022-12-05 18:06_
+
+I believe this is now fixed.
+
+---
+
+_Closed by @charliermarsh on 2022-12-05 18:06_
+
+---

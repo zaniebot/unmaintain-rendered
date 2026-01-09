@@ -1,0 +1,371 @@
+---
+number: 1377
+title: uv fails to use extra index url
+type: issue
+state: closed
+author: pawamoy
+labels:
+  - bug
+assignees: []
+created_at: 2024-02-15T23:03:26Z
+updated_at: 2024-02-29T16:57:08Z
+url: https://github.com/astral-sh/uv/issues/1377
+synced_at: 2026-01-07T13:12:16-06:00
+---
+
+# uv fails to use extra index url
+
+---
+
+_Issue opened by @pawamoy on 2024-02-15 23:03_
+
+I'm passing an extra index URL, but uv seems to only find package versions from PyPI.org.
+
+Here is a reproduction:
+
+```bash
+# Create an experimentation directory.
+mkdir repro-uv-extra-urls
+cd repro-uv-extra-urls
+
+#  Run a local PyPI-like server.
+mkdir dists
+pipx run pypiserver run dists --disable-fallback -p8000 -a. -P. &>/dev/null &
+
+# Create a pyproject.toml for a project called "ruff", version 1000.
+cat <<EOF >pyproject.toml
+[project]
+name = "ruff"
+version = "1000"
+description = "Ruff from the future."
+authors = [{name = "Charlie Marsh", email = "charlie@marsh.com"}]
+readme = "README.md"
+requires-python = ">=3.8"
+classifiers = ["Development Status :: 1 - Planning"]
+EOF
+
+# Create a README.md file.
+cat <<EOF >README.md
+# Ruff
+Hello.
+EOF
+
+# Build Python distributions for this package.
+pipx run --spec build pyproject-build
+
+# Upload both wheel and sdist to our local PyPI-like index.
+pipx run twine upload -u "" -p "" --repository-url http://localhost:8000 dist/*
+
+# Assert dists were uploaded.
+[ ! -f dists/ruff-1000-py3-none-any.whl ] && echo "Wheel not uploaded"
+[ ! -f dists/ruff-1000.tar.gz ] && echo "Source distribution not uploaded"
+
+# Create a venv.
+uv venv --seed
+
+# Assert uv fails to install ruff==1000
+uv pip install --extra-index-url http://localhost:8000/simple ruff==1000 && echo "Working, not expected" || echo "Failing, as expected"
+
+# Assert pip manages to install ruff==1000
+.venv/bin/pip install --extra-index-url http://localhost:8000/simple ruff==1000 && echo "Working, as expected" || echo "Failing, not expected"
+```
+
+---
+
+_Comment by @charliermarsh on 2024-02-15 23:08_
+
+My guess is that we're finding `ruff` on PyPI, so we then know about the Ruff versions from PyPI. But when we fail to find `ruff==1000`, we don't go back and look for Ruff in any extra indexes.
+
+---
+
+_Comment by @charliermarsh on 2024-02-15 23:09_
+
+I actually don't know what the "right" behavior is here. My guess is that we're "supposed" to look at both indexes (though the order in which indexes are searched is not guaranteed in pip).
+
+---
+
+_Label `bug` added by @charliermarsh on 2024-02-15 23:09_
+
+---
+
+_Comment by @charliermarsh on 2024-02-15 23:09_
+
+(Would this explanation match what you saw in practice?)
+
+---
+
+_Comment by @pawamoy on 2024-02-15 23:10_
+
+Yes! Currently, I expect pip to look into every specified index to satisfy the dependency specification (without order/precedence).
+
+---
+
+_Comment by @charliermarsh on 2024-02-15 23:11_
+
+Yeah we definitely don't do that right now -- we take the "first match" -- which seems like it might be incorrect.
+
+---
+
+_Comment by @charliermarsh on 2024-02-15 23:11_
+
+Thanks for the clear write-up!
+
+---
+
+_Comment by @sbrugman on 2024-02-16 08:31_
+
+> I actually don't know what the "right" behavior is here. My guess is that we're "supposed" to look at both indexes (though the order in which indexes are searched is not guaranteed in pip).
+
+The way we use the extra index url it only contains the internal packages that are not available from PyPi. In the case that a package is on both indices, we obviously would like to select the one in the extra index url regardless of version, as otherwise this would break our code, or worse, someone could inject a dependency. 
+
+`pip` does not offer a secure way to provide priority to one of the URLs, indeed the order is not guaranteed. It will look for the highest version in the case of a collision.  As a workaround, one can start prefixing the version, e.g. with year `2024.0.1` or renaming the package all together (cumbersome, and no guarantees that it won't be claimed later).
+
+Poetry solves this by being able to set a priority per source:
+```
+[[tool.poetry.source]]
+name = "pypi"
+priority = "primary"
+```
+
+and even a source per package:
+
+```
+httpx = { version = "^0.22", source = "internal-pypi" }
+```
+
+Since security is at stake here, I would hope we can consider to offer this guarantee in some way, or to deviate from the default behaviour of `pip`.
+
+Edit: +1 for #171
+
+---
+
+_Comment by @pawamoy on 2024-02-16 13:25_
+
+I'll explain my use-case since uv might want to deviate from what pip does (for good reasons) :slightly_smiling_face: 
+
+My projects follow a sponsorware strategy, where there's a public version, and a private version with more features. Sponsorships above a certain amount per month grant access to these private repositories on GitHub. To simplify local development, as well as allowing contributors *without access* to these private versions, I use a local index to store built distributions of these private projects. Details here: https://pawamoy.github.io/pypi-insiders/. It means I can specify `some-project` in my dependencies, instead of hardcoding `git+https://token@github.com/org/private-repo`. pip is then able to fetch packages from both PyPI.org and my local index, if configured as such (pip's config file, env var, cli flag, etc.).
+
+Current situation with pip:
+
+- pip (or other package managers) will search for the highest compatible version of the dependency (`some-project` above) in *both* indices (PyPI.org and http://localhost:XXXX).
+- Since the private projects I'm developing (or using: I'm not the only one following this sponsorware strategy) use a versioning scheme like `major.minor.patch` for public versions, and `major.minor.patch.pmajor.pminor.ppatch` where `pmajor.pminor.ppatch` is the private version (based on the public one, as a fork), private versions are always "higher" in terms of versioning than the public ones. So pip fetches private versions from the local index, unless there's an even higher public version on PyPI.org without its private equivalent (for example `2.0.0` on PyPI.org, but only `1.2.3.1.0.0` and no `2.0.0.1.0.0` in the local index).
+- This is documented as a limitation: you cannot enforce usage of a private version if there's a higher public version.
+
+This leads me to this desired situation with uv:
+
+- If uv is capable of enforcing the fetching of distributions from a specific index (when they exist in this index), configurable *per user*, this will lift the limitation above: I will be able to enforce the use of private versions even if there are higher public versions :+1: Emphasis on *per user configuration*: I do not want to specify relevant packages, and I do not want to add any configuration in pyproject.toml or other per-project tracked file. A simple `prefer-index = "http://localhost:8000/simple/"` in `~/.config/uv/conf.toml` (totally invented) would be perfect. This `prefer-index` setting would be no-op if it is not *also passed as an extra-index-url*. This way it lets me choose whether to fetch packages from my preferred index, *or not* when I need to test public versions:
+  1. no configured extra index: install from main index
+  2. configured extra index, no configured preferred index: install most compatible version (depending on solving strategy), so install from one or the other indices (look into both)
+  3. configured extra index, configured preferred index: if package exists on preferred index, install most compatible from this index only, otherwise install from main index
+
+Note that in my use-case, there are no security concerns, as there is no concept of internal versus public projects, with the latter being able to shadow the former. Projects are the same in both indices, just with different versions. For use-cases actually involving internal packages, I do understand the need to enforce fetching specific packages from a specific index, and I believe the mentioned `prefer-index` setting above would solve that too?
+
+Maybe case 2 above shouldn't be supported at all, and then we would just need to reverse the semantic of `extra-index-url`, without needing any new config option: give `extra-index-url` precedence over the main index. If you can keep the order of multiple extra-index-urls, then give them precedence according to this order. But if an extra index is not reachable, or does not contain a package, do not fail and fall back to the next one (maybe not secure enough though, as you *never want to fall back for internal packages*).
+
+Let me know if anything was unclear!
+
+---
+
+_Comment by @pawamoy on 2024-02-16 13:56_
+
+In short:
+
+- I want to specify multiple indices
+- I want uv to use them in that order
+- If a package isn't found in the first index, I want uv to fall back onto the next index
+- Other users might want to prevent falling back to the next index for specific packages
+
+---
+
+_Referenced in [Chia-Network/chia-blockchain#17572](../../Chia-Network/chia-blockchain/pulls/17572.md) on 2024-02-16 14:57_
+
+---
+
+_Referenced in [astral-sh/uv#1600](../../astral-sh/uv/issues/1600.md) on 2024-02-17 16:53_
+
+---
+
+_Comment by @groodt on 2024-02-19 02:42_
+
+Please consider dependency confusion attacks: https://medium.com/@alex.birsan/dependency-confusion-4a5d60fec610
+
+Use of `--extra-index-url` as they are presently used are a security vulnerability. 
+
+[PEP 708](https://peps.python.org/pep-0708/) is a yet-to-be-implemented approach to improving the security posture.
+
+---
+
+_Comment by @sbrugman on 2024-02-19 05:48_
+
+> Of course, failing to install X with no way to resolve the error is pretty awful. So PEP 708 instructs clients to provide a means of users to explicitly configure X to come from a given set of repositories, but does not specify that means because how configuration is handled is a client level decision.
+
+So `pip` and `uv pip` should fail when there is ambiguity. Is it already clear how pip will implement repository selection? It seems not: https://github.com/pypa/pip/issues/8606#issuecomment-1776000697
+
+From [PEP 708 discussion](https://discuss.python.org/t/pep-708-extending-the-repository-api-to-mitigate-dependency-confusion-attacks/24179/51)
+
+---
+
+_Comment by @groodt on 2024-02-19 06:37_
+
+I am intentionally mentioning this comment because these 2 issues are related and can lead to significant security problems. 
+
+https://github.com/astral-sh/uv/issues/171#issuecomment-1951663263
+
+---
+
+_Comment by @groodt on 2024-02-19 07:14_
+
+I don’t want to claim this as a general alternative to “—extra-index-url”, but it does often work for the common scenario of a single package on a different index. 
+
+One can use direct url references like so
+
+```
+python -m pip install 'SomeProject@https://my.package.repo/SomeProject-1.2.3-py33-none-any.whl'
+```
+
+Another option I thought about to prevent making the same insecure mistake that pip did, might be to rename the flag to `—insecure-extra-index-url` so that at the very least the user is warned they may be vulnerable to dependency confusion attacks and should carefully consider the implications of what they are doing. 
+
+---
+
+_Comment by @pawamoy on 2024-02-19 08:37_
+
+I've quickly read PEP 708, and I definitely support it instead of ordered indexes. So you can discard my previous comments stating "what I want". With PEP 708 I'll be able to set private projects to "track" the same ones on PyPI.org. This should give me what I want. `pypiserver` actually has a "fallback" feature which is possibly already solving my use-case needs (though depending on its implementation could cancel the perfs offered by uv, I'll see and report back).
+
+---
+
+_Referenced in [astral-sh/uv#171](../../astral-sh/uv/issues/171.md) on 2024-02-19 09:30_
+
+---
+
+_Comment by @pawamoy on 2024-02-19 11:43_
+
+`pypiserver` by default falls back to PyPI.org when it can't find the specified project within its own distributions. If it finds the package within its own dists, it does not look into PyPI.org. So if I allow it to fall back, and I point uv at it, I get what I wanted: my private, local packages take precedence over packages on PyPI.org, even if more recent versions are on PyPI.org :tada: Perfs are good :slightly_smiling_face: 
+
+Tagging latest maintainer @dee-me-tree-or-love in case that's of interest to them :smile: 
+
+---
+
+_Comment by @troyharvey on 2024-02-19 22:36_
+
+This feature is important for [Cloudsmith](https://cloudsmith.com/product/formats/python-repository) private package repositories. In the example below we have a `release` repository for use in production and a `development` repository for dev environments.
+
+Thanks for working on this!
+
+```
+pip install \
+  --extra-index-url=https://dl.cloudsmith.io/$(CLOUDSMITH_RELEASE_SECRET)/acme/release/python/index/ \
+  --extra-index-url=https://dl.cloudsmith.io/$(CLOUDSMITH_DEVELOPMENT_SECRET)/acme/development/python/index/ \
+  -r requirements.txt
+```
+
+---
+
+_Referenced in [astral-sh/uv#1502](../../astral-sh/uv/issues/1502.md) on 2024-02-22 10:48_
+
+---
+
+_Comment by @wchen99998 on 2024-02-23 13:36_
+
+I've got a similar situation here as well. Torch==2.2.0+cpu requires a special index provided by pytorch and uv is not resolving the package as well.
+
+```
+➜  src git:(main) ✗ UV_EXTRA_INDEX_URL=https://download.pytorch.org/whl/cpu uv -v pip compile --no-build -n requirements.in         
+ uv::requirements::from_source source=requirements.in
+ uv_interpreter::python_query::find_python selector=Default
+      0.003066s   0ms DEBUG uv_interpreter::interpreter Detecting markers for: /usr/bin/python3
+    0.027836s DEBUG uv::commands::pip_compile Using Python 3.10.12 interpreter at /usr/bin/python3 for builds
+    0.028172s DEBUG uv_client::registry_client Using registry request timeout of 300s
+ uv_client::flat_index::from_entries 
+ uv_resolver::resolver::solve 
+      0.029227s   0ms DEBUG uv_resolver::resolver Solving with target Python version 3.10.12
+   uv_resolver::resolver::choose_version package=root
+   uv_resolver::resolver::get_dependencies package=root, version=0a0.dev0
+        0.029321s   0ms DEBUG uv_resolver::resolver Adding direct dependency: torch==2.2.0+cpu
+        0.029335s   0ms DEBUG uv_resolver::resolver Adding direct dependency: requests*
+        0.029340s   0ms DEBUG uv_resolver::resolver Adding direct dependency: numpy*
+        0.029344s   0ms DEBUG uv_resolver::resolver Adding direct dependency: pandas*
+   uv_resolver::resolver::choose_version package=torch
+     uv_resolver::resolver::package_wait package_name=torch
+ uv_resolver::resolver::process_request request=Versions torch
+   uv_client::registry_client::simple_api package=torch
+     uv_client::cached_client::get_cacheable 
+       uv_client::cached_client::read_and_parse_cache file=/tmp/.tmpGTB7d6/simple-v2/pypi/torch.rkyv
+ uv_resolver::resolver::process_request request=Versions requests
+   uv_client::registry_client::simple_api package=requests
+     uv_client::cached_client::get_cacheable 
+       uv_client::cached_client::read_and_parse_cache file=/tmp/.tmpGTB7d6/simple-v2/pypi/requests.rkyv
+ uv_resolver::resolver::process_request request=Versions numpy
+   uv_client::registry_client::simple_api package=numpy
+     uv_client::cached_client::get_cacheable 
+       uv_client::cached_client::read_and_parse_cache file=/tmp/.tmpGTB7d6/simple-v2/pypi/numpy.rkyv
+ uv_resolver::resolver::process_request request=Versions pandas
+   uv_client::registry_client::simple_api package=pandas
+     uv_client::cached_client::get_cacheable 
+       uv_client::cached_client::read_and_parse_cache file=/tmp/.tmpGTB7d6/simple-v2/pypi/pandas.rkyv
+ uv_resolver::resolver::process_request request=Prefetch pandas *
+ uv_resolver::resolver::process_request request=Prefetch numpy *
+ uv_resolver::resolver::process_request request=Prefetch requests *
+ uv_resolver::resolver::process_request request=Prefetch torch ==2.2.0+cpu
+          0.029852s   0ms DEBUG uv_client::cached_client No cache entry for: https://pypi.org/simple/torch/
+       uv_client::cached_client::fresh_request url="https://pypi.org/simple/torch/"
+          0.029967s   0ms DEBUG uv_client::cached_client No cache entry for: https://pypi.org/simple/pandas/
+       uv_client::cached_client::fresh_request url="https://pypi.org/simple/pandas/"
+          0.030016s   0ms DEBUG uv_client::cached_client No cache entry for: https://pypi.org/simple/requests/
+       uv_client::cached_client::fresh_request url="https://pypi.org/simple/requests/"
+          0.030088s   0ms DEBUG uv_client::cached_client No cache entry for: https://pypi.org/simple/numpy/
+       uv_client::cached_client::fresh_request url="https://pypi.org/simple/numpy/"
+       uv_client::cached_client::new_cache file=/tmp/.tmpGTB7d6/simple-v2/pypi/torch.rkyv
+       uv_client::registry_client::parse_simple_api package=torch
+       uv_client::cached_client::new_cache file=/tmp/.tmpGTB7d6/simple-v2/pypi/pandas.rkyv
+       uv_client::registry_client::parse_simple_api package=pandas
+       uv_client::cached_client::new_cache file=/tmp/.tmpGTB7d6/simple-v2/pypi/requests.rkyv
+       uv_client::registry_client::parse_simple_api package=requests
+       uv_client::cached_client::new_cache file=/tmp/.tmpGTB7d6/simple-v2/pypi/numpy.rkyv
+       uv_client::registry_client::parse_simple_api package=numpy
+ uv_resolver::version_map::from_metadata 
+ uv_resolver::version_map::from_metadata 
+   uv_distribution::distribution_database::get_or_build_wheel_metadata dist=requests==2.31.0
+     uv_client::registry_client::wheel_metadata built_dist=requests==2.31.0
+ uv_resolver::version_map::from_metadata 
+       uv_client::cached_client::get_serde 
+         uv_client::cached_client::get_cacheable 
+           uv_client::cached_client::read_and_parse_cache file=/tmp/.tmpGTB7d6/wheels-v0/pypi/requests/requests-2.31.0-py3-none-any.msgpack
+        0.065767s  36ms DEBUG uv_resolver::resolver Searching for a compatible version of torch (==2.2.0+cpu)
+      0.065781s  36ms DEBUG uv_resolver::resolver No compatible version found for: torch
+  × No solution found when resolving dependencies:
+  ╰─▶ Because there is no version of torch==2.2.0+cpu and you require torch==2.2.0+cpu, we can conclude that the requirements are unsatisfiable.
+```
+
+---
+
+_Referenced in [pypa/hatch#1282](../../pypa/hatch/issues/1282.md) on 2024-02-24 18:15_
+
+---
+
+_Referenced in [astral-sh/uv#2011](../../astral-sh/uv/issues/2011.md) on 2024-02-27 15:35_
+
+---
+
+_Referenced in [astral-sh/uv#2083](../../astral-sh/uv/pulls/2083.md) on 2024-02-29 15:16_
+
+---
+
+_Closed by @BurntSushi on 2024-02-29 16:57_
+
+---
+
+_Referenced in [astral-sh/uv#2159](../../astral-sh/uv/issues/2159.md) on 2024-03-04 17:03_
+
+---
+
+_Referenced in [astral-sh/uv#2205](../../astral-sh/uv/issues/2205.md) on 2024-03-05 16:42_
+
+---
+
+_Referenced in [astral-sh/uv#2542](../../astral-sh/uv/issues/2542.md) on 2024-03-19 17:20_
+
+---
+
+_Referenced in [astral-sh/uv#2718](../../astral-sh/uv/issues/2718.md) on 2024-03-28 19:19_
+
+---

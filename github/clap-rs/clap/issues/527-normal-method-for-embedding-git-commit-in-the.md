@@ -1,0 +1,88 @@
+---
+number: 527
+title: Normal method for embedding git commit in the version?
+type: issue
+state: closed
+author: lilith
+labels: []
+assignees: []
+created_at: 2016-06-11T10:32:44Z
+updated_at: 2024-07-18T06:18:50Z
+url: https://github.com/clap-rs/clap/issues/527
+synced_at: 2026-01-07T13:12:19-06:00
+---
+
+# Normal method for embedding git commit in the version?
+
+---
+
+_Issue opened by @lilith on 2016-06-11 10:32_
+
+I want to be able to track down what version of the software a user is using, based on git commit ID.
+
+I see this showing up in most Rust command-line tools, but I haven't figured out how it's done. 
+
+Any suggestions?
+
+
+---
+
+_Comment by @kbknapp on 2016-06-12 19:36_
+
+You can either manually add the commit hash and just add it your version with `App::version` as in:
+
+``` rust
+const LATEST_COMMIT: &'static str = "abcd1234";
+fn main() {
+    App::new("prog").version(&*format!("v1.2.3 ({})", LATEST_COMMIT));
+}
+```
+
+But what I think most people do is add a [`build.rs`](http://doc.crates.io/build-script.html) script to pull the latest commit hash automatically.
+
+Although this isn't really anything specific to `clap`.
+
+
+---
+
+_Label `T: RFC / question` added by @kbknapp on 2016-06-12 19:36_
+
+---
+
+_Comment by @lilith on 2016-06-12 19:51_
+
+Thanks! I found this approach based on your suggestion:
+1. Write it out to a text file during build: https://github.com/rust-lang-nursery/rustup.rs/blob/master/build.rs
+2. Read the text file in at runtime: https://github.com/rust-lang-nursery/rustup.rs/blob/27f64753d016acbf93b833fc3618ce09f14ab9a3/src/rustup-cli/common.rs#L339
+
+I'm distributing a single binary, so maybe I'll write code to write code. You can change .rs files in build.rs, right? Or do you know of a project that's already doing this? 
+
+Definitely not specific to clap, but I'd like to add an example when I figure it out, since it seems like a ubiquitous need.
+
+
+---
+
+_Comment by @jhelwig on 2016-06-12 20:53_
+
+https://github.com/cstorey/git-build-version/ is an example of how to do this without requiring files be available at runtime.
+
+
+---
+
+_Closed by @kbknapp on 2016-06-23 19:06_
+
+---
+
+_Comment by @zmlgirl on 2023-04-27 06:46_
+
+for now it's a good idea to use creat [shadow-rs](https://github.com/baoyachi/shadow-rs). 
+
+---
+
+_Comment by @acro5piano on 2024-07-18 06:18_
+
+Great example for integrating clap struct with shadow-rs.
+
+https://github.com/baoyachi/shadow-rs/issues/86#issuecomment-1073030931
+
+---

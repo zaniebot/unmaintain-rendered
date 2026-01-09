@@ -1,0 +1,71 @@
+---
+number: 6644
+title: "Constraint support for `uv lock` (as `uv pip install -r requirements.txt --constraint constraints.txt`)"
+type: issue
+state: closed
+author: mthiboust
+labels:
+  - enhancement
+assignees: []
+created_at: 2024-08-26T12:51:45Z
+updated_at: 2024-08-26T20:45:58Z
+url: https://github.com/astral-sh/uv/issues/6644
+synced_at: 2026-01-07T13:12:17-06:00
+---
+
+# Constraint support for `uv lock` (as `uv pip install -r requirements.txt --constraint constraints.txt`)
+
+---
+
+_Issue opened by @mthiboust on 2024-08-26 12:51_
+
+Is there an equivalent of  `uv pip install -r requirements.txt --constraint constraints.txt` for `uv lock`/`uv sync`?
+
+### Use case:
+I want to install my python project inside a docker image whose base image ([jupyter/base-notebook](https://github.com/jupyter/docker-stacks/tree/main/images/base-notebook) with dependencies installed via `mamba` in this case) has already installed some python libraries. I would like to avoid version conflicts by giving previously installed lib versions as constraints to lock my project dependencies (exporting previously installed libs with `pip list --format freeze` to create the `constraints.txt` file).
+
+Is it possible or do you see a workaround?
+
+
+---
+
+_Comment by @charliermarsh on 2024-08-26 12:54_
+
+You can provide constraints in the `pyproject.toml` like:
+
+```toml
+[tool.uv]
+constraint-dependencies = ["flask==3.0.0"]
+```
+
+But we don't currently have a way for you to provide a list of constraints like that. A few people have asked about it though, we should probably figure out a realistic workflow for it.
+
+---
+
+_Label `enhancement` added by @charliermarsh on 2024-08-26 12:54_
+
+---
+
+_Comment by @zanieb on 2024-08-26 17:44_
+
+I think we can track this in https://github.com/astral-sh/uv/issues/6518
+
+I feel relatively strongly that constraints should be defined in the project metadata instead of provided directly to `uv lock`.
+
+---
+
+_Closed by @zanieb on 2024-08-26 17:44_
+
+---
+
+_Comment by @mthiboust on 2024-08-26 20:45_
+
+Thanks for your answers and linking this to the other issue.
+
+Indeed, the following workflow using `uv add` would be great:
+* Retrieving already installed packages with their version: `pip list --format freeze > constraints.txt`
+* Adding those as constraint dependencies to project metadata: `uv add --constraint constraints.txt`
+* Locking the project: `uv lock`
+
+
+---

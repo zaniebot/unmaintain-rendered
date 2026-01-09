@@ -1,0 +1,64 @@
+---
+number: 1751
+title: __future__ import should not trigger I001
+type: issue
+state: closed
+author: zpz
+labels:
+  - question
+assignees: []
+created_at: 2023-01-09T20:29:24Z
+updated_at: 2023-01-10T04:16:32Z
+url: https://github.com/astral-sh/ruff/issues/1751
+synced_at: 2026-01-07T13:12:14-06:00
+---
+
+# __future__ import should not trigger I001
+
+---
+
+_Issue opened by @zpz on 2023-01-09 20:29_
+
+I suspect I'm missing something. I have this in pyproject.toml
+
+[tool.ruff]
+target-version = "py38"
+select = ["E", "F"]
+extend-select = ["I001"]
+ignore = ["E501"]
+
+The `__future__` imports, which should be the first import, trigger I001 errors. Isort says it doesn't have this issue https://github.com/PyCQA/isort/issues/1637
+
+I think `__future__` on the first line should be the internal behavior, or there should be an option about that. Am I missing something?
+
+---
+
+_Comment by @charliermarsh on 2023-01-09 20:34_
+
+Can you include the exact Python file or snippet that reproduces the issue?
+
+---
+
+_Label `question` added by @charliermarsh on 2023-01-09 20:34_
+
+---
+
+_Comment by @zpz on 2023-01-10 03:27_
+
+My bad. My code had ``from __future__ import annotations`` followed immediately by other imports. I have many files like this: standard lib imports are one block, including the ``__future__`` at the beginning. When it complained about "unsorted" issue, I was surprised, and I did not let ``ruff`` "fix" it (fearing it would mess it up). When I did let it fix it, it added a blank line after ``__future__``, so that is OK. Then I read the message again, it says something like unsorted "in the import block", so that makes sense, too. If ``__future__`` was in its own block, it would not complain.
+
+Not sure whether this needs some call out in the documentation. After all, I was confused at first.
+
+Please feel free to close.
+
+---
+
+_Comment by @charliermarsh on 2023-01-10 04:16_
+
+Ah yeah, that makes sense. We could do a better job of communicating the specific issues that Ruff is flagging when it comes to organizing imports. (Right now, it just tells you that there's _something_ wrong with the set of imports.) Thanks for the thorough reply.
+
+---
+
+_Closed by @charliermarsh on 2023-01-10 04:16_
+
+---

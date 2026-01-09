@@ -1,0 +1,61 @@
+---
+number: 2495
+title: "feature request: drop `pip` prefix from `uv` commands"
+type: issue
+state: closed
+author: charles-cooper
+labels:
+  - question
+assignees: []
+created_at: 2024-03-17T15:03:17Z
+updated_at: 2024-03-17T15:57:38Z
+url: https://github.com/astral-sh/uv/issues/2495
+synced_at: 2026-01-07T13:12:17-06:00
+---
+
+# feature request: drop `pip` prefix from `uv` commands
+
+---
+
+_Issue opened by @charles-cooper on 2024-03-17 15:03_
+
+```
+$ uv --version
+uv 0.1.21
+```
+
+i think `uv`'s UX would benefit from being able to drop the `pip` prefix from all commands. examples:
+```bash
+uv pip install ... -> uv install
+uv pip uninstall ... -> uv uninstall
+```
+
+while it's neat that `uv` is going for "pip compatibility mode", where all the commands have the same interface, just prefixed by `uv`, i think it's not really necessary.
+1. `uv install` is a lot easier to type(!)
+2. if there is no `pip`, users don't need to expect that the API will be exactly the same.
+3. i don't think exact API compatibility is important, what's more important is that all the same *functionality* works
+4. "pip compatibility mode" can be maintained, so `uv pip install ...` always works like `pip install ...`. but after some time, users can graduate to "uv-native" mode
+
+https://github.com/astral-sh/uv/issues/2494 is an example where the "`uv`-native" API could break compatibility in a good way -- `uv install` could just install from the current directory by default instead of requiring the explicit directory (as in `pip install .`).
+
+---
+
+_Label `question` added by @zanieb on 2024-03-17 15:50_
+
+---
+
+_Comment by @zanieb on 2024-03-17 15:51_
+
+We put all these pip-compatible interfaces into a separate namespace because we're going to design a new workflow that is not designed to be pip-compatible. We'll be addressing all sorts of usability concerns there. So, this is on our roadmap but we will explicitly not be moving the existing `uv pip` commands to `uv`.
+
+---
+
+_Closed by @zanieb on 2024-03-17 15:51_
+
+---
+
+_Comment by @zanieb on 2024-03-17 15:57_
+
+More discussion about this in https://github.com/astral-sh/uv/issues/1657
+
+---

@@ -1,0 +1,32 @@
+---
+number: 9269
+title: "`uv add` disregards venv called `venv`"
+type: issue
+state: open
+author: paveldikov
+labels: []
+assignees: []
+created_at: 2024-11-20T10:28:17Z
+updated_at: 2024-11-20T10:31:21Z
+url: https://github.com/astral-sh/uv/issues/9269
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# `uv add` disregards venv called `venv`
+
+---
+
+_Issue opened by @paveldikov on 2024-11-20 10:28_
+
+I think the insistence on `.venv` (with leading dot) is a bit too much. I get that the idea is to install in the project venv and not _any old venv_, but there should be a bit of give here.
+
+Perhaps the heuristic should be:
+- 'is `$VIRTUAL_ENV` a subdirectory of `dirname pyproject.toml`
+
+rather than the current
+- 'is `$VIRTUAL_ENV` equal to `$(dirname pyproject.toml)/.venv`
+
+Also, note that `.venv` vs `venv` is a [somewhat controversial choice, with a bunch of people/systems feeling strongly either way](https://discuss.python.org/t/trying-to-come-up-with-a-default-directory-name-for-virtual-environments/3750). (FWIW, personally I don't, but I'd rather not have to exhort people to rename their venvs.)
+
+
+---

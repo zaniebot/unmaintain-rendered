@@ -1,0 +1,56 @@
+---
+number: 12911
+title: "'Fat wheel' with all workspace packages?"
+type: issue
+state: closed
+author: Ben-grmbl
+labels:
+  - question
+assignees: []
+created_at: 2025-04-15T23:54:53Z
+updated_at: 2025-04-17T13:01:04Z
+url: https://github.com/astral-sh/uv/issues/12911
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# 'Fat wheel' with all workspace packages?
+
+---
+
+_Issue opened by @Ben-grmbl on 2025-04-15 23:54_
+
+### Question
+
+We have been using [uv workspaces ](https://docs.astral.sh/uv/concepts/projects/workspaces/) to split a monolith into multiple packages, to great success.
+
+I was wondering though, when publishing a wheel, is there a way to publish a single wheel containing all the workspace packages? 
+
+
+### Platform
+Linux/Windows
+
+### Version
+
+0.6.14
+
+---
+
+_Label `question` added by @Ben-grmbl on 2025-04-15 23:54_
+
+---
+
+_Comment by @charliermarsh on 2025-04-17 12:41_
+
+Hmm, no, I don't think there's an easy way to do this, though it's an interesting idea.
+
+---
+
+_Comment by @charliermarsh on 2025-04-17 13:01_
+
+Going to close for now, maybe revisit in the future...
+
+---
+
+_Closed by @charliermarsh on 2025-04-17 13:01_
+
+---

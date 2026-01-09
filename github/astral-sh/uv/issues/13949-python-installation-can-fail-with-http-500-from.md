@@ -1,0 +1,59 @@
+---
+number: 13949
+title: Python installation can fail with HTTP 500 from GitHub
+type: issue
+state: closed
+author: zanieb
+labels:
+  - bug
+  - ci-flake
+assignees: []
+created_at: 2025-06-10T13:43:28Z
+updated_at: 2025-08-28T09:02:55Z
+url: https://github.com/astral-sh/uv/issues/13949
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# Python installation can fail with HTTP 500 from GitHub
+
+---
+
+_Issue opened by @zanieb on 2025-06-10 13:43_
+
+e.g.,
+
+```
+error: Failed to install cpython-3.13.2-windows-x86_64-none
+  Caused by: Failed to download https://github.com/astral-sh/python-build-standalone/releases/download/202[50](https://github.com/astral-sh/uv/actions/runs/15560408097/job/43811059422?pr=13946#step:6:51)317/cpython-3.13.2%2B20250317-x86_64-pc-windows-msvc-install_only_stripped.tar.gz
+  Caused by: HTTP status server error (500 Internal Server Error) for url (https://github.com/astral-sh/python-build-standalone/releases/download/20250317/cpython-3.13.2%2B20250317-x86_64-pc-windows-msvc-install_only_stripped.tar.gz)
+```
+
+Should we... retry on these?
+
+---
+
+_Label `ci-flake` added by @zanieb on 2025-06-10 13:43_
+
+---
+
+_Label `bug` added by @zanieb on 2025-06-10 13:43_
+
+---
+
+_Comment by @konstin on 2025-06-10 14:02_
+
+We probably are but we aren't showing it: https://github.com/astral-sh/uv/pull/13897/files#diff-a6e0e21a018971af790e29f1b21d6f45dc5dea4a33f5c8c6b3eb1e58e97ebfcb
+
+There's a gap, namely that we atm can't retry once we started streaming, though I wouldn't see how that could lead to the 500.
+
+---
+
+_Comment by @konstin on 2025-08-28 09:02_
+
+This one has been fixed.
+
+---
+
+_Closed by @konstin on 2025-08-28 09:02_
+
+---

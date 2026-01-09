@@ -1,0 +1,151 @@
+---
+number: 10018
+title: pip install of uv can fail for Python < 3.10 with certain Debian Python distributions
+type: issue
+state: open
+author: mason3k
+labels:
+  - bug
+  - compatibility
+assignees: []
+created_at: 2024-12-19T02:46:42Z
+updated_at: 2024-12-19T16:37:54Z
+url: https://github.com/astral-sh/uv/issues/10018
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# pip install of uv can fail for Python < 3.10 with certain Debian Python distributions
+
+---
+
+_Issue opened by @mason3k on 2024-12-19 02:46_
+
+I love the project and am grateful for all the work!
+
+I noticed an issue that arose due to a confluence of bad user behaviors. For Python < 3.10 (bad) when using the Debian-based distribution of Python (bad) and not using a venv or pipx (bad), the pip installation of uv can install `uv` to a scripts location that `find_uv_bin()` then fails to find. 
+
+
+```repl
+root:/# python3.9 -m pip install uv
+Collecting uv
+  Using cached uv-0.5.10-py3-none-manylinux_2_28_aarch64.whl.metadata (11 kB)
+Using cached uv-0.5.10-py3-none-manylinux_2_28_aarch64.whl (13.9 MB)
+Installing collected packages: uv
+Successfully installed uv-0.5.10
+WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager, possibly rendering your system unusable.It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv. Use the --root-user-action option if you know what you are doing and want to suppress this warning.
+
+root:/# python3.9 -m uv            
+Traceback (most recent call last):
+  File "/usr/lib/python3.9/runpy.py", line 197, in _run_module_as_main
+    return _run_code(code, main_globals, None,
+  File "/usr/lib/python3.9/runpy.py", line 87, in _run_code
+    exec(code, run_globals)
+  File "/usr/local/lib/python3.9/dist-packages/uv/__main__.py", line 47, in <module>
+    _run()
+  File "/usr/local/lib/python3.9/dist-packages/uv/__main__.py", line 27, in _run
+    uv = os.fsdecode(find_uv_bin())
+  File "/usr/local/lib/python3.9/dist-packages/uv/_find_uv.py", line 36, in find_uv_bin
+    raise FileNotFoundError(path)
+FileNotFoundError: /root/.local/bin/uv
+```
+
+I believe what's happening here is actually a known irritation with the Debian distribution of Python: it is patched s.t. scripts are installed to `/usr/local` (https://wiki.debian.org/Python#Deviations_from_upstream), but there is not the appropriate corresponding adjustment in `sysconfig`, which still points to `/usr/bin` for the scripts location. So, in this case, we have:
+
+```repl
+root:/# python3.9
+Python 3.9.5 (default, Nov 23 2021, 15:27:38) 
+[GCC 9.3.0] on linux
+Type "help", "copyright", "credits" or "license" for more information.
+>>> import sysconfig
+>>> sysconfig.get_path("scripts")
+'/usr/bin'
+```
+vs. 
+
+```repl
+root:/# whereis uv
+uv: /usr/local/bin/uv
+```
+
+`find_uv_bin()` starts by checking `os.path.join(sysconfig.get_path("scripts"), uv_exe)`
+
+There is a cri de cœur on this topic (along with some unsatisfying solutions) here: https://ffy00.github.io/blog/02-python-debian-and-the-install-locations/
+
+Not sure if this is something you want to address or not, but considering the size of the project I thought someone else might run into it. I switched to the standalone installer in this Docker image and that works well. 
+
+---
+
+Details:
+
+This is a Docker container
+
+Distributor ID:	Ubuntu
+Description:	Ubuntu 20.04.6 LTS
+Release:	20.04
+Codename:	focal
+6.10.11-linuxkit
+Python 3.9.5
+Python installed via `apt-get install python3.9`
+
+
+
+---
+
+_Comment by @charliermarsh on 2024-12-19 02:59_
+
+Thank you!
+
+---
+
+_Label `bug` added by @charliermarsh on 2024-12-19 03:00_
+
+---
+
+_Label `compatibility` added by @charliermarsh on 2024-12-19 03:00_
+
+---
+
+_Comment by @charliermarsh on 2024-12-19 03:13_
+
+Which container should I use to reproduce this?
+
+---
+
+_Comment by @charliermarsh on 2024-12-19 03:17_
+
+Nevermind, I reproduced with `debian:bullseye`.
+
+---
+
+_Comment by @charliermarsh on 2024-12-19 03:18_
+
+This honestly might not be fixable hah.
+
+---
+
+_Comment by @charliermarsh on 2024-12-19 03:40_
+
+I guess we could sniff for debian and check `import distutils.dist`, etc.
+
+---
+
+_Comment by @charliermarsh on 2024-12-19 03:41_
+
+I'm curious if you have `python3.9-disutils` installed in your example?
+
+---
+
+_Comment by @mason3k on 2024-12-19 16:37_
+
+Thanks for the quick reply! I do have `python3-distutils` preinstalled but not `python3.9-distutils`
+`python3-distutils 3.8.10-0ubuntu1~20.04  all  distutils package for Python 3.x`
+
+---
+
+_Comment by @mason3k on 2024-12-19 16:37_
+
+Per this [code](https://github.com/pypa/pip/blob/3b91f42e461de3f23e9bed46a8c5695435f930fb/src/pip/_internal/locations/__init__.py#L328), it appears this might affect Red Hat as well? And along the lines you suggest, it looks like pip uses `distutils` for scheme logic [for versions <= 3.9](https://github.com/pypa/pip/blob/3b91f42e461de3f23e9bed46a8c5695435f930fb/src/pip/_internal/locations/__init__.py#L46). But it looks kind of nasty. 
+
+The more I look at this, there more I'm starting to think this is a whole can of worms to accommodate an upstream problem, and for Python versions that are almost all EOL. At the end of the day...users probably *should* be using `pipx` or a virtual environment, and in a container, the docs already point to a lot of good ways to install uv that don't run into this. So I could definitely see the argument to defer on this and see if anyone else runs into it. 
+
+---

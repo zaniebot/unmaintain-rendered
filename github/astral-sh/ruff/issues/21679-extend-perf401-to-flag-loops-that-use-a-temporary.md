@@ -1,0 +1,56 @@
+---
+number: 21679
+title: Extend PERF401 to flag loops that use a temporary variable before append
+type: issue
+state: open
+author: harupy
+labels:
+  - rule
+  - needs-decision
+assignees: []
+created_at: 2025-11-28T14:33:57Z
+updated_at: 2025-11-28T14:55:57Z
+url: https://github.com/astral-sh/ruff/issues/21679
+synced_at: 2026-01-07T13:12:16-06:00
+---
+
+# Extend PERF401 to flag loops that use a temporary variable before append
+
+---
+
+_Issue opened by @harupy on 2025-11-28 14:33_
+
+### Summary
+
+[PERF401](https://docs.astral.sh/ruff/rules/manual-list-comprehension/) currently flags patterns like:
+
+```python
+for x in y:
+    filtered.append(f(x))
+```
+
+but misses equivalent cases using a temporary variable:
+
+```python
+for x in y:
+    t = f(x)
+    filtered.append(t)
+```
+
+Is it possible to extend the rule to detect and flag this form as well?
+
+---
+
+_Comment by @MichaReiser on 2025-11-28 14:55_
+
+In theory, yes, it's just harder because the analysis needs to take into account that there are no other writes to `t`  
+
+---
+
+_Label `rule` added by @MichaReiser on 2025-11-28 14:55_
+
+---
+
+_Label `needs-decision` added by @MichaReiser on 2025-11-28 14:55_
+
+---

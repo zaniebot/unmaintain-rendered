@@ -1,0 +1,71 @@
+---
+number: 5564
+title: pep8 rules and autopep8
+type: issue
+state: closed
+author: IamRezaMousavi
+labels: []
+assignees: []
+created_at: 2023-07-06T15:25:51Z
+updated_at: 2023-07-06T15:42:40Z
+url: https://github.com/astral-sh/ruff/issues/5564
+synced_at: 2026-01-07T13:12:15-06:00
+---
+
+# pep8 rules and autopep8
+
+---
+
+_Issue opened by @IamRezaMousavi on 2023-07-06 15:25_
+
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+See standard style guide for Python code [pep8](https://peps.python.org/pep-0008/) and [autopep8](https://pypi.org/project/autopep8/)
+
+![Screenshot from 2023-07-06 18-51-04](https://github.com/astral-sh/ruff/assets/83984878/fe45e0a8-28b2-4a1f-a286-4371f24b7056)
+
+
+---
+
+_Comment by @zanieb on 2023-07-06 15:27_
+
+Hi @IamRezaMousavi thanks for opening an issue. Could you please include more details about what you expect here?
+
+---
+
+_Comment by @IamRezaMousavi on 2023-07-06 15:41_
+
+> Hi @IamRezaMousavi thanks for opening an issue. Could you please include more details about what you expect here?
+
+pep8 rules must implement in ruff.
+Some rules like:
+* `String Quotes`
+* `Whitespace in Expressions and Statements`
+* And other rules
+
+We can implement `--fix` for this rules like `autopep8`
+
+---
+
+_Comment by @charliermarsh on 2023-07-06 15:42_
+
+I _think_ this can be considered a duplicate of https://github.com/astral-sh/ruff/issues/2402, which covers the pycodestyle rules, which in turn cover PEP 8.
+
+---
+
+_Closed by @charliermarsh on 2023-07-06 15:42_
+
+---
+
+_Referenced in [ansible/awx-plugins#109](../../ansible/awx-plugins/pulls/109.md) on 2025-04-22 14:27_
+
+---

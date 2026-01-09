@@ -1,0 +1,71 @@
+---
+number: 10439
+title: "--fix should not delete lines which are marked with pylint disable or pyright ignore"
+type: issue
+state: closed
+author: mavwolverine
+labels:
+  - question
+  - suppression
+assignees: []
+created_at: 2024-03-17T17:56:29Z
+updated_at: 2024-03-17T21:42:50Z
+url: https://github.com/astral-sh/ruff/issues/10439
+synced_at: 2026-01-07T13:12:15-06:00
+---
+
+# --fix should not delete lines which are marked with pylint disable or pyright ignore
+
+---
+
+_Issue opened by @mavwolverine on 2024-03-17 17:56_
+
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* List of keywords you searched for before creating this issue. Write them down here so that others can find this issue more easily and help provide feedback.
+  e.g. "RUF001", "unused variable", "Jupyter notebook"
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+ruff 0.3.3
+
+`poetry run ruff check --fix appmap`
+
+It deleted this line. 
+
+`import _appmap.unittest  # pyright: ignore pylint: disable=unused-import`
+
+Ideally expected behavior: It should add `# noqa: F401`
+Or atleast not delete this line.
+
+---
+
+_Comment by @zanieb on 2024-03-17 19:30_
+
+Hi! Could you please provide a reproducible example e.g. a single file with a `ruff check --isolated --fix --select <RULE>` command that demonstrates the behavior?
+
+---
+
+_Comment by @charliermarsh on 2024-03-17 21:42_
+
+Thanks -- thanks has been requested before and can be tracked here: https://github.com/astral-sh/ruff/issues/1203. Right now, though, we only respect `# noqa` directives. You can run `ruff check --select RUF100 --fix` to automatically add `# noqa` directives for existing violations, if you want, or even `ruff check --select RUF100 --select F401 --fix` to add `# noqa` for existing unused imports.
+
+---
+
+_Closed by @charliermarsh on 2024-03-17 21:42_
+
+---
+
+_Label `question` added by @charliermarsh on 2024-03-17 21:42_
+
+---
+
+_Label `suppression` added by @charliermarsh on 2024-03-17 21:42_
+
+---

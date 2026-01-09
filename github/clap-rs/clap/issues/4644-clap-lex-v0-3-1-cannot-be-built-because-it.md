@@ -1,0 +1,100 @@
+---
+number: 4644
+title: "`clap_lex v0.3.1` cannot be built because it requires rustc 1.64.0 or newer"
+type: issue
+state: closed
+author: uran0sH
+labels:
+  - C-bug
+assignees: []
+created_at: 2023-01-16T04:38:39Z
+updated_at: 2023-01-16T16:10:08Z
+url: https://github.com/clap-rs/clap/issues/4644
+synced_at: 2026-01-07T13:12:20-06:00
+---
+
+# `clap_lex v0.3.1` cannot be built because it requires rustc 1.64.0 or newer
+
+---
+
+_Issue opened by @uran0sH on 2023-01-16 04:38_
+
+### Please complete the following tasks
+
+- [X] I have searched the [discussions](https://github.com/clap-rs/clap/discussions)
+- [X] I have searched the [open](https://github.com/clap-rs/clap/issues) and [rejected](https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed) issues
+
+### Rust Version
+
+1.61
+
+### Clap Version
+
+4.0.18
+
+### Minimal reproducible code
+
+None
+
+### Steps to reproduce the bug with the above code
+
+specify clap versioin: `clap = { version = "=4.0.18", features = ["derive"] }`
+`cargo build`
+results:
+```
+error: package `clap_lex v0.3.1` cannot be built because it requires rustc 1.64.0 or newer, while the currently active rustc version is 1.61.0
+```
+
+### Actual Behaviour
+
+`error: package `clap_lex v0.3.1` cannot be built because it requires rustc 1.64.0 or newer, while the currently active rustc version is 1.61.0`
+
+I think minor version updates shouldn't require updating rustc's version.
+
+### Expected Behaviour
+
+build successfully
+
+### Additional Context
+
+_No response_
+
+### Debug Output
+
+_No response_
+
+---
+
+_Label `C-bug` added by @uran0sH on 2023-01-16 04:38_
+
+---
+
+_Comment by @epage on 2023-01-16 14:48_
+
+> I think minor version updates shouldn't require updating rustc's version.
+
+In terms of "minor version field" like `major.minor.update`, I doubt there will be much ecosystem change on it as breaking changes are disruptive and this is a gray area for semver.
+
+For `0.minor.patch`, its a further gray areas as this is really `0.breaking.minor-and-patch`, compressing two meanings into the field.
+
+---
+
+_Comment by @epage on 2023-01-16 14:49_
+
+As for how to resolve your problem, you can either
+- Use a lockfile and run `cargo update -p clap_lex --precise 0.3.0` (generally preferred)
+- Pin `clap_lex` with `cargo add clap_lex@=0.3.0`
+
+As this is all working as expected, I'm going to go ahead and close this.
+
+---
+
+_Closed by @epage on 2023-01-16 14:49_
+
+---
+
+_Comment by @uran0sH on 2023-01-16 16:10_
+
+Thank you for getting back to me. I mean the 'update version.' And Thank you for your method again.
+
+---

@@ -1,0 +1,362 @@
+---
+number: 16216
+title: "HPC cluster problems: uv pip not respecting indexes?"
+type: issue
+state: closed
+author: rabyj
+labels:
+  - question
+assignees: []
+created_at: 2025-10-09T20:00:16Z
+updated_at: 2025-10-10T21:36:46Z
+url: https://github.com/astral-sh/uv/issues/16216
+synced_at: 2026-01-07T13:12:19-06:00
+---
+
+# HPC cluster problems: uv pip not respecting indexes?
+
+---
+
+_Issue opened by @rabyj on 2025-10-09 20:00_
+
+### Question
+
+I'm trying to get uv to work with some HPC wheelhouses, which is proving to be quite the challenge to me.
+
+I specified multiple flat indexes via [[tool.uv.index]] in my toml, including a default one, but when doing ` uv pip compile --emit-index-url pyproject.toml`, it still lists "--index-url https://pypi.org/simple" instead of the indexes I specified.
+
+Is this expected behavior? Should I be doing thing differently? On the cluster we want to use prebuilt, optimized wheels from the local wheelhouse. I tried various things, without any success. My understanding of the install process is as follows.
+
+The following commands all follow `uv cache clean`.
+
+### Basic command
+
+`uv pip install -r pyproject.toml` seems to be downloading from pipy anyways, since
+
+1) I get "downloading" messages
+
+2) The wheels don't have the expected names.
+What is found:
+```
+DEBUG Selecting: numpy==1.24.4 [compatible] (numpy-1.24.4-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.whl)
+```
+What is expected to be used:
+`numpy-1.24.2+computecanada-cp38-cp38-linux_x86_64.whl`, which exists in one of the specified wheelhouses.
+
+3) Installation seems to still be using pypi (files.pythonhosted.org):
+```
+DEBUG No cache entry for: https://files.pythonhosted.org/packages/54/a0/c62d63c5c69be9aae07836e4d7e25e7a6f5590be3d8f2d53f43eeec5c475/pandas-1.5.3-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
+```
+
+### Offline install (since compute nodes have no internet access)
+
+`uv pip install --offline -r pyproject.toml` --> packages need to already be cached.
+
+<details><summary>DEBUG details</summary>
+<p>
+
+```
+(epiclass_uv_test) [user@narval2 ~]$ uv -v pip install --offline -r pyproject.toml
+DEBUG uv 0.9.0
+DEBUG Acquired shared lock for `$HOME/.cache/uv`
+DEBUG Searching for default Python interpreter in virtual environments
+DEBUG Found `cpython-3.8.10-linux-x86_64-gnu` at `$SCRATCH/envs/epiclass_uv_test/bin/python3` (active virtual environment)
+Using Python 3.8.10 environment at: $SCRATCH/envs/epiclass_uv_test
+DEBUG Acquired lock for `$SCRATCH/envs/epiclass_uv_test`
+DEBUG Using request timeout of 30s
+DEBUG No static `requires-dist` available for: /lustre06/project/6007017/user/sources/epiclass/src/python (DynamicField("dependencies"))
+DEBUG No static `pyproject.toml` available for: file:///lustre06/project/6007017/user/sources/epiclass/src/python/ (DynamicField("version"))
+DEBUG Acquired lock for `$HOME/.cache/uv/sdists-v9/path/728c4f2af1f7b80c`
+DEBUG Computed cache info: Some(Timestamp(SystemTime { tv_sec: 1760034683, tv_nsec: 0 })), None, None, {}, {"src": None}
+DEBUG Preparing metadata for: file:///lustre06/project/6007017/user/sources/epiclass/src/python/
+DEBUG Assessing Python executable as base candidate: $SCRATCH/envs/epiclass_uv_test/bin/python3
+DEBUG Assessing Python executable as base candidate: $SCRATCH/envs/epiclass_uv_test/bin/python
+DEBUG Assessing Python executable as base candidate: /cvmfs/soft.computecanada.ca/easybuild/software/2020/avx2/Core/python/3.8.10/bin/python
+DEBUG No workspace root found, using project root
+DEBUG Using base executable for virtual environment: $SCRATCH/envs/epiclass_uv_test/bin/python3
+DEBUG Resolving build requirements
+DEBUG Solving with installed Python version: 3.8.10
+DEBUG Solving with target Python version: >=3.8.10
+DEBUG Adding direct dependency: setuptools>=75, <81
+DEBUG Adding direct dependency: pip>=23
+DEBUG Adding direct dependency: wheel*
+DEBUG No cache entry for: https://pypi.org/simple/setuptools/
+DEBUG Searching for a compatible version of setuptools (>=75, <81)
+DEBUG No compatible version found for: setuptools
+DEBUG No cache entry for: https://pypi.org/simple/pip/
+DEBUG No cache entry for: https://pypi.org/simple/wheel/
+DEBUG Released lock at `$HOME/.cache/uv/sdists-v9/path/728c4f2af1f7b80c/.lock`
+DEBUG Released lock at `$SCRATCH/envs/epiclass_uv_test/.lock`
+DEBUG Released lock at `$HOME/.cache/uv/.lock`
+error: Failed to resolve requirements from `build-system.requires`
+  Caused by: No solution found when resolving: `setuptools>=75, <81`, `pip>=23`, `wheel`
+  Caused by: Because setuptools was not found in the cache and you require setuptools>=75,<81, we can conclude that your requirements are unsatisfiable.
+
+hint: Packages were unavailable because the network was disabled. When the network is disabled, registry packages may only be read from the cache.
+```
+
+</p>
+</details>
+
+### More simple case
+
+I can reproduce the expected pip behavior when using a simple requirement file, but I don't understand what's making it fail with my project config.
+
+Here's what works:
+
+```pip install --no-index -r req_core.in```
+MATCHES
+```
+uv pip install --no-index -r req_core.in --find-links /cvmfs/soft.computecanada.ca/custom/python/wheelhouse/gentoo2020/avx2 --find-links /cvmfs/soft.computecanada.ca/custom/python/wheelhouse/gentoo/avx2 --find-links /cvmfs/soft.computecanada.ca/custom/python/wheelhouse/gentoo2020/generic --find-links /cvmfs/soft.computecanada.ca/custom/python/wheelhouse/gentoo/generic --find-links /cvmfs/soft.computecanada.ca/custom/python/wheelhouse/generic
+```
+
+If I try to install my package with the pyproject.toml which points to `req_core.in`, then it starts downloading from pipy again.
+
+
+### Relevant files
+
+pyproject.toml
+```
+# -- PYTHON INSTALL SECTION --
+[build-system]
+requires = ["setuptools>=75,<81", "pip>=23", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name="EpiClass"
+dynamic = ["version", "dependencies"]
+requires-python = ">=3.8, <3.12"
+
+[tool.setuptools.dynamic]
+version = { file = "VERSION" }
+dependencies = { file = "requirements/req_core.in" }
+
+[[tool.uv.index]]
+name = "computecanada-generic"
+url = "/cvmfs/soft.computecanada.ca/custom/python/wheelhouse/generic"
+format = "flat"
+default = true
+
+[[tool.uv.index]]
+name = "computecanada-gentoo2020-avx2"
+url = "/cvmfs/soft.computecanada.ca/custom/python/wheelhouse/gentoo2020/avx2"
+format = "flat"
+
+[[tool.uv.index]]
+name = "computecanada-gentoo2020-generic"
+url = "/cvmfs/soft.computecanada.ca/custom/python/wheelhouse/gentoo2020/generic"
+format = "flat"
+
+[[tool.uv.index]]
+name = "computecanada-gentoo-avx2"
+url = "/cvmfs/soft.computecanada.ca/custom/python/wheelhouse/gentoo/avx2"
+format = "flat"
+
+[[tool.uv.index]]
+name = "computecanada-gentoo-generic"
+url = "/cvmfs/soft.computecanada.ca/custom/python/wheelhouse/gentoo/generic"
+format = "flat"
+```
+
+pip config
+```
+(epiclass_uv_test) [user@narval2 envs]$ pip config list
+:env:.config-file='/cvmfs/soft.computecanada.ca/config/python/pip-avx2-gentoo.conf'
+download.find-links='/cvmfs/soft.computecanada.ca/custom/python/wheelhouse/gentoo2020/avx2 /cvmfs/soft.computecanada.ca/custom/python/wheelhouse/gentoo/avx2 /cvmfs/soft.computecanada.ca/custom/python/wheelhouse/gentoo2020/generic /cvmfs/soft.computecanada.ca/custom/python/wheelhouse/gentoo/generic /cvmfs/soft.computecanada.ca/custom/python/wheelhouse/generic'
+global.disable-pip-version-check='true'
+install.constraint='/cvmfs/soft.computecanada.ca/config/python/constraints.txt'
+install.disable-pip-version-check='true'
+install.find-links='/cvmfs/soft.computecanada.ca/custom/python/wheelhouse/gentoo2020/avx2 /cvmfs/soft.computecanada.ca/custom/python/wheelhouse/gentoo/avx2 /cvmfs/soft.computecanada.ca/custom/python/wheelhouse/gentoo2020/generic /cvmfs/soft.computecanada.ca/custom/python/wheelhouse/gentoo/generic /cvmfs/soft.computecanada.ca/custom/python/wheelhouse/generic'
+install.only-binary='numpy,scipy,mpi4py,pandas,h5py,Cython,grpcio'
+install.prefer-binary='true'
+wheel.disable-pip-version-check='true'
+wheel.find-links='/cvmfs/soft.computecanada.ca/custom/python/wheelhouse/gentoo2020/avx2 /cvmfs/soft.computecanada.ca/custom/python/wheelhouse/gentoo/avx2 /cvmfs/soft.computecanada.ca/custom/python/wheelhouse/gentoo2020/generic /cvmfs/soft.computecanada.ca/custom/python/wheelhouse/gentoo/generic /cvmfs/soft.computecanada.ca/custom/python/wheelhouse/generic'
+```
+
+req_core.in
+```
+numpy>=1.22,<2.0
+scipy>=1.8.0
+h5py>=3.6.0,<4.0
+pandas>=1.4.1,<2.0
+```
+
+### Platform
+
+Linux 4.18.0-553.74.1.el8_10.x86_64 x86_64 GNU/Linux
+
+### Version
+
+uv 0.9.0
+
+---
+
+_Label `question` added by @rabyj on 2025-10-09 20:00_
+
+---
+
+_Comment by @rabyj on 2025-10-09 20:06_
+
+I finally found part of my answer while writing this issue -_-
+
+I think using `uv pip install -r pyproject.toml` actually ignores all the uv config part, and only considers the pure requirements parts. I'm actually running the command from a different folder than the toml file. If I run the command somewhere uv sees the project config, it correctly considers it.
+
+---
+
+_Comment by @rabyj on 2025-10-09 20:28_
+
+I'm still hitting some problems, for example 
+```
+Using Python 3.8.10 environment at: $SCRATCH/envs/epiclass_uv_test
+  × Failed to build `epiclass @ file:///lustre06/project/6007017/user/sources/epiclass/src/python`
+  ├─▶ Failed to resolve requirements from `build-system.requires`
+  ├─▶ No solution found when resolving: `setuptools>=75, <81`, `pip>=23`, `wheel`
+  ╰─▶ Because only setuptools==50.3.2+computecanada is available and you require setuptools>=75,<81, we can conclude that your requirements are
+      unsatisfiable.
+```
+But, the default index which points to `/cvmfs/soft.computecanada.ca/custom/python/wheelhouse/generic` contains many setuptools 
+
+
+<details><summary>File list</summary>
+<p>
+
+```
+(epiclass_uv_test) [user@narval2 python]$ find /cvmfs/soft.computecanada.ca/custom/python/wheelhouse/ -type f -name "setuptools-*" | sort
+/cvmfs/soft.computecanada.ca/custom/python/wheelhouse/generic/setuptools-34.1.0+computecanada-py2.py3-none-any.whl
+/cvmfs/soft.computecanada.ca/custom/python/wheelhouse/generic/setuptools-36.2.7+computecanada-py2.py3-none-any.whl
+/cvmfs/soft.computecanada.ca/custom/python/wheelhouse/generic/setuptools-36.4.0+computecanada-py2.py3-none-any.whl
+/cvmfs/soft.computecanada.ca/custom/python/wheelhouse/generic/setuptools-38.2.4+computecanada-py2.py3-none-any.whl
+/cvmfs/soft.computecanada.ca/custom/python/wheelhouse/generic/setuptools-39.0.1+computecanada-py2.py3-none-any.whl
+/cvmfs/soft.computecanada.ca/custom/python/wheelhouse/generic/setuptools-39.1.0+computecanada-py2.py3-none-any.whl
+/cvmfs/soft.computecanada.ca/custom/python/wheelhouse/generic/setuptools-40.0.0+computecanada-py2.py3-none-any.whl
+/cvmfs/soft.computecanada.ca/custom/python/wheelhouse/generic/setuptools-40.6.3+computecanada-py2.py3-none-any.whl
+/cvmfs/soft.computecanada.ca/custom/python/wheelhouse/generic/setuptools-41.0.1+computecanada-py2.py3-none-any.whl
+/cvmfs/soft.computecanada.ca/custom/python/wheelhouse/generic/setuptools-41.6.0+computecanada-py2.py3-none-any.whl
+/cvmfs/soft.computecanada.ca/custom/python/wheelhouse/generic/setuptools-44.0.0+computecanada-py2.py3-none-any.whl
+/cvmfs/soft.computecanada.ca/custom/python/wheelhouse/generic/setuptools-44.1.1+computecanada-py2.py3-none-any.whl
+/cvmfs/soft.computecanada.ca/custom/python/wheelhouse/generic/setuptools-49.6.0+computecanada-py3-none-any.whl
+/cvmfs/soft.computecanada.ca/custom/python/wheelhouse/generic/setuptools-50.3.0+computecanada-py3-none-any.whl
+/cvmfs/soft.computecanada.ca/custom/python/wheelhouse/generic/setuptools-52.0.0+computecanada-py3-none-any.whl
+/cvmfs/soft.computecanada.ca/custom/python/wheelhouse/generic/setuptools-53.0.0+computecanada-py3-none-any.whl
+/cvmfs/soft.computecanada.ca/custom/python/wheelhouse/generic/setuptools-54.0.0+computecanada-py3-none-any.whl
+/cvmfs/soft.computecanada.ca/custom/python/wheelhouse/generic/setuptools-56.2.0+computecanada-py3-none-any.whl
+/cvmfs/soft.computecanada.ca/custom/python/wheelhouse/generic/setuptools-57.0.0+computecanada-py3-none-any.whl
+/cvmfs/soft.computecanada.ca/custom/python/wheelhouse/generic/setuptools-57.4.0+computecanada-py3-none-any.whl
+/cvmfs/soft.computecanada.ca/custom/python/wheelhouse/generic/setuptools-59.2.0+computecanada-py3-none-any.whl
+/cvmfs/soft.computecanada.ca/custom/python/wheelhouse/generic/setuptools-59.5.0+computecanada-py3-none-any.whl
+/cvmfs/soft.computecanada.ca/custom/python/wheelhouse/generic/setuptools-59.8.0+computecanada-py3-none-any.whl
+/cvmfs/soft.computecanada.ca/custom/python/wheelhouse/generic/setuptools-60.0.0+computecanada-py3-none-any.whl
+/cvmfs/soft.computecanada.ca/custom/python/wheelhouse/generic/setuptools-60.2.0+computecanada-py3-none-any.whl
+/cvmfs/soft.computecanada.ca/custom/python/wheelhouse/generic/setuptools-60.7.1+computecanada-py3-none-any.whl
+/cvmfs/soft.computecanada.ca/custom/python/wheelhouse/generic/setuptools-60.8.1+computecanada-py3-none-any.whl
+/cvmfs/soft.computecanada.ca/custom/python/wheelhouse/generic/setuptools-63.2.0+computecanada-py3-none-any.whl
+/cvmfs/soft.computecanada.ca/custom/python/wheelhouse/generic/setuptools-63.4.3+computecanada-py3-none-any.whl
+/cvmfs/soft.computecanada.ca/custom/python/wheelhouse/generic/setuptools-64.0.2+computecanada-py3-none-any.whl
+/cvmfs/soft.computecanada.ca/custom/python/wheelhouse/generic/setuptools-65.5.0-py3-none-any.whl
+/cvmfs/soft.computecanada.ca/custom/python/wheelhouse/generic/setuptools-67.0.0+computecanada-py3-none-any.whl
+/cvmfs/soft.computecanada.ca/custom/python/wheelhouse/generic/setuptools-67.7.2+computecanada-py3-none-any.whl
+/cvmfs/soft.computecanada.ca/custom/python/wheelhouse/generic/setuptools-67.8.0+computecanada-py3-none-any.whl
+/cvmfs/soft.computecanada.ca/custom/python/wheelhouse/generic/setuptools-68.0.0+computecanada-py3-none-any.whl
+/cvmfs/soft.computecanada.ca/custom/python/wheelhouse/generic/setuptools-68.1.2+computecanada-py3-none-any.whl
+/cvmfs/soft.computecanada.ca/custom/python/wheelhouse/generic/setuptools-69.1.0+computecanada-py3-none-any.whl
+/cvmfs/soft.computecanada.ca/custom/python/wheelhouse/generic/setuptools-69.5.1+computecanada-py3-none-any.whl
+/cvmfs/soft.computecanada.ca/custom/python/wheelhouse/generic/setuptools-70.0.0+computecanada-py3-none-any.whl
+/cvmfs/soft.computecanada.ca/custom/python/wheelhouse/generic/setuptools-75.1.0+computecanada-py3-none-any.whl
+/cvmfs/soft.computecanada.ca/custom/python/wheelhouse/generic/setuptools-75.3.0+computecanada-py3-none-any.whl
+/cvmfs/soft.computecanada.ca/custom/python/wheelhouse/generic/setuptools-75.4.0+computecanada-py3-none-any.whl
+/cvmfs/soft.computecanada.ca/custom/python/wheelhouse/generic/setuptools-75.6.0+computecanada-py3-none-any.whl
+/cvmfs/soft.computecanada.ca/custom/python/wheelhouse/generic/setuptools-75.8.0+computecanada-py3-none-any.whl
+/cvmfs/soft.computecanada.ca/custom/python/wheelhouse/generic/setuptools-76.0.0+computecanada-py3-none-any.whl
+/cvmfs/soft.computecanada.ca/custom/python/wheelhouse/generic/setuptools-78.1.0+computecanada-py3-none-any.whl
+/cvmfs/soft.computecanada.ca/custom/python/wheelhouse/generic/setuptools-79.0.1+computecanada-py3-none-any.whl
+/cvmfs/soft.computecanada.ca/custom/python/wheelhouse/generic/setuptools-80.8.0+computecanada-py3-none-any.whl
+/cvmfs/soft.computecanada.ca/custom/python/wheelhouse/generic/setuptools-80.9.0+computecanada-py3-none-any.whl
+/cvmfs/soft.computecanada.ca/custom/python/wheelhouse/gentoo/generic/setuptools-50.3.2+computecanada-py3-none-any.whl
+```
+
+</p>
+</details>
+
+Plus, if I unzip the first match, `setuptools-75.1.0+computecanada-py3-none-any.whl`, the METADATA file indicates `Requires-Python: >=3.8`, so it should accept that one, right? Or am I missing something regarding wheels restrictions? I joined the full wheel, in case it contains some other pertinent info. (I replaced the extension with `zip`)
+
+[setuptools-75.1.0+computecanada-py3-none-any.zip](https://github.com/user-attachments/files/22804578/setuptools-75.1.0%2Bcomputecanada-py3-none-any.zip)
+
+
+---
+
+_Comment by @rabyj on 2025-10-10 18:01_
+
+It seems my problem is actually related to [Enabling local version constraints with dependency range](https://github.com/astral-sh/uv/issues/2478). No solution for this yet.
+
+---
+
+_Comment by @rabyj on 2025-10-10 20:10_
+
+I probably misread the previous dependency range issue, because I was able to make it mostly work using index-strategy = "unsafe-first-match" and flat indexes (since they're supposed to be similar to --find-links). Something like this:
+
+```
+[build-system]
+requires = ["setuptools>=75,<81", "pip>=23", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "EpiClass"
+dynamic = ["version", "dependencies"]
+requires-python = ">=3.8, <3.12"
+
+[tool.setuptools.dynamic]
+version = { file = "VERSION" }
+dependencies = { file = "requirements/req_core.in" }
+
+
+[tool.uv.pip]
+index-strategy = "unsafe-first-match"  # Order matters now!
+
+
+[[tool.uv.index]]
+name = "computecanada-gentoo2020-avx2"
+url = "/cvmfs/soft.computecanada.ca/custom/python/wheelhouse/gentoo2020/avx2"
+format = "flat"
+
+[[tool.uv.index]]
+name = "computecanada-gentoo2020-generic"
+url = "/cvmfs/soft.computecanada.ca/custom/python/wheelhouse/gentoo2020/generic"
+format = "flat"
+
+[[tool.uv.index]]
+name = "computecanada-gentoo-avx2"
+url = "/cvmfs/soft.computecanada.ca/custom/python/wheelhouse/gentoo/avx2"
+format = "flat"
+
+[[tool.uv.index]]
+name = "computecanada-gentoo-generic"
+url = "/cvmfs/soft.computecanada.ca/custom/python/wheelhouse/gentoo/generic"
+format = "flat"
+
+[[tool.uv.index]]
+name = "computecanada-generic"
+url = "/cvmfs/soft.computecanada.ca/custom/python/wheelhouse/generic"
+format = "flat"
+
+# PyPI LAST - only used if not found in ComputeCanada or explicitly requested
+[[tool.uv.index]]
+name = "pypi"
+url = "https://pypi.org/simple"
+
+```
+
+---
+
+_Comment by @rabyj on 2025-10-10 20:52_
+
+Closing since I finally figure it out.
+
+---
+
+_Closed by @rabyj on 2025-10-10 20:52_
+
+---
+
+_Renamed from "HPC problems: uv pip not respecting indexes?" to "HPC cluster problems: uv pip not respecting indexes?" by @rabyj on 2025-10-10 21:36_
+
+---

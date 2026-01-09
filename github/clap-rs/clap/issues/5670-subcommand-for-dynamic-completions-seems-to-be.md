@@ -1,0 +1,67 @@
+---
+number: 5670
+title: "Subcommand for dynamic completions seems to be hard coded and blocks use of word 'complete' as actual input"
+type: issue
+state: closed
+author: alerque
+labels:
+  - A-completion
+assignees: []
+created_at: 2024-08-12T13:34:59Z
+updated_at: 2024-08-12T13:41:49Z
+url: https://github.com/clap-rs/clap/issues/5670
+synced_at: 2026-01-07T13:12:20-06:00
+---
+
+# Subcommand for dynamic completions seems to be hard coded and blocks use of word 'complete' as actual input
+
+---
+
+_Issue opened by @alerque on 2024-08-12 13:34_
+
+I have been [experimenting with a POC on a small project](https://github.com/alerque/git-warp-time/compare/dynamic-completion) using the `features = [ "unstable-dynamic" ]` and testing ZSH completions.
+
+One oddity I ran into is that the top level subcommand seems to be hard coded as `complete`. The docs mention adding this as a subcommand:
+
+https://github.com/clap-rs/clap/blob/2d8138a4716fe3b63ef32693211d4cd50531eb81/clap_complete/src/dynamic/shells/command.rs#L28-L30
+
+I did this at first, but quickly ran into problems because my app needs to be able to accept an argument "complete" that is not hijacked by the completion system. I assumed I could just redo my struct a bit:
+
+```rust
+/// Used internally by Clap to generate dynamic completions
+#[command(subcommand)]
+pub _generate_dynamic_completions: Option<CompleteCommand>,
+```
+
+This was accepted, and modifying my `main()` function to intercept it also compiled:
+
+```rust
+let cli = Cli::parse();
+if let Some(completions) = cli._generate_dynamic_completions {
+    completions.complete(&mut Cli::command());
+}
+```
+
+Quite unexpectedly however the `mycommand _generate_dynamic_completions` is not accepted, it still expects `mycommand complete` and still outputs a completion definition that relies on a "complete" subcommand.
+
+It seems like the subcommand used to trigger completion generation needs to be configurable and/or much more abstract and less likely to conflict with other existing possible completions.
+
+---
+
+_Label `A-completion` added by @epage on 2024-08-12 13:39_
+
+---
+
+_Comment by @epage on 2024-08-12 13:41_
+
+> `pub _generate_dynamic_completions: Option<CompleteCommand>,`
+
+That only changed the field.  In clap, subcommand names are pulled from their enum variant.  If we supported this, youd likely need to use `CompleteArgs` instead.
+
+#5293 is tracking discussion on a custom subcommand, closing in favor of that.
+
+---
+
+_Closed by @epage on 2024-08-12 13:41_
+
+---

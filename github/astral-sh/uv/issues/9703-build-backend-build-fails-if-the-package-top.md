@@ -1,0 +1,73 @@
+---
+number: 9703
+title: "build-backend: build fails if the package (top-level module) name is different than the project name"
+type: issue
+state: closed
+author: pantheraleo-7
+labels:
+  - needs-decision
+  - preview
+assignees: []
+created_at: 2024-12-07T10:36:02Z
+updated_at: 2025-10-30T08:28:48Z
+url: https://github.com/astral-sh/uv/issues/9703
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# build-backend: build fails if the package (top-level module) name is different than the project name
+
+---
+
+_Issue opened by @pantheraleo-7 on 2024-12-07 10:36_
+
+Since the build-backend is in preview, I was trying it out. if the project name is defined as "xyz" in the `pyproject.toml`, uv expects the directory `src/xyz/` to be present, but that may not always be the case (most popular example would be `scikit-learn` and `sklearn`).
+
+This is more of a question than a bug(?) report. How to overcome this? Is there any field that can be defined in the toml? Passing `--directory=src/abc` to `uv build` works but I don't think that's its intended use?
+
+---
+
+_Label `bug` added by @charliermarsh on 2024-12-08 01:26_
+
+---
+
+_Label `preview` added by @charliermarsh on 2024-12-08 01:26_
+
+---
+
+_Comment by @charliermarsh on 2024-12-08 01:26_
+
+\cc @konstin 
+
+---
+
+_Label `bug` removed by @konstin on 2024-12-09 09:06_
+
+---
+
+_Label `needs-decision` added by @konstin on 2024-12-09 09:06_
+
+---
+
+_Comment by @T-256 on 2025-02-13 14:40_
+
+_from https://github.com/astral-sh/uv/pull/11325#discussion_r1954457990:_
+> Another approach could be always using direct path for module_root (i.e. src points to src/__init__.py)
+
+by that approach, `build-backend.module_root = "sklearn"` would build [scikit-learn](https://github.com/scikit-learn/scikit-learn).
+
+---
+
+_Comment by @pantheraleo-7 on 2025-10-30 08:28_
+
+I see we have:
+
+```
+[tool.uv]
+build-backend.module-name = "xyz"
+```
+
+---
+
+_Closed by @pantheraleo-7 on 2025-10-30 08:28_
+
+---

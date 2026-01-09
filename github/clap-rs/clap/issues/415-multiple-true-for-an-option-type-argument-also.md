@@ -1,0 +1,201 @@
+---
+number: 415
+title: "multiple=True for an option-type argument also sets max_values > 1?"
+type: issue
+state: closed
+author: birkenfeld
+labels:
+  - A-docs
+assignees: []
+created_at: 2016-02-04T16:49:03Z
+updated_at: 2018-08-02T03:29:47Z
+url: https://github.com/clap-rs/clap/issues/415
+synced_at: 2026-01-07T13:12:19-06:00
+---
+
+# multiple=True for an option-type argument also sets max_values > 1?
+
+---
+
+_Issue opened by @birkenfeld on 2016-02-04 16:49_
+
+Here is a small demo for the issue. Take this code:
+
+```
+extern crate clap;
+
+use clap::{App, Arg, ArgMatches};
+
+fn get_arguments<'a>() -> ArgMatches<'a> {
+    App::new("app")
+        .version("1.0")
+        .arg(Arg::with_name("option")
+                 .takes_value(true)
+                 //.multiple(true)
+                 //.max_values(1)
+                 .short("O"))
+        .arg(Arg::with_name("positional")
+                 .takes_value(true)
+                 .required(true))
+        .get_matches()
+}
+
+fn main() {
+    let arguments = get_arguments();
+}
+```
+
+which should run fine with arguments `-O x pos`.
+When you uncomment the `multiple(true)`, it should behave the same (I assume from the docs), but instead it complains that the positional arg is not given, which leads me to believe that the option now accepts multiple values. And indeed, also uncommenting the `max_values(1)` makes it behave again.
+
+I hope this isn't expected behavior -- max_values > 1 arguments are thoroughly confusing in my opinion.
+
+
+---
+
+_Comment by @kbknapp on 2016-02-04 20:35_
+
+@birkenfeld This is expected behavior and should be corrected in the documentation if it's unclear, which sadly is hard to tell from my optic because I'm familiar with all the internals so I take a lot of that knowledge for granted.
+
+Just to ensure we're speaking about the same thing. You'd like `multiple(true)` to only mean, `-O val1 -O val2` is allowed, but stop parsing for values after the first value (per occurrence of `-O`), and continue along not the parsing chain _not_ assuming another value to `-O` is coming next? If that's the case, you have to set `number_of_values(1)` to get that effect.
+
+Explanation below. Bare with me here, explaining multiples gets hairy :)
+
+---
+
+First, just to make sure we're understanding the same things I'll regress back a bit for terminology sake. When setting an **option** to `multiple(true)`  you're allowing `-O` to receive multiple values. (For **flags** it just allows them to occur multiple times).
+
+What I think is the confusing part is that there are two ways to specify multiple values for an option. The way I believe you're thinking of, where each occurrence of that option is followed by a single (and only a single) value, such as `-O val1 -O val2` etc. There is also a shorthand way, because some CLIs expect to be able to pass multiple values without having to re-pass the flag, i.e. these two being equivalent
+
+```
+$ program -o val1 val2
+$ program -o val1 -o val2
+```
+
+When you tell `clap` and option is `.multiple(true)` the _only_ thing you're telling it is "this thing can have > 1 values." That's it. The important part is what still has _not_ been specified, such as how many values are possible, or what range, or even even how many values per occurrence of the option. So literally the only thing `clap` knows is keep parsing values for `-O` until it hits one of these three conditions:
+1. It runs into another flag or special character `-f`, `--`, subcommand, etc. 
+2. It reaches the upper limit for max values (i.e. when you set `.max_values(1)`) 
+3. It reaches a specific number of values per occurrence (i.e. such as would be set by `number_of_values(1)`).
+
+So you might ask, what's the difference between `number_of_values` and `max_values` and `multiple`?
+
+`number_of_values` looks for a specific number of values per instance of said option. i.e. you set it to `2` and it will look for `-O val1 val2` then quit parsing values for `-O`, but this _also_ means `-O val2` or `-O val1 val2 val3` is an error.
+
+`max_values` on the otherhand just sets an upper bound on the number of values allowed, and again will continue parsing values until one of those three conditions above is met.
+
+Hopefully this is more clear, please let me know if it's not, or where you found the documentation lacking. If everything I explained was already understood and you mean something different let me know, cause then it may be a bug. Also, if something I said is instead wrong (logically, not programatically) please let me know and we can find a way to correct it.
+
+Thanks for taking the time to file this!
+
+
+---
+
+_Label `T: RFC / question` added by @kbknapp on 2016-02-04 20:36_
+
+---
+
+_Label `P2: need to have` added by @kbknapp on 2016-02-04 20:36_
+
+---
+
+_Label `C: docs` added by @kbknapp on 2016-02-04 20:36_
+
+---
+
+_Label `D: easy` added by @kbknapp on 2016-02-04 20:36_
+
+---
+
+_Label `W: 2.x` added by @kbknapp on 2016-02-04 20:36_
+
+---
+
+_Comment by @kbknapp on 2016-02-04 20:46_
+
+This did in fact point out a bug! Everything I said above is still true, just there is a current bug not respecting `number_of_values` :wink:
+
+
+---
+
+_Label `T: bug` added by @kbknapp on 2016-02-04 20:46_
+
+---
+
+_Label `P1: urgent` added by @kbknapp on 2016-02-04 20:46_
+
+---
+
+_Label `C: args` added by @kbknapp on 2016-02-04 20:46_
+
+---
+
+_Label `C: parsing` added by @kbknapp on 2016-02-04 20:46_
+
+---
+
+_Label `P2: need to have` removed by @kbknapp on 2016-02-04 20:46_
+
+---
+
+_Referenced in [clap-rs/clap#417](../../clap-rs/clap/pulls/417.md) on 2016-02-04 21:45_
+
+---
+
+_Comment by @kbknapp on 2016-02-04 21:46_
+
+#417 fixes the issue I was talking about...once that merges everything I said above will be for real :wink:
+
+
+---
+
+_Comment by @birkenfeld on 2016-02-04 22:01_
+
+Ah, so I should have been using `number_of_values` and not `max_values`. Makes sense - although I still think that it should be 1 by default - but as long as I can set this I'm happy.
+
+
+---
+
+_Comment by @kbknapp on 2016-02-05 07:32_
+
+Yeah looking back, this is one other slightly breaking change I wish I'd made during the bump to 2.x because I agree the largest source of confusion is that it's _not_ 1 by default (well except those that expect that). But going the other way around (opt in to > 1) has less potential for confusion. 
+
+
+---
+
+_Comment by @kbknapp on 2016-02-05 07:33_
+
+Also #417  is about to merge, so I'll put out 2.0.5 right after that.
+
+
+---
+
+_Comment by @kbknapp on 2016-02-05 08:16_
+
+2.0.5 is out on crates.io. I'm going to leave this issue open until I re-do the docs for these parts.
+
+
+---
+
+_Label `P2: need to have` added by @kbknapp on 2016-02-05 08:16_
+
+---
+
+_Label `C: args` removed by @kbknapp on 2016-02-05 08:16_
+
+---
+
+_Label `C: parsing` removed by @kbknapp on 2016-02-05 08:16_
+
+---
+
+_Label `P1: urgent` removed by @kbknapp on 2016-02-05 08:16_
+
+---
+
+_Label `T: bug` removed by @kbknapp on 2016-02-05 08:16_
+
+---
+
+_Closed by @kbknapp on 2016-02-14 11:13_
+
+---

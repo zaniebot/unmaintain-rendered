@@ -1,0 +1,140 @@
+---
+number: 16399
+title: Sorting imports with aliases expands to multiple lines (using ruff --select I)
+type: issue
+state: open
+author: timotk
+labels:
+  - bug
+  - isort
+  - "priority:medium"
+assignees: []
+created_at: 2025-02-26T15:08:58Z
+updated_at: 2025-04-15T13:24:09Z
+url: https://github.com/astral-sh/ruff/issues/16399
+synced_at: 2026-01-07T13:12:16-06:00
+---
+
+# Sorting imports with aliases expands to multiple lines (using ruff --select I)
+
+---
+
+_Issue opened by @timotk on 2025-02-26 15:08_
+
+### Summary
+
+I have an issue with sorting imports. I have a bunch of aliased imports from a single module (aws_cdk):
+
+```python
+from aws_cdk import (
+    NestedStack,
+    aws_ecr as ecr,
+    aws_ecs as ecs,
+    aws_events as events,
+    aws_events_targets as targets,
+    aws_iam as iam,
+    aws_logs as logs,
+)
+```
+
+To fix/sort them, I run:
+```
+ruff check --fix --select I my_file.py
+```
+
+This results in the following code:
+```python
+from aws_cdk import (
+    NestedStack,
+)
+from aws_cdk import (
+    aws_ecr as ecr,
+)
+from aws_cdk import (
+    aws_ecs as ecs,
+)
+from aws_cdk import (
+    aws_events as events,
+)
+from aws_cdk import (
+    aws_events_targets as targets,
+)
+from aws_cdk import (
+    aws_iam as iam,
+)
+from aws_cdk import (
+    aws_logs as logs,
+)
+```
+
+This is not what I would expect! I now have a lot more lines, many parentheses and I think my imports look worse now than before.
+
+The behavior I expect would be:
+1. Imports are fine as is, they are sorted and grouped (no changes)
+2. Imports are split into multiple lines, but without parentheses (see isort output below)
+
+Example output of `isort my_file.py` (isort version 6.0.0):
+```python
+from aws_cdk import NestedStack
+from aws_cdk import aws_ecr as ecr
+from aws_cdk import aws_ecs as ecs
+from aws_cdk import aws_events as events
+from aws_cdk import aws_events_targets as targets
+from aws_cdk import aws_iam as iam
+from aws_cdk import aws_logs as logs
+```
+
+Or with `isort --profile=black`:
+```python
+from aws_cdk import (
+    NestedStack,
+)
+from aws_cdk import aws_ecr as ecr
+from aws_cdk import aws_ecs as ecs
+from aws_cdk import aws_events as events
+from aws_cdk import aws_events_targets as targets
+from aws_cdk import aws_iam as iam
+from aws_cdk import aws_logs as logs
+```
+
+I hope this makes sense!
+
+### Version
+
+ruff 0.9.7
+
+---
+
+_Comment by @MichaReiser on 2025-02-26 16:23_
+
+This could be a bug. 
+
+It is due to the last item ending with a trailing comma (see https://docs.astral.sh/ruff/settings/#lint_isort_split-on-trailing-comma). You get the isort formatting if you remove the trailing comma. 
+
+Respecting the trailing comma is important for formatter compatibility (to avoid collapsing an import that the formatter expanded) but we should probably ignore it when splitting a single import into multiple statements.
+
+---
+
+_Label `bug` added by @MichaReiser on 2025-02-26 16:23_
+
+---
+
+_Label `isort` added by @MichaReiser on 2025-02-26 16:23_
+
+---
+
+_Label `priority:medium` added by @MichaReiser on 2025-02-26 16:23_
+
+---
+
+_Referenced in [astral-sh/ruff#17397](../../astral-sh/ruff/issues/17397.md) on 2025-04-14 20:23_
+
+---
+
+_Comment by @ntBre on 2025-04-15 13:23_
+
+In talking through the related #17397, we realized that the [combine-as-imports](https://docs.astral.sh/ruff/settings/#lint_isort_combine-as-imports) option should accomplish your first expected behavior: https://play.ruff.rs/8fb07319-8044-40ba-90b7-17f7370cc7c7. Note that there are no diagnostics on the input code with `combine-as-imports` set to `true`.
+
+We also discussed the possibility of changing this default value at some point. There was discussion of [isort](https://github.com/PyCQA/isort/issues/1305#issuecomment-926369825) doing this in the next major release in 2021, but I don't see anything in its release notes, and their default for `combine-as-imports` is still `false` too.
+
+---

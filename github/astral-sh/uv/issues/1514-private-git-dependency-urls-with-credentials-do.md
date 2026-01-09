@@ -1,0 +1,284 @@
+---
+number: 1514
+title: Private git dependency URLs with credentials do not resolve
+type: issue
+state: closed
+author: meridionaljet
+labels:
+  - bug
+assignees: []
+created_at: 2024-02-16T16:59:38Z
+updated_at: 2025-07-25T16:03:45Z
+url: https://github.com/astral-sh/uv/issues/1514
+synced_at: 2026-01-07T13:12:16-06:00
+---
+
+# Private git dependency URLs with credentials do not resolve
+
+---
+
+_Issue opened by @meridionaljet on 2024-02-16 16:59_
+
+Working with private git repos that require a username and token to resolve seems to fail in `uv`:
+
+```
+uv pip install '{packagename} @ git+https://{username}@github.com/{organization}/{packagename}.git'
+Updating https://{username}/ (github.com/{organization}/{packagename}.git) 
+error: Failed to download and build: {packagename} @ git+https://{username}@github.com/{organization}/{packagename}.git
+  Caused by: Git operation failed
+  Caused by: failed to fetch into: /home/user/.cache/uv/git-v0/db/20cbf189775078d1
+  Caused by: failed to connect to the repository
+  Caused by: failed to resolve address for {username}: Temporary failure in name resolution; class=Net (12)
+```
+
+`pip` will read `~/.git-credentials` and find the token associated with `username` and resolve the URL correctly. `pip` will also accept the token directly using the form `pip install '{packagename} @ git+https://{username}:{token}@github.com/{organization}/{packagename}.git'`, but `uv` complains about the URL format in this case, trying to interpret `token` as a port:
+
+```
+thread 'main' panicked at crates/cache-key/src/canonical_url.rs:113:38:
+called `Result::unwrap()` on an `Err` value: InvalidPort
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+```
+
+
+---
+
+_Assigned to @zanieb by @zanieb on 2024-02-16 17:00_
+
+---
+
+_Label `bug` added by @zanieb on 2024-02-16 17:00_
+
+---
+
+_Comment by @SnoopJ on 2024-02-16 21:09_
+
+I have seen a similar problem when attempting to install `pkg @ git+ssh://git@github.com/…` where `github.com` has a corresponding `Host` entry in `~/.ssh/config`
+
+---
+
+_Comment by @Dimitrioglo on 2024-02-17 14:13_
+
+Did you try to use GITHUB_ACTOR and GITHUB_TOKEN for auth? For me works well
+
+related info:
+- https://docs.github.com/en/actions/security-guides/automatic-token-authentication
+
+---
+
+_Comment by @lexicalunit on 2024-02-18 02:20_
+
+I'm also having this issue with dependencies with URLs that begin like `git+ssh://git`, for example:
+```shell
+cat > reqs.txt <<EOF
+elasticmock @ git+ssh://git@github.com/monte-carlo-data/elasticmock.git@1.11.0
+EOF
+
+uv pip install -r reqs.txt
+
+ uv::requirements::from_source source=reqs.txt
+    0.000328s DEBUG uv_interpreter::virtual_env Found a virtualenv through VIRTUAL_ENV at: /Users/me/source/montecarlo/monolith-django/venv
+    0.000524s DEBUG uv_interpreter::interpreter Using cached markers for: /Users/me/source/montecarlo/monolith-django/venv/bin/python
+    0.000532s DEBUG uv::commands::pip_install Using Python 3.8.17 environment at /Users/me/source/montecarlo/monolith-django/venv/bin/python
+ uv_client::flat_index::from_entries
+ uv_resolver::resolver::solve
+      0.138836s   0ms DEBUG uv_resolver::resolver Solving with target Python version 3.8.17
+   uv_resolver::resolver::choose_version package=root
+   uv_resolver::resolver::get_dependencies package=root, version=0a0.dev0
+        0.138896s   0ms DEBUG uv_resolver::resolver Adding direct dependency: elasticmock*
+   uv_resolver::resolver::choose_version package=elasticmock
+        0.138939s   0ms DEBUG uv_resolver::resolver Searching for a compatible version of elasticmock @ git+ssh://git@github.com/monte-carlo-data/elasticmock.git@1.11.0 (*)
+ uv_resolver::resolver::process_request request=Metadata elasticmock @ git+ssh://git@github.com/monte-carlo-data/elasticmock.git@1.11.0
+   uv_distribution::distribution_database::get_or_build_wheel_metadata dist=elasticmock @ git+ssh://git@github.com/monte-carlo-data/elasticmock.git@1.11.0
+    0.261561s DEBUG uv_git::source Updating git source `Url { scheme: "ssh", cannot_be_a_base: false, username: "git", password: None, host: Some(Domain("github.com")), port: None, path: "/monte-carlo-data/elasticmock.git", query: None, fragment: None }`
+    0.262142s DEBUG uv_git::git Attempting GitHub fast path for: https://api.github.com/repos/monte-carlo-data/elasticmock/commits/1.11.0
+    0.299788s DEBUG uv_git::git skipping gc as there's only 0 pack files
+    0.299888s DEBUG uv_git::git Performing a Git fetch for: ssh://git@github.com/monte-carlo-data/elasticmock.git
+    0.300004s DEBUG uv_git::git initiating fetch of ["+refs/heads/1.11.0:refs/remotes/origin/1.11.0", "+refs/tags/1.11.0:refs/remotes/origin/tags/1.11.0"] from ssh://git@github.com/monte-carlo-data/elasticmock.git
+    0.849429s DEBUG uv_git::git fetch failed: no authentication methods succeeded
+error: Failed to download and build: elasticmock @ git+ssh://git@github.com/monte-carlo-data/elasticmock.git@1.11.0
+  Caused by: Git operation failed
+  Caused by: failed to fetch into: /Users/me/Library/Caches/uv/git-v0/db/83a8ffe9f36e5f2e
+  Caused by: failed to authenticate when downloading repository
+
+* attempted ssh-agent authentication, but no usernames succeeded: `git`
+  Caused by: no authentication methods succeeded
+```
+
+Exit code is 2.
+
+Compared to output from `pip install`:
+```shell
+pip install -v -r reqs.txt
+Using pip 24.0 from /Users/me/source/montecarlo/monolith-django/venv/lib/python3.8/site-packages/pip (python 3.8)
+Collecting elasticmock@ git+ssh://****@github.com/monte-carlo-data/elasticmock.git@1.11.0 (from -r reqs.txt (line 1))
+  Cloning ssh://****@github.com/monte-carlo-data/elasticmock.git (to revision 1.11.0) to /private/var/folders/k6/l90cqg1x7jj20qf91bqhh4p40000gn/T/pip-install-cmkzk7fk/elasticmock_e2963d61c270497da34f03732656cb01
+  Running command git version
+  git version 2.39.0
+  Running command git clone --filter=blob:none 'ssh://****@github.com/monte-carlo-data/elasticmock.git' /private/var/folders/k6/l90cqg1x7jj20qf91bqhh4p40000gn/T/pip-install-cmkzk7fk/elasticmock_e2963d61c270497da34f03732656cb01
+  Cloning into '/private/var/folders/k6/l90cqg1x7jj20qf91bqhh4p40000gn/T/pip-install-cmkzk7fk/elasticmock_e2963d61c270497da34f03732656cb01'...
+  Running command git show-ref 1.11.0
+  ead2f1a441569c8df929e389449b355aa1bf8e1b refs/tags/1.11.0
+  Running command git rev-parse HEAD
+  ead2f1a441569c8df929e389449b355aa1bf8e1b
+  Resolved ssh://****@github.com/monte-carlo-data/elasticmock.git to commit ead2f1a441569c8df929e389449b355aa1bf8e1b
+  Running command git rev-parse HEAD
+  ead2f1a441569c8df929e389449b355aa1bf8e1b
+  Running command pip subprocess to install build dependencies
+  Collecting setuptools>=40.8.0
+    Using cached setuptools-69.1.0-py3-none-any.whl.metadata (6.1 kB)
+  Using cached setuptools-69.1.0-py3-none-any.whl (819 kB)
+  Installing collected packages: setuptools
+  Successfully installed setuptools-69.1.0
+  Installing build dependencies ... done
+  Running command Getting requirements to build wheel
+  running egg_info
+  creating ElasticMock.egg-info
+  writing ElasticMock.egg-info/PKG-INFO
+  writing dependency_links to ElasticMock.egg-info/dependency_links.txt
+  writing requirements to ElasticMock.egg-info/requires.txt
+  writing top-level names to ElasticMock.egg-info/top_level.txt
+  writing manifest file 'ElasticMock.egg-info/SOURCES.txt'
+  reading manifest file 'ElasticMock.egg-info/SOURCES.txt'
+  reading manifest template 'MANIFEST.in'
+  adding license file 'LICENSE'
+  writing manifest file 'ElasticMock.egg-info/SOURCES.txt'
+  Getting requirements to build wheel ... done
+  Running command pip subprocess to install backend dependencies
+  Collecting wheel
+    Using cached wheel-0.42.0-py3-none-any.whl.metadata (2.2 kB)
+  Using cached wheel-0.42.0-py3-none-any.whl (65 kB)
+  Installing collected packages: wheel
+  Successfully installed wheel-0.42.0
+  Installing backend dependencies ... done
+  Running command Preparing metadata (pyproject.toml)
+  running dist_info
+  creating /private/var/folders/k6/l90cqg1x7jj20qf91bqhh4p40000gn/T/pip-modern-metadata-a9ptxrjl/ElasticMock.egg-info
+  writing /private/var/folders/k6/l90cqg1x7jj20qf91bqhh4p40000gn/T/pip-modern-metadata-a9ptxrjl/ElasticMock.egg-info/PKG-INFO
+  writing dependency_links to /private/var/folders/k6/l90cqg1x7jj20qf91bqhh4p40000gn/T/pip-modern-metadata-a9ptxrjl/ElasticMock.egg-info/dependency_links.txt
+  writing requirements to /private/var/folders/k6/l90cqg1x7jj20qf91bqhh4p40000gn/T/pip-modern-metadata-a9ptxrjl/ElasticMock.egg-info/requires.txt
+  writing top-level names to /private/var/folders/k6/l90cqg1x7jj20qf91bqhh4p40000gn/T/pip-modern-metadata-a9ptxrjl/ElasticMock.egg-info/top_level.txt
+  writing manifest file '/private/var/folders/k6/l90cqg1x7jj20qf91bqhh4p40000gn/T/pip-modern-metadata-a9ptxrjl/ElasticMock.egg-info/SOURCES.txt'
+  reading manifest file '/private/var/folders/k6/l90cqg1x7jj20qf91bqhh4p40000gn/T/pip-modern-metadata-a9ptxrjl/ElasticMock.egg-info/SOURCES.txt'
+  reading manifest template 'MANIFEST.in'
+  adding license file 'LICENSE'
+  writing manifest file '/private/var/folders/k6/l90cqg1x7jj20qf91bqhh4p40000gn/T/pip-modern-metadata-a9ptxrjl/ElasticMock.egg-info/SOURCES.txt'
+  creating '/private/var/folders/k6/l90cqg1x7jj20qf91bqhh4p40000gn/T/pip-modern-metadata-a9ptxrjl/ElasticMock-1.10.0.dist-info'
+  Preparing metadata (pyproject.toml) ... done
+Requirement already satisfied: elasticsearch in ./venv/lib/python3.8/site-packages (from elasticmock@ git+ssh://git@github.com/monte-carlo-data/elasticmock.git@1.11.0->-r reqs.txt (line 1)) (8.12.0)
+Requirement already satisfied: python-dateutil in ./venv/lib/python3.8/site-packages (from elasticmock@ git+ssh://git@github.com/monte-carlo-data/elasticmock.git@1.11.0->-r reqs.txt (line 1)) (2.8.2)
+Requirement already satisfied: elastic-transport<9,>=8 in ./venv/lib/python3.8/site-packages (from elasticsearch->elasticmock@ git+ssh://git@github.com/monte-carlo-data/elasticmock.git@1.11.0->-r reqs.txt (line 1)) (8.12.0)
+Requirement already satisfied: six>=1.5 in ./venv/lib/python3.8/site-packages (from python-dateutil->elasticmock@ git+ssh://git@github.com/monte-carlo-data/elasticmock.git@1.11.0->-r reqs.txt (line 1)) (1.16.0)
+Requirement already satisfied: urllib3<3,>=1.26.2 in ./venv/lib/python3.8/site-packages (from elastic-transport<9,>=8->elasticsearch->elasticmock@ git+ssh://git@github.com/monte-carlo-data/elasticmock.git@1.11.0->-r reqs.txt (line 1)) (2.2.0)
+Requirement already satisfied: certifi in ./venv/lib/python3.8/site-packages (from elastic-transport<9,>=8->elasticsearch->elasticmock@ git+ssh://git@github.com/monte-carlo-data/elasticmock.git@1.11.0->-r reqs.txt (line 1)) (2024.2.2)
+```
+
+Note that I do not have a `~/.ssh/config` file. Nor do I have a `~/.git-credentials` file.
+
+> **Edit:**
+> I actually was able to resolve this by adding a properly configured (not just empty) `~/.ssh/config` file. Not sure why the `pip install` worked without it. 🤷🏻‍♀️ 
+
+---
+
+_Comment by @lexicalunit on 2024-02-18 03:05_
+
+Hrm. Actually I can't get `uv pip compile` to work, even after adding a `~/.ssh/config` file (which allowed `pip install` to work).
+
+```shell
+➜ uv pip compile reqs.in
+Updating ssh://git@github.com/monte-carlo-data/elasticmock.git (1.11.0)                                                                                                                 error: Failed to download and build: elasticmock @ git+ssh://git@github.com/monte-carlo-data/elasticmock.git@1.11.0
+  Caused by: Git operation failed
+  Caused by: failed to fetch into: /Users/me/Library/Caches/uv/git-v0/db/83a8ffe9f36e5f2e
+  Caused by: failed to authenticate when downloading repository
+
+* attempted ssh-agent authentication, but no usernames succeeded: `git`
+  Caused by: no authentication methods succeeded
+```
+Exit code 2.
+
+---
+
+_Comment by @TudorAndrei-Pythia on 2024-02-18 12:29_
+
+I think this issue is related to #1452 
+
+---
+
+_Referenced in [astral-sh/uv#1717](../../astral-sh/uv/pulls/1717.md) on 2024-02-19 20:28_
+
+---
+
+_Comment by @albertotb on 2024-02-20 16:23_
+
+I'm encountering the same issue. I can 
+
+- clone the repo from the terminal
+- install the repo with `pip install "doraemon @ git+ssh://git@github.com/Komorebi-AI/doraemon.git@1.0"`
+
+But using `uv pip install "doraemon @ git+ssh://git@github.com/Komorebi-AI/doraemon.git@1.0"` throws the error:
+
+```
+error: Failed to download and build: doraemon @ git+ssh://git@github.com/Komorebi-AI/doraemon.git@1.0
+  Caused by: Git operation failed
+  Caused by: failed to fetch into: /home/users/atorres/.cache/uv/git-v0/db/85abc53470d01254
+  Caused by: failed to authenticate when downloading repository
+
+* attempted ssh-agent authentication, but no usernames succeeded: `git`
+  Caused by: no authentication methods succeeded
+```
+
+---
+
+_Referenced in [astral-sh/uv#1781](../../astral-sh/uv/pulls/1781.md) on 2024-02-21 00:09_
+
+---
+
+_Closed by @zanieb on 2024-02-21 18:44_
+
+---
+
+_Comment by @ruteru on 2025-05-24 18:11_
+
+After some attemps in different ways manage to find this message: attempted to find username/password via credential.helper, but maybe the found credentials were incorrect
+
+then do:
+```
+git config --global credential.helper manager-core
+uv pip install "<PACKAGE>@git+https://gitlab.com/<ORG>/<REPO>.git"
+```
+
+not sure if works as well in github
+edit: this only works running Gitlab CLI `./glab.exe auth login` and populating Git with Gitlab credentials probably the same for github username and GITHUB_TOKEN
+
+---
+
+_Comment by @bitadmiral on 2025-07-25 15:32_
+
+I don't see why uv couldn't transparently support the git credential cache when accessing private git URLs.  The idea that anything user-specific should be specified inside the pyproject.toml file is anathema to CI/CD.  
+
+When I try running `uv add -U any-package` in a project that has dependencies on a private bitbucket repo, uv seems to skip over the git credential cache mechanism.  In my case, I'm using the git **credential.helper _cache_** backend, so it will interactively prompt me for a password the first time.  This interactive prompting is ignored by uv.  The prompt pops up for my bitbucket username, but it never gets to the point of asking for my password.  Instead, uv steamrolls forward and gives the following error:
+
+_pyproject.toml:_
+```toml
+[tool.uv.sources]
+my-package = { git = "https://bitbucket.my-company.com/scm/de/my-package.git" }
+```
+_**uv** command:_
+```bash
+uv add -U any-package
+```
+_Error:_
+```
+   Updating https://bitbucket.my-company.com/scm/de/my-package.git (HEAD)
+⠇ Resolving dependencies...                                                                                                                                                                                                        × Failed to download and build `my-package @ git+https://bitbucket.my-company.com/scm/de/my-package.git`
+  ├─▶ Git operation failed
+  ├─▶ failed to fetch into: /home/myuser/.cache/uv/git-v0/db/e247d9e4d5047be6
+  ╰─▶ process didn't exit successfully: `/usr/bin/git fetch --force --update-head-ok 'https://bitbucket.my-company.com/scm/de/my-package.git' '+HEAD:refs/remotes/origin/HEAD'` (exit status: 128)
+      --- stderr
+      fatal: Authentication failed for 'https://bitbucket.my-company.com/scm/de/my-package.git/'
+```
+At least there could be a uv command line option to support the git credential cache.  (Note that `--keyring-provider subprocess` option doesn't work for this type of reference to a private git repo (but it should 😉).
+
+UPDATE:  **uv** _does_ work transparently with the git credential cache mechanism if the username and password have recently been stored _prior_ to running `uv add -U any-package`.  I'm guessing it doesn't work with the interactive prompting because uv is running things in the background (non-interactively) which isn't compatible with the git **credential.helper _cache_** mechanism.  A more permanent storage than _**cache**_ should avoid this problem.
+
+
+---

@@ -1,0 +1,73 @@
+---
+number: 13868
+title: "`uv sync` twice tries to install to /usr/local/lib the second time"
+type: issue
+state: closed
+author: c0g
+labels:
+  - bug
+assignees: []
+created_at: 2025-06-05T17:33:21Z
+updated_at: 2025-06-15T01:19:18Z
+url: https://github.com/astral-sh/uv/issues/13868
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# `uv sync` twice tries to install to /usr/local/lib the second time
+
+---
+
+_Issue opened by @c0g on 2025-06-05 17:33_
+
+### Summary
+
+We have a fairly complex workspace repo so I'm struggling to find a minimal reproduce - doesn't reproduce with two sub-projects with cross-dependencies, also doesn't reproduce if I just copy the pyproject.toml skeleton from my project (e.g. remove all our code 😓). Will keep plugging away at re-producing in something I can share.
+
+The very short is if I run `uv sync` once, it creates a .venv and works fine. If I run it again with a .venv in the directory, it tries to install into /usr and fails because I don't have write access into /usr.
+
+I've attached log files of the first and second run. 
+
+I ran a bisection and the problem seems to have been introduced in 0.6.4 -- it works fine on 0.6.0 - 0.6.3. I have logs from all installs during the bisection if those might be helpful. Also happy to run any other diagnosis commands.
+
+[first.log](https://github.com/user-attachments/files/20615027/first.log)
+[second.log](https://github.com/user-attachments/files/20615028/second.log)
+
+### Platform
+
+Ubuntu 22.04 amd64
+
+### Version
+
+uv 0.6.4 onward
+
+### Python version
+
+3.10.12
+
+---
+
+_Label `bug` added by @c0g on 2025-06-05 17:33_
+
+---
+
+_Comment by @konstin on 2025-06-06 15:37_
+
+Can you share the output of the following with the venv activated?
+```
+python -m sysconfig 2>/dev/null | head -14
+``` 
+How did you install the system Python interpreter?
+
+---
+
+_Comment by @c0g on 2025-06-15 01:19_
+
+Unfortunately I no longer have access to this system so can’t run the command. It was just the standard 3.10 python on Ubuntu 22.04.
+
+I’ll close this since I can’t provide any more info. Sorry.
+
+---
+
+_Closed by @c0g on 2025-06-15 01:19_
+
+---

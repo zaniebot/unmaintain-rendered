@@ -1,0 +1,116 @@
+---
+number: 12914
+title: "`uv python list` stopped showing non-installed PyPy exactly after 0.6.10"
+type: issue
+state: closed
+author: alexprengere
+labels:
+  - bug
+assignees: []
+created_at: 2025-04-16T07:45:22Z
+updated_at: 2025-04-17T16:59:14Z
+url: https://github.com/astral-sh/uv/issues/12914
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# `uv python list` stopped showing non-installed PyPy exactly after 0.6.10
+
+---
+
+_Issue opened by @alexprengere on 2025-04-16 07:45_
+
+### Summary
+
+Hi!
+I believe this is a minor regression that happened when uv went from `0.6.9` to `0.6.10` (unless I missed something in the docs or release notes).
+I tested this on both Windows et Fedora (WSL2).
+On `0.6.10`, `uv python list` stops listing PyPy releases that are *available for download* (this does not happen for CPython releases).
+
+```
+$ uv self update 0.6.9
+$ uv python list |grep -i pypy
+pypy-3.11.11-linux-x86_64-gnu                     ... bin/pypy3.11
+pypy-3.10.16-linux-x86_64-gnu                     ... bin/pypy3 -> .../bin/pypy
+pypy-3.10.16-linux-x86_64-gnu                     <download available>
+pypy-3.9.19-linux-x86_64-gnu                      <download available>
+pypy-3.8.16-linux-x86_64-gnu                      <download available>
+pypy-3.7.13-linux-x86_64-gnu                      ... bin/pypy3.7 -> pypy3
+
+$ uv self update 0.6.10
+$ uv python list |grep -i pypy
+pypy-3.11.11-linux-x86_64-gnu                     ... bin/pypy3.11
+pypy-3.10.16-linux-x86_64-gnu                     ... bin/pypy3 -> .../bin/pypy
+pypy-3.7.13-linux-x86_64-gnu                      ... bin/pypy3.7 -> pypy3
+```
+This behavior is also present on the very latest version `0.6.14`.
+Interestingly, forcing the interpreter show them again:
+
+```
+$ uv python list pypy |grep -i pypy
+pypy-3.11.11-linux-x86_64-gnu                     ... bin/pypy3.11
+pypy-3.10.16-linux-x86_64-gnu                     ... bin/pypy3 -> .../bin/pypy
+pypy-3.10.16-linux-x86_64-gnu                     <download available>
+pypy-3.9.19-linux-x86_64-gnu                      <download available>
+pypy-3.8.16-linux-x86_64-gnu                      <download available>
+pypy-3.7.13-linux-x86_64-gnu                      ... bin/pypy3.7 -> pypy3
+```
+
+After digging a bit in the code, it looks like this is caused by ec499807f (reverting and building from sources works as expected).
+
+### Platform
+
+Windows x86_64, Fedora (WSL)
+
+### Version
+
+0.6.10
+
+### Python version
+
+Python 3.9.0
+
+---
+
+_Label `bug` added by @alexprengere on 2025-04-16 07:45_
+
+---
+
+_Assigned to @zanieb by @konstin on 2025-04-16 08:25_
+
+---
+
+_Comment by @alexprengere on 2025-04-16 08:54_
+
+My quick analysis of the code is that when not providing any `request` [here](https://github.com/astral-sh/uv/blob/main/crates/uv/src/commands/python/list.rs#L54) (the `uv python list` parameter), we hit `base_download_request.fill()?` [here](https://github.com/astral-sh/uv/blob/main/crates/uv/src/commands/python/list.rs#L91) that sets `download_request` to basically `PythonDownloadRequest { implementation: Some(CPython) }` (from [fill](https://github.com/astral-sh/uv/blob/main/crates/uv-python/src/downloads.rs#L211), as `self.implementation` is none). So in that case only CPython downloads are shown, but I would expect all of implementations to be shown.
+
+When passing `uv python list pypy`, then `download_request` is basically `PythonDownloadRequest { implementation: Some(PyPy) }`, and the PyPy downloads are shown.
+
+Removing the 3 lines [there](https://github.com/astral-sh/uv/blob/main/crates/uv-python/src/downloads.rs#L210-L212) to avoid setting implementation to CPython when calling `fill` solves this issue (not sure it this is clean). If I am on the right track I could perhaps open a PR, but if someone else is faster feel free to go ahead.
+
+EDIT: I opened a PR, but it has no tests, I wanted mostly to check the CI
+
+---
+
+_Referenced in [astral-sh/uv#12915](../../astral-sh/uv/pulls/12915.md) on 2025-04-16 09:15_
+
+---
+
+_Comment by @j178 on 2025-04-17 05:15_
+
+I added tests can showcase this in #12931 
+
+---
+
+_Comment by @alexprengere on 2025-04-17 08:12_
+
+Good catch! I believe your PR should be merged first, then I can rebase and leverage your tests.
+
+---
+
+_Closed by @zanieb on 2025-04-17 16:59_
+
+---
+
+_Closed by @zanieb on 2025-04-17 16:59_
+
+---

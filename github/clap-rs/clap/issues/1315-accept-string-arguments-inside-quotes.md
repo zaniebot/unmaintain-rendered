@@ -1,0 +1,64 @@
+---
+number: 1315
+title: Accept string arguments inside quotes
+type: issue
+state: closed
+author: NQNStudios
+labels: []
+assignees: []
+created_at: 2018-07-05T17:28:00Z
+updated_at: 2018-08-02T03:30:26Z
+url: https://github.com/clap-rs/clap/issues/1315
+synced_at: 2026-01-07T13:12:19-06:00
+---
+
+# Accept string arguments inside quotes
+
+---
+
+_Issue opened by @NQNStudios on 2018-07-05 17:28_
+
+### Bug or Feature Request Summary
+
+I'd like to be able to pass a multiple-token string as an argument to a program, like in the following common cases:
+
+`echo "Hello world!"`
+`echo 'Hello world!'`
+
+Right now, I can find no mechanism for handling the contents of quotation marks as a singular argument. If I want, I can declare the last positional argument to allow multiple values without a delimiter, and retrieve them in a `Values` struct, but the first and last values will contain the preceding `"` and trailing `"` which is not desired. Really, I want a complete, single `&str` value containing all of the tokens which were included within the quotes. 
+
+Am I missing some way of doing this, or is it a new feature requirement? Thanks in advance.
+
+---
+
+_Comment by @kbknapp on 2018-07-09 21:56_
+
+I'm not sure I understand exactly. You want `echo "Hello World"` where `Hello World` is a single value, or two values? Because the quoting functionality is handled by your shell. clap doesn't do anything to the quotes. 
+
+
+
+---
+
+_Label `T: RFC / question` added by @kbknapp on 2018-07-09 21:56_
+
+---
+
+_Comment by @NQNStudios on 2018-07-09 22:27_
+
+Aha! Turns out the lack of string-handling I'm experiencing is a consequence of my use-case. My program runs its own REPL that executes custom commands on the program state. I'm passing input to clap by tokenizing lines of input that are taken directly, not from env::args. This being different from the norm, I can see how implementing a solution in the crate might be undesirable, but I will say that it works excellently for my use-case otherwise, and others might want to apply clap in similar situations.
+
+---
+
+_Comment by @kbknapp on 2018-07-10 18:15_
+
+Ah ok I see. Yeah it sounds like something that should be done at the tokenization stage, so I can't say it's something I'd be comfortable changing in mainline clap. I'm going to close this for now. If you need help with the tokenization feel free to pop in the gitter chat :wink:
+
+---
+
+_Closed by @kbknapp on 2018-07-10 18:15_
+
+---
+
+_Referenced in [GitoxideLabs/gitoxide#1859](../../GitoxideLabs/gitoxide/pulls/1859.md) on 2025-03-13 17:14_
+
+---

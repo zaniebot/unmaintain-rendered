@@ -1,0 +1,67 @@
+---
+number: 8126
+title: Using UV to manage the system installation
+type: issue
+state: closed
+author: guillemc23
+labels:
+  - question
+assignees: []
+created_at: 2024-10-11T11:57:58Z
+updated_at: 2024-10-14T14:54:21Z
+url: https://github.com/astral-sh/uv/issues/8126
+synced_at: 2026-01-07T13:12:17-06:00
+---
+
+# Using UV to manage the system installation
+
+---
+
+_Issue opened by @guillemc23 on 2024-10-11 11:57_
+
+I don't think that this is an issue, it's most likely a question.
+
+In my case, I am using the [GDAL official docker image](https://github.com/OSGeo/gdal/pkgs/container/gdal/259415026?tag=ubuntu-small-3.9.2) that already comes with its bindings and Python packages properly installed. I would like to use UV to manage this system's Python installation and to add other packages on top of it. I have seen the flag `--system` but I'm not certain what it does, it definitely doesn't let me to do this.
+
+For example, the system's installation has the `gdal` package properly installed but not `pandas`, so I would like to use UV to install `pandas` on the system's installation and run my scripts without the need for creating a virtual environment.
+
+I have tested as well setting the following environment variables:
+```
+ENV UV_SYSTEM_PYTHON "true"
+ENV UV_PYTHON_PREFERENCE "only-system"
+```
+But still, when I run `uv run --frozen python main.py`, it creates a virtual environment instead of running over the system instalation. This also happens when running `uv sync` 🤔 
+
+FYI: GDAL is a geospatial set of tools that are usually quite tedious to install, so using the official docker image is a practical way to do so, better than just starting from the Python image and installing GDAL to it
+
+---
+
+_Comment by @Super1Windcloud on 2024-10-11 15:13_
+
+#  I think that    you can    ` uv pip install --system` 
+
+---
+
+_Comment by @guillemc23 on 2024-10-14 06:35_
+
+What about running something using the system python?
+
+---
+
+_Label `question` added by @charliermarsh on 2024-10-14 14:02_
+
+---
+
+_Comment by @charliermarsh on 2024-10-14 14:54_
+
+You can set `UV_PROJECT_ENVIRONMENT` to a system interpreter -- see here: https://github.com/astral-sh/uv/pull/6834#issuecomment-2319253359
+
+---
+
+_Closed by @charliermarsh on 2024-10-14 14:54_
+
+---
+
+_Referenced in [astral-sh/uv#12987](../../astral-sh/uv/issues/12987.md) on 2025-10-21 19:20_
+
+---

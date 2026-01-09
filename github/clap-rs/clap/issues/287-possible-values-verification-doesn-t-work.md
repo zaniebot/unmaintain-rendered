@@ -1,0 +1,106 @@
+---
+number: 287
+title: "Possible values verification doesn't work"
+type: issue
+state: closed
+author: grossws
+labels:
+  - C-bug
+  - A-parsing
+assignees: []
+created_at: 2015-09-29T23:31:50Z
+updated_at: 2018-08-02T03:29:45Z
+url: https://github.com/clap-rs/clap/issues/287
+synced_at: 2026-01-07T13:12:19-06:00
+---
+
+# Possible values verification doesn't work
+
+---
+
+_Issue opened by @grossws on 2015-09-29 23:31_
+
+Can be reproduced using [example 11_only_specific_values](https://github.com/kbknapp/clap-rs/blob/master/examples/11_only_specific_values.rs). 
+### actual
+
+If invoked with any value (other than `fast` and `slow`) it triggers panic:
+    `thread '<main>' panicked at 'internal error: entered unreachable code', src/main.rs:32`
+### expected
+
+Some error message, graceful exit and usage info printed.
+
+
+---
+
+_Comment by @kbknapp on 2015-09-30 04:25_
+
+Thanks for taking the time to file this! We'll post back here with updates and should have this fixed quickly. 
+
+
+---
+
+_Label `T: bug` added by @kbknapp on 2015-09-30 04:26_
+
+---
+
+_Label `P1: urgent` added by @kbknapp on 2015-09-30 04:26_
+
+---
+
+_Label `C: args` added by @kbknapp on 2015-09-30 04:26_
+
+---
+
+_Label `D: easy` added by @kbknapp on 2015-09-30 04:26_
+
+---
+
+_Label `C: parsing` added by @kbknapp on 2015-09-30 04:26_
+
+---
+
+_Label `W: 1.x` added by @kbknapp on 2015-09-30 04:26_
+
+---
+
+_Added to milestone `1.4.3` by @kbknapp on 2015-09-30 04:26_
+
+---
+
+_Comment by @kbknapp on 2015-09-30 04:34_
+
+Offending lines are most likely [here](https://github.com/kbknapp/clap-rs/blob/master/src/app/app.rs#L2590-L2592)
+
+I'll fix in the morning if someone hasn't beaten me to it by then :wink:
+
+
+---
+
+_Referenced in [clap-rs/clap#288](../../clap-rs/clap/pulls/288.md) on 2015-09-30 14:25_
+
+---
+
+_Closed by @homu on 2015-09-30 15:05_
+
+---
+
+_Comment by @grossws on 2015-09-30 17:02_
+
+:+1: 
+
+
+---
+
+_Comment by @kbknapp on 2015-09-30 17:03_
+
+@grossws Once #289 merges I'll release 1.4.3 to crates.io
+
+
+---
+
+_Comment by @kbknapp on 2015-09-30 18:45_
+
+v1.4.3 is out on crates.io which fixes this issue.
+
+
+---

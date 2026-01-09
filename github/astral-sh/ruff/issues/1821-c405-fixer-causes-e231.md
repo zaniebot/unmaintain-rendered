@@ -1,0 +1,60 @@
+---
+number: 1821
+title: C405 fixer causes E231
+type: issue
+state: closed
+author: spaceone
+labels:
+  - fixes
+assignees: []
+created_at: 2023-01-12T16:54:33Z
+updated_at: 2023-01-13T17:56:44Z
+url: https://github.com/astral-sh/ruff/issues/1821
+synced_at: 2026-01-07T13:12:14-06:00
+---
+
+# C405 fixer causes E231
+
+---
+
+_Issue opened by @spaceone on 2023-01-12 16:54_
+
+foo.py:
+`SKIP = set(('interfaces/restart/auto',))`
+
+`ruff --fix foo.py` causes:
+`SKIP = {'interfaces/restart/auto',}`
+which is detected as `E231` by `flake8`:
+`foo.py:1:34: E231 missing whitespace after ','`
+
+---
+
+_Label `wontfix` added by @charliermarsh on 2023-01-12 20:49_
+
+---
+
+_Label `wontfix` removed by @charliermarsh on 2023-01-12 20:50_
+
+---
+
+_Comment by @charliermarsh on 2023-01-12 21:00_
+
+I was initially gonna say we shouldn't fix this, but I guess it's like, the specific case of a tuple with a trailing comma (to signify a tuple) that isn't a "magic trailing comma" (from Black's perspective).
+
+---
+
+_Label `autofix` added by @charliermarsh on 2023-01-12 21:00_
+
+---
+
+_Referenced in [astral-sh/ruff#1854](../../astral-sh/ruff/pulls/1854.md) on 2023-01-13 17:56_
+
+---
+
+_Closed by @charliermarsh on 2023-01-13 17:56_
+
+---
+
+_Referenced in [astral-sh/ruff#2397](../../astral-sh/ruff/issues/2397.md) on 2023-01-31 14:22_
+
+---

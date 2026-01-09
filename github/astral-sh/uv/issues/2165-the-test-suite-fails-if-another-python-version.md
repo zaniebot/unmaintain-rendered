@@ -1,0 +1,221 @@
+---
+number: 2165
+title: The test suite fails if another Python version than 3.11.7 is installed
+type: issue
+state: closed
+author: mgorny
+labels:
+  - testing
+assignees: []
+created_at: 2024-03-04T17:22:37Z
+updated_at: 2024-04-16T06:14:00Z
+url: https://github.com/astral-sh/uv/issues/2165
+synced_at: 2026-01-07T13:12:17-06:00
+---
+
+# The test suite fails if another Python version than 3.11.7 is installed
+
+---
+
+_Issue opened by @mgorny on 2024-03-04 17:22_
+
+I'm trying to package `uv` for Gentoo Linux. While running the test suite for 0.1.13, I'm getting the following test failure:
+
+```
+     Running `/var/tmp/portage/dev-python/uv-0.1.13/work/uv-0.1.13/target/debug/deps/pip_compile_scenarios-c46f31b1c84ace09`
+
+running 8 tests
+test requires_incompatible_python_version_compatible_override_other_wheel ... ok^O
+test requires_python_patch_version_override_no_patch ... ok^O
+test requires_incompatible_python_version_compatible_override_no_wheels ... ok^O
+test requires_incompatible_python_version_compatible_override_no_compatible_wheels ... ok^O
+test requires_compatible_python_version_incompatible_override ... FAILED^O
+test requires_incompatible_python_version_compatible_override ... ok^O
+test requires_python_patch_version_override_patch_compatible ... ok^O
+test requires_incompatible_python_version_compatible_override_no_wheels_available_system ... ok^O
+
+failures:
+
+---- requires_compatible_python_version_incompatible_override stdout ----
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ Snapshot Summary ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Snapshot: requires_compatible_python_version_incompatible_override
+Source: crates/uv/tests/pip_compile_scenarios.rs:132
+────────────────────────────────────────────────────────────────────────────────
+Expression: snapshot
+────────────────────────────────────────────────────────────────────────────────
+-old snapshot
++new results
+────────────┬───────────────────────────────────────────────────────────────────
+    1     1 │ exit_code: 1
+    2     2 │ ----- stdout -----
+    3     3 │ 
+    4     4 │ ----- stderr -----
+    5       │-warning: The requested Python version 3.9 is not available; 3.11.7 will be used to build dependencies instead.
+          5 │+warning: The requested Python version 3.9 is not available; 3.11.8 will be used to build dependencies instead.
+    6     6 │   × No solution found when resolving dependencies:
+    7     7 │   ╰─▶ Because the requested Python version (3.9) does not satisfy Python>=3.10 and albatross==1.0.0 depends on Python>=3.10, we can conclude that albatross==1.0.0 cannot be used.
+    8     8 │       And because you require albatross==1.0.0, we can conclude that the requirements are unsatisfiable.
+────────────┴───────────────────────────────────────────────────────────────────
+To update snapshots run `cargo insta review`
+Stopped on the first failure. Run `cargo insta test` to run all snapshots.
+thread 'requires_compatible_python_version_incompatible_override' panicked at /var/tmp/portage/dev-python/uv-0.1.13/work/cargo_home/gentoo/insta-1.35.1/src/runtime.rs:563:9:
+snapshot assertion for 'requires_compatible_python_version_incompatible_override' failed in line 132
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    requires_compatible_python_version_incompatible_override
+
+test result: FAILED^O. 7 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 11.11s
+```
+
+Could you, please, make the test suite work with any up-to-date Python rather than requiring a very specific version?
+
+---
+
+_Label `testing` added by @charliermarsh on 2024-03-04 17:24_
+
+---
+
+_Comment by @charliermarsh on 2024-03-04 17:25_
+
+Have you looked at the bootstrapping that we do in `ci.yml`, by calling into `scripts/bootstrap/install.py`? We assume a specific set of Python versions are available; otherwise, there's no way to get a reliable test suite.
+
+---
+
+_Comment by @zanieb on 2024-03-04 17:26_
+
+You can also see the [specific Python versions](https://github.com/astral-sh/uv/blob/main/.python-versions) we require for testing. 
+
+---
+
+_Comment by @mgorny on 2024-03-04 17:29_
+
+> Have you looked at the bootstrapping that we do in `ci.yml`, by calling into `scripts/bootstrap/install.py`? We assume a specific set of Python versions are available; otherwise, there's no way to get a reliable test suite.
+
+I don't think that's going to work for us. We really want to make sure everything works with the same Python versions that will be used in production, not a temporary build used during test run.
+
+---
+
+_Comment by @zanieb on 2024-03-04 17:38_
+
+We need to be able to test cases where there are multiple Python versions available e.g. different Python 3.8 patch versions. I'm not sure what we could do for you here.
+
+Perhaps it's not worth including these tests in your distribution?
+
+---
+
+_Comment by @zanieb on 2024-03-04 17:44_
+
+For reference, they seem to be using our Python versions in the [Arch Linux package](https://gitlab.archlinux.org/archlinux/packaging/packages/uv/-/blob/21448fdf29b67b919b38a193abd5eb770222d4f1/PKGBUILD#L36-37).
+
+---
+
+_Comment by @mgorny on 2024-03-04 17:55_
+
+Would it be possible to skip these tests when required Python version doesn't match?
+
+---
+
+_Comment by @eli-schwartz on 2024-03-04 18:02_
+
+> We need to be able to test cases where there are multiple Python versions available e.g. different Python 3.8 patch versions. I'm not sure what we could do for you here.
+
+Shouldn't you be using mocks for this?
+
+
+---
+
+_Comment by @zanieb on 2024-03-04 20:59_
+
+> Shouldn't you be using mocks for this?
+
+What would we mock? Like.. create a several Python interpreters that report fake versions but make use of a single version behind the scenes? A part of what we're testing is retrieving Python version information from interpreters.
+
+We don't really use "mocks" for testing here. Most of these are end-to-end tests of the CLI and aren't really suitable for that.
+
+> Would it be possible to skip these tests when required Python version doesn't match?
+
+Yeah, but wouldn't that be easier to do on your end? We don't want these to be silently skipped on our end. We could consider putting tests that rely on specific Python versions behind a separate feature flag you could turn off, but since resolutions are Python-version dependent this would either exclude a lot of tests or introduce brittleness into our test suite.
+
+---
+
+_Comment by @zanieb on 2024-03-04 21:09_
+
+To be clear, I would like to make it easy for you to package `uv` but I don't want to degrade our test suite to do it and we have limited resources for pursuing entirely different testing strategies.
+
+---
+
+_Comment by @eli-schwartz on 2024-03-04 21:38_
+
+> What would we mock? Like.. create a several Python interpreters that report fake versions but make use of a single version behind the scenes? A part of what we're testing is retrieving Python version information from interpreters.
+
+Based on the failure message, it superficially looks like that test is testing the resolver behavior, assuming a given python version and expecting it to produce a specific style of "good error message" when resolving possible package version installations.
+
+Is there a specific reason that such a test also needs to test how uv retrieves python version information from interpreters? Seems like a test to test how uv retrieves python version information from interpreters should be an entirely independent test (and perhaps one that can get away with testing whichever versions of python are available).
+
+> Yeah, but wouldn't that be easier to do on your end? We don't want these to be silently skipped on our end. We could consider putting tests that rely on specific Python versions behind a separate feature flag you could turn off, but since resolutions are Python-version dependent this would either exclude a lot of tests or introduce brittleness into our test suite.
+
+I am not so sure that specifying test exclusions manually in distro packaging is all that scalable. Consider also that Gentoo is *not* the only distro that will be facing this problem. Actually, Arch Linux is the odd one out here as Arch Linux has no official policy on build environment sanitization. Debian, Fedora, OpenSUSE etc. also have rules that forbid downloading arbitrary binaries from the internet during build or testing.
+
+(Aside for which: the architecture support for arbitrary prebuilts here is *terrible*. It cannot run on musl systems except on x86_64 specifically, and the only arch support even for glibc is i686/x86_64, plus arm64 and s390x and ppc64le. For Gentoo in particular this means more architectures are NOT supported than are. In particular, there are 6 platforms which Gentoo provides rust for, but the indygreg binaries don't cover.)
+
+Anyways, point is that doing whatever is the cargo nextest equivalent of python pytest's "pytest.mark.requires_picky_pythons" and allowing people to deselect that based on category, feels like the most correct way to allow packagers to skip tests.
+
+Excluding a lot of tests only when packagers ask for it, is better than all those same tests failing, probably.
+
+---
+
+_Comment by @mgorny on 2024-03-05 04:02_
+
+> Yeah, but wouldn't that be easier to do on your end? We don't want these to be silently skipped on our end. We could consider putting tests that rely on specific Python versions behind a separate feature flag you could turn off, but since resolutions are Python-version dependent this would either exclude a lot of tests or introduce brittleness into our test suite.
+
+I think feature flags would help, yes. Specifically a separate flag for test that require specific x.y.z version (vs just x.y.*). I'm not really familiar with `cargo test`, but I wasn't able to find a clean way of skipping tests equivalent to `pytest --deselect`, nor even a clean way of sed-ing them. So far I've ended up with a large patch which is far from optimal and will probably need to be updated frequently.
+
+---
+
+_Comment by @zanieb on 2024-03-05 15:27_
+
+I'll look into that and report back.
+
+---
+
+_Assigned to @zanieb by @zanieb on 2024-03-05 16:22_
+
+---
+
+_Referenced in [astral-sh/uv#2930](../../astral-sh/uv/pulls/2930.md) on 2024-04-09 13:33_
+
+---
+
+_Referenced in [astral-sh/uv#2940](../../astral-sh/uv/pulls/2940.md) on 2024-04-09 17:48_
+
+---
+
+_Closed by @zanieb on 2024-04-10 14:01_
+
+---
+
+_Comment by @zanieb on 2024-04-10 14:01_
+
+With https://github.com/astral-sh/uv/pull/2940 and https://github.com/astral-sh/uv/pull/2930 you should now be able to disable the very few tests that actually require specific patch versions. Thanks for your patience!
+
+---
+
+_Comment by @mgorny on 2024-04-10 14:54_
+
+> With #2940 and #2930 you should now be able to disable the very few tests that actually require specific patch versions. Thanks for your patience!
+
+Thanks a lot! I'll test it with the next release.
+
+---
+
+_Comment by @mgorny on 2024-04-16 06:13_
+
+Thanks a lot again! This resolved almost all test failures we were having. I'll file a separate bug for the one I'm seeing right now.
+
+---
+
+_Referenced in [astral-sh/uv#3051](../../astral-sh/uv/issues/3051.md) on 2024-04-16 06:17_
+
+---

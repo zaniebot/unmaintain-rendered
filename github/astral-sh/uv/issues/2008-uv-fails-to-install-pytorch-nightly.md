@@ -1,0 +1,156 @@
+---
+number: 2008
+title: uv fails to install pytorch nightly
+type: issue
+state: closed
+author: gilfree
+labels:
+  - bug
+assignees: []
+created_at: 2024-02-27T09:30:22Z
+updated_at: 2024-03-19T14:14:03Z
+url: https://github.com/astral-sh/uv/issues/2008
+synced_at: 2026-01-07T13:12:16-06:00
+---
+
+# uv fails to install pytorch nightly
+
+---
+
+_Issue opened by @gilfree on 2024-02-27 09:30_
+
+The command:
+```
+python3.10 -muv pip install -U --prerelease allow torch torchvision torchaudio --index-url https://download.pytorch.org/whl/nightly/cu121
+```
+
+(Run in a clean python3.10 venv, with only uv installed in it)
+
+Fails to install claiming non solvable dependencies. As far as I can understand that is not the case.
+
+After a long message it says:
+```
+ And because torchvision==0.18.0.dev20240222+cu121 depends on torch==2.3.0.dev20240222 and torchvision==0.18.0.dev20240226+cu121 depends on torch==2.3.0.dev20240226, we
+      can conclude that all versions of torchvision depend on one of:
+...
+          torch==2.3.0.dev20240221
+          torch==2.3.0.dev20240222
+          torch==2.3.0.dev20240226
+
+      And because only the following versions of torch are available:
+          torch<2.2.0.dev20231010
+          torch>2.2.0.dev20231010,<2.3.0.dev20231225
+....
+         torch>2.3.0.dev20240222,<2.3.0.dev20240226
+         torch>2.3.0.dev20240226
+      and you require torchvision, we can conclude that the requirements are unsatisfiable.
+```
+
+Torch 2.3.0.dev20240226 do exist: https://download.pytorch.org/whl/nightly/cu121/torch-2.3.0.dev20240226%2Bcu121-cp310-cp310-linux_x86_64.whl, and is present in the index.html
+
+Platform is Ubuntu linux, uv version 0.1.11
+
+Log: [log.txt](https://github.com/astral-sh/uv/files/14417321/log.txt) (with local paths redacted by ...)
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with uv.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
+* The current uv platform.
+* The current uv version (`uv --version`).
+-->
+
+
+---
+
+_Comment by @BurntSushi on 2024-02-27 12:12_
+
+This _might_ be a duplicate of https://github.com/astral-sh/uv/issues/1855, but I haven't investigated yet.
+
+---
+
+_Label `bug` added by @charliermarsh on 2024-02-27 16:12_
+
+---
+
+_Comment by @charliermarsh on 2024-02-27 16:12_
+
+My impression is that it's the same.
+
+---
+
+_Comment by @charliermarsh on 2024-03-18 20:47_
+
+I believe this should work in the latest release, as long as you add `+cu121` or similar to your requirements.
+
+---
+
+_Closed by @charliermarsh on 2024-03-18 20:47_
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2024-03-18 20:47_
+
+---
+
+_Comment by @gilfree on 2024-03-19 10:49_
+
+Hi, @charliermarsh, thanks but that does not really solve this use case 😟
+
+Its a nightly version, and not a pinned version. Where should I add +cu121? I can't set a specific version, as I have no idea what is the last released nightly version without manually inspecting the html page.
+
+(pip does not require it)
+
+
+---
+
+_Comment by @charliermarsh on 2024-03-19 13:15_
+
+Sorry, we don’t support that kind of “local” version access right now. You can read more on our support here: https://github.com/astral-sh/uv/blob/main/PIP_COMPATIBILITY.md#local-version-identifiers.
+
+Candidly, I’m not even sure what “torch” without a local version tag should give you based on the spec. It seems like you could be served any suffix (+cpu, +cu118, etc.) arbitrarily and it would still be spec compliant.
+
+---
+
+_Comment by @charliermarsh on 2024-03-19 13:43_
+
+I'll file a separate issue to track this.
+
+---
+
+_Comment by @gilfree on 2024-03-19 13:49_
+
+Hi @charliermarsh 
+I agree that you could be served any suffix. It is ok. 
+
+It is a common practice in the ML python packages space of having an index per cuda version with a local suffix. For example  https://download.pytorch.org/whl/cu121/  contains only packages with no suffix or with cu121 suffix.
+
+According to my read of the spec - you should simply drop the suffix, and assume anything you find is compatible to the non suffix version. It is responsibility of the index provider to have only compatible versions. You should not do this in public indexes according to the spec, but in practice it is very common.
+
+As far as I know that is the "best" way that was found to handle cuda dependencies, or similar cases of dependency on external packages with multiple variants in the python packaging ecosystem. 
+
+---
+
+_Comment by @charliermarsh on 2024-03-19 13:51_
+
+Do you know why they include both the version with no suffix and the cu121 suffix, if the index is scoped in that way? (What does pip resolve to?)
+
+---
+
+_Comment by @gilfree on 2024-03-19 13:54_
+
+The index contains multiple packages. Each of the is either suffixed or non suffixed. torch for example is suffixed, but torchdata or jinja2 are not. This means that you don't need to choose - you have only one option per package version and python version. Just ignoring the suffixes altogether when selecting what to install will work
+
+---
+
+_Comment by @charliermarsh on 2024-03-19 14:14_
+
+Got it. Hard to map these onto a global dependency resolution context, but we'll try.
+
+---
+
+_Referenced in [astral-sh/uv#2541](../../astral-sh/uv/issues/2541.md) on 2024-03-19 15:14_
+
+---

@@ -1,0 +1,54 @@
+---
+number: 2473
+title: Always log syntax errors to the console
+type: issue
+state: closed
+author: charliermarsh
+labels:
+  - cli
+assignees: []
+created_at: 2023-02-02T13:01:10Z
+updated_at: 2023-02-03T00:12:19Z
+url: https://github.com/astral-sh/ruff/issues/2473
+synced_at: 2026-01-07T13:12:14-06:00
+---
+
+# Always log syntax errors to the console
+
+---
+
+_Issue opened by @charliermarsh on 2023-02-02 13:01_
+
+See: https://github.com/charliermarsh/ruff/issues/282#issuecomment-1413422052
+
+---
+
+_Label `cli` added by @charliermarsh on 2023-02-02 13:01_
+
+---
+
+_Referenced in [astral-sh/ruff#282](../../astral-sh/ruff/issues/282.md) on 2023-02-02 13:01_
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2023-02-02 15:08_
+
+---
+
+_Comment by @charliermarsh on 2023-02-02 17:10_
+
+This will go out in the next release (not today's, the following release).
+
+---
+
+_Referenced in [astral-sh/ruff#2505](../../astral-sh/ruff/pulls/2505.md) on 2023-02-03 00:02_
+
+---
+
+_Closed by @charliermarsh on 2023-02-03 00:12_
+
+---
+
+_Referenced in [astral-sh/ruff#8447](../../astral-sh/ruff/issues/8447.md) on 2023-11-02 17:40_
+
+---

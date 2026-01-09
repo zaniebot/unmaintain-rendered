@@ -1,0 +1,87 @@
+---
+number: 1297
+title: "clap_app!: allow app names and subcommands with hyphens"
+type: issue
+state: closed
+author: g2p
+labels:
+  - C-enhancement
+  - S-waiting-on-decision
+assignees: []
+created_at: 2018-06-13T06:59:07Z
+updated_at: 2020-04-12T08:53:30Z
+url: https://github.com/clap-rs/clap/issues/1297
+synced_at: 2026-01-07T13:12:19-06:00
+---
+
+# clap_app!: allow app names and subcommands with hyphens
+
+---
+
+_Issue opened by @g2p on 2018-06-13 06:59_
+
+At the moment dashes cannot be used with the macro.
+
+Follow-up to #321.
+
+---
+
+_Comment by @jethrogb on 2018-06-18 17:33_
+
+It appears to work for app names but not subcommands.
+
+---
+
+_Label `C: macros` added by @CreepySkeleton on 2020-02-06 07:51_
+
+---
+
+_Label `T: enhancement` added by @CreepySkeleton on 2020-02-06 07:51_
+
+---
+
+_Label `W: 3.x` added by @CreepySkeleton on 2020-02-06 07:51_
+
+---
+
+_Label `W: maybe` added by @CreepySkeleton on 2020-02-06 07:51_
+
+---
+
+_Comment by @pksunkara on 2020-04-09 07:25_
+
+Unfortunately, it is an issue with Rust `macro_rules!`. We use `$ident` and it does not allow `-`.
+
+---
+
+_Comment by @CreepySkeleton on 2020-04-10 02:11_
+
+We could allow `($expr)` along with `$ident` so people can use `clap_app!( ("cool-ap") ...)`
+
+---
+
+_Comment by @CreepySkeleton on 2020-04-11 03:21_
+
+This *is* allowed in 3.x
+
+https://github.com/clap-rs/clap/blob/9060e3e56343c86f6a97c1e97aed83a9ac248e65/tests/macros.rs#L36-L42
+
+Closing as solved
+
+---
+
+_Closed by @CreepySkeleton on 2020-04-11 03:21_
+
+---
+
+_Reopened by @pksunkara on 2020-04-12 08:47_
+
+---
+
+_Added to milestone `3.0` by @pksunkara on 2020-04-12 08:48_
+
+---
+
+_Closed by @pksunkara on 2020-04-12 08:53_
+
+---

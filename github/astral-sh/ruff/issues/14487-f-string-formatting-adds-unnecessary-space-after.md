@@ -1,0 +1,86 @@
+---
+number: 14487
+title: "F-string formatting adds unnecessary space after `**` operator"
+type: issue
+state: closed
+author: dhruvmanila
+labels:
+  - bug
+  - formatter
+  - preview
+assignees: []
+created_at: 2024-11-20T12:58:54Z
+updated_at: 2024-11-22T12:01:24Z
+url: https://github.com/astral-sh/ruff/issues/14487
+synced_at: 2026-01-07T13:12:16-06:00
+---
+
+# F-string formatting adds unnecessary space after `**` operator
+
+---
+
+_Issue opened by @dhruvmanila on 2024-11-20 12:58_
+
+Consider the following source code:
+
+```py
+f"aaaaaaaaaaaaaaaaaaaaaaaaaa {10**27} bbbbbbbbbbbbbbbbbbbbbbbbbb ccccccccccccccccccccccccc"
+```
+
+Running `ruff format --preview`:
+
+```py
+f"aaaaaaaaaaaaaaaaaaaaaaaaaa {10** 27} bbbbbbbbbbbbbbbbbbbbbbbbbb ccccccccccccccccccccccccc"
+```
+
+Playground: https://play.ruff.rs/80926d6e-f183-4631-94ce-f1702502a0e0
+
+Found in https://github.com/astral-sh/ruff/pull/14454#issuecomment-2488346686
+
+---
+
+_Label `bug` added by @dhruvmanila on 2024-11-20 12:58_
+
+---
+
+_Label `formatter` added by @dhruvmanila on 2024-11-20 12:58_
+
+---
+
+_Label `preview` added by @dhruvmanila on 2024-11-20 12:58_
+
+---
+
+_Comment by @MichaReiser on 2024-11-20 13:13_
+
+Huh, that's weird
+
+---
+
+_Comment by @MichaReiser on 2024-11-20 13:14_
+
+Oh, is it because of the inner `group` and the entire line exceeds the line length. We might need to remove `if_group_breaks` from `RemoveSoftLinesBuffer`
+
+---
+
+_Comment by @MichaReiser on 2024-11-20 13:14_
+
+this could be annoying
+
+---
+
+_Comment by @dhruvmanila on 2024-11-20 13:17_
+
+> Oh, is it because of the inner `group` and the entire line exceeds the line length.
+
+Yeah, and we use `RemoveSoftLinesBuffer` but that doesn't remove the space as you've mentioned.
+
+---
+
+_Referenced in [astral-sh/ruff#14489](../../astral-sh/ruff/pulls/14489.md) on 2024-11-20 14:32_
+
+---
+
+_Closed by @MichaReiser on 2024-11-22 12:01_
+
+---

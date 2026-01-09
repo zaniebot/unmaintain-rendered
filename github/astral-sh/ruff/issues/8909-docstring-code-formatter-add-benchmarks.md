@@ -1,0 +1,50 @@
+---
+number: 8909
+title: "docstring code formatter: add benchmarks"
+type: issue
+state: open
+author: BurntSushi
+labels:
+  - performance
+  - docstring
+  - formatter
+assignees: []
+created_at: 2023-11-29T13:31:24Z
+updated_at: 2023-11-29T13:32:19Z
+url: https://github.com/astral-sh/ruff/issues/8909
+synced_at: 2026-01-07T13:12:15-06:00
+---
+
+# docstring code formatter: add benchmarks
+
+---
+
+_Issue opened by @BurntSushi on 2023-11-29 13:31_
+
+There is some concern over whether the new docstring code snippet formatting could slow down the overall formatting process. To ameliorate this and understand its performance characteristics, we should try to write some micro-benchmarks that will help us track performance over time. @MichaReiser in particular had some suggestions here: https://github.com/astral-sh/ruff/issues/8857#issuecomment-1830959726
+
+I think we should try to include some "real world" examples of code snippets, but it might also be useful to try to include some "tortured" examples too. That is, try to devise the absolute worst case for performance and see how it does. This will give us an idea of what perf might look like at the extremes. For example, this might help us characterize the costs of us checking whether the reformatted code is valid or not. See #8857.
+
+At present, I have done [some very loose ad hoc benchmarking](https://github.com/astral-sh/ruff/issues/8857#issuecomment-1830018211) to get a general sense of things:
+
+> For an ad hoc benchmark, if I run the formatter with and without `docstring-code` enabled, then runtime is about the same. I ran it a few times and couldn't notice a difference. (Not that this is a good substitute for a real benchmark, but perhaps suggestive that docstring code formatting doesn't have a huge impact on perf.)
+
+In particular, I did that on CPython and polars.
+
+---
+
+_Label `performance` added by @BurntSushi on 2023-11-29 13:31_
+
+---
+
+_Label `docstring` added by @BurntSushi on 2023-11-29 13:31_
+
+---
+
+_Label `formatter` added by @BurntSushi on 2023-11-29 13:31_
+
+---
+
+_Referenced in [astral-sh/ruff#8857](../../astral-sh/ruff/issues/8857.md) on 2023-11-29 13:31_
+
+---

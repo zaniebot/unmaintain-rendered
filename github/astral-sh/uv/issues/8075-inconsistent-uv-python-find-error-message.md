@@ -1,0 +1,91 @@
+---
+number: 8075
+title: "Inconsistent `uv python find` error message"
+type: issue
+state: closed
+author: potoo0
+labels:
+  - error messages
+assignees: []
+created_at: 2024-10-10T08:54:37Z
+updated_at: 2024-12-10T18:56:53Z
+url: https://github.com/astral-sh/uv/issues/8075
+synced_at: 2026-01-07T13:12:17-06:00
+---
+
+# Inconsistent `uv python find` error message
+
+---
+
+_Issue opened by @potoo0 on 2024-10-10 08:54_
+
+If virtualenv is activated, `uv python find <not exists version>` msg should be consistent regardless of the working path.
+
+`(cd ~; uv python find 3.13)` error msg should the same as `uv python find 3.13`.
+
+```
+# code @ archlinux in ~/.venv/jupyter jupyter [16:44:32]
+$ uv python find 3.12
+/home/code/.venv/jupyter/bin/python3
+
+# code @ archlinux in ~/.venv/jupyter jupyter [16:44:57]
+$ (cd ~; uv python find 3.12)
+/home/code/.venv/jupyter/bin/python3
+
+# code @ archlinux in ~/.venv/jupyter jupyter [16:45:04]
+$ uv python find 3.13
+error: No interpreter found for Python 3.13 in virtual environments, managed installations, or system path
+
+# code @ archlinux in ~/.venv/jupyter jupyter [16:45:11] C:2
+$ (cd ~; uv python find 3.13)
+error: Broken virtualenv `/home/code/.venv`: `pyvenv.cfg` is missing
+```
+
+---
+
+_Comment by @charliermarsh on 2024-10-10 09:45_
+
+\cc @zanieb 
+
+---
+
+_Label `error messages` added by @charliermarsh on 2024-10-10 09:45_
+
+---
+
+_Comment by @potoo0 on 2024-10-10 10:22_
+
+python_find test error:
+
+```
+Testing started at 18:16 ...
+/home/wsl/0-projects/uv/target/debug/deps/python_find-820b62fc917fea0d python_find --format=json --exact -Z unstable-options --show-output
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ Snapshot Summary ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Snapshot: python_find
+Source: crates/uv/tests/python_find.rs:28
+────────────────────────────────────────────────────────────────────────────────
+Expression: snapshot
+────────────────────────────────────────────────────────────────────────────────
+-old snapshot
++new results
+────────────┬───────────────────────────────────────────────────────────────────
+    1     1 │ exit_code: 2
+    2     2 │ ----- stdout -----
+    3     3 │ 
+    4     4 │ ----- stderr -----
+    5       │-error: No interpreter found in virtual environments, managed installations, or system path
+          5 │+error: Broken virtualenv `/home/wsl/.venv`: `pyvenv.cfg` is missing
+────────────┴───────────────────────────────────────────────────────────────────
+To update snapshots run `cargo insta review`
+Stopped on the first failure. Run `cargo insta test` to run all snapshots.
+```
+
+---
+
+_Referenced in [astral-sh/uv#8086](../../astral-sh/uv/pulls/8086.md) on 2024-10-10 12:17_
+
+---
+
+_Closed by @zanieb on 2024-12-10 18:56_
+
+---

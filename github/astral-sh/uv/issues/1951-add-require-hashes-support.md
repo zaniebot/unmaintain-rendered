@@ -1,0 +1,69 @@
+---
+number: 1951
+title: "Add `--require-hashes` support"
+type: issue
+state: closed
+author: epicserve
+labels: []
+assignees: []
+created_at: 2024-02-24T14:45:52Z
+updated_at: 2024-02-24T17:45:25Z
+url: https://github.com/astral-sh/uv/issues/1951
+synced_at: 2026-01-07T13:12:16-06:00
+---
+
+# Add `--require-hashes` support
+
+---
+
+_Issue opened by @epicserve on 2024-02-24 14:45_
+
+So far, UV is excellent and so much faster! Thank you guys for making it. I'm trying to include it in my [Django Base Site](https://github.com/epicserve/django-base-site/) project.
+
+Before, in my docker file, I had the following:
+```
+$VIRTUAL_ENV/bin/pip install --require-hashes -r config/requirements/${ENV_NAME}_lock.txt
+```
+
+Now, when I tried to switch to UV, the following didn't work:
+```
+$VIRTUAL_ENV/bin/uv pip install --require-hashes -r config/requirements/${ENV_NAME}_lock.txt
+```
+
+I got the following error:
+```
+error: unexpected argument '--require-hashes' found
+
+  tip: a similar argument exists: '--requirement'
+
+Usage: uv pip install <PACKAGE|--requirement <REQUIREMENT>|--editable <EDITABLE>> <PACKAGE|--requirement <REQUIREMENT>|--editable <EDITABLE>|--constraint <CONSTRAINT>|--override <OVERRIDE>|--extra <EXTRA>|--all-extras|--upgrade|--upgrade-package <UPGRADE_PACKAGE>|--reinstall|--reinstall-package <REINSTALL_PACKAGE>|--offline|--refresh|--refresh-package <REFRESH_PACKAGE>|--no-deps|--link-mode <LINK_MODE>|--resolution <RESOLUTION>|--prerelease <PRERELEASE>|--output-file <OUTPUT_FILE>|--index-url <INDEX_URL>|--extra-index-url <EXTRA_INDEX_URL>|--find-links <FIND_LINKS>|--no-index|--legacy-setup-py|--no-build|--no-binary <NO_BINARY>|--only-binary <ONLY_BINARY>|--config-setting <CONFIG_SETTING>|--strict|--exclude-newer <EXCLUDE_NEWER>>
+
+For more information, try '--help'.
+```
+
+Taking out `--require-hashes` works.
+
+
+---
+
+_Comment by @epicserve on 2024-02-24 15:33_
+
+Sorry if this is a duplicate of #474.
+
+---
+
+_Comment by @charliermarsh on 2024-02-24 17:45_
+
+👍 `--require-hashes` is not yet supported but we definitely plan to support it.
+
+---
+
+_Comment by @charliermarsh on 2024-02-24 17:45_
+
+(I think this can be merged in #474.)
+
+---
+
+_Closed by @charliermarsh on 2024-02-24 17:45_
+
+---

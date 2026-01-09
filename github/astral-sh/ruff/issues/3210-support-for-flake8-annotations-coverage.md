@@ -1,0 +1,110 @@
+---
+number: 3210
+title: "Support for `flake8-annotations-coverage`"
+type: issue
+state: open
+author: szymonmaszke
+labels:
+  - plugin
+  - needs-decision
+assignees: []
+created_at: 2023-02-24T18:14:55Z
+updated_at: 2023-07-10T01:26:06Z
+url: https://github.com/astral-sh/ruff/issues/3210
+synced_at: 2026-01-07T13:12:14-06:00
+---
+
+# Support for `flake8-annotations-coverage`
+
+---
+
+_Issue opened by @szymonmaszke on 2023-02-24 18:14_
+
+Hey, we are currently using [`flake8-annotations-coverage`](https://github.com/best-doctor/flake8-annotations-coverage) in our FOSS [`py-template`](https://github.com/inovintell/py-template) project, but we would like to move to `ruff` exclusively from `flake8` + `flakeheaven`. 
+
+This plugin basically allows you to set minimum percentage coverage for annotations and raise if it is not fulfilled.
+
+### Error Codes
+
+- TAE001 - Too few type annotations in file
+
+Is support for [`flake8-annotations-coverage`](https://github.com/best-doctor/flake8-annotations-coverage) planned/would be considered? Unfortunately we cannot pick up this issue ourselves at the current time.
+
+---
+
+_Referenced in [inovintell/py-template#142](../../inovintell/py-template/issues/142.md) on 2023-02-24 18:20_
+
+---
+
+_Label `plugin` added by @charliermarsh on 2023-02-24 18:55_
+
+---
+
+_Comment by @matthewlloyd on 2023-02-24 21:47_
+
+I am a new contributor and considering this since it's something I would use in my own repos. However after some thought, I realized I would just set the % to 100%. What's the argument for setting a lower minimum %, rather than just enforcing 100% and adding noqa (or annotations) where needed?
+
+Since Ruff already has all the flake8-annotations rules prefixed with ANN, would it be better for your FOSS project to enable them all and just add more type annotations or noqa to fix any warnings?
+
+I guess what I'm asking is, in what circumstances is it OK for a module to have 80% coverage, and why would that be OK when 70% coverage is not? Just trying to understand the motivation behind the original flake8 plugin here. Thanks!
+
+---
+
+_Comment by @szymonmaszke on 2023-02-25 00:41_
+
+Thank you for quick reply!
+
+> However after some thought, I realized I would just set the % to 100%. What's the argument for setting a lower minimum %, rather than just enforcing 100% and adding noqa (or annotations) where needed?
+
+We are indeed using it like that, although for migrating existing codebases such a threshold to reach might be beneficial (leaving aside reasoning for such a decision).
+
+> Since Ruff already has all the flake8-annotations rules prefixed with ANN, would it be better for your FOSS project to enable them all and just add more type annotations or noqa to fix any warnings?
+
+Yes, indeed, seems more reasonable to place it under `ANN`
+
+Regarding the last question, I think I have already answered, I see no sensible reason for new repos. Another reason might be to leave aside `typing.Any` as I don't find it too beneficial tbh, but it's mere speculation on my end.
+
+---
+
+_Comment by @JonathanPlasse on 2023-02-25 06:34_
+
+If I had to type an old codebase, I would use `--add-noqa` with `--select=ANN` to add `noqa` for `ANN` errors.
+Then you can search for files with the most `noqa`to have an indicator of the files that need it the most.
+
+---
+
+_Comment by @szymonmaszke on 2023-02-26 22:56_
+
+> If I had to type an old codebase, I would use `--add-noqa` with `--select=ANN` to add `noqa` for `ANN` errors.
+> 
+> Then you can search for files with the most `noqa`to have an indicator of the files that need it the most.
+
+Also an option, we would honestly be fine with anything showing us missing annotations.
+
+
+
+---
+
+_Comment by @stefanitsky on 2023-04-05 05:00_
+
+I'm not sure if this rule can be optimally implemented in ruff, due to the fact, that the rule checks the entire file for annotations, but i don't see in the code, where this could be added.
+
+@MichaReiser @charliermarsh please, could any of you help us understand, where it is possible to implement it?
+
+If done in a simple way, i think, we just can check for annotations for each function separately and implement such a rule within `ANN` rules, as @matthewlloyd suggested. I can implement that, doesn't look difficult.
+
+What do you all think?
+
+---
+
+_Comment by @szymonmaszke on 2023-04-05 14:12_
+
+@stefanitsky agreed, it would be best as a per function/method check and telling more.
+
+Something to keep in mind - possibility to exclude `self` and `cls`.
+
+---
+
+_Label `needs-decision` added by @charliermarsh on 2023-07-10 01:26_
+
+---

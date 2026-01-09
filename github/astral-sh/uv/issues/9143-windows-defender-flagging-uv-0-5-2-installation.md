@@ -1,0 +1,129 @@
+---
+number: 9143
+title: Windows Defender flagging uv 0.5.2 installation via pip
+type: issue
+state: closed
+author: Eutropios
+labels:
+  - windows
+  - external
+assignees: []
+created_at: 2024-11-15T07:49:47Z
+updated_at: 2024-12-10T18:11:18Z
+url: https://github.com/astral-sh/uv/issues/9143
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# Windows Defender flagging uv 0.5.2 installation via pip
+
+---
+
+_Issue opened by @Eutropios on 2024-11-15 07:49_
+
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with uv.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
+* The current uv platform.
+* The current uv version (`uv --version`).
+-->
+Windows version: W11 23H2
+Installed packages: uv 0.5.1
+Command being run: `pip install --upgrade uv`
+Windows Defender reading:
+![image](https://github.com/user-attachments/assets/7ef27a42-f08b-4dda-8484-ae69c8dfaa86)
+
+Log:
+```
+2024-11-14T23:46:32,566 Collecting uv
+2024-11-14T23:46:32,568   Obtaining dependency information for uv from https://files.pythonhosted.org/packages/55/84/ab10b46e0523aa8ea290798ec7ca4dde339601697d2319d19564c3552b34/uv-0.5.2-py3-none-win_amd64.whl.metadata
+2024-11-14T23:46:32,568   Created temporary directory: C:\Users\noahj\AppData\Local\Temp\pip-unpack-74afa249
+2024-11-14T23:46:32,570   Using cached uv-0.5.2-py3-none-win_amd64.whl.metadata (11 kB)
+2024-11-14T23:46:32,576   Created temporary directory: C:\Users\noahj\AppData\Local\Temp\pip-metadata-5ngxlx7n
+2024-11-14T23:46:32,584 Created temporary directory: C:\Users\noahj\AppData\Local\Temp\pip-unpack-t9tpu1x3
+2024-11-14T23:46:32,977 Using cached uv-0.5.2-py3-none-win_amd64.whl (15.3 MB)
+2024-11-14T23:46:32,978 Downloading link https://files.pythonhosted.org/packages/55/84/ab10b46e0523aa8ea290798ec7ca4dde339601697d2319d19564c3552b34/uv-0.5.2-py3-none-win_amd64.whl (from https://pypi.org/simple/uv/) (requires-python:>=3.8) to C:\Users\noahj\AppData\Local\Temp\pip-unpack-t9tpu1x3\uv-0.5.2-py3-none-win_amd64.whl
+2024-11-14T23:46:33,370 Remote version of pip: 24.3.1
+2024-11-14T23:46:33,370 Local version of pip:  24.3.1
+2024-11-14T23:46:33,373 Was pip installed by pip? True
+2024-11-14T23:46:33,375 ERROR: THESE PACKAGES DO NOT MATCH THE HASHES FROM THE REQUIREMENTS FILE. If you have updated the package versions, please update the hashes. Otherwise, examine the package contents carefully; someone may have tampered with them.
+2024-11-14T23:46:33,375     unknown package:
+2024-11-14T23:46:33,375         Expected sha256 a4d4fdad03e6dc3e8216192b8a12bcf2c71c8b12046e755575c7f262cbb61924
+2024-11-14T23:46:33,375              Got        e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+
+2024-11-14T23:46:33,376 Exception information:
+2024-11-14T23:46:33,376 Traceback (most recent call last):
+2024-11-14T23:46:33,376   File "C:\Users\noahj\AppData\Local\Programs\Python\Python312\Lib\site-packages\pip\_internal\cli\base_command.py", line 105, in _run_wrapper
+2024-11-14T23:46:33,376     status = _inner_run()
+2024-11-14T23:46:33,376              ^^^^^^^^^^^^
+2024-11-14T23:46:33,376   File "C:\Users\noahj\AppData\Local\Programs\Python\Python312\Lib\site-packages\pip\_internal\cli\base_command.py", line 96, in _inner_run
+2024-11-14T23:46:33,376     return self.run(options, args)
+2024-11-14T23:46:33,376            ^^^^^^^^^^^^^^^^^^^^^^^
+2024-11-14T23:46:33,376   File "C:\Users\noahj\AppData\Local\Programs\Python\Python312\Lib\site-packages\pip\_internal\cli\req_command.py", line 67, in wrapper
+2024-11-14T23:46:33,376     return func(self, options, args)
+2024-11-14T23:46:33,376            ^^^^^^^^^^^^^^^^^^^^^^^^^
+2024-11-14T23:46:33,376   File "C:\Users\noahj\AppData\Local\Programs\Python\Python312\Lib\site-packages\pip\_internal\commands\install.py", line 379, in run
+2024-11-14T23:46:33,376     requirement_set = resolver.resolve(
+2024-11-14T23:46:33,376                       ^^^^^^^^^^^^^^^^^
+2024-11-14T23:46:33,376   File "C:\Users\noahj\AppData\Local\Programs\Python\Python312\Lib\site-packages\pip\_internal\resolution\resolvelib\resolver.py", line 179, in resolve
+2024-11-14T23:46:33,376     self.factory.preparer.prepare_linked_requirements_more(reqs)
+2024-11-14T23:46:33,376   File "C:\Users\noahj\AppData\Local\Programs\Python\Python312\Lib\site-packages\pip\_internal\operations\prepare.py", line 554, in prepare_linked_requirements_more
+2024-11-14T23:46:33,376     self._complete_partial_requirements(
+2024-11-14T23:46:33,376   File "C:\Users\noahj\AppData\Local\Programs\Python\Python312\Lib\site-packages\pip\_internal\operations\prepare.py", line 489, in _complete_partial_requirements
+2024-11-14T23:46:33,376     self._prepare_linked_requirement(req, parallel_builds)
+2024-11-14T23:46:33,376   File "C:\Users\noahj\AppData\Local\Programs\Python\Python312\Lib\site-packages\pip\_internal\operations\prepare.py", line 614, in _prepare_linked_requirement
+2024-11-14T23:46:33,376     hashes.check_against_path(file_path)
+2024-11-14T23:46:33,376   File "C:\Users\noahj\AppData\Local\Programs\Python\Python312\Lib\site-packages\pip\_internal\utils\hashes.py", line 102, in check_against_path
+2024-11-14T23:46:33,376     return self.check_against_file(file)
+2024-11-14T23:46:33,376            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2024-11-14T23:46:33,376   File "C:\Users\noahj\AppData\Local\Programs\Python\Python312\Lib\site-packages\pip\_internal\utils\hashes.py", line 98, in check_against_file
+2024-11-14T23:46:33,376     return self.check_against_chunks(read_chunks(file))
+2024-11-14T23:46:33,376            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2024-11-14T23:46:33,376   File "C:\Users\noahj\AppData\Local\Programs\Python\Python312\Lib\site-packages\pip\_internal\utils\hashes.py", line 87, in check_against_chunks
+2024-11-14T23:46:33,376     self._raise(gots)
+2024-11-14T23:46:33,376   File "C:\Users\noahj\AppData\Local\Programs\Python\Python312\Lib\site-packages\pip\_internal\utils\hashes.py", line 90, in _raise
+2024-11-14T23:46:33,376     raise HashMismatch(self._allowed, gots)
+2024-11-14T23:46:33,376 pip._internal.exceptions.HashMismatch: THESE PACKAGES DO NOT MATCH THE HASHES FROM THE REQUIREMENTS FILE. If you have updated the package versions, please update the hashes. Otherwise, examine the package contents carefully; someone may have tampered with them.
+2024-11-14T23:46:33,376     unknown package:
+2024-11-14T23:46:33,376         Expected sha256 a4d4fdad03e6dc3e8216192b8a12bcf2c71c8b12046e755575c7f262cbb61924
+2024-11-14T23:46:33,376              Got        e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+
+2024-11-14T23:46:33,429 Removed build tracker: 'C:\\Users\\noahj\\AppData\\Local\\Temp\\pip-build-tracker-ar8xauue'
+```
+
+---
+
+_Label `upstream` added by @konstin on 2024-11-15 08:59_
+
+---
+
+_Referenced in [astral-sh/uv#9144](../../astral-sh/uv/issues/9144.md) on 2024-11-15 09:01_
+
+---
+
+_Referenced in [astral-sh/uv#8963](../../astral-sh/uv/pulls/8963.md) on 2024-11-15 18:21_
+
+---
+
+_Label `windows` added by @charliermarsh on 2024-11-16 03:05_
+
+---
+
+_Comment by @zanieb on 2024-12-10 16:24_
+
+@Eutropios is this still an issue?
+
+---
+
+_Comment by @Eutropios on 2024-12-10 17:21_
+
+@zanieb Not that I'm aware of, at least on my machine. Updating to 0.5.7 presents no issues with the latest security channels on Defender.
+
+---
+
+_Closed by @zanieb on 2024-12-10 18:11_
+
+---

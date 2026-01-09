@@ -1,0 +1,165 @@
+---
+number: 18358
+title: "`flake8-bugbear.extend-immutable-calls` does not work with relative imports in sub-packages"
+type: issue
+state: open
+author: JuneStepp
+labels:
+  - bug
+assignees: []
+created_at: 2025-05-28T22:31:48Z
+updated_at: 2025-06-02T18:13:18Z
+url: https://github.com/astral-sh/ruff/issues/18358
+synced_at: 2026-01-07T13:12:16-06:00
+---
+
+# `flake8-bugbear.extend-immutable-calls` does not work with relative imports in sub-packages
+
+---
+
+_Issue opened by @JuneStepp on 2025-05-28 22:31_
+
+### Summary
+
+I've attached a minimal reproducible example to this issue, including the ruff.toml file. The `does_not_work.py` file shows that `extend-immutable-calls` does not prevent a linting error when the function is imported using a relative import from a sub-package. The two `works.py` files demonstrate that it does work with both relative imports within the main package and with absolute imports in a sub-package The command run is `ruff check`.
+
+[example.zip](https://github.com/user-attachments/files/20495754/example.zip)
+
+### Version
+
+ruff 0.11.11
+
+---
+
+_Comment by @ntBre on 2025-05-30 13:45_
+
+This sounds plausible to me because I think `extend-mutable-calls` does a pretty simple comparison that may not match the relative path correctly. However, I'm having some trouble with the attached example. I unzipped the file and ran
+
+```shell
+ruff check
+```
+
+which only reports two `RUF009` errors since that's the only rule selected in `ruff.toml`. When I select the `flake8-bugbear` rules with
+
+```shell
+ruff check --select B
+```
+
+I don't get any diagnostics at all.
+
+Could you provide a reproducing example? I'd also slightly prefer a couple of markdown code blocks, if possible so I can avoid downloading a file 😅 
+
+---
+
+_Label `needs-mre` added by @ntBre on 2025-05-30 13:45_
+
+---
+
+_Comment by @JuneStepp on 2025-05-30 14:12_
+
+> which only reports two `RUF009` errors since that's the only rule selected in `ruff.toml`. 
+
+That's the correct error. The example uses dataclasses. `RUF009` is also affected by `extend-immutable-calls` as documented at https://docs.astral.sh/ruff/settings/#lint_flake8-bugbear_extend-immutable-calls. Oddly, only the example using an absolute import is working now. I swear when I made the example, the non-sub-package relative import worked.
+
+---
+
+_Comment by @ntBre on 2025-05-30 17:26_
+
+Oh I see, I missed that in the docs, thanks! I'll take a closer look at the reproduction then.
+
+---
+
+_Label `needs-mre` removed by @ntBre on 2025-05-30 17:26_
+
+---
+
+_Label `bug` added by @ntBre on 2025-05-30 17:26_
+
+---
+
+_Comment by @ntBre on 2025-06-02 17:59_
+
+Just to make this a little easier to glance at in the future, this is the project structure in the `example` directory:
+
+```
+.
+├── package
+│   ├── custom_field.py
+│   ├── sub_package
+│   │   ├── does_not_work.py
+│   │   └── works.py
+│   └── works.py
+└── ruff.toml
+```
+
+And these are the contents of the files, with comments added showing where RUF009 is emitted.
+
+### `ruff.toml`
+
+```toml
+[lint]
+select = ["RUF"]
+flake8-bugbear.extend-immutable-calls = ["package.custom_field.custom_field"]
+```
+
+### `package/custom_field.py`
+
+```python
+def custom_field() -> list[int]:
+    return [1, 2, 3, 4]
+```
+
+### `package/sub_package/does_not_work.py`
+
+```python
+from dataclasses import dataclass
+
+from ..custom_field import custom_field
+
+
+@dataclass
+class A:
+    some_field: list[int] = custom_field()  # RUF009
+```
+
+### `package/sub_package/works.py`
+
+```python
+from dataclasses import dataclass
+
+from package.custom_field import custom_field
+
+
+@dataclass
+class A:
+    some_field: list[int] = custom_field()
+```
+
+### `package/works.py`
+
+```python
+from dataclasses import dataclass
+
+from .custom_field import custom_field
+
+
+@dataclass
+class A:
+    some_field: list[int] = custom_field()  # RUF009
+```
+
+If I add an empty `package/__init__.py` file, I get the error in `package/works.py` to go away. Could that be what you were seeing before?
+
+In that case, the false positive would be with the `from ..custom_field import custom_field` import in `package/sub_package/does_not_work.py`.
+
+As a minor note, everything still seems to reproduce even if I delete `package/custom_field.py`, which might be a slight help to someone turning this into a CLI test in the future.
+
+---
+
+_Comment by @JuneStepp on 2025-06-02 18:13_
+
+> If I add an empty package/__init__.py file, I get the error in package/works.py to go away. Could that be what you were seeing before?
+
+Probably.
+
+---

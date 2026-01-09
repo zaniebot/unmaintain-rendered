@@ -1,0 +1,166 @@
+---
+number: 16096
+title: keyring test test_simultaneous_multiple_create_delete_single_thread can fail
+type: issue
+state: closed
+author: konstin
+labels:
+  - ci-flake
+assignees: []
+created_at: 2025-10-02T07:30:21Z
+updated_at: 2025-11-24T15:10:36Z
+url: https://github.com/astral-sh/uv/issues/16096
+synced_at: 2026-01-07T13:12:19-06:00
+---
+
+# keyring test test_simultaneous_multiple_create_delete_single_thread can fail
+
+---
+
+_Issue opened by @konstin on 2025-10-02 07:30_
+
+https://github.com/astral-sh/uv/actions/runs/18175581890/job/51740717744?pr=16092
+
+```
+        FAIL [   0.187s] uv-keyring::threading test_simultaneous_multiple_create_delete_single_thread
+  stdout ───
+
+    running 1 test
+    test test_simultaneous_multiple_create_delete_single_thread ... FAILED
+
+    failures:
+
+    failures:
+        test_simultaneous_multiple_create_delete_single_thread
+
+    test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 4 filtered out; finished in 0.17s
+    
+  stderr ───
+
+    thread 'test_simultaneous_multiple_create_delete_single_thread' panicked at crates\uv-keyring\tests\threading.rs:259:22:
+    Can't get ascii password: NoEntry
+    stack backtrace:
+       0: std::panicking::begin_panic_handler
+                 at /rustc/1159e78c4747b02ef996e55082b704c09b970588/library\std\src\panicking.rs:697
+       1: core::panicking::panic_fmt
+                 at /rustc/1159e78c4747b02ef996e55082b704c09b970588/library\core\src\panicking.rs:75
+       2: core::result::unwrap_failed
+                 at /rustc/1159e78c4747b02ef996e55082b704c09b970588/library\core\src\result.rs:1765
+       3: enum2$<core::result::Result<alloc::string::String,enum2$<uv_keyring::error::Error> > >::expect<alloc::string::String,enum2$<uv_keyring::error::Error> >
+                 at /rustc/1159e78c4747b02ef996e55082b704c09b970588\library\core\src\result.rs:1119
+       4: threading::test_simultaneous_multiple_create_delete_single_thread::async_block$0::async_block$0
+                 at .\tests\threading.rs:259
+       5: tokio::runtime::task::core::impl$6::poll::closure$0<enum2$<threading::test_simultaneous_multiple_create_delete_single_thread::async_block$0::async_block_env$0>,alloc::sync::Arc<tokio::runtime::scheduler::current_thread::Handle,alloc::alloc::Global> >
+                 at V:\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\tokio-1.47.1\src\runtime\task\core.rs:365
+       6: tokio::loom::std::unsafe_cell::UnsafeCell<enum2$<tokio::runtime::task::core::Stage<enum2$<threading::test_simultaneous_multiple_create_delete_single_thread::async_block$0::async_block_env$0> > > >::with_mut
+                 at V:\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\tokio-1.47.1\src\loom\std\unsafe_cell.rs:16
+       7: tokio::runtime::task::core::Core<enum2$<threading::test_simultaneous_multiple_create_delete_single_thread::async_block$0::async_block_env$0>,alloc::sync::Arc<tokio::runtime::scheduler::current_thread::Handle,alloc::alloc::Global> >::poll<enum2$<threading::
+                 at V:\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\tokio-1.47.1\src\runtime\task\core.rs:354
+       8: tokio::runtime::task::harness::poll_future::closure$0<enum2$<threading::test_simultaneous_multiple_create_delete_single_thread::async_block$0::async_block_env$0>,alloc::sync::Arc<tokio::runtime::scheduler::current_thread::Handle,alloc::alloc::Global> >
+                 at V:\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\tokio-1.47.1\src\runtime\task\harness.rs:535
+       9: core::panic::unwind_safe::impl$25::call_once<enum2$<core::task::poll::Poll<tuple$<> > >,tokio::runtime::task::harness::poll_future::closure_env$0<enum2$<threading::test_simultaneous_multiple_create_delete_single_thread::async_block$0::async_block_env$0>,al
+                 at /rustc/1159e78c4747b02ef996e55082b704c09b970588\library\core\src\panic\unwind_safe.rs:272
+      10: std::panicking::catch_unwind::do_call<core::panic::unwind_safe::AssertUnwindSafe<tokio::runtime::task::harness::poll_future::closure_env$0<enum2$<threading::test_simultaneous_multiple_create_delete_single_thread::async_block$0::async_block_env$0>,alloc::sy
+                 at /rustc/1159e78c4747b02ef996e55082b704c09b970588\library\std\src\panicking.rs:589
+      11: core::iter::adapters::take::impl$9::spec_for_each::check::closure$0<char,alloc::string::impl$13::extend::closure_env$0<core::iter::adapters::take::Take<core::iter::sources::repeat_with::RepeatWith<char (*)()> > > >
+      12: std::panicking::catch_unwind
+                 at /rustc/1159e78c4747b02ef996e55082b704c09b970588\library\std\src\panicking.rs:552
+      13: std::panic::catch_unwind<core::panic::unwind_safe::AssertUnwindSafe<tokio::runtime::task::harness::poll_future::closure_env$0<enum2$<threading::test_simultaneous_multiple_create_delete_single_thread::async_block$0::async_block_env$0>,alloc::sync::Arc<tokio
+                 at /rustc/1159e78c4747b02ef996e55082b704c09b970588\library\std\src\panic.rs:359
+      14: tokio::runtime::task::harness::poll_future<enum2$<threading::test_simultaneous_multiple_create_delete_single_thread::async_block$0::async_block_env$0>,alloc::sync::Arc<tokio::runtime::scheduler::current_thread::Handle,alloc::alloc::Global> >
+                 at V:\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\tokio-1.47.1\src\runtime\task\harness.rs:523
+      15: tokio::runtime::task::harness::Harness<enum2$<threading::test_simultaneous_multiple_create_delete_single_thread::async_block$0::async_block_env$0>,alloc::sync::Arc<tokio::runtime::scheduler::current_thread::Handle,alloc::alloc::Global> >::poll_inner<enum2$
+                 at V:\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\tokio-1.47.1\src\runtime\task\harness.rs:210
+      16: tokio::runtime::task::harness::Harness<enum2$<threading::test_simultaneous_multiple_create_delete_single_thread::async_block$0::async_block_env$0>,alloc::sync::Arc<tokio::runtime::scheduler::current_thread::Handle,alloc::alloc::Global> >::poll<enum2$<threa
+                 at V:\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\tokio-1.47.1\src\runtime\task\harness.rs:155
+      17: tokio::runtime::task::raw::poll<enum2$<threading::test_simultaneous_multiple_create_delete_single_thread::async_block$0::async_block_env$0>,alloc::sync::Arc<tokio::runtime::scheduler::current_thread::Handle,alloc::alloc::Global> >
+                 at V:\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\tokio-1.47.1\src\runtime\task\raw.rs:325
+      18: tokio::runtime::task::raw::RawTask::poll
+                 at V:\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\tokio-1.47.1\src\runtime\task\raw.rs:255
+      19: tokio::runtime::task::LocalNotified<alloc::sync::Arc<tokio::runtime::scheduler::current_thread::Handle,alloc::alloc::Global> >::run<alloc::sync::Arc<tokio::runtime::scheduler::current_thread::Handle,alloc::alloc::Global> >
+                 at V:\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\tokio-1.47.1\src\runtime\task\mod.rs:509
+      20: tokio::runtime::scheduler::current_thread::impl$8::block_on::closure$0::closure$1<core::pin::Pin<ref_mut$<core::pin::Pin<ref_mut$<dyn$<core::future::future::Future<assoc$<Output,tuple$<> > > > > > > > >
+                 at V:\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\tokio-1.47.1\src\runtime\scheduler\current_thread\mod.rs:789
+      21: tokio::task::coop::with_budget
+                 at V:\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\tokio-1.47.1\src\task\coop\mod.rs:167
+      22: tokio::task::coop::budget
+                 at V:\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\tokio-1.47.1\src\task\coop\mod.rs:133
+      23: tokio::runtime::scheduler::current_thread::impl$3::run_task::closure$0<tuple$<>,tokio::runtime::scheduler::current_thread::impl$8::block_on::closure$0::closure_env$1<core::pin::Pin<ref_mut$<core::pin::Pin<ref_mut$<dyn$<core::future::future::Future<assoc$<O
+                 at V:\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\tokio-1.47.1\src\runtime\scheduler\current_thread\mod.rs:368
+      24: tokio::runtime::scheduler::current_thread::Context::enter<tuple$<>,tokio::runtime::scheduler::current_thread::impl$3::run_task::closure_env$0<tuple$<>,tokio::runtime::scheduler::current_thread::impl$8::block_on::closure$0::closure_env$1<core::pin::Pin<ref_
+                 at V:\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\tokio-1.47.1\src\runtime\scheduler\current_thread\mod.rs:432
+      25: tokio::runtime::scheduler::current_thread::Context::run_task<tuple$<>,tokio::runtime::scheduler::current_thread::impl$8::block_on::closure$0::closure_env$1<core::pin::Pin<ref_mut$<core::pin::Pin<ref_mut$<dyn$<core::future::future::Future<assoc$<Output,tupl
+                 at V:\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\tokio-1.47.1\src\runtime\scheduler\current_thread\mod.rs:368
+      26: tokio::runtime::scheduler::current_thread::impl$8::block_on::closure$0<core::pin::Pin<ref_mut$<core::pin::Pin<ref_mut$<dyn$<core::future::future::Future<assoc$<Output,tuple$<> > > > > > > > >
+                 at V:\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\tokio-1.47.1\src\runtime\scheduler\current_thread\mod.rs:785
+      27: tokio::runtime::scheduler::current_thread::impl$8::enter::closure$0<tokio::runtime::scheduler::current_thread::impl$8::block_on::closure_env$0<core::pin::Pin<ref_mut$<core::pin::Pin<ref_mut$<dyn$<core::future::future::Future<assoc$<Output,tuple$<> > > > > 
+                 at V:\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\tokio-1.47.1\src\runtime\scheduler\current_thread\mod.rs:829
+      28: tokio::runtime::context::scoped::Scoped<enum2$<tokio::runtime::scheduler::Context> >::set<enum2$<tokio::runtime::scheduler::Context>,tokio::runtime::scheduler::current_thread::impl$8::enter::closure_env$0<tokio::runtime::scheduler::current_thread::impl$8::
+                 at V:\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\tokio-1.47.1\src\runtime\context\scoped.rs:40
+      29: tokio::runtime::context::set_scheduler::closure$0<tuple$<alloc::boxed::Box<tokio::runtime::scheduler::current_thread::Core,alloc::alloc::Global>,enum2$<core::option::Option<tuple$<> > > >,tokio::runtime::scheduler::current_thread::impl$8::enter::closure_en
+                 at V:\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\tokio-1.47.1\src\runtime\context.rs:176
+      30: std::thread::local::LocalKey<tokio::runtime::context::Context>::try_with<tokio::runtime::context::Context,tokio::runtime::context::set_scheduler::closure_env$0<tuple$<alloc::boxed::Box<tokio::runtime::scheduler::current_thread::Core,alloc::alloc::Global>,e
+                 at /rustc/1159e78c4747b02ef996e55082b704c09b970588\library\std\src\thread\local.rs:315
+      31: std::thread::local::LocalKey<tokio::runtime::context::Context>::with<tokio::runtime::context::Context,tokio::runtime::context::set_scheduler::closure_env$0<tuple$<alloc::boxed::Box<tokio::runtime::scheduler::current_thread::Core,alloc::alloc::Global>,enum2
+                 at /rustc/1159e78c4747b02ef996e55082b704c09b970588\library\std\src\thread\local.rs:279
+      32: tokio::runtime::context::set_scheduler<tuple$<alloc::boxed::Box<tokio::runtime::scheduler::current_thread::Core,alloc::alloc::Global>,enum2$<core::option::Option<tuple$<> > > >,tokio::runtime::scheduler::current_thread::impl$8::enter::closure_env$0<tokio::
+                 at V:\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\tokio-1.47.1\src\runtime\context.rs:176
+      33: tokio::runtime::scheduler::current_thread::CoreGuard::enter<tokio::runtime::scheduler::current_thread::impl$8::block_on::closure_env$0<core::pin::Pin<ref_mut$<core::pin::Pin<ref_mut$<dyn$<core::future::future::Future<assoc$<Output,tuple$<> > > > > > > > >,
+                 at V:\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\tokio-1.47.1\src\runtime\scheduler\current_thread\mod.rs:829
+      34: tokio::runtime::scheduler::current_thread::CoreGuard::block_on<core::pin::Pin<ref_mut$<core::pin::Pin<ref_mut$<dyn$<core::future::future::Future<assoc$<Output,tuple$<> > > > > > > > >
+                 at V:\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\tokio-1.47.1\src\runtime\scheduler\current_thread\mod.rs:729
+      35: tokio::runtime::scheduler::current_thread::impl$0::block_on::closure$0<core::pin::Pin<ref_mut$<dyn$<core::future::future::Future<assoc$<Output,tuple$<> > > > > > >
+                 at V:\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\tokio-1.47.1\src\runtime\scheduler\current_thread\mod.rs:200
+      36: tokio::runtime::context::runtime::enter_runtime<tokio::runtime::scheduler::current_thread::impl$0::block_on::closure_env$0<core::pin::Pin<ref_mut$<dyn$<core::future::future::Future<assoc$<Output,tuple$<> > > > > > >,tuple$<> >
+                 at V:\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\tokio-1.47.1\src\runtime\context\runtime.rs:65
+      37: tokio::runtime::scheduler::current_thread::CurrentThread::block_on<core::pin::Pin<ref_mut$<dyn$<core::future::future::Future<assoc$<Output,tuple$<> > > > > > >
+                 at V:\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\tokio-1.47.1\src\runtime\scheduler\current_thread\mod.rs:188
+      38: tokio::runtime::runtime::Runtime::block_on_inner<core::pin::Pin<ref_mut$<dyn$<core::future::future::Future<assoc$<Output,tuple$<> > > > > > >
+                 at V:\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\tokio-1.47.1\src\runtime\runtime.rs:356
+      39: tokio::runtime::runtime::Runtime::block_on<core::pin::Pin<ref_mut$<dyn$<core::future::future::Future<assoc$<Output,tuple$<> > > > > > >
+                 at V:\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\tokio-1.47.1\src\runtime\runtime.rs:330
+      40: threading::test_simultaneous_multiple_create_delete_single_thread
+                 at .\tests\threading.rs:277
+      41: threading::test_simultaneous_multiple_create_delete_single_thread::closure$0
+                 at .\tests\threading.rs:241
+      42: core::ops::function::FnOnce::call_once<threading::test_simultaneous_multiple_create_delete_single_thread::closure_env$0,tuple$<> >
+                 at /rustc/1159e78c4747b02ef996e55082b704c09b970588\library\core\src\ops\function.rs:253
+      43: core::ops::function::FnOnce::call_once
+                 at /rustc/1159e78c4747b02ef996e55082b704c09b970588/library\core\src\ops\function.rs:253
+    note: Some details are omitted, run with `RUST_BACKTRACE=full` for a verbose backtrace.
+
+    thread 'test_simultaneous_multiple_create_delete_single_thread' panicked at crates\uv-keyring\tests\threading.rs:278:22:
+    Task failed: JoinError::Panic(Id(1), "Can't get ascii password: NoEntry", ...)
+```
+
+---
+
+_Label `ci-flake` added by @konstin on 2025-10-02 07:30_
+
+---
+
+_Comment by @zanieb on 2025-10-08 15:02_
+
+This appears to be Windows-specific
+
+---
+
+_Comment by @zanieb on 2025-10-08 16:03_
+
+Claude tells me that Windows just isn't robust to write-read patterns like this?
+
+---
+
+_Comment by @konstin on 2025-11-24 10:12_
+
+Another one: https://github.com/astral-sh/uv/actions/runs/19628968183/job/56203994140
+
+---
+
+_Referenced in [astral-sh/uv#16834](../../astral-sh/uv/pulls/16834.md) on 2025-11-24 14:57_
+
+---
+
+_Closed by @zanieb on 2025-11-24 15:10_
+
+---

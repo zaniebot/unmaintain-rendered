@@ -1,0 +1,114 @@
+---
+number: 5347
+title: Consider relaxing the bounds of Send + Sync on TypedValueParser
+type: issue
+state: closed
+author: csmclaren
+labels:
+  - C-enhancement
+  - M-breaking-change
+  - A-help
+assignees: []
+created_at: 2024-02-09T14:35:25Z
+updated_at: 2024-02-09T16:15:00Z
+url: https://github.com/clap-rs/clap/issues/5347
+synced_at: 2026-01-07T13:12:20-06:00
+---
+
+# Consider relaxing the bounds of Send + Sync on TypedValueParser
+
+---
+
+_Issue opened by @csmclaren on 2024-02-09 14:35_
+
+### Please complete the following tasks
+
+- [X] I have searched the [discussions](https://github.com/clap-rs/clap/discussions)
+- [X] I have searched the [open](https://github.com/clap-rs/clap/issues) and [rejected](https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed) issues
+
+### Clap Version
+
+4.5.0
+
+### Describe your use case
+
+1. It's quite ergonomic that the value_parser attribute allows one to express the following in a single line, delegating option argument parsing to their library's existing parsing functionality without any extra code:
+
+#[arg(long, short, value_parser = |s: &str| MyObject::try_from(s))]
+my_object: MyObject
+
+2. If an error is encountered during a call to Cli::parse(), Clap will print the first line of the error message, which includes the option name "--my-object" and option argument name "MY_OBJECT". This is elegant, as it decouples the option and option argument names from the user's library. Then, clap will print the Error returned by my TryFrom implementation which can contain more detailed information that only the user's library knows.
+
+error: invalid value '123' for '--my-object <MY_OBJECT>':  <- from clap
+
+  *detailed information*  <- from the error returned by TryFrom
+
+Because TypedValueParser enforces Send + Sync, one can't compile any value_parser function which does not adhere to these bounds. 
+
+In my case, one component of the Error object returned by TryFrom contains an instance of RefCell. This is a requirement of the implementation of my particular library and non-trivial to work around. As such, it's impossible for me to use the above pattern.
+
+### Describe the solution you'd like
+
+Please consider, if possible, relaxing the bounds on TypedValueParser.
+
+### Alternatives, if applicable
+
+_No response_
+
+### Additional Context
+
+_No response_
+
+---
+
+_Label `C-enhancement` added by @csmclaren on 2024-02-09 14:35_
+
+---
+
+_Comment by @epage on 2024-02-09 14:57_
+
+I assume you mean `Send + Sync` on the error type?
+
+Loosening that would be a breaking change because clap's error type would no longer be `Send + Sync` which can then affect using it with other parts of the Rust ecosystem.
+
+There is a general assumption that errors are `Send + Sync`, e.g. [anyhow requires it](https://docs.rs/anyhow/latest/anyhow/struct.Error.html#impl-From%3CE%3E-for-Error).
+
+A workaround is to render the error before passing it back up to clap by using `.to_string()`.
+
+---
+
+_Label `M-breaking-change` added by @epage on 2024-02-09 14:57_
+
+---
+
+_Label `A-help` added by @epage on 2024-02-09 14:57_
+
+---
+
+_Comment by @csmclaren on 2024-02-09 16:15_
+
+Yes, thank you, I did mean Send + Sync on the Error. 
+
+While I'm reticent to say that *all* errors should implement Send + Sync, I can see now that this is a general assumption in a number of libraries and why you might not wish to consider the change.
+
+Furthermore, I think the workaround you suggested is ultimately the better option, in part because it's so short to implement.
+
+For others who might encounter this issue, the workaround for my example above is as follows:
+
+#[arg(long, short, value_parser = |s: &str| MyObject::try_from(s).map_err(|e| e.to_string()))]
+my_object: MyObject,
+
+And here is a variation on the workaround that does not use a closure and is explicit about the error type:
+
+#[arg(long, short, value_parser = parse_my_object))]
+my_object: MyObject,
+
+fn parse_my_object(s: &str) -> Result<MyObject, Box<dyn std::error::Error + Send + Sync>> {
+    MyObject::try_from(s).map_err(|e| e.to_string().into())
+}
+
+---
+
+_Closed by @csmclaren on 2024-02-09 16:15_
+
+---

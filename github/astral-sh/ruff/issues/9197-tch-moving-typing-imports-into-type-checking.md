@@ -1,0 +1,207 @@
+---
+number: 9197
+title: "[TCH] moving  `typing` imports into `TYPE_CHECKING` block does not work as intended"
+type: issue
+state: closed
+author: picnixz
+labels:
+  - bug
+  - linter
+assignees: []
+created_at: 2023-12-19T10:15:29Z
+updated_at: 2023-12-20T16:03:04Z
+url: https://github.com/astral-sh/ruff/issues/9197
+synced_at: 2026-01-07T13:12:15-06:00
+---
+
+# [TCH] moving  `typing` imports into `TYPE_CHECKING` block does not work as intended
+
+---
+
+_Issue opened by @picnixz on 2023-12-19 10:15_
+
+This is a follow-up of #9196 (actually #9196 happened when I was trying to figure out this issue). 
+
+Consider the following configuration:
+
+```toml
+[tool.ruff]
+target-version = 'py311'
+ignore = ['ALL']
+select = ['TCH']
+
+[tool.ruff.lint.flake8-type-checking]
+exempt-modules = []
+```
+
+Invoking 
+
+```bash
+python3.11 -m ruff file.py --fix --unsafe-fixes
+```
+
+on
+
+```python
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, Final
+
+if TYPE_CHECKING:
+    from collections.abc import Sequence
+
+Const: Final[Sequence[str]] = ['a']
+```
+
+has no effect. However, the `Final` annotation should not be required because of `from __future__ import annotations`. More precisely, here's what I would expect:
+
+
+```python
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from collections.abc import Sequence
+    from typing import Final
+
+Const: Final[Sequence[str]] = ['a']
+```
+
+I tried to find related issues but most of them were lacking `from __future__ import annotations` and thus annotations were treated as required at runtime. However, in my case, I really want the `Final` import to be moved inside a `TYPE_CHECKING` block, whence
+
+```toml
+[tool.ruff.lint.flake8-type-checking]
+exempt-modules = []
+```
+
+As such, I think the bug is related to `flake8-type-checking` itself.
+
+### Environment
+
+```text
+Platform:              linux; (Linux-5.3.18-lp152.106-default-x86_64-with-glibc2.26)
+Python version:        3.11.6 (main, Nov 29 2023, 14:46:32) [GCC 7.5.0])
+Python implementation: CPython
+ruff version:          0.1.8
+```
+
+---
+
+_Renamed from "[TCH]  `typing` imports into `TYPE_CHECKING` block are not always moved" to "[TCH] moving  `typing` imports into `TYPE_CHECKING` block does not work as intended" by @picnixz on 2023-12-19 10:15_
+
+---
+
+_Label `bug` added by @charliermarsh on 2023-12-19 14:58_
+
+---
+
+_Label `linter` added by @charliermarsh on 2023-12-19 14:58_
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2023-12-19 14:58_
+
+---
+
+_Comment by @charliermarsh on 2023-12-20 03:56_
+
+We definitely shouldn't panic here, but can I ask why you want put your `typing` imports in the `TYPE_CHECKING` block? There's no runtime advantage to doing so since you already have to import `typing` to get `TYPE_CHECKING` itself, so it doesn't help with startup time or reducing circular dependencies or anything like that.
+
+---
+
+_Comment by @eli-schwartz on 2023-12-20 04:31_
+
+As far as I can tell this works as expected according to the documentation.
+
+```diff
+$ ruff check source.py --fix --unsafe-fixes --diff
+--- source.py
++++ source.py
+@@ -1,9 +1,9 @@
+ from __future__ import annotations
+ 
+ from typing import TYPE_CHECKING
+-from typing import Final
+ 
+ if TYPE_CHECKING:
++    from typing import Final
+     from collections.abc import Sequence
+ 
+ Const: Final[Sequence[str]] = ['a']
+
+Would fix 1 error.
+```
+
+... however, per the documentation you need to also add the `strict = true` setting.
+
+> Enforce TC001, TC002, and TC003 rules even when valid runtime imports are present for the same module.
+
+In case you're wondering why my example is different from yours, and has Final on its own import line -- without that change, it panicked again. I also had to remove `ignore = ['all']` as that just complains it's an unknown rule selector.
+
+---
+
+_Comment by @eli-schwartz on 2023-12-20 04:37_
+
+> but can I ask why you want put your `typing` imports in the `TYPE_CHECKING` block? There's no runtime advantage to doing so since you already have to import `typing` to get `TYPE_CHECKING` itself, so it doesn't help with startup time or reducing circular dependencies or anything like that.
+
+On general principle:
+- It avoids binding the name
+- I believe if you have a runtime circular import where typing.py imports from your current module, but after TYPE_CHECKING is defined and before Final is defined, then if you don't actually attempt to forcibly bind Final "right now", you can return to processing the rest of your current module before finishing typing.py. It's kind of sketchy to want to do that but :shrug:
+
+---
+
+_Comment by @picnixz on 2023-12-20 08:18_
+
+> We definitely shouldn't panic here, but can I ask why you want put your typing imports in the TYPE_CHECKING block? There's no runtime advantage to doing so since you already have to import typing to get TYPE_CHECKING itself, so it doesn't help with startup time or reducing circular dependencies or anything like that.
+
+It's as eli said, it's to avoid binding the name. Also it's to reduce the amount of imports at the top of the file for clarity purposes (I can collapse the TYPE_CHECKING block). 
+
+> I also had to remove ignore = ['all'] as that just complains it's an unknown rule selector.
+
+Ah sorry about that, I think it's 'ALL' that I needed to put; I'll edit the issue shortly.
+
+> ... however, per the documentation you need to also add the strict = true setting.
+
+Oh I am also sorry about this. I usually carefully read the docs before complaining but I think it passed under the radar. However, with that enabled, I also have a linter panic in my case as yopu said and this is probably related to #9196. For instance, the following linter-panicks
+
+```python
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, Final
+
+if TYPE_CHECKING:
+    from collections.abc import Sequence
+
+Const: Final[Sequence[str]] = ['a']
+```
+
+with 
+
+```toml
+[tool.ruff.lint.flake8-type-checking]
+exempt-modules = []
+strict = true
+``` 
+
+So I agree that it works as intended but with 'strict' it's a linter panic. I'll update the title issue as well or we can move the discussion to #9196 if it's better for you.
+
+
+
+---
+
+_Referenced in [astral-sh/ruff#9214](../../astral-sh/ruff/pulls/9214.md) on 2023-12-20 15:49_
+
+---
+
+_Closed by @charliermarsh on 2023-12-20 16:03_
+
+---
+
+_Referenced in [conda/conda-build#5178](../../conda/conda-build/pulls/5178.md) on 2024-02-12 17:13_
+
+---
+
+_Referenced in [astral-sh/ruff#16529](../../astral-sh/ruff/issues/16529.md) on 2025-03-06 08:29_
+
+---

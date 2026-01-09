@@ -1,0 +1,64 @@
+---
+number: 14996
+title: "`used-dummy-variable` (`RUF052`) - false positive on private global variable when it has a usage in two functions"
+type: issue
+state: closed
+author: DetachHead
+labels:
+  - bug
+  - help wanted
+assignees: []
+created_at: 2024-12-16T00:14:42Z
+updated_at: 2025-01-14T07:36:41Z
+url: https://github.com/astral-sh/ruff/issues/14996
+synced_at: 2026-01-07T13:12:16-06:00
+---
+
+# `used-dummy-variable` (`RUF052`) - false positive on private global variable when it has a usage in two functions
+
+---
+
+_Issue opened by @DetachHead on 2024-12-16 00:14_
+
+```py
+_bar: int
+
+
+def foo():
+    global _bar # error: Local dummy variable `_bar` is accessed
+    _bar = 1
+
+
+def baz():
+    print(_bar)
+```
+
+https://play.ruff.rs/7b9e5645-c159-4e00-8b84-49183a6c31c4
+
+---
+
+_Label `bug` added by @MichaReiser on 2024-12-16 07:32_
+
+---
+
+_Label `help wanted` added by @MichaReiser on 2024-12-16 07:32_
+
+---
+
+_Comment by @MichaReiser on 2024-12-16 07:32_
+
+Thanks
+
+---
+
+_Referenced in [astral-sh/ruff#15235](../../astral-sh/ruff/pulls/15235.md) on 2025-01-03 05:08_
+
+---
+
+_Closed by @MichaReiser on 2025-01-14 07:36_
+
+---
+
+_Referenced in [vega/vega-datasets#725](../../vega/vega-datasets/issues/725.md) on 2025-10-26 02:40_
+
+---

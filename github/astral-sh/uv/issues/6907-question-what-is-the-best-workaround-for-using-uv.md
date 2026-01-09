@@ -1,0 +1,2277 @@
+---
+number: 6907
+title: "[Question] What is the best workaround for using uv when dependency is not resolvable? (e.g. PyTorch v2.4.0 + segment-anything-2 (sam-2) v1.0)"
+type: issue
+state: closed
+author: hideakitai
+labels: []
+assignees: []
+created_at: 2024-09-01T04:46:14Z
+updated_at: 2024-09-03T16:14:53Z
+url: https://github.com/astral-sh/uv/issues/6907
+synced_at: 2026-01-07T13:12:17-06:00
+---
+
+# [Question] What is the best workaround for using uv when dependency is not resolvable? (e.g. PyTorch v2.4.0 + segment-anything-2 (sam-2) v1.0)
+
+---
+
+_Issue opened by @hideakitai on 2024-09-01 04:46_
+
+Thanks for the great tool.
+
+I have tried to make a [segment-anything-2](https://github.com/facebookresearch/segment-anything-2) and a PyTorch environment with uv to get the demo working. 
+
+However, as of 9/1/2024, PyTorch v2.4.0 requires `tqdm==4.64.1`, and sam-2 ([7e1596c](https://github.com/facebookresearch/segment-anything-2/commit/7e1596c0b6462eb1d1ba7e1492430fed95023598)) requires `tqdm>=4.66.1`. So, there is no way to resolve this dependency mismatch, but it will unlikely happen shortly.
+
+Still, I want to use uv to manage the project while avoiding dependency mismatch. What do you think is the best workaround? I tried to use `uv add --frozen`, but if I use uv, `uv sync` will be called somewhere, and the dependencies will not be preserved. I can get it to work by using Python and pip directly in the virtual environment without using uv, so is that the only way to do it? `uv pip install` results in the same problem.
+
+I have attached a log to reproduce the problem. I would appreciate your wisdom.
+
+```
+❯ uv --version
+uv 0.4.1
+
+❯ uv init test_sam2_with_uv -p 3.12
+Initialized project `test-sam2-with-uv` at `/home/hideakitai/develop/ml/sandbox/test_sam2_with_uv`
+
+❯ cd test_sam2_with_uv/
+
+❯ uv python install 3.12
+Searching for Python versions matching: Python 3.12
+Found existing installation for Python 3.12: cpython-3.12.5-linux-x86_64-gnu
+
+❯ uv python pin 3.12.5
+Pinned `.python-version` to `3.12.5`
+
+❯ echo -e "\n[tool.uv]\nextra-index-url = [\"https://download.pytorch.org/whl/cu118\"]" >> pyproject.toml
+
+❯ uv add "torch==2.4.0+cu118" "torchvision==0.19.0+cu118"
+Using Python 3.12.5
+Creating virtualenv at: .venv
+Resolved 26 packages in 3.14s
+Installed 25 packages in 279ms
+ + filelock==3.13.1
+ + fsspec==2024.2.0
+ + jinja2==3.1.3
+ + markupsafe==2.1.5
+ + mpmath==1.3.0
+ + networkx==3.2.1
+ + numpy==1.26.3
+ + nvidia-cublas-cu11==11.11.3.6
+ + nvidia-cuda-cupti-cu11==11.8.87
+ + nvidia-cuda-nvrtc-cu11==11.8.89
+ + nvidia-cuda-runtime-cu11==11.8.89
+ + nvidia-cudnn-cu11==9.1.0.70
+ + nvidia-cufft-cu11==10.9.0.58
+ + nvidia-curand-cu11==10.3.0.86
+ + nvidia-cusolver-cu11==11.4.1.48
+ + nvidia-cusparse-cu11==11.7.5.86
+ + nvidia-nccl-cu11==2.20.5
+ + nvidia-nvtx-cu11==11.8.86
+ + pillow==10.2.0
+ + setuptools==70.0.0
+ + sympy==1.12
+ + torch==2.4.0+cu118
+ + torchvision==0.19.0+cu118
+ + triton==3.0.0
+ + typing-extensions==4.9.0
+
+❯ uv run python -c "import torch; print(torch.__version__, torch.cuda.is_available())"
+2.4.0+cu118 True
+
+❯ git clone https://github.com/facebookresearch/segment-anything-2.git
+Cloning into 'segment-anything-2'...
+remote: Enumerating objects: 510, done.
+remote: Total 510 (delta 0), reused 0 (delta 0), pack-reused 510 (from 1)
+Receiving objects: 100% (510/510), 88.46 MiB | 7.25 MiB/s, done.
+Resolving deltas: 100% (157/157), done.
+
+❯ uv add --editable ./segment-anything-2
+  × No solution found when resolving dependencies:
+  ╰─▶ Because only tqdm==4.64.1 is available and sam-2==1.0 depends on tqdm>=4.66.1, we can conclude that
+      sam-2==1.0 cannot be used.
+      And because only sam-2==1.0 is available and your project depends on sam-2, we can conclude that your
+      project's requirements are unsatisfiable.
+  help: If this is intentional, run `uv add --frozen` to skip the lock and sync steps.
+```
+
+---
+
+_Comment by @bluss on 2024-09-01 06:47_
+
+I think https://docs.astral.sh/uv/reference/settings/#override-dependencies is the feature intended to help you there.
+
+Add a section of override dependencies to the pyproject.toml (root of the workspace if it's a workspace), to set a specific tqdm version.
+
+---
+
+_Comment by @hideakitai on 2024-09-01 07:15_
+
+Thank you, @bluss! I've tried `override-dependencies`, but it doesn't work. I wonder if it is related to the `uv tree` not showing the dependency for `tqdm`...? (It is not apparently managed by uv??)
+
+```
+❯ uv --version
+uv 0.4.1
+
+❯ uv init test_sam2_with_uv_override_dependencies -p 3.12
+Initialized project `test-sam2-with-uv-override-dependencies` at `/home/hideakitai/develop/ml/sandbox/test_sam2_with_uv_override_dependencies`
+
+❯ cd test_sam2_with_uv_override_dependencies/
+
+❯ uv python install 3.12
+Searching for Python versions matching: Python 3.12
+Found existing installation for Python 3.12: cpython-3.12.5-linux-x86_64-gnu
+
+❯ uv python pin 3.12.5
+Pinned `.python-version` to `3.12.5`
+
+❯ echo -e "\n[tool.uv]\nextra-index-url = [\"https://download.pytorch.org/whl/cu118\"]\noverride-dependencies = [\"tqdm>=4.66.1\"]" >> pyproject.toml
+
+❯ cat pyproject.toml
+[project]
+name = "test-sam2-with-uv-override-dependencies"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = []
+
+[tool.uv]
+extra-index-url = ["https://download.pytorch.org/whl/cu118"]
+override-dependencies = ["tqdm>=4.66.1"]
+
+❯ uv add "torch==2.4.0+cu118" "torchvision==0.19.0+cu118"
+Using Python 3.12.5
+Creating virtualenv at: .venv
+Resolved 26 packages in 3.25s
+Installed 25 packages in 426ms
+ + filelock==3.13.1
+ + fsspec==2024.2.0
+ + jinja2==3.1.3
+ + markupsafe==2.1.5
+ + mpmath==1.3.0
+ + networkx==3.2.1
+ + numpy==1.26.3
+ + nvidia-cublas-cu11==11.11.3.6
+ + nvidia-cuda-cupti-cu11==11.8.87
+ + nvidia-cuda-nvrtc-cu11==11.8.89
+ + nvidia-cuda-runtime-cu11==11.8.89
+ + nvidia-cudnn-cu11==9.1.0.70
+ + nvidia-cufft-cu11==10.9.0.58
+ + nvidia-curand-cu11==10.3.0.86
+ + nvidia-cusolver-cu11==11.4.1.48
+ + nvidia-cusparse-cu11==11.7.5.86
+ + nvidia-nccl-cu11==2.20.5
+ + nvidia-nvtx-cu11==11.8.86
+ + pillow==10.2.0
+ + setuptools==70.0.0
+ + sympy==1.12
+ + torch==2.4.0+cu118
+ + torchvision==0.19.0+cu118
+ + triton==3.0.0
+ + typing-extensions==4.9.0
+
+❯ uv run python -c "import torch; print(torch.__version__, torch.cuda.is_available())"
+2.4.0+cu118 True
+
+❯ uv run python -c "import torch; x = torch.rand(5, 3); print(x)"
+tensor([[0.8313, 0.5773, 0.2631],
+        [0.2783, 0.8677, 0.5963],
+        [0.7147, 0.8830, 0.4496],
+        [0.2011, 0.2477, 0.3833],
+        [0.3909, 0.3219, 0.6389]])
+
+❯ git clone https://github.com/facebookresearch/segment-anything-2.git
+Cloning into 'segment-anything-2'...
+remote: Enumerating objects: 510, done.
+remote: Total 510 (delta 0), reused 0 (delta 0), pack-reused 510 (from 1)
+Receiving objects: 100% (510/510), 88.46 MiB | 10.41 MiB/s, done.
+Resolving deltas: 100% (157/157), done.
+
+❯ uv add --editable ./segment-anything-2
+  × No solution found when resolving dependencies:
+  ╰─▶ Because only tqdm==4.64.1 is available and sam-2==1.0 depends on tqdm>=4.66.1, we can conclude that
+      sam-2==1.0 cannot be used.
+      And because only sam-2==1.0 is available and your project depends on sam-2, we can conclude that your
+      project's requirements are unsatisfiable.
+  help: If this is intentional, run `uv add --frozen` to skip the lock and sync steps.
+
+❯ uv add tqdm
+  × No solution found when resolving dependencies:
+  ╰─▶ Because only tqdm==4.64.1 is available and your project depends on tqdm>=4.66.1, we can conclude that your
+      project's requirements are unsatisfiable.
+  help: If this is intentional, run `uv add --frozen` to skip the lock and sync steps.
+
+❯ uv tree
+Resolved 26 packages in 1ms
+test-sam2-with-uv-override-dependencies v0.1.0
+├── torch v2.4.0+cu118
+│   ├── filelock v3.13.1
+│   ├── fsspec v2024.2.0
+│   ├── jinja2 v3.1.3
+│   │   └── markupsafe v2.1.5
+│   ├── networkx v3.2.1
+│   ├── nvidia-cublas-cu11 v11.11.3.6
+│   ├── nvidia-cuda-cupti-cu11 v11.8.87
+│   ├── nvidia-cuda-nvrtc-cu11 v11.8.89
+│   ├── nvidia-cuda-runtime-cu11 v11.8.89
+│   ├── nvidia-cudnn-cu11 v9.1.0.70
+│   │   └── nvidia-cublas-cu11 v11.11.3.6
+│   ├── nvidia-cufft-cu11 v10.9.0.58
+│   ├── nvidia-curand-cu11 v10.3.0.86
+│   ├── nvidia-cusolver-cu11 v11.4.1.48
+│   │   └── nvidia-cublas-cu11 v11.11.3.6
+│   ├── nvidia-cusparse-cu11 v11.7.5.86
+│   ├── nvidia-nccl-cu11 v2.20.5
+│   ├── nvidia-nvtx-cu11 v11.8.86
+│   ├── setuptools v70.0.0
+│   ├── sympy v1.12
+│   │   └── mpmath v1.3.0
+│   ├── triton v3.0.0
+│   │   └── filelock v3.13.1
+│   └── typing-extensions v4.9.0
+└── torchvision v0.19.0+cu118
+    ├── numpy v1.26.3
+    ├── pillow v10.2.0
+    └── torch v2.4.0+cu118 (*)
+(*) Package tree already displayed
+```
+
+---
+
+_Comment by @bluss on 2024-09-01 07:25_
+
+https://github.com/facebookresearch/segment-anything-2.git has torch as a build requirement, I guess I would try to use no build isolation then https://docs.astral.sh/uv/concepts/projects/#build-isolation
+
+Maybe that could help, and maybe the invisible tqdm dependency is in a build-dep? If you need more information, enable more log output when synching or when adding segment anything, such as using -v -vv or -vvv on the relevant command to get more logs.
+
+---
+
+_Comment by @hideakitai on 2024-09-01 07:36_
+
+Thank you so much! I will try it later 🙌
+
+---
+
+_Comment by @bluss on 2024-09-01 10:12_
+
+Ok the tqdm error is also from the fact that [tqdm-4.64.1-py2.py3-none-any.whl](https://download.pytorch.org/whl/tqdm-4.64.1-py2.py3-none-any.whl#sha256=6fee160d6ffcd1b1c68c65f14c829c22832bc401726335ce92c52d395944a6a1) is the only version of tqdm available from that index.
+
+So that's the reason no other tqdm dependency is visible, there is none. It's a conflict between versions offered by the index and versions required by the project. override can work if it overrides to that exact version that is available, or look at uv sync --index-strategy -- but I don't know those parts very well, someone else might know.
+
+---
+
+_Comment by @bluss on 2024-09-01 10:20_
+
+The [two step sync described in docs](https://docs.astral.sh/uv/concepts/projects/#build-isolation) can make this project installable though - but note as above that there are maybe other better solutions for tqdm.
+
+```toml
+[project]
+name = "uvtorchexample"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+]
+[project.optional-dependencies]
+build = [
+    "torch==2.4.0+cu118",
+    "torchvision==0.19.0+cu118",
+    "setuptools",
+    "wheel",
+]
+sam = [
+    "sam-2",
+]
+
+[tool.uv]
+extra-index-url = ["https://download.pytorch.org/whl/cu118"]
+override-dependencies = ["tqdm>=4.64.1"]
+no-build-isolation-package = ["sam-2"]
+
+[tool.uv.sources]
+sam-2 = { path = "segment-anything-2", editable = true }
+```
+
+---
+
+_Referenced in [astral-sh/uv#6909](../../astral-sh/uv/issues/6909.md) on 2024-09-01 11:00_
+
+---
+
+_Comment by @hideakitai on 2024-09-02 21:08_
+
+@bluss I'm sorry for not getting back to you sooner. Am I correct in understanding that I should prepare the above `pyproject.toml` and execute the following command?
+
+```
+uv sync --extra build
+uv sync --extra sam-2
+```
+
+That did not work. For some reason, at `uv sync --extra build`, it seems to be trying to install `sam-2` as well, and I get an error that `setuptools` is not installed.
+
+```
+❯ uv --version
+uv 0.4.1
+
+❯ uv init test_sam2_with_uv_no_build_deps -p 3.12
+Initialized project `test-sam2-with-uv-no-build-deps` at `/home/hideakitai/develop/ml/sandbox/test_sam2_with_uv_no_build_deps`
+
+❯ cd test_sam2_with_uv_no_build_deps/
+
+❯ uv python pin 3.12.5
+Pinned `.python-version` to `3.12.5`
+
+❯ git clone https://github.com/facebookresearch/segment-anything-2.git
+Cloning into 'segment-anything-2'...
+remote: Enumerating objects: 510, done.
+remote: Total 510 (delta 0), reused 0 (delta 0), pack-reused 510 (from 1)
+Receiving objects: 100% (510/510), 88.46 MiB | 10.86 MiB/s, done.
+Resolving deltas: 100% (157/157), done.
+
+❯ nvim pyproject.toml
+
+❯ cat pyproject.toml
+[project]
+name = "uvtorchexample"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+]
+[project.optional-dependencies]
+build = [
+    "torch==2.4.0+cu118",
+    "torchvision==0.19.0+cu118",
+    "setuptools",
+    "wheel",
+]
+sam = [
+    "sam-2",
+]
+
+[tool.uv]
+extra-index-url = ["https://download.pytorch.org/whl/cu118"]
+override-dependencies = ["tqdm>=4.64.1"]
+no-build-isolation-package = ["sam-2"]
+
+[tool.uv.sources]
+sam-2 = { path = "segment-anything-2", editable = true }
+
+
+❯ uv sync --extra build -vvv
+    0.013282s DEBUG uv uv 0.4.1
+    0.015069s DEBUG uv_workspace::workspace Found project root: `/home/hideakitai/develop/ml/sandbox/test_sam2_with_uv_no_build_deps`
+    0.015226s DEBUG uv_workspace::workspace No workspace root found, using project root
+    0.015325s DEBUG uv_python::version_files Reading requests from `/home/hideakitai/develop/ml/sandbox/test_sam2_with_uv_no_build_deps/.python-version`
+    0.015422s DEBUG uv::commands::project The virtual environment's Python version satisfies `Python 3.12.5`
+ uv_client::linehaul::linehaul
+    0.015643s DEBUG uv_client::base_client Using request timeout of 30s
+ uv_resolver::flat_index::from_entries
+    0.015736s DEBUG uv::commands::project::lock Starting clean resolution
+ uv_distribution::distribution_database::get_or_build_wheel_metadata dist=uvtorchexample @ file:///home/hideakitai/develop/ml/sandbox/test_sam2_with_uv_no_build_deps
+    0.016545s DEBUG uv_fs Acquired lock for `/home/hideakitai/.cache/uv/built-wheels-v3/path/cfe3ec44b26fdaf7`
+    0.016738s   0ms DEBUG uv_distribution::source Found static `pyproject.toml` for: uvtorchexample @ file:///home/hideakitai/develop/ml/sandbox/test_sam2_with_uv_no_build_deps
+    0.016859s   0ms DEBUG uv_workspace::workspace No workspace root found, using project root
+warning: Missing version constraint (e.g., a lower bound) for `setuptools`
+warning: Missing version constraint (e.g., a lower bound) for `wheel`
+    0.016940s   0ms DEBUG uv_fs Released lock at `/home/hideakitai/.cache/uv/built-wheels-v3/path/cfe3ec44b26fdaf7/.lock`
+ uv_distribution::distribution_database::get_or_build_wheel_metadata dist=sam-2 @ file:///home/hideakitai/develop/ml/sandbox/test_sam2_with_uv_no_build_deps/segment-anything-2
+    0.017067s DEBUG uv_fs Acquired lock for `/home/hideakitai/.cache/uv/built-wheels-v3/editable/4d0c7d6de43d8c2c`
+    0.017248s   0ms DEBUG uv_distribution::source No static `pyproject.toml` available for: sam-2 @ file:///home/hideakitai/develop/ml/sandbox/test_sam2_with_uv_no_build_deps/segment-anything-2 (PyprojectToml(FieldNotFound("project")))
+   uv_distribution::source::build_metadata dist=sam-2 @ file:///home/hideakitai/develop/ml/sandbox/test_sam2_with_uv_no_build_deps/segment-anything-2
+      0.017339s   0ms DEBUG uv_distribution::source Preparing metadata for: sam-2 @ file:///home/hideakitai/develop/ml/sandbox/test_sam2_with_uv_no_build_deps/segment-anything-2
+     uv_dispatch::setup_build version_id="sam-2 @ file:///home/hideakitai/develop/ml/sandbox/test_sam2_with_uv_no_build_deps/segment-anything-2", subdirectory=None
+      0.017732s   0ms DEBUG uv_build Calling `setuptools.build_meta.prepare_metadata_for_build_editable()`
+     uv_build::run_python_script script="prepare_metadata_for_build_editable", python_version=3.12.5
+    0.027779s  10ms DEBUG uv_fs Released lock at `/home/hideakitai/.cache/uv/built-wheels-v3/editable/4d0c7d6de43d8c2c/.lock`
+error: Failed to build: `sam-2 @ file:///home/hideakitai/develop/ml/sandbox/test_sam2_with_uv_no_build_deps/segment-anything-2`
+  Caused by: Build backend failed to determine metadata through `prepare_metadata_for_build_editable` with exit status: 1
+--- stdout:
+
+--- stderr:
+Traceback (most recent call last):
+  File "<string>", line 8, in <module>
+ModuleNotFoundError: No module named 'setuptools'
+---
+```
+
+The `uv sync` itself works fine if I follow the steps below.
+
+- First, `uv add torch` with optional dependencies disabled.
+- Then `uv sync --extra build` with only `wheel` as optional dependencies in `build` (comment out optional dependencies `sam-2`)
+- Uncomment `sam-2` optional dependencies and `uv sync --extra sam-2`.
+
+```
+❯ uv --version
+uv 0.4.1
+
+❯ uv init test_sam2_with_uv_no_build_deps -p 3.12
+Initialized project `test-sam2-with-uv-no-build-deps` at `/home/hideakitai/develop/ml/sandbox/test_sam2_with_uv_no_build_deps`
+
+❯ cd test_sam2_with_uv_no_build_deps/
+
+❯ uv python pin 3.12.5
+Pinned `.python-version` to `3.12.5`
+
+❯ git clone https://github.com/facebookresearch/segment-anything-2.git
+Cloning into 'segment-anything-2'...
+remote: Enumerating objects: 510, done.
+remote: Total 510 (delta 0), reused 0 (delta 0), pack-reused 510 (from 1)
+Receiving objects: 100% (510/510), 88.46 MiB | 10.79 MiB/s, done.
+Resolving deltas: 100% (157/157), done.
+
+❯ nvim pyproject.toml
+
+❯ cat pyproject.toml
+[project]
+name = "test-sam2-with-uv-no-build-deps"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = []
+
+# [project.optional-dependencies]
+# build = [
+#     "wheel",
+# ]
+# sam = [
+#     "sam-2",
+# ]
+
+[tool.uv]
+extra-index-url = ["https://download.pytorch.org/whl/cu118"]
+override-dependencies = ["tqdm>=4.64.1"]
+no-build-isolation-package = ["sam-2"]
+
+[tool.uv.sources]
+sam-2 = { path = "segment-anything-2", editable = true }
+
+
+❯ uv add "torch==2.4.0+cu118" "torchvision==0.19.0+cu118"
+Using Python 3.12.5
+Creating virtualenv at: .venv
+Resolved 26 packages in 2.90s
+Installed 25 packages in 282ms
+ + filelock==3.13.1
+ + fsspec==2024.2.0
+ + jinja2==3.1.3
+ + markupsafe==2.1.5
+ + mpmath==1.3.0
+ + networkx==3.2.1
+ + numpy==1.26.3
+ + nvidia-cublas-cu11==11.11.3.6
+ + nvidia-cuda-cupti-cu11==11.8.87
+ + nvidia-cuda-nvrtc-cu11==11.8.89
+ + nvidia-cuda-runtime-cu11==11.8.89
+ + nvidia-cudnn-cu11==9.1.0.70
+ + nvidia-cufft-cu11==10.9.0.58
+ + nvidia-curand-cu11==10.3.0.86
+ + nvidia-cusolver-cu11==11.4.1.48
+ + nvidia-cusparse-cu11==11.7.5.86
+ + nvidia-nccl-cu11==2.20.5
+ + nvidia-nvtx-cu11==11.8.86
+ + pillow==10.2.0
+ + setuptools==70.0.0
+ + sympy==1.12
+ + torch==2.4.0+cu118
+ + torchvision==0.19.0+cu118
+ + triton==3.0.0
+ + typing-extensions==4.9.0
+
+❯ nvim pyproject.toml
+
+❯ cat pyproject.toml
+[project]
+name = "test-sam2-with-uv-no-build-deps"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "torch==2.4.0+cu118",
+    "torchvision==0.19.0+cu118",
+]
+
+[project.optional-dependencies]
+build = [
+    "wheel",
+]
+# sam = [
+#     "sam-2",
+# ]
+
+[tool.uv]
+extra-index-url = ["https://download.pytorch.org/whl/cu118"]
+override-dependencies = ["tqdm>=4.64.1"]
+no-build-isolation-package = ["sam-2"]
+
+[tool.uv.sources]
+sam-2 = { path = "segment-anything-2", editable = true }
+
+❯ uv sync --extra build
+warning: Missing version constraint (e.g., a lower bound) for `wheel`
+Resolved 27 packages in 2.13s
+Prepared 1 package in 0.54ms
+Installed 1 package in 4ms
+ + wheel==0.44.0
+
+❯ nvim pyproject.toml
+
+❯ cat pyproject.toml
+[project]
+name = "test-sam2-with-uv-no-build-deps"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "torch==2.4.0+cu118",
+    "torchvision==0.19.0+cu118",
+]
+
+[project.optional-dependencies]
+build = [
+    "wheel",
+]
+sam = [
+    "sam-2",
+]
+
+[tool.uv]
+extra-index-url = ["https://download.pytorch.org/whl/cu118"]
+override-dependencies = ["tqdm>=4.64.1"]
+no-build-isolation-package = ["sam-2"]
+
+[tool.uv.sources]
+sam-2 = { path = "segment-anything-2", editable = true }
+
+
+❯ uv sync --extra sam-2 -vvv
+# omit...
+Uninstalled 1 package in 0.88ms
+ - wheel==0.44.0
+
+❯ uv run python -c "from sam2.build_sam import build_sam2"
+warning: Missing version constraint (e.g., a lower bound) for `wheel`
+Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+ModuleNotFoundError: No module named 'sam2'
+```
+
+However, `sam-2` is not built correctly, and I get an import error for `sam-2`.
+
+```
+❯ uv run python -c "from sam2.build_sam import build_sam2"
+warning: Missing version constraint (e.g., a lower bound) for `wheel`
+Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+ModuleNotFoundError: No module named 'sam2'
+```
+
+Is something wrong with my two-step sync method? If so, I would like to know the possible cause. Thanks for the great support!
+
+Here are the `uv sync --extra sam-2 -vvvv` details.
+
+<details><summary>`uv sync --extra sam-2 -vvv` Details</summary>
+<p>
+
+```
+❯ uv sync --extra sam-2 -vvv
+    0.014254s DEBUG uv uv 0.4.1
+    0.014398s DEBUG uv_workspace::workspace Found project root: `/home/hideakitai/develop/ml/sandbox/test_sam2_with_uv_no_build_deps`
+    0.014545s DEBUG uv_workspace::workspace No workspace root found, using project root
+    0.014657s DEBUG uv_python::version_files Reading requests from `/home/hideakitai/develop/ml/sandbox/test_sam2_with_uv_no_build_deps/.python-version`
+    0.014766s DEBUG uv::commands::project The virtual environment's Python version satisfies `Python 3.12.5`
+ uv_client::linehaul::linehaul
+    0.015440s DEBUG uv_client::base_client Using request timeout of 30s
+ uv_resolver::flat_index::from_entries
+ uv_distribution::distribution_database::get_or_build_wheel_metadata dist=test-sam2-with-uv-no-build-deps @ file:///home/hideakitai/develop/ml/sandbox/test_sam2_with_uv_no_build_deps
+    0.015835s DEBUG uv_fs Acquired lock for `/home/hideakitai/.cache/uv/built-wheels-v3/path/cfe3ec44b26fdaf7`
+    0.016310s   0ms DEBUG uv_distribution::source Found static `pyproject.toml` for: test-sam2-with-uv-no-build-deps @ file:///home/hideakitai/develop/ml/sandbox/test_sam2_with_uv_no_build_deps
+    0.016411s   0ms DEBUG uv_workspace::workspace No workspace root found, using project root
+warning: Missing version constraint (e.g., a lower bound) for `wheel`
+    0.016475s   0ms DEBUG uv_fs Released lock at `/home/hideakitai/.cache/uv/built-wheels-v3/path/cfe3ec44b26fdaf7/.lock`
+    0.016513s DEBUG uv::commands::project::lock Ignoring existing lockfile due to mismatched `requires-dist` for:
+`test-sam2-with-uv-no-build-deps==0.1.0`
+   Expected: {Requirement { name: PackageName("sam-2"), extras: [], marker: extra == 'sam', source: Directory { install_path: "/home/hideakitai/develop/ml/sandbox/test_sam2_with_uv_no_build_deps/segment-anything-2", editable: true, virtual: false, url: VerbatimUrl { url: Url { scheme: "file", cannot_be_a_base: false, username: "", password: None, host: None, port: None, path: "/home/hideakitai/develop/ml/sandbox/test_sam2_with_uv_no_build_deps/segment-anything-2", query: None, fragment: None }, given: None } }, origin: None }, Requirement { name: PackageName("torch"), extras: [], marker: true, source: Registry { specifier: VersionSpecifiers([VersionSpecifier { operator: Equal, version: "2.4.0+cu118" }]), index: None }, origin: None }, Requirement { name: PackageName("torchvision"), extras: [], marker: true, source: Registry { specifier: VersionSpecifiers([VersionSpecifier { operator: Equal, version: "0.19.0+cu118" }]), index: None }, origin: None }, Requirement { name: PackageName("wheel"), extras: [], marker:
+extra == 'build', source: Registry { specifier: VersionSpecifiers([]), index: None }, origin: None }}
+   Actual: {Requirement { name: PackageName("torch"), extras: [], marker: true, source: Registry { specifier: VersionSpecifiers([VersionSpecifier { operator: Equal, version: "2.4.0+cu118" }]), index: None }, origin: None }, Requirement { name: PackageName("torchvision"), extras: [], marker: true, source: Registry { specifier: VersionSpecifiers([VersionSpecifier { operator: Equal, version: "0.19.0+cu118" }]), index: None }, origin: None }, Requirement { name: PackageName("wheel"), extras: [], marker: extra == 'build', source: Registry { specifier: VersionSpecifiers([]), index: None }, origin: None }}
+    0.017727s DEBUG uv::commands::project::lock Starting clean resolution
+ uv_distribution::distribution_database::get_or_build_wheel_metadata dist=test-sam2-with-uv-no-build-deps @ file:///home/hideakitai/develop/ml/sandbox/test_sam2_with_uv_no_build_deps
+    0.018427s DEBUG uv_fs Acquired lock for `/home/hideakitai/.cache/uv/built-wheels-v3/path/cfe3ec44b26fdaf7`
+    0.018588s   0ms DEBUG uv_distribution::source Found static `pyproject.toml` for: test-sam2-with-uv-no-build-deps @ file:///home/hideakitai/develop/ml/sandbox/test_sam2_with_uv_no_build_deps
+    0.018684s   0ms DEBUG uv_workspace::workspace No workspace root found, using project root
+    0.018723s   0ms DEBUG uv_fs Released lock at `/home/hideakitai/.cache/uv/built-wheels-v3/path/cfe3ec44b26fdaf7/.lock`
+ uv_distribution::distribution_database::get_or_build_wheel_metadata dist=sam-2 @ file:///home/hideakitai/develop/ml/sandbox/test_sam2_with_uv_no_build_deps/segment-anything-2
+    0.018830s DEBUG uv_fs Acquired lock for `/home/hideakitai/.cache/uv/built-wheels-v3/editable/4d0c7d6de43d8c2c`
+    0.019704s   0ms DEBUG uv_distribution::source No static `pyproject.toml` available for: sam-2 @ file:///home/hideakitai/develop/ml/sandbox/test_sam2_with_uv_no_build_deps/segment-anything-2 (PyprojectToml(FieldNotFound("project")))
+   uv_distribution::source::build_metadata dist=sam-2 @ file:///home/hideakitai/develop/ml/sandbox/test_sam2_with_uv_no_build_deps/segment-anything-2
+      0.019868s   0ms DEBUG uv_distribution::source Preparing metadata for: sam-2 @ file:///home/hideakitai/develop/ml/sandbox/test_sam2_with_uv_no_build_deps/segment-anything-2
+     uv_dispatch::setup_build version_id="sam-2 @ file:///home/hideakitai/develop/ml/sandbox/test_sam2_with_uv_no_build_deps/segment-anything-2", subdirectory=None
+      0.020803s   0ms DEBUG uv_build Calling `setuptools.build_meta.prepare_metadata_for_build_editable()`
+     uv_build::run_python_script script="prepare_metadata_for_build_editable", python_version=3.12.5
+      3.565329s   3s  DEBUG uv_distribution::source Prepared metadata for: sam-2 @ file:///home/hideakitai/develop/ml/sandbox/test_sam2_with_uv_no_build_deps/segment-anything-2
+    3.566220s   3s  DEBUG uv_fs Released lock at `/home/hideakitai/.cache/uv/built-wheels-v3/editable/4d0c7d6de43d8c2c/.lock`
+ uv_resolver::resolver::solve
+    3.567079s   0ms DEBUG uv_resolver::resolver Solving with installed Python version: 3.12.5
+    3.567089s   0ms DEBUG uv_resolver::resolver Solving with target Python version: >=3.12
+   uv_resolver::resolver::choose_version package=root
+   uv_resolver::resolver::get_dependencies_forking package=root, version=0a0.dev0
+     uv_resolver::resolver::get_dependencies package=root, version=0a0.dev0
+    3.567219s   0ms DEBUG uv_resolver::resolver Adding direct dependency: test-sam2-with-uv-no-build-deps*
+    3.567237s   0ms DEBUG uv_resolver::resolver Adding direct dependency: test-sam2-with-uv-no-build-deps[build]*
+    3.567252s   0ms DEBUG uv_resolver::resolver Adding direct dependency: test-sam2-with-uv-no-build-deps[sam]*
+   uv_resolver::resolver::choose_version package=test-sam2-with-uv-no-build-deps[sam]
+      3.567302s   0ms DEBUG uv_resolver::resolver Searching for a compatible version of test-sam2-with-uv-no-build-deps @ file:///home/hideakitai/develop/ml/sandbox/test_sam2_with_uv_no_build_deps (*)
+   uv_resolver::resolver::get_dependencies_forking package=test-sam2-with-uv-no-build-deps[sam], version=0.1.0
+     uv_resolver::resolver::get_dependencies package=test-sam2-with-uv-no-build-deps[sam], version=0.1.0
+    3.567352s   0ms DEBUG uv_resolver::resolver Adding transitive dependency for test-sam2-with-uv-no-build-deps==0.1.0: test-sam2-with-uv-no-build-deps==0.1.0
+    3.567377s   0ms DEBUG uv_resolver::resolver Adding transitive dependency for test-sam2-with-uv-no-build-deps==0.1.0: test-sam2-with-uv-no-build-deps[sam]==0.1.0
+   uv_resolver::resolver::choose_version package=test-sam2-with-uv-no-build-deps
+      3.567409s   0ms DEBUG uv_resolver::resolver Searching for a compatible version of test-sam2-with-uv-no-build-deps @ file:///home/hideakitai/develop/ml/sandbox/test_sam2_with_uv_no_build_deps (==0.1.0)
+   uv_resolver::resolver::get_dependencies_forking package=test-sam2-with-uv-no-build-deps, version=0.1.0
+     uv_resolver::resolver::get_dependencies package=test-sam2-with-uv-no-build-deps, version=0.1.0
+    3.567465s   0ms DEBUG uv_resolver::resolver Adding transitive dependency for test-sam2-with-uv-no-build-deps==0.1.0: torch==2.4.0+cu118
+    3.567483s   0ms DEBUG uv_resolver::resolver Adding transitive dependency for test-sam2-with-uv-no-build-deps==0.1.0: torchvision==0.19.0+cu118
+   uv_resolver::resolver::choose_version package=test-sam2-with-uv-no-build-deps[sam]
+      3.567541s   0ms DEBUG uv_resolver::resolver Searching for a compatible version of test-sam2-with-uv-no-build-deps @ file:///home/hideakitai/develop/ml/sandbox/test_sam2_with_uv_no_build_deps (==0.1.0)
+ uv_resolver::resolver::process_request request=Versions torch
+   uv_client::registry_client::simple_api package=torch
+     uv_client::cached_client::get_cacheable
+       uv_client::cached_client::read_and_parse_cache file=/home/hideakitai/.cache/uv/simple-v12/index/0683d010c15737d1/torch.rkyv
+   uv_resolver::resolver::get_dependencies_forking package=test-sam2-with-uv-no-build-deps[sam], version=0.1.0
+ uv_client::cached_client::from_path_sync path="/home/hideakitai/.cache/uv/simple-v12/index/0683d010c15737d1/torch.rkyv"
+ uv_resolver::resolver::process_request request=Versions torchvision
+   uv_client::registry_client::simple_api package=torchvision
+     uv_resolver::resolver::get_dependencies package=test-sam2-with-uv-no-build-deps[sam], version=0.1.0
+     uv_client::cached_client::get_cacheable
+       uv_client::cached_client::read_and_parse_cache file=/home/hideakitai/.cache/uv/simple-v12/index/0683d010c15737d1/torchvision.rkyv
+ uv_resolver::resolver::process_request request=Prefetch torchvision ==0.19.0+cu118
+    3.567938s   0ms DEBUG uv_resolver::resolver Adding transitive dependency for test-sam2-with-uv-no-build-deps==0.1.0: sam-2*
+ uv_client::cached_client::from_path_sync path="/home/hideakitai/.cache/uv/simple-v12/index/0683d010c15737d1/torchvision.rkyv"
+ uv_resolver::resolver::process_request request=Prefetch torch ==2.4.0+cu118
+        3.568055s   0ms DEBUG uv_client::cached_client No cache entry for: https://download.pytorch.org/whl/cu118/torch/
+   uv_resolver::resolver::choose_version package=test-sam2-with-uv-no-build-deps[build]
+       uv_client::cached_client::fresh_request url="https://download.pytorch.org/whl/cu118/torch/"
+      3.568193s   0ms DEBUG uv_resolver::resolver Searching for a compatible version of test-sam2-with-uv-no-build-deps @ file:///home/hideakitai/develop/ml/sandbox/test_sam2_with_uv_no_build_deps (*)
+   uv_resolver::resolver::get_dependencies_forking package=test-sam2-with-uv-no-build-deps[build], version=0.1.0
+     uv_resolver::resolver::get_dependencies package=test-sam2-with-uv-no-build-deps[build], version=0.1.0
+    3.568260s   1ms DEBUG uv_resolver::resolver Adding transitive dependency for test-sam2-with-uv-no-build-deps==0.1.0: test-sam2-with-uv-no-build-deps==0.1.0
+    3.568287s   1ms DEBUG uv_resolver::resolver Adding transitive dependency for test-sam2-with-uv-no-build-deps==0.1.0: test-sam2-with-uv-no-build-deps[build]==0.1.0
+        3.568324s   0ms DEBUG uv_client::cached_client No cache entry for: https://download.pytorch.org/whl/cu118/torchvision/
+       uv_client::cached_client::fresh_request url="https://download.pytorch.org/whl/cu118/torchvision/"
+   uv_resolver::resolver::choose_version package=test-sam2-with-uv-no-build-deps[build]
+      3.568410s   0ms DEBUG uv_resolver::resolver Searching for a compatible version of test-sam2-with-uv-no-build-deps @ file:///home/hideakitai/develop/ml/sandbox/test_sam2_with_uv_no_build_deps (==0.1.0)
+   uv_resolver::resolver::get_dependencies_forking package=test-sam2-with-uv-no-build-deps[build], version=0.1.0
+     uv_resolver::resolver::get_dependencies package=test-sam2-with-uv-no-build-deps[build], version=0.1.0
+    3.568461s   1ms DEBUG uv_resolver::resolver Adding transitive dependency for test-sam2-with-uv-no-build-deps==0.1.0: wheel*
+   uv_resolver::resolver::choose_version package=sam-2
+      3.568513s   0ms DEBUG uv_resolver::resolver Searching for a compatible version of sam-2 @ file:///home/hideakitai/develop/ml/sandbox/test_sam2_with_uv_no_build_deps/segment-anything-2 (*)
+   uv_resolver::resolver::get_dependencies_forking package=sam-2, version=1.0
+     uv_resolver::resolver::get_dependencies package=sam-2, version=1.0
+    3.568575s   1ms DEBUG uv_resolver::resolver Adding transitive dependency for sam-2==1.0: hydra-core>=1.3.2
+    3.568592s   1ms DEBUG uv_resolver::resolver Adding transitive dependency for sam-2==1.0: iopath>=0.1.10
+    3.568611s   1ms DEBUG uv_resolver::resolver Adding transitive dependency for sam-2==1.0: numpy>=1.24.4
+    3.568617s   1ms DEBUG uv_resolver::resolver Adding transitive dependency for sam-2==1.0: pillow>=9.4.0
+    3.568632s   1ms DEBUG uv_resolver::resolver Adding transitive dependency for sam-2==1.0: torch>=2.3.1
+    3.568648s   1ms DEBUG uv_resolver::resolver Adding transitive dependency for sam-2==1.0: torchvision>=0.18.1
+    3.568663s   1ms DEBUG uv_resolver::resolver Adding transitive dependency for sam-2==1.0: tqdm>=4.64.1
+   uv_resolver::resolver::choose_version package=torch
+ uv_resolver::resolver::process_request request=Versions wheel
+   uv_client::registry_client::simple_api package=wheel
+     uv_client::cached_client::get_cacheable
+       uv_client::cached_client::read_and_parse_cache file=/home/hideakitai/.cache/uv/simple-v12/index/0683d010c15737d1/wheel.rkyv
+ uv_resolver::resolver::process_request request=Prefetch wheel *
+ uv_resolver::resolver::process_request request=Versions hydra-core
+   uv_client::registry_client::simple_api package=hydra-core
+     uv_client::cached_client::get_cacheable
+       uv_client::cached_client::read_and_parse_cache file=/home/hideakitai/.cache/uv/simple-v12/index/0683d010c15737d1/hydra-core.rkyv
+ uv_client::cached_client::from_path_sync path="/home/hideakitai/.cache/uv/simple-v12/index/0683d010c15737d1/wheel.rkyv"
+ uv_resolver::resolver::process_request request=Versions iopath
+   uv_client::registry_client::simple_api package=iopath
+     uv_client::cached_client::get_cacheable
+       uv_client::cached_client::read_and_parse_cache file=/home/hideakitai/.cache/uv/simple-v12/index/0683d010c15737d1/iopath.rkyv
+ uv_client::cached_client::from_path_sync path="/home/hideakitai/.cache/uv/simple-v12/index/0683d010c15737d1/hydra-core.rkyv"
+ uv_client::cached_client::from_path_sync path="/home/hideakitai/.cache/uv/simple-v12/index/0683d010c15737d1/iopath.rkyv"
+ uv_resolver::resolver::process_request request=Versions numpy
+   uv_client::registry_client::simple_api package=numpy
+     uv_client::cached_client::get_cacheable
+       uv_client::cached_client::read_and_parse_cache file=/home/hideakitai/.cache/uv/simple-v12/index/0683d010c15737d1/numpy.rkyv
+ uv_resolver::resolver::process_request request=Versions pillow
+   uv_client::registry_client::simple_api package=pillow
+     uv_client::cached_client::get_cacheable
+       uv_client::cached_client::read_and_parse_cache file=/home/hideakitai/.cache/uv/simple-v12/index/0683d010c15737d1/pillow.rkyv
+ uv_resolver::resolver::process_request request=Versions tqdm
+   uv_client::registry_client::simple_api package=tqdm
+     uv_client::cached_client::get_cacheable
+       uv_client::cached_client::read_and_parse_cache file=/home/hideakitai/.cache/uv/simple-v12/index/0683d010c15737d1/tqdm.rkyv
+ uv_resolver::resolver::process_request request=Prefetch tqdm >=4.64.1
+ uv_resolver::resolver::process_request request=Prefetch pillow >=9.4.0
+ uv_resolver::resolver::process_request request=Prefetch numpy >=1.24.4
+ uv_resolver::resolver::process_request request=Prefetch iopath >=0.1.10
+ uv_resolver::resolver::process_request request=Prefetch hydra-core >=1.3.2
+ uv_client::cached_client::from_path_sync path="/home/hideakitai/.cache/uv/simple-v12/index/0683d010c15737d1/tqdm.rkyv"
+        3.570413s   1ms DEBUG uv_client::cached_client No cache entry for: https://download.pytorch.org/whl/cu118/wheel/
+       uv_client::cached_client::fresh_request url="https://download.pytorch.org/whl/cu118/wheel/"
+        3.570511s   1ms DEBUG uv_client::cached_client No cache entry for: https://download.pytorch.org/whl/cu118/hydra-core/
+       uv_client::cached_client::fresh_request url="https://download.pytorch.org/whl/cu118/hydra-core/"
+ uv_client::cached_client::from_path_sync path="/home/hideakitai/.cache/uv/simple-v12/index/0683d010c15737d1/numpy.rkyv"
+ uv_client::cached_client::from_path_sync path="/home/hideakitai/.cache/uv/simple-v12/index/0683d010c15737d1/pillow.rkyv"
+        3.571299s   1ms DEBUG uv_client::cached_client No cache entry for: https://download.pytorch.org/whl/cu118/iopath/
+       uv_client::cached_client::fresh_request url="https://download.pytorch.org/whl/cu118/iopath/"
+        3.571360s   1ms DEBUG uv_client::cached_client No cache entry for: https://download.pytorch.org/whl/cu118/tqdm/
+       uv_client::cached_client::fresh_request url="https://download.pytorch.org/whl/cu118/tqdm/"
+        3.571409s   1ms DEBUG uv_client::cached_client No cache entry for: https://download.pytorch.org/whl/cu118/numpy/
+       uv_client::cached_client::fresh_request url="https://download.pytorch.org/whl/cu118/numpy/"
+        3.571488s   1ms DEBUG uv_client::cached_client No cache entry for: https://download.pytorch.org/whl/cu118/pillow/
+       uv_client::cached_client::fresh_request url="https://download.pytorch.org/whl/cu118/pillow/"
+     uv_client::cached_client::get_cacheable
+       uv_client::cached_client::read_and_parse_cache file=/home/hideakitai/.cache/uv/simple-v12/pypi/iopath.rkyv
+ uv_client::cached_client::from_path_sync path="/home/hideakitai/.cache/uv/simple-v12/pypi/iopath.rkyv"
+        4.273760s   2ms DEBUG uv_client::cached_client Found stale response for: https://pypi.org/simple/iopath/
+        4.273788s   2ms DEBUG uv_client::cached_client Sending revalidation request for: https://pypi.org/simple/iopath/
+       uv_client::cached_client::revalidation_request url="https://pypi.org/simple/iopath/"
+       uv_client::cached_client::new_cache file=/home/hideakitai/.cache/uv/simple-v12/index/0683d010c15737d1/torch.rkyv
+       uv_client::registry_client::parse_simple_api package=torch
+       uv_client::cached_client::new_cache file=/home/hideakitai/.cache/uv/simple-v12/index/0683d010c15737d1/pillow.rkyv
+       uv_client::registry_client::parse_simple_api package=pillow
+         uv_client::html::parse url=https://download.pytorch.org/whl/cu118/pillow/
+   uv_resolver::version_map::from_metadata
+   uv_distribution::distribution_database::get_or_build_wheel_metadata dist=pillow==10.2.0
+     uv_client::registry_client::wheel_metadata built_dist=pillow==10.2.0
+       uv_client::cached_client::get_serde
+         uv_client::cached_client::get_cacheable
+           uv_client::cached_client::read_and_parse_cache file=/home/hideakitai/.cache/uv/wheels-v1/index/0683d010c15737d1/pillow/pillow-10.2.0-cp312-cp312-macosx_10_10_x86_64.msgpack
+ uv_client::cached_client::from_path_sync path="/home/hideakitai/.cache/uv/wheels-v1/index/0683d010c15737d1/pillow/pillow-10.2.0-cp312-cp312-macosx_10_10_x86_64.msgpack"
+            4.275733s   0ms DEBUG uv_client::cached_client Found stale response for: https://download.pytorch.org/whl/pillow-10.2.0-cp312-cp312-macosx_10_10_x86_64.whl#sha256=1b5e1b74d1bd1b78bc3477528919414874748dd363e6272efd5abf7654e68bef
+            4.275761s   0ms DEBUG uv_client::cached_client Sending revalidation request for: https://download.pytorch.org/whl/pillow-10.2.0-cp312-cp312-macosx_10_10_x86_64.whl#sha256=1b5e1b74d1bd1b78bc3477528919414874748dd363e6272efd5abf7654e68bef
+           uv_client::cached_client::revalidation_request url="https://download.pytorch.org/whl/pillow-10.2.0-cp312-cp312-macosx_10_10_x86_64.whl#sha256=1b5e1b74d1bd1b78bc3477528919414874748dd363e6272efd5abf7654e68bef"
+     uv_client::cached_client::get_cacheable
+       uv_client::cached_client::read_and_parse_cache file=/home/hideakitai/.cache/uv/simple-v12/pypi/hydra-core.rkyv
+ uv_client::cached_client::from_path_sync path="/home/hideakitai/.cache/uv/simple-v12/pypi/hydra-core.rkyv"
+        4.277878s   0ms DEBUG uv_client::cached_client Found stale response for: https://pypi.org/simple/hydra-core/
+        4.277899s   0ms DEBUG uv_client::cached_client Sending revalidation request for: https://pypi.org/simple/hydra-core/
+       uv_client::cached_client::revalidation_request url="https://pypi.org/simple/hydra-core/"
+       uv_client::cached_client::new_cache file=/home/hideakitai/.cache/uv/simple-v12/index/0683d010c15737d1/numpy.rkyv
+       uv_client::registry_client::parse_simple_api package=numpy
+         uv_client::html::parse url=https://download.pytorch.org/whl/cu118/numpy/
+   uv_resolver::version_map::from_metadata
+   uv_distribution::distribution_database::get_or_build_wheel_metadata dist=numpy==1.26.3
+     uv_client::registry_client::wheel_metadata built_dist=numpy==1.26.3
+       uv_client::cached_client::get_serde
+         uv_client::cached_client::get_cacheable
+           uv_client::cached_client::read_and_parse_cache file=/home/hideakitai/.cache/uv/wheels-v1/index/0683d010c15737d1/numpy/numpy-1.26.3-cp312-cp312-macosx_10_9_x86_64.msgpack
+ uv_client::cached_client::from_path_sync path="/home/hideakitai/.cache/uv/wheels-v1/index/0683d010c15737d1/numpy/numpy-1.26.3-cp312-cp312-macosx_10_9_x86_64.msgpack"
+            4.280560s   0ms DEBUG uv_client::cached_client Found stale response for: https://download.pytorch.org/whl/numpy-1.26.3-cp312-cp312-macosx_10_9_x86_64.whl#sha256=a7081fd19a6d573e1a05e600c82a1c421011db7935ed0d5c483e9dd96b99cf13
+            4.280612s   0ms DEBUG uv_client::cached_client Sending revalidation request for: https://download.pytorch.org/whl/numpy-1.26.3-cp312-cp312-macosx_10_9_x86_64.whl#sha256=a7081fd19a6d573e1a05e600c82a1c421011db7935ed0d5c483e9dd96b99cf13
+           uv_client::cached_client::revalidation_request url="https://download.pytorch.org/whl/numpy-1.26.3-cp312-cp312-macosx_10_9_x86_64.whl#sha256=a7081fd19a6d573e1a05e600c82a1c421011db7935ed0d5c483e9dd96b99cf13"
+     uv_client::cached_client::get_cacheable
+       uv_client::cached_client::read_and_parse_cache file=/home/hideakitai/.cache/uv/simple-v12/pypi/wheel.rkyv
+ uv_client::cached_client::from_path_sync path="/home/hideakitai/.cache/uv/simple-v12/pypi/wheel.rkyv"
+        4.282978s   0ms DEBUG uv_client::cached_client Found fresh response for: https://pypi.org/simple/wheel/
+   uv_resolver::version_map::from_metadata
+   uv_distribution::distribution_database::get_or_build_wheel_metadata dist=wheel==0.44.0
+     uv_client::registry_client::wheel_metadata built_dist=wheel==0.44.0
+       uv_client::cached_client::get_serde
+         uv_client::cached_client::get_cacheable
+           uv_client::cached_client::read_and_parse_cache file=/home/hideakitai/.cache/uv/wheels-v1/pypi/wheel/wheel-0.44.0-py3-none-any.msgpack
+ uv_client::cached_client::from_path_sync path="/home/hideakitai/.cache/uv/wheels-v1/pypi/wheel/wheel-0.44.0-py3-none-any.msgpack"
+            4.283334s   0ms DEBUG uv_client::cached_client Found fresh response for: https://files.pythonhosted.org/packages/1b/d1/9babe2ccaecff775992753d8686970b1e2755d21c8a63be73aba7a4e7d77/wheel-0.44.0-py3-none-any.whl.metadata
+            4.283430s   7ms DEBUG uv_client::cached_client Found not-modified response for: https://download.pytorch.org/whl/pillow-10.2.0-cp312-cp312-macosx_10_10_x86_64.whl#sha256=1b5e1b74d1bd1b78bc3477528919414874748dd363e6272efd5abf7654e68bef
+           uv_client::cached_client::refresh_cache file=/home/hideakitai/.cache/uv/wheels-v1/index/0683d010c15737d1/pillow/pillow-10.2.0-cp312-cp312-macosx_10_10_x86_64.msgpack
+            4.287975s   7ms DEBUG uv_client::cached_client Found not-modified response for: https://download.pytorch.org/whl/numpy-1.26.3-cp312-cp312-macosx_10_9_x86_64.whl#sha256=a7081fd19a6d573e1a05e600c82a1c421011db7935ed0d5c483e9dd96b99cf13
+           uv_client::cached_client::refresh_cache file=/home/hideakitai/.cache/uv/wheels-v1/index/0683d010c15737d1/numpy/numpy-1.26.3-cp312-cp312-macosx_10_9_x86_64.msgpack
+        4.297755s  20ms DEBUG uv_client::cached_client Found not-modified response for: https://pypi.org/simple/hydra-core/
+       uv_client::cached_client::refresh_cache file=/home/hideakitai/.cache/uv/simple-v12/pypi/hydra-core.rkyv
+   uv_resolver::version_map::from_metadata
+   uv_distribution::distribution_database::get_or_build_wheel_metadata dist=hydra-core==1.3.2
+     uv_client::registry_client::wheel_metadata built_dist=hydra-core==1.3.2
+       uv_client::cached_client::get_serde
+         uv_client::cached_client::get_cacheable
+           uv_client::cached_client::read_and_parse_cache file=/home/hideakitai/.cache/uv/wheels-v1/pypi/hydra-core/hydra_core-1.3.2-py3-none-any.msgpack
+ uv_client::cached_client::from_path_sync path="/home/hideakitai/.cache/uv/wheels-v1/pypi/hydra-core/hydra_core-1.3.2-py3-none-any.msgpack"
+            4.298916s   0ms DEBUG uv_client::cached_client Found fresh response for: https://files.pythonhosted.org/packages/c6/50/e0edd38dcd63fb26a8547f13d28f7a008bc4a3fd4eb4ff030673f22ad41a/hydra_core-1.3.2-py3-none-any.whl.metadata
+       uv_client::cached_client::new_cache file=/home/hideakitai/.cache/uv/simple-v12/index/0683d010c15737d1/torchvision.rkyv
+       uv_client::registry_client::parse_simple_api package=torchvision
+       uv_client::cached_client::new_cache file=/home/hideakitai/.cache/uv/simple-v12/index/0683d010c15737d1/tqdm.rkyv
+       uv_client::registry_client::parse_simple_api package=tqdm
+         uv_client::html::parse url=https://download.pytorch.org/whl/cu118/tqdm/
+   uv_resolver::version_map::from_metadata
+   uv_distribution::distribution_database::get_or_build_wheel_metadata dist=tqdm==4.64.1
+     uv_client::registry_client::wheel_metadata built_dist=tqdm==4.64.1
+       uv_client::cached_client::get_serde
+         uv_client::cached_client::get_cacheable
+           uv_client::cached_client::read_and_parse_cache file=/home/hideakitai/.cache/uv/wheels-v1/index/0683d010c15737d1/tqdm/tqdm-4.64.1-py2.py3-none-any.msgpack
+ uv_client::cached_client::from_path_sync path="/home/hideakitai/.cache/uv/wheels-v1/index/0683d010c15737d1/tqdm/tqdm-4.64.1-py2.py3-none-any.msgpack"
+            4.316463s   0ms DEBUG uv_client::cached_client Found stale response for: https://download.pytorch.org/whl/tqdm-4.64.1-py2.py3-none-any.whl#sha256=6fee160d6ffcd1b1c68c65f14c829c22832bc401726335ce92c52d395944a6a1
+            4.316483s   0ms DEBUG uv_client::cached_client Sending revalidation request for: https://download.pytorch.org/whl/tqdm-4.64.1-py2.py3-none-any.whl#sha256=6fee160d6ffcd1b1c68c65f14c829c22832bc401726335ce92c52d395944a6a1
+           uv_client::cached_client::revalidation_request url="https://download.pytorch.org/whl/tqdm-4.64.1-py2.py3-none-any.whl#sha256=6fee160d6ffcd1b1c68c65f14c829c22832bc401726335ce92c52d395944a6a1"
+            4.322945s   6ms DEBUG uv_client::cached_client Found not-modified response for: https://download.pytorch.org/whl/tqdm-4.64.1-py2.py3-none-any.whl#sha256=6fee160d6ffcd1b1c68c65f14c829c22832bc401726335ce92c52d395944a6a1
+           uv_client::cached_client::refresh_cache file=/home/hideakitai/.cache/uv/wheels-v1/index/0683d010c15737d1/tqdm/tqdm-4.64.1-py2.py3-none-any.msgpack
+         uv_client::html::parse url=https://download.pytorch.org/whl/cu118/torch/
+   uv_resolver::version_map::from_metadata
+   uv_distribution::distribution_database::get_or_build_wheel_metadata dist=torch==2.4.0+cu118
+     uv_client::registry_client::wheel_metadata built_dist=torch==2.4.0+cu118
+       uv_client::cached_client::get_serde
+         uv_client::cached_client::get_cacheable
+      4.421275s 852ms DEBUG uv_resolver::resolver Searching for a compatible version of torch (==2.4.0+cu118)
+      4.421328s 852ms DEBUG uv_resolver::resolver Selecting: torch==2.4.0+cu118 [preference] (torch-2.4.0+cu118-cp312-cp312-linux_x86_64.whl)
+           uv_client::cached_client::read_and_parse_cache file=/home/hideakitai/.cache/uv/wheels-v1/index/0683d010c15737d1/torch/torch-2.4.0+cu118-cp312-cp312-linux_x86_64.msgpack
+   uv_resolver::resolver::get_dependencies_forking package=torch, version=2.4.0+cu118
+     uv_resolver::resolver::get_dependencies package=torch, version=2.4.0+cu118
+ uv_client::cached_client::from_path_sync path="/home/hideakitai/.cache/uv/wheels-v1/index/0683d010c15737d1/torch/torch-2.4.0+cu118-cp312-cp312-linux_x86_64.msgpack"
+            4.421578s   0ms DEBUG uv_client::cached_client Found fresh response for: https://download.pytorch.org/whl/cu118/torch-2.4.0%2Bcu118-cp312-cp312-linux_x86_64.whl#sha256=d38bd98e5faf9565f04d2b59a481cf576cdf4078444cdf24868fbf5ad685dc4d
+    4.421855s 854ms DEBUG uv_resolver::resolver Adding transitive dependency for torch==2.4.0+cu118: filelock*
+    4.421884s 854ms DEBUG uv_resolver::resolver Adding transitive dependency for torch==2.4.0+cu118: fsspec*
+    4.421888s 854ms DEBUG uv_resolver::resolver Adding transitive dependency for torch==2.4.0+cu118: jinja2*
+    4.421890s 854ms DEBUG uv_resolver::resolver Adding transitive dependency for torch==2.4.0+cu118: networkx*
+    4.421891s 854ms DEBUG uv_resolver::resolver Adding transitive dependency for torch==2.4.0+cu118: nvidia-cublas-cu11{platform_machine == 'x86_64' and platform_system == 'Linux'}==11.11.3.6
+    4.421941s 854ms DEBUG uv_resolver::resolver Adding transitive dependency for torch==2.4.0+cu118: nvidia-cuda-cupti-cu11{platform_machine == 'x86_64' and platform_system == 'Linux'}==11.8.87
+    4.421945s 854ms DEBUG uv_resolver::resolver Adding transitive dependency for torch==2.4.0+cu118: nvidia-cuda-nvrtc-cu11{platform_machine == 'x86_64' and platform_system == 'Linux'}==11.8.89
+    4.421948s 854ms DEBUG uv_resolver::resolver Adding transitive dependency for torch==2.4.0+cu118: nvidia-cuda-runtime-cu11{platform_machine == 'x86_64' and platform_system == 'Linux'}==11.8.89
+    4.421951s 854ms DEBUG uv_resolver::resolver Adding transitive dependency for torch==2.4.0+cu118: nvidia-cudnn-cu11{platform_machine == 'x86_64' and platform_system == 'Linux'}==9.1.0.70
+    4.421954s 854ms DEBUG uv_resolver::resolver Adding transitive dependency for torch==2.4.0+cu118: nvidia-cufft-cu11{platform_machine == 'x86_64' and platform_system == 'Linux'}==10.9.0.58
+    4.421958s 854ms DEBUG uv_resolver::resolver Adding transitive dependency for torch==2.4.0+cu118: nvidia-curand-cu11{platform_machine == 'x86_64' and platform_system == 'Linux'}==10.3.0.86
+    4.421961s 854ms DEBUG uv_resolver::resolver Adding transitive dependency for torch==2.4.0+cu118: nvidia-cusolver-cu11{platform_machine == 'x86_64' and platform_system == 'Linux'}==11.4.1.48
+    4.421974s 854ms DEBUG uv_resolver::resolver Adding transitive dependency for torch==2.4.0+cu118: nvidia-cusparse-cu11{platform_machine == 'x86_64' and platform_system == 'Linux'}==11.7.5.86
+    4.421977s 854ms DEBUG uv_resolver::resolver Adding transitive dependency for torch==2.4.0+cu118: nvidia-nccl-cu11{platform_machine == 'x86_64' and platform_system == 'Linux'}==2.20.5
+    4.421994s 854ms DEBUG uv_resolver::resolver Adding transitive dependency for torch==2.4.0+cu118: nvidia-nvtx-cu11{platform_machine == 'x86_64' and platform_system == 'Linux'}==11.8.86
+    4.422001s 854ms DEBUG uv_resolver::resolver Adding transitive dependency for torch==2.4.0+cu118: setuptools*
+    4.422003s 854ms DEBUG uv_resolver::resolver Adding transitive dependency for torch==2.4.0+cu118: sympy*
+    4.422005s 854ms DEBUG uv_resolver::resolver Adding transitive dependency for torch==2.4.0+cu118: triton{python_full_version < '3.13' and platform_machine == 'x86_64' and platform_system == 'Linux'}==3.0.0
+    4.422015s 854ms DEBUG uv_resolver::resolver Adding transitive dependency for torch==2.4.0+cu118: typing-extensions>=4.8.0
+   uv_resolver::resolver::choose_version package=torchvision
+ uv_resolver::resolver::process_request request=Versions filelock
+   uv_client::registry_client::simple_api package=filelock
+     uv_client::cached_client::get_cacheable
+       uv_client::cached_client::read_and_parse_cache file=/home/hideakitai/.cache/uv/simple-v12/index/0683d010c15737d1/filelock.rkyv
+ uv_resolver::resolver::process_request request=Versions fsspec
+   uv_client::registry_client::simple_api package=fsspec
+ uv_client::cached_client::from_path_sync path="/home/hideakitai/.cache/uv/simple-v12/index/0683d010c15737d1/filelock.rkyv"
+     uv_client::cached_client::get_cacheable
+       uv_client::cached_client::read_and_parse_cache file=/home/hideakitai/.cache/uv/simple-v12/index/0683d010c15737d1/fsspec.rkyv
+ uv_resolver::resolver::process_request request=Versions jinja2
+   uv_client::registry_client::simple_api package=jinja2
+ uv_client::cached_client::from_path_sync path="/home/hideakitai/.cache/uv/simple-v12/index/0683d010c15737d1/fsspec.rkyv"
+     uv_client::cached_client::get_cacheable
+       uv_client::cached_client::read_and_parse_cache file=/home/hideakitai/.cache/uv/simple-v12/index/0683d010c15737d1/jinja2.rkyv
+ uv_resolver::resolver::process_request request=Versions networkx
+   uv_client::registry_client::simple_api package=networkx
+     uv_client::cached_client::get_cacheable
+       uv_client::cached_client::read_and_parse_cache file=/home/hideakitai/.cache/uv/simple-v12/index/0683d010c15737d1/networkx.rkyv
+ uv_client::cached_client::from_path_sync path="/home/hideakitai/.cache/uv/simple-v12/index/0683d010c15737d1/jinja2.rkyv"
+ uv_resolver::resolver::process_request request=Versions nvidia-cublas-cu11
+   uv_client::registry_client::simple_api package=nvidia-cublas-cu11
+     uv_client::cached_client::get_cacheable
+       uv_client::cached_client::read_and_parse_cache file=/home/hideakitai/.cache/uv/simple-v12/index/0683d010c15737d1/nvidia-cublas-cu11.rkyv
+ uv_client::cached_client::from_path_sync path="/home/hideakitai/.cache/uv/simple-v12/index/0683d010c15737d1/networkx.rkyv"
+ uv_resolver::resolver::process_request request=Versions nvidia-cuda-cupti-cu11
+ uv_client::cached_client::from_path_sync path="/home/hideakitai/.cache/uv/simple-v12/index/0683d010c15737d1/nvidia-cublas-cu11.rkyv"
+   uv_client::registry_client::simple_api package=nvidia-cuda-cupti-cu11
+     uv_client::cached_client::get_cacheable
+       uv_client::cached_client::read_and_parse_cache file=/home/hideakitai/.cache/uv/simple-v12/index/0683d010c15737d1/nvidia-cuda-cupti-cu11.rkyv
+ uv_resolver::resolver::process_request request=Versions nvidia-cuda-nvrtc-cu11
+   uv_client::registry_client::simple_api package=nvidia-cuda-nvrtc-cu11
+     uv_client::cached_client::get_cacheable
+       uv_client::cached_client::read_and_parse_cache file=/home/hideakitai/.cache/uv/simple-v12/index/0683d010c15737d1/nvidia-cuda-nvrtc-cu11.rkyv
+ uv_resolver::resolver::process_request request=Versions nvidia-cuda-runtime-cu11
+   uv_client::registry_client::simple_api package=nvidia-cuda-runtime-cu11
+     uv_client::cached_client::get_cacheable
+       uv_client::cached_client::read_and_parse_cache file=/home/hideakitai/.cache/uv/simple-v12/index/0683d010c15737d1/nvidia-cuda-runtime-cu11.rkyv
+ uv_client::cached_client::from_path_sync path="/home/hideakitai/.cache/uv/simple-v12/index/0683d010c15737d1/nvidia-cuda-cupti-cu11.rkyv"
+ uv_resolver::resolver::process_request request=Versions nvidia-cudnn-cu11
+   uv_client::registry_client::simple_api package=nvidia-cudnn-cu11
+     uv_client::cached_client::get_cacheable
+       uv_client::cached_client::read_and_parse_cache file=/home/hideakitai/.cache/uv/simple-v12/index/0683d010c15737d1/nvidia-cudnn-cu11.rkyv
+ uv_client::cached_client::from_path_sync path="/home/hideakitai/.cache/uv/simple-v12/index/0683d010c15737d1/nvidia-cuda-nvrtc-cu11.rkyv"
+ uv_client::cached_client::from_path_sync path="/home/hideakitai/.cache/uv/simple-v12/index/0683d010c15737d1/nvidia-cuda-runtime-cu11.rkyv"
+ uv_client::cached_client::from_path_sync path="/home/hideakitai/.cache/uv/simple-v12/index/0683d010c15737d1/nvidia-cudnn-cu11.rkyv"
+        4.423311s   0ms DEBUG uv_client::cached_client No cache entry for: https://download.pytorch.org/whl/cu118/nvidia-cudnn-cu11/
+       uv_client::cached_client::fresh_request url="https://download.pytorch.org/whl/cu118/nvidia-cudnn-cu11/"
+ uv_resolver::resolver::process_request request=Versions nvidia-cufft-cu11
+   uv_client::registry_client::simple_api package=nvidia-cufft-cu11
+     uv_client::cached_client::get_cacheable
+       uv_client::cached_client::read_and_parse_cache file=/home/hideakitai/.cache/uv/simple-v12/index/0683d010c15737d1/nvidia-cufft-cu11.rkyv
+ uv_resolver::resolver::process_request request=Versions nvidia-curand-cu11
+   uv_client::registry_client::simple_api package=nvidia-curand-cu11
+     uv_client::cached_client::get_cacheable
+       uv_client::cached_client::read_and_parse_cache file=/home/hideakitai/.cache/uv/simple-v12/index/0683d010c15737d1/nvidia-curand-cu11.rkyv
+ uv_resolver::resolver::process_request request=Versions nvidia-cusolver-cu11
+   uv_client::registry_client::simple_api package=nvidia-cusolver-cu11
+     uv_client::cached_client::get_cacheable
+       uv_client::cached_client::read_and_parse_cache file=/home/hideakitai/.cache/uv/simple-v12/index/0683d010c15737d1/nvidia-cusolver-cu11.rkyv
+ uv_client::cached_client::from_path_sync path="/home/hideakitai/.cache/uv/simple-v12/index/0683d010c15737d1/nvidia-cufft-cu11.rkyv"
+ uv_client::cached_client::from_path_sync path="/home/hideakitai/.cache/uv/simple-v12/index/0683d010c15737d1/nvidia-curand-cu11.rkyv"
+ uv_resolver::resolver::process_request request=Versions nvidia-cusparse-cu11
+   uv_client::registry_client::simple_api package=nvidia-cusparse-cu11
+ uv_client::cached_client::from_path_sync path="/home/hideakitai/.cache/uv/simple-v12/index/0683d010c15737d1/nvidia-cusolver-cu11.rkyv"
+     uv_client::cached_client::get_cacheable
+       uv_client::cached_client::read_and_parse_cache file=/home/hideakitai/.cache/uv/simple-v12/index/0683d010c15737d1/nvidia-cusparse-cu11.rkyv
+ uv_resolver::resolver::process_request request=Versions nvidia-nccl-cu11
+   uv_client::registry_client::simple_api package=nvidia-nccl-cu11
+ uv_client::cached_client::from_path_sync path="/home/hideakitai/.cache/uv/simple-v12/index/0683d010c15737d1/nvidia-cusparse-cu11.rkyv"
+     uv_client::cached_client::get_cacheable
+       uv_client::cached_client::read_and_parse_cache file=/home/hideakitai/.cache/uv/simple-v12/index/0683d010c15737d1/nvidia-nccl-cu11.rkyv
+ uv_resolver::resolver::process_request request=Versions nvidia-nvtx-cu11
+ uv_client::cached_client::from_path_sync path="/home/hideakitai/.cache/uv/simple-v12/index/0683d010c15737d1/nvidia-nccl-cu11.rkyv"
+   uv_client::registry_client::simple_api package=nvidia-nvtx-cu11
+     uv_client::cached_client::get_cacheable
+       uv_client::cached_client::read_and_parse_cache file=/home/hideakitai/.cache/uv/simple-v12/index/0683d010c15737d1/nvidia-nvtx-cu11.rkyv
+ uv_resolver::resolver::process_request request=Versions setuptools
+ uv_client::cached_client::from_path_sync path="/home/hideakitai/.cache/uv/simple-v12/index/0683d010c15737d1/nvidia-nvtx-cu11.rkyv"
+   uv_client::registry_client::simple_api package=setuptools
+     uv_client::cached_client::get_cacheable
+       uv_client::cached_client::read_and_parse_cache file=/home/hideakitai/.cache/uv/simple-v12/index/0683d010c15737d1/setuptools.rkyv
+ uv_resolver::resolver::process_request request=Versions sympy
+   uv_client::registry_client::simple_api package=sympy
+ uv_client::cached_client::from_path_sync path="/home/hideakitai/.cache/uv/simple-v12/index/0683d010c15737d1/setuptools.rkyv"
+     uv_client::cached_client::get_cacheable
+       uv_client::cached_client::read_and_parse_cache file=/home/hideakitai/.cache/uv/simple-v12/index/0683d010c15737d1/sympy.rkyv
+ uv_client::cached_client::from_path_sync path="/home/hideakitai/.cache/uv/simple-v12/index/0683d010c15737d1/sympy.rkyv"
+ uv_resolver::resolver::process_request request=Versions triton
+   uv_client::registry_client::simple_api package=triton
+     uv_client::cached_client::get_cacheable
+       uv_client::cached_client::read_and_parse_cache file=/home/hideakitai/.cache/uv/simple-v12/index/0683d010c15737d1/triton.rkyv
+ uv_resolver::resolver::process_request request=Versions typing-extensions
+   uv_client::registry_client::simple_api package=typing-extensions
+ uv_client::cached_client::from_path_sync path="/home/hideakitai/.cache/uv/simple-v12/index/0683d010c15737d1/triton.rkyv"
+     uv_client::cached_client::get_cacheable
+       uv_client::cached_client::read_and_parse_cache file=/home/hideakitai/.cache/uv/simple-v12/index/0683d010c15737d1/typing-extensions.rkyv
+ uv_resolver::resolver::process_request request=Prefetch typing-extensions >=4.8.0
+ uv_resolver::resolver::process_request request=Prefetch sympy *
+ uv_resolver::resolver::process_request request=Prefetch setuptools *
+ uv_client::cached_client::from_path_sync path="/home/hideakitai/.cache/uv/simple-v12/index/0683d010c15737d1/typing-extensions.rkyv"
+ uv_resolver::resolver::process_request request=Prefetch networkx *
+ uv_resolver::resolver::process_request request=Prefetch jinja2 *
+ uv_resolver::resolver::process_request request=Prefetch fsspec *
+ uv_resolver::resolver::process_request request=Prefetch filelock *
+        4.425731s   3ms DEBUG uv_client::cached_client No cache entry for: https://download.pytorch.org/whl/cu118/filelock/
+       uv_client::cached_client::fresh_request url="https://download.pytorch.org/whl/cu118/filelock/"
+        4.425770s   3ms DEBUG uv_client::cached_client No cache entry for: https://download.pytorch.org/whl/cu118/fsspec/
+       uv_client::cached_client::fresh_request url="https://download.pytorch.org/whl/cu118/fsspec/"
+        4.425797s   3ms DEBUG uv_client::cached_client No cache entry for: https://download.pytorch.org/whl/cu118/jinja2/
+       uv_client::cached_client::fresh_request url="https://download.pytorch.org/whl/cu118/jinja2/"
+        4.425818s   3ms DEBUG uv_client::cached_client No cache entry for: https://download.pytorch.org/whl/cu118/networkx/
+       uv_client::cached_client::fresh_request url="https://download.pytorch.org/whl/cu118/networkx/"
+        4.425928s   3ms DEBUG uv_client::cached_client No cache entry for: https://download.pytorch.org/whl/cu118/nvidia-cublas-cu11/
+       uv_client::cached_client::fresh_request url="https://download.pytorch.org/whl/cu118/nvidia-cublas-cu11/"
+        4.425967s   2ms DEBUG uv_client::cached_client No cache entry for: https://download.pytorch.org/whl/cu118/nvidia-cuda-cupti-cu11/
+       uv_client::cached_client::fresh_request url="https://download.pytorch.org/whl/cu118/nvidia-cuda-cupti-cu11/"
+        4.426034s   2ms DEBUG uv_client::cached_client No cache entry for: https://download.pytorch.org/whl/cu118/nvidia-cuda-nvrtc-cu11/
+       uv_client::cached_client::fresh_request url="https://download.pytorch.org/whl/cu118/nvidia-cuda-nvrtc-cu11/"
+        4.426070s   2ms DEBUG uv_client::cached_client No cache entry for: https://download.pytorch.org/whl/cu118/nvidia-cuda-runtime-cu11/
+       uv_client::cached_client::fresh_request url="https://download.pytorch.org/whl/cu118/nvidia-cuda-runtime-cu11/"
+        4.426147s   2ms DEBUG uv_client::cached_client No cache entry for: https://download.pytorch.org/whl/cu118/nvidia-cufft-cu11/
+       uv_client::cached_client::fresh_request url="https://download.pytorch.org/whl/cu118/nvidia-cufft-cu11/"
+        4.426177s   2ms DEBUG uv_client::cached_client No cache entry for: https://download.pytorch.org/whl/cu118/nvidia-curand-cu11/
+       uv_client::cached_client::fresh_request url="https://download.pytorch.org/whl/cu118/nvidia-curand-cu11/"
+        4.426231s   2ms DEBUG uv_client::cached_client No cache entry for: https://download.pytorch.org/whl/cu118/nvidia-cusolver-cu11/
+       uv_client::cached_client::fresh_request url="https://download.pytorch.org/whl/cu118/nvidia-cusolver-cu11/"
+        4.426272s   2ms DEBUG uv_client::cached_client No cache entry for: https://download.pytorch.org/whl/cu118/nvidia-cusparse-cu11/
+       uv_client::cached_client::fresh_request url="https://download.pytorch.org/whl/cu118/nvidia-cusparse-cu11/"
+        4.426321s   1ms DEBUG uv_client::cached_client No cache entry for: https://download.pytorch.org/whl/cu118/nvidia-nccl-cu11/
+       uv_client::cached_client::fresh_request url="https://download.pytorch.org/whl/cu118/nvidia-nccl-cu11/"
+        4.426401s   1ms DEBUG uv_client::cached_client No cache entry for: https://download.pytorch.org/whl/cu118/nvidia-nvtx-cu11/
+       uv_client::cached_client::fresh_request url="https://download.pytorch.org/whl/cu118/nvidia-nvtx-cu11/"
+        4.426441s   1ms DEBUG uv_client::cached_client No cache entry for: https://download.pytorch.org/whl/cu118/setuptools/
+       uv_client::cached_client::fresh_request url="https://download.pytorch.org/whl/cu118/setuptools/"
+        4.426697s   1ms DEBUG uv_client::cached_client No cache entry for: https://download.pytorch.org/whl/cu118/sympy/
+       uv_client::cached_client::fresh_request url="https://download.pytorch.org/whl/cu118/sympy/"
+        4.426795s   1ms DEBUG uv_client::cached_client No cache entry for: https://download.pytorch.org/whl/cu118/triton/
+       uv_client::cached_client::fresh_request url="https://download.pytorch.org/whl/cu118/triton/"
+        4.426882s   1ms DEBUG uv_client::cached_client No cache entry for: https://download.pytorch.org/whl/cu118/typing-extensions/
+       uv_client::cached_client::fresh_request url="https://download.pytorch.org/whl/cu118/typing-extensions/"
+         uv_client::html::parse url=https://download.pytorch.org/whl/cu118/torchvision/
+   uv_resolver::version_map::from_metadata
+      4.448756s  26ms DEBUG uv_resolver::resolver Searching for a compatible version of torchvision (==0.19.0+cu118)
+      4.448805s  26ms DEBUG uv_resolver::resolver Selecting: torchvision==0.19.0+cu118 [preference] (torchvision-0.19.0+cu118-cp312-cp312-linux_x86_64.whl)
+   uv_distribution::distribution_database::get_or_build_wheel_metadata dist=torchvision==0.19.0+cu118
+   uv_resolver::resolver::get_dependencies_forking package=torchvision, version=0.19.0+cu118
+     uv_client::registry_client::wheel_metadata built_dist=torchvision==0.19.0+cu118
+     uv_resolver::resolver::get_dependencies package=torchvision, version=0.19.0+cu118
+       uv_client::cached_client::get_serde
+         uv_client::cached_client::get_cacheable
+           uv_client::cached_client::read_and_parse_cache file=/home/hideakitai/.cache/uv/wheels-v1/index/0683d010c15737d1/torchvision/torchvision-0.19.0+cu118-cp312-cp312-linux_x86_64.msgpack
+ uv_client::cached_client::from_path_sync path="/home/hideakitai/.cache/uv/wheels-v1/index/0683d010c15737d1/torchvision/torchvision-0.19.0+cu118-cp312-cp312-linux_x86_64.msgpack"
+            4.449165s   0ms DEBUG uv_client::cached_client Found stale response for: https://download.pytorch.org/whl/cu118/torchvision-0.19.0%2Bcu118-cp312-cp312-linux_x86_64.whl#sha256=5ab8b06c0110d28573b43b21a5f5f6a34c083c6dfe6f8870e4390d1e88723471
+            4.449186s   0ms DEBUG uv_client::cached_client Sending revalidation request for: https://download.pytorch.org/whl/cu118/torchvision-0.19.0%2Bcu118-cp312-cp312-linux_x86_64.whl#sha256=5ab8b06c0110d28573b43b21a5f5f6a34c083c6dfe6f8870e4390d1e88723471
+           uv_client::cached_client::revalidation_request url="https://download.pytorch.org/whl/cu118/torchvision-0.19.0%2Bcu118-cp312-cp312-linux_x86_64.whl#sha256=5ab8b06c0110d28573b43b21a5f5f6a34c083c6dfe6f8870e4390d1e88723471"
+            4.458043s   9ms DEBUG uv_client::cached_client Found not-modified response for: https://download.pytorch.org/whl/cu118/torchvision-0.19.0%2Bcu118-cp312-cp312-linux_x86_64.whl#sha256=5ab8b06c0110d28573b43b21a5f5f6a34c083c6dfe6f8870e4390d1e88723471
+           uv_client::cached_client::refresh_cache file=/home/hideakitai/.cache/uv/wheels-v1/index/0683d010c15737d1/torchvision/torchvision-0.19.0+cu118-cp312-cp312-linux_x86_64.msgpack
+    4.458470s 891ms DEBUG uv_resolver::resolver Adding transitive dependency for torchvision==0.19.0+cu118: numpy*
+    4.458493s 891ms DEBUG uv_resolver::resolver Adding transitive dependency for torchvision==0.19.0+cu118: pillow>=5.3.0, <8.3.dev0 | >=8.4.dev0
+    4.458502s 891ms DEBUG uv_resolver::resolver Adding transitive dependency for torchvision==0.19.0+cu118: torch==2.4.0 | ==2.4.0+cu118
+   uv_resolver::resolver::choose_version package=nvidia-cublas-cu11{platform_machine == 'x86_64' and platform_system == 'Linux'}
+        4.463157s 191ms DEBUG uv_client::cached_client Found not-modified response for: https://pypi.org/simple/iopath/
+       uv_client::cached_client::refresh_cache file=/home/hideakitai/.cache/uv/simple-v12/pypi/iopath.rkyv
+   uv_resolver::version_map::from_metadata
+   uv_distribution::distribution_database::get_or_build_wheel_metadata dist=iopath==0.1.10
+    4.463502s DEBUG uv_fs Acquired lock for `/home/hideakitai/.cache/uv/built-wheels-v3/pypi/iopath/0.1.10`
+     uv_client::cached_client::get_serde
+       uv_client::cached_client::get_cacheable
+         uv_client::cached_client::read_and_parse_cache file=/home/hideakitai/.cache/uv/built-wheels-v3/pypi/iopath/0.1.10/revision.http
+ uv_client::cached_client::from_path_sync path="/home/hideakitai/.cache/uv/built-wheels-v3/pypi/iopath/0.1.10/revision.http"
+          4.463880s   0ms DEBUG uv_client::cached_client Found fresh response for: https://files.pythonhosted.org/packages/72/73/b3d451dfc523756cf177d3ebb0af76dc7751b341c60e2a21871be400ae29/iopath-0.1.10.tar.gz
+      4.463975s   0ms DEBUG uv_distribution::source No static `pyproject.toml` available for: iopath==0.1.10 (MissingPyprojectToml)
+      4.464250s   0ms DEBUG uv_distribution::source No static `PKG-INFO` available for: iopath==0.1.10 (PkgInfo(UnsupportedMetadataVersion("2.1")))
+      4.464984s   1ms DEBUG uv_distribution::source Found static `egg-info` for: iopath==0.1.10
+      4.465008s   1ms DEBUG uv_fs Released lock at `/home/hideakitai/.cache/uv/built-wheels-v3/pypi/iopath/0.1.10/.lock`
+       uv_client::cached_client::new_cache file=/home/hideakitai/.cache/uv/simple-v12/index/0683d010c15737d1/nvidia-nvtx-cu11.rkyv
+       uv_client::registry_client::parse_simple_api package=nvidia-nvtx-cu11
+         uv_client::html::parse url=https://download.pytorch.org/whl/cu118/nvidia-nvtx-cu11/
+   uv_resolver::version_map::from_metadata
+       uv_client::cached_client::new_cache file=/home/hideakitai/.cache/uv/simple-v12/index/0683d010c15737d1/sympy.rkyv
+       uv_client::registry_client::parse_simple_api package=sympy
+         uv_client::html::parse url=https://download.pytorch.org/whl/cu118/sympy/
+   uv_resolver::version_map::from_metadata
+   uv_distribution::distribution_database::get_or_build_wheel_metadata dist=sympy==1.12
+     uv_client::registry_client::wheel_metadata built_dist=sympy==1.12
+       uv_client::cached_client::get_serde
+         uv_client::cached_client::get_cacheable
+           uv_client::cached_client::read_and_parse_cache file=/home/hideakitai/.cache/uv/wheels-v1/index/0683d010c15737d1/sympy/sympy-1.12-py3-none-any.msgpack
+ uv_client::cached_client::from_path_sync path="/home/hideakitai/.cache/uv/wheels-v1/index/0683d010c15737d1/sympy/sympy-1.12-py3-none-any.msgpack"
+            4.623415s   0ms DEBUG uv_client::cached_client Found stale response for: https://download.pytorch.org/whl/sympy-1.12-py3-none-any.whl#sha256=c3588cd4295d0c0f603d0f2ae780587e64e2efeedb3521e46b9bb1d08d184fa5
+            4.623449s   0ms DEBUG uv_client::cached_client Sending revalidation request for: https://download.pytorch.org/whl/sympy-1.12-py3-none-any.whl#sha256=c3588cd4295d0c0f603d0f2ae780587e64e2efeedb3521e46b9bb1d08d184fa5
+           uv_client::cached_client::revalidation_request url="https://download.pytorch.org/whl/sympy-1.12-py3-none-any.whl#sha256=c3588cd4295d0c0f603d0f2ae780587e64e2efeedb3521e46b9bb1d08d184fa5"
+            4.630448s   7ms DEBUG uv_client::cached_client Found not-modified response for: https://download.pytorch.org/whl/sympy-1.12-py3-none-any.whl#sha256=c3588cd4295d0c0f603d0f2ae780587e64e2efeedb3521e46b9bb1d08d184fa5
+           uv_client::cached_client::refresh_cache file=/home/hideakitai/.cache/uv/wheels-v1/index/0683d010c15737d1/sympy/sympy-1.12-py3-none-any.msgpack
+       uv_client::cached_client::new_cache file=/home/hideakitai/.cache/uv/simple-v12/index/0683d010c15737d1/nvidia-cudnn-cu11.rkyv
+       uv_client::registry_client::parse_simple_api package=nvidia-cudnn-cu11
+         uv_client::html::parse url=https://download.pytorch.org/whl/cu118/nvidia-cudnn-cu11/
+   uv_resolver::version_map::from_metadata
+       uv_client::cached_client::new_cache file=/home/hideakitai/.cache/uv/simple-v12/index/0683d010c15737d1/nvidia-cuda-cupti-cu11.rkyv
+       uv_client::registry_client::parse_simple_api package=nvidia-cuda-cupti-cu11
+         uv_client::html::parse url=https://download.pytorch.org/whl/cu118/nvidia-cuda-cupti-cu11/
+   uv_resolver::version_map::from_metadata
+       uv_client::cached_client::new_cache file=/home/hideakitai/.cache/uv/simple-v12/index/0683d010c15737d1/filelock.rkyv
+       uv_client::registry_client::parse_simple_api package=filelock
+         uv_client::html::parse url=https://download.pytorch.org/whl/cu118/filelock/
+   uv_resolver::version_map::from_metadata
+   uv_distribution::distribution_database::get_or_build_wheel_metadata dist=filelock==3.13.1
+     uv_client::registry_client::wheel_metadata built_dist=filelock==3.13.1
+       uv_client::cached_client::get_serde
+         uv_client::cached_client::get_cacheable
+           uv_client::cached_client::read_and_parse_cache file=/home/hideakitai/.cache/uv/wheels-v1/index/0683d010c15737d1/filelock/filelock-3.13.1-py3-none-any.msgpack
+ uv_client::cached_client::from_path_sync path="/home/hideakitai/.cache/uv/wheels-v1/index/0683d010c15737d1/filelock/filelock-3.13.1-py3-none-any.msgpack"
+            5.032363s   0ms DEBUG uv_client::cached_client Found stale response for: https://download.pytorch.org/whl/filelock-3.13.1-py3-none-any.whl#sha256=57dbda9b35157b05fb3e58ee91448612eb674172fab98ee235ccb0b5bee19a1c
+            5.032405s   0ms DEBUG uv_client::cached_client Sending revalidation request for: https://download.pytorch.org/whl/filelock-3.13.1-py3-none-any.whl#sha256=57dbda9b35157b05fb3e58ee91448612eb674172fab98ee235ccb0b5bee19a1c
+           uv_client::cached_client::revalidation_request url="https://download.pytorch.org/whl/filelock-3.13.1-py3-none-any.whl#sha256=57dbda9b35157b05fb3e58ee91448612eb674172fab98ee235ccb0b5bee19a1c"
+       uv_client::cached_client::new_cache file=/home/hideakitai/.cache/uv/simple-v12/index/0683d010c15737d1/nvidia-cublas-cu11.rkyv
+       uv_client::registry_client::parse_simple_api package=nvidia-cublas-cu11
+         uv_client::html::parse url=https://download.pytorch.org/whl/cu118/nvidia-cublas-cu11/
+   uv_resolver::version_map::from_metadata
+      5.032651s 574ms DEBUG uv_resolver::resolver Searching for a compatible version of nvidia-cublas-cu11{platform_machine == 'x86_64' and platform_system == 'Linux'} (==11.11.3.6)
+      5.032714s 574ms DEBUG uv_resolver::resolver Selecting: nvidia-cublas-cu11==11.11.3.6 [preference] (nvidia_cublas_cu11-11.11.3.6-py3-none-manylinux1_x86_64.whl)
+   uv_resolver::resolver::get_dependencies_forking package=nvidia-cublas-cu11{platform_machine == 'x86_64' and platform_system == 'Linux'}, version=11.11.3.6
+     uv_resolver::resolver::get_dependencies package=nvidia-cublas-cu11{platform_machine == 'x86_64' and platform_system == 'Linux'}, version=11.11.3.6
+    5.032809s   1s  DEBUG uv_resolver::resolver Adding transitive dependency for nvidia-cublas-cu11==11.11.3.6: nvidia-cublas-cu11==11.11.3.6
+    5.032825s   1s  DEBUG uv_resolver::resolver Adding transitive dependency for nvidia-cublas-cu11==11.11.3.6: nvidia-cublas-cu11{platform_machine == 'x86_64' and platform_system == 'Linux'}==11.11.3.6
+   uv_resolver::resolver::choose_version package=nvidia-cublas-cu11{platform_machine == 'x86_64' and platform_system == 'Linux'}
+      5.032891s   0ms DEBUG uv_resolver::resolver Searching for a compatible version of nvidia-cublas-cu11{platform_machine == 'x86_64' and platform_system == 'Linux'} (==11.11.3.6)
+ uv_resolver::resolver::process_request request=Prefetch nvidia-cublas-cu11 ==11.11.3.6
+      5.032949s   0ms DEBUG uv_resolver::resolver Selecting: nvidia-cublas-cu11==11.11.3.6 [preference] (nvidia_cublas_cu11-11.11.3.6-py3-none-manylinux1_x86_64.whl)
+   uv_distribution::distribution_database::get_or_build_wheel_metadata dist=nvidia-cublas-cu11==11.11.3.6
+   uv_resolver::resolver::get_dependencies_forking package=nvidia-cublas-cu11{platform_machine == 'x86_64' and platform_system == 'Linux'}, version=11.11.3.6
+     uv_resolver::resolver::get_dependencies package=nvidia-cublas-cu11{platform_machine == 'x86_64' and platform_system == 'Linux'}, version=11.11.3.6
+     uv_client::registry_client::wheel_metadata built_dist=nvidia-cublas-cu11==11.11.3.6
+       uv_client::cached_client::get_serde
+         uv_client::cached_client::get_cacheable
+           uv_client::cached_client::read_and_parse_cache file=/home/hideakitai/.cache/uv/wheels-v1/index/0683d010c15737d1/nvidia-cublas-cu11/nvidia_cublas_cu11-11.11.3.6-py3-none-manylinux1_x86_64.msgpack
+ uv_client::cached_client::from_path_sync path="/home/hideakitai/.cache/uv/wheels-v1/index/0683d010c15737d1/nvidia-cublas-cu11/nvidia_cublas_cu11-11.11.3.6-py3-none-manylinux1_x86_64.msgpack"
+            5.033302s   0ms DEBUG uv_client::cached_client Found stale response for: https://download.pytorch.org/whl/cu118/nvidia_cublas_cu11-11.11.3.6-py3-none-manylinux1_x86_64.whl#sha256=39fb40e8f486dd8a2ddb8fdeefe1d5b28f5b99df01c87ab3676f057a74a5a6f3
+            5.033330s   0ms DEBUG uv_client::cached_client Sending revalidation request for: https://download.pytorch.org/whl/cu118/nvidia_cublas_cu11-11.11.3.6-py3-none-manylinux1_x86_64.whl#sha256=39fb40e8f486dd8a2ddb8fdeefe1d5b28f5b99df01c87ab3676f057a74a5a6f3
+           uv_client::cached_client::revalidation_request url="https://download.pytorch.org/whl/cu118/nvidia_cublas_cu11-11.11.3.6-py3-none-manylinux1_x86_64.whl#sha256=39fb40e8f486dd8a2ddb8fdeefe1d5b28f5b99df01c87ab3676f057a74a5a6f3"
+       uv_client::cached_client::new_cache file=/home/hideakitai/.cache/uv/simple-v12/index/0683d010c15737d1/jinja2.rkyv
+       uv_client::registry_client::parse_simple_api package=jinja2
+         uv_client::html::parse url=https://download.pytorch.org/whl/cu118/jinja2/
+   uv_resolver::version_map::from_metadata
+   uv_distribution::distribution_database::get_or_build_wheel_metadata dist=jinja2==3.1.3
+     uv_client::registry_client::wheel_metadata built_dist=jinja2==3.1.3
+       uv_client::cached_client::get_serde
+         uv_client::cached_client::get_cacheable
+           uv_client::cached_client::read_and_parse_cache file=/home/hideakitai/.cache/uv/wheels-v1/index/0683d010c15737d1/jinja2/jinja2-3.1.3-py3-none-any.msgpack
+ uv_client::cached_client::from_path_sync path="/home/hideakitai/.cache/uv/wheels-v1/index/0683d010c15737d1/jinja2/jinja2-3.1.3-py3-none-any.msgpack"
+       uv_client::cached_client::new_cache file=/home/hideakitai/.cache/uv/simple-v12/index/0683d010c15737d1/fsspec.rkyv
+       uv_client::registry_client::parse_simple_api package=fsspec
+         uv_client::html::parse url=https://download.pytorch.org/whl/cu118/fsspec/
+   uv_resolver::version_map::from_metadata
+            5.035093s   0ms DEBUG uv_client::cached_client Found stale response for: https://download.pytorch.org/whl/Jinja2-3.1.3-py3-none-any.whl#sha256=7d6d50dd97d52cbc355597bd845fabfbac3f551e1f99619e39a35ce8c370b5fa
+            5.035110s   0ms DEBUG uv_client::cached_client Sending revalidation request for: https://download.pytorch.org/whl/Jinja2-3.1.3-py3-none-any.whl#sha256=7d6d50dd97d52cbc355597bd845fabfbac3f551e1f99619e39a35ce8c370b5fa
+           uv_client::cached_client::revalidation_request url="https://download.pytorch.org/whl/Jinja2-3.1.3-py3-none-any.whl#sha256=7d6d50dd97d52cbc355597bd845fabfbac3f551e1f99619e39a35ce8c370b5fa"
+   uv_distribution::distribution_database::get_or_build_wheel_metadata dist=fsspec==2024.2.0
+     uv_client::registry_client::wheel_metadata built_dist=fsspec==2024.2.0
+       uv_client::cached_client::get_serde
+         uv_client::cached_client::get_cacheable
+           uv_client::cached_client::read_and_parse_cache file=/home/hideakitai/.cache/uv/wheels-v1/index/0683d010c15737d1/fsspec/fsspec-2024.2.0-py3-none-any.msgpack
+ uv_client::cached_client::from_path_sync path="/home/hideakitai/.cache/uv/wheels-v1/index/0683d010c15737d1/fsspec/fsspec-2024.2.0-py3-none-any.msgpack"
+            5.035313s   0ms DEBUG uv_client::cached_client Found stale response for: https://download.pytorch.org/whl/fsspec-2024.2.0-py3-none-any.whl#sha256=817f969556fa5916bc682e02ca2045f96ff7f586d45110fcb76022063ad2c7d8
+            5.035339s   0ms DEBUG uv_client::cached_client Sending revalidation request for: https://download.pytorch.org/whl/fsspec-2024.2.0-py3-none-any.whl#sha256=817f969556fa5916bc682e02ca2045f96ff7f586d45110fcb76022063ad2c7d8
+           uv_client::cached_client::revalidation_request url="https://download.pytorch.org/whl/fsspec-2024.2.0-py3-none-any.whl#sha256=817f969556fa5916bc682e02ca2045f96ff7f586d45110fcb76022063ad2c7d8"
+            5.039659s   7ms DEBUG uv_client::cached_client Found not-modified response for: https://download.pytorch.org/whl/filelock-3.13.1-py3-none-any.whl#sha256=57dbda9b35157b05fb3e58ee91448612eb674172fab98ee235ccb0b5bee19a1c
+           uv_client::cached_client::refresh_cache file=/home/hideakitai/.cache/uv/wheels-v1/index/0683d010c15737d1/filelock/filelock-3.13.1-py3-none-any.msgpack
+            5.040060s   7ms DEBUG uv_client::cached_client Found not-modified response for: https://download.pytorch.org/whl/cu118/nvidia_cublas_cu11-11.11.3.6-py3-none-manylinux1_x86_64.whl#sha256=39fb40e8f486dd8a2ddb8fdeefe1d5b28f5b99df01c87ab3676f057a74a5a6f3
+           uv_client::cached_client::refresh_cache file=/home/hideakitai/.cache/uv/wheels-v1/index/0683d010c15737d1/nvidia-cublas-cu11/nvidia_cublas_cu11-11.11.3.6-py3-none-manylinux1_x86_64.msgpack
+   uv_resolver::resolver::choose_version package=nvidia-cublas-cu11
+      5.040364s   0ms DEBUG uv_resolver::resolver Searching for a compatible version of nvidia-cublas-cu11 (==11.11.3.6)
+      5.040388s   0ms DEBUG uv_resolver::resolver Selecting: nvidia-cublas-cu11==11.11.3.6 [preference] (nvidia_cublas_cu11-11.11.3.6-py3-none-manylinux1_x86_64.whl)
+   uv_resolver::resolver::get_dependencies_forking package=nvidia-cublas-cu11, version=11.11.3.6
+     uv_resolver::resolver::get_dependencies package=nvidia-cublas-cu11, version=11.11.3.6
+   uv_resolver::resolver::choose_version package=nvidia-cuda-cupti-cu11{platform_machine == 'x86_64' and platform_system == 'Linux'}
+      5.040506s   0ms DEBUG uv_resolver::resolver Searching for a compatible version of nvidia-cuda-cupti-cu11{platform_machine == 'x86_64' and platform_system == 'Linux'} (==11.8.87)
+      5.040540s   0ms DEBUG uv_resolver::resolver Selecting: nvidia-cuda-cupti-cu11==11.8.87 [preference] (nvidia_cuda_cupti_cu11-11.8.87-py3-none-manylinux1_x86_64.whl)
+       uv_client::cached_client::new_cache file=/home/hideakitai/.cache/uv/simple-v12/index/0683d010c15737d1/nvidia-curand-cu11.rkyv
+       uv_client::registry_client::parse_simple_api package=nvidia-curand-cu11
+         uv_client::html::parse url=https://download.pytorch.org/whl/cu118/nvidia-curand-cu11/
+   uv_resolver::resolver::get_dependencies_forking package=nvidia-cuda-cupti-cu11{platform_machine == 'x86_64' and platform_system == 'Linux'}, version=11.8.87
+     uv_resolver::resolver::get_dependencies package=nvidia-cuda-cupti-cu11{platform_machine == 'x86_64' and platform_system == 'Linux'}, version=11.8.87
+    5.040755s   1s  DEBUG uv_resolver::resolver Adding transitive dependency for nvidia-cuda-cupti-cu11==11.8.87:
+nvidia-cuda-cupti-cu11==11.8.87
+    5.040789s   1s  DEBUG uv_resolver::resolver Adding transitive dependency for nvidia-cuda-cupti-cu11==11.8.87:
+nvidia-cuda-cupti-cu11{platform_machine == 'x86_64' and platform_system == 'Linux'}==11.8.87
+   uv_resolver::version_map::from_metadata
+   uv_resolver::resolver::choose_version package=nvidia-cuda-cupti-cu11{platform_machine == 'x86_64' and platform_system == 'Linux'}
+      5.040904s   0ms DEBUG uv_resolver::resolver Searching for a compatible version of nvidia-cuda-cupti-cu11{platform_machine == 'x86_64' and platform_system == 'Linux'} (==11.8.87)
+      5.040937s   0ms DEBUG uv_resolver::resolver Selecting: nvidia-cuda-cupti-cu11==11.8.87 [preference] (nvidia_cuda_cupti_cu11-11.8.87-py3-none-manylinux1_x86_64.whl)
+ uv_resolver::resolver::process_request request=Prefetch nvidia-cuda-cupti-cu11 ==11.8.87
+   uv_resolver::resolver::get_dependencies_forking package=nvidia-cuda-cupti-cu11{platform_machine == 'x86_64' and platform_system == 'Linux'}, version=11.8.87
+     uv_resolver::resolver::get_dependencies package=nvidia-cuda-cupti-cu11{platform_machine == 'x86_64' and platform_system == 'Linux'}, version=11.8.87
+ uv_resolver::resolver::process_request request=Metadata nvidia-cuda-cupti-cu11==11.8.87
+   uv_distribution::distribution_database::get_or_build_wheel_metadata dist=nvidia-cuda-cupti-cu11==11.8.87
+     uv_client::registry_client::wheel_metadata built_dist=nvidia-cuda-cupti-cu11==11.8.87
+       uv_client::cached_client::get_serde
+         uv_client::cached_client::get_cacheable
+           uv_client::cached_client::read_and_parse_cache file=/home/hideakitai/.cache/uv/wheels-v1/index/0683d010c15737d1/nvidia-cuda-cupti-cu11/nvidia_cuda_cupti_cu11-11.8.87-py3-none-manylinux1_x86_64.msgpack
+ uv_client::cached_client::from_path_sync path="/home/hideakitai/.cache/uv/wheels-v1/index/0683d010c15737d1/nvidia-cuda-cupti-cu11/nvidia_cuda_cupti_cu11-11.8.87-py3-none-manylinux1_x86_64.msgpack"
+            5.041284s   0ms DEBUG uv_client::cached_client Found stale response for: https://download.pytorch.org/whl/cu118/nvidia_cuda_cupti_cu11-11.8.87-py3-none-manylinux1_x86_64.whl#sha256=0e50c707df56c75a2c0703dc6b886f3c97a22f37d6f63839f75b7418ba672a8d
+            5.041304s   0ms DEBUG uv_client::cached_client Sending revalidation request for: https://download.pytorch.org/whl/cu118/nvidia_cuda_cupti_cu11-11.8.87-py3-none-manylinux1_x86_64.whl#sha256=0e50c707df56c75a2c0703dc6b886f3c97a22f37d6f63839f75b7418ba672a8d
+           uv_client::cached_client::revalidation_request url="https://download.pytorch.org/whl/cu118/nvidia_cuda_cupti_cu11-11.8.87-py3-none-manylinux1_x86_64.whl#sha256=0e50c707df56c75a2c0703dc6b886f3c97a22f37d6f63839f75b7418ba672a8d"
+            5.041513s   6ms DEBUG uv_client::cached_client Found not-modified response for: https://download.pytorch.org/whl/fsspec-2024.2.0-py3-none-any.whl#sha256=817f969556fa5916bc682e02ca2045f96ff7f586d45110fcb76022063ad2c7d8
+           uv_client::cached_client::refresh_cache file=/home/hideakitai/.cache/uv/wheels-v1/index/0683d010c15737d1/fsspec/fsspec-2024.2.0-py3-none-any.msgpack
+            5.041589s   6ms DEBUG uv_client::cached_client Found not-modified response for: https://download.pytorch.org/whl/Jinja2-3.1.3-py3-none-any.whl#sha256=7d6d50dd97d52cbc355597bd845fabfbac3f551e1f99619e39a35ce8c370b5fa
+           uv_client::cached_client::refresh_cache file=/home/hideakitai/.cache/uv/wheels-v1/index/0683d010c15737d1/jinja2/jinja2-3.1.3-py3-none-any.msgpack
+       uv_client::cached_client::new_cache file=/home/hideakitai/.cache/uv/simple-v12/index/0683d010c15737d1/networkx.rkyv
+       uv_client::registry_client::parse_simple_api package=networkx
+         uv_client::html::parse url=https://download.pytorch.org/whl/cu118/networkx/
+   uv_resolver::version_map::from_metadata
+       uv_client::cached_client::new_cache file=/home/hideakitai/.cache/uv/simple-v12/index/0683d010c15737d1/nvidia-cuda-runtime-cu11.rkyv
+       uv_client::registry_client::parse_simple_api package=nvidia-cuda-runtime-cu11
+         uv_client::html::parse url=https://download.pytorch.org/whl/cu118/nvidia-cuda-runtime-cu11/
+   uv_resolver::version_map::from_metadata
+   uv_distribution::distribution_database::get_or_build_wheel_metadata dist=networkx==3.2.1
+     uv_client::registry_client::wheel_metadata built_dist=networkx==3.2.1
+       uv_client::cached_client::get_serde
+         uv_client::cached_client::get_cacheable
+           uv_client::cached_client::read_and_parse_cache file=/home/hideakitai/.cache/uv/wheels-v1/index/0683d010c15737d1/networkx/networkx-3.2.1-py3-none-any.msgpack
+ uv_client::cached_client::from_path_sync path="/home/hideakitai/.cache/uv/wheels-v1/index/0683d010c15737d1/networkx/networkx-3.2.1-py3-none-any.msgpack"
+            5.043499s   0ms DEBUG uv_client::cached_client Found stale response for: https://download.pytorch.org/whl/networkx-3.2.1-py3-none-any.whl#sha256=f18c69adc97877c42332c170849c96cefa91881c99a7cb3e95b7c659ebdc1ec2
+            5.043522s   0ms DEBUG uv_client::cached_client Sending revalidation request for: https://download.pytorch.org/whl/networkx-3.2.1-py3-none-any.whl#sha256=f18c69adc97877c42332c170849c96cefa91881c99a7cb3e95b7c659ebdc1ec2
+           uv_client::cached_client::revalidation_request url="https://download.pytorch.org/whl/networkx-3.2.1-py3-none-any.whl#sha256=f18c69adc97877c42332c170849c96cefa91881c99a7cb3e95b7c659ebdc1ec2"
+       uv_client::cached_client::new_cache file=/home/hideakitai/.cache/uv/simple-v12/index/0683d010c15737d1/nvidia-nccl-cu11.rkyv
+       uv_client::registry_client::parse_simple_api package=nvidia-nccl-cu11
+         uv_client::html::parse url=https://download.pytorch.org/whl/cu118/nvidia-nccl-cu11/
+   uv_resolver::version_map::from_metadata
+       uv_client::cached_client::new_cache file=/home/hideakitai/.cache/uv/simple-v12/index/0683d010c15737d1/setuptools.rkyv
+       uv_client::registry_client::parse_simple_api package=setuptools
+         uv_client::html::parse url=https://download.pytorch.org/whl/cu118/setuptools/
+   uv_resolver::version_map::from_metadata
+   uv_distribution::distribution_database::get_or_build_wheel_metadata dist=setuptools==70.0.0
+     uv_client::registry_client::wheel_metadata built_dist=setuptools==70.0.0
+       uv_client::cached_client::get_serde
+         uv_client::cached_client::get_cacheable
+           uv_client::cached_client::read_and_parse_cache file=/home/hideakitai/.cache/uv/wheels-v1/index/0683d010c15737d1/setuptools/setuptools-70.0.0-py3-none-any.msgpack
+ uv_client::cached_client::from_path_sync path="/home/hideakitai/.cache/uv/wheels-v1/index/0683d010c15737d1/setuptools/setuptools-70.0.0-py3-none-any.msgpack"
+            5.046929s   0ms DEBUG uv_client::cached_client Found stale response for: https://download.pytorch.org/whl/setuptools-70.0.0-py3-none-any.whl#sha256=54faa7f2e8d2d11bcd2c07bed282eef1046b5c080d1c32add737d7b5817b1ad4
+            5.046979s   0ms DEBUG uv_client::cached_client Sending revalidation request for: https://download.pytorch.org/whl/setuptools-70.0.0-py3-none-any.whl#sha256=54faa7f2e8d2d11bcd2c07bed282eef1046b5c080d1c32add737d7b5817b1ad4
+           uv_client::cached_client::revalidation_request url="https://download.pytorch.org/whl/setuptools-70.0.0-py3-none-any.whl#sha256=54faa7f2e8d2d11bcd2c07bed282eef1046b5c080d1c32add737d7b5817b1ad4"
+            5.048127s   6ms DEBUG uv_client::cached_client Found not-modified response for: https://download.pytorch.org/whl/cu118/nvidia_cuda_cupti_cu11-11.8.87-py3-none-manylinux1_x86_64.whl#sha256=0e50c707df56c75a2c0703dc6b886f3c97a22f37d6f63839f75b7418ba672a8d
+           uv_client::cached_client::refresh_cache file=/home/hideakitai/.cache/uv/wheels-v1/index/0683d010c15737d1/nvidia-cuda-cupti-cu11/nvidia_cuda_cupti_cu11-11.8.87-py3-none-manylinux1_x86_64.msgpack
+       uv_client::cached_client::new_cache file=/home/hideakitai/.cache/uv/simple-v12/index/0683d010c15737d1/nvidia-cufft-cu11.rkyv
+       uv_client::registry_client::parse_simple_api package=nvidia-cufft-cu11
+         uv_client::html::parse url=https://download.pytorch.org/whl/cu118/nvidia-cufft-cu11/
+   uv_resolver::version_map::from_metadata
+   uv_resolver::resolver::choose_version package=nvidia-cuda-cupti-cu11
+      5.048383s   0ms DEBUG uv_resolver::resolver Searching for a compatible version of nvidia-cuda-cupti-cu11 (==11.8.87)
+      5.048390s   0ms DEBUG uv_resolver::resolver Selecting: nvidia-cuda-cupti-cu11==11.8.87 [preference] (nvidia_cuda_cupti_cu11-11.8.87-py3-none-manylinux1_x86_64.whl)
+   uv_resolver::resolver::get_dependencies_forking package=nvidia-cuda-cupti-cu11, version=11.8.87
+     uv_resolver::resolver::get_dependencies package=nvidia-cuda-cupti-cu11, version=11.8.87
+   uv_resolver::resolver::choose_version package=nvidia-cuda-nvrtc-cu11{platform_machine == 'x86_64' and platform_system == 'Linux'}
+            5.050125s   6ms DEBUG uv_client::cached_client Found not-modified response for: https://download.pytorch.org/whl/networkx-3.2.1-py3-none-any.whl#sha256=f18c69adc97877c42332c170849c96cefa91881c99a7cb3e95b7c659ebdc1ec2
+           uv_client::cached_client::refresh_cache file=/home/hideakitai/.cache/uv/wheels-v1/index/0683d010c15737d1/networkx/networkx-3.2.1-py3-none-any.msgpack
+       uv_client::cached_client::new_cache file=/home/hideakitai/.cache/uv/simple-v12/index/0683d010c15737d1/nvidia-cusolver-cu11.rkyv
+       uv_client::registry_client::parse_simple_api package=nvidia-cusolver-cu11
+         uv_client::html::parse url=https://download.pytorch.org/whl/cu118/nvidia-cusolver-cu11/
+   uv_resolver::version_map::from_metadata
+       uv_client::cached_client::new_cache file=/home/hideakitai/.cache/uv/simple-v12/index/0683d010c15737d1/nvidia-cuda-nvrtc-cu11.rkyv
+       uv_client::registry_client::parse_simple_api package=nvidia-cuda-nvrtc-cu11
+         uv_client::html::parse url=https://download.pytorch.org/whl/cu118/nvidia-cuda-nvrtc-cu11/
+   uv_resolver::version_map::from_metadata
+      5.053843s   5ms DEBUG uv_resolver::resolver Searching for a compatible version of nvidia-cuda-nvrtc-cu11{platform_machine == 'x86_64' and platform_system == 'Linux'} (==11.8.89)
+            5.053918s   7ms DEBUG uv_client::cached_client Found not-modified response for: https://download.pytorch.org/whl/setuptools-70.0.0-py3-none-any.whl#sha256=54faa7f2e8d2d11bcd2c07bed282eef1046b5c080d1c32add737d7b5817b1ad4
+           uv_client::cached_client::refresh_cache file=/home/hideakitai/.cache/uv/wheels-v1/index/0683d010c15737d1/setuptools/setuptools-70.0.0-py3-none-any.msgpack
+      5.053992s   5ms DEBUG uv_resolver::resolver Selecting: nvidia-cuda-nvrtc-cu11==11.8.89 [preference] (nvidia_cuda_nvrtc_cu11-11.8.89-py3-none-manylinux1_x86_64.whl)
+   uv_resolver::resolver::get_dependencies_forking package=nvidia-cuda-nvrtc-cu11{platform_machine == 'x86_64' and platform_system == 'Linux'}, version=11.8.89
+     uv_resolver::resolver::get_dependencies package=nvidia-cuda-nvrtc-cu11{platform_machine == 'x86_64' and platform_system == 'Linux'}, version=11.8.89
+    5.054074s   1s  DEBUG uv_resolver::resolver Adding transitive dependency for nvidia-cuda-nvrtc-cu11==11.8.89:
+nvidia-cuda-nvrtc-cu11==11.8.89
+    5.054082s   1s  DEBUG uv_resolver::resolver Adding transitive dependency for nvidia-cuda-nvrtc-cu11==11.8.89:
+nvidia-cuda-nvrtc-cu11{platform_machine == 'x86_64' and platform_system == 'Linux'}==11.8.89
+   uv_resolver::resolver::choose_version package=nvidia-cuda-nvrtc-cu11{platform_machine == 'x86_64' and platform_system == 'Linux'}
+      5.054148s   0ms DEBUG uv_resolver::resolver Searching for a compatible version of nvidia-cuda-nvrtc-cu11{platform_machine == 'x86_64' and platform_system == 'Linux'} (==11.8.89)
+      5.054157s   0ms DEBUG uv_resolver::resolver Selecting: nvidia-cuda-nvrtc-cu11==11.8.89 [preference] (nvidia_cuda_nvrtc_cu11-11.8.89-py3-none-manylinux1_x86_64.whl)
+   uv_resolver::resolver::get_dependencies_forking package=nvidia-cuda-nvrtc-cu11{platform_machine == 'x86_64' and platform_system == 'Linux'}, version=11.8.89
+     uv_resolver::resolver::get_dependencies package=nvidia-cuda-nvrtc-cu11{platform_machine == 'x86_64' and platform_system == 'Linux'}, version=11.8.89
+ uv_resolver::resolver::process_request request=Prefetch nvidia-cuda-nvrtc-cu11 ==11.8.89
+ uv_resolver::resolver::process_request request=Metadata nvidia-cuda-nvrtc-cu11==11.8.89
+   uv_distribution::distribution_database::get_or_build_wheel_metadata dist=nvidia-cuda-nvrtc-cu11==11.8.89
+     uv_client::registry_client::wheel_metadata built_dist=nvidia-cuda-nvrtc-cu11==11.8.89
+       uv_client::cached_client::get_serde
+         uv_client::cached_client::get_cacheable
+           uv_client::cached_client::read_and_parse_cache file=/home/hideakitai/.cache/uv/wheels-v1/index/0683d010c15737d1/nvidia-cuda-nvrtc-cu11/nvidia_cuda_nvrtc_cu11-11.8.89-py3-none-manylinux1_x86_64.msgpack
+ uv_client::cached_client::from_path_sync path="/home/hideakitai/.cache/uv/wheels-v1/index/0683d010c15737d1/nvidia-cuda-nvrtc-cu11/nvidia_cuda_nvrtc_cu11-11.8.89-py3-none-manylinux1_x86_64.msgpack"
+            5.054527s   0ms DEBUG uv_client::cached_client Found stale response for: https://download.pytorch.org/whl/cu118/nvidia_cuda_nvrtc_cu11-11.8.89-py3-none-manylinux1_x86_64.whl#sha256=1f27d67b0f72902e9065ae568b4f6268dfe49ba3ed269c9a3da99bb86d1d2008
+            5.054549s   0ms DEBUG uv_client::cached_client Sending revalidation request for: https://download.pytorch.org/whl/cu118/nvidia_cuda_nvrtc_cu11-11.8.89-py3-none-manylinux1_x86_64.whl#sha256=1f27d67b0f72902e9065ae568b4f6268dfe49ba3ed269c9a3da99bb86d1d2008
+           uv_client::cached_client::revalidation_request url="https://download.pytorch.org/whl/cu118/nvidia_cuda_nvrtc_cu11-11.8.89-py3-none-manylinux1_x86_64.whl#sha256=1f27d67b0f72902e9065ae568b4f6268dfe49ba3ed269c9a3da99bb86d1d2008"
+       uv_client::cached_client::new_cache file=/home/hideakitai/.cache/uv/simple-v12/index/0683d010c15737d1/nvidia-cusparse-cu11.rkyv
+       uv_client::registry_client::parse_simple_api package=nvidia-cusparse-cu11
+         uv_client::html::parse url=https://download.pytorch.org/whl/cu118/nvidia-cusparse-cu11/
+   uv_resolver::version_map::from_metadata
+       uv_client::cached_client::new_cache file=/home/hideakitai/.cache/uv/simple-v12/index/0683d010c15737d1/triton.rkyv
+       uv_client::registry_client::parse_simple_api package=triton
+         uv_client::html::parse url=https://download.pytorch.org/whl/cu118/triton/
+   uv_resolver::version_map::from_metadata
+            5.061182s   6ms DEBUG uv_client::cached_client Found not-modified response for: https://download.pytorch.org/whl/cu118/nvidia_cuda_nvrtc_cu11-11.8.89-py3-none-manylinux1_x86_64.whl#sha256=1f27d67b0f72902e9065ae568b4f6268dfe49ba3ed269c9a3da99bb86d1d2008
+           uv_client::cached_client::refresh_cache file=/home/hideakitai/.cache/uv/wheels-v1/index/0683d010c15737d1/nvidia-cuda-nvrtc-cu11/nvidia_cuda_nvrtc_cu11-11.8.89-py3-none-manylinux1_x86_64.msgpack
+   uv_resolver::resolver::choose_version package=nvidia-cuda-nvrtc-cu11
+      5.061466s   0ms DEBUG uv_resolver::resolver Searching for a compatible version of nvidia-cuda-nvrtc-cu11 (==11.8.89)
+      5.061473s   0ms DEBUG uv_resolver::resolver Selecting: nvidia-cuda-nvrtc-cu11==11.8.89 [preference] (nvidia_cuda_nvrtc_cu11-11.8.89-py3-none-manylinux1_x86_64.whl)
+   uv_resolver::resolver::get_dependencies_forking package=nvidia-cuda-nvrtc-cu11, version=11.8.89
+     uv_resolver::resolver::get_dependencies package=nvidia-cuda-nvrtc-cu11, version=11.8.89
+   uv_resolver::resolver::choose_version package=nvidia-cuda-runtime-cu11{platform_machine == 'x86_64' and platform_system == 'Linux'}
+      5.061513s   0ms DEBUG uv_resolver::resolver Searching for a compatible version of nvidia-cuda-runtime-cu11{platform_machine == 'x86_64' and platform_system == 'Linux'} (==11.8.89)
+      5.061537s   0ms DEBUG uv_resolver::resolver Selecting: nvidia-cuda-runtime-cu11==11.8.89 [preference] (nvidia_cuda_runtime_cu11-11.8.89-py3-none-manylinux1_x86_64.whl)
+   uv_resolver::resolver::get_dependencies_forking package=nvidia-cuda-runtime-cu11{platform_machine == 'x86_64' and platform_system == 'Linux'}, version=11.8.89
+     uv_resolver::resolver::get_dependencies package=nvidia-cuda-runtime-cu11{platform_machine == 'x86_64' and platform_system == 'Linux'}, version=11.8.89
+    5.061595s   1s  DEBUG uv_resolver::resolver Adding transitive dependency for nvidia-cuda-runtime-cu11==11.8.89: nvidia-cuda-runtime-cu11==11.8.89
+    5.061611s   1s  DEBUG uv_resolver::resolver Adding transitive dependency for nvidia-cuda-runtime-cu11==11.8.89: nvidia-cuda-runtime-cu11{platform_machine == 'x86_64' and platform_system == 'Linux'}==11.8.89
+   uv_resolver::resolver::choose_version package=nvidia-cuda-runtime-cu11{platform_machine == 'x86_64' and platform_system == 'Linux'}
+ uv_resolver::resolver::process_request request=Prefetch nvidia-cuda-runtime-cu11 ==11.8.89
+      5.061673s   0ms DEBUG uv_resolver::resolver Searching for a compatible version of nvidia-cuda-runtime-cu11{platform_machine == 'x86_64' and platform_system == 'Linux'} (==11.8.89)
+      5.061703s   0ms DEBUG uv_resolver::resolver Selecting: nvidia-cuda-runtime-cu11==11.8.89 [preference] (nvidia_cuda_runtime_cu11-11.8.89-py3-none-manylinux1_x86_64.whl)
+   uv_distribution::distribution_database::get_or_build_wheel_metadata dist=nvidia-cuda-runtime-cu11==11.8.89
+     uv_client::registry_client::wheel_metadata built_dist=nvidia-cuda-runtime-cu11==11.8.89
+   uv_resolver::resolver::get_dependencies_forking package=nvidia-cuda-runtime-cu11{platform_machine == 'x86_64' and platform_system == 'Linux'}, version=11.8.89
+       uv_client::cached_client::get_serde
+         uv_client::cached_client::get_cacheable
+           uv_client::cached_client::read_and_parse_cache file=/home/hideakitai/.cache/uv/wheels-v1/index/0683d010c15737d1/nvidia-cuda-runtime-cu11/nvidia_cuda_runtime_cu11-11.8.89-py3-none-manylinux1_x86_64.msgpack
+     uv_resolver::resolver::get_dependencies package=nvidia-cuda-runtime-cu11{platform_machine == 'x86_64' and platform_system == 'Linux'}, version=11.8.89
+ uv_client::cached_client::from_path_sync path="/home/hideakitai/.cache/uv/wheels-v1/index/0683d010c15737d1/nvidia-cuda-runtime-cu11/nvidia_cuda_runtime_cu11-11.8.89-py3-none-manylinux1_x86_64.msgpack"
+            5.062041s   0ms DEBUG uv_client::cached_client Found stale response for: https://download.pytorch.org/whl/cu118/nvidia_cuda_runtime_cu11-11.8.89-py3-none-manylinux1_x86_64.whl#sha256=f587bd726eb2f7612cf77ce38a2c1e65cf23251ff49437f6161ce0d647f64f7c
+            5.062060s   0ms DEBUG uv_client::cached_client Sending revalidation request for: https://download.pytorch.org/whl/cu118/nvidia_cuda_runtime_cu11-11.8.89-py3-none-manylinux1_x86_64.whl#sha256=f587bd726eb2f7612cf77ce38a2c1e65cf23251ff49437f6161ce0d647f64f7c
+           uv_client::cached_client::revalidation_request url="https://download.pytorch.org/whl/cu118/nvidia_cuda_runtime_cu11-11.8.89-py3-none-manylinux1_x86_64.whl#sha256=f587bd726eb2f7612cf77ce38a2c1e65cf23251ff49437f6161ce0d647f64f7c"
+            5.069634s   7ms DEBUG uv_client::cached_client Found not-modified response for: https://download.pytorch.org/whl/cu118/nvidia_cuda_runtime_cu11-11.8.89-py3-none-manylinux1_x86_64.whl#sha256=f587bd726eb2f7612cf77ce38a2c1e65cf23251ff49437f6161ce0d647f64f7c
+           uv_client::cached_client::refresh_cache file=/home/hideakitai/.cache/uv/wheels-v1/index/0683d010c15737d1/nvidia-cuda-runtime-cu11/nvidia_cuda_runtime_cu11-11.8.89-py3-none-manylinux1_x86_64.msgpack
+   uv_resolver::resolver::choose_version package=nvidia-cuda-runtime-cu11
+      5.069955s   0ms DEBUG uv_resolver::resolver Searching for a compatible version of nvidia-cuda-runtime-cu11 (==11.8.89)
+      5.069974s   0ms DEBUG uv_resolver::resolver Selecting: nvidia-cuda-runtime-cu11==11.8.89 [preference] (nvidia_cuda_runtime_cu11-11.8.89-py3-none-manylinux1_x86_64.whl)
+   uv_resolver::resolver::get_dependencies_forking package=nvidia-cuda-runtime-cu11, version=11.8.89
+     uv_resolver::resolver::get_dependencies package=nvidia-cuda-runtime-cu11, version=11.8.89
+   uv_resolver::resolver::choose_version package=nvidia-cudnn-cu11{platform_machine == 'x86_64' and platform_system == 'Linux'}
+      5.070032s   0ms DEBUG uv_resolver::resolver Searching for a compatible version of nvidia-cudnn-cu11{platform_machine == 'x86_64' and platform_system == 'Linux'} (==9.1.0.70)
+      5.070056s   0ms DEBUG uv_resolver::resolver Selecting: nvidia-cudnn-cu11==9.1.0.70 [preference] (nvidia_cudnn_cu11-9.1.0.70-py3-none-manylinux2014_x86_64.whl)
+   uv_resolver::resolver::get_dependencies_forking package=nvidia-cudnn-cu11{platform_machine == 'x86_64' and platform_system == 'Linux'}, version=9.1.0.70
+     uv_resolver::resolver::get_dependencies package=nvidia-cudnn-cu11{platform_machine == 'x86_64' and platform_system == 'Linux'}, version=9.1.0.70
+    5.070114s   1s  DEBUG uv_resolver::resolver Adding transitive dependency for nvidia-cudnn-cu11==9.1.0.70: nvidia-cudnn-cu11==9.1.0.70
+    5.070130s   1s  DEBUG uv_resolver::resolver Adding transitive dependency for nvidia-cudnn-cu11==9.1.0.70: nvidia-cudnn-cu11{platform_machine == 'x86_64' and platform_system == 'Linux'}==9.1.0.70
+   uv_resolver::resolver::choose_version package=nvidia-cudnn-cu11{platform_machine == 'x86_64' and platform_system == 'Linux'}
+ uv_resolver::resolver::process_request request=Prefetch nvidia-cudnn-cu11 ==9.1.0.70
+      5.070210s   0ms DEBUG uv_resolver::resolver Searching for a compatible version of nvidia-cudnn-cu11{platform_machine == 'x86_64' and platform_system == 'Linux'} (==9.1.0.70)
+      5.070241s   0ms DEBUG uv_resolver::resolver Selecting: nvidia-cudnn-cu11==9.1.0.70 [preference] (nvidia_cudnn_cu11-9.1.0.70-py3-none-manylinux2014_x86_64.whl)
+   uv_distribution::distribution_database::get_or_build_wheel_metadata dist=nvidia-cudnn-cu11==9.1.0.70
+     uv_client::registry_client::wheel_metadata built_dist=nvidia-cudnn-cu11==9.1.0.70
+   uv_resolver::resolver::get_dependencies_forking package=nvidia-cudnn-cu11{platform_machine == 'x86_64' and platform_system == 'Linux'}, version=9.1.0.70
+     uv_resolver::resolver::get_dependencies package=nvidia-cudnn-cu11{platform_machine == 'x86_64' and platform_system == 'Linux'}, version=9.1.0.70
+       uv_client::cached_client::get_serde
+         uv_client::cached_client::get_cacheable
+           uv_client::cached_client::read_and_parse_cache file=/home/hideakitai/.cache/uv/wheels-v1/index/0683d010c15737d1/nvidia-cudnn-cu11/nvidia_cudnn_cu11-9.1.0.70-py3-none-manylinux2014_x86_64.msgpack
+ uv_client::cached_client::from_path_sync path="/home/hideakitai/.cache/uv/wheels-v1/index/0683d010c15737d1/nvidia-cudnn-cu11/nvidia_cudnn_cu11-9.1.0.70-py3-none-manylinux2014_x86_64.msgpack"
+            5.070551s   0ms DEBUG uv_client::cached_client Found stale response for: https://download.pytorch.org/whl/cu118/nvidia_cudnn_cu11-9.1.0.70-py3-none-manylinux2014_x86_64.whl#sha256=e6135ac63fe9d5b0b89cfb35c3fc1c1349f2b995becadf2e9dc21bca89d9633d
+            5.070571s   0ms DEBUG uv_client::cached_client Sending revalidation request for: https://download.pytorch.org/whl/cu118/nvidia_cudnn_cu11-9.1.0.70-py3-none-manylinux2014_x86_64.whl#sha256=e6135ac63fe9d5b0b89cfb35c3fc1c1349f2b995becadf2e9dc21bca89d9633d
+           uv_client::cached_client::revalidation_request url="https://download.pytorch.org/whl/cu118/nvidia_cudnn_cu11-9.1.0.70-py3-none-manylinux2014_x86_64.whl#sha256=e6135ac63fe9d5b0b89cfb35c3fc1c1349f2b995becadf2e9dc21bca89d9633d"
+       uv_client::cached_client::new_cache file=/home/hideakitai/.cache/uv/simple-v12/index/0683d010c15737d1/typing-extensions.rkyv
+       uv_client::registry_client::parse_simple_api package=typing-extensions
+         uv_client::html::parse url=https://download.pytorch.org/whl/cu118/typing-extensions/
+   uv_resolver::version_map::from_metadata
+   uv_distribution::distribution_database::get_or_build_wheel_metadata dist=typing-extensions==4.9.0
+     uv_client::registry_client::wheel_metadata built_dist=typing-extensions==4.9.0
+       uv_client::cached_client::get_serde
+         uv_client::cached_client::get_cacheable
+           uv_client::cached_client::read_and_parse_cache file=/home/hideakitai/.cache/uv/wheels-v1/index/0683d010c15737d1/typing-extensions/typing_extensions-4.9.0-py3-none-any.msgpack
+ uv_client::cached_client::from_path_sync path="/home/hideakitai/.cache/uv/wheels-v1/index/0683d010c15737d1/typing-extensions/typing_extensions-4.9.0-py3-none-any.msgpack"
+            5.075076s   0ms DEBUG uv_client::cached_client Found stale response for: https://download.pytorch.org/whl/typing_extensions-4.9.0-py3-none-any.whl#sha256=af72aea155e91adfc61c3ae9e0e342dbc0cba726d6cba4b6c72c1f34e47291cd
+            5.075092s   0ms DEBUG uv_client::cached_client Sending revalidation request for: https://download.pytorch.org/whl/typing_extensions-4.9.0-py3-none-any.whl#sha256=af72aea155e91adfc61c3ae9e0e342dbc0cba726d6cba4b6c72c1f34e47291cd
+           uv_client::cached_client::revalidation_request url="https://download.pytorch.org/whl/typing_extensions-4.9.0-py3-none-any.whl#sha256=af72aea155e91adfc61c3ae9e0e342dbc0cba726d6cba4b6c72c1f34e47291cd"
+            5.077623s   7ms DEBUG uv_client::cached_client Found not-modified response for: https://download.pytorch.org/whl/cu118/nvidia_cudnn_cu11-9.1.0.70-py3-none-manylinux2014_x86_64.whl#sha256=e6135ac63fe9d5b0b89cfb35c3fc1c1349f2b995becadf2e9dc21bca89d9633d
+           uv_client::cached_client::refresh_cache file=/home/hideakitai/.cache/uv/wheels-v1/index/0683d010c15737d1/nvidia-cudnn-cu11/nvidia_cudnn_cu11-9.1.0.70-py3-none-manylinux2014_x86_64.msgpack
+    5.077890s   1s  DEBUG uv_resolver::resolver Adding transitive dependency for nvidia-cudnn-cu11==9.1.0.70: nvidia-cublas-cu11*
+   uv_resolver::resolver::choose_version package=nvidia-cudnn-cu11
+      5.077935s   0ms DEBUG uv_resolver::resolver Searching for a compatible version of nvidia-cudnn-cu11 (==9.1.0.70)
+      5.077941s   0ms DEBUG uv_resolver::resolver Selecting: nvidia-cudnn-cu11==9.1.0.70 [preference] (nvidia_cudnn_cu11-9.1.0.70-py3-none-manylinux2014_x86_64.whl)
+   uv_resolver::resolver::get_dependencies_forking package=nvidia-cudnn-cu11, version=9.1.0.70
+     uv_resolver::resolver::get_dependencies package=nvidia-cudnn-cu11, version=9.1.0.70
+    5.078001s   1s  DEBUG uv_resolver::resolver Adding transitive dependency for nvidia-cudnn-cu11==9.1.0.70: nvidia-cublas-cu11*
+   uv_resolver::resolver::choose_version package=nvidia-cufft-cu11{platform_machine == 'x86_64' and platform_system == 'Linux'}
+      5.078047s   0ms DEBUG uv_resolver::resolver Searching for a compatible version of nvidia-cufft-cu11{platform_machine == 'x86_64' and platform_system == 'Linux'} (==10.9.0.58)
+      5.078069s   0ms DEBUG uv_resolver::resolver Selecting: nvidia-cufft-cu11==10.9.0.58 [preference] (nvidia_cufft_cu11-10.9.0.58-py3-none-manylinux1_x86_64.whl)
+   uv_resolver::resolver::get_dependencies_forking package=nvidia-cufft-cu11{platform_machine == 'x86_64' and platform_system == 'Linux'}, version=10.9.0.58
+     uv_resolver::resolver::get_dependencies package=nvidia-cufft-cu11{platform_machine == 'x86_64' and platform_system == 'Linux'}, version=10.9.0.58
+    5.078139s   1s  DEBUG uv_resolver::resolver Adding transitive dependency for nvidia-cufft-cu11==10.9.0.58: nvidia-cufft-cu11==10.9.0.58
+    5.078143s   1s  DEBUG uv_resolver::resolver Adding transitive dependency for nvidia-cufft-cu11==10.9.0.58: nvidia-cufft-cu11{platform_machine == 'x86_64' and platform_system == 'Linux'}==10.9.0.58
+   uv_resolver::resolver::choose_version package=nvidia-cufft-cu11{platform_machine == 'x86_64' and platform_system == 'Linux'}
+ uv_resolver::resolver::process_request request=Prefetch nvidia-cufft-cu11 ==10.9.0.58
+   uv_distribution::distribution_database::get_or_build_wheel_metadata dist=nvidia-cufft-cu11==10.9.0.58
+     uv_client::registry_client::wheel_metadata built_dist=nvidia-cufft-cu11==10.9.0.58
+      5.078286s   0ms DEBUG uv_resolver::resolver Searching for a compatible version of nvidia-cufft-cu11{platform_machine == 'x86_64' and platform_system == 'Linux'} (==10.9.0.58)
+      5.078329s   0ms DEBUG uv_resolver::resolver Selecting: nvidia-cufft-cu11==10.9.0.58 [preference] (nvidia_cufft_cu11-10.9.0.58-py3-none-manylinux1_x86_64.whl)
+       uv_client::cached_client::get_serde
+         uv_client::cached_client::get_cacheable
+           uv_client::cached_client::read_and_parse_cache file=/home/hideakitai/.cache/uv/wheels-v1/index/0683d010c15737d1/nvidia-cufft-cu11/nvidia_cufft_cu11-10.9.0.58-py3-none-manylinux1_x86_64.msgpack
+   uv_resolver::resolver::get_dependencies_forking package=nvidia-cufft-cu11{platform_machine == 'x86_64' and platform_system == 'Linux'}, version=10.9.0.58
+ uv_client::cached_client::from_path_sync path="/home/hideakitai/.cache/uv/wheels-v1/index/0683d010c15737d1/nvidia-cufft-cu11/nvidia_cufft_cu11-10.9.0.58-py3-none-manylinux1_x86_64.msgpack"
+     uv_resolver::resolver::get_dependencies package=nvidia-cufft-cu11{platform_machine == 'x86_64' and platform_system == 'Linux'}, version=10.9.0.58
+            5.078614s   0ms DEBUG uv_client::cached_client Found stale response for: https://download.pytorch.org/whl/cu118/nvidia_cufft_cu11-10.9.0.58-py3-none-manylinux1_x86_64.whl#sha256=222f9da70c80384632fd6035e4c3f16762d64ea7a843829cb278f98b3cb7dd81
+            5.078633s   0ms DEBUG uv_client::cached_client Sending revalidation request for: https://download.pytorch.org/whl/cu118/nvidia_cufft_cu11-10.9.0.58-py3-none-manylinux1_x86_64.whl#sha256=222f9da70c80384632fd6035e4c3f16762d64ea7a843829cb278f98b3cb7dd81
+           uv_client::cached_client::revalidation_request url="https://download.pytorch.org/whl/cu118/nvidia_cufft_cu11-10.9.0.58-py3-none-manylinux1_x86_64.whl#sha256=222f9da70c80384632fd6035e4c3f16762d64ea7a843829cb278f98b3cb7dd81"
+            5.081550s   6ms DEBUG uv_client::cached_client Found not-modified response for: https://download.pytorch.org/whl/typing_extensions-4.9.0-py3-none-any.whl#sha256=af72aea155e91adfc61c3ae9e0e342dbc0cba726d6cba4b6c72c1f34e47291cd
+           uv_client::cached_client::refresh_cache file=/home/hideakitai/.cache/uv/wheels-v1/index/0683d010c15737d1/typing-extensions/typing_extensions-4.9.0-py3-none-any.msgpack
+            5.085527s   7ms DEBUG uv_client::cached_client Found not-modified response for: https://download.pytorch.org/whl/cu118/nvidia_cufft_cu11-10.9.0.58-py3-none-manylinux1_x86_64.whl#sha256=222f9da70c80384632fd6035e4c3f16762d64ea7a843829cb278f98b3cb7dd81
+           uv_client::cached_client::refresh_cache file=/home/hideakitai/.cache/uv/wheels-v1/index/0683d010c15737d1/nvidia-cufft-cu11/nvidia_cufft_cu11-10.9.0.58-py3-none-manylinux1_x86_64.msgpack
+   uv_resolver::resolver::choose_version package=nvidia-cufft-cu11
+      5.085765s   0ms DEBUG uv_resolver::resolver Searching for a compatible version of nvidia-cufft-cu11 (==10.9.0.58)
+      5.085772s   0ms DEBUG uv_resolver::resolver Selecting: nvidia-cufft-cu11==10.9.0.58 [preference] (nvidia_cufft_cu11-10.9.0.58-py3-none-manylinux1_x86_64.whl)
+   uv_resolver::resolver::get_dependencies_forking package=nvidia-cufft-cu11, version=10.9.0.58
+     uv_resolver::resolver::get_dependencies package=nvidia-cufft-cu11, version=10.9.0.58
+   uv_resolver::resolver::choose_version package=nvidia-curand-cu11{platform_machine == 'x86_64' and platform_system == 'Linux'}
+      5.085798s   0ms DEBUG uv_resolver::resolver Searching for a compatible version of nvidia-curand-cu11{platform_machine == 'x86_64' and platform_system == 'Linux'} (==10.3.0.86)
+      5.085805s   0ms DEBUG uv_resolver::resolver Selecting: nvidia-curand-cu11==10.3.0.86 [preference] (nvidia_curand_cu11-10.3.0.86-py3-none-manylinux1_x86_64.whl)
+   uv_resolver::resolver::get_dependencies_forking package=nvidia-curand-cu11{platform_machine == 'x86_64' and platform_system == 'Linux'}, version=10.3.0.86
+     uv_resolver::resolver::get_dependencies package=nvidia-curand-cu11{platform_machine == 'x86_64' and platform_system == 'Linux'}, version=10.3.0.86
+    5.085845s   1s  DEBUG uv_resolver::resolver Adding transitive dependency for nvidia-curand-cu11==10.3.0.86: nvidia-curand-cu11==10.3.0.86
+    5.085861s   1s  DEBUG uv_resolver::resolver Adding transitive dependency for nvidia-curand-cu11==10.3.0.86: nvidia-curand-cu11{platform_machine == 'x86_64' and platform_system == 'Linux'}==10.3.0.86
+   uv_resolver::resolver::choose_version package=nvidia-curand-cu11{platform_machine == 'x86_64' and platform_system == 'Linux'}
+      5.085919s   0ms DEBUG uv_resolver::resolver Searching for a compatible version of nvidia-curand-cu11{platform_machine == 'x86_64' and platform_system == 'Linux'} (==10.3.0.86)
+      5.085956s   0ms DEBUG uv_resolver::resolver Selecting: nvidia-curand-cu11==10.3.0.86 [preference] (nvidia_curand_cu11-10.3.0.86-py3-none-manylinux1_x86_64.whl)
+ uv_resolver::resolver::process_request request=Prefetch nvidia-curand-cu11 ==10.3.0.86
+   uv_resolver::resolver::get_dependencies_forking package=nvidia-curand-cu11{platform_machine == 'x86_64' and platform_system == 'Linux'}, version=10.3.0.86
+ uv_resolver::resolver::process_request request=Metadata nvidia-curand-cu11==10.3.0.86
+   uv_distribution::distribution_database::get_or_build_wheel_metadata dist=nvidia-curand-cu11==10.3.0.86
+     uv_client::registry_client::wheel_metadata built_dist=nvidia-curand-cu11==10.3.0.86
+     uv_resolver::resolver::get_dependencies package=nvidia-curand-cu11{platform_machine == 'x86_64' and platform_system == 'Linux'}, version=10.3.0.86
+       uv_client::cached_client::get_serde
+         uv_client::cached_client::get_cacheable
+           uv_client::cached_client::read_and_parse_cache file=/home/hideakitai/.cache/uv/wheels-v1/index/0683d010c15737d1/nvidia-curand-cu11/nvidia_curand_cu11-10.3.0.86-py3-none-manylinux1_x86_64.msgpack
+ uv_client::cached_client::from_path_sync path="/home/hideakitai/.cache/uv/wheels-v1/index/0683d010c15737d1/nvidia-curand-cu11/nvidia_curand_cu11-10.3.0.86-py3-none-manylinux1_x86_64.msgpack"
+            5.086357s   0ms DEBUG uv_client::cached_client Found stale response for: https://download.pytorch.org/whl/cu118/nvidia_curand_cu11-10.3.0.86-py3-none-manylinux1_x86_64.whl#sha256=ac439548c88580269a1eb6aeb602a5aed32f0dbb20809a31d9ed7d01d77f6bf5
+            5.086376s   0ms DEBUG uv_client::cached_client Sending revalidation request for: https://download.pytorch.org/whl/cu118/nvidia_curand_cu11-10.3.0.86-py3-none-manylinux1_x86_64.whl#sha256=ac439548c88580269a1eb6aeb602a5aed32f0dbb20809a31d9ed7d01d77f6bf5
+           uv_client::cached_client::revalidation_request url="https://download.pytorch.org/whl/cu118/nvidia_curand_cu11-10.3.0.86-py3-none-manylinux1_x86_64.whl#sha256=ac439548c88580269a1eb6aeb602a5aed32f0dbb20809a31d9ed7d01d77f6bf5"
+            5.093026s   6ms DEBUG uv_client::cached_client Found not-modified response for: https://download.pytorch.org/whl/cu118/nvidia_curand_cu11-10.3.0.86-py3-none-manylinux1_x86_64.whl#sha256=ac439548c88580269a1eb6aeb602a5aed32f0dbb20809a31d9ed7d01d77f6bf5
+           uv_client::cached_client::refresh_cache file=/home/hideakitai/.cache/uv/wheels-v1/index/0683d010c15737d1/nvidia-curand-cu11/nvidia_curand_cu11-10.3.0.86-py3-none-manylinux1_x86_64.msgpack
+   uv_resolver::resolver::choose_version package=nvidia-curand-cu11
+      5.093291s   0ms DEBUG uv_resolver::resolver Searching for a compatible version of nvidia-curand-cu11 (==10.3.0.86)
+      5.093296s   0ms DEBUG uv_resolver::resolver Selecting: nvidia-curand-cu11==10.3.0.86 [preference] (nvidia_curand_cu11-10.3.0.86-py3-none-manylinux1_x86_64.whl)
+   uv_resolver::resolver::get_dependencies_forking package=nvidia-curand-cu11, version=10.3.0.86
+     uv_resolver::resolver::get_dependencies package=nvidia-curand-cu11, version=10.3.0.86
+   uv_resolver::resolver::choose_version package=nvidia-cusolver-cu11{platform_machine == 'x86_64' and platform_system == 'Linux'}
+      5.093342s   0ms DEBUG uv_resolver::resolver Searching for a compatible version of nvidia-cusolver-cu11{platform_machine == 'x86_64' and platform_system == 'Linux'} (==11.4.1.48)
+      5.093366s   0ms DEBUG uv_resolver::resolver Selecting: nvidia-cusolver-cu11==11.4.1.48 [preference] (nvidia_cusolver_cu11-11.4.1.48-py3-none-manylinux1_x86_64.whl)
+   uv_resolver::resolver::get_dependencies_forking package=nvidia-cusolver-cu11{platform_machine == 'x86_64' and platform_system == 'Linux'}, version=11.4.1.48
+     uv_resolver::resolver::get_dependencies package=nvidia-cusolver-cu11{platform_machine == 'x86_64' and platform_system == 'Linux'}, version=11.4.1.48
+    5.093432s   1s  DEBUG uv_resolver::resolver Adding transitive dependency for nvidia-cusolver-cu11==11.4.1.48:
+nvidia-cusolver-cu11==11.4.1.48
+    5.093448s   1s  DEBUG uv_resolver::resolver Adding transitive dependency for nvidia-cusolver-cu11==11.4.1.48:
+nvidia-cusolver-cu11{platform_machine == 'x86_64' and platform_system == 'Linux'}==11.4.1.48
+   uv_resolver::resolver::choose_version package=nvidia-cusolver-cu11{platform_machine == 'x86_64' and platform_system == 'Linux'}
+      5.093520s   0ms DEBUG uv_resolver::resolver Searching for a compatible version of nvidia-cusolver-cu11{platform_machine == 'x86_64' and platform_system == 'Linux'} (==11.4.1.48)
+      5.093551s   0ms DEBUG uv_resolver::resolver Selecting: nvidia-cusolver-cu11==11.4.1.48 [preference] (nvidia_cusolver_cu11-11.4.1.48-py3-none-manylinux1_x86_64.whl)
+ uv_resolver::resolver::process_request request=Prefetch nvidia-cusolver-cu11 ==11.4.1.48
+   uv_resolver::resolver::get_dependencies_forking package=nvidia-cusolver-cu11{platform_machine == 'x86_64' and platform_system == 'Linux'}, version=11.4.1.48
+ uv_resolver::resolver::process_request request=Metadata nvidia-cusolver-cu11==11.4.1.48
+   uv_distribution::distribution_database::get_or_build_wheel_metadata dist=nvidia-cusolver-cu11==11.4.1.48
+     uv_client::registry_client::wheel_metadata built_dist=nvidia-cusolver-cu11==11.4.1.48
+     uv_resolver::resolver::get_dependencies package=nvidia-cusolver-cu11{platform_machine == 'x86_64' and platform_system == 'Linux'}, version=11.4.1.48
+       uv_client::cached_client::get_serde
+         uv_client::cached_client::get_cacheable
+           uv_client::cached_client::read_and_parse_cache file=/home/hideakitai/.cache/uv/wheels-v1/index/0683d010c15737d1/nvidia-cusolver-cu11/nvidia_cusolver_cu11-11.4.1.48-py3-none-manylinux1_x86_64.msgpack
+ uv_client::cached_client::from_path_sync path="/home/hideakitai/.cache/uv/wheels-v1/index/0683d010c15737d1/nvidia-cusolver-cu11/nvidia_cusolver_cu11-11.4.1.48-py3-none-manylinux1_x86_64.msgpack"
+            5.093962s   0ms DEBUG uv_client::cached_client Found stale response for: https://download.pytorch.org/whl/cu118/nvidia_cusolver_cu11-11.4.1.48-py3-none-manylinux1_x86_64.whl#sha256=ca538f545645b7e6629140786d3127fe067b3d5a085bd794cde5bfe877c8926f
+            5.093989s   0ms DEBUG uv_client::cached_client Sending revalidation request for: https://download.pytorch.org/whl/cu118/nvidia_cusolver_cu11-11.4.1.48-py3-none-manylinux1_x86_64.whl#sha256=ca538f545645b7e6629140786d3127fe067b3d5a085bd794cde5bfe877c8926f
+           uv_client::cached_client::revalidation_request url="https://download.pytorch.org/whl/cu118/nvidia_cusolver_cu11-11.4.1.48-py3-none-manylinux1_x86_64.whl#sha256=ca538f545645b7e6629140786d3127fe067b3d5a085bd794cde5bfe877c8926f"
+            5.100972s   7ms DEBUG uv_client::cached_client Found not-modified response for: https://download.pytorch.org/whl/cu118/nvidia_cusolver_cu11-11.4.1.48-py3-none-manylinux1_x86_64.whl#sha256=ca538f545645b7e6629140786d3127fe067b3d5a085bd794cde5bfe877c8926f
+           uv_client::cached_client::refresh_cache file=/home/hideakitai/.cache/uv/wheels-v1/index/0683d010c15737d1/nvidia-cusolver-cu11/nvidia_cusolver_cu11-11.4.1.48-py3-none-manylinux1_x86_64.msgpack
+    5.101257s   1s  DEBUG uv_resolver::resolver Adding transitive dependency for nvidia-cusolver-cu11==11.4.1.48:
+nvidia-cublas-cu11*
+   uv_resolver::resolver::choose_version package=nvidia-cusolver-cu11
+      5.101295s   0ms DEBUG uv_resolver::resolver Searching for a compatible version of nvidia-cusolver-cu11 (==11.4.1.48)
+      5.101300s   0ms DEBUG uv_resolver::resolver Selecting: nvidia-cusolver-cu11==11.4.1.48 [preference] (nvidia_cusolver_cu11-11.4.1.48-py3-none-manylinux1_x86_64.whl)
+   uv_resolver::resolver::get_dependencies_forking package=nvidia-cusolver-cu11, version=11.4.1.48
+     uv_resolver::resolver::get_dependencies package=nvidia-cusolver-cu11, version=11.4.1.48
+    5.101320s   1s  DEBUG uv_resolver::resolver Adding transitive dependency for nvidia-cusolver-cu11==11.4.1.48:
+nvidia-cublas-cu11*
+   uv_resolver::resolver::choose_version package=nvidia-cusparse-cu11{platform_machine == 'x86_64' and platform_system == 'Linux'}
+      5.101361s   0ms DEBUG uv_resolver::resolver Searching for a compatible version of nvidia-cusparse-cu11{platform_machine == 'x86_64' and platform_system == 'Linux'} (==11.7.5.86)
+      5.101383s   0ms DEBUG uv_resolver::resolver Selecting: nvidia-cusparse-cu11==11.7.5.86 [preference] (nvidia_cusparse_cu11-11.7.5.86-py3-none-manylinux1_x86_64.whl)
+   uv_resolver::resolver::get_dependencies_forking package=nvidia-cusparse-cu11{platform_machine == 'x86_64' and platform_system == 'Linux'}, version=11.7.5.86
+     uv_resolver::resolver::get_dependencies package=nvidia-cusparse-cu11{platform_machine == 'x86_64' and platform_system == 'Linux'}, version=11.7.5.86
+    5.101441s   1s  DEBUG uv_resolver::resolver Adding transitive dependency for nvidia-cusparse-cu11==11.7.5.86:
+nvidia-cusparse-cu11==11.7.5.86
+    5.101457s   1s  DEBUG uv_resolver::resolver Adding transitive dependency for nvidia-cusparse-cu11==11.7.5.86:
+nvidia-cusparse-cu11{platform_machine == 'x86_64' and platform_system == 'Linux'}==11.7.5.86
+   uv_resolver::resolver::choose_version package=nvidia-cusparse-cu11{platform_machine == 'x86_64' and platform_system == 'Linux'}
+ uv_resolver::resolver::process_request request=Prefetch nvidia-cusparse-cu11 ==11.7.5.86
+   uv_distribution::distribution_database::get_or_build_wheel_metadata dist=nvidia-cusparse-cu11==11.7.5.86
+     uv_client::registry_client::wheel_metadata built_dist=nvidia-cusparse-cu11==11.7.5.86
+      5.101603s   0ms DEBUG uv_resolver::resolver Searching for a compatible version of nvidia-cusparse-cu11{platform_machine == 'x86_64' and platform_system == 'Linux'} (==11.7.5.86)
+      5.101643s   0ms DEBUG uv_resolver::resolver Selecting: nvidia-cusparse-cu11==11.7.5.86 [preference] (nvidia_cusparse_cu11-11.7.5.86-py3-none-manylinux1_x86_64.whl)
+       uv_client::cached_client::get_serde
+         uv_client::cached_client::get_cacheable
+           uv_client::cached_client::read_and_parse_cache file=/home/hideakitai/.cache/uv/wheels-v1/index/0683d010c15737d1/nvidia-cusparse-cu11/nvidia_cusparse_cu11-11.7.5.86-py3-none-manylinux1_x86_64.msgpack
+   uv_resolver::resolver::get_dependencies_forking package=nvidia-cusparse-cu11{platform_machine == 'x86_64' and platform_system == 'Linux'}, version=11.7.5.86
+     uv_resolver::resolver::get_dependencies package=nvidia-cusparse-cu11{platform_machine == 'x86_64' and platform_system == 'Linux'}, version=11.7.5.86
+ uv_client::cached_client::from_path_sync path="/home/hideakitai/.cache/uv/wheels-v1/index/0683d010c15737d1/nvidia-cusparse-cu11/nvidia_cusparse_cu11-11.7.5.86-py3-none-manylinux1_x86_64.msgpack"
+            5.101872s   0ms DEBUG uv_client::cached_client Found stale response for: https://download.pytorch.org/whl/cu118/nvidia_cusparse_cu11-11.7.5.86-py3-none-manylinux1_x86_64.whl#sha256=4ae709fe78d3f23f60acaba8c54b8ad556cf16ca486e0cc1aa92dca7555d2d2b
+            5.101894s   0ms DEBUG uv_client::cached_client Sending revalidation request for: https://download.pytorch.org/whl/cu118/nvidia_cusparse_cu11-11.7.5.86-py3-none-manylinux1_x86_64.whl#sha256=4ae709fe78d3f23f60acaba8c54b8ad556cf16ca486e0cc1aa92dca7555d2d2b
+           uv_client::cached_client::revalidation_request url="https://download.pytorch.org/whl/cu118/nvidia_cusparse_cu11-11.7.5.86-py3-none-manylinux1_x86_64.whl#sha256=4ae709fe78d3f23f60acaba8c54b8ad556cf16ca486e0cc1aa92dca7555d2d2b"
+            5.109161s   7ms DEBUG uv_client::cached_client Found not-modified response for: https://download.pytorch.org/whl/cu118/nvidia_cusparse_cu11-11.7.5.86-py3-none-manylinux1_x86_64.whl#sha256=4ae709fe78d3f23f60acaba8c54b8ad556cf16ca486e0cc1aa92dca7555d2d2b
+           uv_client::cached_client::refresh_cache file=/home/hideakitai/.cache/uv/wheels-v1/index/0683d010c15737d1/nvidia-cusparse-cu11/nvidia_cusparse_cu11-11.7.5.86-py3-none-manylinux1_x86_64.msgpack
+   uv_resolver::resolver::choose_version package=nvidia-cusparse-cu11
+      5.109410s   0ms DEBUG uv_resolver::resolver Searching for a compatible version of nvidia-cusparse-cu11 (==11.7.5.86)
+      5.109416s   0ms DEBUG uv_resolver::resolver Selecting: nvidia-cusparse-cu11==11.7.5.86 [preference] (nvidia_cusparse_cu11-11.7.5.86-py3-none-manylinux1_x86_64.whl)
+   uv_resolver::resolver::get_dependencies_forking package=nvidia-cusparse-cu11, version=11.7.5.86
+     uv_resolver::resolver::get_dependencies package=nvidia-cusparse-cu11, version=11.7.5.86
+   uv_resolver::resolver::choose_version package=nvidia-nccl-cu11{platform_machine == 'x86_64' and platform_system == 'Linux'}
+      5.109499s   0ms DEBUG uv_resolver::resolver Searching for a compatible version of nvidia-nccl-cu11{platform_machine == 'x86_64' and platform_system == 'Linux'} (==2.20.5)
+      5.109523s   0ms DEBUG uv_resolver::resolver Selecting: nvidia-nccl-cu11==2.20.5 [preference] (nvidia_nccl_cu11-2.20.5-py3-none-manylinux2014_x86_64.whl)
+   uv_resolver::resolver::get_dependencies_forking package=nvidia-nccl-cu11{platform_machine == 'x86_64' and platform_system == 'Linux'}, version=2.20.5
+     uv_resolver::resolver::get_dependencies package=nvidia-nccl-cu11{platform_machine == 'x86_64' and platform_system == 'Linux'}, version=2.20.5
+    5.109580s   1s  DEBUG uv_resolver::resolver Adding transitive dependency for nvidia-nccl-cu11==2.20.5: nvidia-nccl-cu11==2.20.5
+    5.109595s   1s  DEBUG uv_resolver::resolver Adding transitive dependency for nvidia-nccl-cu11==2.20.5: nvidia-nccl-cu11{platform_machine == 'x86_64' and platform_system == 'Linux'}==2.20.5
+   uv_resolver::resolver::choose_version package=nvidia-nccl-cu11{platform_machine == 'x86_64' and platform_system == 'Linux'}
+ uv_resolver::resolver::process_request request=Prefetch nvidia-nccl-cu11 ==2.20.5
+      5.109669s   0ms DEBUG uv_resolver::resolver Searching for a compatible version of nvidia-nccl-cu11{platform_machine == 'x86_64' and platform_system == 'Linux'} (==2.20.5)
+      5.109700s   0ms DEBUG uv_resolver::resolver Selecting: nvidia-nccl-cu11==2.20.5 [preference] (nvidia_nccl_cu11-2.20.5-py3-none-manylinux2014_x86_64.whl)
+   uv_distribution::distribution_database::get_or_build_wheel_metadata dist=nvidia-nccl-cu11==2.20.5
+     uv_client::registry_client::wheel_metadata built_dist=nvidia-nccl-cu11==2.20.5
+   uv_resolver::resolver::get_dependencies_forking package=nvidia-nccl-cu11{platform_machine == 'x86_64' and platform_system == 'Linux'}, version=2.20.5
+     uv_resolver::resolver::get_dependencies package=nvidia-nccl-cu11{platform_machine == 'x86_64' and platform_system == 'Linux'}, version=2.20.5
+       uv_client::cached_client::get_serde
+         uv_client::cached_client::get_cacheable
+           uv_client::cached_client::read_and_parse_cache file=/home/hideakitai/.cache/uv/wheels-v1/index/0683d010c15737d1/nvidia-nccl-cu11/nvidia_nccl_cu11-2.20.5-py3-none-manylinux2014_x86_64.msgpack
+ uv_client::cached_client::from_path_sync path="/home/hideakitai/.cache/uv/wheels-v1/index/0683d010c15737d1/nvidia-nccl-cu11/nvidia_nccl_cu11-2.20.5-py3-none-manylinux2014_x86_64.msgpack"
+            5.109988s   0ms DEBUG uv_client::cached_client Found stale response for: https://download.pytorch.org/whl/cu118/nvidia_nccl_cu11-2.20.5-py3-none-manylinux2014_x86_64.whl#sha256=3619e25dfb0c8f4c554561c3459ee7dfe1250eed05e9aa4d147a75c45cc6ae0d
+            5.110006s   0ms DEBUG uv_client::cached_client Sending revalidation request for: https://download.pytorch.org/whl/cu118/nvidia_nccl_cu11-2.20.5-py3-none-manylinux2014_x86_64.whl#sha256=3619e25dfb0c8f4c554561c3459ee7dfe1250eed05e9aa4d147a75c45cc6ae0d
+           uv_client::cached_client::revalidation_request url="https://download.pytorch.org/whl/cu118/nvidia_nccl_cu11-2.20.5-py3-none-manylinux2014_x86_64.whl#sha256=3619e25dfb0c8f4c554561c3459ee7dfe1250eed05e9aa4d147a75c45cc6ae0d"
+            5.116510s   6ms DEBUG uv_client::cached_client Found not-modified response for: https://download.pytorch.org/whl/cu118/nvidia_nccl_cu11-2.20.5-py3-none-manylinux2014_x86_64.whl#sha256=3619e25dfb0c8f4c554561c3459ee7dfe1250eed05e9aa4d147a75c45cc6ae0d
+           uv_client::cached_client::refresh_cache file=/home/hideakitai/.cache/uv/wheels-v1/index/0683d010c15737d1/nvidia-nccl-cu11/nvidia_nccl_cu11-2.20.5-py3-none-manylinux2014_x86_64.msgpack
+   uv_resolver::resolver::choose_version package=nvidia-nccl-cu11
+      5.116753s   0ms DEBUG uv_resolver::resolver Searching for a compatible version of nvidia-nccl-cu11 (==2.20.5)
+      5.116760s   0ms DEBUG uv_resolver::resolver Selecting: nvidia-nccl-cu11==2.20.5 [preference] (nvidia_nccl_cu11-2.20.5-py3-none-manylinux2014_x86_64.whl)
+   uv_resolver::resolver::get_dependencies_forking package=nvidia-nccl-cu11, version=2.20.5
+     uv_resolver::resolver::get_dependencies package=nvidia-nccl-cu11, version=2.20.5
+   uv_resolver::resolver::choose_version package=nvidia-nvtx-cu11{platform_machine == 'x86_64' and platform_system == 'Linux'}
+      5.116799s   0ms DEBUG uv_resolver::resolver Searching for a compatible version of nvidia-nvtx-cu11{platform_machine == 'x86_64' and platform_system == 'Linux'} (==11.8.86)
+      5.116820s   0ms DEBUG uv_resolver::resolver Selecting: nvidia-nvtx-cu11==11.8.86 [preference] (nvidia_nvtx_cu11-11.8.86-py3-none-manylinux1_x86_64.whl)
+   uv_resolver::resolver::get_dependencies_forking package=nvidia-nvtx-cu11{platform_machine == 'x86_64' and platform_system == 'Linux'}, version=11.8.86
+     uv_resolver::resolver::get_dependencies package=nvidia-nvtx-cu11{platform_machine == 'x86_64' and platform_system == 'Linux'}, version=11.8.86
+    5.116864s   1s  DEBUG uv_resolver::resolver Adding transitive dependency for nvidia-nvtx-cu11==11.8.86: nvidia-nvtx-cu11==11.8.86
+    5.116880s   1s  DEBUG uv_resolver::resolver Adding transitive dependency for nvidia-nvtx-cu11==11.8.86: nvidia-nvtx-cu11{platform_machine == 'x86_64' and platform_system == 'Linux'}==11.8.86
+   uv_resolver::resolver::choose_version package=nvidia-nvtx-cu11{platform_machine == 'x86_64' and platform_system == 'Linux'}
+      5.116958s   0ms DEBUG uv_resolver::resolver Searching for a compatible version of nvidia-nvtx-cu11{platform_machine == 'x86_64' and platform_system == 'Linux'} (==11.8.86)
+      5.116988s   0ms DEBUG uv_resolver::resolver Selecting: nvidia-nvtx-cu11==11.8.86 [preference] (nvidia_nvtx_cu11-11.8.86-py3-none-manylinux1_x86_64.whl)
+ uv_resolver::resolver::process_request request=Prefetch nvidia-nvtx-cu11 ==11.8.86
+   uv_resolver::resolver::get_dependencies_forking package=nvidia-nvtx-cu11{platform_machine == 'x86_64' and platform_system == 'Linux'}, version=11.8.86
+ uv_resolver::resolver::process_request request=Metadata nvidia-nvtx-cu11==11.8.86
+   uv_distribution::distribution_database::get_or_build_wheel_metadata dist=nvidia-nvtx-cu11==11.8.86
+     uv_client::registry_client::wheel_metadata built_dist=nvidia-nvtx-cu11==11.8.86
+     uv_resolver::resolver::get_dependencies package=nvidia-nvtx-cu11{platform_machine == 'x86_64' and platform_system == 'Linux'}, version=11.8.86
+       uv_client::cached_client::get_serde
+         uv_client::cached_client::get_cacheable
+           uv_client::cached_client::read_and_parse_cache file=/home/hideakitai/.cache/uv/wheels-v1/index/0683d010c15737d1/nvidia-nvtx-cu11/nvidia_nvtx_cu11-11.8.86-py3-none-manylinux1_x86_64.msgpack
+ uv_client::cached_client::from_path_sync path="/home/hideakitai/.cache/uv/wheels-v1/index/0683d010c15737d1/nvidia-nvtx-cu11/nvidia_nvtx_cu11-11.8.86-py3-none-manylinux1_x86_64.msgpack"
+            5.117407s   0ms DEBUG uv_client::cached_client Found stale response for: https://download.pytorch.org/whl/cu118/nvidia_nvtx_cu11-11.8.86-py3-none-manylinux1_x86_64.whl#sha256=890656d8bd9b4e280231c832e1f0d03459200ba4824ddda3dcb59b1e1989b9f5
+            5.117426s   0ms DEBUG uv_client::cached_client Sending revalidation request for: https://download.pytorch.org/whl/cu118/nvidia_nvtx_cu11-11.8.86-py3-none-manylinux1_x86_64.whl#sha256=890656d8bd9b4e280231c832e1f0d03459200ba4824ddda3dcb59b1e1989b9f5
+           uv_client::cached_client::revalidation_request url="https://download.pytorch.org/whl/cu118/nvidia_nvtx_cu11-11.8.86-py3-none-manylinux1_x86_64.whl#sha256=890656d8bd9b4e280231c832e1f0d03459200ba4824ddda3dcb59b1e1989b9f5"
+            5.125065s   7ms DEBUG uv_client::cached_client Found not-modified response for: https://download.pytorch.org/whl/cu118/nvidia_nvtx_cu11-11.8.86-py3-none-manylinux1_x86_64.whl#sha256=890656d8bd9b4e280231c832e1f0d03459200ba4824ddda3dcb59b1e1989b9f5
+           uv_client::cached_client::refresh_cache file=/home/hideakitai/.cache/uv/wheels-v1/index/0683d010c15737d1/nvidia-nvtx-cu11/nvidia_nvtx_cu11-11.8.86-py3-none-manylinux1_x86_64.msgpack
+   uv_resolver::resolver::choose_version package=nvidia-nvtx-cu11
+      5.125306s   0ms DEBUG uv_resolver::resolver Searching for a compatible version of nvidia-nvtx-cu11 (==11.8.86)
+      5.125312s   0ms DEBUG uv_resolver::resolver Selecting: nvidia-nvtx-cu11==11.8.86 [preference] (nvidia_nvtx_cu11-11.8.86-py3-none-manylinux1_x86_64.whl)
+   uv_resolver::resolver::get_dependencies_forking package=nvidia-nvtx-cu11, version=11.8.86
+     uv_resolver::resolver::get_dependencies package=nvidia-nvtx-cu11, version=11.8.86
+   uv_resolver::resolver::choose_version package=triton{python_full_version < '3.13' and platform_machine == 'x86_64' and platform_system == 'Linux'}
+      5.125354s   0ms DEBUG uv_resolver::resolver Searching for a compatible version of triton{python_full_version < '3.13' and platform_machine == 'x86_64' and platform_system == 'Linux'} (==3.0.0)
+      5.125392s   0ms DEBUG uv_resolver::resolver Selecting: triton==3.0.0 [preference] (triton-3.0.0-1-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.whl)
+   uv_resolver::resolver::get_dependencies_forking package=triton{python_full_version < '3.13' and platform_machine == 'x86_64' and platform_system == 'Linux'}, version=3.0.0
+     uv_resolver::resolver::get_dependencies package=triton{python_full_version < '3.13' and platform_machine == 'x86_64' and platform_system == 'Linux'}, version=3.0.0
+    5.125455s   1s  DEBUG uv_resolver::resolver Adding transitive dependency for triton==3.0.0: triton==3.0.0
+    5.125471s   1s  DEBUG uv_resolver::resolver Adding transitive dependency for triton==3.0.0: triton{python_full_version < '3.13' and platform_machine == 'x86_64' and platform_system == 'Linux'}==3.0.0
+   uv_resolver::resolver::choose_version package=triton{python_full_version < '3.13' and platform_machine == 'x86_64' and platform_system == 'Linux'}
+      5.125549s   0ms DEBUG uv_resolver::resolver Searching for a compatible version of triton{python_full_version < '3.13' and platform_machine == 'x86_64' and platform_system == 'Linux'} (==3.0.0)
+      5.125569s   0ms DEBUG uv_resolver::resolver Selecting: triton==3.0.0 [preference] (triton-3.0.0-1-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.whl)
+ uv_resolver::resolver::process_request request=Prefetch triton ==3.0.0
+ uv_resolver::resolver::process_request request=Metadata triton==3.0.0
+   uv_distribution::distribution_database::get_or_build_wheel_metadata dist=triton==3.0.0
+     uv_client::registry_client::wheel_metadata built_dist=triton==3.0.0
+       uv_client::cached_client::get_serde
+   uv_resolver::resolver::get_dependencies_forking package=triton{python_full_version < '3.13' and platform_machine == 'x86_64' and platform_system == 'Linux'}, version=3.0.0
+         uv_client::cached_client::get_cacheable
+           uv_client::cached_client::read_and_parse_cache file=/home/hideakitai/.cache/uv/wheels-v1/index/0683d010c15737d1/triton/triton-3.0.0-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.msgpack
+     uv_resolver::resolver::get_dependencies package=triton{python_full_version < '3.13' and platform_machine == 'x86_64' and platform_system == 'Linux'}, version=3.0.0
+ uv_client::cached_client::from_path_sync path="/home/hideakitai/.cache/uv/wheels-v1/index/0683d010c15737d1/triton/triton-3.0.0-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.msgpack"
+            5.125936s   0ms DEBUG uv_client::cached_client Found stale response for: https://download.pytorch.org/whl/triton-3.0.0-1-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.whl#sha256=34e509deb77f1c067d8640725ef00c5cbfcb2052a1a3cb6a6d343841f92624eb
+            5.125955s   0ms DEBUG uv_client::cached_client Sending revalidation request for: https://download.pytorch.org/whl/triton-3.0.0-1-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.whl#sha256=34e509deb77f1c067d8640725ef00c5cbfcb2052a1a3cb6a6d343841f92624eb
+           uv_client::cached_client::revalidation_request url="https://download.pytorch.org/whl/triton-3.0.0-1-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.whl#sha256=34e509deb77f1c067d8640725ef00c5cbfcb2052a1a3cb6a6d343841f92624eb"
+            5.132662s   6ms DEBUG uv_client::cached_client Found not-modified response for: https://download.pytorch.org/whl/triton-3.0.0-1-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.whl#sha256=34e509deb77f1c067d8640725ef00c5cbfcb2052a1a3cb6a6d343841f92624eb
+           uv_client::cached_client::refresh_cache file=/home/hideakitai/.cache/uv/wheels-v1/index/0683d010c15737d1/triton/triton-3.0.0-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.msgpack
+    5.132933s   1s  DEBUG uv_resolver::resolver Adding transitive dependency for triton==3.0.0: filelock*
+   uv_resolver::resolver::choose_version package=triton
+      5.132956s   0ms DEBUG uv_resolver::resolver Searching for a compatible version of triton (==3.0.0)
+      5.132960s   0ms DEBUG uv_resolver::resolver Selecting: triton==3.0.0 [preference] (triton-3.0.0-1-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.whl)
+   uv_resolver::resolver::get_dependencies_forking package=triton, version=3.0.0
+     uv_resolver::resolver::get_dependencies package=triton, version=3.0.0
+    5.133012s   1s  DEBUG uv_resolver::resolver Adding transitive dependency for triton==3.0.0: filelock*
+   uv_resolver::resolver::choose_version package=wheel
+      5.133048s   0ms DEBUG uv_resolver::resolver Searching for a compatible version of wheel (*)
+      5.133070s   0ms DEBUG uv_resolver::resolver Selecting: wheel==0.44.0 [preference] (wheel-0.44.0-py3-none-any.whl)
+   uv_resolver::resolver::get_dependencies_forking package=wheel, version=0.44.0
+     uv_resolver::resolver::get_dependencies package=wheel, version=0.44.0
+   uv_resolver::resolver::choose_version package=hydra-core
+      5.133140s   0ms DEBUG uv_resolver::resolver Searching for a compatible version of hydra-core (>=1.3.2)
+      5.133160s   0ms DEBUG uv_resolver::resolver Selecting: hydra-core==1.3.2 [compatible] (hydra_core-1.3.2-py3-none-any.whl)
+   uv_resolver::resolver::get_dependencies_forking package=hydra-core, version=1.3.2
+     uv_resolver::resolver::get_dependencies package=hydra-core, version=1.3.2
+    5.133211s   1s  DEBUG uv_resolver::resolver Adding transitive dependency for hydra-core==1.3.2: antlr4-python3-runtime>=4.9.dev0, <4.10.dev0
+    5.133216s   1s  DEBUG uv_resolver::resolver Adding transitive dependency for hydra-core==1.3.2: omegaconf>=2.2, <2.4
+    5.133232s   1s  DEBUG uv_resolver::resolver Adding transitive dependency for hydra-core==1.3.2: packaging*
+   uv_resolver::resolver::choose_version package=iopath
+      5.133298s   0ms DEBUG uv_resolver::resolver Searching for a compatible version of iopath (>=0.1.10)
+      5.133330s   0ms DEBUG uv_resolver::resolver Selecting: iopath==0.1.10 [compatible] (iopath-0.1.10.tar.gz)
+   uv_resolver::resolver::get_dependencies_forking package=iopath, version=0.1.10
+     uv_resolver::resolver::get_dependencies package=iopath, version=0.1.10
+ uv_resolver::resolver::process_request request=Versions antlr4-python3-runtime
+   uv_client::registry_client::simple_api package=antlr4-python3-runtime
+     uv_client::cached_client::get_cacheable
+       uv_client::cached_client::read_and_parse_cache file=/home/hideakitai/.cache/uv/simple-v12/index/0683d010c15737d1/antlr4-python3-runtime.rkyv
+    5.133535s   1s  DEBUG uv_resolver::resolver Adding transitive dependency for iopath==0.1.10: portalocker*
+    5.133568s   1s  DEBUG uv_resolver::resolver Adding transitive dependency for iopath==0.1.10: tqdm>=4.64.1
+    5.133597s   1s  DEBUG uv_resolver::resolver Adding transitive dependency for iopath==0.1.10: typing-extensions*
+ uv_resolver::resolver::process_request request=Versions omegaconf
+   uv_client::registry_client::simple_api package=omegaconf
+ uv_client::cached_client::from_path_sync path="/home/hideakitai/.cache/uv/simple-v12/index/0683d010c15737d1/antlr4-python3-runtime.rkyv"
+   uv_resolver::resolver::choose_version package=numpy
+      5.133740s   0ms DEBUG uv_resolver::resolver Searching for a compatible version of numpy (>=1.24.4)
+      5.133770s   0ms DEBUG uv_resolver::resolver Selecting: numpy==1.26.3 [preference] (numpy-1.26.3-cp312-cp312-macosx_10_9_x86_64.whl)
+     uv_client::cached_client::get_cacheable
+       uv_client::cached_client::read_and_parse_cache file=/home/hideakitai/.cache/uv/simple-v12/index/0683d010c15737d1/omegaconf.rkyv
+ uv_resolver::resolver::process_request request=Versions packaging
+   uv_client::registry_client::simple_api package=packaging
+     uv_client::cached_client::get_cacheable
+       uv_client::cached_client::read_and_parse_cache file=/home/hideakitai/.cache/uv/simple-v12/index/0683d010c15737d1/packaging.rkyv
+ uv_client::cached_client::from_path_sync path="/home/hideakitai/.cache/uv/simple-v12/index/0683d010c15737d1/omegaconf.rkyv"
+ uv_client::cached_client::from_path_sync path="/home/hideakitai/.cache/uv/simple-v12/index/0683d010c15737d1/packaging.rkyv"
+ uv_resolver::resolver::process_request request=Prefetch packaging *
+   uv_resolver::resolver::get_dependencies_forking package=numpy, version=1.26.3
+     uv_resolver::resolver::get_dependencies package=numpy, version=1.26.3
+   uv_resolver::resolver::choose_version package=pillow
+      5.134188s   0ms DEBUG uv_resolver::resolver Searching for a compatible version of pillow (>=9.4.0)
+ uv_resolver::resolver::process_request request=Prefetch omegaconf >=2.2, <2.4
+      5.134232s   0ms DEBUG uv_resolver::resolver Selecting: pillow==10.2.0 [preference] (pillow-10.2.0-cp312-cp312-macosx_10_10_x86_64.whl)
+ uv_resolver::resolver::process_request request=Prefetch antlr4-python3-runtime >=4.9.dev0, <4.10.dev0
+   uv_resolver::resolver::get_dependencies_forking package=pillow, version=10.2.0
+     uv_resolver::resolver::get_dependencies package=pillow, version=10.2.0
+        5.134371s   0ms DEBUG uv_client::cached_client No cache entry for: https://download.pytorch.org/whl/cu118/antlr4-python3-runtime/
+       uv_client::cached_client::fresh_request url="https://download.pytorch.org/whl/cu118/antlr4-python3-runtime/"
+   uv_resolver::resolver::choose_version package=tqdm
+      5.134473s   0ms DEBUG uv_resolver::resolver Searching for a compatible version of tqdm (>=4.64.1)
+      5.134481s   0ms DEBUG uv_resolver::resolver Selecting: tqdm==4.64.1 [compatible] (tqdm-4.64.1-py2.py3-none-any.whl)
+        5.134513s   0ms DEBUG uv_client::cached_client No cache entry for: https://download.pytorch.org/whl/cu118/packaging/
+       uv_client::cached_client::fresh_request url="https://download.pytorch.org/whl/cu118/packaging/"
+   uv_resolver::resolver::get_dependencies_forking package=tqdm, version=4.64.1
+     uv_resolver::resolver::get_dependencies package=tqdm, version=4.64.1
+        5.134644s   0ms DEBUG uv_client::cached_client No cache entry for: https://download.pytorch.org/whl/cu118/omegaconf/
+       uv_client::cached_client::fresh_request url="https://download.pytorch.org/whl/cu118/omegaconf/"
+    5.134705s   1s  DEBUG uv_resolver::resolver Adding transitive dependency for tqdm==4.64.1: colorama{platform_system == 'Windows'}*
+ uv_resolver::resolver::process_request request=Versions portalocker
+   uv_client::registry_client::simple_api package=portalocker
+   uv_resolver::resolver::choose_version package=filelock
+      5.134846s   0ms DEBUG uv_resolver::resolver Searching for a compatible version of filelock (*)
+      5.134874s   0ms DEBUG uv_resolver::resolver Selecting: filelock==3.13.1 [preference] (filelock-3.13.1-py3-none-any.whl)
+     uv_client::cached_client::get_cacheable
+       uv_client::cached_client::read_and_parse_cache file=/home/hideakitai/.cache/uv/simple-v12/index/0683d010c15737d1/portalocker.rkyv
+ uv_resolver::resolver::process_request request=Prefetch portalocker *
+ uv_client::cached_client::from_path_sync path="/home/hideakitai/.cache/uv/simple-v12/index/0683d010c15737d1/portalocker.rkyv"
+   uv_resolver::resolver::get_dependencies_forking package=filelock, version=3.13.1
+     uv_resolver::resolver::get_dependencies package=filelock, version=3.13.1
+   uv_resolver::resolver::choose_version package=fsspec
+      5.135024s   0ms DEBUG uv_resolver::resolver Searching for a compatible version of fsspec (*)
+        5.135027s   0ms DEBUG uv_client::cached_client No cache entry for: https://download.pytorch.org/whl/cu118/portalocker/
+       uv_client::cached_client::fresh_request url="https://download.pytorch.org/whl/cu118/portalocker/"
+      5.135070s   0ms DEBUG uv_resolver::resolver Selecting: fsspec==2024.2.0 [preference] (fsspec-2024.2.0-py3-none-any.whl)
+ uv_resolver::resolver::process_request request=Versions colorama
+   uv_client::registry_client::simple_api package=colorama
+     uv_client::cached_client::get_cacheable
+       uv_client::cached_client::read_and_parse_cache file=/home/hideakitai/.cache/uv/simple-v12/index/0683d010c15737d1/colorama.rkyv
+   uv_resolver::resolver::get_dependencies_forking package=fsspec, version=2024.2.0
+     uv_resolver::resolver::get_dependencies package=fsspec, version=2024.2.0
+ uv_client::cached_client::from_path_sync path="/home/hideakitai/.cache/uv/simple-v12/index/0683d010c15737d1/colorama.rkyv"
+   uv_resolver::resolver::choose_version package=jinja2
+      5.135309s   0ms DEBUG uv_resolver::resolver Searching for a compatible version of jinja2 (*)
+      5.135327s   0ms DEBUG uv_resolver::resolver Selecting: jinja2==3.1.3 [preference] (Jinja2-3.1.3-py3-none-any.whl)
+   uv_resolver::resolver::get_dependencies_forking package=jinja2, version=3.1.3
+     uv_resolver::resolver::get_dependencies package=jinja2, version=3.1.3
+        5.135411s   0ms DEBUG uv_client::cached_client No cache entry for: https://download.pytorch.org/whl/cu118/colorama/
+       uv_client::cached_client::fresh_request url="https://download.pytorch.org/whl/cu118/colorama/"
+    5.135482s   1s  DEBUG uv_resolver::resolver Adding transitive dependency for jinja2==3.1.3: markupsafe>=2.0
+   uv_resolver::resolver::choose_version package=networkx
+      5.135552s   0ms DEBUG uv_resolver::resolver Searching for a compatible version of networkx (*)
+      5.135580s   0ms DEBUG uv_resolver::resolver Selecting: networkx==3.2.1 [preference] (networkx-3.2.1-py3-none-any.whl)
+ uv_resolver::resolver::process_request request=Versions markupsafe
+   uv_client::registry_client::simple_api package=markupsafe
+     uv_client::cached_client::get_cacheable
+       uv_client::cached_client::read_and_parse_cache file=/home/hideakitai/.cache/uv/simple-v12/index/0683d010c15737d1/markupsafe.rkyv
+   uv_resolver::resolver::get_dependencies_forking package=networkx, version=3.2.1
+     uv_resolver::resolver::get_dependencies package=networkx, version=3.2.1
+ uv_resolver::resolver::process_request request=Prefetch markupsafe >=2.0
+ uv_client::cached_client::from_path_sync path="/home/hideakitai/.cache/uv/simple-v12/index/0683d010c15737d1/markupsafe.rkyv"
+   uv_resolver::resolver::choose_version package=setuptools
+      5.135888s   0ms DEBUG uv_resolver::resolver Searching for a compatible version of setuptools (*)
+      5.135922s   0ms DEBUG uv_resolver::resolver Selecting: setuptools==70.0.0 [preference] (setuptools-70.0.0-py3-none-any.whl)
+   uv_resolver::resolver::get_dependencies_forking package=setuptools, version=70.0.0
+     uv_resolver::resolver::get_dependencies package=setuptools, version=70.0.0
+        5.136025s   0ms DEBUG uv_client::cached_client No cache entry for: https://download.pytorch.org/whl/cu118/markupsafe/
+       uv_client::cached_client::fresh_request url="https://download.pytorch.org/whl/cu118/markupsafe/"
+   uv_resolver::resolver::choose_version package=sympy
+      5.136124s   0ms DEBUG uv_resolver::resolver Searching for a compatible version of sympy (*)
+      5.136129s   0ms DEBUG uv_resolver::resolver Selecting: sympy==1.12 [preference] (sympy-1.12-py3-none-any.whl)
+   uv_resolver::resolver::get_dependencies_forking package=sympy, version=1.12
+     uv_resolver::resolver::get_dependencies package=sympy, version=1.12
+    5.136179s   1s  DEBUG uv_resolver::resolver Adding transitive dependency for sympy==1.12: mpmath>=0.19
+   uv_resolver::resolver::choose_version package=typing-extensions
+ uv_resolver::resolver::process_request request=Versions mpmath
+   uv_client::registry_client::simple_api package=mpmath
+     uv_client::cached_client::get_cacheable
+       uv_client::cached_client::read_and_parse_cache file=/home/hideakitai/.cache/uv/simple-v12/index/0683d010c15737d1/mpmath.rkyv
+      5.136337s   0ms DEBUG uv_resolver::resolver Searching for a compatible version of typing-extensions (>=4.8.0)
+ uv_client::cached_client::from_path_sync path="/home/hideakitai/.cache/uv/simple-v12/index/0683d010c15737d1/mpmath.rkyv"
+      5.136370s   0ms DEBUG uv_resolver::resolver Selecting: typing-extensions==4.9.0 [preference] (typing_extensions-4.9.0-py3-none-any.whl)
+   uv_resolver::resolver::get_dependencies_forking package=typing-extensions, version=4.9.0
+     uv_resolver::resolver::get_dependencies package=typing-extensions, version=4.9.0
+   uv_resolver::resolver::choose_version package=antlr4-python3-runtime
+ uv_resolver::resolver::process_request request=Prefetch mpmath >=0.19
+        5.136516s   0ms DEBUG uv_client::cached_client No cache entry for: https://download.pytorch.org/whl/cu118/mpmath/
+       uv_client::cached_client::fresh_request url="https://download.pytorch.org/whl/cu118/mpmath/"
+     uv_client::cached_client::get_cacheable
+       uv_client::cached_client::read_and_parse_cache file=/home/hideakitai/.cache/uv/simple-v12/pypi/antlr4-python3-runtime.rkyv
+ uv_client::cached_client::from_path_sync path="/home/hideakitai/.cache/uv/simple-v12/pypi/antlr4-python3-runtime.rkyv"
+        5.291577s   1ms DEBUG uv_client::cached_client Found stale response for: https://pypi.org/simple/antlr4-python3-runtime/
+        5.291601s   1ms DEBUG uv_client::cached_client Sending revalidation request for: https://pypi.org/simple/antlr4-python3-runtime/
+       uv_client::cached_client::revalidation_request url="https://pypi.org/simple/antlr4-python3-runtime/"
+        5.297790s   8ms DEBUG uv_client::cached_client Found not-modified response for: https://pypi.org/simple/antlr4-python3-runtime/
+       uv_client::cached_client::refresh_cache file=/home/hideakitai/.cache/uv/simple-v12/pypi/antlr4-python3-runtime.rkyv
+   uv_resolver::version_map::from_metadata
+      5.298317s 161ms DEBUG uv_resolver::resolver Searching for a compatible version of antlr4-python3-runtime (>=4.9.dev0, <4.10.dev0)
+      5.298393s 161ms DEBUG uv_resolver::resolver Selecting: antlr4-python3-runtime==4.9.3 [compatible] (antlr4-python3-runtime-4.9.3.tar.gz)
+   uv_distribution::distribution_database::get_or_build_wheel_metadata dist=antlr4-python3-runtime==4.9.3
+   uv_resolver::resolver::get_dependencies_forking package=antlr4-python3-runtime, version=4.9.3
+     uv_resolver::resolver::get_dependencies package=antlr4-python3-runtime, version=4.9.3
+    5.298562s DEBUG uv_fs Acquired lock for `/home/hideakitai/.cache/uv/built-wheels-v3/pypi/antlr4-python3-runtime/4.9.3`
+     uv_client::cached_client::get_serde
+       uv_client::cached_client::get_cacheable
+         uv_client::cached_client::read_and_parse_cache file=/home/hideakitai/.cache/uv/built-wheels-v3/pypi/antlr4-python3-runtime/4.9.3/revision.http
+ uv_client::cached_client::from_path_sync path="/home/hideakitai/.cache/uv/built-wheels-v3/pypi/antlr4-python3-runtime/4.9.3/revision.http"
+          5.299650s   0ms DEBUG uv_client::cached_client Found fresh response for: https://files.pythonhosted.org/packages/3e/38/7859ff46355f76f8d19459005ca000b6e7012f2f1ca597746cbcd1fbfe5e/antlr4-python3-runtime-4.9.3.tar.gz
+      5.300048s   1ms DEBUG uv_distribution::source No static `pyproject.toml` available for: antlr4-python3-runtime==4.9.3 (MissingPyprojectToml)
+      5.300443s   2ms DEBUG uv_distribution::source No static `PKG-INFO` available for: antlr4-python3-runtime==4.9.3 (PkgInfo(UnsupportedMetadataVersion("1.0")))
+      5.300744s   2ms DEBUG uv_distribution::source No static `egg-info` available for: antlr4-python3-runtime==4.9.3 (MissingEggInfo)
+      5.301208s   2ms DEBUG uv_distribution::source Using cached metadata for: antlr4-python3-runtime==4.9.3
+      5.301234s   2ms DEBUG uv_fs Released lock at `/home/hideakitai/.cache/uv/built-wheels-v3/pypi/antlr4-python3-runtime/4.9.3/.lock`
+   uv_resolver::resolver::choose_version package=omegaconf
+       uv_client::cached_client::new_cache file=/home/hideakitai/.cache/uv/simple-v12/index/0683d010c15737d1/markupsafe.rkyv
+       uv_client::registry_client::parse_simple_api package=markupsafe
+         uv_client::html::parse url=https://download.pytorch.org/whl/cu118/markupsafe/
+   uv_resolver::version_map::from_metadata
+   uv_distribution::distribution_database::get_or_build_wheel_metadata dist=markupsafe==2.1.5
+     uv_client::registry_client::wheel_metadata built_dist=markupsafe==2.1.5
+       uv_client::cached_client::get_serde
+         uv_client::cached_client::get_cacheable
+           uv_client::cached_client::read_and_parse_cache file=/home/hideakitai/.cache/uv/wheels-v1/index/0683d010c15737d1/markupsafe/markupsafe-2.1.5-cp312-cp312-macosx_10_9_universal2.msgpack
+ uv_client::cached_client::from_path_sync path="/home/hideakitai/.cache/uv/wheels-v1/index/0683d010c15737d1/markupsafe/markupsafe-2.1.5-cp312-cp312-macosx_10_9_universal2.msgpack"
+            5.303164s   0ms DEBUG uv_client::cached_client Found stale response for: https://download.pytorch.org/whl/MarkupSafe-2.1.5-cp312-cp312-macosx_10_9_universal2.whl#sha256=8dec4936e9c3100156f8a2dc89c4b88d5c435175ff03413b443469c7c8c5f4d1
+            5.303182s   0ms DEBUG uv_client::cached_client Sending revalidation request for: https://download.pytorch.org/whl/MarkupSafe-2.1.5-cp312-cp312-macosx_10_9_universal2.whl#sha256=8dec4936e9c3100156f8a2dc89c4b88d5c435175ff03413b443469c7c8c5f4d1
+           uv_client::cached_client::revalidation_request url="https://download.pytorch.org/whl/MarkupSafe-2.1.5-cp312-cp312-macosx_10_9_universal2.whl#sha256=8dec4936e9c3100156f8a2dc89c4b88d5c435175ff03413b443469c7c8c5f4d1"
+       uv_client::cached_client::new_cache file=/home/hideakitai/.cache/uv/simple-v12/index/0683d010c15737d1/colorama.rkyv
+       uv_client::registry_client::parse_simple_api package=colorama
+         uv_client::html::parse url=https://download.pytorch.org/whl/cu118/colorama/
+   uv_resolver::version_map::from_metadata
+       uv_client::cached_client::new_cache file=/home/hideakitai/.cache/uv/simple-v12/index/0683d010c15737d1/mpmath.rkyv
+       uv_client::registry_client::parse_simple_api package=mpmath
+         uv_client::html::parse url=https://download.pytorch.org/whl/cu118/mpmath/
+   uv_resolver::version_map::from_metadata
+   uv_distribution::distribution_database::get_or_build_wheel_metadata dist=mpmath==1.3.0
+     uv_client::registry_client::wheel_metadata built_dist=mpmath==1.3.0
+       uv_client::cached_client::get_serde
+         uv_client::cached_client::get_cacheable
+           uv_client::cached_client::read_and_parse_cache file=/home/hideakitai/.cache/uv/wheels-v1/index/0683d010c15737d1/mpmath/mpmath-1.3.0-py3-none-any.msgpack
+ uv_client::cached_client::from_path_sync path="/home/hideakitai/.cache/uv/wheels-v1/index/0683d010c15737d1/mpmath/mpmath-1.3.0-py3-none-any.msgpack"
+            5.307369s   0ms DEBUG uv_client::cached_client Found stale response for: https://download.pytorch.org/whl/mpmath-1.3.0-py3-none-any.whl#sha256=a0b2b9fe80bbcd81a6647ff13108738cfb482d481d826cc0e02f5b35e5c88d2c
+            5.307389s   0ms DEBUG uv_client::cached_client Sending revalidation request for: https://download.pytorch.org/whl/mpmath-1.3.0-py3-none-any.whl#sha256=a0b2b9fe80bbcd81a6647ff13108738cfb482d481d826cc0e02f5b35e5c88d2c
+           uv_client::cached_client::revalidation_request url="https://download.pytorch.org/whl/mpmath-1.3.0-py3-none-any.whl#sha256=a0b2b9fe80bbcd81a6647ff13108738cfb482d481d826cc0e02f5b35e5c88d2c"
+            5.310225s   7ms DEBUG uv_client::cached_client Found not-modified response for: https://download.pytorch.org/whl/MarkupSafe-2.1.5-cp312-cp312-macosx_10_9_universal2.whl#sha256=8dec4936e9c3100156f8a2dc89c4b88d5c435175ff03413b443469c7c8c5f4d1
+           uv_client::cached_client::refresh_cache file=/home/hideakitai/.cache/uv/wheels-v1/index/0683d010c15737d1/markupsafe/markupsafe-2.1.5-cp312-cp312-macosx_10_9_universal2.msgpack
+            5.314019s   6ms DEBUG uv_client::cached_client Found not-modified response for: https://download.pytorch.org/whl/mpmath-1.3.0-py3-none-any.whl#sha256=a0b2b9fe80bbcd81a6647ff13108738cfb482d481d826cc0e02f5b35e5c88d2c
+           uv_client::cached_client::refresh_cache file=/home/hideakitai/.cache/uv/wheels-v1/index/0683d010c15737d1/mpmath/mpmath-1.3.0-py3-none-any.msgpack
+     uv_client::cached_client::get_cacheable
+       uv_client::cached_client::read_and_parse_cache file=/home/hideakitai/.cache/uv/simple-v12/pypi/omegaconf.rkyv
+ uv_client::cached_client::from_path_sync path="/home/hideakitai/.cache/uv/simple-v12/pypi/omegaconf.rkyv"
+        5.725592s   3ms DEBUG uv_client::cached_client Found stale response for: https://pypi.org/simple/omegaconf/
+        5.725624s   3ms DEBUG uv_client::cached_client Sending revalidation request for: https://pypi.org/simple/omegaconf/
+       uv_client::cached_client::revalidation_request url="https://pypi.org/simple/omegaconf/"
+        5.731194s   8ms DEBUG uv_client::cached_client Found not-modified response for: https://pypi.org/simple/omegaconf/
+       uv_client::cached_client::refresh_cache file=/home/hideakitai/.cache/uv/simple-v12/pypi/omegaconf.rkyv
+   uv_resolver::version_map::from_metadata
+      5.732243s 430ms DEBUG uv_resolver::resolver Searching for a compatible version of omegaconf (>=2.2, <2.4)
+      5.732315s 431ms DEBUG uv_resolver::resolver Selecting: omegaconf==2.3.0 [compatible] (omegaconf-2.3.0-py3-none-any.whl)
+   uv_distribution::distribution_database::get_or_build_wheel_metadata dist=omegaconf==2.3.0
+     uv_client::registry_client::wheel_metadata built_dist=omegaconf==2.3.0
+   uv_resolver::resolver::get_dependencies_forking package=omegaconf, version=2.3.0
+     uv_resolver::resolver::get_dependencies package=omegaconf, version=2.3.0
+       uv_client::cached_client::get_serde
+         uv_client::cached_client::get_cacheable
+           uv_client::cached_client::read_and_parse_cache file=/home/hideakitai/.cache/uv/wheels-v1/pypi/omegaconf/omegaconf-2.3.0-py3-none-any.msgpack
+ uv_client::cached_client::from_path_sync path="/home/hideakitai/.cache/uv/wheels-v1/pypi/omegaconf/omegaconf-2.3.0-py3-none-any.msgpack"
+            5.732909s   0ms DEBUG uv_client::cached_client Found fresh response for: https://files.pythonhosted.org/packages/e3/94/1843518e420fa3ed6919835845df698c7e27e183cb997394e4a670973a65/omegaconf-2.3.0-py3-none-any.whl.metadata
+    5.733032s   2s  DEBUG uv_resolver::resolver Adding transitive dependency for omegaconf==2.3.0: antlr4-python3-runtime>=4.9.dev0, <4.10.dev0
+    5.733064s   2s  DEBUG uv_resolver::resolver Adding transitive dependency for omegaconf==2.3.0: pyyaml>=5.1.0
+ uv_resolver::resolver::process_request request=Versions pyyaml
+   uv_client::registry_client::simple_api package=pyyaml
+   uv_resolver::resolver::choose_version package=packaging
+     uv_client::cached_client::get_cacheable
+       uv_client::cached_client::read_and_parse_cache file=/home/hideakitai/.cache/uv/simple-v12/index/0683d010c15737d1/pyyaml.rkyv
+ uv_resolver::resolver::process_request request=Prefetch pyyaml >=5.1.0
+ uv_client::cached_client::from_path_sync path="/home/hideakitai/.cache/uv/simple-v12/index/0683d010c15737d1/pyyaml.rkyv"
+        5.733333s   0ms DEBUG uv_client::cached_client No cache entry for: https://download.pytorch.org/whl/cu118/pyyaml/
+       uv_client::cached_client::fresh_request url="https://download.pytorch.org/whl/cu118/pyyaml/"
+     uv_client::cached_client::get_cacheable
+       uv_client::cached_client::read_and_parse_cache file=/home/hideakitai/.cache/uv/simple-v12/pypi/portalocker.rkyv
+ uv_client::cached_client::from_path_sync path="/home/hideakitai/.cache/uv/simple-v12/pypi/portalocker.rkyv"
+        5.742246s   0ms DEBUG uv_client::cached_client Found stale response for: https://pypi.org/simple/portalocker/
+        5.742264s   0ms DEBUG uv_client::cached_client Sending revalidation request for: https://pypi.org/simple/portalocker/
+       uv_client::cached_client::revalidation_request url="https://pypi.org/simple/portalocker/"
+        5.747338s   5ms DEBUG uv_client::cached_client Found not-modified response for: https://pypi.org/simple/portalocker/
+       uv_client::cached_client::refresh_cache file=/home/hideakitai/.cache/uv/simple-v12/pypi/portalocker.rkyv
+   uv_resolver::version_map::from_metadata
+   uv_distribution::distribution_database::get_or_build_wheel_metadata dist=portalocker==2.10.1
+     uv_client::registry_client::wheel_metadata built_dist=portalocker==2.10.1
+       uv_client::cached_client::get_serde
+         uv_client::cached_client::get_cacheable
+           uv_client::cached_client::read_and_parse_cache file=/home/hideakitai/.cache/uv/wheels-v1/pypi/portalocker/portalocker-2.10.1-py3-none-any.msgpack
+ uv_client::cached_client::from_path_sync path="/home/hideakitai/.cache/uv/wheels-v1/pypi/portalocker/portalocker-2.10.1-py3-none-any.msgpack"
+            5.748398s   0ms DEBUG uv_client::cached_client Found fresh response for: https://files.pythonhosted.org/packages/9b/fb/a70a4214956182e0d7a9099ab17d50bfcba1056188e9b14f35b9e2b62a0d/portalocker-2.10.1-py3-none-any.whl.metadata
+       uv_client::cached_client::new_cache file=/home/hideakitai/.cache/uv/simple-v12/index/0683d010c15737d1/packaging.rkyv
+       uv_client::registry_client::parse_simple_api package=packaging
+         uv_client::html::parse url=https://download.pytorch.org/whl/cu118/packaging/
+   uv_resolver::version_map::from_metadata
+   uv_distribution::distribution_database::get_or_build_wheel_metadata dist=packaging==22.0
+     uv_client::registry_client::wheel_metadata built_dist=packaging==22.0
+      5.749990s  16ms DEBUG uv_resolver::resolver Searching for a compatible version of packaging (*)
+      5.750046s  16ms DEBUG uv_resolver::resolver Selecting: packaging==22.0 [compatible] (packaging-22.0-py3-none-any.whl)
+       uv_client::cached_client::get_serde
+         uv_client::cached_client::get_cacheable
+           uv_client::cached_client::read_and_parse_cache file=/home/hideakitai/.cache/uv/wheels-v1/index/0683d010c15737d1/packaging/packaging-22.0-py3-none-any.msgpack
+   uv_resolver::resolver::get_dependencies_forking package=packaging, version=22.0
+     uv_resolver::resolver::get_dependencies package=packaging, version=22.0
+ uv_client::cached_client::from_path_sync path="/home/hideakitai/.cache/uv/wheels-v1/index/0683d010c15737d1/packaging/packaging-22.0-py3-none-any.msgpack"
+            5.750495s   0ms DEBUG uv_client::cached_client Found stale response for: https://download.pytorch.org/whl/packaging-22.0-py3-none-any.whl#sha256=957e2148ba0e1a3b282772e791ef1d8083648bc131c8ab0c1feba110ce1146c3
+            5.750513s   0ms DEBUG uv_client::cached_client Sending revalidation request for: https://download.pytorch.org/whl/packaging-22.0-py3-none-any.whl#sha256=957e2148ba0e1a3b282772e791ef1d8083648bc131c8ab0c1feba110ce1146c3
+           uv_client::cached_client::revalidation_request url="https://download.pytorch.org/whl/packaging-22.0-py3-none-any.whl#sha256=957e2148ba0e1a3b282772e791ef1d8083648bc131c8ab0c1feba110ce1146c3"
+            5.757441s   7ms DEBUG uv_client::cached_client Found not-modified response for: https://download.pytorch.org/whl/packaging-22.0-py3-none-any.whl#sha256=957e2148ba0e1a3b282772e791ef1d8083648bc131c8ab0c1feba110ce1146c3
+           uv_client::cached_client::refresh_cache file=/home/hideakitai/.cache/uv/wheels-v1/index/0683d010c15737d1/packaging/packaging-22.0-py3-none-any.msgpack
+   uv_resolver::resolver::choose_version package=portalocker
+      5.758117s   0ms DEBUG uv_resolver::resolver Searching for a compatible version of portalocker (*)
+      5.758125s   0ms DEBUG uv_resolver::resolver Selecting: portalocker==2.10.1 [compatible] (portalocker-2.10.1-py3-none-any.whl)
+   uv_resolver::resolver::get_dependencies_forking package=portalocker, version=2.10.1
+     uv_resolver::resolver::get_dependencies package=portalocker, version=2.10.1
+    5.758207s   2s  DEBUG uv_resolver::resolver Adding transitive dependency for portalocker==2.10.1: pywin32{platform_system == 'Windows'}>=226
+ uv_resolver::resolver::process_request request=Versions pywin32
+   uv_client::registry_client::simple_api package=pywin32
+   uv_resolver::resolver::choose_version package=colorama{platform_system == 'Windows'}
+      5.758360s   0ms DEBUG uv_resolver::resolver Searching for a compatible version of colorama{platform_system == 'Windows'} (*)
+      5.758395s   0ms DEBUG uv_resolver::resolver Selecting: colorama==0.4.6 [compatible] (colorama-0.4.6-py2.py3-none-any.whl)
+   uv_resolver::resolver::get_dependencies_forking package=colorama{platform_system == 'Windows'}, version=0.4.6
+     uv_resolver::resolver::get_dependencies package=colorama{platform_system == 'Windows'}, version=0.4.6
+    5.758493s   2s  DEBUG uv_resolver::resolver Adding transitive dependency for colorama==0.4.6: colorama==0.4.6
+    5.758541s   2s  DEBUG uv_resolver::resolver Adding transitive dependency for colorama==0.4.6: colorama{platform_system == 'Windows'}==0.4.6
+     uv_client::cached_client::get_cacheable
+       uv_client::cached_client::read_and_parse_cache file=/home/hideakitai/.cache/uv/simple-v12/index/0683d010c15737d1/pywin32.rkyv
+   uv_resolver::resolver::choose_version package=colorama{platform_system == 'Windows'}
+      5.758673s   0ms DEBUG uv_resolver::resolver Searching for a compatible version of colorama{platform_system == 'Windows'} (==0.4.6)
+      5.758709s   0ms DEBUG uv_resolver::resolver Selecting: colorama==0.4.6 [compatible] (colorama-0.4.6-py2.py3-none-any.whl)
+ uv_resolver::resolver::process_request request=Prefetch colorama ==0.4.6
+ uv_client::cached_client::from_path_sync path="/home/hideakitai/.cache/uv/simple-v12/index/0683d010c15737d1/pywin32.rkyv"
+ uv_resolver::resolver::process_request request=Metadata colorama==0.4.6
+   uv_distribution::distribution_database::get_or_build_wheel_metadata dist=colorama==0.4.6
+     uv_client::registry_client::wheel_metadata built_dist=colorama==0.4.6
+       uv_client::cached_client::get_serde
+         uv_client::cached_client::get_cacheable
+           uv_client::cached_client::read_and_parse_cache file=/home/hideakitai/.cache/uv/wheels-v1/index/0683d010c15737d1/colorama/colorama-0.4.6-py2.py3-none-any.msgpack
+        5.759017s   0ms DEBUG uv_client::cached_client No cache entry for: https://download.pytorch.org/whl/cu118/pywin32/
+       uv_client::cached_client::fresh_request url="https://download.pytorch.org/whl/cu118/pywin32/"
+ uv_client::cached_client::from_path_sync path="/home/hideakitai/.cache/uv/wheels-v1/index/0683d010c15737d1/colorama/colorama-0.4.6-py2.py3-none-any.msgpack"
+   uv_resolver::resolver::get_dependencies_forking package=colorama{platform_system == 'Windows'}, version=0.4.6
+     uv_resolver::resolver::get_dependencies package=colorama{platform_system == 'Windows'}, version=0.4.6
+            5.759380s   0ms DEBUG uv_client::cached_client Found stale response for: https://download.pytorch.org/whl/colorama-0.4.6-py2.py3-none-any.whl#sha256=4f1d9991f5acc0ca119f9d443620b77f9d6b33703e51011c16baf57afb285fc6
+            5.759398s   0ms DEBUG uv_client::cached_client Sending revalidation request for: https://download.pytorch.org/whl/colorama-0.4.6-py2.py3-none-any.whl#sha256=4f1d9991f5acc0ca119f9d443620b77f9d6b33703e51011c16baf57afb285fc6
+           uv_client::cached_client::revalidation_request url="https://download.pytorch.org/whl/colorama-0.4.6-py2.py3-none-any.whl#sha256=4f1d9991f5acc0ca119f9d443620b77f9d6b33703e51011c16baf57afb285fc6"
+            5.766026s   7ms DEBUG uv_client::cached_client Found not-modified response for: https://download.pytorch.org/whl/colorama-0.4.6-py2.py3-none-any.whl#sha256=4f1d9991f5acc0ca119f9d443620b77f9d6b33703e51011c16baf57afb285fc6
+           uv_client::cached_client::refresh_cache file=/home/hideakitai/.cache/uv/wheels-v1/index/0683d010c15737d1/colorama/colorama-0.4.6-py2.py3-none-any.msgpack
+   uv_resolver::resolver::choose_version package=colorama
+      5.766572s   0ms DEBUG uv_resolver::resolver Searching for a compatible version of colorama (==0.4.6)
+      5.766578s   0ms DEBUG uv_resolver::resolver Selecting: colorama==0.4.6 [compatible] (colorama-0.4.6-py2.py3-none-any.whl)
+   uv_resolver::resolver::get_dependencies_forking package=colorama, version=0.4.6
+     uv_resolver::resolver::get_dependencies package=colorama, version=0.4.6
+   uv_resolver::resolver::choose_version package=markupsafe
+      5.766616s   0ms DEBUG uv_resolver::resolver Searching for a compatible version of markupsafe (>=2.0)
+      5.766621s   0ms DEBUG uv_resolver::resolver Selecting: markupsafe==2.1.5 [preference] (MarkupSafe-2.1.5-cp312-cp312-macosx_10_9_universal2.whl)
+   uv_resolver::resolver::get_dependencies_forking package=markupsafe, version=2.1.5
+     uv_resolver::resolver::get_dependencies package=markupsafe, version=2.1.5
+   uv_resolver::resolver::choose_version package=mpmath
+      5.766662s   0ms DEBUG uv_resolver::resolver Searching for a compatible version of mpmath (>=0.19)
+      5.766666s   0ms DEBUG uv_resolver::resolver Selecting: mpmath==1.3.0 [preference] (mpmath-1.3.0-py3-none-any.whl)
+   uv_resolver::resolver::get_dependencies_forking package=mpmath, version=1.3.0
+     uv_resolver::resolver::get_dependencies package=mpmath, version=1.3.0
+   uv_resolver::resolver::choose_version package=pyyaml
+     uv_client::cached_client::get_cacheable
+       uv_client::cached_client::read_and_parse_cache file=/home/hideakitai/.cache/uv/simple-v12/pypi/pywin32.rkyv
+ uv_client::cached_client::from_path_sync path="/home/hideakitai/.cache/uv/simple-v12/pypi/pywin32.rkyv"
+        5.922475s   3ms DEBUG uv_client::cached_client Found stale response for: https://pypi.org/simple/pywin32/
+        5.922522s   3ms DEBUG uv_client::cached_client Sending revalidation request for: https://pypi.org/simple/pywin32/
+       uv_client::cached_client::revalidation_request url="https://pypi.org/simple/pywin32/"
+        5.929142s  10ms DEBUG uv_client::cached_client Found not-modified response for: https://pypi.org/simple/pywin32/
+       uv_client::cached_client::refresh_cache file=/home/hideakitai/.cache/uv/simple-v12/pypi/pywin32.rkyv
+   uv_resolver::version_map::from_metadata
+     uv_client::cached_client::get_cacheable
+       uv_client::cached_client::read_and_parse_cache file=/home/hideakitai/.cache/uv/simple-v12/pypi/pyyaml.rkyv
+ uv_client::cached_client::from_path_sync path="/home/hideakitai/.cache/uv/simple-v12/pypi/pyyaml.rkyv"
+        6.321175s   3ms DEBUG uv_client::cached_client Found stale response for: https://pypi.org/simple/pyyaml/
+        6.321200s   3ms DEBUG uv_client::cached_client Sending revalidation request for: https://pypi.org/simple/pyyaml/
+       uv_client::cached_client::revalidation_request url="https://pypi.org/simple/pyyaml/"
+        6.327657s   9ms DEBUG uv_client::cached_client Found not-modified response for: https://pypi.org/simple/pyyaml/
+       uv_client::cached_client::refresh_cache file=/home/hideakitai/.cache/uv/simple-v12/pypi/pyyaml.rkyv
+   uv_resolver::version_map::from_metadata
+   uv_distribution::distribution_database::get_or_build_wheel_metadata dist=pyyaml==6.0.2
+     uv_client::registry_client::wheel_metadata built_dist=pyyaml==6.0.2
+       uv_client::cached_client::get_serde
+         uv_client::cached_client::get_cacheable
+      6.328573s 561ms DEBUG uv_resolver::resolver Searching for a compatible version of pyyaml (>=5.1.0)
+           uv_client::cached_client::read_and_parse_cache file=/home/hideakitai/.cache/uv/wheels-v1/pypi/pyyaml/pyyaml-6.0.2-cp312-cp312-macosx_10_9_x86_64.msgpack
+      6.328882s 562ms DEBUG uv_resolver::resolver Selecting: pyyaml==6.0.2 [compatible] (PyYAML-6.0.2-cp312-cp312-macosx_10_9_x86_64.whl)
+ uv_client::cached_client::from_path_sync path="/home/hideakitai/.cache/uv/wheels-v1/pypi/pyyaml/pyyaml-6.0.2-cp312-cp312-macosx_10_9_x86_64.msgpack"
+   uv_resolver::resolver::get_dependencies_forking package=pyyaml, version=6.0.2
+     uv_resolver::resolver::get_dependencies package=pyyaml, version=6.0.2
+            6.329459s   0ms DEBUG uv_client::cached_client Found fresh response for: https://files.pythonhosted.org/packages/86/0c/c581167fc46d6d6d7ddcfb8c843a4de25bdd27e4466938109ca68492292c/PyYAML-6.0.2-cp312-cp312-macosx_10_9_x86_64.whl.metadata
+   uv_resolver::resolver::choose_version package=pywin32{platform_system == 'Windows'}
+      6.329581s   0ms DEBUG uv_resolver::resolver Searching for a compatible version of pywin32{platform_system == 'Windows'} (>=226)
+      6.329630s   0ms DEBUG uv_resolver::resolver Selecting: pywin32==306 [compatible] (pywin32-306-cp312-cp312-win32.whl)
+   uv_resolver::resolver::get_dependencies_forking package=pywin32{platform_system == 'Windows'}, version=306
+     uv_resolver::resolver::get_dependencies package=pywin32{platform_system == 'Windows'}, version=306
+    6.329660s   2s  DEBUG uv_resolver::resolver Adding transitive dependency for pywin32==306: pywin32==306
+    6.329664s   2s  DEBUG uv_resolver::resolver Adding transitive dependency for pywin32==306: pywin32{platform_system == 'Windows'}==306
+   uv_resolver::resolver::choose_version package=pywin32{platform_system == 'Windows'}
+      6.329711s   0ms DEBUG uv_resolver::resolver Searching for a compatible version of pywin32{platform_system == 'Windows'} (==306)
+ uv_resolver::resolver::process_request request=Prefetch pywin32 ==306
+      6.329719s   0ms DEBUG uv_resolver::resolver Selecting: pywin32==306 [compatible] (pywin32-306-cp312-cp312-win32.whl)
+   uv_distribution::distribution_database::get_or_build_wheel_metadata dist=pywin32==306
+   uv_resolver::resolver::get_dependencies_forking package=pywin32{platform_system == 'Windows'}, version=306
+     uv_client::registry_client::wheel_metadata built_dist=pywin32==306
+     uv_resolver::resolver::get_dependencies package=pywin32{platform_system == 'Windows'}, version=306
+       uv_client::cached_client::get_serde
+         uv_client::cached_client::get_cacheable
+           uv_client::cached_client::read_and_parse_cache file=/home/hideakitai/.cache/uv/wheels-v1/pypi/pywin32/pywin32-306-cp312-cp312-win32.msgpack
+ uv_client::cached_client::from_path_sync path="/home/hideakitai/.cache/uv/wheels-v1/pypi/pywin32/pywin32-306-cp312-cp312-win32.msgpack"
+            6.330109s   0ms DEBUG uv_client::cached_client Found fresh response for: https://files.pythonhosted.org/packages/14/91/17e016d5923e178346aabda3dfec6629d1a26efe587d19667542105cf0a6/pywin32-306-cp312-cp312-win32.whl.metadata
+   uv_resolver::resolver::choose_version package=pywin32
+      6.330536s   0ms DEBUG uv_resolver::resolver Searching for a compatible version of pywin32 (==306)
+      6.330668s   0ms DEBUG uv_resolver::resolver Selecting: pywin32==306 [compatible] (pywin32-306-cp312-cp312-win32.whl)
+   uv_resolver::resolver::get_dependencies_forking package=pywin32, version=306
+     uv_resolver::resolver::get_dependencies package=pywin32, version=306
+    6.331099s   2s  DEBUG uv_resolver::resolver::batch_prefetch Tried 38 versions: antlr4-python3-runtime 1, colorama 1, filelock 1, fsspec 1, hydra-core 1, iopath 1, jinja2 1, markupsafe 1, mpmath 1, networkx 1, numpy 1, nvidia-cublas-cu11 1, nvidia-cuda-cupti-cu11 1, nvidia-cuda-nvrtc-cu11 1, nvidia-cuda-runtime-cu11 1, nvidia-cudnn-cu11
+1, nvidia-cufft-cu11 1, nvidia-curand-cu11 1, nvidia-cusolver-cu11 1, nvidia-cusparse-cu11 1, nvidia-nccl-cu11 1,
+nvidia-nvtx-cu11 1, omegaconf 1, packaging 1, pillow 1, portalocker 1, pywin32 1, pyyaml 1, sam-2 1, setuptools 1, sympy 1, test-sam2-with-uv-no-build-deps 1, torch 1, torchvision 1, tqdm 1, triton 1, typing-extensions 1, wheel
+1
+    6.331239s   2s  DEBUG uv_resolver::resolver Split universal resolution took 2.764s
+Resolved 38 packages in 6.31s
+ uv_client::linehaul::linehaul
+    6.334875s DEBUG uv_client::base_client Using request timeout of 30s
+ uv_resolver::flat_index::from_entries
+    6.335140s DEBUG uv_installer::plan Requirement already installed: filelock==3.13.1
+    6.335163s DEBUG uv_installer::plan Requirement already installed: fsspec==2024.2.0
+    6.335166s DEBUG uv_installer::plan Requirement already installed: jinja2==3.1.3
+    6.335167s DEBUG uv_installer::plan Requirement already installed: markupsafe==2.1.5
+    6.335169s DEBUG uv_installer::plan Requirement already installed: mpmath==1.3.0
+    6.335199s DEBUG uv_installer::plan Requirement already installed: networkx==3.2.1
+    6.335214s DEBUG uv_installer::plan Requirement already installed: numpy==1.26.3
+    6.335217s DEBUG uv_installer::plan Requirement already installed: nvidia-cublas-cu11==11.11.3.6
+    6.335219s DEBUG uv_installer::plan Requirement already installed: nvidia-cuda-cupti-cu11==11.8.87
+    6.335221s DEBUG uv_installer::plan Requirement already installed: nvidia-cuda-nvrtc-cu11==11.8.89
+    6.335222s DEBUG uv_installer::plan Requirement already installed: nvidia-cuda-runtime-cu11==11.8.89
+    6.335224s DEBUG uv_installer::plan Requirement already installed: nvidia-cudnn-cu11==9.1.0.70
+    6.335225s DEBUG uv_installer::plan Requirement already installed: nvidia-cufft-cu11==10.9.0.58
+    6.335227s DEBUG uv_installer::plan Requirement already installed: nvidia-curand-cu11==10.3.0.86
+    6.335228s DEBUG uv_installer::plan Requirement already installed: nvidia-cusolver-cu11==11.4.1.48
+    6.335230s DEBUG uv_installer::plan Requirement already installed: nvidia-cusparse-cu11==11.7.5.86
+    6.335231s DEBUG uv_installer::plan Requirement already installed: nvidia-nccl-cu11==2.20.5
+    6.335233s DEBUG uv_installer::plan Requirement already installed: nvidia-nvtx-cu11==11.8.86
+    6.335235s DEBUG uv_installer::plan Requirement already installed: pillow==10.2.0
+    6.335236s DEBUG uv_installer::plan Requirement already installed: setuptools==70.0.0
+    6.335239s DEBUG uv_installer::plan Requirement already installed: sympy==1.12
+    6.335241s DEBUG uv_installer::plan Requirement already installed: torch==2.4.0+cu118
+    6.335259s DEBUG uv_installer::plan Requirement already installed: torchvision==0.19.0+cu118
+    6.335261s DEBUG uv_installer::plan Requirement already installed: triton==3.0.0
+    6.335262s DEBUG uv_installer::plan Requirement already installed: typing-extensions==4.9.0
+    6.335273s DEBUG uv_installer::plan Unnecessary package: wheel==0.44.0
+    6.336140s DEBUG uv::commands::pip::operations Uninstalled wheel (37 files, 9 directories)
+Uninstalled 1 package in 0.88ms
+ - wheel==0.44.0
+```
+
+
+</p>
+</details> 
+
+---
+
+_Comment by @hideakitai on 2024-09-03 15:36_
+
+Oh, it was my mistake... I should run `uv sync --extra sam` instead of `uv sync --extra sam-2`!!! (`sam-2` should be `sam`) Now sam-2 worked!
+
+---
+
+_Comment by @hideakitai on 2024-09-03 15:46_
+
+> For some reason, at uv sync --extra build, it seems to be trying to install sam-2 as well, and I get an error that setuptools is not installed.
+
+One thing I would like to see `uv` improve is that `uv sync --extra build` does not work if you define optional dependencies (`build` `sam`). This may be related to this issue.
+
+https://github.com/astral-sh/uv/issues/6729
+
+---
+
+_Comment by @hideakitai on 2024-09-03 16:11_
+
+Finally, here is the log of successfully getting the segment-anything-2 demo notebooks to work with uv. Thank you very much for your valuable time! @bluss 
+
+```bash
+❯ uv --version
+uv 0.4.3
+
+❯ uv init test_sam2_with_uv_no_build_deps -p 3.12
+Initialized project `test-sam2-with-uv-no-build-deps` at `/home/hideakitai/develop/ml/sandbox/test_sam2_with_uv_no_build_deps`
+
+❯ cd test_sam2_with_uv_no_build_deps/
+
+❯ uv python pin 3.12.5
+Pinned `.python-version` to `3.12.5`
+
+❯ git clone https://github.com/facebookresearch/segment-anything-2.git
+Cloning into 'segment-anything-2'...
+remote: Enumerating objects: 510, done.
+remote: Total 510 (delta 0), reused 0 (delta 0), pack-reused 510 (from 1)
+Receiving objects: 100% (510/510), 88.46 MiB | 7.21 MiB/s, done.
+Resolving deltas: 100% (156/156), done.
+
+❯ nvim pyproject.toml
+
+❯ cat pyproject.toml
+[project]
+name = "test-sam2-with-uv-no-build-deps"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = []
+
+[project.optional-dependencies]
+build = [
+    "torch==2.4.0+cu118",
+    "torchvision==0.19.0+cu118",
+    "setuptools>=70.0.0",
+    "wheel>=0.44.0",
+]
+# sam-2 = [
+#     "sam-2",
+#     "opencv-python>=4.10.0",
+# ]
+sam-2-demo = [
+    "jupyterlab>=4.1.6",
+    "matplotlib>=3.9.2",
+]
+
+[tool.uv]
+extra-index-url = ["https://download.pytorch.org/whl/cu118"]
+override-dependencies = ["tqdm>=4.64.1"]
+no-build-isolation-package = ["sam-2"]
+
+[tool.uv.sources]
+sam-2 = { path = "segment-anything-2", editable = true }
+
+
+❯ uv sync --extra build
+Resolved 123 packages in 4.19s
+Prepared 1 package in 1ms
+Installed 26 packages in 255ms
+ + filelock==3.13.1
+ + fsspec==2024.2.0
+ + jinja2==3.1.3
+ + markupsafe==2.1.5
+ + mpmath==1.3.0
+ + networkx==3.2.1
+ + numpy==1.26.3
+ + nvidia-cublas-cu11==11.11.3.6
+ + nvidia-cuda-cupti-cu11==11.8.87
+ + nvidia-cuda-nvrtc-cu11==11.8.89
+ + nvidia-cuda-runtime-cu11==11.8.89
+ + nvidia-cudnn-cu11==9.1.0.70
+ + nvidia-cufft-cu11==10.9.0.58
+ + nvidia-curand-cu11==10.3.0.86
+ + nvidia-cusolver-cu11==11.4.1.48
+ + nvidia-cusparse-cu11==11.7.5.86
+ + nvidia-nccl-cu11==2.20.5
+ + nvidia-nvtx-cu11==11.8.86
+ + pillow==10.2.0
+ + setuptools==70.0.0
+ + sympy==1.12
+ + torch==2.4.0+cu118
+ + torchvision==0.19.0+cu118
+ + triton==3.0.0
+ + typing-extensions==4.9.0
+ + wheel==0.44.0
+
+❯ nvim pyproject.toml
+
+❯ cat pyproject.toml
+[project]
+name = "test-sam2-with-uv-no-build-deps"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = []
+
+[project.optional-dependencies]
+build = [
+    "torch==2.4.0+cu118",
+    "torchvision==0.19.0+cu118",
+    "setuptools>=70.0.0",
+    "wheel>=0.44.0",
+]
+sam-2 = [
+    "sam-2",
+    "opencv-python>=4.10.0",
+]
+sam-2-demo = [
+    "jupyterlab>=4.1.6",
+    "matplotlib>=3.9.2",
+]
+
+[tool.uv]
+extra-index-url = ["https://download.pytorch.org/whl/cu118"]
+override-dependencies = ["tqdm>=4.64.1"]
+no-build-isolation-package = ["sam-2"]
+
+[tool.uv.sources]
+sam-2 = { path = "segment-anything-2", editable = true }
+
+
+❯ uv sync --extra sam-2 --extra sam-2-demo
+Resolved 131 packages in 7.63s
+   Built sam-2 @ file:///home/hideakitai/develop/ml/sandbox/test_sam2_with_uv_no_build_deps/segment-anything-2
+Prepared 93 packages in 1.95s
+Uninstalled 1 package in 0.74ms
+Installed 100 packages in 141ms
+ + antlr4-python3-runtime==4.9.3
+ + anyio==4.4.0
+ + argon2-cffi==23.1.0
+ + argon2-cffi-bindings==21.2.0
+ + arrow==1.3.0
+ + asttokens==2.4.1
+ + async-lru==2.0.4
+ + attrs==24.2.0
+ + babel==2.16.0
+ + beautifulsoup4==4.12.3
+ + bleach==6.1.0
+ + certifi==2022.12.7
+ + cffi==1.17.0
+ + charset-normalizer==2.1.1
+ + comm==0.2.2
+ + contourpy==1.3.0
+ + cycler==0.12.1
+ + debugpy==1.8.5
+ + decorator==5.1.1
+ + defusedxml==0.7.1
+ + executing==2.1.0
+ + fastjsonschema==2.20.0
+ + fonttools==4.53.1
+ + fqdn==1.5.1
+ + h11==0.14.0
+ + httpcore==1.0.5
+ + httpx==0.27.2
+ + hydra-core==1.3.2
+ + idna==3.4
+ + iopath==0.1.10
+ + ipykernel==6.29.5
+ + ipython==8.27.0
+ + isoduration==20.11.0
+ + jedi==0.19.1
+ + json5==0.9.25
+ + jsonpointer==3.0.0
+ + jsonschema==4.23.0
+ + jsonschema-specifications==2023.12.1
+ + jupyter-client==8.6.2
+ + jupyter-core==5.7.2
+ + jupyter-events==0.10.0
+ + jupyter-lsp==2.2.5
+ + jupyter-server==2.14.2
+ + jupyter-server-terminals==0.5.3
+ + jupyterlab==4.1.6
+ + jupyterlab-pygments==0.3.0
+ + jupyterlab-server==2.24.0
+ + kiwisolver==1.4.5
+ + matplotlib==3.9.2
+ + matplotlib-inline==0.1.7
+ + mistune==3.0.2
+ + nbclient==0.10.0
+ + nbconvert==7.16.4
+ + nbformat==5.10.4
+ + nest-asyncio==1.6.0
+ + notebook-shim==0.2.4
+ + omegaconf==2.3.0
+ + opencv-python==4.10.0.84
+ + overrides==7.7.0
+ + packaging==22.0
+ + pandocfilters==1.5.1
+ + parso==0.8.4
+ + pexpect==4.9.0
+ + platformdirs==4.2.2
+ + portalocker==2.10.1
+ + prometheus-client==0.20.0
+ + prompt-toolkit==3.0.47
+ + psutil==6.0.0
+ + ptyprocess==0.7.0
+ + pure-eval==0.2.3
+ + pycparser==2.22
+ + pygments==2.18.0
+ + pyparsing==3.1.4
+ + python-dateutil==2.9.0.post0
+ + python-json-logger==2.0.7
+ + pyyaml==6.0.2
+ + pyzmq==26.2.0
+ + referencing==0.35.1
+ + requests==2.28.1
+ + rfc3339-validator==0.1.4
+ + rfc3986-validator==0.1.1
+ + rpds-py==0.20.0
+ + sam-2==1.0 (from file:///home/hideakitai/develop/ml/sandbox/test_sam2_with_uv_no_build_deps/segment-anything-2)
+ + send2trash==1.8.3
+ + six==1.16.0
+ + sniffio==1.3.1
+ + soupsieve==2.6
+ + stack-data==0.6.3
+ + terminado==0.18.1
+ + tinycss2==1.3.0
+ + tornado==6.4.1
+ + tqdm==4.64.1
+ + traitlets==5.14.3
+ + types-python-dateutil==2.9.0.20240821
+ + uri-template==1.3.0
+ + urllib3==1.26.13
+ + wcwidth==0.2.13
+ + webcolors==24.8.0
+ + webencodings==0.5.1
+ + websocket-client==1.8.0
+ - wheel==0.44.0
+ 
+❯ cd segment-anything-2/checkpoints/
+
+❯ ./download_ckpts.sh
+Downloading sam2_hiera_tiny.pt checkpoint...
+--2024-09-04 01:01:52--  https://dl.fbaipublicfiles.com/segment_anything_2/072824/sam2_hiera_tiny.pt
+Resolving dl.fbaipublicfiles.com (dl.fbaipublicfiles.com)... 3.164.121.107, 3.164.121.45, 3.164.121.115, ...
+Connecting to dl.fbaipublicfiles.com (dl.fbaipublicfiles.com)|3.164.121.107|:443... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 155906050 (149M) [application/vnd.snesdev-page-table]
+Saving to: ‘sam2_hiera_tiny.pt’
+
+sam2_hiera_tiny.pt           100%[============================================>] 148.68M  31.5MB/s    in 4.7s
+
+2024-09-04 01:01:57 (31.8 MB/s) - ‘sam2_hiera_tiny.pt’ saved [155906050/155906050]
+
+Downloading sam2_hiera_small.pt checkpoint...
+--2024-09-04 01:01:57--  https://dl.fbaipublicfiles.com/segment_anything_2/072824/sam2_hiera_small.pt
+Resolving dl.fbaipublicfiles.com (dl.fbaipublicfiles.com)... 18.65.185.33, 18.65.185.117, 18.65.185.119, ...
+Connecting to dl.fbaipublicfiles.com (dl.fbaipublicfiles.com)|18.65.185.33|:443... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 184309650 (176M) [application/vnd.snesdev-page-table]
+Saving to: ‘sam2_hiera_small.pt’
+
+sam2_hiera_small.pt          100%[============================================>] 175.77M  49.4MB/s    in 3.9s
+
+2024-09-04 01:02:01 (44.8 MB/s) - ‘sam2_hiera_small.pt’ saved [184309650/184309650]
+
+Downloading sam2_hiera_base_plus.pt checkpoint...
+--2024-09-04 01:02:01--  https://dl.fbaipublicfiles.com/segment_anything_2/072824/sam2_hiera_base_plus.pt
+Resolving dl.fbaipublicfiles.com (dl.fbaipublicfiles.com)... 18.65.185.33, 18.65.185.117, 18.65.185.119, ...
+Connecting to dl.fbaipublicfiles.com (dl.fbaipublicfiles.com)|18.65.185.33|:443... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 323493298 (309M) [application/vnd.snesdev-page-table]
+Saving to: ‘sam2_hiera_base_plus.pt’
+
+sam2_hiera_base_plus.pt      100%[============================================>] 308.51M  39.5MB/s    in 8.1s
+
+2024-09-04 01:02:09 (38.0 MB/s) - ‘sam2_hiera_base_plus.pt’ saved [323493298/323493298]
+
+Downloading sam2_hiera_large.pt checkpoint...
+--2024-09-04 01:02:09--  https://dl.fbaipublicfiles.com/segment_anything_2/072824/sam2_hiera_large.pt
+Resolving dl.fbaipublicfiles.com (dl.fbaipublicfiles.com)... 18.65.185.117, 18.65.185.119, 18.65.185.25, ...
+Connecting to dl.fbaipublicfiles.com (dl.fbaipublicfiles.com)|18.65.185.117|:443... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 897952466 (856M) [application/vnd.snesdev-page-table]
+Saving to: ‘sam2_hiera_large.pt’
+
+sam2_hiera_large.pt          100%[============================================>] 856.35M  38.7MB/s    in 25s
+
+2024-09-04 01:02:33 (34.7 MB/s) - ‘sam2_hiera_large.pt’ saved [897952466/897952466]
+
+All checkpoints are downloaded successfully.
+
+❯ cd -
+/home/hideakitai/develop/ml/sandbox/test_sam2_with_uv_no_build_deps
+
+❯ code .
+
+# Now I could run segment-anything-2/notebooks/ successfully!
+```
+
+---
+
+_Closed by @hideakitai on 2024-09-03 16:11_
+
+---
+
+_Comment by @hideakitai on 2024-09-03 16:14_
+
+If anyone knows of a better way, please let me know 👏 
+
+---

@@ -1,0 +1,60 @@
+---
+number: 1085
+title: Add a section to readme on relevant CLI crates and tools (testing, assertions, etc.)
+type: issue
+state: closed
+author: kbknapp
+labels:
+  - C-enhancement
+  - A-docs
+  - E-easy
+assignees: []
+created_at: 2017-10-26T21:02:01Z
+updated_at: 2018-08-02T03:30:13Z
+url: https://github.com/clap-rs/clap/issues/1085
+synced_at: 2026-01-07T13:12:19-06:00
+---
+
+# Add a section to readme on relevant CLI crates and tools (testing, assertions, etc.)
+
+---
+
+_Issue opened by @kbknapp on 2017-10-26 21:02_
+
+_No description provided._
+
+---
+
+_Label `C: docs` added by @kbknapp on 2017-10-26 21:03_
+
+---
+
+_Label `D: easy` added by @kbknapp on 2017-10-26 21:03_
+
+---
+
+_Label `good first issue` added by @kbknapp on 2017-10-26 21:03_
+
+---
+
+_Label `P3: want to have` added by @kbknapp on 2017-10-26 21:03_
+
+---
+
+_Label `T: enhancement` added by @kbknapp on 2017-10-26 21:03_
+
+---
+
+_Comment by @kbknapp on 2017-11-03 03:16_
+
+Closed with #1090 
+
+---
+
+_Closed by @kbknapp on 2017-11-03 03:16_
+
+---
+
+_Referenced in [clap-rs/clap#1037](../../clap-rs/clap/issues/1037.md) on 2017-11-13 01:59_
+
+---

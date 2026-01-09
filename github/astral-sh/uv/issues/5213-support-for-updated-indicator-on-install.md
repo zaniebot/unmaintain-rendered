@@ -1,0 +1,155 @@
+---
+number: 5213
+title: "Support for \"Updated\" indicator on install/uninstall output"
+type: issue
+state: closed
+author: T-256
+labels:
+  - needs-design
+  - cli
+assignees: []
+created_at: 2024-07-19T11:00:50Z
+updated_at: 2024-12-27T14:52:47Z
+url: https://github.com/astral-sh/uv/issues/5213
+synced_at: 2026-01-07T13:12:17-06:00
+---
+
+# Support for "Updated" indicator on install/uninstall output
+
+---
+
+_Issue opened by @T-256 on 2024-07-19 11:00_
+
+Ref https://github.com/astral-sh/uv/pull/5197#discussion_r1683553671
+
+![image](https://github.com/user-attachments/assets/3c83a004-38a5-48ec-bf37-a3223fec27a1)
+
+- only updated version of `from (url://)` is shown
+- time is calculated on both uninstalling old version and installing new version
+
+Example of output when installation contains all three actions (no color):
+```
+$ uv pip sync requirements.txt
+Resolved 18 packages in 300ms
+Prepared 1 package in 51ms
+Uninstalled 1 package in 32ms
+Installed 1 package in 28ms
+Updated 1 package in 90ms
+ ~ abc 0.1.3 -> 0.2.0 (from file:///E:/path/to/wheels/abc-0.2.0-py3-none-any.whl)
+ - test==0.1.3
+ + mypkg==0.2.0
+```
+
+---
+
+_Label `needs-design` added by @charliermarsh on 2024-07-19 12:42_
+
+---
+
+_Comment by @charliermarsh on 2024-07-19 12:43_
+
+I think something like this would be a good change. I'm unsure on the right symbol (caret vs, e.g., dash?) and color for it. I assume that if the prior version was from a direct URL, we'd just omit it?
+
+---
+
+_Label `cli` added by @charliermarsh on 2024-07-19 12:43_
+
+---
+
+_Referenced in [astral-sh/uv#5197](../../astral-sh/uv/pulls/5197.md) on 2024-07-19 13:05_
+
+---
+
+_Comment by @T-256 on 2024-07-19 13:08_
+
+> I'm unsure on the right symbol (caret vs, e.g., dash?) and color for it.
+
+Agree, since caret is stands for upper numbers, but we can have also downgraded numbers. I prefer it distinguished from -+ since it has both adding and removing. we can consider `~` or `*` since they are commonly used symbols in CLIs.
+
+
+
+> I assume that if the prior version was from a direct URL, we'd just omit it?
+
+We can either when both versions have url:
+- show both urls (line becomes long)
+- only show prior url (new version number will be on last of line)
+- only show updated url (prior url not tracked)
+- fallback to -+ when both have url (inconsistency)
+
+
+---
+
+_Comment by @charliermarsh on 2024-07-19 13:10_
+
+I think `~` would be reasonable... Or `>` and `<` for upgrade and downgrade...? Is that ridiculus? Not sure if there's prior art to draw on here.
+
+---
+
+_Comment by @T-256 on 2024-07-19 13:15_
+
+> Or `>` and `<` for upgrade and downgrade...?
+
+What if version number didn't change? using `=` ? I agree with >, < and = while they also come with reasonable colors. otherwise, they may bring some confusion.
+
+---
+
+_Comment by @charliermarsh on 2024-07-19 13:16_
+
+I think I'd be fine with `~` in either yellow or blue.
+
+---
+
+_Comment by @j178 on 2024-07-19 13:17_
+
+or `↑`  (U+2191) and `↓`  (U+2193)?
+
+---
+
+_Comment by @T-256 on 2024-07-19 13:26_
+
+> I think I'd be fine with `~` in either yellow or blue.
+
+Updated description with tilde and blue color since yellow was hard to distinguished from white color.
+
+> * only show updated url (prior url not tracked)
+
+Do you know what's the point if someone may want to use prior url when updating a package? does it have any use case?
+
+---
+
+_Comment by @charliermarsh on 2024-07-19 13:27_
+
+I think simplest is to show just the updated URL, it seems rare that the prior URL would be important.
+
+---
+
+_Comment by @T-256 on 2024-07-19 13:48_
+
+Do we need do different when version number was same? e.g. editables mostly: 
+```
+ ~ abc 0.1.2 -> 0.1.2 (from file:///E:/path/to/projects/abc)
+```
+Perhaps could merge `0.1.2 -> 0.1.2` into one?
+
+
+---
+
+_Comment by @T-256 on 2024-07-19 13:52_
+
+When it implemented, I think it's reasonable change sorting to action types? e.g. Updated packages shown first.
+
+---
+
+_Comment by @charliermarsh on 2024-12-27 14:52_
+
+I believe we now have `~` for updates.
+
+---
+
+_Closed by @charliermarsh on 2024-12-27 14:52_
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2024-12-27 14:52_
+
+---

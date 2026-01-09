@@ -1,0 +1,446 @@
+---
+number: 4626
+title: Improve how we infer behavior from field types
+type: issue
+state: open
+author: tmccombs
+labels:
+  - C-enhancement
+  - A-derive
+  - S-waiting-on-design
+assignees: []
+created_at: 2023-01-11T08:24:37Z
+updated_at: 2023-07-24T19:23:16Z
+url: https://github.com/clap-rs/clap/issues/4626
+synced_at: 2026-01-07T13:12:20-06:00
+---
+
+# Improve how we infer behavior from field types
+
+---
+
+_Issue opened by @tmccombs on 2023-01-11 08:24_
+
+As brought up in #4600 and #3661, there are cases where it would be nice to support additional types with special semantics for clap_derive fields. However, doing so for any existing isn't backwards compatible, because users might have custom value parsers that produce those types. In addition, currently in order to opt out of special behavior for field types of `Opt` or `Vec`, you need to fully qualify the paths for those types (ex. `::std::vec::Vec`), which is both undocumented, and non-obvious. It would be nice to have a consistent, easy to understand way to specify how 0 or more values for an option are aggregated into a single type.
+
+In particular here are some cases that are currently difficult or impossible to include in a `Parser` derived using clap_derive:
+- `Vec<Vec<T>>` containing the values passed in, grouped by occurrence
+- `[T; N]`, where `num_args` is set to `N`
+- `Vec<[T; N]>` would be a combination of the two above (with `num_args` set to `N`, but action set to `Append`)
+- `Result<T, SomeError>` for an optional argument (like `Option<T>`, but return some default error if missing)
+- Probably others
+
+
+The current types with special behavior are described [here](https://docs.rs/clap/latest/clap/_derive/index.html#arg-types). It should also be noted, that if you specify an action of `Count` with an integral field type, also sort of fits in this category.
+
+# Requirements
+
+- Derive code continues to be easy to write and read
+- Can both configure the `Arg` and extract the value from `ArgMatches` for our specialized types, including
+  - `Option<T>`
+  - `Option<Option<T>>`
+  - `Vec<T>`
+  - `Option<Vec<T>>`
+  - `Vec<Vec<T>>` (v5)
+  - `Option<Vec<Vec<T>>` (v5)
+  - `bool`
+  - `()`
+  - `[T; N]` (#1682)
+
+# Options
+
+## Add semantics for additional types in a breaking change
+
+This perhaps the most straightforward way to do it. But it has several downsides:
+
+1. It requires breaking changes, which might not be caught by the compiler
+1. It adds more "magic" to how types communicate information to the derive macro
+1. It increases the importance of being able to opt
+
+## Add an additional argument to the arg attribute
+
+We could add one or more additional arguments to the `arg` attribute on fields.
+
+There are a few ways this could be done:
+
+1. Have a different argument for each kind of semantics, such as `optional`, `all_values`, `optional_values`, `occurrences`, `optional_occurrences`, etc.
+2. Add a single new argument that is given an enumeration value that is effectively the same as the current `clap_derive::utils::ty::Ty` enum (although we might want to use more descriptive names)
+3. Add a single new argument that is passed an instance of a trait that specifies how to extract the value from the `ArgMatches`, see [User-extensible trait](#user-extensible-trait)
+4. Add a single new argument that opts in to treating all supported standard types specially.
+
+1-3 have the downside that either the attribute must agree with the type of the field, or there has to be some magic conversion of the field type.
+
+4 would make it difficult to express sitiutations `Option<Vec<MyType>>` where the value parser parses a `Vec<MyType>`, but the `Option` is because the option is optional. It also still has the backwards
+compatibility problem if we add anything new in the future.
+
+### User-extensible trait
+
+For 3 above, we can define a trait that encapsulates the wanted behavior, and give the derive macro an implementation of that trait. While it can be defined for standard types in clap_derive, it would
+also be possible to allow users to create their own implementations, opening up additional ways to expand this functionality in other crates.
+
+Note: bikeshed on the actual names
+
+```rust
+trait AggregateParser {
+  type Aggregate;
+
+  /// Make any necessary changes to the `Arg` before it is used in a `Command`
+  fn modify_arg(&self, arg: clap::Arg) -> clap::Arg {
+    arg
+  }
+
+  fn get(&self, matches: &mut clap::ArgMatches, name: &str) -> Self::Aggregate;
+}
+```
+
+And one possible implementation would be:
+
+```rust
+struct OptionalValues<T>(PhantomData<T>); // goes with `Option<Vec<T>>`
+impl<T> AggregateParser for OptionalValues<T> {
+  type Aggregate = Option<Vec<T>>;
+
+  fn modify_arg(arg: clap::Arg) -> clap::Arg {
+    if arg.is_positional() {
+      arg.num_args(1..)
+    } else {
+      arg
+    }
+  }
+
+  fn get(matches: &mut clap::ArgMatches, name: &str) -> Self::Aggregate {
+    matches.remove_many::<T>(name).map(|v| v.map(Iterator::collect))
+  }
+}
+```
+
+This could potentially use  GATs, so that it isn't necessary to include type parameters to the type itself.
+
+### Expected Example Code
+
+```rust
+// 1. different arguments
+#[arg(long, optional)]
+a: Option<u32>,
+#[arg(long, flag)]
+b: bool,
+#[arg(long, occurrences)]
+c: Vec<Vec<String>>,
+#[arg(long, optional_option)]
+d: Option<Option<String>>,
+// etc.
+
+// 2. enumeration
+#[arg(long, aggregation = AggregationType::Optional)]
+a: Option<u32>,
+#[arg(long, aggregation = AggregationType::Flag)]
+b: bool,
+#[arg(long, aggregation = AggregationType::Occurrences)]
+c: Vec<Vec<String>>,
+// etc.
+
+// 3. trait
+#[arg(long, aggregation = Optional<u32>)]
+a: Option<u32>,
+#[arg(long, aggregation = Flag)]
+b: bool,
+#[arg(long, aggregation = Occurrences<String>)]
+c: Vec<Vec<String>>,
+
+// 4. single arg
+#[arg(long, magic_types)]
+a: Vec<Vec<String>>
+```
+
+
+## Support parsing a macro invocation inside the struct definition
+
+This might look like:
+
+- `optional!(T)` is equivalent to the current `Option<T>`
+- `values!(T)` is equivalent to the current `Vec<T>`
+- `flag!()` is equivalent to the current `bool`
+- `occurrences!(T)` would expand to `Vec<Vec<T>>` and opt in to getting a vec of values for each occurrence.
+- either have `optional_vec!(T)` and `optional_occurrences!(T)` or allow `optional!(values!(T))` and `optional!(occurrences!(T))`.
+- Maybe for completeness also have `required!(T)` which is the same as T but would make the option required?
+
+These all use the Value type `T`, but it could also use the final type instead (for example: `occurrences!(Vec<Vec<T>>)`)
+
+### Custom macros
+
+This method could potentially support custom behavior by delegating to actual macro invocations in the generated impl. If the macro used looked like `example!(T)` then the generated code would have the following:
+
+- When implementing `CommandFactory` invoking the macro like: `example!(T, arg: arg_value)` where `arg_value` is the `Arg` for the field, and it returns a new `Arg` to actually use, so that it can make modifications to the argument.
+- The type of the field in the struct itself would be `example!(T)`
+- When implementing `FromArgMatches`, to get the value of the field, invoke `example!(T, matches: matches_val, name)` where `matches_val` is an `ArgMatches` and `name` is the name of the option to extract.
+
+
+Note the similarity between this and the custom trait in the section on using an attribute
+
+### Expected Example Code
+
+```rust
+#[arg(long)]
+a: optional!(u32),
+#[arg(long)]
+b: flag!(),
+#[arg(long)]
+c:  occurrences!(String),
+#[arg(long, optional_option)]
+d: optional_option!(String),
+```
+
+## Use newtypes
+
+Wrapper types might be the least confusing, since they would be clearly intended for the purpose of communicating how the field should be parsed. However, they are probably the least ergonomic to use, since you would often have to unwrap the value. Although... I'm not sure how to determine for sure that the path actually points to the right type, and not a user-defined type with the same name, without require the type to be fully specified.
+
+From @epage:
+
+> One option would be to use deref specialization. We could move some (or all?) of the type handling to a macro that takes in a field's type and uses deref specialization to find the right Arg policy type which would have a function to apply that policy to an Arg
+
+
+Another possibility is we could have the newtypes implement a trait similar to the one defined above in [User-extensible trait](#user-extensible-trait) (but with `Self` instead of `Self::Aggregate`) for the newtypes. Tha could also potentially make it user-extensible, but we still have the question of how to identify if a type is one of these types and extract the type for the value parser. Perhaps it could be combined witht he autoref specialized macro @epage mentioned above? Or use an attribute. Probably if it is user-extensible we would require that it has 0 or 1 type parameters, and if it is 1, use that to infer the type for th value parser. Or maybe we could use an associated type?
+
+### Expected Example Code
+
+```rust
+#[arg(long)]
+a: Optional<u32>,
+#[arg(long)]
+b: Flag,
+#[arg(long, occurrences)]
+c: Occurrences<String>,
+#[arg(long)]
+d: OptionalOption<String>,
+```
+
+
+Footnote:
+I haven't put a lot of thought into the specific names for types, macros, attribute arguments etc. We can hash out better names for those once we decide on the general direction.
+
+---
+
+_Label `C-enhancement` added by @epage on 2023-01-11 13:11_
+
+---
+
+_Label `A-derive` added by @epage on 2023-01-11 13:11_
+
+---
+
+_Label `S-waiting-on-design` added by @epage on 2023-01-11 13:11_
+
+---
+
+_Comment by @epage on 2023-01-11 13:22_
+
+I've added a requirements section and changed the headers so it was easier to see what the top-level options are.
+
+---
+
+_Comment by @epage on 2023-01-11 13:22_
+
+Could you add "expected example code" to each section for what the common case and the exception cases would be for user code?
+
+---
+
+_Referenced in [clap-rs/clap#4635](../../clap-rs/clap/pulls/4635.md) on 2023-01-13 03:38_
+
+---
+
+_Referenced in [clap-rs/clap#4636](../../clap-rs/clap/issues/4636.md) on 2023-01-13 14:49_
+
+---
+
+_Referenced in [clap-rs/clap#4481](../../clap-rs/clap/issues/4481.md) on 2023-01-30 13:55_
+
+---
+
+_Referenced in [clap-rs/clap#4679](../../clap-rs/clap/issues/4679.md) on 2023-02-06 15:49_
+
+---
+
+_Renamed from "Proposal: more extensible pattern for clap derive field types" to "Improve how we infer behavior from field types" by @epage on 2023-02-10 16:13_
+
+---
+
+_Referenced in [clap-rs/clap#3114](../../clap-rs/clap/issues/3114.md) on 2023-02-13 16:54_
+
+---
+
+_Comment by @valkum on 2023-02-13 18:24_
+
+I was pointed here from #3114. I guess I came up with a rough idea that is basically approach 3 here but in broader aspect. Instead of passing a custom trait, I proposed adding a new argument to disable the generation of the `FromArgMatches` impl, allowing one to implement `FromArgMatches` for the specific collection in user code. 
+Is this something you thought of @tmccombs ? If not, as you thought about different approaches, what are your thoughts on this solution?
+
+---
+
+_Comment by @tmccombs on 2023-02-14 07:46_
+
+Are you suggesting having a way to derive `CommandFactory` without deriving `FromArgMatches`? I could see there being cases where that might be useful, but that removes a lot of the usefulness of clap_derive IMO. And I don't really see how it solves the original problem. Namely that there are additional types, such as `Vec<Vec<T>>` and `[T; N]` that we would like clap_derive to treat specially.
+
+---
+
+_Comment by @valkum on 2023-02-14 14:44_
+
+That was the initial idea. I guess it more related to custom containers than to support `Vec<Vec<T>>`. Currently, you need to implement `CommandFactory`, `Subcommand`, or `Args` yourself if you need your own `FromArgMatches` implementation. 
+I guess both problems can best benefit from approach 3. 
+For the types above, clap provides default aggregators and for custom types you can impl a trait yourself. Similar to serde's `(de)serialize_with` attribute.
+
+The other options seem limiting regarding custom container support.
+
+---
+
+_Referenced in [clap-rs/clap#4808](../../clap-rs/clap/issues/4808.md) on 2023-03-29 13:16_
+
+---
+
+_Comment by @tgockel on 2023-06-15 20:25_
+
+Just adding a somewhat minimal real-world example of where this is useful, imagine I want to use a letter to represent a list (this came up in the context of logging):
+
+```rust
+use clap::Parser;
+
+#[derive(Debug)]
+struct MyError;
+
+impl std::fmt::Display for MyError {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        write!(f, "MyError")
+    }
+}
+
+impl std::error::Error for MyError { }
+
+#[derive(Clone, Copy, Debug)]
+enum Level {
+    Debug,
+    Info,
+    Warning,
+    Error,
+}
+
+impl Level {
+    pub fn from_str(src: &str) -> Result<Vec<Level>, MyError> {
+        let mut out = Vec::with_capacity(src.len());
+        for c in src.chars() {
+            match Self::try_from(c) {
+                Ok(x) => out.push(x),
+                Err(e) => return Err(e),
+            }
+        }
+        Ok(out)
+    }
+}
+
+impl TryFrom<char> for Level {
+    type Error = MyError;
+
+    fn try_from(value: char) -> Result<Self, MyError> {
+        match value {
+            'd' => Ok(Self::Debug),
+            'i' => Ok(Self::Info),
+            'w' => Ok(Self::Warning),
+            'e' => Ok(Self::Error),
+            _ => Err(MyError),
+        }
+    }
+}
+
+
+#[derive(Debug, Parser)]
+#[command()]
+struct Command {
+    #[arg(long, value_parser = Level::from_str)]
+    pub levels: Vec<Level>,
+}
+
+fn main() {
+    let cmd = Command::parse();
+    println!("Hello --> {:?}", cmd);
+}
+```
+
+Running with `--levels we` fails at run time with the error #4830, since `value_parser = Level::from_str` applies to the elements, not the whole `Vec<Level>` as intended. Workaround is to denote `Command::levels` as the long-form `std::vec::Vec<Level>`. Functional, but probably not the ideal user experience.
+
+---
+
+_Referenced in [clap-rs/clap#4989](../../clap-rs/clap/issues/4989.md) on 2023-06-27 15:34_
+
+---
+
+_Referenced in [EspressoSystems/espresso-polygon-zkevm-demo#53](../../EspressoSystems/espresso-polygon-zkevm-demo/pulls/53.md) on 2023-07-04 17:27_
+
+---
+
+_Referenced in [clap-rs/clap#5019](../../clap-rs/clap/issues/5019.md) on 2023-07-19 13:50_
+
+---
+
+_Comment by @dzmitry-lahoda on 2023-07-22 20:08_
+
+Until this solved, can we just have improved error message? Like saying to use `::` prefixed types? Tbh may be disable mapping guess and fail fast? I prefer Rust to do this instead of giving me JS like error. 
+
+---
+
+_Comment by @epage on 2023-07-24 12:49_
+
+I am not aware of a way to detect the cases you are interested in to provide better errors. The proc macro is generating code and we'd need information from compile time.
+
+---
+
+_Comment by @dzmitry-lahoda on 2023-07-24 13:45_
+
+fail proc macro fast in case of potential short version ambiguilty at comile time. or when fail type cast at runtime tell to use long versions.
+
+---
+
+_Comment by @dzmitry-lahoda on 2023-07-24 13:48_
+
+at runtime there is very exact error is thrown. so can detect.
+at compile time, just fail compilation if not full path in case of option vex used at same time.
+
+---
+
+_Comment by @epage on 2023-07-24 14:32_
+
+Proc macros run, generating code.  The compiler then runs.
+
+The proc macro cannot "catch" compiler errors to detect and translate.
+
+---
+
+_Comment by @dzmitry-lahoda on 2023-07-24 19:08_
+
+in case of ambiguilty like Option<Vec<T>> and other case proc macro can stop not generating code and const panic or any other well know error reporting, sure proc macros can do these things. proc macro can have strict flag for people who prefer compile time validation.
+
+---
+
+_Comment by @epage on 2023-07-24 19:22_
+
+Yes, proc-macros can provide errors; we provide a lot today and have UI tests for (hopefully) most of them.
+
+However, at the time we can error, we do not have enough information for providing a better error for users.  If you have concrete ideas on what sources of information our proc macro can pull from to generate errors to help people, I would be open.  Otherwise, I feel like this conversation isn't being productive with its handy-waivy solutions that I would ask that we stop so we don't detract from this actual issue
+
+---
+
+_Referenced in [clap-rs/clap#5078](../../clap-rs/clap/issues/5078.md) on 2023-08-18 14:57_
+
+---
+
+_Referenced in [clap-rs/clap#5166](../../clap-rs/clap/issues/5166.md) on 2023-10-09 17:41_
+
+---
+
+_Referenced in [cspr-rad/kairos#17](../../cspr-rad/kairos/pulls/17.md) on 2024-02-13 14:31_
+
+---
+
+_Referenced in [clap-rs/clap#1717](../../clap-rs/clap/issues/1717.md) on 2024-04-16 00:22_
+
+---
+
+_Referenced in [clap-rs/clap#5536](../../clap-rs/clap/issues/5536.md) on 2024-06-20 01:17_
+
+---

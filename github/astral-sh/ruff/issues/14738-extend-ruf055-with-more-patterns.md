@@ -1,0 +1,117 @@
+---
+number: 14738
+title: "Extend `RUF055` with more patterns"
+type: issue
+state: open
+author: MichaReiser
+labels:
+  - rule
+assignees: []
+created_at: 2024-12-02T17:28:54Z
+updated_at: 2025-01-27T02:49:05Z
+url: https://github.com/astral-sh/ruff/issues/14738
+synced_at: 2026-01-07T13:12:16-06:00
+---
+
+# Extend `RUF055` with more patterns
+
+---
+
+_Issue opened by @MichaReiser on 2024-12-02 17:28_
+
+> Here are some slightly more complex examples not supported by the initial implementation in #14659:
+> ```py
+> re.search(r"abc", s) is None       # ⇒ "abc" not in s
+> re.search(r"abc", s) is not None   # ⇒ "abc" in s
+> re.sub(r"abc", "", s, count=1)     # ⇒ s.replace("abc", "", count=1)
+> re.split(r"abc", s, maxsplit=1)    # ⇒ s.split("abc", maxsplit=1)
+> re.search(r"^abc", s)              # ⇒ s.startswith("abc")
+> re.search(r"abc$", s)              # ⇒ s.endswith("abc")
+> re.search(r"^abc$", s)             # ⇒ s == "abc"
+> re.match(r"abc|xyz|123", s)        # ⇒ s.startswith(("abc", "xyz", "123"))
+> re.search(r"^abc|^xyz|^123", s)
+> re.search(r"^(?:abc|xyz|123)", s)
+> re.search(r"abc$|xyz$|123$", s)    # ⇒ s.endswith(("abc", "xyz", "123"))
+> re.search(r"(?:abc|xyz|123)$", s)
+> re.fullmatch(r"abc|xyz|123", s)    # ⇒ s in {"abc", "xyz", "123"}
+> re.search(r"^(?:abc|xyz|123)$", s)
+> re.match(r"[abc]", s)              # ⇒ s.startswith(("a", "b", "c"))
+> re.search(r"[abc]$", s)            # ⇒ s.endswith(("a", "b", "c"))
+> re.fullmatch(r"[abc]", s)          # ⇒ s in {"a", "b", "c"}
+> # Handle the ignore case flag
+> re.match(r"AbC", s, re.I)          # ⇒ s.casefold().startswith("abc")
+> re.search(r"AbC", s, re.I)         # ⇒ "abc" in s.casefold()
+> re.fullmatch(r"AbC", s, re.I)      # ⇒ "abc" == s.casefold()
+> # Handle any escaped special characters
+> re.fullmatch(r"""!"\#\$%\&'\(\)\*\+,\-\./:;<=>\?@\[\\\]\^_`\{\|\}\~""", s) # ⇒ s == """!"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~"""
+> ```
+> Edit: The `.endswith()` examples would be unsafe, per https://github.com/astral-sh/ruff/issues/12283#issuecomment-2509831070. 
+
+ _Originally posted by @tdulcet in [#12283](https://github.com/astral-sh/ruff/issues/12283#issuecomment-2509753927)_
+
+
+> Great to see that the rule was implemented!
+> 
+> > `re.search(r"abc$", s)              # ⇒ s.endswith("abc")`
+> 
+> This is not equivalent:
+> 
+> ```pycon
+> >>> s = "abc\n"
+> >>> re.search(r"abc$", s)
+> <re.Match object; span=(0, 3), match='abc'>
+> >>> s.endswith("abc")
+> False
+> ```
+> 
+> I'm also not sure about the `re.I` ones; are those transformations correct in the presence of exotic casing conventions like in Turkish?
+> 
+> And I'm not sure the replacement is worth it in cases where the replacement is a little more complex (e.g., passing a tuple to startswith). The goal of the rule should be to make code simpler; with those transformations, that may not be the case any more.
+
+ _Originally posted by @JelleZijlstra in [#12283](https://github.com/astral-sh/ruff/issues/12283#issuecomment-2509831070)_
+
+---
+
+_Label `rule` added by @MichaReiser on 2024-12-02 17:28_
+
+---
+
+_Comment by @tdulcet on 2024-12-16 21:14_
+
+Per #15017, here are some additional examples:
+```py
+re.search(r"\Aabc", s)              # ⇒ s.startswith("abc")
+re.search(r"abc\Z", s)              # ⇒ s.endswith("abc")
+re.search(r"\Aabc\Z", s)            # ⇒ s == "abc"
+re.search(r"\Aabc|\Axyz|\A123", s)  # ⇒ s.startswith(("abc", "xyz", "123"))
+re.search(r"\A(?:abc|xyz|123)", s)
+re.search(r"abc\Z|xyz\Z|123\Z", s)  # ⇒ s.endswith(("abc", "xyz", "123"))
+re.search(r"(?:abc|xyz|123)\Z", s)
+re.search(r"\A(?:abc|xyz|123)\Z", s)# ⇒ s in {"abc", "xyz", "123"}
+```
+Unlike those previous examples using `$`, these should all be safe.
+
+---
+
+_Comment by @Garrett-R on 2025-01-26 08:08_
+
+Just a heads-up, I'm working on the 2 cases involving the parent expression:
+
+```python
+re.search(r"abc", s) is None       # ⇒ "abc" not in s
+re.search(r"abc", s) is not None   # ⇒ "abc" in s
+```
+
+as well as these 2 related case, not yet reported:
+```python
+re.match(r"abc", s) is None       # ⇒ not s.startswith("abc")  
+re.match(r"abc", s) is not None   # ⇒ s.startswith("abc")
+```
+
+(I'll look at `re.fullmatch` too)
+
+---
+
+_Referenced in [astral-sh/ruff#15764](../../astral-sh/ruff/pulls/15764.md) on 2025-01-27 05:57_
+
+---

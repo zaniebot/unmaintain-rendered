@@ -1,0 +1,150 @@
+---
+number: 15662
+title: "Issue while updatnig `ty`"
+type: issue
+state: closed
+author: klonuo
+labels:
+  - bug
+assignees: []
+created_at: 2025-09-03T13:40:27Z
+updated_at: 2025-09-03T16:12:17Z
+url: https://github.com/astral-sh/uv/issues/15662
+synced_at: 2026-01-07T13:12:19-06:00
+---
+
+# Issue while updatnig `ty`
+
+---
+
+_Issue opened by @klonuo on 2025-09-03 13:40_
+
+### Summary
+
+Hi, just wanted to report this:
+
+<img width="927" height="607" alt="Image" src="https://github.com/user-attachments/assets/0c28833f-0316-4db0-9258-b76c50d8eac3" />
+
+### Platform
+
+Windows 11
+
+### Version
+
+uv 0.8.14 (af856fb88 2025-08-28)
+
+### Python version
+
+Python 3.12.7
+
+---
+
+_Label `bug` added by @klonuo on 2025-09-03 13:40_
+
+---
+
+_Comment by @zanieb on 2025-09-03 13:51_
+
+I think this looks right. It looks like you installed ty outside of uv, then wanted to overwrite that install with a uv-managed one?
+
+---
+
+_Comment by @klonuo on 2025-09-03 14:07_
+
+No, ty was installed by uv globally, and I wanted to update as usual
+
+---
+
+_Comment by @zanieb on 2025-09-03 14:11_
+
+I don't think it could have been, or uv wouldn't have complained it existed.
+
+e.g.,
+
+```
+❯ uv tool install ty
+Resolved 1 package in 205ms
+Prepared 1 package in 695ms
+Installed 1 package in 3ms
+ + ty==0.0.1a20
+Installed 1 executable: ty
+❯ uv tool install ty
+`ty` is already installed
+❯ uv tool install ty@0.0.1a19
+Resolved 1 package in 88ms
+Prepared 1 package in 629ms
+Uninstalled 1 package in 1ms
+Installed 1 package in 3ms
+ - ty==0.0.1a20
+ + ty==0.0.1a19
+Installed 1 executable: ty
+```
+
+The error you're seeing happens if `ty` exists already
+
+```
+❯ uv tool uninstall ty
+Uninstalled 1 executable: ty
+❯ touch ~/.local/bin/ty
+❯ uv tool install ty
+Resolved 1 package in 14ms
+Installed 1 package in 5ms
+ + ty==0.0.1a20
+error: Executable already exists: ty (use `--force` to overwrite)
+```
+
+I'm not sure how it got there on your system.
+
+---
+
+_Comment by @klonuo on 2025-09-03 14:15_
+
+Yes it existed I actively use ty on daily bases, I had version a19 and there was new version so I tried to update the same way as usual
+
+Now I tried what you did and it's even more confusing:
+
+<img width="510" height="408" alt="Image" src="https://github.com/user-attachments/assets/6d4af517-114d-4cfc-90f8-5227fc889210" />
+
+---
+
+_Comment by @zanieb on 2025-09-03 15:03_
+
+It won't upgrade there because you've pinned a specific version at install time.
+
+---
+
+_Referenced in [astral-sh/uv#15665](../../astral-sh/uv/issues/15665.md) on 2025-09-03 15:04_
+
+---
+
+_Comment by @klonuo on 2025-09-03 15:58_
+
+I found the issue while trying now to update uv: 
+
+```
+The current executable is at `C:\Users\klo\.local\bin\uv.exe` but the standalone installer was used to install uv to `C:\Users\klo\AppData\Local\com.Langflow\uv`. Are multiple copies of uv installed?
+```
+
+So this program (Langflow) somehow managed to mess with my global uv
+
+---
+
+_Comment by @zanieb on 2025-09-03 16:01_
+
+That indeed sounds like they're improperly installed uv such that it wasn't isolated.
+
+---
+
+_Comment by @klonuo on 2025-09-03 16:03_
+
+They added their folder in PATH. Didn't cleanup by themselves even after uninstall
+
+---
+
+_Referenced in [langflow-ai/langflow#9678](../../langflow-ai/langflow/issues/9678.md) on 2025-09-03 16:11_
+
+---
+
+_Closed by @klonuo on 2025-09-03 16:12_
+
+---

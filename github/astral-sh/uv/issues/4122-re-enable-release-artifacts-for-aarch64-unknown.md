@@ -1,0 +1,177 @@
+---
+number: 4122
+title: Re-enable release artifacts for aarch64-unknown-linux-gnu
+type: issue
+state: closed
+author: ofek
+labels: []
+assignees: []
+created_at: 2024-06-07T01:50:01Z
+updated_at: 2024-06-12T04:17:12Z
+url: https://github.com/astral-sh/uv/issues/4122
+synced_at: 2026-01-07T13:12:17-06:00
+---
+
+# Re-enable release artifacts for aarch64-unknown-linux-gnu
+
+---
+
+_Issue opened by @ofek on 2024-06-07 01:50_
+
+The binary release artifact `aarch64-unknown-linux-gnu` was unintentionally removed in [this PR](https://github.com/astral-sh/uv/pull/3685) or one of the associated revert/revert-revert commits.
+
+This [broke](https://github.com/ofek/pyapp/issues/139) at least PyApp and other scripts/tools that expect LLVM target names to exist as release artifacts (the provided installation scripts cannot be used or are undesirable in some circumstances).
+
+---
+
+_Referenced in [ofek/pyapp#139](../../ofek/pyapp/issues/139.md) on 2024-06-07 01:51_
+
+---
+
+_Comment by @charliermarsh on 2024-06-07 02:32_
+
+This seems like a problem in PyApp? For example, our installer scripts successfully detect that the `musl` variant exists and uses that when the `gnu` variant doesn't exist.
+
+---
+
+_Comment by @charliermarsh on 2024-06-07 02:33_
+
+To be clear, the `musl` variant should work just fine for you, right?
+
+---
+
+_Comment by @charliermarsh on 2024-06-07 02:34_
+
+To correct the issue summary: it was removed intentionally, since it wasn't needed anymore. It wasn't a mistake.
+
+---
+
+_Comment by @ofek on 2024-06-07 02:35_
+
+Is there a reason to not ship a binary for that target i.e. if MUSL happened to work in other situations like on PowerPC would you also remove those artifacts?
+
+---
+
+_Comment by @charliermarsh on 2024-06-07 02:38_
+
+No reason beyond that there isn't a clear reason to ship it -- we weren't using it anywhere. We don't upload it to PyPI, we don't use it in the installers, the musl variant works everywhere we need it to, so why build-and-upload it? You're welcome to make a case for it.
+
+---
+
+_Comment by @ofek on 2024-06-07 02:43_
+
+I suppose I would like to get confirmation about the binary targets because this sets a precedent. Is it the policy that a binary must only be released as an artifact if it's used in a wheel or one of the installers?
+
+---
+
+_Comment by @charliermarsh on 2024-06-07 02:53_
+
+We don't have a formal policy on it, it's not something we've had to consider before. We didn't think we had a reason to continue publishing the `gnu` variant once we stopped exposing ways for users to installer it.
+
+---
+
+_Comment by @charliermarsh on 2024-06-07 03:01_
+
+It's not a big deal to re-add it (though I'll \cc @konstin for more opinions). We removed it under the assumption that no one was using it -- so if no one's using it, and it isn't being tested, why publish it?
+
+---
+
+_Comment by @ofek on 2024-06-07 03:08_
+
+I don't know if this helps but for the final release supporting both artifacts here are the download counts:
+
+![image](https://github.com/astral-sh/uv/assets/9677399/4dc736c2-7f7e-4be3-aa56-5239ceff59d5)
+
+
+---
+
+_Comment by @zanieb on 2024-06-07 03:13_
+
+I'm not sure that means anything though, e.g. for 0.2.6 the musl build was downloaded >500 times. I think the vast majority of consumers of our GitHub release artifacts are using our installers which used gnu when it existed and happily use musl now.
+
+---
+
+_Comment by @konstin on 2024-06-07 07:45_
+
+Sorry for breaking pyapp, i didn't realize there were people depending on the artifacts directly.
+
+Comparing musl and gnu builds, the gnu build only works on glibc-based systems with at least the minimum gnu version of the build host, while the musl one works on both musl and glibc of all versions; effectively musl builds are a superset in compatibility over gnu builds. With only musl builds we get smaller releases on pypi with less artifacts. The main reason i haven't pushed for removing the gnu build altogether is the churn that would bring to something as badly testable as the release pipeline.
+
+Is there a reason for you to not always use the musl builds in pyapp?
+
+---
+
+_Referenced in [astral-sh/uv#4129](../../astral-sh/uv/pulls/4129.md) on 2024-06-07 12:26_
+
+---
+
+_Comment by @ofek on 2024-06-07 13:30_
+
+Feel free to close this but just FYI this:
+
+> i didn't realize there were people depending on the artifacts directly
+
+is concerning because this is the primary way UV is installed for enterprises/organizations that put emphasis on security. You never use an install script not even at a particular version, you download the artifact directly and verify its hash. This is true of all software I'm not just talking about UV.
+
+I definitely understand most downloads you see is from the install script but that is mostly from CI. CD systems use the approach I mentioned, at least in my experience 🙂 
+
+---
+
+_Comment by @charliermarsh on 2024-06-07 14:44_
+
+Thanks for your perspective Ofek, we will keep that in mind. (To be clear, the vast majority of our downloads, by three or four orders of magnitude, come from PyPI and related indexes.)
+
+
+---
+
+_Comment by @ofek on 2024-06-07 15:25_
+
+Oh I definitely believe that! I was just talking about the standalone binaries.
+
+---
+
+_Comment by @charliermarsh on 2024-06-07 19:11_
+
+@ofek - Do you want the GNU releases to be re-added though?
+
+---
+
+_Comment by @ofek on 2024-06-07 19:43_
+
+That would be my preference but if that's not what you all want then you can close the issue of course.
+
+---
+
+_Comment by @henryiii on 2024-06-08 05:33_
+
+By the way, if you didn't want to re-add them, you don't need to rebuild them, you could literally just copy the MUSL release to the GNU names. Or just document that they work.
+
+---
+
+_Comment by @ofek on 2024-06-08 13:19_
+
+Copying sounds like a fine solution as all we care about is availability of an artifact that matches the default Rust/LLVM target.
+
+---
+
+_Referenced in [astral-sh/uv#4254](../../astral-sh/uv/pulls/4254.md) on 2024-06-11 23:27_
+
+---
+
+_Closed by @charliermarsh on 2024-06-11 23:46_
+
+---
+
+_Comment by @ofek on 2024-06-12 04:17_
+
+Thanks!
+
+---
+
+_Referenced in [pypi/support#4260](../../pypi/support/issues/4260.md) on 2024-06-20 21:52_
+
+---
+
+_Referenced in [pypi/support#6640](../../pypi/support/issues/6640.md) on 2025-06-12 22:37_
+
+---

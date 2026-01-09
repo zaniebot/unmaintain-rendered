@@ -1,0 +1,107 @@
+---
+number: 1634
+title: "Question: How to use uv with poetry on CI?"
+type: issue
+state: closed
+author: Warchant
+labels:
+  - question
+assignees: []
+created_at: 2024-02-18T09:06:44Z
+updated_at: 2024-03-25T20:30:32Z
+url: https://github.com/astral-sh/uv/issues/1634
+synced_at: 2026-01-07T13:12:16-06:00
+---
+
+# Question: How to use uv with poetry on CI?
+
+---
+
+_Issue opened by @Warchant on 2024-02-18 09:06_
+
+Is it possible to use uv to speed-up `poetry install` on CI? 
+
+---
+
+_Renamed from "Question: How to use with poetry?" to "Question: How to use uv with poetry on CI?" by @Warchant on 2024-02-18 11:12_
+
+---
+
+_Comment by @woutervh on 2024-02-18 13:34_
+
+for now:
+```
+poetry export > requirements.txt
+uv venv
+uv pip install -r requirements
+poetry install
+```
+
+---
+
+_Comment by @zanieb on 2024-02-18 17:04_
+
+We'd need to add support for reading Poetry's dependency format, I'm not sure if we will. 
+
+Related:
+- #1650
+
+---
+
+_Label `question` added by @zanieb on 2024-02-18 17:04_
+
+---
+
+_Comment by @Warchant on 2024-02-18 18:07_
+
+> for now:
+> 
+> ```
+> poetry export > requirements.txt
+> uv venv
+> uv pip install -r requirements
+> poetry install
+> ```
+
+This works, but `poetry export > requirements.txt` creates UTF16-LE file, while `uv pip install -r requirements.txt` expects UTF-8, so I manually need to re-save it in UTF8. It is not a problem, but would be cool if `uv` would detect input file encoding...
+
+```
+uv pip install -r .\requirements.txt
+error: failed to read from file `.\requirements.txt`
+  Caused by: stream did not contain valid UTF-8
+```
+
+---
+
+_Referenced in [astral-sh/uv#1666](../../astral-sh/uv/issues/1666.md) on 2024-02-18 21:03_
+
+---
+
+_Comment by @Secrus on 2024-02-19 00:11_
+
+> for now:
+> 
+> ```
+> poetry export > requirements.txt
+> uv venv
+> uv pip install -r requirements
+> poetry install
+> ```
+
+Do not redirect stream from `poetry export`, use `-o` flag to specify output file (it properly handles user messages and the actual dependency output).
+
+---
+
+_Referenced in [astral-sh/uv#2633](../../astral-sh/uv/pulls/2633.md) on 2024-03-25 19:41_
+
+---
+
+_Comment by @zanieb on 2024-03-25 20:30_
+
+As of https://github.com/astral-sh/uv/pull/2633 we support reading this directly.
+
+---
+
+_Closed by @zanieb on 2024-03-25 20:30_
+
+---

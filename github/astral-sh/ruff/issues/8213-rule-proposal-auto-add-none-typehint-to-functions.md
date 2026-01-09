@@ -1,0 +1,62 @@
+---
+number: 8213
+title: "Rule proposal: Auto-add `-> None` typehint to functions"
+type: issue
+state: closed
+author: intgr
+labels:
+  - fixes
+assignees: []
+created_at: 2023-10-25T12:45:51Z
+updated_at: 2023-11-14T04:34:17Z
+url: https://github.com/astral-sh/ruff/issues/8213
+synced_at: 2026-01-07T13:12:15-06:00
+---
+
+# Rule proposal: Auto-add `-> None` typehint to functions
+
+---
+
+_Issue opened by @intgr on 2023-10-25 12:45_
+
+I want to create a new Ruff rule that auto-adds `-> None` return type hint to functions when no `return <value>` statements are present.
+
+Clearly there are lots of special cases that need to be handled (`yield`, `raise`, `@overload`, `.pyi` files, etc).
+
+What do you think?
+
+I pushed a very eary draft #8212, but no point doing thorough review yet.
+
+
+---
+
+_Comment by @intgr on 2023-10-25 12:54_
+
+This autofix could potentially be annoying for peope who run Ruff after every save/auto-save in their IDE. Because Ruff might add `-> None` to a partially written function when the user isn't finished writing a `return` statement. Is this something I should consider?
+
+Also, maybe it makes sense to allocate a specific range of RUF codes for typehinting-related rules? Or create another rule prefix entirely?
+
+
+---
+
+_Referenced in [astral-sh/ruff#8212](../../astral-sh/ruff/pulls/8212.md) on 2023-10-25 13:48_
+
+---
+
+_Comment by @henryiii on 2023-10-26 13:52_
+
+Also, remember that `-> None` isn't required on `__init__` functions unless there are no typed arguments.
+
+---
+
+_Label `autofix` added by @charliermarsh on 2023-10-26 15:11_
+
+---
+
+_Referenced in [astral-sh/ruff#8643](../../astral-sh/ruff/pulls/8643.md) on 2023-11-13 04:44_
+
+---
+
+_Closed by @charliermarsh on 2023-11-14 04:34_
+
+---

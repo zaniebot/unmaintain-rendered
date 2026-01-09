@@ -1,0 +1,165 @@
+---
+number: 13559
+title: Refuses to use old setuptools
+type: issue
+state: closed
+author: mlanett
+labels:
+  - question
+assignees: []
+created_at: 2025-05-20T18:22:32Z
+updated_at: 2025-05-20T19:53:45Z
+url: https://github.com/astral-sh/uv/issues/13559
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# Refuses to use old setuptools
+
+---
+
+_Issue opened by @mlanett on 2025-05-20 18:22_
+
+### Summary
+
+I have an project which I want to uv-ify but which requires some old projects, and uv can't install them.
+
+uv init
+uv venv --seed
+uv add "setuptools==45.3.0" # Required for old zope-i18nmessageid==4.0.3
+uv sync
+uv add "zope-i18nmessageid==4.0.3" # Fails because it uses newer setuptools from base python
+UV_NO_SYNC=1 uv run pip install "zope-i18nmessageid==4.0.3" # uses setuptools==45.3.0; works
+uv pip list # Has zope-i18nmessageid 4.0.3
+uv add "zope-i18nmessageid==4.0.3" # Fails even though zope-i18nmessageid is installed
+
+# What is going on:
+
+1. zope-i18nmessageid==4.0.3 requires Feature which is in setuptools==45.3.0
+
+2. uv keeps trying to use newer setuptools to install packages
+
+3. Even if we install zope-i18nmessageid==4.0.3 manually, uv add or sync tries to reinstall it, but uses wrong setuptools.
+
+See "Selecting: setuptools==80.8.0" in log output:
+
+```
+$ uv add -v "zope-i18nmessageid==4.0.3" # Fails because it uses setuptools from base image
+DEBUG uv 0.7.6 (Homebrew 2025-05-19)
+DEBUG Found project root: `/Users/Mark.Lanett/ClassPass/x`
+DEBUG No workspace root found, using project root
+DEBUG Acquired lock for `/Users/Mark.Lanett/ClassPass/x`
+DEBUG Reading Python requests from version file at `/Users/Mark.Lanett/ClassPass/x/.python-version`
+DEBUG Using Python request `3.10` from version file at `.python-version`
+DEBUG Checking for Python environment at `.venv`
+DEBUG The project environment's Python version satisfies the request: `Python 3.10`
+DEBUG Released lock at `/var/folders/fl/dfhxwq1d07vb1qc_hn9bh04w0000gq/T/uv-d9ff856810d6c64e.lock`
+DEBUG Using request timeout of 30s
+DEBUG Found static `pyproject.toml` for: x @ file:///Users/Mark.Lanett/ClassPass/x
+DEBUG No workspace root found, using project root
+DEBUG Ignoring existing lockfile due to mismatched requirements for: `x==0.1.0`
+  Requested: {Requirement { name: PackageName("setuptools"), extras: [], groups: [], marker: true, source: Registry { specifier: VersionSpecifiers([VersionSpecifier { operator: Equal, version: "45.3.0" }]), index: None, conflict: None }, origin: None }, Requirement { name: PackageName("zope-i18nmessageid"), extras: [], groups: [], marker: true, source: Registry { specifier: VersionSpecifiers([VersionSpecifier { operator: Equal, version: "4.0.3" }]), index: None, conflict: None }, origin: None }}
+  Existing: {Requirement { name: PackageName("setuptools"), extras: [], groups: [], marker: true, source: Registry { specifier: VersionSpecifiers([VersionSpecifier { operator: Equal, version: "45.3.0" }]), index: None, conflict: None }, origin: None }}
+DEBUG Solving with installed Python version: 3.10.16
+DEBUG Solving with target Python version: >=3.10
+DEBUG Adding direct dependency: x*
+DEBUG Searching for a compatible version of x @ file:///Users/Mark.Lanett/ClassPass/x (*)
+DEBUG Adding direct dependency: setuptools>=45.3.0, <45.3.0+
+DEBUG Adding direct dependency: zope-i18nmessageid>=4.0.3, <4.0.3+
+DEBUG Found stale response for: https://pypi.org/simple/zope-i18nmessageid/
+DEBUG Sending revalidation request for: https://pypi.org/simple/zope-i18nmessageid/
+DEBUG Found stale response for: https://pypi.org/simple/setuptools/
+DEBUG Sending revalidation request for: https://pypi.org/simple/setuptools/
+DEBUG Found not-modified response for: https://pypi.org/simple/setuptools/
+DEBUG Found not-modified response for: https://pypi.org/simple/zope-i18nmessageid/
+DEBUG Searching for a compatible version of setuptools (>=45.3.0, <45.3.0+)
+DEBUG Selecting: setuptools==45.3.0 [preference] (setuptools-45.3.0-py3-none-any.whl)
+DEBUG Acquired lock for `/Users/Mark.Lanett/Library/Caches/uv/sdists-v9/pypi/zope-i18nmessageid/4.0.3`
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/0e/8e/4d9a9009afeae48ec1301713d96b9ae901aa6e157637ddf37e844c1bf4ee/setuptools-45.3.0-py3-none-any.whl.metadata
+DEBUG Searching for a compatible version of zope-i18nmessageid (>=4.0.3, <4.0.3+)
+DEBUG Selecting: zope-i18nmessageid==4.0.3 [compatible] (zope.i18nmessageid-4.0.3.tar.gz)
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/97/16/e76c4d7833d8e4246e0ebec826b68facbf21c97a1a62a9292f0b2779e3a1/zope.i18nmessageid-4.0.3.tar.gz
+DEBUG No `pyproject.toml` available for: zope-i18nmessageid==4.0.3
+DEBUG No static `PKG-INFO` available for: zope-i18nmessageid==4.0.3 (PkgInfo(UnsupportedMetadataVersion("1.0")))
+DEBUG Preparing metadata for: zope-i18nmessageid==4.0.3
+DEBUG Assessing Python executable as base candidate: /Users/Mark.Lanett/ClassPass/x/.venv/bin/python3
+DEBUG Assessing Python executable as base candidate: /Users/Mark.Lanett/ClassPass/x/.venv/bin/python
+DEBUG Assessing Python executable as base candidate: /Users/Mark.Lanett/.local/share/uv/python/cpython-3.10.16-macos-aarch64-none/bin/python3.10
+DEBUG Using base executable for virtual environment: /Users/Mark.Lanett/.local/share/uv/python/cpython-3.10.16-macos-aarch64-none/bin/python3.10
+DEBUG Ignoring empty directory
+DEBUG Resolving build requirements
+DEBUG Solving with installed Python version: 3.10.16
+DEBUG Solving with target Python version: >=3.10.16
+DEBUG Adding direct dependency: setuptools>=40.8.0
+DEBUG Found fresh response for: https://pypi.org/simple/setuptools/
+DEBUG Searching for a compatible version of setuptools (>=40.8.0)
+DEBUG Selecting: setuptools==80.8.0 [compatible] (setuptools-80.8.0-py3-none-any.whl)
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/58/29/93c53c098d301132196c3238c312825324740851d77a8500a2462c0fd888/setuptools-80.8.0-py3-none-any.whl.metadata
+DEBUG Tried 1 versions: setuptools 1
+DEBUG marker environment resolution took 0.002s
+DEBUG Installing in setuptools==80.8.0 in /Users/Mark.Lanett/Library/Caches/uv/builds-v0/.tmpBMfDNh
+DEBUG Registry requirement already cached: setuptools==80.8.0
+DEBUG Installing build requirement: setuptools==80.8.0
+DEBUG Creating PEP 517 build environment
+DEBUG Calling `setuptools.build_meta:__legacy__.get_requires_for_build_wheel()`
+DEBUG Traceback (most recent call last):
+DEBUG   File "<string>", line 14, in <module>
+DEBUG   File "/Users/Mark.Lanett/Library/Caches/uv/builds-v0/.tmpBMfDNh/lib/python3.10/site-packages/setuptools/build_meta.py", line 331, in get_requires_for_build_wheel
+DEBUG     return self._get_build_requires(config_settings, requirements=[])
+DEBUG   File "/Users/Mark.Lanett/Library/Caches/uv/builds-v0/.tmpBMfDNh/lib/python3.10/site-packages/setuptools/build_meta.py", line 301, in _get_build_requires
+DEBUG     self.run_setup()
+DEBUG   File "/Users/Mark.Lanett/Library/Caches/uv/builds-v0/.tmpBMfDNh/lib/python3.10/site-packages/setuptools/build_meta.py", line 512, in run_setup
+DEBUG     super().run_setup(setup_script=setup_script)
+DEBUG   File "/Users/Mark.Lanett/Library/Caches/uv/builds-v0/.tmpBMfDNh/lib/python3.10/site-packages/setuptools/build_meta.py", line 317, in run_setup
+DEBUG     exec(code, locals())
+DEBUG   File "<string>", line 25, in <module>
+DEBUG ImportError: cannot import name 'Feature' from 'setuptools' (/Users/Mark.Lanett/Library/Caches/uv/builds-v0/.tmpBMfDNh/lib/python3.10/site-packages/setuptools/__init__.py)
+DEBUG Released lock at `/Users/Mark.Lanett/Library/Caches/uv/sdists-v9/pypi/zope-i18nmessageid/4.0.3/.lock`
+DEBUG Reverting changes to `pyproject.toml`
+DEBUG Reverting changes to `uv.lock`
+  × Failed to build `zope-i18nmessageid==4.0.3`
+  ├─▶ The build backend returned an error
+```
+
+
+### Platform
+
+Darwin GKXY9X7G4W 24.4.0 Darwin Kernel Version 24.4.0: Fri Apr 11 18:33:47 PDT 2025; root:xnu-11417.101.15~117/RELEASE_ARM64_T6000 arm64
+
+### Version
+
+uv --version uv 0.7.6 (Homebrew 2025-05-19)
+
+### Python version
+
+3.10.16
+
+---
+
+_Label `bug` added by @mlanett on 2025-05-20 18:22_
+
+---
+
+_Comment by @konstin on 2025-05-20 18:33_
+
+You can set build constraints to force an older setuptools version in project mode (https://docs.astral.sh/uv/reference/settings/#build-constraint-dependencies)
+
+---
+
+_Label `bug` removed by @konstin on 2025-05-20 18:33_
+
+---
+
+_Label `question` added by @konstin on 2025-05-20 18:33_
+
+---
+
+_Comment by @mlanett on 2025-05-20 19:53_
+
+Perfect, I had tried constraint-dependencies but did not find build-constraint-dependencies, thanks!
+
+
+---
+
+_Closed by @mlanett on 2025-05-20 19:53_
+
+---

@@ -1,0 +1,54 @@
+---
+number: 12433
+title: i686 release build fails with LLVM out of memory error
+type: issue
+state: open
+author: zanieb
+labels:
+  - bug
+  - releases
+assignees: []
+created_at: 2025-03-24T15:44:04Z
+updated_at: 2025-03-24T16:19:39Z
+url: https://github.com/astral-sh/uv/issues/12433
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# i686 release build fails with LLVM out of memory error
+
+---
+
+_Issue opened by @zanieb on 2025-03-24 15:44_
+
+We're using a machine with 16 GB of RAM and it spuriously fails to build on release pull requests with an LLVM error. See https://github.com/astral-sh/uv/actions/runs/14039048836/job/39304306163
+
+```
+   Compiling uv v0.6.10 (/home/runner/work/uv/uv/crates/uv)
+rustc-LLVM ERROR: out of memory
+Allocation failed
+error: could not compile `uv` (bin "uv")
+```
+
+We increased to 32 GB of RAM to workaround; see https://github.com/astral-sh/uv/pull/12430/commits/ae880c6d48671fbe84d304d3f86b9666ee89ad54
+
+---
+
+_Label `releases` added by @zanieb on 2025-03-24 15:44_
+
+---
+
+_Label `bug` added by @zanieb on 2025-03-24 15:44_
+
+---
+
+_Comment by @zanieb on 2025-03-24 16:17_
+
+The workaround does not work. The failure is because the 32bit compiler attempts to allocate more than 4GB of memory.
+
+---
+
+_Comment by @zanieb on 2025-03-24 16:19_
+
+Also trying https://github.com/astral-sh/uv/pull/12436/commits/7a9d9fb9af0ad48d1d9ffde462add51336964845; which uses some flags to attempt to reduce memory usage
+
+---

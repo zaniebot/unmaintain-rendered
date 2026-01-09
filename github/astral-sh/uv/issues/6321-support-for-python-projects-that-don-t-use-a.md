@@ -1,0 +1,160 @@
+---
+number: 6321
+title: "Support for Python projects that don't use a build system"
+type: issue
+state: closed
+author: anze3db
+labels:
+  - needs-design
+assignees: []
+created_at: 2024-08-21T12:19:29Z
+updated_at: 2025-07-11T12:45:32Z
+url: https://github.com/astral-sh/uv/issues/6321
+synced_at: 2026-01-07T13:12:17-06:00
+---
+
+# Support for Python projects that don't use a build system
+
+---
+
+_Issue opened by @anze3db on 2024-08-21 12:19_
+
+Hey! Congrats on the 0.3.0 release! 🎉 
+
+I'm trying to switch one of my Django projects from pip-tools to uv, but for most Django projects there usually isn't a need for a build step, so I'd want `uv` to only create the virtual environment and install the dependencies.
+
+Currently, when I run `uv sync` or `uv run` I get the following `setuptools` error:
+
+```
+uv run python manage.py runserver
+error: Failed to prepare distributions
+  Caused by: Failed to fetch wheel: fedidevs @ file:///Users/anze/Coding/fedidevs
+  Caused by: Build backend failed to determine extra requires with `build_editable()` with exit status: 1
+--- stdout:
+
+--- stderr:
+error: Multiple top-level packages discovered in a flat-layout: ['posts', 'theme', 'confs', 'stats', 'static', 'accounts', 'fedidevs', 'staticfiles', 'mastodon_auth', 'static_nonversioned'].
+
+To avoid accidental inclusion of unwanted files or directories,
+setuptools will not proceed with this build.
+
+If you are trying to create a single distribution with multiple packages
+on purpose, you should not rely on automatic discovery.
+Instead, consider the following options:
+
+1. set up custom discovery (`find` directive with `include` or `exclude`)
+2. use a `src-layout`
+3. explicitly set `py_modules` or `packages` with a list of names
+
+To find more information, look for "package discovery" on setuptools docs.
+---
+```
+
+I managed to get around this problem by adding the following lines to my `pyproject.toml`
+
+```
+[tool.setuptools]
+py-modules = []
+```
+
+This makes the `uv run` and `uv sync` command work, but uv still generates build artifacts that I don't need.
+
+Ideally I think `uv` should only install the dependencies and skip trying to build the project. Is there any way to prevent uv from running setuptools?
+
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with uv.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
+* The current uv platform.
+* The current uv version (`uv --version`).
+-->
+
+
+---
+
+_Comment by @charliermarsh on 2024-08-21 13:37_
+
+Yeah this is something we're thinking a lot about -- how to better serve projects that would prefer not to use a build system.
+
+I think the most harmless setup for now is:
+
+```
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["."]
+```
+
+
+---
+
+_Label `needs-design` added by @charliermarsh on 2024-08-21 13:38_
+
+---
+
+_Comment by @arv-anshul on 2024-08-21 15:33_
+
+I have also **this issue with my data science projects**. Previously, using `rye` which has virtual package feature, `uv` has also `--virtual` flag with `uv init` command but it doesn't works as `rye`.
+
+**Please fix this issue, it will be very helpful for Data Science guys.**
+
+---
+
+_Comment by @charliermarsh on 2024-08-21 15:41_
+
+👍 This is something we want to have a better answer to. Working on it.
+
+---
+
+_Comment by @chrisrodrigue on 2024-08-21 23:41_
+
+It would be cool if `uv` supported this `hatchling` capability for build-less projects (or scripts?).
+
+If `uv` provided a full-blown PEP517 build backend that would really be the bee's knees! It would be a one stop shop. 
+
+For the most simple source-only projects that don't compile any binaries... I think `uv` could just check the `[build-system]` section for `uv.build` and do the necessary src/dist-info file additions in `.venv/Lib/site-packages`. Performance wise, I'm sure whatever backend capability that the Astral team could add to `uv` would blow the other backends out of the water.
+
+---
+
+_Comment by @charliermarsh on 2024-08-28 18:09_
+
+This exists now as of [v0.4.0](https://github.com/astral-sh/uv/releases/tag/0.4.0)!
+
+Projects that omit `[build-system]` will no longer be built and installed by default. You can also set `tool.uv.package` to `false` to control the behavior explicitly, as in:
+
+```toml
+[tool.uv]
+package = false
+```
+
+---
+
+_Closed by @charliermarsh on 2024-08-28 18:09_
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2024-08-28 18:09_
+
+---
+
+_Comment by @dimaqq on 2025-07-11 12:11_
+
+Is `package = false` still the right way to prevent a package from being built?
+
+I've upgraded one project to uv just now, it's not a workspace, and there's no `build-system`, but otherwise it's a valid uv pyproject.toml with dep groups, etc.
+
+- `uv build --all` errors out "Workspace does not contain any buildable packages." ✅ 
+- `uv build` builds an sdist and a wheel. ❓ 
+
+---
+
+_Comment by @zanieb on 2025-07-11 12:45_
+
+`uv build` is an explicit request for a build, so... yes we'll force the package to be built there. Can you open a new issue with more details if you have more questions? This issue is old and shouldn't be bumped. 
+
+---

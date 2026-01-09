@@ -1,0 +1,101 @@
+---
+number: 4914
+title: Infer possible values for enum or bool
+type: issue
+state: closed
+author: kik4444
+labels:
+  - C-enhancement
+assignees: []
+created_at: 2023-05-18T12:26:57Z
+updated_at: 2023-05-18T13:09:09Z
+url: https://github.com/clap-rs/clap/issues/4914
+synced_at: 2026-01-07T13:12:20-06:00
+---
+
+# Infer possible values for enum or bool
+
+---
+
+_Issue opened by @kik4444 on 2023-05-18 12:26_
+
+### Please complete the following tasks
+
+- [X] I have searched the [discussions](https://github.com/clap-rs/clap/discussions)
+- [x] I have searched the [open](https://github.com/clap-rs/clap/issues) and [rejected](https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed) issues
+
+### Clap Version
+
+4.2.7
+
+### Describe your use case
+
+I have an argument that looks like this
+```rust
+#[arg(short, long)]
+tracking: Option<bool>
+```
+I have to set it to true or false in one of the following ways
+```
+-t true
+-t false
+```
+However, clap does not accept shortened values such as `-t t` or `-t f` even though it's able to recognize them and provide a tip `tip: a similar value exists: 'true'` if I wrote `-t t`
+
+### Describe the solution you'd like
+
+I would like clap to be able to infer the full name of the possible values in the case of booleans or ValueEnums in the same way that `infer_subcommands` and `infer_long_args` are able to infer the full name of the subcommand or arg from a shortened value.
+This feature could be presented to the user like this for example
+```rust
+#[arg(short, long, infer_possible_values = true)]
+tracking: Option<bool>
+```
+And then all of these arguments would work the same way
+```rust
+-t true
+-t tru
+-t tr
+-t t
+-tt
+```
+As well as
+```rust
+-t false
+-t fals
+-t fal
+-t fa
+-t f
+-tf
+```
+
+### Alternatives, if applicable
+
+_No response_
+
+### Additional Context
+
+_No response_
+
+---
+
+_Label `C-enhancement` added by @kik4444 on 2023-05-18 12:26_
+
+---
+
+_Comment by @epage on 2023-05-18 13:09_
+
+Parsing of possible values is handled by implementations of `TypedValueParser`, and not the top-level parser, making it so this couldn't be a general attribute but something set when constructing a `TypedValueParser`.
+
+Also, because this would exist in `TypedValueParser`, it is something that can be done outside of clap (e.g. clap includes a couple different bool `TypedValueParser`s).
+
+Alternatively, we could put this on `PossibleValue`.  We'd need to change how we do matching  to avoid problems like #4815.  However, this would mean you have to set it on each value which I think is the wrong model for processing.
+
+I also am not the greatest fan of inferring.
+
+So with those problems, the fact that users can do this on their side, and my preference, I'm going to go ahead and close this.  If there is a reason we should reconsider this, let us know!
+
+---
+
+_Closed by @epage on 2023-05-18 13:09_
+
+---

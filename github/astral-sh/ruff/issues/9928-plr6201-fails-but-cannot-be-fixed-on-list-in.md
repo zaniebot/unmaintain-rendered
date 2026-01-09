@@ -1,0 +1,58 @@
+---
+number: 9928
+title: "PLR6201 fails but cannot be fixed on `list in tuple(list, list)`"
+type: issue
+state: closed
+author: gboeing
+labels:
+  - bug
+assignees: []
+created_at: 2024-02-11T04:12:59Z
+updated_at: 2024-02-13T05:44:23Z
+url: https://github.com/astral-sh/ruff/issues/9928
+synced_at: 2026-01-07T13:12:15-06:00
+---
+
+# PLR6201 fails but cannot be fixed on `list in tuple(list, list)`
+
+---
+
+_Issue opened by @gboeing on 2024-02-11 04:12_
+
+Thanks for developing and supporting this wonderful tool! I'm using ruff 0.2.0. Say I have a bit of code to check if some list appears in a predefined collection of lists:
+
+```python
+def f(x):
+    list1 = [1, 2, 3]
+    list2 = [4, 5, 6]
+    return x in (list1, list2)
+```
+
+Running `ruff . --preview` fails with "PLR6201 Use a `set` literal when testing for membership"... which you certainly should do whenever you can, but you cannot in this case. Python lists are not hashable, so you cannot insert them into a set. If you try, like `return x in {list1, list2}`, you get "TypeError: unhashable type: 'list'".
+
+PLR6201 should not fail in this case because it is unfixable. Instead, PLR6201 should only fail if the items in the membership test are hashable.
+
+
+---
+
+_Label `bug` added by @charliermarsh on 2024-02-11 18:39_
+
+---
+
+_Comment by @charliermarsh on 2024-02-11 23:05_
+
+Agreed. It's hard to fix this _in general_ because we need arbitrary type inference, but we can do better in cases like the one above.
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2024-02-12 17:10_
+
+---
+
+_Referenced in [astral-sh/ruff#9956](../../astral-sh/ruff/pulls/9956.md) on 2024-02-12 17:17_
+
+---
+
+_Closed by @charliermarsh on 2024-02-12 18:05_
+
+---

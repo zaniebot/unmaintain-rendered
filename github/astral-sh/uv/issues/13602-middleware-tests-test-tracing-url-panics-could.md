@@ -1,0 +1,123 @@
+---
+number: 13602
+title: "`middleware::tests::test_tracing_url` panics: `Could not set global tracing subscriber: SetGlobalDefaultError(\"a global default trace dispatcher has already been set\")`"
+type: issue
+state: open
+author: mgorny
+labels:
+  - bug
+assignees: []
+created_at: 2025-05-22T18:48:06Z
+updated_at: 2025-05-22T19:06:23Z
+url: https://github.com/astral-sh/uv/issues/13602
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# `middleware::tests::test_tracing_url` panics: `Could not set global tracing subscriber: SetGlobalDefaultError("a global default trace dispatcher has already been set")`
+
+---
+
+_Issue opened by @mgorny on 2025-05-22 18:48_
+
+### Summary
+
+I think it's pretty recent, however the suite has been failing earlier for me because of #13212.
+
+```console
+$ cargo test --no-default-features --features=python,pypi,git
+[…]
+     Running unittests src/lib.rs (target/debug/deps/uv_auth-ffc8cf7f13c25871)
+
+running 45 tests
+test credentials::tests::test_password_obfuscation ... ok
+test credentials::tests::from_url_no_credentials ... ok
+test keyring::tests::fetch_url_no_auth ... ok
+test keyring::tests::fetch_url ... ok
+test keyring::tests::fetch_url_no_host ... ok
+test keyring::tests::fetch_url_no_match ... ok
+test keyring::tests::fetch_url_no_username ... ok
+test keyring::tests::fetch_url_prefers_url_to_host ... ok
+test keyring::tests::fetch_url_username ... ok
+test keyring::tests::fetch_url_username_no_match ... ok
+test keyring::tests::fetch_url_with_empty_username ... ok
+test keyring::tests::fetch_url_with_password ... ok
+test credentials::tests::from_url_no_password ... ok
+test credentials::tests::from_url_no_username ... ok
+test credentials::tests::from_url_username_and_password ... ok
+test cache::tests::test_url_with_credentials ... ok
+test cache::tests::test_trie ... ok
+test middleware::tests::test_auth_policy_always_with_credentials ... ok
+test middleware::tests::test_credentials_from_keyring_mixed_authentication_in_realm_same_username ... ok
+test middleware::tests::test_credentials_from_keyring_mixed_authentication_different_indexes_same_realm ... ok
+test middleware::tests::test_auth_policy_never_unauthenticated ... ok
+test middleware::tests::test_auth_policy_never_with_credentials ... ok
+test middleware::tests::test_auth_policy_always_unauthenticated ... ok
+test middleware::tests::test_credentials_from_keyring_shared_authentication_different_indexes_same_realm ... ok
+test middleware::tests::test_credentials_from_keyring_multiple_realms ... ok
+test middleware::tests::test_credentials_from_keyring_mixed_authentication_in_realm ... ok
+test middleware::tests::test_credentials_in_keyring_seed ... ok
+test middleware::tests::test_credentials_in_url_multiple_realms ... ok
+test middleware::tests::test_credentials_in_url_seed ... ok
+test middleware::tests::test_credentials_in_url_username_only ... ok
+test middleware::tests::test_credentials_in_url_no_seed ... ok
+test middleware::tests::test_keyring_always_authenticate ... ok
+test middleware::tests::test_keyring ... ok
+test realm::tests::test_should_retain_auth ... ok
+test middleware::tests::test_keyring_includes_non_standard_port ... ok
+test middleware::tests::test_tracing_url ... FAILED
+test middleware::tests::test_netrc_file_default_host ... ok
+test middleware::tests::test_netrc_file_mismatched_username ... ok
+test middleware::tests::test_netrc_file_mismatched_host ... ok
+test middleware::tests::test_no_credentials ... ok
+test middleware::tests::test_credentials_in_url_mixed_authentication_in_realm ... ok
+test middleware::tests::test_netrc_file_matching_host ... ok
+test credentials::tests::authenticated_request_from_url ... ok
+test credentials::tests::authenticated_request_from_url_with_percent_encoded_user ... ok
+test credentials::tests::authenticated_request_from_url_with_percent_encoded_password ... ok
+
+failures:
+
+---- middleware::tests::test_tracing_url stdout ----
+
+thread 'middleware::tests::test_tracing_url' panicked at crates/uv-auth/src/middleware.rs:2107:5:
+Could not set global tracing subscriber: SetGlobalDefaultError("a global default trace dispatcher has already been set")
+
+
+failures:
+    middleware::tests::test_tracing_url
+
+test result: FAILED. 44 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.16s
+
+error: test failed, to rerun pass `-p uv-auth --lib`
+```
+
+### Platform
+
+Gentoo Linux amd64
+
+### Version
+
+46bc7d34772470a380e1f5c335f72b1844217f6c
+
+### Python version
+
+_No response_
+
+---
+
+_Label `bug` added by @mgorny on 2025-05-22 18:48_
+
+---
+
+_Comment by @konstin on 2025-05-22 19:06_
+
+I can reproduce this locally with:
+```
+cargo test --no-default-features --features=python,pypi,git middleware::tests::
+```
+
+---
+
+_Assigned to @jtfmumm by @konstin on 2025-05-22 19:06_
+
+---

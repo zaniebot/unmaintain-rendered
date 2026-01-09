@@ -1,0 +1,125 @@
+---
+number: 4822
+title: uv toolchain installs debug Python versions
+type: issue
+state: closed
+author: gusutabopb
+labels: []
+assignees: []
+created_at: 2024-07-05T06:51:54Z
+updated_at: 2024-07-05T14:13:25Z
+url: https://github.com/astral-sh/uv/issues/4822
+synced_at: 2026-01-07T13:12:17-06:00
+---
+
+# uv toolchain installs debug Python versions
+
+---
+
+_Issue opened by @gusutabopb on 2024-07-05 06:51_
+
+When used on Linux (Ubuntu), `uv toolchain` installs debug Python versions. This leads to some programs printing out various debug messages meant for CPython core developers, not regular Python users.
+
+This can be confirmed by checking that `sys.abiflags` is `d`, which as per [PEP-3149](https://peps.python.org/pep-3149/), means the installed CPython was compiled with the `--with-pydebug` flag.
+
+Sample debug message which shouldn't be shown:
+
+```
+Immortal Object has less refcnt than expected.
+object address  : 0x7f722f0517b0
+object refcount : 4294967294
+object type     : 0x7f722ef28be0
+object type name: bytes
+object repr     : b'L'
+```
+
+Also, when building wheels (with `pip wheel`), the resulting file name contains `cp312d` instead of `cp312`. Examples:
+
+With debug flag (CPython installed by `uv`)
+```
+packagename-cp312-cp312d-linux_x86_64.whl
+```
+Regular CPython:
+```
+packagename-cp312-cp312-linux_x86_64.whl
+```
+
+I was able to reproduce this using Ubuntu, but on macOS the installed toolchains did not have the `d` flag, so this issue's impact seems limited to Linux.
+
+### Steps to reproduce the issue
+
+1. Install toolchain
+```fish
+> uv toolchain install 3.12 --verbose
+DEBUG uv 0.2.21
+warning: `uv toolchain install` is experimental and may change without warning.
+DEBUG Acquired lock for `/home/ubuntu/.local/share/uv/toolchains`
+Looking for toolchain Python 3.12 (any-3.12-any-any-any)
+Found installed toolchain `cpython-3.12.3-linux-aarch64-gnu` that satisfies Python 3.12
+Requested toolchain already installed.
+```
+
+2. Create/activate venv
+```fish
+> uv venv --preview --python 3.12 --verbose && . .venv/bin/activate.fish
+DEBUG uv 0.2.21
+DEBUG Searching for Python 3.12 in managed toolchains or system path
+DEBUG Searching for managed toolchains at `/home/ubuntu/.local/share/uv/toolchains`
+DEBUG Found managed toolchain `cpython-3.12.3-linux-aarch64-gnu`
+DEBUG Found cpython 3.12.3 at `/home/ubuntu/.local/share/uv/toolchains/cpython-3.12.3-linux-aarch64-gnu/install/bin/python3` (managed toolchains)
+Using Python 3.12.3 interpreter at: /home/ubuntu/.local/share/uv/toolchains/cpython-3.12.3-linux-aarch64-gnu/install/bin/python3
+Creating virtualenv at: .venv
+INFO Removing existing directory
+Activate with: source .venv/bin/activate.fish
+```
+
+3. Check `abiflags`
+```fish
+python -c 'import sys; print(f"{sys.version=} {sys.abiflags=}")'
+sys.version='3.12.3 (main, Apr 15 2024, 17:09:34) [GCC 6.3.0 20170516]' sys.abiflags='d'
+```
+
+### Other info
+
+```
+> lsb_release -a
+No LSB modules are available.
+Distributor ID:	Ubuntu
+Description:	Ubuntu 23.10
+Release:	23.10
+Codename:	mantic
+
+> uv --version
+uv 0.2.21
+```
+
+---
+
+_Comment by @charliermarsh on 2024-07-05 12:27_
+
+I think this is fixed by https://github.com/astral-sh/uv/pull/4775 (which hasn’t been released IIRC).
+
+---
+
+_Comment by @gusutabopb on 2024-07-05 14:11_
+
+That seems to be the case indeed. I will close this issue as it's a dupe of  #4774.
+
+
+---
+
+_Closed by @gusutabopb on 2024-07-05 14:11_
+
+---
+
+_Comment by @helderco on 2024-07-05 14:12_
+
+So this is a duplicate of https://github.com/astral-sh/uv/issues/4774
+
+---
+
+_Comment by @helderco on 2024-07-05 14:13_
+
+@gusutabopb commented at the same time 😄 
+
+---

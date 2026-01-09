@@ -1,0 +1,92 @@
+---
+number: 15879
+title: "SLOT: Classes with multiple base classes"
+type: issue
+state: open
+author: Skylion007
+labels:
+  - rule
+  - type-inference
+assignees: []
+created_at: 2025-02-02T18:07:43Z
+updated_at: 2025-02-04T09:16:53Z
+url: https://github.com/astral-sh/ruff/issues/15879
+synced_at: 2026-01-07T13:12:16-06:00
+---
+
+# SLOT: Classes with multiple base classes
+
+---
+
+_Issue opened by @Skylion007 on 2025-02-02 18:07_
+
+### Description
+
+```
+ruff check --select=SLOT .
+```
+```
+ruff --version 0.8.4
+```
+```python
+class Backend(RandomClass, tuple):
+   pass
+```
+~^ suggests a fixit here. This is the recommended class structure for old versions of python before strenum was introduced. However, enum doesn't have __slots__ defined, so defining a `__slots__` wouldn't be that helpful.~ i also see this bug happen when a class has multiple ancestors, one of which is a tuple.
+
+Actually, nevermind, this error was actually masking another error where enum was not properly imported. Seems odd to suggest a fixit in this situation. In other cases though, I do see the error pop up when only one of the ancestors is a tuple.
+
+---
+
+_Renamed from "SLOT lint false positive on classes with multiple ancestors" to "SLOT lint false positive on classes with multiple ancestors for strenum" by @Skylion007 on 2025-02-02 18:07_
+
+---
+
+_Renamed from "SLOT lint false positive on classes with multiple ancestors for strenum" to "SLOT lint false positive on classes where one ancestor is not defined" by @Skylion007 on 2025-02-02 18:09_
+
+---
+
+_Comment by @MichaReiser on 2025-02-03 11:17_
+
+Could you explain what's the bug experience? I don't think I understand it from the issue. 
+
+Ruff does raise an error about a missing `__slots__` even if the base class is known. So warning in the case if any base class is unknown doesn't seem incorrect, because the `__slots__` attribute is always required if any parent is `tuple`. 
+
+Playground: https://play.ruff.rs/45b205ae-153c-4a73-8fe6-29995ef0a5c9
+
+---
+
+_Label `needs-info` added by @MichaReiser on 2025-02-03 11:17_
+
+---
+
+_Comment by @Skylion007 on 2025-02-03 15:29_
+
+@MichaReiser To clarify, what is the behavior if a class has two ancestors, and only one of them implements `__slots__`? My understanding is that the __slots__ in the class itself won't have an effect because it will still need to consult the `__dict__` of the first parent, but I could be wrong? Specifically, what happens here:
+https://play.ruff.rs/26820797-8f34-4fc4-8c13-eb81bce03d0e
+
+---
+
+_Comment by @MichaReiser on 2025-02-04 09:16_
+
+Oh, I see. That's a good point. In that case, I'd say it's not a false positive, at least not when the base class is under the user's control. However, the suggested fix/message is misleading because only adding `__slots__` to the current class isn't enough; it also needs to be added to all non-tuple parent classes. 
+
+Now, analyzing base classes is something that Ruff struggles with, at least if they're defined in another file. Which is why I'm leaning towards leaving the rule as is for now and revisit it once we have better type inference.
+
+---
+
+_Label `needs-info` removed by @MichaReiser on 2025-02-04 09:16_
+
+---
+
+_Label `rule` added by @MichaReiser on 2025-02-04 09:16_
+
+---
+
+_Label `type-inference` added by @MichaReiser on 2025-02-04 09:16_
+
+---
+
+_Renamed from "SLOT lint false positive on classes where one ancestor is not defined" to "SLOT: Classes with multiple base classes" by @MichaReiser on 2025-02-04 09:16_
+
+---

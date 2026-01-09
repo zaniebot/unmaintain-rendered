@@ -1,0 +1,165 @@
+---
+number: 2105
+title: "uv venv: support Pythons installed via the Microsoft Store"
+type: issue
+state: closed
+author: madig
+labels:
+  - bug
+  - windows
+assignees: []
+created_at: 2024-03-01T09:56:10Z
+updated_at: 2024-03-05T17:42:19Z
+url: https://github.com/astral-sh/uv/issues/2105
+synced_at: 2026-01-07T13:12:17-06:00
+---
+
+# uv venv: support Pythons installed via the Microsoft Store
+
+---
+
+_Issue opened by @madig on 2024-03-01 09:56_
+
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with uv.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
+* The current uv platform.
+* The current uv version (`uv --version`).
+-->
+
+`uv venv` currently (v0.1.13) fails to create venvs with Pythons installed via the Microsoft Store (Windows 11 Version 10.0.22631 Build 22631). Example with Python 3.12:
+
+```
+❯ uv venv --verbose -p 3.12 vvv
+ uv_interpreter::python_query::find_requested_python request=3.12
+      0.003583s   0ms DEBUG uv_interpreter::python_query Starting interpreter discovery for Python @ `3.12`
+      0.004400s   0ms DEBUG uv_interpreter::interpreter Cached interpreter info for Python 3.8.10, skipping probing: C:\Program Files\Python38\python.exe
+      0.004961s   1ms DEBUG uv_interpreter::interpreter Cached interpreter info for Python 3.6.8, skipping probing: C:\Program Files\Python36\python.exe
+      0.005404s   1ms DEBUG uv_interpreter::interpreter Probing interpreter info for: C:\Python27\python.exe
+      0.062965s  59ms DEBUG uv_interpreter::python_query Found a Python 2 installation that isn't supported by uv, skipping.
+      0.063666s  60ms DEBUG uv_interpreter::interpreter Probing interpreter info for: C:\Python27-64\python.exe
+      0.114595s 111ms DEBUG uv_interpreter::python_query Found a Python 2 installation that isn't supported by uv, skipping.
+  × failed to canonicalize path `C:\Users\...\AppData\Local\Microsoft\WindowsApps\python3.12.exe`
+  ╰─▶ The file cannot be accessed by the system. (os error 1920)
+```
+
+---
+
+_Label `windows` added by @MichaReiser on 2024-03-01 10:01_
+
+---
+
+_Comment by @charliermarsh on 2024-03-01 13:56_
+
+Thanks!
+
+---
+
+_Label `bug` added by @charliermarsh on 2024-03-01 13:56_
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2024-03-01 15:10_
+
+---
+
+_Comment by @NMertsch on 2024-03-01 21:04_
+
+Probably related:
+- Multiple Python versions installed via Microsoft Store (Win11, x64)
+- uv finds the requested Python version
+- copy-pasting the path from the uv error message works
+- `sys.executable` reports a different path
+
+```shell
+PS C:\Users\username> # try `uv venv`
+PS C:\Users\username> uv venv --verbose --python 3.11
+ uv_interpreter::python_query::find_requested_python request=3.11
+      0.002206s   0ms DEBUG uv_interpreter::python_query Starting interpreter discovery for Python @ `3.11`
+  × failed to canonicalize path `C:\Users\username\AppData\Local\Microsoft\WindowsApps\python3.11.exe`
+  ╰─▶ The file cannot be accessed by the system. (os error 1920)
+PS C:\Users\username> # execute python directly
+PS C:\Users\username> C:\Users\username\AppData\Local\Microsoft\WindowsApps\python3.11.exe
+Python 3.11.8 (tags/v3.11.8:db85d51, Feb  6 2024, 22:03:32) [MSC v.1937 64 bit (AMD64)] on win32
+Type "help", "copyright", "credits" or "license" for more information.
+>>> import sys
+>>> sys.executable
+'C:\\Users\\username\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\\python.exe'
+>>>
+```
+
+---
+
+_Comment by @charliermarsh on 2024-03-01 21:07_
+
+Yeah I'm working on this now. Should work soon.
+
+---
+
+_Referenced in [astral-sh/uv#2122](../../astral-sh/uv/pulls/2122.md) on 2024-03-01 21:21_
+
+---
+
+_Closed by @charliermarsh on 2024-03-03 17:55_
+
+---
+
+_Comment by @madig on 2024-03-05 10:09_
+
+I'm not sure this is fixed?
+
+```
+AppData\Local\Temp
+❯ uv --version
+uv 0.1.14 (c525fdf2b 2024-03-04)
+
+AppData\Local\Temp
+❯ uv venv -p 3.12 vvv
+  × failed to canonicalize path `C:\Users\...\AppData\Local\Microsoft\WindowsApps\python3.12.exe`
+  ╰─▶ The file cannot be accessed by the system. (os error 1920)
+```
+
+---
+
+_Comment by @charliermarsh on 2024-03-05 13:58_
+
+It works without issue on my Windows Store installation. Do you mind sharing the outputs of `import sys; print(sys.executable); print(sys._base_executable)` on that installation?
+
+---
+
+_Comment by @madig on 2024-03-05 14:44_
+
+```
+❯ python3.12
+Python 3.12.2 (tags/v3.12.2:6abddd9, Feb  6 2024, 21:26:36) [MSC v.1937 64 bit (AMD64)] on win32
+Type "help", "copyright", "credits" or "license" for more information.
+>>> import sys; print(sys.executable); print(sys._base_executable)
+C:\Users\...\AppData\Local\Microsoft\WindowsApps\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\python.exe
+C:\Users\...\AppData\Local\Microsoft\WindowsApps\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\python.exe
+```
+
+---
+
+_Comment by @charliermarsh on 2024-03-05 15:14_
+
+If I push to a branch, would you be able to test locally by running `cargo build` in the uv repo? 
+
+---
+
+_Referenced in [astral-sh/uv#2208](../../astral-sh/uv/issues/2208.md) on 2024-03-05 17:41_
+
+---
+
+_Comment by @charliermarsh on 2024-03-05 17:42_
+
+Creating a new issue for this specific fix (https://github.com/astral-sh/uv/issues/2208), which I'm working on now.
+
+---
+
+_Referenced in [astral-sh/uv#2264](../../astral-sh/uv/issues/2264.md) on 2024-03-07 06:24_
+
+---

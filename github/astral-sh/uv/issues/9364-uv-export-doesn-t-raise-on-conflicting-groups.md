@@ -1,0 +1,36 @@
+---
+number: 9364
+title: "`uv export` doesn't raise on conflicting groups"
+type: issue
+state: closed
+author: charliermarsh
+labels:
+  - bug
+assignees: []
+created_at: 2024-11-22T19:36:49Z
+updated_at: 2024-11-22T20:58:28Z
+url: https://github.com/astral-sh/uv/issues/9364
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# `uv export` doesn't raise on conflicting groups
+
+---
+
+_Issue opened by @charliermarsh on 2024-11-22 19:36_
+
+At present, you can attempt to `uv export` two conflicting groups, which leads to duplicate dependencies.
+
+---
+
+_Label `bug` added by @charliermarsh on 2024-11-22 19:37_
+
+---
+
+_Referenced in [astral-sh/uv#9365](../../astral-sh/uv/pulls/9365.md) on 2024-11-22 19:37_
+
+---
+
+_Closed by @charliermarsh on 2024-11-22 20:58_
+
+---

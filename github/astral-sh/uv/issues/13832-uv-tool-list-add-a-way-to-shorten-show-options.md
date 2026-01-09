@@ -1,0 +1,109 @@
+---
+number: 13832
+title: "`uv tool list`: add a way to shorten `--show-*` options"
+type: issue
+state: closed
+author: richieadler
+labels:
+  - enhancement
+assignees: []
+created_at: 2025-06-04T12:47:27Z
+updated_at: 2025-06-04T23:25:02Z
+url: https://github.com/astral-sh/uv/issues/13832
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# `uv tool list`: add a way to shorten `--show-*` options
+
+---
+
+_Issue opened by @richieadler on 2025-06-04 12:47_
+
+### Summary
+
+The number of flags for showing specific information for the `uv tool list` has grown many `--show-*` options, making the full invocation of said command very verbose.
+
+It would be useful to add a shorter form to express the same flags.
+
+
+### Example
+
+An example would be:
+
+```bash
+uv tool list --show-flags pvwe
+````
+
+as an equivalent of
+
+```bash
+uv tool list --show-paths --show-version-specifiers --show-with --show-extras
+```
+
+This could also relate to #13374, as a flag `s` could mean "short".
+
+---
+
+_Label `enhancement` added by @richieadler on 2025-06-04 12:47_
+
+---
+
+_Comment by @zanieb on 2025-06-04 13:35_
+
+What's your use-case for needing to see all the information?
+
+I'm generally supportive of a `--show-all` or `--long` flag or something.
+
+---
+
+_Comment by @richieadler on 2025-06-04 13:49_
+
+> What's your use-case for needing to see all the information?
+> 
+> I'm generally supportive of a `--show-all` or `--long` flag or something.
+
+The question perplexes me somewhat. My case use for having the short option with all flags is the same than for the existence of `--show-all`, and the existence of every flag in the short form is justified by the existence of the long form flag.
+
+Do you have another question in mind that you're not asking?
+
+---
+
+_Comment by @zanieb on 2025-06-04 14:29_
+
+In what specific situation do you need to see paths, version specifiers, extras, and with dependencies all at once?
+
+---
+
+_Comment by @zanieb on 2025-06-04 14:29_
+
+i.e., what are you using that information for?
+
+---
+
+_Comment by @richieadler on 2025-06-04 20:44_
+
+> i.e., what are you using that information for?
+
+Would you ask the same question to the people using the same existing four long flags? Do you plan to restrict the simultaneous use of all of them?
+
+---
+
+_Comment by @zanieb on 2025-06-04 21:08_
+
+> Would you ask the same question to the people using the same existing four long flags? 
+
+Yes?
+
+> Do you plan to restrict the simultaneous use of all of them?
+
+No?
+
+I don't quite understand the antagonistic attitude here. I'm just trying to understand your goals to inform the design.
+
+For example, if it's because you're parsing the output and need all the information handy, then a JSON format that includes all the information by default makes more sense than another flag. Or, if you always want all the information for some reason, maybe we should consider changing the defaults.
+
+---
+
+_Closed by @richieadler on 2025-06-04 23:25_
+
+---

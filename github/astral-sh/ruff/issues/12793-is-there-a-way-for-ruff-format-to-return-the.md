@@ -1,0 +1,82 @@
+---
+number: 12793
+title: "Is there a way for `ruff format` to return the formatted source files as outputs to `stdout` instead of formatting inplace?"
+type: issue
+state: closed
+author: jymchng
+labels:
+  - question
+assignees: []
+created_at: 2024-08-10T04:46:53Z
+updated_at: 2024-08-12T09:25:08Z
+url: https://github.com/astral-sh/ruff/issues/12793
+synced_at: 2026-01-07T13:12:15-06:00
+---
+
+# Is there a way for `ruff format` to return the formatted source files as outputs to `stdout` instead of formatting inplace?
+
+---
+
+_Issue opened by @jymchng on 2024-08-10 04:46_
+
+As titled, simple question - from the documentation, it seems like it can't do this but let's see.
+
+---
+
+_Comment by @chrreisinger on 2024-08-10 08:25_
+
+      --check
+          Avoid writing any formatted files back; instead, exit with a non-zero status code if any files would have been modified, and zero otherwise
+
+
+
+---
+
+_Renamed from "Is there a way for `ruff format` to return the formatted source files as outputs to `stdout` instead of formatting inplace." to "Is there a way for `ruff format` to return the formatted source files as outputs to `stdout` instead of formatting inplace?" by @jymchng on 2024-08-10 08:32_
+
+---
+
+_Comment by @charliermarsh on 2024-08-10 12:03_
+
+Yeah if you write via stdin, we write back as stdout, e.g., `cat python/uv/__main__.py | ruff format -`.
+
+
+---
+
+_Label `question` added by @charliermarsh on 2024-08-10 12:04_
+
+---
+
+_Comment by @jymchng on 2024-08-12 08:20_
+
+> Yeah if you write via stdin, we write back as stdout, e.g., `cat python/uv/__main__.py | ruff format -`.
+
+Thank you for your response - sorry for my delayed response.
+
+I realize that it actually works for the answer you have given me - thank you!
+
+I have a new question if you don't mind - is there a way to dynamically check the files using a Python script? Like sending a source text to `ruff` in Python and get back the formatted source text or linting (with `ruff check` within the Python API, or `ruff format`, respectively).
+
+---
+
+_Comment by @MichaReiser on 2024-08-12 08:26_
+
+Not yet no. See https://github.com/astral-sh/ruff/issues/659. There's only a WASM API.
+
+---
+
+_Comment by @jymchng on 2024-08-12 09:23_
+
+Yeah, I guess something like [this](https://www.npmjs.com/package/@astral-sh/ruff-wasm-web) is what I can work with for my Python playground with formatting capability lol - thank you!
+
+---
+
+_Comment by @MichaReiser on 2024-08-12 09:25_
+
+Yes, that should work. It's also what we use in our playground :)
+
+---
+
+_Closed by @MichaReiser on 2024-08-12 09:25_
+
+---

@@ -1,0 +1,173 @@
+---
+number: 7390
+title: "`uv lock` Improvement: a consistent environment for `prepare_metadata_for_build_wheel`."
+type: issue
+state: open
+author: YouJiacheng
+labels:
+  - needs-decision
+assignees: []
+created_at: 2024-09-14T11:07:13Z
+updated_at: 2024-09-14T15:02:14Z
+url: https://github.com/astral-sh/uv/issues/7390
+synced_at: 2026-01-07T13:12:17-06:00
+---
+
+# `uv lock` Improvement: a consistent environment for `prepare_metadata_for_build_wheel`.
+
+---
+
+_Issue opened by @YouJiacheng on 2024-09-14 11:07_
+
+Currently, `uv lock` runs in the Python interpreter specified by "Python options" (shown by `uv lock --help`).
+![image](https://github.com/user-attachments/assets/0013c39f-f366-44f9-8dc6-bb41cd95c85e)
+
+However, as discussed in #7291 , even managed Python Interpreters can have an environment inconsistent with the default virtual environment created by `uv venv`.
+Let `uv lock` be "polluted" by the system Python Interpreter with an arbitrary environment sounds even worse.
+
+[deleted]
+~~Ideally we can specify this in `pyproject.toml` with a default to an environment **equivalent** to the one created by `uv venv`.
+And we can also specify `index-url`.
+Expectation by example:~~
+```toml
+[tool.uv]
+lock-dependencies-default = []
+
+[tool.uv.lock-index-url]
+torch = "https://download.pytorch.org/whl/cu124"
+
+[tool.uv.lock-dependencies]
+flash-attn = ["setuptools", "packaging"]
+chumpy = ["setuptools", "pip"]
+```
+~~OR~~
+```toml
+[[tool.uv.lock-resolution]]
+name = "torch"
+index-url = "https://download.pytorch.org/whl/cu124"
+dependencies = ["setuptools"]
+
+[[tool.uv.lock-resolution]]
+name = "flash-attn"
+dependencies = ["setuptools", "packaging"]
+
+[[tool.uv.lock-resolution]]
+name = "chumpy"
+dependencies = ["setuptools", "pip"]
+```
+[deleted]
+
+---
+
+_Comment by @charliermarsh on 2024-09-14 12:27_
+
+There's a significant downside to this, which is that it would require that we create a virtual environment to perform `uv lock` (despite the fact that we never modify it). I'm hesitant to make that change, given that (1) build isolation is relatively rare, and (2) we want to redesign it anyway.
+
+Can you file the second suggestion here as its own issue? I think it's separate.
+
+\cc @zanieb 
+
+---
+
+_Label `needs-decision` added by @charliermarsh on 2024-09-14 12:27_
+
+---
+
+_Comment by @YouJiacheng on 2024-09-14 13:45_
+
+~~"the second suggestion here" -- did you mean index-url stuffs or the whole "lock resolution config" thing?~~
+
+---
+
+_Comment by @YouJiacheng on 2024-09-14 13:47_
+
+IIUC all package that have a dynamic metadata or without a pyproject.toml will need an environment to run `prepare_metadata_for_build_wheel`?
+
+---
+
+_Comment by @YouJiacheng on 2024-09-14 13:51_
+
+> we want to redesign it anyway.
+
+is there any roadmap for this?
+
+---
+
+_Comment by @charliermarsh on 2024-09-14 14:27_
+
+I misread your second suggestion. I thought you were suggesting something like https://github.com/astral-sh/uv/issues/7393 which would also fix this by allowing you to define the Chumpy requirements upfront rather than requiring that we build it.
+
+---
+
+_Comment by @charliermarsh on 2024-09-14 14:28_
+
+The `[tool.uv.lock-index-url]` is unlikely to happen as we're adding an entirely separate API for indexes (#171).
+
+---
+
+_Comment by @charliermarsh on 2024-09-14 14:30_
+
+If a user said:
+
+```toml
+[[tool.uv.lock-resolution]]
+name = "flash-attn"
+dependencies = ["setuptools", "packaging", "torch"]
+```
+
+Then we would install setuptools, packaging, and torch in an isolated environment -- is that the suggestion?
+
+I don't know that this would solve the general case. It's typically _not_ the case that users disable build isolation because a package fails to declare the right build dependencies -- that is _sometimes_ true, like for Chumpy, but typically, build isolation is disabled because you need to build against a specific version of an installed dependency, like for PyTorch.
+
+---
+
+_Comment by @YouJiacheng on 2024-09-14 14:34_
+
+Okay that sounds bad.
+Useful cases are too rare.
+And this can confuse the users -- "is it the dependencies for setup.py of the package or the whole package?" -- even you misread my example.
+
+---
+
+_Comment by @charliermarsh on 2024-09-14 14:36_
+
+> is there any roadmap for this?
+
+Let me look... The main idea was that we wanted to add a new build isolation API for `uv sync` and `uv lock`, but we didn't have time so we decided to support `--no-build-isolation` like in pip to start. I have some unformed ideas around allowing packages to declare the dependencies that they need to pull in from the existing environment, kind of like what you had above... E.g.:
+
+```toml
+name = "flash-attn"
+dependencies = ["setuptools", "packaging", "torch"]
+```
+
+...could create a virtual environment, and then give it access to the already-installed `torch` from another virtual environment. So it'd be a sort of hybrid form of isolation: the build happens in a new, isolated environment, but we link in packages that are installed in a separate environment.
+
+
+---
+
+_Comment by @YouJiacheng on 2024-09-14 14:48_
+
+I think `flash-attn` can be solved by #7393 + switching between two optional dependencies groups?
+But yeah "hybrid form of isolation" is not bad.
+
+---
+
+_Comment by @YouJiacheng on 2024-09-14 15:00_
+
+Can we provide a first-class support for "switching between two (or more) optional dependencies groups"?
+Just standardize it with inspiration from Docker multi-stage builds -- the outputs of build stages are wheels.
+```toml
+[[tool.uv.build-stage]]
+# environment variables etc. can also be set.
+dependencies = ["setuptools", "packaging", "psutil", "ninja", "torch"]
+outputs = ["flash-attn", "some-other-packages"]
+[[tool.uv.build-stage]]
+dependencies = ["setuptools", "torch", "flash-attn"]
+outputs = ["some-packages"]
+```
+
+---
+
+_Referenced in [astral-sh/uv#11675](../../astral-sh/uv/issues/11675.md) on 2025-02-20 19:13_
+
+---

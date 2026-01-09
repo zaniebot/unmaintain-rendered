@@ -1,0 +1,91 @@
+---
+number: 14983
+title: Incorrect Package version being installed
+type: issue
+state: closed
+author: arun0908
+labels:
+  - bug
+  - needs-mre
+assignees: []
+created_at: 2025-07-30T22:42:35Z
+updated_at: 2025-08-04T07:39:06Z
+url: https://github.com/astral-sh/uv/issues/14983
+synced_at: 2026-01-07T13:12:19-06:00
+---
+
+# Incorrect Package version being installed
+
+---
+
+_Issue opened by @arun0908 on 2025-07-30 22:42_
+
+### Summary
+
+I am trying to install a library [PyMuPDF4LLM](https://pypi.org/project/pymupdf4llm/). Previously I had a 0.0.17 version installed globally. I created a new local virtual environment with UV initialized in it. When I tried to install the package in this environment it installed the same 0.0.17 version. I upgraded the package globally with pip and in the virtual environment uninstalled it, upgraded UV from 0.7.1 -> 0.8.4, and tried to install it again, but still installs the 0.0.17 version. Python version - Python 3.11.9
+
+Attaching screenshots for the same.
+
+<img width="1914" height="920" alt="Image" src="https://github.com/user-attachments/assets/9c0fe06a-1ad3-4efd-8b59-f10142dce9ab" />
+<img width="1919" height="1035" alt="Image" src="https://github.com/user-attachments/assets/4e524c4c-bc5c-453f-a7ff-2fc033586806" />
+<img width="1864" height="1007" alt="Image" src="https://github.com/user-attachments/assets/1b5f1946-949b-430b-9533-e3e56120ffba" />
+<img width="1913" height="1071" alt="Image" src="https://github.com/user-attachments/assets/12dc95b9-69e5-4a4e-91af-28ae4b4b11cb" />
+
+### Platform
+
+Windows 11 Enterprise
+
+### Version
+
+uv 0.8.4 (e176e1714 2025-07-30)
+
+### Python version
+
+Python 3.11.9
+
+---
+
+_Label `bug` added by @arun0908 on 2025-07-30 22:42_
+
+---
+
+_Comment by @zanieb on 2025-07-30 23:03_
+
+What version do you expect to be installed? Can you attach a reproduction and logs as text please? See https://github.com/astral-sh/uv/issues/9452 for details.
+
+---
+
+_Label `needs-mre` added by @zanieb on 2025-07-30 23:03_
+
+---
+
+_Comment by @arun0908 on 2025-07-31 00:53_
+
+Hi Zanieb,
+
+The latest version of the [PyMuPDF4LLM](https://pypi.org/project/pymupdf4llm/) is 0.0.27 which was supposed to be installed instead of the 0.0.17 version being installed.
+
+The log file is attached for reference. Kindly let me know if you need anything else
+
+[logs.txt](https://github.com/user-attachments/files/21520069/logs.txt)
+
+
+---
+
+_Comment by @zanieb on 2025-07-31 02:19_
+
+Can you demonstrate the issue in a new project? e.g.,
+
+```
+uv init example
+cd example
+uv add pymupdf4llm
+```
+
+
+
+---
+
+_Closed by @arun0908 on 2025-08-04 07:39_
+
+---

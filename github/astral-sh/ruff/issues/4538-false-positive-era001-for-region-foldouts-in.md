@@ -1,0 +1,88 @@
+---
+number: 4538
+title: "False positive ERA001 for #region foldouts in PyCharm"
+type: issue
+state: closed
+author: bshishov
+labels: []
+assignees: []
+created_at: 2023-05-20T04:35:43Z
+updated_at: 2023-05-20T16:45:51Z
+url: https://github.com/astral-sh/ruff/issues/4538
+synced_at: 2026-01-07T13:12:14-06:00
+---
+
+# False positive ERA001 for #region foldouts in PyCharm
+
+---
+
+_Issue opened by @bshishov on 2023-05-20 04:35_
+
+Hello, 
+
+there is a code folding functionality using comment lines `# region {region name}` in JetBrains IDEs. End ERA001 fires as there is code inside a region name. 
+
+```python
+# region: Foo / Bar
+# endregion
+# region: Not a code
+# endregion
+# region: 1 + 1
+# endregion
+
+class SomeName:
+    pass
+
+# region: SomeName
+# endregion
+```
+
+```
+ruff --isolated --select ERA folding.py
+folding.py:1:1: ERA001 [*] Found commented-out code
+folding.py:5:1: ERA001 [*] Found commented-out code
+folding.py:11:1: ERA001 [*] Found commented-out code
+```
+
+Notice that code-like names are detected as rule violation and `# region: Not a code` not.
+
+
+Ruff version is `0.0.269`
+
+The best documentation I could find: 
+* https://www.jetbrains.com/help/idea/code-folding-settings.html
+* https://www.jetbrains.com/help/rider/Coding_Assistance__Surrounding_with_Region.html
+This feature was implemented in JetBrains IDEs to mimic same feature in Visual Studio editor.
+
+There is also some extensions for different IDEs like VSCode: https://marketplace.visualstudio.com/items?itemName=maptz.regionfolder and also a discussion https://github.com/microsoft/vscode/issues/105 
+
+I couldn't find any implementation of the allowed pattern for start and end myself. My best guess for PyCharm is following patterns
+* `#\s*region[:\s]+(?<name>.*)` for start of named regions
+* `#\s*region.*` for start of unnamed regions
+* `#.*endregion.*` for end of any regions
+
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+
+---
+
+_Referenced in [astral-sh/ruff#4546](../../astral-sh/ruff/pulls/4546.md) on 2023-05-20 16:34_
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2023-05-20 16:34_
+
+---
+
+_Closed by @charliermarsh on 2023-05-20 16:45_
+
+---

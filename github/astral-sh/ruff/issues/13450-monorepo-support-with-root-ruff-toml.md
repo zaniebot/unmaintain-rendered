@@ -1,0 +1,60 @@
+---
+number: 13450
+title: Monorepo support with root .ruff.toml
+type: issue
+state: closed
+author: augustelalande
+labels:
+  - question
+assignees: []
+created_at: 2024-09-23T00:10:40Z
+updated_at: 2024-09-23T14:34:47Z
+url: https://github.com/astral-sh/ruff/issues/13450
+synced_at: 2026-01-07T13:12:15-06:00
+---
+
+# Monorepo support with root .ruff.toml
+
+---
+
+_Issue opened by @augustelalande on 2024-09-23 00:10_
+
+I'm having an issue with rule inheritance in a monorepo with the following structure
+```
+root
+├── .ruff.toml
+└── packages
+    ├── package1
+    │   └── pyproject.toml
+    └── package2
+        └── pyproject.toml
+```
+if the package `pyproject.toml` specifies a ruff configuration (e.g. ignore ANN), then ruff will ignore the root `.ruff.toml` and use a default ruff configuration plus whatever is specified in the `pyproject.toml`. If the package doesn't have a ruff section in the `pyproject.toml` then it works as expected.
+
+---
+
+_Comment by @augustelalande on 2024-09-23 00:11_
+
+Also the reason I don't have a `pyproject.toml` at the root is that the monorepo is mixed language so I prefer to just have a tool configuration.
+
+---
+
+_Comment by @MichaReiser on 2024-09-23 07:17_
+
+Did you set the extend setting in the pyproject.toml? Ruff doesn't automatically extend from configurations in a parent directory. If you did, would you mind sharing an example ruff and pyproject.toml configuration? 
+
+---
+
+_Label `question` added by @MichaReiser on 2024-09-23 07:17_
+
+---
+
+_Comment by @augustelalande on 2024-09-23 14:34_
+
+Thanks. That works. I don't know why I thought it would inherit automatically.
+
+---
+
+_Closed by @augustelalande on 2024-09-23 14:34_
+
+---

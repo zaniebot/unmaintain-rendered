@@ -1,0 +1,108 @@
+---
+number: 21347
+title: "UP007 emitted for dynamic `Union` creation"
+type: issue
+state: open
+author: wRAR
+labels:
+  - bug
+  - rule
+assignees: []
+created_at: 2025-11-09T17:41:57Z
+updated_at: 2025-11-11T16:00:16Z
+url: https://github.com/astral-sh/ruff/issues/21347
+synced_at: 2026-01-07T13:12:16-06:00
+---
+
+# UP007 emitted for dynamic `Union` creation
+
+---
+
+_Issue opened by @wRAR on 2025-11-09 17:41_
+
+### Summary
+
+It's possible to pass a tuple of types to `Union` at the run time:
+
+```py
+from typing import Union
+
+
+def f(types: tuple[type, ...]):
+    return Union[types]
+
+
+if __name__ == "__main__":
+    u = f((int, str, float))
+    print(u)  # typing.Union[int, str, float]
+    print(type(u))  # <class 'typing._UnionGenericAlias'>
+```
+
+ruff emits ```UP007 Use `X | Y` for type annotations``` for this, but I don't see how can that be done.
+
+Playground link: https://play.ruff.rs/b9d9c214-7cf5-473e-914f-264a6da9a92d
+
+### Version
+
+0.14.4
+
+---
+
+_Comment by @ntBre on 2025-11-10 13:45_
+
+Interesting, I'm surprised that the lint isn't restricted to annotation positions as the message indicates.
+
+---
+
+_Label `bug` added by @ntBre on 2025-11-10 13:45_
+
+---
+
+_Label `rule` added by @ntBre on 2025-11-10 13:45_
+
+---
+
+_Referenced in [astral-sh/ruff#21375](../../astral-sh/ruff/pulls/21375.md) on 2025-11-11 04:47_
+
+---
+
+_Comment by @AlexWaygood on 2025-11-11 15:25_
+
+> Interesting, I'm surprised that the lint isn't restricted to annotation positions as the message indicates.
+
+I think it's useful for it to be applied in non-annotation positions too -- e.g. I'd want this autofix applied:
+
+```diff
+- from typing import Union
+
+  # implicit type alias
+- X = Union[int, str]
++ X = int | str
+```
+
+> ruff emits `` UP007 Use `X | Y` for type annotations `` for this, but I don't see how can that be done.
+
+I guess you can dynamically construct a PEP-604 union like this, though I agree it's not quite as pretty to look at:
+
+```py
+import functools
+import operator
+
+
+def f(types: tuple[type, ...]):
+    return functools.reduce(operator.or_, types)
+```
+
+---
+
+_Comment by @MichaReiser on 2025-11-11 15:56_
+
+I'm surprised that the rule flags usages of `Union`s with a single argument (`Union[types]` vs `Union[types, str]`)
+
+---
+
+_Comment by @ntBre on 2025-11-11 16:00_
+
+Ah that might be a better way to filter this out. We should definitely support the implicit type alias case.
+
+---

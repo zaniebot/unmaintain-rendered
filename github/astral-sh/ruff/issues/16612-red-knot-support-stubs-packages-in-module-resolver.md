@@ -1,0 +1,66 @@
+---
+number: 16612
+title: "[red-knot] support -stubs packages in module resolver"
+type: issue
+state: closed
+author: carljm
+labels:
+  - ty
+assignees: []
+created_at: 2025-03-10T23:13:41Z
+updated_at: 2025-04-07T12:40:51Z
+url: https://github.com/astral-sh/ruff/issues/16612
+synced_at: 2026-01-07T13:12:16-06:00
+---
+
+# [red-knot] support -stubs packages in module resolver
+
+---
+
+_Issue opened by @carljm on 2025-03-10 23:13_
+
+The package `foo-stubs`, if present in `site-packages`, should take priority over the package `foo` from `site-packages`.
+
+---
+
+_Label `red-knot` added by @carljm on 2025-03-10 23:13_
+
+---
+
+_Added to milestone `Red Knot Q1 2025` by @carljm on 2025-03-10 23:13_
+
+---
+
+_Referenced in [astral-sh/ruff#15697](../../astral-sh/ruff/issues/15697.md) on 2025-03-10 23:14_
+
+---
+
+_Referenced in [astral-sh/ruff#11653](../../astral-sh/ruff/issues/11653.md) on 2025-03-10 23:18_
+
+---
+
+_Removed from milestone `Red Knot Q1 2025` by @carljm on 2025-03-27 18:33_
+
+---
+
+_Added to milestone `Red Knot Alpha` by @carljm on 2025-03-27 18:33_
+
+---
+
+_Comment by @MichaReiser on 2025-03-28 20:42_
+
+Link to specification https://typing.python.org/en/latest/spec/distributing.html#stub-only-packages
+
+---
+
+_Assigned to @MichaReiser by @MichaReiser on 2025-03-28 20:42_
+
+---
+
+_Referenced in [astral-sh/ruff#17204](../../astral-sh/ruff/pulls/17204.md) on 2025-04-04 16:24_
+
+---
+
+_Closed by @MichaReiser on 2025-04-07 12:40_
+
+---

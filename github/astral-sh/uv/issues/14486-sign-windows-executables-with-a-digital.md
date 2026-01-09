@@ -1,0 +1,52 @@
+---
+number: 14486
+title: Sign Windows Executables with a digital certificate
+type: issue
+state: closed
+author: tianmiaohu-fis
+labels:
+  - enhancement
+assignees: []
+created_at: 2025-07-07T15:08:38Z
+updated_at: 2025-07-07T15:30:47Z
+url: https://github.com/astral-sh/uv/issues/14486
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# Sign Windows Executables with a digital certificate
+
+---
+
+_Issue opened by @tianmiaohu-fis on 2025-07-07 15:08_
+
+### Summary
+
+Our company does not allow uv to install due to lack of a digital certificate identifying the publisher on Windows.  Can the uv Windows executes be signed with a digital certificate?
+
+### Example
+
+_No response_
+
+---
+
+_Label `enhancement` added by @tianmiaohu-fis on 2025-07-07 15:08_
+
+---
+
+_Renamed from "Sign Windows Executable with a digital certificate" to "Sign Windows Executablea with a digital certificate" by @tianmiaohu-fis on 2025-07-07 15:09_
+
+---
+
+_Renamed from "Sign Windows Executablea with a digital certificate" to "Sign Windows Executables with a digital certificate" by @tianmiaohu-fis on 2025-07-07 15:13_
+
+---
+
+_Comment by @my1e5 on 2025-07-07 15:29_
+
+Duplicate of https://github.com/astral-sh/uv/issues/10336
+
+---
+
+_Closed by @konstin on 2025-07-07 15:30_
+
+---

@@ -1,0 +1,48 @@
+---
+number: 720
+title: Import tracking should take aliases into account
+type: issue
+state: closed
+author: charliermarsh
+labels: []
+assignees: []
+created_at: 2022-11-13T15:53:33Z
+updated_at: 2022-11-15T02:29:31Z
+url: https://github.com/astral-sh/ruff/issues/720
+synced_at: 2026-01-07T13:12:14-06:00
+---
+
+# Import tracking should take aliases into account
+
+---
+
+_Issue opened by @charliermarsh on 2022-11-13 15:53_
+
+E.g., if we do `from typing import List as CustomList`, we should detect that `CustomList[...]` is a subscript annotation.
+
+
+---
+
+_Label `enhancement` added by @charliermarsh on 2022-11-13 15:53_
+
+---
+
+_Referenced in [astral-sh/ruff#733](../../astral-sh/ruff/issues/733.md) on 2022-11-14 14:32_
+
+---
+
+_Referenced in [astral-sh/ruff#738](../../astral-sh/ruff/pulls/738.md) on 2022-11-14 16:01_
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2022-11-14 16:01_
+
+---
+
+_Referenced in [astral-sh/ruff#746](../../astral-sh/ruff/pulls/746.md) on 2022-11-15 01:21_
+
+---
+
+_Closed by @charliermarsh on 2022-11-15 02:29_
+
+---

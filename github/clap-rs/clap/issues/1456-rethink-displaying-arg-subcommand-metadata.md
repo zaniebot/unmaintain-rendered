@@ -1,0 +1,129 @@
+---
+number: 1456
+title: "Rethink displaying arg & subcommand metadata normally and colorfully both "
+type: issue
+state: closed
+author: HarrisonTotty
+labels:
+  - C-enhancement
+  - A-help
+  - E-hard
+assignees: []
+created_at: 2019-04-22T19:29:25Z
+updated_at: 2021-12-09T19:56:40Z
+url: https://github.com/clap-rs/clap/issues/1456
+synced_at: 2026-01-07T13:12:19-06:00
+---
+
+# Rethink displaying arg & subcommand metadata normally and colorfully both 
+
+---
+
+_Issue opened by @HarrisonTotty on 2019-04-22 19:29_
+
+<!--
+Please use the following template to assist with creating an issue and to ensure a speedy resolution. If an area is not applicable, feel free to delete the area or mark with `N/A`
+-->
+
+### Rust Version
+
+* rustc 1.33.0-nightly (7bac68a5d 2019-01-21)
+
+### Affected Version of clap
+
+* clap 2.33.0
+
+### Bug or Feature Request Summary
+
+Currently, when one creates an application with arguments that specify environment variables via `.env()`, passing a flag that prints the program's help information at runtime will print environment variable information in the form: `[env: NAME=]`, which is all expected.
+
+The issue I wish to bring up arises when you add `AppSettings::ColoredHelp` (and have the corresponding feature enabled in your `Cargo.toml`). You'll notice that default values and possible values will be colorized, however the environment variables are not.
+
+### Expected Behavior Summary
+
+This is more of a minor nitpick I suppose. I would expect `NAME=` or `NAME` in the `[env: NAME=]` substring to be colorized like how `VAL` in `[default: VAL]` is colorized.
+
+
+---
+
+_Label `C: environment variable` added by @CreepySkeleton on 2020-02-01 14:35_
+
+---
+
+_Label `T: enhancement` added by @CreepySkeleton on 2020-02-01 14:35_
+
+---
+
+_Label `W: maybe` added by @CreepySkeleton on 2020-02-01 14:35_
+
+---
+
+_Added to milestone `3.1` by @pksunkara on 2020-02-06 19:28_
+
+---
+
+_Comment by @pksunkara on 2020-04-14 22:03_
+
+I actually removed the colorizing for default values and possible values and aliases in #1824. I wanted to rethink quite a bit on how to display this stuff while also taking #1695 into account. I am renaming this issue.
+
+---
+
+_Renamed from "Enable colored output for env help text" to "Rethink displaying arg & subcommand metadata normally and colorfully both " by @pksunkara on 2020-04-14 22:04_
+
+---
+
+_Label `W: maybe` removed by @pksunkara on 2020-04-14 22:04_
+
+---
+
+_Label `D: hard` added by @pksunkara on 2020-04-14 22:04_
+
+---
+
+_Label `P2: need to have` added by @pksunkara on 2020-04-14 22:04_
+
+---
+
+_Label `C: help message` added by @pksunkara on 2020-04-14 22:04_
+
+---
+
+_Referenced in [clap-rs/clap#1246](../../clap-rs/clap/issues/1246.md) on 2020-04-14 22:06_
+
+---
+
+_Label `C: colorizing` added by @pksunkara on 2020-04-15 09:31_
+
+---
+
+_Referenced in [mgeisler/textwrap#179](../../mgeisler/textwrap/pulls/179.md) on 2020-04-18 12:18_
+
+---
+
+_Referenced in [epage/clapng#117](../../epage/clapng/issues/117.md) on 2021-12-06 18:35_
+
+---
+
+_Label `C: environment variable` removed by @epage on 2021-12-08 20:23_
+
+---
+
+_Label `C: colorizing` removed by @epage on 2021-12-08 20:23_
+
+---
+
+_Removed from milestone `3.1` by @epage on 2021-12-08 20:23_
+
+---
+
+_Comment by @epage on 2021-12-09 19:56_
+
+Another case to keep in mind is #1695 
+
+With the immediate issue being resolved (consistently there is no styling), I think #2963 supersedes this.  If there are thoughts or concerns about closing this out in favor of #2963, let us know!
+
+---
+
+_Closed by @epage on 2021-12-09 19:56_
+
+---

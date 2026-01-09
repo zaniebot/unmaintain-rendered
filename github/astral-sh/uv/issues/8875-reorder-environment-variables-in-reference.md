@@ -1,0 +1,46 @@
+---
+number: 8875
+title: Reorder environment variables in reference documentation
+type: issue
+state: closed
+author: charliermarsh
+labels:
+  - documentation
+assignees: []
+created_at: 2024-11-07T03:40:03Z
+updated_at: 2024-11-11T18:44:54Z
+url: https://github.com/astral-sh/uv/issues/8875
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# Reorder environment variables in reference documentation
+
+---
+
+_Issue opened by @charliermarsh on 2024-11-07 03:40_
+
+The ordering is a little random right now. As a proposal, we could split into two sections: those prefixed with `UV_`, and those that aren't. And then sort within those two sections.
+
+---
+
+_Label `documentation` added by @charliermarsh on 2024-11-07 03:40_
+
+---
+
+_Label `benchmarks` added by @charliermarsh on 2024-11-07 03:40_
+
+---
+
+_Label `benchmarks` removed by @charliermarsh on 2024-11-07 03:40_
+
+---
+
+_Comment by @charliermarsh on 2024-11-11 18:44_
+
+Fixed in https://github.com/astral-sh/uv/pull/9018.
+
+---
+
+_Closed by @charliermarsh on 2024-11-11 18:44_
+
+---

@@ -1,0 +1,96 @@
+---
+number: 5125
+title: "#[command] docs are missing"
+type: issue
+state: closed
+author: nixpulvis
+labels:
+  - C-enhancement
+assignees: []
+created_at: 2023-09-14T14:23:24Z
+updated_at: 2023-09-14T20:51:07Z
+url: https://github.com/clap-rs/clap/issues/5125
+synced_at: 2026-01-07T13:12:20-06:00
+---
+
+# #[command] docs are missing
+
+---
+
+_Issue opened by @nixpulvis on 2023-09-14 14:23_
+
+### Please complete the following tasks
+
+- [X] I have searched the [discussions](https://github.com/clap-rs/clap/discussions)
+- [X] I have searched the [open](https://github.com/clap-rs/clap/issues) and [rejected](https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed) issues
+
+### Clap Version
+
+4
+
+### Describe your use case
+
+I'm trying to figure out how to use `#[command]` on a derived `Parser`. Docs for `#[arg]` seem to exist, so I was expecting these as well. It's a shame there's probably not a surefire way to ensure these are exhaustive, since they are macro attributes, but still beats reading through all the examples for what `#[command]` takes.
+
+### Describe the solution you'd like
+
+Document `#[command]`.
+
+### Alternatives, if applicable
+
+_No response_
+
+### Additional Context
+
+_No response_
+
+---
+
+_Label `C-enhancement` added by @nixpulvis on 2023-09-14 14:23_
+
+---
+
+_Comment by @epage on 2023-09-14 16:45_
+
+More information is needed on what is missing as we do cover this in the documentation
+
+This is covered in the tutorial
+- https://docs.rs/clap/latest/clap/_derive/_tutorial/chapter_1/index.html
+- https://docs.rs/clap/latest/clap/_derive/_tutorial/chapter_2/index.html#subcommands
+
+And in the reference
+- https://docs.rs/clap/latest/clap/_derive/index.html#command-attributes
+
+And in the cookbook
+- https://docs.rs/clap/latest/clap/_derive/_cookbook/cargo_example_derive/index.html
+- https://docs.rs/clap/latest/clap/_derive/_cookbook/git_derive/index.html
+
+---
+
+_Comment by @nixpulvis on 2023-09-14 17:20_
+
+I was just expecting it since there are docs at the top level under `arg`. Maybe just put a link in the `command` macro docs so people like me don't get lost?
+
+---
+
+_Comment by @epage on 2023-09-14 19:53_
+
+There are not top-level docs for `#[arg()]` but for `arg!` which is a macro to use the builder API by example.  Similarly, there are top-level docs for `command!` which is also for the builder API.
+
+---
+
+_Comment by @nixpulvis on 2023-09-14 20:46_
+
+Oh, that makes sense. Sorry for the confusion. Macro docs in Rust still confuse me.
+
+---
+
+_Comment by @epage on 2023-09-14 20:51_
+
+rustdoc has no support for proc macro attributes which makes things more difficult in general.  The above links are my experimentation in making up for that problem.
+
+---
+
+_Closed by @epage on 2023-09-14 20:51_
+
+---

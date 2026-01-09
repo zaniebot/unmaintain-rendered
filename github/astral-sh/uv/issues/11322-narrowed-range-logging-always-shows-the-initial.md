@@ -1,0 +1,44 @@
+---
+number: 11322
+title: "\"Narrowed range\" logging always shows the initial specifiers"
+type: issue
+state: closed
+author: charliermarsh
+labels:
+  - tracing
+assignees: []
+created_at: 2025-02-07T17:10:35Z
+updated_at: 2025-02-07T22:43:34Z
+url: https://github.com/astral-sh/uv/issues/11322
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# "Narrowed range" logging always shows the initial specifiers
+
+---
+
+_Issue opened by @charliermarsh on 2025-02-07 17:10_
+
+I think we don't update the specifiers (somewhat intentionally), and the display implementation uses the specifiers, so even if the range gets narrowed, we show the "wrong" value.
+
+---
+
+_Label `tracing` added by @charliermarsh on 2025-02-07 17:10_
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2025-02-07 17:28_
+
+---
+
+_Referenced in [astral-sh/uv#11334](../../astral-sh/uv/pulls/11334.md) on 2025-02-07 22:21_
+
+---
+
+_Closed by @charliermarsh on 2025-02-07 22:43_
+
+---
+
+_Closed by @charliermarsh on 2025-02-07 22:43_
+
+---

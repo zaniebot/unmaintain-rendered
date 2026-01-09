@@ -1,0 +1,135 @@
+---
+number: 15214
+title: "'did not find executable' error when `uv tool update` after `uv python upgrade`"
+type: issue
+state: closed
+author: karofsky
+labels:
+  - bug
+assignees: []
+created_at: 2025-08-11T01:36:49Z
+updated_at: 2025-08-11T04:43:28Z
+url: https://github.com/astral-sh/uv/issues/15214
+synced_at: 2026-01-07T13:12:19-06:00
+---
+
+# 'did not find executable' error when `uv tool update` after `uv python upgrade`
+
+---
+
+_Issue opened by @karofsky on 2025-08-11 01:36_
+
+### Summary
+
+1. `uv python install 3.13.5`
+2. `uv tool install ruff`
+3. `uv python upgrade 3.13 --preview`
+4. `uv python uninstall 3.13.5`
+5. `uv tool update ruff`
+
+throws error: `ruff` is missing a valid environment; run `uv tool install --force ruff` to reinstall
+
+run `uv tool install --force ruff`, throws error: did not find executable at 'C:\Users\karofsky\AppData\Roaming\uv\python\cpython-3.13.5-windows-x86_64-none\python.exe'
+
+### Platform
+
+Windows 10
+
+### Version
+
+uv 0.8.8 (9a54754b0 2025-08-08)
+
+### Python version
+
+Python 3.10.18
+
+---
+
+_Label `bug` added by @karofsky on 2025-08-11 01:36_
+
+---
+
+_Comment by @faisal-fida on 2025-08-11 02:01_
+
+
+
+This error occurs when there's a mismatch between the Python version used to install a tool and the currently active Python environment after an upgrade. The tool was originally installed using Python 3.13.5, but after upgrading and uninstalling that version, uv can no longer find the executable.
+
+### Why it happens:
+- `uv tool install` creates tools tied to specific Python installations
+- When you `uv python upgrade` and then `uv python uninstall` the old version, the tool's associated Python executable is removed
+- The tool metadata still references the old Python path, causing the "did not find executable" error
+- Even forcing a reinstall fails because the original Python version (3.13.5) is no longer available
+
+### How to solve it:
+
+1. **Reinstall the tool with the current Python version**:
+   ```bash
+   uv tool install --force ruff
+   ```
+   This should now use the upgraded Python version.
+
+2. **If the above fails, first ensure the new Python version is properly set**:
+   ```bash
+   uv python list
+   uv python pin 3.13  # or whatever version you upgraded to
+   uv tool install --force ruff
+   ```
+
+3. **Alternative: Remove and reinstall the tool cleanly**:
+   ```bash
+   uv tool uninstall ruff
+   uv tool install ruff
+   ```
+
+4. **For future upgrades, avoid uninstalling the old Python version immediately**:
+   - Upgrade Python: `uv python upgrade 3.13 --preview`
+   - Update tools: `uv tool update ruff`
+   - Only uninstall old Python versions after confirming everything works
+
+
+---
+
+_Comment by @karofsky on 2025-08-11 04:43_
+
+> This error occurs when there's a mismatch between the Python version used to install a tool and the currently active Python environment after an upgrade. The tool was originally installed using Python 3.13.5, but after upgrading and uninstalling that version, uv can no longer find the executable.
+> 
+> ### Why it happens:
+> * `uv tool install` creates tools tied to specific Python installations
+> * When you `uv python upgrade` and then `uv python uninstall` the old version, the tool's associated Python executable is removed
+> * The tool metadata still references the old Python path, causing the "did not find executable" error
+> * Even forcing a reinstall fails because the original Python version (3.13.5) is no longer available
+> 
+> ### How to solve it:
+> 1. **Reinstall the tool with the current Python version**:
+>    uv tool install --force ruff
+>        
+>          
+>        
+>    
+>          
+>        
+>    
+>        
+>      
+>    This should now use the upgraded Python version.
+> 2. **If the above fails, first ensure the new Python version is properly set**:
+>    uv python list
+>    uv python pin 3.13  # or whatever version you upgraded to
+>    uv tool install --force ruff
+> 3. **Alternative: Remove and reinstall the tool cleanly**:
+>    uv tool uninstall ruff
+>    uv tool install ruff
+> 4. **For future upgrades, avoid uninstalling the old Python version immediately**:
+>    
+>    * Upgrade Python: `uv python upgrade 3.13 --preview`
+>    * Update tools: `uv tool update ruff`
+>    * Only uninstall old Python versions after confirming everything works
+
+thanks for clearing this for me!
+
+---
+
+_Closed by @karofsky on 2025-08-11 04:43_
+
+---

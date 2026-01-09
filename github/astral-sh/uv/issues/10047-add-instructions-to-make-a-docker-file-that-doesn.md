@@ -1,0 +1,248 @@
+---
+number: 10047
+title: "Add instructions to make a docker file that doesn't use root at runtime"
+type: issue
+state: open
+author: danieltalsky
+labels:
+  - documentation
+assignees: []
+created_at: 2024-12-20T03:26:03Z
+updated_at: 2025-01-02T21:36:34Z
+url: https://github.com/astral-sh/uv/issues/10047
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# Add instructions to make a docker file that doesn't use root at runtime
+
+---
+
+_Issue opened by @danieltalsky on 2024-12-20 03:26_
+
+I really appreciate this example:
+https://github.com/astral-sh/uv-docker-example/blob/main/Dockerfile
+
+But sometimes people need to install uv and switch to a non-root user at runtime.
+
+I could NOT get it to work.  Here's a somewhat commented out example of what I tried but not everything.  I tried installing uv to a non-root folder and giving the web user access to the cache, install directory, and virtual environment but I couldn't get ANYTHING to work.  We're talking about two determined devs collaborating for multiple hours.  Is there any way y'all could produce a version of the uv docker example that allows installation and package installation during the build but still allows another user to run the uv entrypoint?  We can't be the only people trying to do this.
+
+```dockerfile
+FROM python:3.12
+
+ENV DEBIAN_FRONTEND noninteractive
+
+RUN apt-get update && apt-get install -y apt-utils
+RUN apt-get update && apt-get install -y --upgrade \
+    ca-certificates \
+    curl \
+    git \
+    nginx \
+    gettext \
+    locales \
+    supervisor \
+    vim
+
+# Install supervisord conf
+COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+
+# Setup nginx
+RUN rm /etc/nginx/sites-enabled/default
+RUN ln -s /code/nginx.conf /etc/nginx/sites-enabled/tungsten.conf
+
+# Localization / terminal UTF-8 handling
+RUN locale-gen en_US.UTF-8
+RUN update-locale en_US.UTF-8
+ENV LANG=en_US.UTF-8
+
+# Create and use web-user
+RUN groupadd web-user --gid 2001
+RUN useradd --uid 2001 --gid 2001 -d /code web-user
+
+# nginx and gunicorn setup
+COPY . /code
+
+# Download uv installer
+ADD https://astral.sh/uv/install.sh /code/uv-installer.sh
+
+RUN chown -R 2001:2001 /code
+RUN chown -R 2001:2001 /var/lib/nginx
+RUN chown -R 2001:2001 /var/log/nginx
+
+RUN mkdir /logs
+RUN chown 2001:2001 /logs
+
+RUN mkdir /logs/nginx
+RUN chown 2001:2001 /logs/nginx
+
+RUN mkdir /logs/gunicorn
+RUN chown 2001:2001 /logs/gunicorn
+
+USER 2001:2001
+
+# Configure Django project
+
+# Install uv
+RUN mkdir -p /code/uv-cache/uv
+ENV UV_CACHE_DIR=/code/uv-cache
+RUN sh /code/uv-installer.sh && rm /code/uv-installer.sh
+ENV PATH="/root/.cargo/bin/:$PATH"
+mkdir -p /code/uv-cache/uv
+ENV PATH="/code/.cargo/uv/:$PATH"
+
+# Enable bytecode compilation
+ENV UV_COMPILE_BYTECODE=1
+# Copy from the cache instead of linking since it's a mounted volume
+ENV UV_LINK_MODE=copy
+
+ENV DJANGO_PRODUCTION=true
+ENV DJANGO_SETTINGS_MODULE=tungsten.settings
+
+# Set workdir
+WORKDIR /code
+ENV PATH="/code/.venv/bin:$PATH"
+
+# Install dependencies
+# we did try this with /code/
+RUN --mount=type=cache,target=/root/.cache/uv \
+    uv sync
+
+# Place executables in the environment at the front of the path
+RUN chmod ug+x /code/setup_cert.sh
+RUN chmod ug+x /code/initialize.sh
+
+## Create a registry of static files
+RUN uv run /code/manage.py collectstatic --noinput
+
+# Still using a local memory database for a few things
+RUN uv run /code/manage.py migrate --noinput
+
+# Compile translation files
+RUN uv run /code/manage.py compilemessages
+
+# Expose ports
+# 80 = Nginx
+# 8000 = Gunicorn
+# 3306 = postgres
+EXPOSE 80 8000 3306
+
+# Run Supervisor (i.e., start postgres, nginx, and gunicorn)
+ENTRYPOINT ["uv", "run", "/code/initialize.sh"]
+
+---
+
+_Renamed from "Add instructions to make a docker file that doesn't use root" to "Add instructions to make a docker file that doesn't use root at runtime" by @danieltalsky on 2024-12-20 03:51_
+
+---
+
+_Comment by @zed on 2024-12-20 08:48_
+
+you could prefix `RUN --mount=type=cache,target=${UV_CACHE_DIR}` to any command that works with `$UV_CACHE_DIR` (not just `uv sync`). For example:
+
+```dockerfile
+# workaround "Permission denied (os error 13)" error in
+#    "RUN --mount=type=cache" in `uv sync` below
+RUN --mount=type=cache,target=${UV_CACHE_DIR}                     \
+    [ -d "${UV_CACHE_DIR}" ] && chown -R "${UID}:${UID}" "${UV_CACHE_DIR}"
+```
+
+Then
+```dockerfile
+# install the project's dependencies
+RUN --mount=type=cache,target=${UV_CACHE_DIR}                     \
+    --mount=type=bind,source=uv.lock,target=uv.lock               \
+    --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
+     uv sync --frozen --no-install-project
+```
+succeeds.
+
+Alternatively, you could use uid:
+```dockerfile
+RUN --mount=type=cache,target=${UV_CACHE_DIR},uid=${UID}                     \
+...
+```
+no `chown` is necessary for the cache dir in this case.
+
+btw, COPY accepts --chown option too:
+
+```dockerfile
+COPY --chown="${UID}:${UID}" . . 
+```
+
+---
+
+_Comment by @danieltalsky on 2024-12-21 13:50_
+
+Thank you for pointing me in the right direction!  Any chance you would consider adding a fully working example recommendation to your dockerfile example repo?
+
+---
+
+_Comment by @zanieb on 2024-12-21 17:08_
+
+@zed doesn't work here, they're just being helpful :)
+
+Yes it seems reasonable to add an example to our repositories. I'd review a contribution doing so.
+
+---
+
+_Label `documentation` added by @zanieb on 2024-12-21 18:35_
+
+---
+
+_Comment by @scrat247 on 2025-01-02 21:25_
+
+We've spend some time with this as well and circumvented the problem by focussing on a system-wide install because then switching the user isn't an issue at all. 
+
+Some glitch with this is that uv itself isn't available to that unprivileged user - but tbh we don't consider this an issue.
+
+```
+FROM python:3.8.3-slim
+
+# set work directory
+WORKDIR /usr/src/app
+
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends curl ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
+
+# Download the installer
+ADD https://astral.sh/uv/0.5.13/install.sh /uv-installer.sh
+
+# Run the installer then remove it
+RUN sh /uv-installer.sh && rm /uv-installer.sh
+
+# Ensure the installed binary is on the `PATH`
+ENV PATH="/root/.local/bin/:$PATH"
+
+# Utilize system wide install via uv
+ENV UV_PROJECT_ENVIRONMENT="/usr/local/"
+ENV UV_SYSTEM_PYTHON="true"
+ENV UV_PYTHON_PREFERENCE="only-system"
+ENV UV_LINK_MODE=copy
+
+RUN --mount=type=cache,target=/root/.cache/uv \
+    --mount=type=bind,source=uv.lock,target=uv.lock \
+    --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
+    uv sync --frozen
+
+# replace <GID> with desired group id
+# replace <GROUP_NAME> with desired group name
+# replace <UID> with desired user id
+# replace <USER_NAME> with desired user name
+RUN addgroup -gid <GID><GROUP_NAME> && adduser --disabled-password --gecos "" --gid <GID> --uid <UID> <USER_NAME>
+USER <USER_NAME>
+
+#copy project
+COPY . .
+```
+
+Small warning: Obviously we haven't put that to production (see outdated python version),  but for our local development environments while updating the project it seems to work great so far.
+
+---
+
+_Referenced in [returnDanilo/uv#1](../../returnDanilo/uv/pulls/1.md) on 2025-02-19 11:21_
+
+---
+
+_Referenced in [astral-sh/uv#11617](../../astral-sh/uv/pulls/11617.md) on 2025-02-19 11:27_
+
+---

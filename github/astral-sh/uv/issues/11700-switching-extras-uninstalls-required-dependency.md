@@ -1,0 +1,165 @@
+---
+number: 11700
+title: Switching extras uninstalls required dependency
+type: issue
+state: open
+author: ElliottKasoar
+labels:
+  - bug
+  - needs-decision
+assignees: []
+created_at: 2025-02-21T17:31:05Z
+updated_at: 2025-02-24T21:05:33Z
+url: https://github.com/astral-sh/uv/issues/11700
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# Switching extras uninstalls required dependency
+
+---
+
+_Issue opened by @ElliottKasoar on 2025-02-21 17:31_
+
+### Summary
+
+I am encountering various instances where a sub-dependency, `pynvml`, of a required dependency, `codecarbon`, seems to be removed when switching extras.
+
+For example, with a pyproject.toml:
+
+```
+[project]
+name = "test"
+version = "0.0.1"
+requires-python = ">=3.10, <3.13"
+
+dependencies = [
+    "codecarbon<3.0.0,>=2.8.3",
+]
+
+[project.optional-dependencies]
+chgnet = [
+    "chgnet == 0.4.0",
+]
+
+matgl = [
+    "matgl == 1.1.3",
+]
+
+[tool.uv]
+constraint-dependencies = [
+    "dgl==2.1",
+]
+```
+
+If I install any individual combination of extras (`uv sync -p 3.12`, `uv sync -p 3.12 --extra chgnet`, `uv sync -p 3.12 --extra matgl`, or `uv sync -p 3.12 --extra matgl --extra chgnet`), I am able to run `uv run python -c "import pynvml"` successfully.
+
+However, if I install `chgnet`, followed by `matgl`, `pynvml` is (partially) uninstalled:
+
+```
+uv sync -p 3.12 --extra chgnet
+uv sync -p 3.12 --extra matgl
+
+uv run python -c "import pynvml"
+Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+ModuleNotFoundError: No module named 'pynvml'
+```
+
+I think this may be as `chgnet` depends on `nvidia-ml-py3`, which is uninstalled in this process, and `pynvml` depends on `nvidia-ml-py`.
+
+However, the only place I can see `pynvml` in `uv.lock` is as a dependency of `codecarbon`, and even when it can't be imported, it shows up in `uv pip list`, and `pynvml v12.0.0 [required: *]` as a codecarbon dependency when I run `uv pip tree --show-version-specifiers`. 
+
+### Platform
+
+macOS 15.2 arm64
+
+### Version
+
+uv 0.6.2 (6d3614eec 2025-02-19)
+
+### Python version
+
+Python 3.12.8
+
+---
+
+_Label `bug` added by @ElliottKasoar on 2025-02-21 17:31_
+
+---
+
+_Comment by @charliermarsh on 2025-02-21 22:41_
+
+We’ll take a look, thanks!
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2025-02-24 18:47_
+
+---
+
+_Comment by @charliermarsh on 2025-02-24 18:51_
+
+Hmm. I'm not sure how to fix this. The `RECORD` file for `nvidia-ml-py3` is:
+
+```
+nvidia_ml_py3-7.352.0.dist-info/INSTALLER,sha256=5hhM4Q4mYTT9z6QB6PGpUAW81PGNFrYrdXMj4oM_6ak,2
+nvidia_ml_py3-7.352.0.dist-info/METADATA,sha256=NKzkmXydI-aq5gU44yK4qXPCqWD4vyudHdlUoI8y9_w,858
+nvidia_ml_py3-7.352.0.dist-info/RECORD,,
+nvidia_ml_py3-7.352.0.dist-info/REQUESTED,sha256=47DEQpj8HBSa-_TImW-5JCeuQeRkm5NMpJWZG3hSuFU,0
+nvidia_ml_py3-7.352.0.dist-info/WHEEL,sha256=In9FTNxeP60KnTkGw7wk6mJPYd_dQSjEZmXdBdMCI-8,91
+nvidia_ml_py3-7.352.0.dist-info/top_level.txt,sha256=bq9FaIiyagzX5vVW9zq0DfNTJoZ88kfSossw4mVUgUc,18
+nvidia_smi.py,sha256=kfhLwjCxVcFGQ3WlFWkLIIcBEUutejiLYPrzIr5LnOE,37168
+pynvml.py,sha256=6yia0CYdK5r22Ph3W9Kp9vAs4xtHq_3KD7nJKcX0gqU,56874
+```
+
+And then for `nvidia-ml-py`:
+
+```
+example.py,sha256=mDXwPVyEDuiKeMApEh53r_M36xuncmzMpFOGA3Q-_Kw,7968
+nvidia_ml_py-12.570.86.dist-info/INSTALLER,sha256=5hhM4Q4mYTT9z6QB6PGpUAW81PGNFrYrdXMj4oM_6ak,2
+nvidia_ml_py-12.570.86.dist-info/METADATA,sha256=vY-jfk5MJsbWGy2jmbgdwfPKG4G0FHbspv-av_h5bEE,8718
+nvidia_ml_py-12.570.86.dist-info/RECORD,,
+nvidia_ml_py-12.570.86.dist-info/REQUESTED,sha256=47DEQpj8HBSa-_TImW-5JCeuQeRkm5NMpJWZG3hSuFU,0
+nvidia_ml_py-12.570.86.dist-info/WHEEL,sha256=In9FTNxeP60KnTkGw7wk6mJPYd_dQSjEZmXdBdMCI-8,91
+nvidia_ml_py-12.570.86.dist-info/top_level.txt,sha256=wLINSA1WKnhsGgKsb_nuj51ZCQrXaN5qhioTL56g98A,15
+pynvml.py,sha256=PCW5qJPhGshkIhIUOOQyUXsxkCVaPeTi30R7LsJb4YE,234473
+```
+
+So they _both_ install `pynvml.py` -- the packages overlap. And when we uninstall `nvidia-ml-py3`, it's correct to remove `pynvml.py`... Even though another package _also_ included it.
+
+Note that the `RECORD` file for `pynvml` is:
+
+```
+pynvml-12.0.0.dist-info/INSTALLER,sha256=5hhM4Q4mYTT9z6QB6PGpUAW81PGNFrYrdXMj4oM_6ak,2
+pynvml-12.0.0.dist-info/LICENSE.txt,sha256=gXj--65Fdo4eo8z61E_xNOHqMO1O2u1OENO2xW4SAu0,1496
+pynvml-12.0.0.dist-info/METADATA,sha256=TI5OZVPRmiBywJTLYy_CqTn4-hoJv7mWcMtbyP0juYs,5420
+pynvml-12.0.0.dist-info/RECORD,,
+pynvml-12.0.0.dist-info/REQUESTED,sha256=47DEQpj8HBSa-_TImW-5JCeuQeRkm5NMpJWZG3hSuFU,0
+pynvml-12.0.0.dist-info/WHEEL,sha256=PZUExdf71Ui_so67QXpySuHtCi3-J3wvF4ORK6k_S8U,91
+pynvml-12.0.0.dist-info/top_level.txt,sha256=jzuf0rTExALezG7qEZaLvJ28GFabMuxFnPv5V0YJ3q4,13
+pynvml_utils/__init__.py,sha256=HEz95e4MaZuyIKOk27u9yAVkDIRun8EkQ7RDFdvNFPY,52
+pynvml_utils/smi.py,sha256=NmMrRC9AZkc16XviWReVtIt4dA4taRbtgAMlu_TRi9g,127334
+pynvml_utils/tests/test_nvml.py,sha256=D8g8M-OyjGUIaRsY1BHtm64jrWgHPdkXQwnpLzTvdt4,16073
+pynvml_utils/tests/test_smi.py,sha256=33h5BGyNymWAcURf7MMmfR2nVpUKUWOVjOPoOtRWIv4,1645
+```
+
+So `pynvml` on its own doesn't even add `pyvml` to the environment. It gets it from `nvidia-ml-py`.
+
+
+---
+
+_Label `needs-decision` added by @charliermarsh on 2025-02-24 21:05_
+
+---
+
+_Referenced in [stfc/janus-core#605](../../stfc/janus-core/issues/605.md) on 2025-09-19 10:10_
+
+---
+
+_Referenced in [mlco2/codecarbon#933](../../mlco2/codecarbon/issues/933.md) on 2025-09-19 10:12_
+
+---
+
+_Referenced in [mlco2/codecarbon#942](../../mlco2/codecarbon/pulls/942.md) on 2025-10-01 13:40_
+
+---

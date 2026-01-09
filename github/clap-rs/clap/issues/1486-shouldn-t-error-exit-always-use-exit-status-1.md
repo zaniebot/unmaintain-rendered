@@ -1,0 +1,59 @@
+---
+number: 1486
+title: "Shouldn't Error::exit() always use exit status 1 ?"
+type: issue
+state: closed
+author: TyPR124
+labels: []
+assignees: []
+created_at: 2019-06-08T01:03:18Z
+updated_at: 2020-02-01T19:43:31Z
+url: https://github.com/clap-rs/clap/issues/1486
+synced_at: 2026-01-07T13:12:19-06:00
+---
+
+# Shouldn't Error::exit() always use exit status 1 ?
+
+---
+
+_Issue opened by @TyPR124 on 2019-06-08 01:03_
+
+Because currently it does not:
+
+https://github.com/clap-rs/clap/blob/0568dbd7416ba00928474990b8d865b4e6d0e0f5/src/parse/errors.rs#L395-L403
+
+---
+
+_Comment by @TyPR124 on 2019-06-09 17:22_
+
+So I've looked at it slightly closer, and I guess this is by design. I would still personally suggest updating the docstring, which currently states "Prints the error to stderr and exits with a status of 1". Even if exit(0) only happens when used internally, it could be confusing for someone not familiar with the project.
+
+I only looked at the function to see if clap did any cleanup before exiting to assure myself it was fine for me to call `std::process::exit` where I was, but I immediately saw the discrepancy between docstring and behavior, and incorrectly assumed it was erroneous.
+
+Edit: Actually, it is possible (and non-hidden) for the user to create an error that would exit with status 0, so I'm re-opening this as I believe it is necessary to update documentation accordingly.
+
+Either the `Error::exit` method should state when it exits with status 0, or the `ErrorKind::HelpDisplayed` and `VersionDisplayed` should state they will exit with status 0 rather than 1.
+
+---
+
+_Closed by @TyPR124 on 2019-06-09 17:22_
+
+---
+
+_Reopened by @TyPR124 on 2019-06-09 17:45_
+
+---
+
+_Comment by @CreepySkeleton on 2020-02-01 13:29_
+
+Now we use exit codes from `exitcode` crate.
+
+---
+
+_Closed by @CreepySkeleton on 2020-02-01 13:29_
+
+---
+
+_Label `T: RFC / question` added by @pksunkara on 2020-02-01 19:43_
+
+---

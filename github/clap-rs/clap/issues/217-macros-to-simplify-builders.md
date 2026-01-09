@@ -1,0 +1,1071 @@
+---
+number: 217
+title: Macros to simplify builders
+type: issue
+state: closed
+author: WildCryptoFox
+labels: []
+assignees: []
+created_at: 2015-09-02T11:43:31Z
+updated_at: 2018-08-02T03:29:43Z
+url: https://github.com/clap-rs/clap/issues/217
+synced_at: 2026-01-07T13:12:19-06:00
+---
+
+# Macros to simplify builders
+
+---
+
+_Issue opened by @WildCryptoFox on 2015-09-02 11:43_
+
+<!--I've quickly hacked together a macro for this purpose. Posting now to open the discussion and I'll happily create a respective PR if approved and only when all features are implemented as desired.-->
+
+Macros can be used to make builders easier to manage, without adding any performance overheads for parsing strings at runtime, or handling YAML at compile time.
+
+<!--
+~~Original Sample~~
+
+---
+~~https://gist.github.com/james-darkfox/601d86a2ea2b4c28dd8c~~
+ ```rust
+// v[ersion], a[uthor], d[escription; =about]
+let matches = matcher!(("MyApp") (v "1.0") (a "Alice") (d "Does awesome things") =>
+    // s[hort], l[ong], h[elp], takes_value, multiple, index N
+    (config (s c) (l config) (h "Sets a custom config file") (takes_value))
+    (output (index 1)        (h "Sets an optional output file"))
+    (debug  (s d) (multiple) (h "Turn debugging information on"))
+    // @subcommand
+    (@subcommand test (d "does testing things") =>
+        (list (s l) (h "lists test values"))
+    )
+);
+``` -->
+## Notes
+
+<!-- This macro uses repeating such that we don't reach the recursion limit using a TT muncher. Such a TT muncher would allow for easing away the parenthesis in favor of other possible syntaxes.
+
+Another note worth mentioning, subcommands are treated just as if they were an application; and as such the macro will happily match version and author; which do not show in the usage output and are implemented functions. Is there any reason for this? -->
+
+This macro is defined as an S-expression. What this means is that it can both take many arguments and parse complicated usage-string-like syntax (like `@arg foo: -s --long <required_arg> [optional_arg] ... conflicts[some_arg] requires[other_arg] {validator_function} "Foobar!"`) without reaching the recursion limit of 64.
+
+`@subcommand` and `@group` allow for visual hierarchy to understand relationships between arguments, commands, and other related meta.
+## Updated sample
+
+https://gist.github.com/james-darkfox/595d22b7c48bd541cc39
+
+``` rust
+let matches = clap_app!(MyApp =>
+    (@setting SubcommandRequiredElseHelp)
+    (version: "1.0")
+    (author: "Alice")
+    (about: "Does awesome things")
+    (@arg config: -c --config <conf> #{1, 2} {file_exists} "Sets a custom config file")
+    (@arg input: * "Input file")
+    (@group test =>
+        (@attributes +required)
+        (@arg output: "Sets an optional output file")
+        (@arg debug: -d ... "Turn debugging information on")
+    )
+    (@subcommand test =>
+        (about: "does testing things")
+        (version: "2.5")
+        (@arg list: -l "Lists test values")
+        (@arg test_req: -r requires[list] "Tests requirement for listing")
+        (@arg aaaa: --aaaa +takes_value {
+                |a| if a.contains("a") {
+                    Ok(())
+                } else {
+                    Err(String::from("string does not contain at least one a"))
+                }
+            } "Test if the argument contains an a")
+    )
+).get_matches();
+```
+## Checklist
+- [x] App
+  - [x] Version `version: "1.2"`
+  - [x] Author `author: "foo"`
+  - [x] About / description `about: "foo"`
+  - [x] AppSettings `@settings foo`
+- [x] Argument groups `@group foo => ...` (implemented as a double accumulator)
+  - [x] ArgGroup attributes
+- [x] Subcommands `@subcommand foo => ...`
+  - [x] Subcommand attributes
+- [x] Argument attributes
+  - [x]    conflicts_with, conflicts_with_all `conflicts_with[a b c]`
+  - [x]    empty_values `!deny_empty` for false `+deny_empty` for true
+  - [x]    ~~from_usage~~
+  - [x]    global `global`
+  - [x]    group `group(x)`
+  - [x]    index `index(n)`
+  - [x]    long `--long`
+  - [x]    help `"Help"` **LAST TOKEN**
+  - [x]    max_values `max_values(n)`
+  - [x]    min_values `min_values(n)`
+  - [x]    multiple `multiple`
+  - [x]    mutually_overrides_with, mutually_overrides_with_all `mutually_overrides_with[a b c]`
+  - [x]    number_of_values `number_of_values(n)`
+  - [x]    possible_value, possible_values `possible_values[a b c]`
+  - [x]    required `required` `*`
+  - [x]    requires, requires_all `requires[a b c]`
+  - [x]    short `-s`
+  - [x]    takes_value `+takes_value`
+  - [x]    validator `{ |val| ... }`
+  - [x]    value_name, value_names `<var>` `[var]` **(Currently no difference between them)**
+  - [x]    with_name **(Forced; all arguments and apps must use this to define their name)**
+- [x] 01c_quick_example.rs **Much more complicated than the a/b samples**
+- [x] Make the macro **generic + shorthand**
+  - [x] **Future proof macro design.**
+    - [x] **`Arg` depends on: `with_name` `long` `short` `takes_value` `required` `multiple` `value_name` `min_values` `max_values`.**
+    - [x] **`App` depends on: `with_name` `arg_group` `subcommand` `setting` `arg`.**
+    - [x] **`ArgGroup` depends on: `with_name` `add`.**
+    - [x] The consumer may use more than this, but this is all the macro itself depends on
+  - [x] Refactored down functions to builder functions
+  - [x] Booleans factored down to `+make_me_true` and `!make_me_false`
+  - [x] Added `#{n, m}` shorthand for min/max settings
+    - [x] ~~Should there be shorthand for each side too? `#{n, }` `#{, m}` or `#{n}` `#{0, m}` ?~~
+    - [x] ~~Should zero be caught and ignored for n?~~
+  - [x] Added `*` shorthand for required
+  - [x] `<>` and `[]` both imply `takes_value` while `<>` also implies `required`. They do not set either flag more than once. `<> []` is equivalent to `<> <>` and `[] <>` is equivalent to `[] []`
+  - [x] Renamed `requires(a b c)` to `requires[a b c]`
+  - [x] Add shorthand for `+foo` = foo(true)
+  - [x] Add shorthand for `!foo` = foo(false)
+  - [x] ~~Add shorthand for `*{foo bar}` = requires **readability**~~
+  - [x] ~~Add shorthand for `!{foo bar}` = conflicts **readability**~~
+  - [x] ~~Add shorthand for `={foo bar}` = possible values **readability**~~
+  - [x] ~~Add shorthand for `~{foo bar}` = mutually overrides **readability**~~
+  - [x] Accumulate expressions instead of `let builder =` for cleaner result. **Increases recursion depth**
+- [x] Implement into crate and export macro
+- [ ] Document the macro usage
+  - [x] Example
+  - [ ] Detailed docs
+- [x] PR
+
+
+---
+
+_Label `T: RFC / question` added by @Vinatorul on 2015-09-02 15:34_
+
+---
+
+_Label `T: new feature` added by @Vinatorul on 2015-09-02 15:34_
+
+---
+
+_Label `W: maybe` added by @Vinatorul on 2015-09-02 15:34_
+
+---
+
+_Comment by @sru on 2015-09-02 17:54_
+
+I took a quick look at the macro. It seems that it is only doing direct translation.
+
+Some things to consider:
+- Does it actually simplify it? Sure, it may simplify typing few strokes, but with short words and symbols, it requires user to learn extra layer of indirection.
+- Is it actually worth simplifying it?
+- Are you sacrificing readabilty? (I feel like the parentheses really clutter things, but that's my opinion)
+- How is it different from using `arg_from_usage`? Of course syntax is clearly different, but what is the benefit of using this macro? I am not sure if there are performance hit on using `arg_from_usage`, but if #202 is solved, then there would be no difference in performance. Here, I think this is concise enough:
+
+``` rust
+let matches = App::new("MyApp")
+    .version("1.0")
+    .author("Kevin K. <kbknapp@gmail.com>")
+    .about("Does awesome things")
+    .args_from_usage("-c --config <config> 'sets a custom config file'
+                      [output]             'sets an optional output file'
+                      -d --debug...        'turn debugging information on'")
+    .subcommand(SubCommand::with_name("test")
+        .about("does testing things")
+        .arg_from_usage("-l --list 'lists test values'"))
+    .get_matches();
+```
+- Implementing anything that isn't mentioned in `quick_example`: 
+  - multiple values for option
+  - groups
+  - specific amount of argument
+  - see other examples for more...
+- I think implementing into crate will be easy enough.
+
+---
+
+About subcommands having version and auther, the version certainly is used in the version flag from subcommand: `cmd subcmd -V` gives version number of subcommand. I am not so sure about where the author is used (maybe a bug). In underlying structure, the subcommands are instance of `App`s.
+
+---
+
+Overall, I can't see the usage of this macro... But, these are my opinion. @kbknapp's opinion may differ.
+
+
+---
+
+_Comment by @kbknapp on 2015-09-02 21:53_
+
+@james-darkfox Huge thanks for taking the time and effort to work this up and submit! I do agree with some of @sru's points (such as sacrificing readability for saving a few keystrokes, and `()` adding some noise), _but_ I'm also not opposed to giving people more options, so long as all the old options still exist and work.
+
+Actually, adding some sort of macro make the builder pattern less noisy was an early goal of mine, but since macros aren't my forte that priority has slowly been kicked down the road, so to speak. I think with some tweaking, your solution would be a welcome addition to `clap`.
+
+So, if you can find a way to tweak your current system, I'm all for a PR :smiley: I'm not sure what the actual macro would look like, but I'm thinking something along the lines of actually using it being as close to a "usage string" as possible.
+
+For additional "settings" I'm actually fine with using a whole word, as I think it increases readability a ton without sacrificing speed. i.e.
+
+```
+@arg -s --long <value> "some help"
+    requires:       other_arg, arg3,
+    conflicts_with: arg4,      arg5
+```
+
+I think is super readable, and actually way easier to type than
+
+```
+Arg::from_usage("-s --long <value> 'some help'")
+    .requires("other_arg")
+    .requires("arg3")
+    .conflicts_with("arg4")
+    .conflicts_with("arg5")
+```
+
+Also, using a macro has the added benefit of being just as fast as the builder pattern, but the convenience (and more-so) of the `from_usage`. Once #216 is solved too, we could change the back-end of the macro and potentially be _faster_ than the builder pattern.
+
+Long story short, I'm all in favor of adding macros to the ways in which to use `clap` so long as they meet the readability, and low noise requirements :wink: And I want to solve the _front-end_ portion first, because once it's in stable `clap` I don't want any huge changes for users until 2.x so we need to make sure it's good up front.
+
+
+---
+
+_Label `D: intermediate` added by @kbknapp on 2015-09-02 21:57_
+
+---
+
+_Label `P3: want to have` added by @kbknapp on 2015-09-02 21:57_
+
+---
+
+_Comment by @WildCryptoFox on 2015-09-02 22:30_
+
+I personally find this an easier pattern to read. But this is why I created the issue to open the discussion first. ;-)
+
+All features would be implementable. The excess of parentheses at first I didn't like either, however, understanding how macros work and the requirements of abstracting a builder into a macro - it seems the cheapest option.
+
+I haven't read any file except for the `quick_example`.
+
+A quick look at #216 looks like it is focused for a YAML input and using `build.rs` as a pre-processor for AST code generation? At such a level, this macro indeed wouldn't have any benefit (except for being compiler-built in, not extension or pre-processor).
+
+A TT muncher should be able to pull in the YAML-like format that @kbknapp mentioned but I'm unsure for if we'll too quickly reach the recursion limit (**edit**: repeating arguments, recursive `@arg` munching should work fine). I'll take an attempt at this tonight. Changing the backend of the macro will be to change the whole macro.
+
+In any case, I thought if there is YAML parsing of arguments, why not macro parsing too!
+
+As a sidenote, I've considered a structure like this for defining an interactive CLI and that isn't really far from program argument parsing - just different features like contexts, and maybe colours. (Just food for thought)
+
+@sru Thanks for the feature complete list. I'll add this to the OP's task list tonight.
+
+---
+
+@DanielKeep 's **Incomplete** "The Little Book of Rust Macros" may be a nice little read for anyone here interested in macros https://danielkeep.github.io/tlborm/ (I have a number of unpublished additions to this)
+
+
+---
+
+_Comment by @kbknapp on 2015-09-03 02:41_
+
+Thanks for the detailed write up, and the link to read on macros! I'm going to start reading up on these.
+
+About changing the backend vs front end, I was speaking a little scatter brained about two different ideas I have roughly floating through my mind. You're right, changing the backend changes the whole thing. I meant to say, I'm ok changing the internals for tuning, so long as whatever macro definition syntax we come up with doesn't change drastically.
+
+My initial goal would be to have some sort of macro (kind of yaml like, as you stated), which translates directly to the traditional builder pattern since that's the version which gets the best performance. And yeah, #216 is focusing on solving this yaml-> `App` conundrum by way of a `build.rs` codegen (which I haven't fully invested in learning yet, it's still the super early phase). I mentioned it here because I was envisioning using a solution similar to this for a pretty far fetched solution that fell apart pretty quickly when I stopped to think about the details :stuck_out_tongue_winking_eye: 
+
+About the readability; one of the primary goals of mine is to ride that fine line between code that readable to someone unfamiliar with `clap` _and_ not be horrendous to write...but err'ing on the side of readable ;) I think some form of macro solution like you're proposing could be a perfect blend of some solutions we're currently using, but with better performance.
+
+
+---
+
+_Comment by @sru on 2015-09-03 05:30_
+
+@james-darkfox In the comment above, I roughly thought up what I know, so that is not feature complete list in any way.
+
+You can see the functions of `Arg` struct in the [documentation](http://kbknapp.github.io/clap-rs/clap/struct.Arg.html). Here's list of functions of `Arg` struct:
+- [ ] `conflicts_with`, `conflicts_with_all`
+- [ ] `empty_values`
+- [x] `from_usage` (not needed)
+- [ ] `global`
+- [ ] `group`
+- [x] `index`
+- [x] `long`
+- [x] `help`
+- [ ] `max_values`
+- [ ] `min_values`
+- [ ] `multiple`
+- [ ] `mutually_overrides_with`, `mutually_verrides_with_all`
+- [ ] `number_of_values`
+- [ ] `possible_value`, `possible_values`
+- [x] `required`
+- [ ] `requires`, `requires_all`
+- [x] `short`
+- [x] `takes_value`
+- [ ] `validator`
+- [ ] `value_name`, `value_names`
+- [x] `with_name`
+
+And then there is `AppSettings`.
+
+
+---
+
+_Comment by @WildCryptoFox on 2015-09-03 06:28_
+
+If the `build.rs` generates the same builder code; then the macro would be ideal as it is cheaper for compile time, and being a macro is much more stable than using `libsyntax`.
+
+Tonight, I'll work the YAML-like parsing. I'll be aiming for something along the lines of... 
+
+``` rust
+clap_app!(MyApp => // separate all relative information with semicolons.
+    author: "Alice";
+    description: "Does things";
+    // @arg argument_name -s --long multiple index(n) takes_value ("help")
+    // Help information needs parenthesis to capture expression
+    @arg verbose -v --verbose multiple ("Set verbosity level");
+    @arg help -h --help ("Display this help message");
+    // @subcommand command_name { /* equal to application template */ }
+    @subcommand test {
+      version: "1.3";
+      @arg config index(1) required ("Test configuration file");
+    }
+)
+```
+
+Anyone have any thoughts for this format?
+
+---
+
+**NOTE**: I don't have a rust compiler to work on this right now.
+
+---
+
+**EDIT**: This was written hours ago; and didn't send. Starting this now.
+
+---
+
+@sru Thanks for the extended list and documentation link. :-)
+
+
+---
+
+_Comment by @WildCryptoFox on 2015-09-03 09:27_
+
+https://gist.github.com/james-darkfox/12e8340ddb4ef7e0a7c3
+
+Few minor things remain. What do you guys think so far?
+
+**Edit**: Original post updated accordingly and **checklist extended**.
+
+``` rust
+let matches = clap_matcher!(@app MyApp =>
+    (version: "1.0")
+    (author: "Alice")
+    (description: "Does awesome things")
+    (@arg config: -c --config takes_value "Sets a custom config file")
+    (@arg output: index(1) "Sets an optional output file")
+    (@arg debug: -d multiple "Turn debugging information on")
+    (@subcommand test =>
+        (description: "does testing things")
+        (version: "2.5")
+        (@arg list: -l "Lists test values")
+        (@arg test_req: -r conflicts(list) "Tests requirement for listing")
+        (@arg aaaa: --aaaa takes_value {
+                |a| if a.contains("a") {
+                    Ok(())
+                } else {
+                    Err(String::from("string does not contain at least one a"))
+                }
+            } "Test if the argument contains an a")
+    )
+);
+```
+
+---
+
+```
+     Running `target/debug/examples/01b_quick_example -h`
+01b_quick_example 1.0
+Alice
+Does awesome things
+
+USAGE:
+    01b_quick_example [FLAGS] [OPTIONS] [ARGS] [SUBCOMMAND]
+
+FLAGS:
+    -d               Turn debugging information on
+    -h, --help       Prints help information
+    -V, --version    Prints version information
+
+OPTIONS:
+    -c, --config <config>    Sets a custom config file
+
+ARGS:
+    output    Sets an optional output file
+
+SUBCOMMANDS:
+    help    Prints this message
+    test    does testing things
+```
+
+```
+     Running `target/debug/examples/01b_quick_example test -h`
+01b_quick_example-test 2.5
+does testing things
+
+USAGE:
+    01b_quick_example test [FLAGS] [OPTIONS]
+
+FLAGS:
+    -h, --help       Prints help information
+    -l               Lists test values
+    -V, --version    Prints version information
+
+OPTIONS:
+        --aaaa <aaaa>    Test if the argument contains an a
+    -r <test_req>        Tests requirement for listing [values: list]
+```
+
+
+---
+
+_Comment by @WildCryptoFox on 2015-09-03 10:26_
+
+## Notes about the implementation
+
+Arguments are handled through repeating and so do not trigger the recursion limit; however, the TT muncher may reach the recursion limit with excessive settings on an argument.
+
+One such breaking example would be if a arg required/conflicted with ~60 other args. But in such a **CRAZY** case; the consumer would just increase the recursion limit on the crate.
+
+The `@app` existed for eased development and now holds no value.
+
+Another TT muncher could remove the remaining parentheses, however, would reach the recursion limit quickly.
+
+`AppSettings`... Should this be implemented the same way that I'm treating `required` `global` etc? just before the `=>` ?
+
+The remaining named values will likely be implemented such that `@arg -s <arg1> <arg2> <arg3> "simple argument test"`. **Blocked** by lifetimes when trying to construct `[$(stringify!($value))*]`; shouldn't be too hard to fix.
+
+
+---
+
+_Comment by @sru on 2015-09-03 12:51_
+
+@james-darkfox `AppSettings` is an enum that changes the behaviors of clap in many ways. [Here](http://kbknapp.github.io/clap-rs/clap/enum.AppSettings.html) is the documentation. It is used by `.setting()` function of `App`.
+
+I don't have much experience in macros (or Rust in general), so I don't know how should `AppSettings` be implemented.
+
+Also, can you explain "repeating?" Wouldn't calling `clap_matcher` inside `clap_matcher` be recursion? I am confused ;P
+
+
+---
+
+_Comment by @WildCryptoFox on 2015-09-03 12:55_
+
+@sru Repeating is matching per each instance; while recursion is munching away at the tail.
+
+The following page gives a good example of the limitations of each method.
+
+https://danielkeep.github.io/tlborm/book/blk/README.html
+
+Essentially when you see `$( $var:ident )*` this is repeating; while in the TT muncher, we use recursion and get levels of macros that increment the depth in the recursion.
+
+Quick visualisation
+
+```
+macro
+ \- repeating
+   \- sub-call
+ \- repeating
+   \- sub-call
+ \- repeating
+   \- sub-call
+ \- recursion
+   \- recursion
+     \- recursion
+       \- ...
+```
+
+Also. Welcome to rust and macros! :-)
+
+
+---
+
+_Comment by @WildCryptoFox on 2015-09-03 13:08_
+
+@sru  **NOTE**: I tend to edit my comments... And sometimes GitHub doesn't refresh things after edits. (Might want to refresh)
+
+Extending here for more detail.
+
+The reason we have the sub-calls above after each repeating level is so that we can further match the Token Tree (the repeating `$tt`). In this case either setting meta like `description` `author` `version` or for registering new `@arg`s or `@subcommand`s.
+
+Recursion is used for munching into the TT such that it eats specific tokens (like '--long' which eats the two negative operators and the identifier `long`). We then throw the tail (remaining) back into another macro call creating further depth. The recursion continues until there is nothing more to handle.
+
+In my original quick hack for this solution (with all the extra parentheses), I did not use a TT muncher and so only used repeating. This means that it could handle a LOT more argument attributes than the muncher which uses recursion. The muncher is indeed, much prettier, at the cost of the recursion limit.
+
+The recursion limit exists to prevent a macro from infinitely calling itself. The default is 64 and this may be set manually using `#![recursion_limit = "128"]` before any `use` imports or `items`.
+
+
+---
+
+_Comment by @WildCryptoFox on 2015-09-04 05:29_
+
+**Updated**
+
+Now supporting `AppSettings` and named values. **Completing** the task list. Now I'm asking for final critiques for usage details. After I get the "All Okay", then I'll submit a PR.
+
+**Edit**: Added `@group` for cleaner group handling than `group(foo)` on each `@arg`
+
+``` rust
+let matches = clap_matcher!(MyApp =>
+    (setting: SubcommandRequiredElseHelp)
+    (version: "1.0")
+    (author: "Alice")
+    (description: "Does awesome things")
+    (@arg config: -c --config <conf> takes_value "Sets a custom config file")
+    (@arg output: "Sets an optional output file")
+    (@arg debug: -d multiple "Turn debugging information on")
+    (@group test: (output debug) required)
+    (@subcommand test =>
+        (description: "does testing things")
+        (version: "2.5")
+        (@arg list: -l "Lists test values")
+        (@arg test_req: -r takes_value conflicts(list) "Tests requirement for listing")
+        (@arg aaaa: --aaaa takes_value {
+                |a| if a.contains("a") {
+                    Ok(())
+                } else {
+                    Err(String::from("string does not contain at least one a"))
+                }
+           } "Test if the argument contains an a")
+    )
+);
+```
+
+**Questions**
+1. Is it fine to have the following redundancy? `<conf> takes_value` ? (I think it would be better to have takes_value implied by having named values. `if takes_value || !named_values.is_empty()`)
+2. Should there be any functional difference for `<>` vs `[]`? If so; would `--config <config>` make this a required argument or is it just declaring that `--config` needs to take a `<config>` ? (Yeilding no difference than `[]`) Note this would be nice for defining arguments like `@arg src: <source_file>` which would imply required through the usage of `<>`.
+3. Any thoughts for the current macro layout? I.e. The argument configuration tokens being before the help string.
+4. Should groups be put into depth like `@subcommand`s?
+5. The functions could be factored down to `ident(expr)` and allow usage of all functions that may be implemented in the future without being mentioned in the macro definition itself. However, this could still keep the sugar'd macro versions for the functions that take multiple arguments like `requires` `conflicts` `possible_values` and `mutually_override`. This also means that the Boolean toggling tokens could optionally have the `(value)` present.
+
+
+---
+
+_Comment by @kbknapp on 2015-09-04 15:18_
+
+@james-darkfox I very much like your current implementation, this is almost exactly what I had in mind :smile: Here's the answer to your questions.
+
+> Is it fine to have the following redundancy? <conf> takes_value ? (I think it would be better to have takes_value implied by having named values. if takes_value || !named_values.is_empty())
+
+I would prefer that it _doesn't_ have that redundancy. All the `from_usage` methods imply `takes_value` when the came comes after the arg `short` or `long`. So your inclination is correct.
+
+> Should there be any functional difference for <> vs []? If so; would --config <config> make this a required argument or is it just declaring that --config needs to take a <config> ? (Yeilding no difference than []) Note this would be nice for defining arguments like @arg src: <source_file> which would imply required through the usage of <>.
+
+This is how the `from_usage` methods work, so yes. `[]` is an optional argument, and `<>` is a required argument.
+
+> Any thoughts for the current macro layout? I.e. The argument configuration tokens being before the help string.
+
+I have no problem with this. I'm fine with have a few stipulations that people need to learn in order to use a feature, so long as it's no overwhelming.
+
+> Should groups be put into depth like @subcommands?
+
+I think this is a good idea. Because `@groups` can have a few settings, and lists of their own (`requirements`, `conflicts`, etc.)
+
+> The functions could be factored down to ident(expr) and allow usage of all functions that may be implemented in the future without being mentioned in the macro definition itself. However, this could still keep the sugar'd macro versions for the functions that take multiple arguments like requires conflicts possible_values and mutually_override. This also means that the Boolean toggling tokens could optionally have the (value) present.
+
+Allowing an `ident` for functions defined elsewhere is something I'd really like to have. Almost every time I've used a `validator` it's applied to multiple args, and having to re-define the function each time would be tedious. 
+
+As for the Boolean values, I'm perfectly fine leaving bool value out. I think there are _very_ few circumstances where you'd need to specify the value itself...and this also makes those particular settings just as verbose as the builder syntax. Having said that, if that's the price I'd pay for allowing validators to use an `ident` I'm good with it (since the builders already use it anyways :stuck_out_tongue_winking_eye: )
+
+#### One Final Note
+
+The last thing I'd like to see if it's possible to factor in is using the shorthand syntax for multiple `...` although still allowing the word `multiple` would be optimal as well.
+
+Other than that, this implementation looks great! Looking forward to the PR!
+
+
+---
+
+_Comment by @WildCryptoFox on 2015-09-04 15:45_
+
+You misinterpreted question 5. I meant for using `ident(expr)` as in, so that the macro doesn't know about the complete builder function list I.e. `index(n)` `min_values(n)` `max_values(n)` `number_of_values(n)` could all be factored down to `$ident:ident($($expr:expr),*)` and also captures things like `multiple(false)`.
+
+As for the `...` shorthand. I don't see any reason why not. `@arg [input] ...` ?
+
+The problem for `<>` vs `[]` in the macro is that it would need to either complicate things with an abacus counter (in macro counter; check if zero and do not trigger again), set the argument to required multiple times or the preferred method - have it implied outside of the macro and in the core code.
+
+Note for the `validator`. As an `$expr` a function name/identifier is already valid so you can do `@arg config: -c --config <conf> {file_exists} "Configuration file"`
+
+---
+
+Everything else looks good. :-)
+
+
+---
+
+_Comment by @WildCryptoFox on 2015-09-04 15:48_
+
+An additional note; debugging a typo in this macro may lead to undesired, confusing errors. Sorry, blame `rustc`. ;-)
+
+
+---
+
+_Comment by @kbknapp on 2015-09-04 15:54_
+
+> You misinterpreted question 5. I meant for using ident(expr) as in, so that the macro doesn't know about the complete builder function list I.e. index(n) min_values(n) max_values(n) number_of_values(n) could all be factored down to $ident:ident($($expr:expr),*) and also captures things like multiple(false).
+
+Aaaah, Ok. My mistake :) Yep, I'm good with that!
+
+> As for the ... shorthand. I don't see any reason why not. @arg [input] ... ?
+
+Exactly, although ideally it would also have to work with no space `@arg [input]...`
+
+> The problem for <> vs [] in the macro is that it would need to either complicate things with an abacus counter (in macro counter; check if zero and do not trigger again), set the argument to required multiple times or the preferred method - have it implied outside of the macro and in the core code.
+
+Setting `required` more than once shouldn't be too big of an issue; I'd imagine it's  a decently cheap call and _maybe_ even optimized away? I'm not sure how we'd imply it in the core code. It's default is `required(false)`, so we'd really only need to catch the case when `<>` is used in the name.
+
+> Note for the validator. As an $expr a function name/identifier is already valid so you can do @arg config: -c --config <conf> {file_exists} "Configuration file"
+
+Ah, perfect! :+1: 
+
+
+---
+
+_Comment by @kbknapp on 2015-09-04 15:55_
+
+> An additional note; debugging a typo in this macro may lead to undesired, confusing errors. Sorry, blame rustc. ;-)
+
+This is almost always the case when macros are involved, so it doesn't worry me at all. I would _hope_ if someone is using a macro, they'd understand error messages can be misleading! :)
+
+
+---
+
+_Comment by @WildCryptoFox on 2015-09-04 16:02_
+
+> Setting required more than once shouldn't be too big of an issue; I'd imagine it's a decently cheap call and maybe even optimized away? I'm not sure how we'd imply it in the core code. It's default is required(false), so we'd really only need to catch the case when <> is used in the name.
+
+The compiler isn't quite that smart (sadly), instead of counting, I could make it a one-way lock... That'd be interesting. Namely it would add a prefix modifier to the recursive macros such that they can't remove the lock down that recursive chain. This allows us to prevent interchangable usage of `<>` and `[]` in the same `@arg` call. No need to count. :-)
+
+> This is almost always the case when macros are involved, so it doesn't worry me at all. I would hope if someone is using a macro, they'd understand error messages can be misleading! :)
+
+Only the case when using a TT muncher due to the recursive nature of a macro calling itself moving where the compiler thinks the matching issue exists. But yes, the macro consumer should be wary.
+
+
+---
+
+_Comment by @WildCryptoFox on 2015-09-04 16:12_
+
+Awwww.. That `$arg_lock:tt` almost works but means that I need to duplicate the `required` definition :P
+
+
+---
+
+_Comment by @WildCryptoFox on 2015-09-04 16:23_
+
+@kbknapp  Updated. :-)
+
+`<>` and `[]` don't prevent interchangeable usage. Using `<>` will reach the recursion limit faster as it is attempting to add required each time; while that is already being tracked and ignored for re-setting. (This could have been moved into `<>` but then `required` could be ran multiple times. (No harm and in that case it would be the consumer's silly decision)). I _COULD_ track all such flags to prevent double-setting and interchangeability for all flags... But that'll be insane!
+
+
+---
+
+_Comment by @WildCryptoFox on 2015-09-04 16:26_
+
+@kbknapp Sorry that update included: `...` for multiple, `<>` for required (and not double setting required). And checks if the config file exists. Refactored down the `Fn(ar, gs)` down to a single capture. Enabling usage of `required(false)` and such.
+
+
+---
+
+_Comment by @WildCryptoFox on 2015-09-04 16:34_
+
+``` rust
+     let matches = clap_matcher!(MyApp =>
+         (setting: SubcommandRequiredElseHelp)
+         (version: "1.0")
+         (author: "Alice")
+         (description: "Does awesome things")
++        (@arg config: -c --config <conf> <conf2> takes_value {file_exists} "Sets a custom config file")
+         (@arg input: required "Input file")
+         (@arg output: "Sets an optional output file")
++        (@arg debug: -d ... "Turn debugging information on")
+         (@group test: (output debug) required)
+         (@subcommand test =>
+             (description: "does testing things")
+             (version: "2.5")
+             (@arg list: -l "Lists test values")
+             (@arg test_req: -r takes_value conflicts(list) "Tests requirement for listing")
+             (@arg aaaa: --aaaa takes_value {
+                     |a| if a.contains("a") {
+                         Ok(())
+                     } else {
+                         Err(String::from("string does not contain at least one a"))
+                     }
+                 } "Test if the argument contains an a")
+         )
+     );
+```
+
+---
+
+**EDIT**: Also the `[var]...` is valid. The TT muncher is eating tokens, all grammar is it's own token. While identifiers, types are words and expressions are more complicated. :P 
+
+
+---
+
+_Comment by @WildCryptoFox on 2015-09-04 16:38_
+
+@kbknapp  PR tomorrow. I'll want to clean things up to suitable max-lengths and maybe reorder and rename things. Any more requests to change anything?
+
+
+---
+
+_Comment by @WildCryptoFox on 2015-09-04 16:59_
+
+@kbknapp Updated the OP with the current status of things.
+
+
+---
+
+_Comment by @kbknapp on 2015-09-04 17:02_
+
+Awesome, excellent work! I've said it before, but thanks for all the effort :smile: 
+
+
+---
+
+_Comment by @WildCryptoFox on 2015-09-04 17:05_
+
+You're welcome! This was definitely a fun game of pushing my macro experience and this is going to go into the TLBORM without a doubt. Who knows, someone might be able to factor it down even more!
+
+
+---
+
+_Label `W: maybe` removed by @kbknapp on 2015-09-04 19:41_
+
+---
+
+_Label `T: RFC / question` removed by @kbknapp on 2015-09-04 19:41_
+
+---
+
+_Comment by @WildCryptoFox on 2015-09-05 07:36_
+
+**Progress report**
+- [x] `@group`
+- [x] Refactored down functions to builder functions
+- [x] Added `#{n, m}` shorthand for min/max settings
+  - [ ] Should there be shorthand for each side too? `#{n, }` `#{, m}` or `#{n}` `#{0, m}` ?
+  - [ ] Should zero be caught and ignored for n?
+- [x] Added `*` shorthand for required
+- [x] `<>` and `[]` both imply `takes_value` while `<>` also implies `required`. They do not set either flag more than once. `<> []` is equivalent to `<> <>` and `[] <>` is equivalent to `[] []`
+- [x] Should `requires(a b c)` be renamed to `requires[a b c]` ?
+  - [ ] If the builder functions `conficts_with`, and `mutually_overrides_with` can have the `_with` removed, then they may be factored down to a single capture.
+- [x] Add shorthand for `+foo` = foo(true)
+- [x] Add shorthand for `!foo` = foo(false)
+- [ ] Add shorthand for `*{foo bar}` = requires
+- [ ] Add shorthand for `!{foo bar}` = conflicts
+- [ ] Add shorthand for `={foo bar}` = possible values
+- [ ] Add shorthand for `~{foo bar}` = mutually overrides
+- [x] Accumulate expressions instead of `let builder =` for cleaner result. Increases recursion depth, but the limit isn't _too_ easy to reach with the current structure. Trivial for a complicated consumer to increase the recursion limit if required.
+  - [x] ~~**Blocked by `@group`**~~
+
+Any thoughts for the changes and possible extra shorthands?
+
+---
+
+**Sidenote**: Why does `@arg verbose: -v .. #{1, 3} "Verbosity"` not limit -v to 3 instances?
+
+
+---
+
+_Comment by @WildCryptoFox on 2015-09-05 09:34_
+
+Expanded macros => https://gist.githubusercontent.com/james-darkfox/9acb0bcfce6a62bf929f/raw/2d0746d7e87b553c33bb563f55b2e9503c4ec955/paste
+
+
+---
+
+_Comment by @kbknapp on 2015-09-05 17:48_
+
+I just saw the gist on reddit, and really like it! I'm curious if using this macro would have stopped the stack overflow issue @Byron had a while back with [google-apis-rs](https://github.com/Byron/google-apis-rs). I'm also wondering if _that_ use would have hit the recursion limit, since it's about the most extreme case of using `clap`, in a good way :smile:...Just thinking out loud.
+
+> Should requires(a b c) be renamed to requires[a b c]
+
+I like `[]` for the "list" methods (`requires`, etc.), but that's probably just bike-shedding. 
+
+> Shorthands
+
+I would leave out the shorthands for now. We can always add them in later, but once they're in, they're in. I'm unsure if they're worth the loss in readability or not. I'll have to play with them for a bit to make a better call. There are other arg parsers which solely use different sigils to denote things like requirements and such, and it's difficult to read if you're not intimately familiar with the code.
+
+> If the builder functions conficts_with, and mutually_overrides_with can have the _with removed
+
+Ideally they'd still have the `_with` to stay consistent throughout the entire lib. But if it makes a big difference for recursions and such we _could_ remove it. I'm open to hearing the pros/cons.
+
+> Why does @arg verbose: -v .. #{1, 3} "Verbosity" not limit -v to 3 instances?
+
+The `min`/`max` values methods only affect options. So it's setting the number of _values_, not _occurrences_. Although adding that functionality isn't a bad idea!
+
+
+---
+
+_Comment by @kbknapp on 2015-09-05 17:51_
+
+Oh, one last thing. In the final version, let's call the macro `app!` and _not_ have it call the `.get_matches()` if possible. This is because we're working on adding the ability to call different `get_matches` functions for those that want Errors returned as a `Result` instead of a hard exit, along with the versions that exist now (such as matching from collections other than `env::args()`). So this macro will create and return the `App` struct, but it'll be up to the user to decide which version of `get_matches` they want to use.
+
+
+---
+
+_Comment by @WildCryptoFox on 2015-09-06 03:54_
+
+How about `clap_app`? unlike functions, types, etc,. Macros cannot be imported as qualified. Otherwise we are claiming the `app` namespace.
+
+
+---
+
+_Comment by @kbknapp on 2015-09-06 03:55_
+
+Good point, I'm OK with `clap_app!`
+
+
+---
+
+_Comment by @WildCryptoFox on 2015-09-06 04:22_
+
+I'm currently working on factoring things down to make the macro definition yet tinier and simpler to understand. This may include accumulating such that we don't have all the `let`s in the generated code and maybe a macro to generate the macro. That is, for generating generic `macro_builder`s where `clap_app` extends it using the shorthands like `-s` `--long`, commands like `@subcommand` and `@group`. Leaving the boolean, functions, and varadic expansion / loops to the core `macro_builder`.
+
+
+---
+
+_Comment by @WildCryptoFox on 2015-09-06 04:44_
+
+~~Technical constraint when factoring things down.... Can we have a prefix token for "help" messages? Like `% "help message"` or because it is the last thing, could even be `% help message here`~~
+
+Nevermind, found a workaround because it is _the_ last token, and any other matches that need to be after, are two tokens! =D
+
+
+---
+
+_Comment by @WildCryptoFox on 2015-09-06 05:00_
+
+26 macro matching arms now. Was ~34 last iteration. Yet more before that.
+
+
+---
+
+_Comment by @WildCryptoFox on 2015-09-06 05:26_
+
+My last checklist above, updated to current status.
+
+
+---
+
+_Comment by @WildCryptoFox on 2015-09-06 05:46_
+
+## Input rust code
+
+``` rust
+let matches = clap_app!(MyApp =>
+    (@setting SubcommandRequiredElseHelp)
+    (version: "1.0")
+    (author: "Alice")
+    (about: "Does awesome things")
+    (@arg config: -c --config <conf> #{1, 2} {file_exists} "Sets a custom config file")
+    (@arg input: * "Input file")
+    (@group test =>
+        (@attributes +required)
+        (@arg output: "Sets an optional output file")
+        (@arg debug: -d ... "Turn debugging information on")
+    )
+    (@subcommand test =>
+        (about: "does testing things")
+        (version: "2.5")
+        (@arg list: -l "Lists test values")
+        (@arg test_req: -r requires[list] "Tests requirement for listing")
+        (@arg aaaa: --aaaa +takes_value {
+                |a| if a.contains("a") {
+                    Ok(())
+                } else {
+                    Err(String::from("string does not contain at least one a"))
+                }
+            } "Test if the argument contains an a")
+    )
+).get_matches();
+```
+
+## Generated rust code
+
+``` rust
+App::new("MyApp")
+    .setting(AppSettings::SubcommandRequiredElseHelp)
+    .version("1.0")
+    .author("Alice")
+    .about("Does awesome things")
+    .arg(Arg::with_name("config")
+        .short("c")
+        .long("config")
+        .value_name("conf")
+        .takes_value(true)
+        .required(true)
+        .min_values(1)
+        .max_values(2)
+        .validator(file_exists)
+        .help("Sets a custom config file"))
+    .arg(Arg::with_name("input")
+        .required(true)
+        .help("Input file"))
+    .arg(Arg::with_name("output")
+        .help("Sets an optional output file"))
+    .arg(Arg::with_name("debug")
+        .short("d")
+        .multiple(true)
+        .help("Turn debugging information on"))
+    .arg_group(ArgGroup::with_name("test")
+        .required(true)
+        .add("output")
+        .add("debug"))
+    .subcommand(SubCommand::with_name("test")
+        .about("does testing things")
+        .version("2.5")
+        .arg(Arg::with_name("list")
+            .short("l")
+            .help("Lists test values"))
+        .arg(Arg::with_name("test_req")
+            .short("r")
+            .requires("list")
+            .help("Tests requirement for listing"))
+        .arg(Arg::with_name("aaaa")
+            .long("aaaa")
+            .takes_value(true)
+            .validator(|a|
+                if a.contains("a") {
+                    Ok(())
+                } else {
+                    Err(String::from("string does not contain at least one a"))
+                })
+            .help("Test if the argument contains an a")))
+```
+
+---
+
+Code cleaned using http://jsbeautifier.org/
+
+
+---
+
+_Comment by @WildCryptoFox on 2015-09-06 06:55_
+
+@kbknapp Quick check through @byron 's google api crate... Took a while to figure out how much of that code is generated outside of rust ***cough* macros?**.. Anyhow, I don't see any cases there that are too large or complex?
+
+If each API were a subcommand, the repeating version of my macro (with many generated `let`s) wouldn't have any problem there, however, with the updated S-expression recursive method... Either increase the recursion limit or use a wrapping macro and pass the subcommands by identifier where they are generated one-by-one; maybe even in separate modules.
+
+Nice idea however. Note that would be `subcommand: foo` instead of `@subcommand foo => ...`. 
+
+---
+
+Implemented and here is an example usage: 
+https://gist.github.com/james-darkfox/12e8340ddb4ef7e0a7c3#file-git-diff-rs-diff-L162-L164
+
+---
+
+**NOTE**: If someone needs to have a LOT of subcommands. I would recommend they create a macro to repeat over each subcommand, and append that to the builder directly.
+
+``` rust
+mod modules;
+macro_rules! build_with_subcommands {
+    (($builder:expr) $($ident:ident)*) => {
+        $builder $( .subcommand(modules::$ident::clap()) )*
+    }
+}
+build_with_subcommands!((clap_app!( MyApp => ... )) alice bob carol dave)
+```
+
+
+---
+
+_Referenced in [clap-rs/clap#228](../../clap-rs/clap/issues/228.md) on 2015-09-06 14:10_
+
+---
+
+_Comment by @kbknapp on 2015-09-06 16:10_
+
+That's looking better and better each time! :+1: 
+
+I tried to find the old issue discussing the google-apis-rs implementation, and it was something like 10,000-15,000 lines of clap only code (generated using a mako script). The solution was use more let bindings instead of the nested builder pattern. With a previous version of the macro expanding to quite a few let bindings, that's what got me thinking about it.
+
+
+---
+
+_Comment by @WildCryptoFox on 2015-09-06 16:50_
+
+@kbknapp  Ahh; so it was doing what I was in my macro a few iterations back (repeating over; using let for handling lifetimes).
+
+Were the mass of subcommands causing the issue as a single builder? If so, then my suggestion at the end of my last comment applies very well - with each module handling it's own clap subcommand; and then simply add the desired `.subcommand()` calls for each one. (Through repeating, so no recursion limit and no `let`s)
+
+
+---
+
+_Comment by @kbknapp on 2015-09-06 16:56_
+
+Yeah it was and I agree with your idea for those that have that issue...which shouldn't be many.
+
+
+---
+
+_Comment by @WildCryptoFox on 2015-09-06 17:06_
+
+=)
+
+
+---
+
+_Comment by @WildCryptoFox on 2015-09-06 17:09_
+
+Any application that has enough subcommands would likely want to have each such command divided into modules anyway - keeping code partitioned. Doesn't necessarily need to be only for those with too many subcommands.
+
+Looking at cargo; there are many more commands than the subcommands list actually shows... How about groups of subcommands where attributes can be set to hide (or show with -v on help)?
+
+
+---
+
+_Comment by @WildCryptoFox on 2015-09-06 17:37_
+
+**Updated checklist in top post, see bold**
+
+
+---
+
+_Comment by @kbknapp on 2015-09-06 18:23_
+
+Hmmm, adding the ability to have hidden args and commands is an intriguing idea.
+
+
+---
+
+_Referenced in [clap-rs/clap#231](../../clap-rs/clap/issues/231.md) on 2015-09-06 18:29_
+
+---
+
+_Referenced in [clap-rs/clap#238](../../clap-rs/clap/pulls/238.md) on 2015-09-08 12:52_
+
+---
+
+_Added to milestone `1.4` by @kbknapp on 2015-09-08 22:49_
+
+---
+
+_Comment by @kbknapp on 2015-09-09 02:58_
+
+Closed with #238 
+
+
+---
+
+_Closed by @kbknapp on 2015-09-09 02:58_
+
+---
+
+_Referenced in [clap-rs/clap#736](../../clap-rs/clap/issues/736.md) on 2016-11-11 13:06_
+
+---
+
+_Referenced in [clap-rs/clap#1248](../../clap-rs/clap/issues/1248.md) on 2018-04-17 12:22_
+
+---

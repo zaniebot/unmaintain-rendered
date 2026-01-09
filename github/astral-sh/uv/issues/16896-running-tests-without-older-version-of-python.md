@@ -1,0 +1,106 @@
+---
+number: 16896
+title: Running tests without older version of python induces error
+type: issue
+state: closed
+author: jimmy312495
+labels:
+  - question
+assignees: []
+created_at: 2025-11-30T14:37:17Z
+updated_at: 2025-11-30T15:22:58Z
+url: https://github.com/astral-sh/uv/issues/16896
+synced_at: 2026-01-07T13:12:19-06:00
+---
+
+# Running tests without older version of python induces error
+
+---
+
+_Issue opened by @jimmy312495 on 2025-11-30 14:37_
+
+### Summary
+
+Running the integration test suite on my computer that does **not** have older Python versions (e.g. 3.8 and 3.10) installed causes multiple tests to **panic** with `Could not find Python 3.X for test`, instead of skipping or failing more gracefully.
+
+I'm new here, not sure if this is a bug, or just something can be ignored.
+
+### Run to reproduce
+Run
+```
+cargo test -p uv --test it pip_sync::install_numpy_py38 -- --nocapture
+```
+or 
+```
+cargo test --workspace
+```
+
+### std output
+```
+> cargo test -p uv --test it pip_sync::install_numpy_py38 -- --nocapture
+
+Finished `test` profile [unoptimized + debuginfo] target(s) in 0.77s
+     Running tests/it/main.rs (target/debug/deps/it-c64196066e9bcf47)
+
+running 1 test
+
+thread 'pip_sync::install_numpy_py38' (6755636) panicked at crates/uv/tests/it/common/mod.rs:1753:17:
+Could not find Python 3.8 for test
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test pip_sync::install_numpy_py38 ... FAILED
+
+failures:
+
+failures:
+    pip_sync::install_numpy_py38
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 2453 filtered out; finished in 0.46s
+
+error: test failed, to rerun pass `-p uv --test it`
+```
+
+### Platform
+
+macOS Darwin 25.1.0 arm64
+
+### Version
+
+uv 0.9.5 (Homebrew 2025-10-21)
+
+### Python version
+
+Python 3.14.0
+
+---
+
+_Label `bug` added by @jimmy312495 on 2025-11-30 14:37_
+
+---
+
+_Comment by @zanieb on 2025-11-30 15:00_
+
+Yeah we require these Python versions for the test suite, see https://github.com/astral-sh/uv/blob/main/CONTRIBUTING.md#python
+
+---
+
+_Label `bug` removed by @zanieb on 2025-11-30 15:00_
+
+---
+
+_Label `question` added by @zanieb on 2025-11-30 15:00_
+
+---
+
+_Comment by @jimmy312495 on 2025-11-30 15:22_
+
+Thank you! After installing other version of Python, all related tests passed.
+
+---
+
+_Closed by @jimmy312495 on 2025-11-30 15:22_
+
+---
+
+_Referenced in [astral-sh/uv#16960](../../astral-sh/uv/pulls/16960.md) on 2025-12-03 09:49_
+
+---

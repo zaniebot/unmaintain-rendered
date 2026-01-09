@@ -1,0 +1,68 @@
+---
+number: 3412
+title: "Bug?: `--show-fixes` doesn't work with `--fix-only`"
+type: issue
+state: closed
+author: MaksimZayats
+labels:
+  - bug
+  - cli
+assignees: []
+created_at: 2023-03-09T09:44:43Z
+updated_at: 2023-03-09T21:37:41Z
+url: https://github.com/astral-sh/ruff/issues/3412
+synced_at: 2026-01-07T13:12:14-06:00
+---
+
+# Bug?: `--show-fixes` doesn't work with `--fix-only`
+
+---
+
+_Issue opened by @MaksimZayats on 2023-03-09 09:44_
+
+Hi! When I tried to use `--show-fixes` with `--fix-only` it doesn't work.
+
+```bash
+> ruff demo.py --fix-only --show-fixes
+Fixed 1 error.
+```
+
+```bash
+> ruff demo.py --fix --show-fixes
+
+Fixed 1 error:
+- demo.py:
+    1 × I001 (unsorted-imports)
+```
+
+```bash
+> ruff --version
+ruff 0.0.254
+```
+
+I'm not sure if this is a bug or feature :)
+
+
+---
+
+_Comment by @charliermarsh on 2023-03-09 13:56_
+
+I think this is probably a bug :)
+
+---
+
+_Label `bug` added by @charliermarsh on 2023-03-09 13:56_
+
+---
+
+_Label `cli` added by @charliermarsh on 2023-03-09 13:56_
+
+---
+
+_Referenced in [astral-sh/ruff#3426](../../astral-sh/ruff/pulls/3426.md) on 2023-03-09 21:31_
+
+---
+
+_Closed by @charliermarsh on 2023-03-09 21:37_
+
+---

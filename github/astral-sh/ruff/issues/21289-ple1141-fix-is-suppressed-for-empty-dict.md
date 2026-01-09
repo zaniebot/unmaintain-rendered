@@ -1,0 +1,64 @@
+---
+number: 21289
+title: "PLE1141 fix is suppressed for empty `dict`"
+type: issue
+state: closed
+author: dscorbett
+labels:
+  - rule
+  - preview
+assignees: []
+created_at: 2025-11-05T21:19:03Z
+updated_at: 2025-11-21T22:07:20Z
+url: https://github.com/astral-sh/ruff/issues/21289
+synced_at: 2026-01-07T13:12:16-06:00
+---
+
+# PLE1141 fix is suppressed for empty `dict`
+
+---
+
+_Issue opened by @dscorbett on 2025-11-05 21:19_
+
+### Summary
+
+The fix for [`dict-iter-missing-items` (PLE1141)](https://docs.astral.sh/ruff/rules/dict-iter-missing-items/) is suppressed when the relevant `dict`’s keys are all 2-tuples in its initial binding. This usually makes sense, but it doesn’t make sense when the `dict` is defined as empty. In that case, there is no reason to assume that any keys added later will be 2-tuples, and that is a rare pattern so they probably won’t be, so PLE1141 should allow the fix. If the empty `dict` is annotated to have 2-tuple keys, as in `dict[tuple[int, str], bool]`, though, it is still appropriate to suppress the fix. [Example](https://play.ruff.rs/e6181e08-ba24-4009-a49d-33a13ad03e0e):
+```console
+$ cat >ple1141.py <<'# EOF'
+data = {}
+data["x"] = 1
+for k, v in data:
+    print(f"{k=} {v=}")
+# EOF
+
+$ ruff --isolated check ple1141.py --select PLE1141 --preview
+All checks passed!
+```
+
+### Version
+
+ruff 0.14.3 (8737a2d5f 2025-10-30)
+
+---
+
+_Label `rule` added by @ntBre on 2025-11-05 22:16_
+
+---
+
+_Label `preview` added by @ntBre on 2025-11-05 22:16_
+
+---
+
+_Comment by @ntBre on 2025-11-05 22:20_
+
+I think it makes sense to try being a bit more aggressive here, especially since the rule is in preview. We should just double check the ecosystem report to make sure there aren't too many new false positives.
+
+---
+
+_Referenced in [astral-sh/ruff#21290](../../astral-sh/ruff/pulls/21290.md) on 2025-11-06 01:08_
+
+---
+
+_Closed by @ntBre on 2025-11-21 22:07_
+
+---

@@ -1,0 +1,64 @@
+---
+number: 12603
+title: "Exit with status of 1 (instead of 2) during `--check` "
+type: issue
+state: closed
+author: zanieb
+labels:
+  - cli
+  - breaking
+assignees: []
+created_at: 2025-04-01T17:17:52Z
+updated_at: 2025-07-14T20:46:05Z
+url: https://github.com/astral-sh/uv/issues/12603
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# Exit with status of 1 (instead of 2) during `--check` 
+
+---
+
+_Issue opened by @zanieb on 2025-04-01 17:17_
+
+_Originally posted by @zanieb in https://github.com/astral-sh/uv/pull/12342#discussion_r2006174400_
+            
+
+---
+
+_Label `cli` added by @zanieb on 2025-04-01 17:17_
+
+---
+
+_Label `breaking` added by @zanieb on 2025-04-01 17:17_
+
+---
+
+_Added to milestone `v0.7.0` by @zanieb on 2025-04-01 17:18_
+
+---
+
+_Removed from milestone `v0.7.0` by @zanieb on 2025-04-15 21:55_
+
+---
+
+_Added to milestone `v0.8.0` by @zanieb on 2025-04-15 21:55_
+
+---
+
+_Comment by @zanieb on 2025-04-15 21:55_
+
+This feels low priority, pushing consideration to 0.8.0
+
+---
+
+_Assigned to @Gankra by @zanieb on 2025-06-20 15:05_
+
+---
+
+_Referenced in [astral-sh/uv#14167](../../astral-sh/uv/pulls/14167.md) on 2025-06-20 18:45_
+
+---
+
+_Closed by @zanieb on 2025-07-14 20:46_
+
+---

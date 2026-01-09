@@ -1,0 +1,95 @@
+---
+number: 20042
+title: Suboptimal autofix when combining PLC0415,I001,RUF100 with a long line
+type: issue
+state: open
+author: tpgillam
+labels:
+  - isort
+  - suppression
+assignees: []
+created_at: 2025-08-22T14:01:32Z
+updated_at: 2025-08-22T14:11:26Z
+url: https://github.com/astral-sh/ruff/issues/20042
+synced_at: 2026-01-07T13:12:16-06:00
+---
+
+# Suboptimal autofix when combining PLC0415,I001,RUF100 with a long line
+
+---
+
+_Issue opened by @tpgillam on 2025-08-22 14:01_
+
+### Summary
+
+Using ruff 0.12.10.
+
+Start with the following code in `moo.py`:
+
+```python
+def moo():
+    from very.long.nonsense.indeed.need.line.to.be.full.to.cause.breakage import foo
+
+    return foo()
+```
+
+Running ruff with (at least) these three rules enabled, currently PLC0415 triggers:
+```console
+$ uvx ruff==0.12.10 check --select PLC0415,I001,RUF100 moo.py
+moo.py:2:5: PLC0415 `import` should be at the top-level of a file
+```
+
+Because there are good reasons that the import is local, we disable (in practice, this disable is done in an editor via the ruff language server's suggested code action):
+
+```python
+def moo():
+    from very.long.nonsense.indeed.need.line.to.be.full.to.cause.breakage import foo  # noqa: PLC0415
+
+    return foo()
+```
+
+but now the line being too long causes `I001` to trigger:
+```console
+$ uvx ruff==0.12.10 check --select PLC0415,I001,RUF100 moo.py
+moo.py:2:5: I001 [*] Import block is un-sorted or un-formatted
+```
+
+but if we trigger the autofix _with RUF100 enabled_, then what the user sees is that the noqa they added disappears, and we get back to:
+```python
+def moo():
+    from very.long.nonsense.indeed.need.line.to.be.full.to.cause.breakage import foo
+
+    return foo()
+```
+
+Fixing _without_ RUF100, we can see that we get this intermediate state:
+```python
+def moo():
+    from very.long.nonsense.indeed.need.line.to.be.full.to.cause.breakage import (
+        foo,  # noqa: PLC0415
+    )
+
+    return foo()
+```
+
+... but the `# noqa: PLC0415` is now the line below where it needs to be, so RUF100's autofix will remove it.
+
+### Version
+
+0.12.10
+
+---
+
+_Comment by @ntBre on 2025-08-22 14:11_
+
+Thanks for the report and the neat reproduction! I think this might be a duplicate of https://github.com/astral-sh/ruff/issues/12179, where the root I001-RUF100 conflict is the same.
+
+---
+
+_Label `isort` added by @ntBre on 2025-08-22 14:11_
+
+---
+
+_Label `suppression` added by @ntBre on 2025-08-22 14:11_
+
+---

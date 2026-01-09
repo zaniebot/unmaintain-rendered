@@ -1,0 +1,31 @@
+---
+number: 9788
+title: Does ruff detect undesired docstring styles?
+type: issue
+state: open
+author: nbro10
+labels:
+  - docstring
+assignees: []
+created_at: 2024-02-02T15:21:03Z
+updated_at: 2024-02-02T17:46:05Z
+url: https://github.com/astral-sh/ruff/issues/9788
+synced_at: 2026-01-07T13:12:15-06:00
+---
+
+# Does ruff detect undesired docstring styles?
+
+---
+
+_Issue opened by @nbro10 on 2024-02-02 15:21_
+
+`flake8-docstring`does not actually detect this and this tool might eventually die. See https://github.com/PyCQA/flake8-docstrings/issues/60
+
+I've never used ruff and I'm looking for a tool that detects and reports different docstring styles from what we want. Is ruff able to do this? If yes, can you just provide an example? It would also be nice if it could automatically format docstrings too. For example, we have codebases that use both sphinx and Google-style docstrings. We would like to convert all docstrings to one style.
+
+
+---
+
+_Label `docstring` added by @AlexWaygood on 2024-02-02 17:46_
+
+---

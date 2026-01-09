@@ -1,0 +1,44 @@
+---
+number: 7149
+title: Config and command to install dependencies with alternative package indexes
+type: issue
+state: open
+author: AdrianB-sovo
+labels: []
+assignees: []
+created_at: 2024-09-07T00:30:05Z
+updated_at: 2024-09-07T15:43:04Z
+url: https://github.com/astral-sh/uv/issues/7149
+synced_at: 2026-01-07T13:12:17-06:00
+---
+
+# Config and command to install dependencies with alternative package indexes
+
+---
+
+_Issue opened by @AdrianB-sovo on 2024-09-07 00:30_
+
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with uv.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
+* The current uv platform.
+* The current uv version (`uv --version`).
+-->
+I'm using AWS CodeArtifact and I want to install all dependencies with an uv command — without running anything, just to have the dependencies available for my IDE after cloning the project —.
+
+Currently, the only way I could find is to have a script (e.g. `install_requirements.sh`) in each project that would [export UV_EXTRA_INDEX_URL](https://docs.astral.sh/uv/guides/integration/alternative-indexes/#aws-codeartifact) (except that I personnally use the SSO profile with `--profile` option in AWS CLI), then run the `uv pip install` command.
+
+Is there something planned to have something defined somewhere (e.g. some `uv` install hooks?) that would be automatically used by an `uv` command to install dependencies, without a custom script?
+The idea is that, if someone wants to clone a repo to start working on it, there would be an official way to do that.
+
+---
+
+_Comment by @zanieb on 2024-09-07 15:43_
+
+I think we'll be tackling this in #171 when we allow add index sources to the `pyproject.toml` directly, cc @charliermarsh 
+
+---

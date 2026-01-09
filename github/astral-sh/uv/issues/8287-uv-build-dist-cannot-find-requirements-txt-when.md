@@ -1,0 +1,68 @@
+---
+number: 8287
+title: uv build dist . cannot find requirements.txt when using setup.py
+type: issue
+state: closed
+author: JohnStokes228
+labels:
+  - question
+assignees: []
+created_at: 2024-10-17T11:20:53Z
+updated_at: 2024-11-03T21:56:10Z
+url: https://github.com/astral-sh/uv/issues/8287
+synced_at: 2026-01-07T13:12:17-06:00
+---
+
+# uv build dist . cannot find requirements.txt when using setup.py
+
+---
+
+_Issue opened by @JohnStokes228 on 2024-10-17 11:20_
+
+in my package, i have the following minimal setup.py file:
+
+```
+def list_reqs(fname="requirements.txt"):
+    with open(fname) as fd:
+        return fd.read().splitlines()
+
+setuptools.setup(
+    name="my_package",
+    version="0.0.1",
+    author="ME",
+    author_email="#ME@hotmail.com",
+    description="mae'r pecyn hwn yn ffendigedig",
+    packages=setuptools.find_packages(),
+    install_requires=list_reqs(),
+    python_requires=">=3.8",
+)
+```
+when run with `python setup.py bdist_wheel`, this compiles correctly as expected, however when i run the following instead:
+```
+pip install --upgrade uv
+uv build --no-python-downloads -o dist .
+```
+I'm greeted with the error:
+`FileNotFoundError: [Errno 2] No such file or directory: 'requirements.txt'`
+
+it seems as if uv is only able to see discovered packages, and not supporting files in the parent directory? I would ideally like to be able to discover the supporting files from the parent directory during the build process if possible, in order to make the transition for older packages more seamless.
+
+cheers,
+
+John
+
+---
+
+_Comment by @charliermarsh on 2024-10-17 12:21_
+
+I think this is an issue with the `setup.py` itself -- the declaration of how to find `requirements.txt` doesn't look portable. Can you try something like `list_reqs(fname=os.path.join(os.path.dirname(__file__), "requirements.txt")`?
+
+---
+
+_Label `question` added by @charliermarsh on 2024-10-17 12:21_
+
+---
+
+_Closed by @charliermarsh on 2024-11-03 21:56_
+
+---

@@ -1,0 +1,140 @@
+---
+number: 19357
+title: "UP008 should only apply when the `__class__` cell exists"
+type: issue
+state: closed
+author: dscorbett
+labels:
+  - bug
+  - fixes
+  - help wanted
+assignees: []
+created_at: 2025-07-15T13:36:23Z
+updated_at: 2025-09-09T18:59:24Z
+url: https://github.com/astral-sh/ruff/issues/19357
+synced_at: 2026-01-07T13:12:16-06:00
+---
+
+# UP008 should only apply when the `__class__` cell exists
+
+---
+
+_Issue opened by @dscorbett on 2025-07-15 13:36_
+
+### Summary
+
+[`super-call-with-parameters` (UP008)](https://docs.astral.sh/ruff/rules/super-call-with-parameters/) should only apply when `super` is a global variable or `__class__` is a nonlocal variable. Expressions that are merely equal to `super` aren’t good enough. Otherwise, the zero-argument `super` call doesn’t work. One solution is for the autofix to rewrite the `super`-equivalent expression to `super`, although that won’t work in all contexts. [Example](https://play.ruff.rs/852c338a-1d97-4fa4-bbbd-6f768ef373b8):
+```console
+$ cat >up008.py <<'# EOF'
+import builtins
+class A:
+    def f(self):
+        print("!")
+class B(A):
+    def f(self):
+        builtins.super(B, self).f()
+B().f()
+# EOF
+
+$ python up008.py
+!
+
+$ ruff --isolated check up008.py --select UP008 --unsafe-fixes --fix
+Found 1 error (1 fixed, 0 remaining).
+
+$ cat up008.py
+import builtins
+class A:
+    def f(self):
+        print("!")
+class B(A):
+    def f(self):
+        builtins.super().f()
+B().f()
+
+$ python up008.py 2>&1 | tail -n 1
+RuntimeError: super(): __class__ cell not found
+```
+
+Note that the expression that UP008 rewrites can still use `builtins.super` (or other expressions that equal `super` but are not literally `super`) but `super` or `__class__` just needs to be mentioned somewhere in the method in order for the `__class__` cell, which the zero-argument `super` uses, to be created. [True positive example](https://play.ruff.rs/4a54ab21-24a0-448a-9331-4b416e84ab75) with `super`:
+```console
+$ cat >up008_super.py <<'# EOF'
+import builtins
+super = None  # It still works even if `super` is shadowed!
+class A:
+    def f(self):
+        print("!")
+class B(A):
+    def f(self):
+        if False: super
+        builtins.super(B, self).f()
+B().f()
+# EOF
+
+$ ruff --isolated check up008_super.py --select UP008 --unsafe-fixes --fix
+Found 1 error (1 fixed, 0 remaining).
+
+$ python up008_super.py
+!
+```
+
+[True positive example](https://play.ruff.rs/fd2bbb26-b678-46aa-9e2f-0d2e76862eb9) with `__class__`:
+```console
+$ cat >up008_class.py <<'# EOF'
+import builtins
+class A:
+    def f(self):
+        print("!")
+class B(A):
+    def f(self):
+        if False: __class__
+        builtins.super(B, self).f()
+B().f()
+# EOF
+
+$ ruff --isolated check up008_class.py --select UP008 --unsafe-fixes --fix
+Found 1 error (1 fixed, 0 remaining).
+
+$ python up008_class.py
+!
+```
+
+### Version
+
+ruff 0.12.3 (5bc81f26c 2025-07-11)
+
+---
+
+_Label `bug` added by @ntBre on 2025-07-15 16:53_
+
+---
+
+_Label `fixes` added by @ntBre on 2025-07-15 16:53_
+
+---
+
+_Label `help wanted` added by @ntBre on 2025-07-15 16:53_
+
+---
+
+_Comment by @IDrokin117 on 2025-07-17 10:20_
+
+I am going to work on this
+
+---
+
+_Assigned to @IDrokin117 by @ntBre on 2025-07-17 13:43_
+
+---
+
+_Referenced in [astral-sh/ruff#19424](../../astral-sh/ruff/pulls/19424.md) on 2025-07-18 15:33_
+
+---
+
+_Referenced in [astral-sh/ruff#20048](../../astral-sh/ruff/pulls/20048.md) on 2025-08-22 17:42_
+
+---
+
+_Closed by @ntBre on 2025-09-09 18:59_
+
+---

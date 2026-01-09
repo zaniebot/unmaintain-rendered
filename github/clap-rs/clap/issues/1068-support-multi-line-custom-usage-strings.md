@@ -1,0 +1,152 @@
+---
+number: 1068
+title: Support multi-line custom usage strings
+type: issue
+state: closed
+author: m-ou-se
+labels: []
+assignees: []
+created_at: 2017-10-16T17:50:25Z
+updated_at: 2021-12-08T20:03:04Z
+url: https://github.com/clap-rs/clap/issues/1068
+synced_at: 2026-01-07T13:12:19-06:00
+---
+
+# Support multi-line custom usage strings
+
+---
+
+_Issue opened by @m-ou-se on 2017-10-16 17:50_
+
+### Affected Version of clap
+
+2.26.2
+
+### Steps to Reproduce the issue
+
+```rust
+	let args = App::new("cmd")
+		.usage("\
+cmd [options] --ping
+cmd [options] --off
+cmd (--help | --version)")
+		.get_matches();
+```
+
+
+
+### Actual Behavior
+
+```
+$ ./target/debug/cmd --help
+cmd
+
+USAGE:
+    cmd [options] --ping
+cmd [options] --off
+cmd (--help | --version)
+```
+
+### Expected Behavior
+
+```
+$ ./target/debug/cmd --help
+cmd
+
+USAGE:
+    cmd [options] --ping
+    cmd [options] --off
+    cmd (--help | --version)
+```
+
+
+---
+
+_Comment by @kbknapp on 2017-10-18 14:42_
+
+This is a known issue, however there isn't a great way to solve it ergonomically for all cases in a non-breaking way. 3.x should be able to fix this.
+
+For now you have to add `\t` manually.
+
+```rust
+	let args = App::new("cmd")
+		.usage("\
+\tcmd [options] --ping
+\tcmd [options] --off
+\tcmd (--help | --version)")
+		.get_matches();
+```
+
+---
+
+_Label `T: refactor` added by @kbknapp on 2017-11-06 03:47_
+
+---
+
+_Label `T: RFC / question` added by @kbknapp on 2017-11-06 03:47_
+
+---
+
+_Label `W: 3.x` added by @kbknapp on 2017-11-06 03:47_
+
+---
+
+_Added to milestone `v3-alpha1` by @kbknapp on 2018-02-02 02:05_
+
+---
+
+_Removed from milestone `v3-alpha.2` by @pksunkara on 2020-02-01 07:45_
+
+---
+
+_Added to milestone `v3.0` by @pksunkara on 2020-02-01 07:45_
+
+---
+
+_Label `T: RFC / question` removed by @pksunkara on 2020-04-01 18:18_
+
+---
+
+_Removed from milestone `3.0` by @pksunkara on 2020-04-10 14:09_
+
+---
+
+_Added to milestone `3.1` by @pksunkara on 2020-04-10 14:09_
+
+---
+
+_Label `W: 3.x` removed by @pksunkara on 2020-04-10 14:09_
+
+---
+
+_Label `C: usage strings` added by @pksunkara on 2020-04-10 14:09_
+
+---
+
+_Referenced in [epage/clapng#80](../../epage/clapng/issues/80.md) on 2021-12-06 16:36_
+
+---
+
+_Comment by @epage on 2021-12-08 20:03_
+
+It looks like this is resolved.
+
+In the changelog for clap3
+
+> App::override_usage no longer implies a leading \t, allowing multi lined usages
+
+https://github.com/clap-rs/clap/blob/master/CHANGELOG.md#breaking-changes
+
+---
+
+_Closed by @epage on 2021-12-08 20:03_
+
+---
+
+_Referenced in [clap-rs/clap#3404](../../clap-rs/clap/pulls/3404.md) on 2022-02-04 22:23_
+
+---
+
+_Referenced in [clap-rs/clap#3413](../../clap-rs/clap/issues/3413.md) on 2022-02-07 21:21_
+
+---

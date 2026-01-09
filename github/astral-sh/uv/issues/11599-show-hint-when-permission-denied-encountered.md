@@ -1,0 +1,72 @@
+---
+number: 11599
+title: Show hint when permission denied encountered during system package install
+type: issue
+state: open
+author: zanieb
+labels:
+  - error messages
+assignees: []
+created_at: 2025-02-18T14:30:59Z
+updated_at: 2025-03-15T20:29:08Z
+url: https://github.com/astral-sh/uv/issues/11599
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# Show hint when permission denied encountered during system package install
+
+---
+
+_Issue opened by @zanieb on 2025-02-18 14:30_
+
+```
+~: uv pip install --system Pillow
+Using Python 3.12.8 environment at: /usr
+Resolved 1 package in 103ms
+error: Failed to install: pillow-11.1.0-cp312-cp312-manylinux_2_28_x86_64.whl (pillow==11.1.0)
+  Caused by: failed to create directory `/usr/local/lib64/python3.12/site-packages/`: Permission denied (os error 13)
+```
+
+We should hint what to do here, e.g.,
+
+> hint: It looks like you do not have permissions to write to the system Python environment. Consider creating a virtual environment (`uv venv`) then installing the package or installing it in an isolated tool environment (`uv tool install`).
+
+We could probably be smart, like only hint a tool install if the package has entry points. 
+
+---
+
+_Label `error messages` added by @zanieb on 2025-02-18 14:31_
+
+---
+
+_Referenced in [astral-sh/uv#11609](../../astral-sh/uv/issues/11609.md) on 2025-02-18 23:20_
+
+---
+
+_Referenced in [astral-sh/uv#2077](../../astral-sh/uv/issues/2077.md) on 2025-02-18 23:26_
+
+---
+
+_Comment by @jtkiley on 2025-03-15 19:41_
+
+I got this error and it would be nice to have some workable guidance from the tool itself.
+
+I tried to use uv today for the first time, and I extensively use devcontainers in VSCode (local and Github Codespaces). I added the uv feature and swapped my post create command to `uv pip` to install from a requirements.txt (then added `--system` from the first error I got). I can see that uv very quickly pulls the dependencies and in parallel, but then I get the error and my devcontainer build stops.
+
+I know this is because uv doesn't fall back to --user packages like pip does, and I see from other issues that you all don't want to do that.
+
+I spent an hour looking at it, and I'm going to switch back to pip, but it would be nice if you all consider this use case for new users of uv. I hoped to see what I read was a drop in replacement for pip, which along with the idea of cargo for Python, is what motivated me to check it out in the first place. (Also, I love `ruff`, so more stuff from the same folks sounded great.)
+
+Perhaps consider putting out your own devcontainer feature that could smooth out the user experience, too. I've read plenty of love for uv, so I'm certainly interested in checking it out.
+
+---
+
+_Comment by @zanieb on 2025-03-15 20:29_
+
+@jtkiley would you mind opening a new issue with an example problematic devcontainer? We can look into improving that experience.
+
+---
+
+_Referenced in [astral-sh/uv#12197](../../astral-sh/uv/issues/12197.md) on 2025-03-15 21:06_
+
+---

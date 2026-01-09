@@ -1,0 +1,137 @@
+---
+number: 7416
+title: Use the lockfile as constraints when doing uv run --with
+type: issue
+state: closed
+author: delfick
+labels:
+  - wish
+assignees: []
+created_at: 2024-09-16T01:07:05Z
+updated_at: 2024-09-23T22:39:52Z
+url: https://github.com/astral-sh/uv/issues/7416
+synced_at: 2026-01-07T13:12:17-06:00
+---
+
+# Use the lockfile as constraints when doing uv run --with
+
+---
+
+_Issue opened by @delfick on 2024-09-16 01:07_
+
+Hello,
+
+I'm using uv 0.4.10
+
+I'm trying to make my [project](https://github.com/delfick/extended-mypy-django-plugin/pull/60) use uv project semantics and to get around uv not having support for conflicting requirements I have scripts to run my tests with either `uv run --with mypy==1.4.0 django-stubs==4.2.3` or `uv run --with mypy==1.11.2 --with django-stubs==5.0.2` and that works.
+
+However, it seems that it's not using the lock file as a constraints and so it's not respecting that I have a specific version of django in my project.
+
+Is it possible to make it so that doing a uv run using ``--with`` uses the lock file as a constraints?
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with uv.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
+* The current uv platform.
+* The current uv version (`uv --version`).
+-->
+
+
+---
+
+_Comment by @juftin on 2024-09-21 07:33_
+
+Agreed - I came looking for a very similar issue to this. In my case I'd like to run Python CLIs in my environment without installing other tools. 
+
+For example, in a `linting` CI/CD job I'd like to just run `ruff` which is one of my dev dependencies, without installing everything else:
+
+```toml
+[build-system]
+build-backend = "hatchling.build"
+requires = ["hatchling"]
+
+[project]
+dependencies = [
+  "requests"
+]
+name = "example"
+readme = "README.md"
+requires-python = ">=3.11,<4"
+version = "0.1.0"
+
+[tool.uv]
+dev-dependencies = [
+  "ruff>=0.6.5",
+  "pytest>=8.3.3"
+]
+```
+
+In this case I would want to run something like this and have it respect my lockfile:
+
+```sh
+uv run --with ruff ruff format .
+```
+
+Even better (for my use case), it would be nice to install ruff into my virtual environment without having to install any of my other dev dependencies:
+
+```
+uv run --only-sync ruff ruff format .
+```
+
+
+---
+
+_Comment by @charliermarsh on 2024-09-21 12:38_
+
+@juftin -- Are you looking for `uv run --only-dev ruff format .`?
+
+---
+
+_Label `wish` added by @charliermarsh on 2024-09-21 12:38_
+
+---
+
+_Comment by @juftin on 2024-09-21 13:57_
+
+Kind of, I'm using `uv run --only-dev ruff format .` today but it syncs all of my dev dependencies when I really only need `ruff` for the CI job. 
+
+Maybe this is a niche need, but I'd like to be able to install/run just `ruff` without trying to sync the other dev dependencies (that was my idea with the `--only-sync` flag in the above example)
+
+If  `uv run --with ruff --no-sync ruff format .` respected my lock file that would also work. 
+
+---
+
+_Comment by @charliermarsh on 2024-09-21 19:06_
+
+Yeah I think we should respect the lockfile for the —with dependencies. At the very least we should prefer versions that are in the lockfile.
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2024-09-22 18:55_
+
+---
+
+_Referenced in [astral-sh/uv#7627](../../astral-sh/uv/pulls/7627.md) on 2024-09-22 20:44_
+
+---
+
+_Closed by @charliermarsh on 2024-09-23 11:36_
+
+---
+
+_Closed by @charliermarsh on 2024-09-23 11:36_
+
+---
+
+_Comment by @delfick on 2024-09-23 22:39_
+
+awesome, thanks for the fix!
+
+---
+
+_Referenced in [delfick/extended-mypy-django-plugin#60](../../delfick/extended-mypy-django-plugin/pulls/60.md) on 2024-09-25 03:50_
+
+---

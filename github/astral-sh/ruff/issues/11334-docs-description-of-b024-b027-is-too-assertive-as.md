@@ -1,0 +1,58 @@
+---
+number: 11334
+title: "[docs] Description of B024&B027 is too assertive, as compared flake8-bugbear"
+type: issue
+state: closed
+author: jakkdl
+labels:
+  - documentation
+assignees: []
+created_at: 2024-05-08T10:07:49Z
+updated_at: 2024-05-08T15:16:59Z
+url: https://github.com/astral-sh/ruff/issues/11334
+synced_at: 2026-01-07T13:12:15-06:00
+---
+
+# [docs] Description of B024&B027 is too assertive, as compared flake8-bugbear
+
+---
+
+_Issue opened by @jakkdl on 2024-05-08 10:07_
+
+The description of B024 [in flake8-bugbear](https://github.com/PyCQA/flake8-bugbear?tab=readme-ov-file#list-of-warnings) is:
+> B024: Abstract base class has methods, but none of them are abstract. This is not necessarily an error, but you might have forgotten to add the `@abstractmethod` decorator, potentially in conjunction with `@classmethod`, `@property` and/or `@staticmethod`.
+
+Which is explicitly saying "this is not necessarily an error" - there are plenty cases where you want a class to be abstract without it having abstract methods. [Ruff's description](https://docs.astral.sh/ruff/rules/abstract-base-class-without-abstract-method/#why-is-this-bad) is
+
+> Why is this bad?
+> 
+> Abstract base classes are used to define interfaces. If they have no abstract methods, they are not useful.
+>
+> If the class is not meant to be used as an interface, it should not be an abstract base class. Remove the ABC base class from the class definition, or add an abstract method to the class.
+
+
+Noticed in https://github.com/python-trio/trio/pull/2997, where we have a base class that should never be instantiated directly (i.e. it's abstract) - but it has default (empty) implementations for all methods, and subclasses can choose which ones to override. There was also a ton of complaints on my initial implementation of B024 over false positives - we've narrowed the check since then (I hope yours also is) to silence most of those, but it's very far from an iron-clad rule.
+
+B027 has a similar problem https://docs.astral.sh/ruff/rules/empty-method-without-abstract-decorator/ vs "consider adding `@abstractmethod`"
+
+---
+
+_Renamed from "[docs] Description of B024 is too assertive, as compared flake8-bugbear" to "[docs] Description of B024&B027 is too assertive, as compared flake8-bugbear" by @jakkdl on 2024-05-08 10:08_
+
+---
+
+_Label `documentation` added by @AlexWaygood on 2024-05-08 10:55_
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2024-05-08 14:55_
+
+---
+
+_Referenced in [astral-sh/ruff#11341](../../astral-sh/ruff/pulls/11341.md) on 2024-05-08 15:03_
+
+---
+
+_Closed by @charliermarsh on 2024-05-08 15:17_
+
+---

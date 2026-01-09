@@ -1,0 +1,78 @@
+---
+number: 20816
+title: "nvim autocomplete for `\"\".<method>` is not working?"
+type: issue
+state: closed
+author: tyoc213
+labels:
+  - question
+assignees: []
+created_at: 2025-10-12T05:21:39Z
+updated_at: 2025-10-12T22:53:13Z
+url: https://github.com/astral-sh/ruff/issues/20816
+synced_at: 2026-01-07T13:12:16-06:00
+---
+
+# nvim autocomplete for `"".<method>` is not working?
+
+---
+
+_Issue opened by @tyoc213 on 2025-10-12 05:21_
+
+### Summary
+
+Autocomplete is not working on my setup?
+
+I see same numbers of errors if I paste my code to https://play.ruff.rs/
+
+But when I try to use autocomplete for a variable I get no plausible completion, and my test case is autocomplete after `"".` hitting ctrl+tab did show autocompletion but didnt show the methods of `string`.
+
+<img width="569" height="76" alt="Image" src="https://github.com/user-attachments/assets/dc00729f-edbe-43e7-a412-aac498715280" />
+
+This behaviour is expected or should I get usable methods for autocompletion?
+
+I copied ruff settings from https://docs.astral.sh/ruff/configuration/#__tabbed_1_2
+
+
+```txt
+cat .local/state/nvim/lsp.log 
+[START][2025-10-11 23:05:31] LSP logging initiated
+[ERROR][2025-10-11 23:05:31] ...p/_transport.lua:36	"rpc"	"ruff"	"stderr"	"2025-10-11 23:05:31.997408674  INFO No workspace options found for file:///hub.git/llm-foundry, using default options\n"
+[ERROR][2025-10-11 23:05:32] ...p/_transport.lua:36	"rpc"	"ruff"	"stderr"	"2025-10-11 23:05:32.104386740  INFO Registering workspace: /hub.git/llm-foundry\n"
+[ERROR][2025-10-11 23:05:32] ...p/_transport.lua:36	"rpc"	"ruff"	"stderr"	"2025-10-11 23:05:32.104486040  WARN LSP client does not support dynamic capability registration - automatic configuration reloading will not be available.\n"
+[START][2025-10-11 23:10:04] LSP logging initiated
+[ERROR][2025-10-11 23:10:04] ...p/_transport.lua:36	"rpc"	"ruff"	"stderr"	"2025-10-11 23:10:04.285367828  INFO No workspace options found for file:///hub.git/llm-foundry, using default options\n"
+[ERROR][2025-10-11 23:10:04] ...p/_transport.lua:36	"rpc"	"ruff"	"stderr"	"2025-10-11 23:10:04.382225613  INFO Registering workspace: /hub.git/llm-foundry\n2025-10-11 23:10:04.382300243  WARN LSP client does not support dynamic capability registration - automatic configuration reloading will not be available.\n"
+```
+
+### Version
+
+0.14.0
+
+---
+
+_Renamed from "nvim autocomplete for `""` is not working?" to "nvim autocomplete for `"".<method>` is not working?" by @tyoc213 on 2025-10-12 05:22_
+
+---
+
+_Comment by @MichaReiser on 2025-10-12 05:33_
+
+Ruff only provides formatting and linting. It doesn't provide any auto-completion, neither in the playground or in VS Code. For auto completion, you'd have to use a type checker like Pyright, https://github.com/astral-sh/ty or pyrefly.
+
+---
+
+_Label `question` added by @MichaReiser on 2025-10-12 05:33_
+
+---
+
+_Comment by @tyoc213 on 2025-10-12 22:52_
+
+My bad,As I saw https://github.com/astral-sh/ruff-lsp pointing to just ruff and I always thought an LSP was the same as autocompletion and thought ruff should be completing things.
+
+
+
+---
+
+_Closed by @tyoc213 on 2025-10-12 22:53_
+
+---

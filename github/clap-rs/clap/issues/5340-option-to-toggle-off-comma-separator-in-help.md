@@ -1,0 +1,91 @@
+---
+number: 5340
+title: Option to toggle off comma separator in help?
+type: issue
+state: closed
+author: mentalisttraceur
+labels:
+  - C-enhancement
+assignees: []
+created_at: 2024-02-04T03:24:43Z
+updated_at: 2024-02-05T16:47:16Z
+url: https://github.com/clap-rs/clap/issues/5340
+synced_at: 2026-01-07T13:12:20-06:00
+---
+
+# Option to toggle off comma separator in help?
+
+---
+
+_Issue opened by @mentalisttraceur on 2024-02-04 03:24_
+
+### Please complete the following tasks
+
+- [X] I have searched the [discussions](https://github.com/clap-rs/clap/discussions)
+- [X] I have searched the [open](https://github.com/clap-rs/clap/issues) and [rejected](https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed) issues
+
+### Clap Version
+
+any/future
+
+### Describe your use case
+
+Some people prefer to separate short/long/alias options with just a space:
+
+```
+-h --help  show help text
+```
+
+..instead of a comma and a space:
+
+```
+-h, --help  show help text
+```
+
+I'm personally undecided which way is Better(tm) or that the difference *matters* enough to support both, but I couldn't find any issue/discussion for it so I wanted to at least create an issue to capture any decision/rationale.
+
+### Describe the solution you'd like
+
+Maybe just this issue existing as-is with a wontfix, if that's the decision.
+
+Or a boolean, somewhere. (I don't yet have enough Rust experience to have opinions/preferences about where.)
+
+Or even let people pass a custom separator string to override the `", "`. For example, some people might strongly feel that two spaces (with or without a comma) improves readability even more.
+
+### Alternatives, if applicable
+
+Getting over it. Having an epiphany that ", "-separation is better actually.
+
+I don't think the Rust program which is using `clap` can do anything (unless there's more capability than I know about to monkey-patch/hook/intercept stuff)? Seems like at best someone would have to intercept the string once it has already been formatted, in a separate process, and try to delete only the correct separator commas (as opposed to any that are in the prose, such as in option descriptions).
+
+### Additional Context
+
+Over the year I've noticed both used by command-line tools. For example, Docopt supports both - the first example on the Docopt website does space-only, the second does comma+space.
+
+The tradeoffs are small either way. It can be simpler to mechanically parse the space-only way: the most basic of split-by-whitespace will do it, without needing to then check for and trim off the `,` - but any serious help-text parser would have to handle both variants anyway. It saves one character, but that only barely matters to a small minority of people who regularly use CLIs on their phones or tightly split their screen real-estate vertically.
+
+The comma sometimes seems to help me with visual parsing, other times it feels like it just adds visual noise. When there's whitespace below the comma and the characters right before it don't poke below the line ("p", "q", "j", "y"), the comma is visually distinct in a way that sometimes sticks out to me even when scrolling or when my eyes are focused on something else in the area. I do think that in the common/general case, the comma helps visual parsing.
+
+Another benefit is that the *meaning* of a comma is extremely clear, it might help interpretation for those not yet familiar with CLI help text conventions. 
+
+---
+
+_Label `C-enhancement` added by @mentalisttraceur on 2024-02-04 03:24_
+
+---
+
+_Comment by @mentalisttraceur on 2024-02-04 04:15_
+
+I'm going to close this myself, actually. That way if there's interest y'all can reopen it, but if not that's one less thing for you to do. (I think just seeing an issue like this, with the pro/cons laid out, would've addressed what I was looking for, so hopefully this helps someone else like me in the future.)
+
+---
+
+_Closed by @mentalisttraceur on 2024-02-04 04:15_
+
+---
+
+_Comment by @epage on 2024-02-05 16:47_
+
+FYI I generally leave these kinds of things to the person reporting the issue to help drive.  You closing this means it goes off my radar unless someone else comes along to help drive the conversation.
+
+---

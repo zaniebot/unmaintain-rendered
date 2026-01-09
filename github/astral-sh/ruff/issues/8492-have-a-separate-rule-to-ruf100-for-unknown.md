@@ -1,0 +1,79 @@
+---
+number: 8492
+title: Have a separate rule to RUF100 for unknown/disabled rules
+type: issue
+state: open
+author: xi
+labels:
+  - rule
+  - needs-decision
+assignees: []
+created_at: 2023-11-05T09:07:50Z
+updated_at: 2024-11-11T10:54:40Z
+url: https://github.com/astral-sh/ruff/issues/8492
+synced_at: 2026-01-07T13:12:15-06:00
+---
+
+# Have a separate rule to RUF100 for unknown/disabled rules
+
+---
+
+_Issue opened by @xi on 2023-11-05 09:07_
+
+See prior discussion in #2194 and #2424.
+
+RUF100 flags noqas that are no longer relevant. There are to distinct cases:
+
+- ruff has checked the rule and knows that there is no problem in that line, so the noqa is not needed
+- ruff has not checked the rule (either because it is not selected or because it is not implemented)
+
+In both cases, no noqa makes no different to ruff. However, in the second case, the noqa might make a difference to other linters that are used in addition to ruff. For those cases, the [`external`](https://docs.astral.sh/ruff/settings/#external) setting can be used to list rules that should not be flagged. However, it might be tedious to list all relevant rules.
+
+So I propose to split RUF100 into two rules. RUF100 would only flag noqas that ruff has actually checked. And a new rule would flag noqas that are not relevant to ruff.
+
+---
+
+_Comment by @Skylion007 on 2023-11-05 16:25_
+
+Splitting this rule would actually allow make it way easier to enable it. Note this doesn't entirely solve the problem if any differences in false positives / false negatives exist between ruff and the external rule code tool, but it would be a nice start!
+
+---
+
+_Comment by @bendoerry on 2023-11-06 09:43_
+
+This would be a great help for us.
+
+We currently have to check for unnecessary (as opposed to not-enabled/understood) noqas separately in our CI.
+Our current method for finding relies on enabling all rules and then parsing the json output format using jq.
+
+Ideally we would just be able to enable one rule in our standard linting config which would highlight these unnecessary noqas, but not noqas for rules that just aren't enabled at that moment.
+
+Not that familiar on ruff's internals so can't comment on to what extent checking that noqas for non-enabled rules are valid will impact performance.
+
+---
+
+_Comment by @ThiefMaster on 2023-11-14 13:28_
+
+Being able to disable this rule for specific violations would also reduce the impact of the F401 shortcoming documented in #61 (see [my comment](https://github.com/astral-sh/ruff/issues/60#issuecomment-1809338927) in there)
+
+---
+
+_Comment by @Quexington on 2024-11-08 23:28_
+
+Adding a comment to this because it seems close to what I came here to report, but if you're searching through a large list of ruff errors, and you want to select & fix just the `RUF100`, you end up making a mess for yourself because it will accidentally generate a false positive on _all_ of the `noqa`s.
+
+```python
+foo = "bar"  # noqa: <some_error_code>
+bat = "baz"  # noqa: <error that no longer applies>
+``` 
+If you run `ruff check --select RUF100 --fix` in order to apply a targeted fix to the `bat`/`baz` line, it will remove BOTH `noqa`s because `<some_error_code>` is no longer selected.
+
+---
+
+_Label `rule` added by @dhruvmanila on 2024-11-11 10:54_
+
+---
+
+_Label `needs-decision` added by @dhruvmanila on 2024-11-11 10:54_
+
+---

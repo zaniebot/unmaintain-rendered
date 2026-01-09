@@ -1,0 +1,221 @@
+---
+number: 11120
+title: "Inconsistent Dependency Handling Across Systems with Different `glibc` Versions"
+type: issue
+state: closed
+author: ido123net
+labels:
+  - configuration
+  - needs-design
+assignees: []
+created_at: 2025-01-30T21:18:23Z
+updated_at: 2025-08-29T00:51:41Z
+url: https://github.com/astral-sh/uv/issues/11120
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# Inconsistent Dependency Handling Across Systems with Different `glibc` Versions
+
+---
+
+_Issue opened by @ido123net on 2025-01-30 21:18_
+
+### Summary
+
+When using UV to create environments on systems with different `glibc` versions (e.g., Ubuntu 22.04 and Ubuntu 18.04), packages that depend on `glibc` (like `paramiko`) do not handle the version difference gracefully.
+
+In setups where environments are shared across multiple systems via NFS, an environment created on Ubuntu 22.04 functions correctly on the same OS. However, when accessed from Ubuntu 18.04 (which has a lower `glibc` version), it leads to runtime errors due to incompatible shared library dependencies. The necessary dependencies are not reinstalled or resolved during environment execution.
+___
+
+## Steps to reproduce:
+1. On Ubuntu 22.04 (glibc 2.35)
+```sh
+$ uv init example
+Initialized project `example` at `/path/to/example`
+
+$ cd example
+
+$ cat hello.py
+import paramiko
+print(paramiko.__version__)
+
+$ uv add paramiko
+Resolved 7 packages in 27ms
+Installed 6 packages in 202ms
+ + bcrypt==4.2.1
+ + cffi==1.17.1
+ + cryptography==44.0.0
+ + paramiko==3.5.0
+ + pycparser==2.22
+ + pynacl==1.5.0
+
+$ uv run hello.py 
+3.5.0
+```
+2. On Ubuntu 18.04 (glibc 2.27)
+```sh
+$ cd /path/to/example
+
+$ uv run hello.py
+Traceback (most recent call last):
+  File "/path/to/example/hello.py", line 1, in <module>
+    import paramiko
+  ...
+ImportError: /lib/x86_64-linux-gnu/libc.so.6: version `GLIBC_2.28' not found (required by /path/to/example/.venv/lib/python3.9/site-packages/cryptography/hazmat/bindings/_rust.abi3.so)
+```
+
+
+### Platform
+
+Ubuntu18.04, Ubuntu22.04
+
+### Version
+
+uv 0.5.25
+
+### Python version
+
+Python 3.9.20
+
+---
+
+_Label `bug` added by @ido123net on 2025-01-30 21:18_
+
+---
+
+_Comment by @zanieb on 2025-01-30 21:23_
+
+I don't think this is a uv problem, this is just the reality of using packages installed in one context in another context. Paramiko (edit: or, as Charlie subsequently pointed out, a dependency of it) chooses to build wheels that dynamically link libc, so a compatible version of libc needs to be around at runtime.
+
+---
+
+_Label `bug` removed by @zanieb on 2025-01-30 21:24_
+
+---
+
+_Label `question` added by @zanieb on 2025-01-30 21:24_
+
+---
+
+_Comment by @zanieb on 2025-01-30 21:24_
+
+(Thanks for the clear reproduction steps though!)
+
+---
+
+_Comment by @charliermarsh on 2025-01-30 21:24_
+
+Hmm... Like, you're accessing the exact same virtual environment? You need different wheels when running against different glibc versions -- that virtual environment isn't seamlessly compatible across platforms. Notice that cryptography publishes wheels for 2.17 and 2.28: https://pypi.org/project/cryptography/#files. uv doesn't introspect which wheel is already-installed when you execute `uv run`. It could? I doubt any other tool does that.
+
+
+---
+
+_Comment by @charliermarsh on 2025-01-30 21:24_
+
+@zanieb I think the error is actually in cryptography.
+
+---
+
+_Comment by @zanieb on 2025-01-30 21:28_
+
+If you install on the older Ubuntu, it should work on the newer one. Alternatively, you could request a specific `--python-platform`, e.g., one of
+
+```
+x86_64-manylinux2014: An x86_64 target for the manylinux2014 platform. Equivalent to x86_64-manylinux_2_17
+x86_64-manylinux_2_17: An x86_64 target for the manylinux_2_17 platform
+x86_64-manylinux_2_28: An x86_64 target for the manylinux_2_28 platform
+x86_64-manylinux_2_31: An x86_64 target for the manylinux_2_31 platform
+x86_64-manylinux_2_32: An x86_64 target for the manylinux_2_32 platform
+x86_64-manylinux_2_33: An x86_64 target for the manylinux_2_33 platform
+x86_64-manylinux_2_34: An x86_64 target for the manylinux_2_34 platform
+x86_64-manylinux_2_35: An x86_64 target for the manylinux_2_35 platform
+x86_64-manylinux_2_36: An x86_64 target for the manylinux_2_36 platform
+x86_64-manylinux_2_37: An x86_64 target for the manylinux_2_37 platform
+x86_64-manylinux_2_38: An x86_64 target for the manylinux_2_38 platform
+x86_64-manylinux_2_39: An x86_64 target for the manylinux_2_39 platform
+x86_64-manylinux_2_40: An x86_64 target for the manylinux_2_40 platform
+```
+
+where `2_<NUM>` refers to the GLIBC version (ref https://peps.python.org/pep-0600/)
+
+But this is only available in the lower-level `uv pip` interface.
+
+---
+
+_Comment by @zanieb on 2025-01-30 21:33_
+
+We can think about how to handle this case better though, agree that user-experience is not ideal.
+
+---
+
+_Comment by @ido123net on 2025-01-30 21:47_
+
+Yes, I tried to generalize the use case.
+
+If I'm installing it on the older Ubuntu it works fine on the newer one. (this is actually what we are doing now).
+But, I wanted something like the `--python-platform` for the `uv run` interface.
+
+The use case is that we have stronger computers with newer OS to develop on, and we have many "old" computers which acts as controllers for some embedded HW.
+
+My CI job is starts on the "strong" PC and distribute the jobs to the "old" PCs.
+
+---
+
+_Comment by @charliermarsh on 2025-01-30 21:49_
+
+Yeah, I think you should be able to specify your minimum-supported glibc version somehow. That would at least solve this case (though wouldn't solve the general case of, like, the platform changing from under us).
+
+---
+
+_Label `question` removed by @charliermarsh on 2025-01-30 21:49_
+
+---
+
+_Label `configuration` added by @charliermarsh on 2025-01-30 21:49_
+
+---
+
+_Label `needs-design` added by @charliermarsh on 2025-01-30 21:49_
+
+---
+
+_Comment by @ido123net on 2025-01-30 21:55_
+
+I don't know if it's better to let `uv-run` handle it on its own.
+
+Maybe a better approach would be to handle it like the existing interface in `uv-pip`, using the `--python-platform` option.
+
+---
+
+_Comment by @charliermarsh on 2025-01-30 21:56_
+
+Yeah there are basically two options:
+
+1. Let users specify a minimum glibc version (or `--python-platform`) as a setting.
+2. In `uv run`, look at the installed packages, and uninstall + reinstall any packages that are incompatible with the current platform.
+
+(2) would be automatic, but it would also mean that if you're sharing the environment across two incompatible machines in real-time, things would break down.
+
+---
+
+_Comment by @ido123net on 2025-01-30 21:59_
+
+Exactly, this is why I prefer (1), this way I can create the environment with the desire minimum `glibc` , and share it across all compatible environment.
+
+---
+
+_Referenced in [astral-sh/uv#15035](../../astral-sh/uv/issues/15035.md) on 2025-08-02 23:57_
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2025-08-25 13:27_
+
+---
+
+_Referenced in [astral-sh/uv#15515](../../astral-sh/uv/pulls/15515.md) on 2025-08-25 14:20_
+
+---
+
+_Closed by @charliermarsh on 2025-08-29 00:51_
+
+---

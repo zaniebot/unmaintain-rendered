@@ -1,0 +1,163 @@
+---
+number: 2808
+title: ruff autocompletion for --select rules
+type: issue
+state: closed
+author: spaceone
+labels:
+  - cli
+assignees: []
+created_at: 2023-02-12T11:55:21Z
+updated_at: 2023-02-15T17:50:45Z
+url: https://github.com/astral-sh/ruff/issues/2808
+synced_at: 2026-01-07T13:12:14-06:00
+---
+
+# ruff autocompletion for --select rules
+
+---
+
+_Issue opened by @spaceone on 2023-02-12 11:55_
+
+`ruff check --select E`<tab> currently suggests filenames starting with `E` instead of the rules starting with `E`.
+
+It would be nice if that was supported for `--select`, `--ignore`, etc.
+
+---
+
+_Comment by @spaceone on 2023-02-12 12:32_
+
+Same for `ruff rule E`
+
+---
+
+_Label `cli` added by @charliermarsh on 2023-02-12 15:43_
+
+---
+
+_Comment by @charliermarsh on 2023-02-12 15:44_
+
+Probably has to do with the fact that we use a custom `from_str` for these, so they aren't picked up in auto-completion. But maybe there's a way around it.
+
+---
+
+_Comment by @not-my-profile on 2023-02-12 17:05_
+
+Yes there's indeed a way around this. I have already implemented this locally but would wait till #2517 is merged since that logic has to change when the `RuleCodePrefix` enum is split up.
+
+---
+
+_Referenced in [astral-sh/ruff#2906](../../astral-sh/ruff/pulls/2906.md) on 2023-02-14 23:37_
+
+---
+
+_Closed by @charliermarsh on 2023-02-15 13:09_
+
+---
+
+_Comment by @spaceone on 2023-02-15 16:10_
+
+> Same for `ruff rule E`
+@not-my-profile can you do this as well?
+
+I tried too long for myself but failed with:
+```diff
+diff --git crates/ruff_cli/src/args.rs crates/ruff_cli/src/args.rs
+index 445534c7..e69bb043 100644                                                                                                                                             
+--- crates/ruff_cli/src/args.rs  
++++ crates/ruff_cli/src/args.rs          
+@@ -38,7 +38,7 @@ pub enum Command {                                                                                                                                        
+     #[clap(alias = "--explain")]                                                                                                            
+     Rule {                                                                                                                                                                 
+         #[arg(value_parser=Rule::from_code)]                                                                                                                               
+-        rule: Rule,                                                     
++        rule: RuleSelector,                                  
+                                                    
+         /// Output format                                    
+         #[arg(long, value_enum, default_value = "pretty")]          
+diff --git crates/ruff_cli/src/main.rs crates/ruff_cli/src/main.rs                                                                                                           
+index cf806cde..ea3af2b4 100644          
+--- crates/ruff_cli/src/main.rs     
++++ crates/ruff_cli/src/main.rs                                                                                                                                             
+@@ -8,6 +8,7 @@ use clap::{CommandFactory, Parser, Subcommand};           
+ use colored::Colorize;                       
+ use notify::{recommended_watcher, RecursiveMode, Watcher};       
+                               
++use ruff::registry::Rule;                          
+ use ::ruff::logging::{set_up_logging, LogLevel};             
+ use ::ruff::resolver::PyprojectDiscovery;
+ use ::ruff::settings::types::SerializationFormat;                                                                                                                           
+@@ -107,7 +108,7 @@ quoting the executed command, along with the relevant file contents and `pyproje
+     set_up_logging(&log_level)?;            
+                                                                             
+     match command {        
+-        Command::Rule { rule, format } => commands::rule::rule(&rule, format)?,
++        Command::Rule { rule, format } => commands::rule::rule(&Rule::from_code(rule.prefix_and_code().1).unwrap(), format)?,
+         Command::Config { option } => return Ok(commands::config::config(option.as_deref())),                                                                              
+         Command::Linter { format } => commands::linter::linter(format)?,
+         Command::Clean => commands::clean::clean(log_level)?,
+```
+
+Also how can I enable that it displays the short-code like in the PR?:
+```
+$ ruff check --select=EM<Tab>
+EM          -- flake8-errmsg
+EM10   EM1  --
+EM101       -- raw-string-in-exception
+EM102       -- f-string-in-exception
+EM103       -- dot-format-in-exception
+```
+
+for me it displays only the raw codes.
+
+
+
+---
+
+_Comment by @not-my-profile on 2023-02-15 17:02_
+
+> can you do this as well?
+
+I am currently busy with other stuff.
+
+> how can I enable that it displays the short-code like in the PR?
+
+I don't know I am using Zsh and this just worked ... are you using a different shell? 
+
+---
+
+_Comment by @spaceone on 2023-02-15 17:38_
+
+I am using `bash`.
+
+---
+
+_Comment by @not-my-profile on 2023-02-15 17:50_
+
+Ah ok yeah ... sorry it appears that `clap_complete` doesn't include the value help text for bash ... perhaps because bash doesn't support it?
+
+```
+$ ruff generate-shell-completion zsh | grep banned-api
+TID251\:"banned-api"
+TID251\:"banned-api"
+TID251\:"banned-api"
+TID251\:"banned-api"
+TID251\:"banned-api"
+TID251\:"banned-api"
+$ ruff generate-shell-completion bash | grep banned-api
+# nothing
+```
+
+I can recommend zsh ... it does in general have much better autocompletion than bash.
+
+---
+
+_Comment by @spaceone on 2023-02-15 17:50_
+
+ok, thanks
+
+---
+
+_Referenced in [astral-sh/ruff#4551](../../astral-sh/ruff/issues/4551.md) on 2023-05-20 19:55_
+
+---

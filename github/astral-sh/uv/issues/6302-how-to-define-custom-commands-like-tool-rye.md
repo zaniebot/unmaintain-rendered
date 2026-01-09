@@ -1,0 +1,195 @@
+---
+number: 6302
+title: "✨ How to define custom commands like `tool.rye.scripts`"
+type: issue
+state: closed
+author: jd-solanki
+labels:
+  - enhancement
+  - projects
+assignees: []
+created_at: 2024-08-21T06:28:48Z
+updated_at: 2025-01-16T03:38:10Z
+url: https://github.com/astral-sh/uv/issues/6302
+synced_at: 2026-01-07T13:12:17-06:00
+---
+
+# ✨ How to define custom commands like `tool.rye.scripts`
+
+---
+
+_Issue opened by @jd-solanki on 2024-08-21 06:28_
+
+Hi 👋🏻 
+
+I'm really happy for UV. I always wanted better python ecosystem thanks all of you for your efforts.
+
+I want to migrate from rye to UV as I'm starting new project and wanted to add custom command like `uv run dev` that executes `uv run fastapi dev src/backend/main.py` for me.
+
+In Rye, I used to define it under scripts section:
+```toml
+[tool.rye.scripts]
+dev = "uvicorn aitools.main:app --reload"
+migration = "alembic revision --autogenerate -m"
+migrate = "alembic upgrade head"
+downgrade = "alembic downgrade -1"
+```
+
+However, It looks like UV don't have this feature or isn't documented yet.
+
+---
+
+_Comment by @captnswing on 2024-08-21 09:01_
+
+I think this is done in the `[project.scripts]` table. 
+
+See https://packaging.python.org/en/latest/guides/writing-pyproject-toml/#creating-executable-scripts
+
+---
+
+_Comment by @jorgebodega on 2024-08-21 09:34_
+
+It is not exactly the same. `[project.scripts]` requires a python file to be created to execute something.
+
+To achieve this, I'm still using [poethepoet](https://github.com/nat-n/poethepoet) inherited from poetry, and it just works.
+
+But yes, this would be great to have inside `uv`. 
+
+---
+
+_Comment by @patrick91 on 2024-08-21 12:42_
+
+`pdm` does it like this:
+
+```
+[tool.pdm.scripts]
+start = "flask run -p 54321"
+```
+
+---
+
+_Comment by @zanieb on 2024-08-21 12:44_
+
+Yeah we don't support this yet, but we plan to in some way.
+
+---
+
+_Label `enhancement` added by @zanieb on 2024-08-21 12:44_
+
+---
+
+_Label `projects` added by @zanieb on 2024-08-21 12:44_
+
+---
+
+_Comment by @anthonycorletti on 2024-08-22 19:48_
+
+this sounds really useful.
+
+my solution for this right now is leaving scripts in a bin directory which does the trick because i don't have to remember commands or reverse-i-search forever. would love to have something like this:
+
+```toml
+# ...
+
+[tool.uv.scripts]
+clean = "rm -rf build dist *_cache"
+format = "ruff format"
+check = "ruff check"
+test = "pytest"
+dev = "uvicorn app.main:app --reload"
+
+[tool.uv.scripts.combos]
+ok = ["clean", "format", "check", "test"]
+
+# ...
+```
+
+---
+
+_Comment by @patrick91 on 2024-08-23 10:38_
+
+@anthonycorletti the combo stuff is interesting, [mise](https://mise.jdx.dev/) does it like this:
+
+```
+[tasks.fetch-openapi]
+run = "curl localhost:8000/api/v1/openapi.json -O"
+
+[tasks.modify-openapi]
+run = "node modify-openapi-operationids.js"
+depends = ["fetch-openapi"]
+```
+
+but I wonder if this is scope creep :D 
+
+---
+
+_Comment by @ion-elgreco on 2024-08-25 12:30_
+
+This would be nice to have so I don't need to have separate make/just files 
+
+---
+
+_Comment by @my1e5 on 2024-08-27 10:36_
+
+Duplicate of https://github.com/astral-sh/uv/issues/5903
+
+---
+
+_Closed by @jd-solanki on 2024-08-27 10:51_
+
+---
+
+_Comment by @phihung on 2024-10-30 14:13_
+
+Hi. I created a small, dependency-free tool to manage scripts directly from pyproject.toml:
+https://github.com/phihung/tomlscript
+
+It works with all dependencies management tools. Tested with uv, pip and poetry.
+
+### Configuration example
+```toml
+[tool.tomlscript]
+# Start dev server ==> this line is the documentation of the command
+dev = "uv run uvicorn --port {port:5001} myapp:app --reload"
+
+# Linter and test 
+test = """
+uv run ruff check
+uv run pytest --inline-snapshot=review
+"""
+
+# Generate pyi stubs (python function) ==> Execute python function
+gen_pyi = "mypackage.typing:generate_pyi"
+
+setup_dev = """
+uv sync
+uv run mypy --install-types--non-interactive
+aws s3 cp s3://my-bucket/model ./models
+"""
+```
+
+### Usage
+```
+alias tom="uvx tomlscript"
+
+tom  # list commands
+tom setup_dev # Setup dev env, install dependencies, etc
+tom dev --port 8000
+tom gen_pyi  --mode all  # execute python function with arguments
+````
+
+---
+
+_Comment by @Mai0313 on 2025-01-16 03:33_
+
+any update?
+
+---
+
+_Comment by @zanieb on 2025-01-16 03:38_
+
+@Mai0313 please don't ask for updates. See #9452.
+
+This issue is being tracked in #5903 
+
+---

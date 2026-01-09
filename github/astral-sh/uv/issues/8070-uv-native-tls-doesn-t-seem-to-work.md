@@ -1,0 +1,100 @@
+---
+number: 8070
+title: "uv --native-tls doesn't seem to work"
+type: issue
+state: closed
+author: andreamoro
+labels:
+  - needs-mre
+assignees: []
+created_at: 2024-10-10T05:19:16Z
+updated_at: 2025-09-18T01:00:51Z
+url: https://github.com/astral-sh/uv/issues/8070
+synced_at: 2026-01-07T13:12:17-06:00
+---
+
+# uv --native-tls doesn't seem to work
+
+---
+
+_Issue opened by @andreamoro on 2024-10-10 05:19_
+
+On my Mac OS Sequoia 15.0 (24A335), I'm trying to run uv and as I'm behind a company proxy, I need to use the system certificates which are not recognised by default.
+
+In running the `uv --native-tls` command the help keeps being prompted. Conversely, using an `export UV_NATIVE_TLS=truez` and then running whatever I need, uv execute without issues.
+
+---
+
+_Comment by @charliermarsh on 2024-10-10 08:40_
+
+Interesting, will take a look.
+
+---
+
+_Comment by @charliermarsh on 2024-10-10 09:09_
+
+Can you include the exact command you're running? `uv --native-tls venv --show-settings` shows that `native_tls` is being set as expected.
+
+---
+
+_Label `needs-mre` added by @charliermarsh on 2024-10-10 09:09_
+
+---
+
+_Comment by @WSF-SEO-AM on 2024-10-10 16:32_
+
+I was going just with UV --native-tls because I thought this was helping to set the parameter once and for all 
+This doesn't sound too be the case, right?
+
+---
+
+_Comment by @zanieb on 2024-10-10 16:49_
+
+`uv --native-tls` doesn't set a configuration value in a persistent way, it changes the behavior for a single invocation of `uv`.
+
+---
+
+_Closed by @charliermarsh on 2024-10-10 17:36_
+
+---
+
+_Comment by @Sairam90 on 2024-10-11 14:12_
+
+Could you provide an example of how I can use a pem file similar to `--cert <.pem file>` for pip ?
+
+---
+
+_Comment by @zanieb on 2024-10-11 14:52_
+
+You can use `SSL_CERT_FILE=/path/to/file.pem` instead.
+
+---
+
+_Comment by @Sairam90 on 2024-10-11 15:29_
+
+Thank you!..setting SSL_CERT_FILE env worked .. but could you also let me know how --native-tls arg could be used ?
+
+---
+
+_Comment by @WSF-SEO-AM on 2024-10-11 17:47_
+
+This SSL_cert_file for me never worked. I got airways error messages circa a file not being valid when I use that one elsewhere
+
+---
+
+_Comment by @WSF-SEO-AM on 2025-09-15 15:52_
+
+@zanieb I was hoping if there is any change and or chance to get more informations on how uv retrieve the local PEM file.
+A --debug doesn't show the file being targeted. And I get that in the end it should be also sourcing from the SSL_CERT_FILE environment variable. 
+
+But a valid certiificate specified in that folder keep triggering an UnknownIssuer certificate output, but when I ran a pip install all works fine.
+
+Do you have any clue?
+
+---
+
+_Comment by @zanieb on 2025-09-18 01:00_
+
+We don't implement the TLS stack ourself, so it's really hard for me to say what the problem is. `RUST_LOG=trace` might have more information. The certificate type might just not be supported by the library we use for TLS, in which case we'd need enough details to open an issue there.
+
+---

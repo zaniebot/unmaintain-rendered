@@ -1,0 +1,99 @@
+---
+number: 895
+title: ArgRequiredElseHelp has lower priority than missing required arguments
+type: issue
+state: closed
+author: iKevinY
+labels:
+  - C-bug
+  - A-parsing
+assignees: []
+created_at: 2017-03-11T08:59:54Z
+updated_at: 2017-03-12T19:48:31Z
+url: https://github.com/clap-rs/clap/issues/895
+synced_at: 2026-01-07T13:12:19-06:00
+---
+
+# ArgRequiredElseHelp has lower priority than missing required arguments
+
+---
+
+_Issue opened by @iKevinY on 2017-03-11 08:59_
+
+As of v2.20, `ArgRequiredElseHelp` doesn't properly take precedence over missing required arguments (the same issue as described in #362). This was working as expected in v2.19.3.
+
+### Affected Version of clap
+
+v2.20.0, v2.20.5, 814b12644ef7cbd41fd64a940bb09dd2b9486494
+
+### Expected Behavior Summary
+
+Full help page is printed when no arguments are provided.
+
+### Actual Behavior Summary
+
+`error: The following required arguments were not provided:`
+
+---
+
+_Comment by @kbknapp on 2017-03-11 18:34_
+
+Thanks for reporting this! Could you check if current master (what will be 2.21) is also affected?
+
+---
+
+_Comment by @iKevinY on 2017-03-11 19:19_
+
+Seems like current `master` is also affected (tested under 814b1264).
+
+---
+
+_Comment by @kbknapp on 2017-03-11 19:32_
+
+Ok thanks!
+
+---
+
+_Assigned to @kbknapp by @kbknapp on 2017-03-11 19:32_
+
+---
+
+_Label `C: errors` added by @kbknapp on 2017-03-11 19:33_
+
+---
+
+_Label `C: parsing` added by @kbknapp on 2017-03-11 19:33_
+
+---
+
+_Label `D: easy` added by @kbknapp on 2017-03-11 19:33_
+
+---
+
+_Label `P2: need to have` added by @kbknapp on 2017-03-11 19:33_
+
+---
+
+_Label `T: bug` added by @kbknapp on 2017-03-11 19:33_
+
+---
+
+_Label `W: 2.x` added by @kbknapp on 2017-03-11 19:33_
+
+---
+
+_Closed by @homu on 2017-03-12 18:17_
+
+---
+
+_Comment by @kbknapp on 2017-03-12 18:22_
+
+This is fixed in 2.21.1 om crates.io
+
+---
+
+_Comment by @iKevinY on 2017-03-12 19:48_
+
+Awesome, thanks for the speedy fix! 😄 
+
+---

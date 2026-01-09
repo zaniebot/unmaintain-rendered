@@ -1,0 +1,178 @@
+---
+number: 13798
+title: "[red-knot] Report line numbers in mdtest relative to the markdown file, not the test snippet"
+type: issue
+state: closed
+author: AlexWaygood
+labels:
+  - help wanted
+  - testing
+  - ty
+assignees: []
+created_at: 2024-10-17T17:06:00Z
+updated_at: 2024-10-22T07:42:41Z
+url: https://github.com/astral-sh/ruff/issues/13798
+synced_at: 2026-01-07T13:12:16-06:00
+---
+
+# [red-knot] Report line numbers in mdtest relative to the markdown file, not the test snippet
+
+---
+
+_Issue opened by @AlexWaygood on 2024-10-17 17:06_
+
+Currently if an assertion in `mdtest` fails, it gives you a message as follows:
+
+```
+---- mdtest::path_06_resources_mdtest_binary_integers_md stdout ----
+
+binary/integers.md - Division by Zero
+
+/src/test.py
+    line 13: unexpected error: [division-by-zero] "Cannot divide object of type `int` by zero"
+
+--------------------------------------------------
+```
+
+The line number here isn't particularly helpful if it's the third or fourth snippet in a Markdown test suite, because it gives you the line number relative to the specific test snippet rather than the Markdown file. Nobody wants to manually count thirteen lines in a Python code block to figure out where the assertion failed!
+
+It would be great if these line numbers could be reported relative to the enclosing Markdown file rather than just the specific code block that contained the failing assertion.
+
+---
+
+_Label `testing` added by @AlexWaygood on 2024-10-17 17:06_
+
+---
+
+_Label `red-knot` added by @AlexWaygood on 2024-10-17 17:06_
+
+---
+
+_Label `help wanted` added by @AlexWaygood on 2024-10-17 17:06_
+
+---
+
+_Comment by @MichaReiser on 2024-10-17 19:37_
+
+I prefer the way it is. It's closer to the cli behavior and the diagnostic contains the file name 
+
+---
+
+_Comment by @MichaReiser on 2024-10-17 19:41_
+
+This would also lead to fragile tests where changing a test description can change the asserted line numbers. Keeping the line numbers relative to the file ensures that only local changes affect the diagnostic line numbers 
+
+---
+
+_Comment by @AlexWaygood on 2024-10-17 19:43_
+
+@carljm and I were finding it _extremely_ difficult to debug failing tests in #13800 just now with the current behaviour :/
+
+> It's closer to the cli behavior
+
+I'm not sure I understand or agree. The CLI never runs on Markdown files; it runs on Python files. If you run the CLI on a file `foo.py` and it reports there's an error on line 14 of `foo.py`, you'll be able to open up that file in an editor and jump straight to line 14. That's the ability I want for mdtest: to have the reported line numbers correspond exactly to "real" line numbers on a file, so that I can jump to the line immediately and see which assertion is failing.
+
+---
+
+_Comment by @carljm on 2024-10-17 20:18_
+
+I think it's important to clarify here that we are not talking about line numbers in **Red Knot** diagnostics; we are only talking about line numbers in **mdtest** error messages when a test fails. I definitely don't think mdtest should ever modify line numbers as they appear in a Red Knot diagnostic.
+
+> This would also lead to fragile tests where changing a test description can change the asserted line numbers. Keeping the line numbers relative to the file ensures that only local changes affect the diagnostic line numbers
+
+This is not an issue, we never assert in tests based on line numbers (instead we just put the assertion on or above the relevant line). And this seems to be based on a misunderstanding that we are talking about line numbers in red-knot diagnostics, rather than line numbers in mdtest failure messages.
+
+The _only_ use for a line number in an mdtest failure message is to help you quickly find where in your Markdown test file the error occurred. So the only relevant question here is what makes that fast and easy. I think it's 100% clear that jumping to line X in your editor in the Markdown file is easier than first finding the right test header, then finding the right embedded file, then manually counting lines from the top of the code block.
+
+---
+
+_Comment by @MichaReiser on 2024-10-17 20:24_
+
+I can see the pain point that but improving the rendering of diagnostics might help to make this more obvious.
+
+I kind of agree that it's different from the CLI and possibly closer to how diagnostics in embedded files should work. But the fact that it makes tests more fragile (changing a single description can break many assertions) is a no go for me unless we make those line numbers relative (which is also annoying because you then need to count the lines manually).
+
+That's why I would keep it as is. Adjusting the line numbers would also complicate the diagnostic rendering (not how it is done today but when we have a proper diagnostic system)
+
+---
+
+_Comment by @MichaReiser on 2024-10-17 20:26_
+
+I'm not sure what's unclear about the error messages in the linked test. Some markdown editors support showing line numbers for code blocks. That might help https://stackoverflow.com/a/65579102
+
+---
+
+_Comment by @carljm on 2024-10-17 20:26_
+
+> the fact that it makes tests more fragile
+
+but it doesn't
+
+> would also complicate the diagnostic rendering
+
+I assume you're talking about Red Knot diagnostic rendering? The change proposed here has nothing to do with Red Knot diagnostics at all.
+
+---
+
+_Comment by @carljm on 2024-10-17 20:53_
+
+To clarify the point I made above, let's say that in future we have (and match on) red-knot diagnostics that include a line number, and we are asserting against a full diagnostic message, including the line number (which would usually be a bad idea because it's fragile to changes in the test, but maybe sometime we want to do it.) So today in that case, if your test fails because of a line number mismatch, mdtest might tell you something like this:
+
+```
+failures:
+
+---- mdtest::path_06_resources_mdtest_directory_file_md stdout ----
+
+directory/file.md - Some Test
+
+/src/test.py
+    line 9: unmatched assertion: error: [some-code] "line 8 -- some error"
+    line 9: unexpected error: 1 [some-code] "line 9 - some error"
+```
+
+Oops, we asserted a red-knot diagnostic including the text "line 8" but we actually got one including the text "line 9". And mdtest helpfully tells us this problem occurs on line 9 of the embedded `/src/test.py` in the test "Some Test" in `directory/file.md`.
+
+So to debug this, we have to open `directory/file.md`, search for "Some Test", find the embedded file `/src/test.py`, and then count nine lines down from the start of the code block. (If you have lots of lines with very similar revealed-type assertions on every line, which is the situation we were in earlier today, this kind of counting is the _only_ way to find the right line, and sometimes you have to count 20+ lines, or do some quick mental addition and hope you don't have an off-by-one error depending whether line 1 is the line with the backticks-fence or the line after that...)
+
+The proposed change here is that mdtest would instead output something like this:
+
+```
+failures:
+
+---- mdtest::path_06_resources_mdtest_directory_file_md stdout ----
+
+directory/file.md - Some Test
+
+line 36: unmatched assertion: error: [some-code] "line 8 -- some error"
+line 36: unexpected error: 1 [some-code] "line 9 - some error"
+```
+
+Line numbers in red-knot diagnostics are untouched; you still see that from the perspective of the embedded file that red-knot sees, the discrepancy in red-knot diagnostic is line 8 vs 9. But now you also can find the problematic assertion in your test by going directly to line 36 of `directory/file.md` in your editor.
+
+Given my experience working with mdtest today, I think this change (or something providing equivalent information) is a requirement for usability of mdtest. I don't know which editors show line numbers inside markdown code blocks; I don't think I've used one, and I don't think that's a reasonable editor requirement to make mdtest usable.
+
+---
+
+_Comment by @MichaReiser on 2024-10-17 21:06_
+
+That makes sense. Thanks for explaining and sorry for the confusion on my side.
+
+We may want to use a format that many editors recognize in the shell. E.g path/test.md:line Error so that you can directly jump to the relevant line
+
+---
+
+_Comment by @carljm on 2024-10-17 21:09_
+
+> We may want to use a format that many editors recognize in the shell. E.g path/test.md:line Error so that you can directly jump to the relevant line
+
+Yes, good idea!
+
+---
+
+_Referenced in [astral-sh/ruff#13804](../../astral-sh/ruff/pulls/13804.md) on 2024-10-18 05:02_
+
+---
+
+_Closed by @MichaReiser on 2024-10-22 07:42_
+
+---

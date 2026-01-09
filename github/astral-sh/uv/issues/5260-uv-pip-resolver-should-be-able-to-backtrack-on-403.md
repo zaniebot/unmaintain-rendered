@@ -1,0 +1,192 @@
+---
+number: 5260
+title: "`uv pip` resolver should be able to backtrack on 403"
+type: issue
+state: open
+author: paveldikov
+labels:
+  - needs-decision
+assignees: []
+created_at: 2024-07-21T16:29:25Z
+updated_at: 2025-03-18T01:09:54Z
+url: https://github.com/astral-sh/uv/issues/5260
+synced_at: 2026-01-07T13:12:17-06:00
+---
+
+# `uv pip` resolver should be able to backtrack on 403
+
+---
+
+_Issue opened by @paveldikov on 2024-07-21 16:29_
+
+Many organisations employ in-band scanner tools on their internal PyPI mirrors, with the aim of preventing the ingress of compromised/non-compliant dependencies. Usually such tools will make their blocking decisions known by way of a HTTP 403 response code at download time.
+
+One of the key pain-points with this approach is that, as new versions of packages come out, they will almost inevitably 403-upon-first-download, as they are yet to be scanned and cleared.
+
+Currently the resolver completely gives up when encountering a 403 code, perhaps on the assumption that this is the usual 'permission denied' meaning, as opposed to a more granular 'not this one, please' meaning. This behaviour is not unique to `uv`; `pip` also does this, but `uv` probably hits this worse than `pip` thanks to supporting universal resolution etc. Regardless, it is a pretty substantial negative impact to developer experience.
+
+I think there should be a resolver option to allow backtracking when 403 codes are encountered, so that older (but scanned + cleared) versions will be considered.
+
+---
+
+_Comment by @charliermarsh on 2024-07-21 16:44_
+
+I believe we do continue and backtrack on 403: https://github.com/astral-sh/uv/blob/12518a01a4a436ba4c8b8cfc51646a253bcc8c6c/crates/uv-client/src/registry_client.rs#L221. Or are you referring to a 403 on the _archive_ download, and not the simple HTTP responses?
+
+---
+
+_Comment by @paveldikov on 2024-07-21 16:55_
+
+Yes, 403 on the wheel/sdist download.
+
+---
+
+_Label `needs-decision` added by @charliermarsh on 2024-07-21 17:16_
+
+---
+
+_Comment by @notatallshaw on 2024-07-22 19:43_
+
+Btw, has this request ever been reported to pip? I had a search through the issue tracker and the only issues related to 403 were all SSL issues, which it makes sense not to retry on.
+
+And do you know the mirror software your organization is using? Back when I used to use artifactory the error I got for this sort of situation was a timeout, usually for large wheels as the mirror was still downloading the wheel and wouldn't start providing data to the client until it had finished.
+
+It may be worth making a request to the mirror software to provide a 502, 503, or 504 error rather than a 403 error, as they are general considered retryable, where as, in general, 403 is not usually considered retryable.
+
+In fact, on a 403 response, the spec explicitly says if credentials were provided that the client SHOULD NOT automatically repeat the request with the same credentials.
+
+---
+
+_Comment by @zanieb on 2024-07-22 20:01_
+
+I think the request is is not to retry the request but to try another package version. I think if don't get a 403 when listing packages, it's reasonable for us to try another version after a 403 for a specific archive.
+
+---
+
+_Comment by @notatallshaw on 2024-07-22 20:10_
+
+ah, that makes sense, I guess I hadn't fully groked the scenario.
+
+---
+
+_Comment by @paveldikov on 2024-07-22 21:40_
+
+That's exactly it. 403 on archive download should definitely not be re-tried, but it _may_ make sense to move along the next archive on the list.
+
+---
+
+_Comment by @charliermarsh on 2024-07-22 23:57_
+
+Are you expecting that it would try all distributions within a version? Or that it would move on to the next version if the archive returned a 403?
+
+---
+
+_Comment by @paveldikov on 2024-07-23 07:58_
+
+Interesting one. I was thinking 'next version', but this is primarily because of my specific circumstances. Not sure if they are safe to make for the general case:
+* since the policy engine in this case is a scanner, it would _likely_ make the same decision for other distributions of the same version
+* rather not waste time downloading incompatible distributions (not sure if the compatibility decision can be made without incurring the cost of a download?)
+* avoid consuming sdists to the extent possible (this is probably specific to my org, though, and probably belongs in a separate config item)
+
+---
+
+_Comment by @charliermarsh on 2024-07-28 00:33_
+
+FWIW, "next version" would be fairly easy but "next distribution" would be challenging (purely based on implementation details).
+
+---
+
+_Comment by @paveldikov on 2024-07-29 07:55_
+
+Yes, I think 'next version' should do it, _even_ if it is a somewhat presumptious heuristic. Whilst it is still possible for it to yield false negatives, it is still fewer false negatives than the current approach.
+
+On a pragmatic level: assuming that the 'first' distribution to be attempted is the most optimal one (closest platform/ABI tag match), then it's really 'best wheel or bust' as far as most users are concerned. The value to be gained from attempting a sub-optimal distribution (even sdist) is _probably_ diminishing returns.
+
+And if it doesn't go far enough (which I doubt, but is a possibility) we could track this as a separate issue?
+
+---
+
+_Comment by @kirici on 2024-08-29 08:28_
+
+Just to give an example for the question by notatallshaw
+> And do you know the mirror software your organization is using?
+
+I've run into it with Sonatype Nexus in combination with Repository Firewall. The symptoms are just as paveldikov reported - the packages are visible and exist, but access is blocked when it comes to pulling the wheels
+
+> build logs may only show a 403 error message for quarantined components 
+
+https://help.sonatype.com/en/firewall-quarantine.html#firewall-quarantine
+
+---
+
+_Referenced in [astral-sh/uv#6970](../../astral-sh/uv/issues/6970.md) on 2024-10-04 08:07_
+
+---
+
+_Referenced in [astral-sh/uv#8201](../../astral-sh/uv/issues/8201.md) on 2024-10-15 10:12_
+
+---
+
+_Referenced in [astral-sh/uv#9508](../../astral-sh/uv/issues/9508.md) on 2024-11-28 18:52_
+
+---
+
+_Referenced in [astral-sh/uv#11463](../../astral-sh/uv/issues/11463.md) on 2025-02-12 23:22_
+
+---
+
+_Comment by @charliermarsh on 2025-02-16 01:42_
+
+@paveldikov -- I want to help you with this, since I get the sense it's causing a lot of trouble. In your index, is this happening when we go to fetch the metadata for the distribution?
+
+
+---
+
+_Comment by @charliermarsh on 2025-02-16 01:44_
+
+When we resolve, we have to get the metadata from the wheel. If the registry includes `.whl.metadata` files, we use those; otherwise, we try to use range requests, and if those too aren't supported, we download the wheel. I assume this is happening when we try to do one of those three things. Do you know which?
+
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2025-02-16 01:44_
+
+---
+
+_Comment by @paveldikov on 2025-02-17 15:24_
+
+I ran with debug just now and it appears that it's fetching the whole wheel.
+
+I see a warning message about 'range requests not supported for ...; streaming wheel'
+
+The registry doesn't appear to include `.whl.metadata` files. (The log doesn't have anything particularly telling on that part, so I can't tell more about its reasoning)
+
+---
+
+_Comment by @charliermarsh on 2025-02-17 15:24_
+
+Okay great, thanks. That should be enough information for me to go on. Are you able to help test if I put up a PR?
+
+---
+
+_Comment by @paveldikov on 2025-02-17 15:26_
+
+Would have a hard time retrieving an arbitrary binary. Is a PyPI pre-release feasible?
+
+---
+
+_Comment by @charliermarsh on 2025-02-17 15:37_
+
+Hmm, unfortunately that's not a common practice for us so it would take some work. Maybe I can just ship it and we test against the released binary.
+
+---
+
+_Referenced in [astral-sh/uv#12255](../../astral-sh/uv/pulls/12255.md) on 2025-03-18 01:09_
+
+---
+
+_Comment by @charliermarsh on 2025-03-18 01:09_
+
+Okay, I have something up here: https://github.com/astral-sh/uv/pull/12255
+
+---

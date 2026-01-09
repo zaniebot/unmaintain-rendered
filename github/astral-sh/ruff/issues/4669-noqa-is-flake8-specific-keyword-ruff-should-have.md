@@ -1,0 +1,56 @@
+---
+number: 4669
+title: "`noqa` is flake8 specific keyword, ruff should have its own"
+type: issue
+state: open
+author: copdips
+labels:
+  - suppression
+assignees: []
+created_at: 2023-05-26T12:57:30Z
+updated_at: 2023-05-28T19:23:13Z
+url: https://github.com/astral-sh/ruff/issues/4669
+synced_at: 2026-01-07T13:12:14-06:00
+---
+
+# `noqa` is flake8 specific keyword, ruff should have its own
+
+---
+
+_Issue opened by @copdips on 2023-05-26 12:57_
+
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+if I accedently have flake8 enabled, sometimes it's enable dby the IDE itself globally, or a collegue opens the code base from his IDE, as ruff noqa has its own error code (for e.g. `AGR001` here) that flake8 is not aware. We can see some unexpected IDE warning:
+
+![image](https://github.com/charliermarsh/ruff/assets/13083856/b6b13afa-9ae3-4573-9446-9518c5ab2feb)
+
+Is it possible to create new ruff specific `noqa` keyword ? maybe `noruff` ?
+
+---
+
+_Comment by @charliermarsh on 2023-05-26 18:43_
+
+We're probably going to redo suppression comments more holistically, so I'd like to hold off on making any incremental changes in the meantime, but I'm going to keep this open since it's a relevant issue for us to resolve with any improved design.
+
+
+---
+
+_Label `noqa` added by @charliermarsh on 2023-05-26 18:43_
+
+---
+
+_Comment by @evanrittenhouse on 2023-05-28 19:23_
+
+Relevant discussion: https://github.com/charliermarsh/ruff/discussions/4051
+
+---

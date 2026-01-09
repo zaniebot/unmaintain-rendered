@@ -1,0 +1,115 @@
+---
+number: 12889
+title: uv run --with environment caching question
+type: issue
+state: closed
+author: tjni
+labels:
+  - bug
+assignees: []
+created_at: 2025-04-15T04:47:28Z
+updated_at: 2025-07-02T19:40:19Z
+url: https://github.com/astral-sh/uv/issues/12889
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# uv run --with environment caching question
+
+---
+
+_Issue opened by @tjni on 2025-04-15 04:47_
+
+### Summary
+
+The following sequence reproduces something I noticed:
+
+```
+mkdir p1
+mkdir p2
+
+cat > p1/pyproject.toml <<EOF
+[project]
+name = "p1"
+version = "0.0.0"
+dependencies = ["aiofiles"]
+EOF
+
+cat > p2/pyproject.toml <<EOF
+[project]
+name = "p2"
+version = "0.0.0"
+dependencies = ["requests"]
+EOF
+
+cat > main.py <<EOF
+import sys
+
+print(f"Python is {sys.executable}")
+EOF
+
+mkdir build
+mkdir build/p1
+mkdir build/p2
+
+pushd p1
+UV_PROJECT_ENVIRONMENT=../build/p1 uv sync
+UV_PROJECT_ENVIRONMENT=../build/p1 uv run --no-sync --with pip ../main.py
+popd
+
+pushd p2
+UV_PROJECT_ENVIRONMENT=../build/p2 uv sync
+UV_PROJECT_ENVIRONMENT=../build/p2 uv run --no-sync --with pip ../main.py
+popd
+```
+
+The script `main.py` prints the current interpreter. Each of the `uv run` statements ends up printing the same interpreter, with the contents of `_uv_ephemeral_overlay.pth` changing in between the statements.
+
+I don't know if this is a bug, but it was surprising to me. When I don't use `--with pip`, the venvs are the separate venvs in `build/p1` and `build/p2`.
+
+My motivating use case is that I am using `UV_PROJECT_ENVIRONMENT` to isolate separate venvs in order to build multiple members of my workspace. When I build them in parallel, the shared ephemeral venvs clobber each other in unpredictable ways. I wonder if maybe I should be approaching this problem in a different way?
+
+### Platform
+
+Darwin 24.3.0 arm64
+
+### Version
+
+uv 0.6.14
+
+### Python version
+
+Python 3.13.0
+
+---
+
+_Label `bug` added by @tjni on 2025-04-15 04:47_
+
+---
+
+_Comment by @zanieb on 2025-05-18 21:48_
+
+I agree this sort of sounds like a bug in our model for environment caching in concurrent contexts.
+
+cc @charliermarsh (you may find it interesting)
+
+---
+
+_Referenced in [astral-sh/uv#13598](../../astral-sh/uv/pulls/13598.md) on 2025-05-22 18:20_
+
+---
+
+_Assigned to @oconnor663 by @oconnor663 on 2025-06-25 19:24_
+
+---
+
+_Referenced in [astral-sh/uv#14403](../../astral-sh/uv/pulls/14403.md) on 2025-07-01 19:59_
+
+---
+
+_Closed by @zanieb on 2025-07-02 19:40_
+
+---
+
+_Referenced in [astral-sh/uv#14447](../../astral-sh/uv/pulls/14447.md) on 2025-07-03 20:17_
+
+---

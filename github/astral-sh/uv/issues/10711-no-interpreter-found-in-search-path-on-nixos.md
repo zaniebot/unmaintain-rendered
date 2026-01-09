@@ -1,0 +1,329 @@
+---
+number: 10711
+title: "`No interpreter found in search path` on nixOS"
+type: issue
+state: open
+author: turbotimon
+labels:
+  - needs-mre
+assignees: []
+created_at: 2025-01-17T14:28:01Z
+updated_at: 2025-06-17T14:10:22Z
+url: https://github.com/astral-sh/uv/issues/10711
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# `No interpreter found in search path` on nixOS
+
+---
+
+_Issue opened by @turbotimon on 2025-01-17 14:28_
+
+### Problem
+
+It is unclear to me, why `uv venv` does not find Python 3.12 in the system path. [Discover of Python version](https://docs.astral.sh/uv/concepts/python-versions/#discovery-of-python-versions) claims its will look in PATH. And `uv python find` does find it.
+
+```sh
+$ uv venv
+  × No interpreter found in search path
+```
+
+### But it should work..
+
+Here is what other commands find:
+
+```sh
+$ python --version
+Python 3.12.7
+
+$ which python
+/etc/profiles/per-user/erti/bin/python
+# context: it's a symlink to /nix/store/542jax1lz8sfq1gqk2wrdskr334sswnx-python3-3.12.7-env/bin/python3.12
+
+$ echo $PATH
+...:/etc/profiles/per-user/erti/bin:...
+
+$ uv python find
+/nix/store/542jax1lz8sfq1gqk2wrdskr334sswnx-python3-3.12.7-env/bin/python3.12
+```
+(yes, i'm using nixOS)
+
+### Context
+
+My config is
+
+```sh
+$ cat ~/.config/uv/uv.toml
+python-preference = "only-system"
+python-downloads = "manual"
+```
+
+uv version is: 0.5.18
+
+### Workaround
+
+This works however
+
+```sh
+uv venv --python $(which python)
+```
+
+
+---
+
+_Renamed from "Question/BUG? `No interpreter found for Python 3.12 in system path`" to "Question/BUG? `No interpreter found in search path`" by @turbotimon on 2025-01-17 14:36_
+
+---
+
+_Renamed from "Question/BUG? `No interpreter found in search path`" to "BUG? `No interpreter found in search path`" by @turbotimon on 2025-01-17 14:43_
+
+---
+
+_Comment by @charliermarsh on 2025-01-17 15:18_
+
+Can you include the logs with `--verbose`?
+
+---
+
+_Label `needs-mre` added by @charliermarsh on 2025-01-17 15:18_
+
+---
+
+_Comment by @turbotimon on 2025-01-20 09:07_
+
+@charliermarsh sure:
+
+```sh
+$ uv --verbose venv
+DEBUG uv 0.5.18
+DEBUG Searching for default Python interpreter in search path
+DEBUG Found `cpython-3.12.8-linux-x86_64-gnu` at `/etc/profiles/per-user/erti/bin/python` (search path)
+DEBUG Ignoring Python interpreter at `/nix/store/qdfm0sbv1fbribr90bakk3nizl32jc4s-python3-3.12.8-env/bin/python3.12`: system interpreter required
+DEBUG Found `cpython-3.12.8-linux-x86_64-gnu` at `/etc/profiles/per-user/erti/bin/python3` (search path)
+DEBUG Ignoring Python interpreter at `/nix/store/qdfm0sbv1fbribr90bakk3nizl32jc4s-python3-3.12.8-env/bin/python3.12`: system interpreter required
+DEBUG Found `cpython-3.12.8-linux-x86_64-gnu` at `/etc/profiles/per-user/erti/bin/python3.12` (search path)
+DEBUG Ignoring Python interpreter at `/nix/store/qdfm0sbv1fbribr90bakk3nizl32jc4s-python3-3.12.8-env/bin/python3.12`: system interpreter required
+  × No interpreter found in search path
+
+$ uv python find --verbose
+DEBUG uv 0.5.18
+DEBUG Searching for default Python interpreter in virtual environments or search path
+DEBUG Found `cpython-3.12.8-linux-x86_64-gnu` at `/etc/profiles/per-user/erti/bin/python` (search path)
+/nix/store/qdfm0sbv1fbribr90bakk3nizl32jc4s-python3-3.12.8-env/bin/python3.12
+```
+
+Why does it not count as a system interpreter? With the `python-preference` setting, I can only distinguish between **system** and **managed** (but not something like **search path**). Managed won't work on nixOS, so it needs to be the interpreter found in PATH.
+
+---
+
+_Comment by @jneem on 2025-03-13 13:21_
+
+I'm having this same issue with uv 0.6.5. Reverting to 0.4.30 has fixed it for me; I haven't yet tried pinning down which version caused the issue.
+
+---
+
+_Comment by @GrafBlutwurst on 2025-03-13 14:21_
+
+> I'm having this same issue with uv 0.6.5. Reverting to 0.4.30 has fixed it for me; I haven't yet tried pinning down which version caused the issue.
+
+I pinned uv to 0.5.31 found in nixpkgs rev `1128e89fd5e11bb25aedbfc287733c6502202ea9` which solved this issue for me as well.  Some commands like `uv venv` require me to specify python explicitly with `uv venv --python $(which python)` because otherwise it wont pick up my nix python installs on PATH.
+
+```
+DEBUG uv 0.5.31
+DEBUG Found project root: `/home/grafblutwurst/projects/rivero/workbench/artificial_intelligence/cloned/lingvo`
+DEBUG Found workspace root: `/home/grafblutwurst/projects/rivero/workbench/artificial_intelligence/cloned/lingvo`
+DEBUG Adding current workspace member: `/home/grafblutwurst/projects/rivero/workbench/artificial_intelligence/cloned/lingvo`
+DEBUG Adding discovered workspace member: `/home/grafblutwurst/projects/rivero/workbench/artificial_intelligence/cloned/lingvo/packages/lingvo-core`
+DEBUG Adding discovered workspace member: `/home/grafblutwurst/projects/rivero/workbench/artificial_intelligence/cloned/lingvo/packages/lingvo-document`
+DEBUG Adding discovered workspace member: `/home/grafblutwurst/projects/rivero/workbench/artificial_intelligence/cloned/lingvo/packages/lingvo-models`
+DEBUG Using Python request `>=3.11, <4.0` from `requires-python` metadata
+DEBUG Searching for Python >=3.11, <4.0 in search path
+DEBUG Found `cpython-3.12.8-linux-x86_64-gnu` at `/nix/store/8abfng9bp44yw359xw29dmv70hffyb63-python3-3.12.8-env/bin/python3` (first executable in the search path)
+DEBUG Ignoring Python interpreter at `/nix/store/8abfng9bp44yw359xw29dmv70hffyb63-python3-3.12.8-env/bin/python3.12`: system interpreter required
+DEBUG Found `cpython-3.12.8-linux-x86_64-gnu` at `/nix/store/8abfng9bp44yw359xw29dmv70hffyb63-python3-3.12.8-env/bin/python` (search path)
+DEBUG Ignoring Python interpreter at `/nix/store/8abfng9bp44yw359xw29dmv70hffyb63-python3-3.12.8-env/bin/python3.12`: system interpreter required
+DEBUG Found `cpython-3.12.8-linux-x86_64-gnu` at `/nix/store/8abfng9bp44yw359xw29dmv70hffyb63-python3-3.12.8-env/bin/python3.12` (search path)
+DEBUG Ignoring Python interpreter at `/nix/store/8abfng9bp44yw359xw29dmv70hffyb63-python3-3.12.8-env/bin/python3.12`: system interpreter required
+  × No interpreter found for Python >=3.11, <4.0 in search path
+```
+
+(I have set uv to require only-system python installs). I suspect uv only accepts certain path patterns as "system" install locations? but I haven't figured out which ones yet
+
+Other commands like `uv run ruff` fail outright due to dynamic linking. That's not an issue if just added ruff directly in my nix dev environment and that seems to do the trick. 
+
+---
+
+_Comment by @zanieb on 2025-03-13 14:36_
+
+There's relevant discussion in
+
+- https://github.com/astral-sh/uv/issues/11529
+- https://github.com/astral-sh/uv/issues/4450
+
+---
+
+_Renamed from "BUG? `No interpreter found in search path`" to "`No interpreter found in search path` on nixOS" by @zanieb on 2025-03-13 14:36_
+
+---
+
+_Comment by @turbotimon on 2025-03-13 17:07_
+
+So, the solution for nixos appears to set `export UV_PYTHON=$(which python)` (or better in your `shell.nix`) 
+
+But then, the uv docs are wrong, isn't it? @zanieb  So even not a BUG in the code, still a BUG in the docs?
+
+> When searching for a Python version, the following locations are checked: 
+    - A Python interpreter on the PATH as python, python3, or python3.x on macOS and Linux, or python.exe on Windows.
+
+---
+
+_Comment by @zanieb on 2025-03-16 01:32_
+
+We don't allow creating a virtual environment from an interpreter discovered in a virtual environment. This is bypassed by setting `UV_PYTHON` directly. This detail is not relevant for most consumers, and is documented in the [CLI reference](https://docs.astral.sh/uv/reference/cli/#uv-venv--python) (i.e., `uv help venv`). We could highlight it elsewhere with a note about Nix. I'm not sure what the ideal solution is yet though.
+
+---
+
+_Referenced in [astral-sh/uv#1495](../../astral-sh/uv/issues/1495.md) on 2025-03-16 02:29_
+
+---
+
+_Comment by @jneem on 2025-03-16 08:47_
+
+Personally, I don't think there needs to be a Nix-specific note: I'm fine with looking in Nix-specific spaces for Nix-specific documentation. I think the part that tripped me up was that the documentation isn't clear on what a "system" python is. In particular, the help text for `--python-preference` flag suggests that python installations can either be "uv-managed" or "system". Since `/nix/store/wz0j2zi02rvnjiz37nn28h3gfdq61svz-python3-3.12.9` definitely isn't uv-managed, I was expecting it to count as a "system" python.
+
+I'm not sure what the best way to address this is. It's probably not worth going into lots of detail about how `--python-preference` is implemented. Maybe it's better to discuss the interaction between `--python` and `--python-preference` instead?
+
+I just went back to `uv help init` and I think one contributing factor was that the `--python` docs were very specific about what that python was used for: "The Python interpreter to use to determine the minimum supported Python version." but the `--python-preference` docs were more vague: "Whether to prefer uv-managed or system Python installations." I probably skipped over `--python` in favor of `--python-preference` because configuring the interpreter "in general" for my project sounded better than just specifying the minimum supported python version.
+
+---
+
+_Comment by @zanieb on 2025-03-16 14:24_
+
+Yeah it's an open problem to change the "managed" vs "system" language to avoid conflation with the "virtual" vs "system" concept. I think we just need to change some names, but it's lower priority (than some other workflow problems) as it's a more advanced use-case.
+
+Just to be clear here:
+
+The `--python-preference` determines which interpreter installation sources are allowed. `managed` is a uv-installed interpreter. `system` is any other discovered interpreter on the system.'
+
+https://github.com/astral-sh/uv/blob/ef38ffbbfa43d3ba374621711c8f06045d5f2c38/crates/uv-python/src/discovery.rs#L73-L88
+
+Separately, when discovering interpreters, uv separates Python interpreters found in a complete installation environment from those found in virtual environments. Interpreters in virtual environments are links to a complete environment and have some differences in behavior. Internally, we track this as an "environment preference":
+
+https://github.com/astral-sh/uv/blob/ef38ffbbfa43d3ba374621711c8f06045d5f2c38/crates/uv-python/src/discovery.rs#L129-L139
+
+which you see in that log
+
+https://github.com/astral-sh/uv/blob/ef38ffbbfa43d3ba374621711c8f06045d5f2c38/crates/uv-python/src/discovery.rs#L712-L718
+
+The names here match the `--system` flag of a `pip install` operation which ignores virtual environments.
+
+Hopefully that helps, obviously the names could be clearer.
+
+
+
+---
+
+_Comment by @turbotimon on 2025-03-17 11:00_
+
+Completely agree with this sentence from *jneem* and the rest of his comment:
+
+> Personally, I don't think there needs to be a Nix-specific note: I'm fine with looking in Nix-specific spaces for Nix-specific documentation. I think the part that tripped me up was that the documentation isn't clear on what a "system" python is.
+
+And this sentence from *zanieb* explains it quite well and way just what I missed in the docs:
+
+> ... uv separates Python interpreters found in a complete installation environment from those found in virtual environments. Interpreters in virtual environments are links to a complete environment ..
+
+In my opinion, the solution is to add a note similar to my proposal below to the [docs](https://docs.astral.sh/uv/concepts/python-versions/#discovery-of-python-versions) and cli help texts. (At least it would have prevented me from creating this issue and hopefully does so for other users too):
+
+```Note: uv only considers Python interpreters found in a complete installation environment as system interpreters. Links to complete environments, such as those found in virtual environments are ignored.  This can be bypassed by setting `UV_PYTHON` directly.``
+
+
+---
+
+_Referenced in [astral-sh/uv#7395](../../astral-sh/uv/issues/7395.md) on 2025-03-25 16:03_
+
+---
+
+_Comment by @MarSoft on 2025-03-25 16:41_
+
+@turbotimon, just exporting `UV_PYTHON` doesn't work as expected because it overrides the Python used even if a virtualenv is active. So this would make it impossible to use e.g. `uv pip install`.
+Here is an example:
+```
+[/tmp/env1]$ UV_PYTHON=/nix/store/lhpwdis5hkyljz1d200bj1s6g51ljq9k-python3-3.12.8/bin/python uv venv
+Using CPython 3.12.8 interpreter at: /nix/store/lhpwdis5hkyljz1d200bj1s6g51ljq9k-python3-3.12.8/bin/python
+Creating virtual environment at: .venv
+Activate with: source .venv/bin/activate
+[/tmp/env1]$ source .venv/bin/activate
+(env1) [/tmp/env1]$ UV_PYTHON=/nix/store/lhpwdis5hkyljz1d200bj1s6g51ljq9k-python3-3.12.8/bin/python uv pip install pip
+Using Python 3.12.8 environment at /nix/store/lhpwdis5hkyljz1d200bj1s6g51ljq9k-python3-3.12.8
+error: The interpreter at /nix/store/lhpwdis5hkyljz1d200bj1s6g51ljq9k-python3-3.12.8 is externally managed, and indicates the following:
+
+  This command has been disabled as it tries to modify the immutable
+  `/nix/store` filesystem.
+
+  To use Python with Nix and nixpkgs, have a look at the online documentation:
+  <https://nixos.org/manual/nixpkgs/stable/
+
+Consider creating a virtual environment with `uv venv`.
+(env1) [/tmp/env1]$ which python
+/tmp/env1/.venv/bin/python
+(env1) [/tmp/env1]$ uv pip install pip
+Resolved 1 package in 182ms
+Installed 1 package in 13ms
+ + pip==25.0.1
+(env1) [/tmp/env1]$ 
+```
+
+I found another solution which worked for me: I've added the desired "clean" python to the end of my $PATH (using `.bashrc`):
+```
+export UV_PYTHON_PREFERENCE=only-system 
+export PATH="$PATH:$(python -c 'import sys; print(sys.base_prefix)')/bin"
+```
+As a result, `uv` ignores the "env" Python variant from `/run/current_system/sw/bin` and correctly finds the "clean" one.
+Python's native `venv` does not have this problem because it uses `sys._base_executable` to find out the real Python, while `nixos` uses its own venv "flavour" with a wrapper binary (not a symlink).
+
+---
+
+_Comment by @iwinux on 2025-06-17 06:14_
+
+More issues with `uv python pin --global /path/to/nix/store`:
+
+`uv python find`: OK
+
+```sh
+$ uv python find --verbose
+DEBUG uv 0.7.13
+DEBUG Found project root: `/home/limbo/Source/Self/uv-test`
+DEBUG No workspace root found, using project root
+DEBUG No Python version file found in workspace: /home/limbo/Source/Self/uv-test
+DEBUG Reading Python requests from version file at `/home/limbo/.config/uv/.python-version`
+DEBUG Using Python request `/nix/store/qrc496n6fsqp4p5m5h8wmw5d5jwyw5mr-python3-3.12.8/bin/python3` from version file at `/home/limbo/.config/uv/.python-version`
+DEBUG Checking for Python interpreter at path `/nix/store/qrc496n6fsqp4p5m5h8wmw5d5jwyw5mr-python3-3.12.8/bin/python3`
+/nix/store/qrc496n6fsqp4p5m5h8wmw5d5jwyw5mr-python3-3.12.8/bin/python3
+```
+
+However, `uv tool run` or `uvx` cannot find it. Why doesn't it read `~/.config/uv/.python-version`?
+
+```sh
+$ uvx --verbose httpie
+DEBUG uv 0.7.13
+DEBUG Searching for default Python interpreter in managed installations or search path
+DEBUG Searching for managed installations at `/home/limbo/.local/share/uv/python`
+error: No interpreter found in managed installations or search path
+```
+
+Ideally there should be a way to tell uv where to find the Nix-managed Python 3 without exposing `python3` to `PATH`. 
+
+Related issues:
+- https://github.com/astral-sh/uv/issues/13577
+- https://github.com/astral-sh/uv/issues/12921
+
+---
+
+_Comment by @zanieb on 2025-06-17 14:10_
+
+> However, uv tool run or uvx cannot find it. Why doesn't it read
+
+I think that's just a bug / oversight.
+
+---

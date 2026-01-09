@@ -1,0 +1,52 @@
+---
+number: 2695
+title: "Feature request: isort.force-to-top"
+type: issue
+state: closed
+author: henryiii
+labels:
+  - isort
+assignees: []
+created_at: 2023-02-09T20:59:36Z
+updated_at: 2023-02-16T18:47:07Z
+url: https://github.com/astral-sh/ruff/issues/2695
+synced_at: 2026-01-07T13:12:14-06:00
+---
+
+# Feature request: isort.force-to-top
+
+---
+
+_Issue opened by @henryiii on 2023-02-09 20:59_
+
+I couldn't see it listed elsewhere, so I'd like to point out `[tool.isort] force_to_top = ["setuptools"]`. It's useful for putting an import that must be imported before other imports (setuptools should be imported before distutils), or maybe for sticking pytest at the top.
+
+---
+
+_Label `isort` added by @charliermarsh on 2023-02-09 21:13_
+
+---
+
+_Referenced in [scikit-build/scikit-build#858](../../scikit-build/scikit-build/pulls/858.md) on 2023-02-10 03:12_
+
+---
+
+_Referenced in [astral-sh/ruff#2877](../../astral-sh/ruff/pulls/2877.md) on 2023-02-14 00:55_
+
+---
+
+_Comment by @charliermarsh on 2023-02-16 18:45_
+
+Closed by #2877.
+
+---
+
+_Closed by @charliermarsh on 2023-02-16 18:45_
+
+---
+
+_Comment by @charliermarsh on 2023-02-16 18:47_
+
+(Which will merge shortly.)
+
+---

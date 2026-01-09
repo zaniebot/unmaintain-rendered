@@ -1,0 +1,239 @@
+---
+number: 9420
+title: "Tensorflow doesn't have a source distribution or wheel for the current platform"
+type: issue
+state: closed
+author: younver
+labels:
+  - bug
+  - question
+assignees: []
+created_at: 2024-11-25T15:05:16Z
+updated_at: 2025-10-19T14:21:44Z
+url: https://github.com/astral-sh/uv/issues/9420
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# Tensorflow doesn't have a source distribution or wheel for the current platform
+
+---
+
+_Issue opened by @younver on 2024-11-25 15:05_
+
+Salute, I've been trying to solve this issue for a while, but couldn't manage to resolve it even after digging through my project like a minefield. I'd really appreciate any help!
+
+```
+$ uv sync
+error: distribution tensorflow==2.8.1 @ registry+https://pypi.org/simple can't be installed because it doesn't have a source distribution or wheel for the current platform
+```
+
+current pyproject.toml:
+```toml
+[project]
+name = "my-project"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = "<3.11,>=3.10"
+dependencies = [
+    "fastapi==0.115.5",
+    "uvicorn==0.32.1",
+    "pydub==0.25.1",
+    "soundfile==0.12.1",
+    "torch==2.5.1",
+    "speechbrain==1.0.2",
+    "soxr<0.5.0,>=0.3.0",
+    "pydantic-settings==2.6.1",
+    "google-cloud-bigquery==3.27.0",
+    "google-cloud-storage==2.18.2",
+    "onnxruntime==1.20.1",
+    "spleeter==2.4.0",
+]
+```
+
+current uv platform: Apple MacBook M1 Sonoma 14.6.1
+current uv version: uv 0.4.17 (Homebrew 2024-09-27)
+
+
+---
+
+_Comment by @charliermarsh on 2024-11-25 15:08_
+
+Have you read the PyTorch documentation? https://docs.astral.sh/uv/guides/integration/pytorch/
+
+---
+
+_Label `question` added by @charliermarsh on 2024-11-25 18:42_
+
+---
+
+_Comment by @charliermarsh on 2024-12-26 16:56_
+
+This has been fixed on `main`.
+
+---
+
+_Closed by @charliermarsh on 2024-12-26 16:56_
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2024-12-26 16:57_
+
+---
+
+_Label `bug` added by @charliermarsh on 2024-12-26 16:57_
+
+---
+
+_Comment by @pventura-mam on 2025-01-15 15:57_
+
+Hi. I am still having issues with this:
+
+`$ uv add skfolio
+
+error: _Distribution tensorflow-io-gcs-filesystem==0.37.1 @ registry+https://pypi.org/simple_ can't be installed because it doesn't have a source distribution or wheel for the current platform`
+
+`$ uv version
+uv 0.5.18 (27d1bad55 2025-01-11)`
+
+This is the project file:
+
+`
+project]
+name = "poc-optimizaciones"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "cvxpy[gurobi,xpress]==1.6.0",
+    "cx-oracle==8.3.0",
+    "ipykernel==6.29.5",
+    "matplotlib==3.10.0",
+    "missingno==0.5.2",
+    "nbformat==5.10.4",
+    "numpy==1.26.4",
+    "pandas==2.2.3",
+    "plotly==5.24.1",
+    "pydantic==2.10.5",
+    "refinitiv-data==1.6.2",
+    "scikit-learn==1.6.1",
+    "seaborn==0.13.2",
+    "sqlalchemy==2.0.37",
+    "statsmodels==0.14.4",
+    "tensorflow==2.10.1",
+    "tensorflow-addons==0.22.0",
+    "tensorflow-probability===0.18.0",
+    "tqdm==4.67.1",
+    "yfinance==0.2.40",
+]
+`
+
+---
+
+_Comment by @charliermarsh on 2025-01-15 16:40_
+
+@pventura-mam -- Does using `--python 3.12` work?
+
+---
+
+_Comment by @pventura-mam on 2025-01-15 17:01_
+
+`uv venv --python 3.12
+Using CPython 3.12.8
+Creating virtual environment at: .venv
+Activate with: .venv\Scripts\activate`
+
+`uv sync
+  x No solution found when resolving dependencies:
+  `-> Because tensorflow==2.10.1 has no wheels with a matching Python version tag and your project depends on
+      tensorflow==2.10.1, we can conclude that your project's requirements are unsatisfiable.`
+
+This seems to be a totally different thing, so maybe, just for this case, I should use `uv pip -r requirements.txt` that works just fine.
+
+What do you think?
+
+
+---
+
+_Comment by @noopurphalak on 2025-08-27 04:56_
+
+> Have you read the PyTorch documentation? https://docs.astral.sh/uv/guides/integration/pytorch/
+
+I followed the steps to install `torch` on my Mac M1. But I am still getting issues. Following is the `pyproject.toml` for your reference:
+
+```toml
+
+[project]
+name = "book-recommender-ai"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "django>=5.2.5",
+    "djangorestframework>=3.16.1",
+    "hf-xet>=1.1.8",
+    "ipykernel>=6.30.1",
+    "ipython>=9.4.0",
+    "langchain-chroma>=0.2.5",
+    "langchain-community>=0.3.28",
+    "langchain-core>=0.3.75",
+    "langchain-huggingface>=0.3.1",
+    "langchain-openai>=0.3.32",
+    "matplotlib>=3.10.5",
+    "numpy==2.1.0",
+    "pandas>=2.3.2",
+    "seaborn>=0.13.2",
+    "torch>=2.7.0",
+    "tqdm>=4.67.1",
+    "transformers>=4.55.4",
+]
+
+[tool.uv.sources]
+torch = [
+  { index = "pytorch-cpu", marker = "sys_platform != 'linux'" },
+  { index = "pytorch-cu128", marker = "sys_platform == 'linux'" },
+]
+torchvision = [
+  { index = "pytorch-cpu", marker = "sys_platform != 'linux'" },
+  { index = "pytorch-cu128", marker = "sys_platform == 'linux'" },
+]
+
+[[tool.uv.index]]
+name = "pytorch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
+explicit = true
+
+[[tool.uv.index]]
+name = "pytorch-cu128"
+url = "https://download.pytorch.org/whl/cu128"
+explicit = true
+
+```
+
+Then when I do `uv sync`, I get the following error:
+
+```sh
+
+Resolved 172 packages in 1.74s
+error: Distribution `torch==2.8.0+cpu @ registry+https://download.pytorch.org/whl/cpu` can't be installed because it doesn't have a source distribution or wheel for the current platform
+
+hint: You're on macOS (`macosx_15_0_x86_64`), but `torch` (v2.8.0+cpu) only has wheels for the following platforms: `win_amd64`, `win_arm64`; consider adding your platform to `tool.uv.required-environments` to ensure uv resolves to a version with compatible wheels
+```
+
+P.S: I am running the terminal with Rosetta enabled to make the terminal run like on a x86_64 environment.
+
+---
+
+_Comment by @juvenn on 2025-10-19 14:21_
+
+Using `pip3 index versions torch` to find out the versions available to your Intel Mac,
+
+```
+torch (2.2.2)
+```
+
+and it looks like 2.2.2 is the last version available to Intel Mac.
+
+---

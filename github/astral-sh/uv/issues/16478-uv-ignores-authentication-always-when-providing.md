@@ -1,0 +1,153 @@
+---
+number: 16478
+title: "uv ignores `authentication = always` when providing PIP_INDEX_URL or PIP_EXTRA_INDEX_URL"
+type: issue
+state: open
+author: schulluk
+labels:
+  - enhancement
+assignees: []
+created_at: 2025-10-28T10:41:42Z
+updated_at: 2025-11-03T12:27:01Z
+url: https://github.com/astral-sh/uv/issues/16478
+synced_at: 2026-01-07T13:12:19-06:00
+---
+
+# uv ignores `authentication = always` when providing PIP_INDEX_URL or PIP_EXTRA_INDEX_URL
+
+---
+
+_Issue opened by @schulluk on 2025-10-28 10:41_
+
+### Summary
+
+We use Google Cloud Artifact Registry to host our Python dependencies in 2 repositories.
+
+We have a `/etc/uv/uv.toml` that specifies the keyring provider and authentication mode:
+```
+keyring-provider = "subprocess"
+
+[[index]]
+name = "repo"
+url = "https://us-python.pkg.dev/${GCP_PROJECT}/${ARTIFACT_REGISTRY_REPOSITORY_A}/simple"
+default = true
+authenticate = "always"
+```
+When we run `uv pip install --verbose -r requirements.txt` everything works.
+
+But when we provide the the second repository as an environment variable or as a command-line flag, the authentication fails with
+```
+$ uv pip install --verbose --index-url=https://us-python.pkg.dev/${GCP_PROJECT}/${ARTIFACT_REGISTRY_REPOSITORY_B}/simple -r requirements.txt
+
+[...]
+DEBUG No cache entry for: https://us-python.pkg.dev/${GCP_PROJECT}/${ARTIFACT_REGISTRY_REPOSITORY_B}/simple/six/
+DEBUG No netrc file found
+DEBUG Acquired lock for `credentials store`
+DEBUG Released lock at `/root/.local/share/uv/credentials/credentials.toml.lock`
+DEBUG No credentials file found at /root/.local/share/uv/credentials/credentials.toml
+DEBUG Skipping keyring fetch for https://us-python.pkg.dev/${GCP_PROJECT}/${ARTIFACT_REGISTRY_REPOSITORY_B}/simple/six/ without username; use `authenticate = always` to force
+```
+
+We also tried to provide the keyring-provider as a command-line flag, but we couldn't find a flag that allows us specifying `authenticate = always` in the command itself.
+
+The following command also fails with the authentication error:
+```
+uv pip install --verbose --keyring-provider subprocess --index-url=https://us-python.pkg.dev/${GCP_PROJECT}/${ARTIFACT_REGISTRY_REPOSITORY_B}/simple -r requirements.txt
+```
+
+As soon as any of `--index-url`, `--extra-index-url`, `PIP_INDEX_URL`, `PIP_EXTRA_INDEX_URL`, `UV_INDEX_URL` and `UV_EXTRA_INDEX_URL` are provided, the authentication will fail.
+
+### Platform
+
+Ubuntu 24.04
+
+### Version
+
+0.9.5
+
+### Python version
+
+Python 3.12.12
+
+---
+
+_Label `bug` added by @schulluk on 2025-10-28 10:41_
+
+---
+
+_Comment by @konstin on 2025-10-28 15:57_
+
+> We also tried to provide the keyring-provider as a command-line flag, but we couldn't find a flag that allows us specifying `authenticate = always` in the command itself.
+
+There's currently no CLI flag for this, to use `authenticate = "always"` for now you need to define the index in a TOML file.
+
+---
+
+_Label `bug` removed by @konstin on 2025-10-28 15:57_
+
+---
+
+_Label `enhancement` added by @konstin on 2025-10-28 15:57_
+
+---
+
+_Comment by @schulluk on 2025-10-30 09:49_
+
+Is it currently possible to use multiple indexes that are defined in a TOML file?
+
+---
+
+_Comment by @charliermarsh on 2025-11-01 20:08_
+
+Yeah you can have multiple indexes defined in the TOML file. You can add another `[[index]]` entry. (That TOML syntax means they're items in a list, so each `[[index]]` defines another index entry.)
+
+---
+
+_Comment by @schulluk on 2025-11-03 12:26_
+
+Thanks for the clarification.
+I knew that I can define multiple indexes, but I didn't know that `uv` will loop through all of the defined indexes automatically to find the package.
+
+Currently, the following setup works:
+```
+# File: /etc/uv/uv.toml
+# The following config uses the system-level syntax.
+# Does also work for the ./pyproject.toml with the correct syntax.
+
+keyring-provider = "subprocess"
+
+[[index]]
+name = "pytorch"
+url = "https://download.pytorch.org/whl/cu129"
+default = true
+
+[[index]]
+name = "repoA"
+url = "https://us-python.pkg.dev/${GCP_PROJECT}/${ARTIFACT_REGISTRY_REPOSITORY_A}/simple"
+authenticate = "always"
+
+[[index]]
+name = "repoB"
+url = "https://us-python.pkg.dev/${GCP_PROJECT}/${ARTIFACT_REGISTRY_REPOSITORY_B}/simple"
+authenticate = "always"
+```
+
+When running `uv pip install torch`, uv will first loop through all defined indexes that haven't set `default = true`. The last used index is the default one, pytorch in the example. If no default one is specified, uv defaults to PYPI servers.
+
+uv uses the order of definition in the TOML file.
+In my example the order of checked indexes is:
+1. repoA
+2. repoB
+3. pytorch
+
+without using `default = true` on index _pytorch_, the order would be:
+1. repoA
+2. repoB
+3. pytorch
+4. pypi API
+
+---
+
+Despite this, it would be nice if the authentication could be specified as a command-line flag or that there is a default setting which can be configured in the TOML files.
+
+---

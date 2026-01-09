@@ -1,0 +1,170 @@
+---
+number: 12772
+title: "F601: Repeated int keys not detected with booleans"
+type: issue
+state: closed
+author: addoolit
+labels:
+  - rule
+  - help wanted
+  - accepted
+assignees: []
+created_at: 2024-08-09T04:46:58Z
+updated_at: 2024-11-03T19:16:35Z
+url: https://github.com/astral-sh/ruff/issues/12772
+synced_at: 2026-01-07T13:12:15-06:00
+---
+
+# F601: Repeated int keys not detected with booleans
+
+---
+
+_Issue opened by @addoolit on 2024-08-09 04:46_
+
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* List of keywords you searched for before creating this issue. Write them down here so that others can find this issue more easily and help provide feedback.
+  e.g. "RUF001", "unused variable", "Jupyter notebook"
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+The multi-value-repeated-key-literal (F601) rule doesn't detect when a key has been duplicated for `True` and `False` boolean when they duplicate a matching int literal. This is also true for the reverse where an int literal duplicates an existing bool key. This was found with ruff `0.5.7` and Python `3.12.2`.
+
+```python
+mydict = {
+    1: "abc",
+    1: "def",
+    True: "ghi",
+    0: "foo",
+    0: "bar",
+    False: "baz",
+}
+```
+
+Ruff detects the int literal repetition, but misses the bool repetition.
+
+```
+> ruff.exe check ruff_repro.py --isolated
+ruff_repro.py:3:5: F601 Dictionary key literal `1` repeated
+  |
+1 | mydict = {
+2 |     1: "abc",
+3 |     1: "def",
+  |     ^ F601
+4 |     True: "ghi",
+5 |     0: "foo",
+  |
+  = help: Remove repeated key literal `1`
+
+ruff_repro.py:6:5: F601 Dictionary key literal `0` repeated
+  |
+4 |     True: "ghi",
+5 |     0: "foo",
+6 |     0: "bar",
+  |     ^ F601
+7 |     False: "baz",
+8 | }
+  |
+  = help: Remove repeated key literal `0`
+
+Found 2 errors.
+```
+
+This state of this dict is ultimately `{1: 'ghi', 0: 'baz'}`. I haven't found a stated guarantee that `True` is *always* `1`, and `False` is *always* `0`, but it appears that they are. The only thing I've seen related is this note in [Boolean type - bool](https://docs.python.org/3/library/stdtypes.html#typebool):
+
+> In many numeric contexts, `False` and `True` behave like the integers 0 and 1, respectively. However, relying on this is discouraged; explicitly convert using [int()](https://docs.python.org/3/library/functions.html#int) instead.
+
+---
+
+_Comment by @dhruvmanila on 2024-08-09 05:27_
+
+I think this makes sense because `bool` is a subtype of `int`. We might want to change this within [`ComparableExpr`](https://github.com/astral-sh/ruff/blob/bc5b9b81dd7ea8a2364898afd0f0a1cf7adeb1d1/crates/ruff_python_ast/src/comparable.rs#L846-L881) such that `True == 1` and `False == 0`. Note that `int` is a subtype of `float` which means that `True == 1.0` and `False == 0.0` is also valid.
+
+I'd be wary of any side effects of this change because a lot of rules utilize the `ComparableExpr`, including the `HashableExpr` type.
+
+---
+
+_Label `rule` added by @dhruvmanila on 2024-08-09 05:28_
+
+---
+
+_Comment by @charliermarsh on 2024-08-09 13:19_
+
+I'm really surprised by this. @AlexWaygood or @carljm is this specified anywhere?
+
+---
+
+_Comment by @AlexWaygood on 2024-08-09 13:25_
+
+Yeah, this is a really common footgun. `1`, `1.0` and `True` compare and hash the same. There's an FAQ about it IIRC.
+
+(I think everybody agrees that it's terrible, but it's because early versions of Python didn't have a `bool` type, so it was implemented as a backwards-compatible subclass of `int`.)
+
+---
+
+_Comment by @AlexWaygood on 2024-08-09 13:31_
+
+Okay maybe not an FAQ, but there's some specification of this here: https://docs.python.org/3/library/stdtypes.html#mapping-types-dict
+
+---
+
+_Comment by @charliermarsh on 2024-08-09 13:31_
+
+Ok thanks!
+
+---
+
+_Label `accepted` added by @charliermarsh on 2024-08-09 13:31_
+
+---
+
+_Label `help wanted` added by @charliermarsh on 2024-08-09 13:31_
+
+---
+
+_Comment by @dylwil3 on 2024-08-11 17:14_
+
+Just to clarify, is the decision that we should include this identification as part of `ComparableExpr` or that we should make a more localized change?
+
+I could imagine both situations where we would want to distinguish between `True` and `1` and situations where we wouldn't. (From a strict type theoretic point of view I would think that these two objects shouldn't even be comparable and one could only ask about whether `bool(1)==True` or `int(True)==1` - but such is Python.)
+
+What about making a custom equivalence method on the `ComparableExpr` struct for this weaker equivalence relation? Like `expr1.iso(expr2)` (where "iso" is short for "isomorphic").
+
+---
+
+_Comment by @MichaReiser on 2024-08-12 06:49_
+
+Yeah, not quiet sure to be honest. Maybe @charliermarsh has a better sense for it. Overall, the idea of `ComparableExpr` is to compare two ASTs. I do believe we also use it in the formatter to detect if we made "unwanted" AST changes. Here it would be unwanted if `True == 1` would be true.
+
+---
+
+_Comment by @charliermarsh on 2024-08-12 12:11_
+
+Yeah, I think it needs to be a more localized change. I don’t think those AST nodes should compare as equal.
+
+---
+
+_Referenced in [astral-sh/ruff#12911](../../astral-sh/ruff/issues/12911.md) on 2024-08-15 21:39_
+
+---
+
+_Referenced in [astral-sh/ruff#14049](../../astral-sh/ruff/issues/14049.md) on 2024-11-01 20:37_
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2024-11-03 18:00_
+
+---
+
+_Referenced in [astral-sh/ruff#14065](../../astral-sh/ruff/pulls/14065.md) on 2024-11-03 18:53_
+
+---
+
+_Closed by @charliermarsh on 2024-11-03 19:16_
+
+---

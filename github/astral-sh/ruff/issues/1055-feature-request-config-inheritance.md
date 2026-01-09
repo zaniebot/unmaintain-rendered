@@ -1,0 +1,108 @@
+---
+number: 1055
+title: "[feature-request] Config inheritance"
+type: issue
+state: closed
+author: smackesey
+labels:
+  - configuration
+assignees: []
+created_at: 2022-12-05T12:23:05Z
+updated_at: 2023-02-03T18:28:30Z
+url: https://github.com/astral-sh/ruff/issues/1055
+synced_at: 2026-01-07T13:12:14-06:00
+---
+
+# [feature-request] Config inheritance
+
+---
+
+_Issue opened by @smackesey on 2022-12-05 12:23_
+
+In monorepos, it can easily happen that some section of the codebase needs to maintain consistency with the rest of the code but vary in one dimension. For example, in [Dagster](https://github.com/dagster-io/dagster) we use a line length of 100, but shorten it to 88 for our `docs-snippets` package, which includes code snippets that are incorporated into built docs. The shorter length is to ensure readers don't need to scroll horizontally when reading a code block in the browser.
+
+We're currently maintaining a separate `pyproject.toml` file in `docs-snippets` where we duplicate most of the configuration in our root `pyproject.toml` for black and isort, just so that we can change the line length. This is because neither of these tools offers any mechanism I'm aware of for config inheritance, which would allow only overriding specific settings.
+
+But it would be great to have-- for ruff, it might look something like this:
+
+```
+# pyproject.toml (root)
+
+[tool.ruff]
+
+line-length = 100
+# ... rest of ruff config
+
+# examples/docs-snippets/pyproject.toml
+
+[tool.ruff]
+
+extends = "../../pyproject.toml"  # reads settings from root pyproject.toml
+line-length = 88
+```
+
+That's just a suggestion, I haven't thought about how best to implement this-- but _some_ generic extension/inheritance mechanism for config would be useful. Eslint might be a good place to [gain inspiration](
+https://eslint.org/docs/latest/user-guide/configuring/configuration-files#extending-configuration-files).
+
+---
+
+_Label `configuration` added by @charliermarsh on 2022-12-05 14:06_
+
+---
+
+_Renamed from "Config inheritance" to "[feature-request] Config inheritance" by @smackesey on 2022-12-05 14:30_
+
+---
+
+_Comment by @charliermarsh on 2022-12-05 14:41_
+
+Yeah, agree with the issue summary. (The discussion around presets would also be relevant here: #809.)
+
+I'd like it to be explicit and opt-in, like ESLint's `extends`, rather than doing anything implicit based on the filesystem hierarchy.
+
+The trickiest part is that we'd then have to use different settings for different files within a single `ruff` execution (at least, I _think_ that's how ESLint works). Right now, we resolve the single project root, resolve the settings, then lint all files with those settings; but if we support configuration inheritance, we may have to resolve different settings for different subtrees of the filesystem.
+
+
+---
+
+_Comment by @charliermarsh on 2022-12-05 14:42_
+
+By the way: thanks for all the thoughtful and well-written issues. I also realized this morning that you wrote the Dagster article on [type migrations](https://dagster.io/blog/adding-python-types), which I enjoyed a lot. Great to have you hanging around the Ruff repo.
+
+---
+
+_Comment by @smackesey on 2022-12-05 15:24_
+
+Thanks-- yeah I've done a lot over the past 24 hours assessing `ruff` and trying to port Dagster OSS. Almost at the finish line. Your selling point of extreme speed is 100% accurate, I'm pretty excited to get linter editor feedback as instantly (even faster really) as the type-checking feedback provided by pyright/pylance. Also very nice to have something so actively developed-- that aliased import config option you added 1 hour after I requestedi it last night would've probably taken a year to get implemented in `isort`. Thanks for your hard work here!
+
+---
+
+_Referenced in [astral-sh/ruff#1069](../../astral-sh/ruff/issues/1069.md) on 2022-12-05 19:57_
+
+---
+
+_Referenced in [dagster-io/dagster#10901](../../dagster-io/dagster/pulls/10901.md) on 2022-12-06 04:13_
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2022-12-06 14:45_
+
+---
+
+_Added to milestone `Release 0.1.0` by @charliermarsh on 2022-12-08 18:38_
+
+---
+
+_Referenced in [astral-sh/ruff#1219](../../astral-sh/ruff/pulls/1219.md) on 2022-12-12 20:52_
+
+---
+
+_Closed by @charliermarsh on 2022-12-13 01:28_
+
+---
+
+_Comment by @charliermarsh on 2022-12-13 03:11_
+
+This is going out in [v0.0.178](https://github.com/charliermarsh/ruff/releases/tag/v0.0.178). For now, at least, it's explicit via `extends`.
+
+---

@@ -1,0 +1,95 @@
+---
+number: 4688
+title: "Incomplete message for `uv tool install azure-cli --prerelease=allow`"
+type: issue
+state: closed
+author: konstin
+labels:
+  - bug
+  - preview
+assignees: []
+created_at: 2024-07-01T11:43:13Z
+updated_at: 2024-07-01T16:22:46Z
+url: https://github.com/astral-sh/uv/issues/4688
+synced_at: 2026-01-07T13:12:17-06:00
+---
+
+# Incomplete message for `uv tool install azure-cli --prerelease=allow`
+
+---
+
+_Issue opened by @konstin on 2024-07-01 11:43_
+
+I get the following for `uv tool install azure-cli --prerelease=allow`:
+```
+warning: `uv tool install` is experimental and may change without warning.
+Resolved 143 packages in 400ms
+Installed 143 packages in 49ms
+ + adal==1.2.7
+ + antlr4-python3-runtime==4.13.1
+...
+ + wrapt==1.16.0
+ + xmltodict==0.13.0
+Installed: 
+```
+The part behind `Installed: ` is empty. Same problem for uninstall.
+
+---
+
+_Label `bug` added by @konstin on 2024-07-01 11:43_
+
+---
+
+_Label `preview` added by @konstin on 2024-07-01 11:43_
+
+---
+
+_Comment by @charliermarsh on 2024-07-01 11:51_
+
+Does it have any entrypoints
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2024-07-01 12:13_
+
+---
+
+_Comment by @konstin on 2024-07-01 12:16_
+
+It has `azure_cli-2.61.0.data/scripts/` entrypoints, not regular `entry_points.txt`
+
+---
+
+_Comment by @charliermarsh on 2024-07-01 12:17_
+
+Ok thanks! Probably missing that. We should also fix the logging in the event that it legitimately has no entrypoints (warn).
+
+---
+
+_Comment by @charliermarsh on 2024-07-01 12:28_
+
+Another example (we use data scripts):
+
+```
+❯ uv tool install ruff
+warning: `uv tool install` is experimental and may change without warning.
+Resolved 1 package in 313ms
+Prepared 1 package in 651ms
+Installed 1 package in 7ms
+ + ruff==0.5.0
+Installed:
+```
+
+---
+
+_Referenced in [astral-sh/uv#4691](../../astral-sh/uv/issues/4691.md) on 2024-07-01 12:49_
+
+---
+
+_Referenced in [astral-sh/uv#4694](../../astral-sh/uv/pulls/4694.md) on 2024-07-01 13:43_
+
+---
+
+_Closed by @charliermarsh on 2024-07-01 16:22_
+
+---

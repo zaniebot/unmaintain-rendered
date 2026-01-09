@@ -1,0 +1,92 @@
+---
+number: 11740
+title: Document recommended way to install private pypi packages in docker build
+type: issue
+state: open
+author: RonNabuurs
+labels:
+  - enhancement
+assignees: []
+created_at: 2025-02-24T09:14:43Z
+updated_at: 2025-03-06T12:35:48Z
+url: https://github.com/astral-sh/uv/issues/11740
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# Document recommended way to install private pypi packages in docker build
+
+---
+
+_Issue opened by @RonNabuurs on 2025-02-24 09:14_
+
+### Summary
+
+Already there is good documentation in how to use UV in a Dockerfile, but there is no documentation about the usage of private pypi repositories within Dockerfiles. 
+
+### Example
+
+One possible solution (though not recommended) could be using the arg and env variables in the Dockerfile:
+
+E.g:
+pyproject.toml
+```toml
+[[tool.uv.index]]
+name = "private"
+url = "https://pypi.private.url"
+```
+
+Dockerfile
+```Dockerfile
+ARG UV_INDEX_PRIVATE_USERNAME
+ENV UV_INDEX_PRIVATE_USERNAME=${UV_INDEX_PRIVATE_USERNAME}
+ARG UV_INDEX_PRIVATE_PASSWORD
+ENV UV_INDEX_PRIVATE_PASSWORD=${UV_INDEX_PRIVATE_PASSWORD}
+```
+
+I think it would be a nice addition to the documentation if some recommended way of handling this use case could be described. 
+
+---
+
+_Label `enhancement` added by @RonNabuurs on 2025-02-24 09:14_
+
+---
+
+_Comment by @sanmai-NL on 2025-02-24 10:37_
+
+[When you do it like that, you store the result in the container image's history.](https://pythonspeed.com/articles/docker-build-secrets/)
+
+Use [build secrets](https://docs.docker.com/build/building/secrets/).
+
+---
+
+_Comment by @RonNabuurs on 2025-02-24 11:25_
+
+@sanmai-NL Thats true indeed. Though in our CI we use kaniko to build images. I don't think kaniko supports build secrets though, should we also include something like kaniko in uv docs, or is that too specific?
+
+---
+
+_Comment by @RonNabuurs on 2025-03-06 12:35_
+
+I'm just putting this here if some one else also happens to have the same issue as me.
+
+By using docker build secrets we could achieve my original outcome, but without adding the environment variable.
+
+In your docker file you would do something like this:
+
+```Dockerfile
+RUN --mount=type=cache,target=/root/.cache/uv \
+    --mount=type=bind,source=uv.lock,target=uv.lock \
+    --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
+    --mount=type=secret,id=uvpass \
+    UV_INDEX_PRIVATE_PASSWORD=$(cat "/run/secrets/uvpass") \
+    uv sync --frozen
+```
+
+Most of it is the same as described on the docs: https://docs.astral.sh/uv/guides/integration/docker/#intermediate-layers
+
+If you Dockerfile looks like that you can build the container with:
+```
+docker build --secret id=uvpass,env=UV_INDEX_PRIVATE_PASSWORD .
+```
+
+---

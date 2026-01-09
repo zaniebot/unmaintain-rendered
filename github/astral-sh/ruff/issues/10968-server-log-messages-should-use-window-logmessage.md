@@ -1,0 +1,91 @@
+---
+number: 10968
+title: "Server log messages should use `window/logMessage`"
+type: issue
+state: closed
+author: dhruvmanila
+labels:
+  - server
+assignees: []
+created_at: 2024-04-16T06:38:22Z
+updated_at: 2024-06-11T18:29:49Z
+url: https://github.com/astral-sh/ruff/issues/10968
+synced_at: 2026-01-07T13:12:15-06:00
+---
+
+# Server log messages should use `window/logMessage`
+
+---
+
+_Issue opened by @dhruvmanila on 2024-04-16 06:38_
+
+Currently, the server uses the `tracing` module for log messages which sends everything to stderr. This gets picked up by the client and is added to the log messages at different level regardless of the level used in the server. This level is set by the client.
+
+Here's what VS Code shows:
+
+```
+2024-04-16 12:00:50.229 [info] ┐ruff_server::server::api::notifications::did_change::run{file=file:///Users/dhruv/playground/python/animation.py}
+┘
+2024-04-16 11:59:47.905 [info]    0.101369s ERROR ruff_server::session The following error occurred when trying to find a configuration file at `/Users/dhruv/playground/python`:
+No pyproject.toml/ruff.toml/.ruff.toml file was found
+   0.101425s ERROR ruff_server::session Falling back to default configuration for `/Users/dhruv/playground/python`
+```
+
+Here's what Neovim shows:
+
+```
+[START][2024-04-16 12:06:02] LSP logging initiated
+[ERROR][2024-04-16 12:06:02] .../vim/lsp/rpc.lua:789	"rpc"	"/Users/dhruv/work/astral/ruff-test/target/debug/ruff"	"stderr"	"   0.001027s DEBUG ruff_server::server No workspace(s) were provided during initialization. Using the current working directory as a default workspace...\n"
+[ERROR][2024-04-16 12:06:02] .../vim/lsp/rpc.lua:789	"rpc"	"/Users/dhruv/work/astral/ruff-test/target/debug/ruff"	"stderr"	"   0.041356s ERROR ruff_server::session The following error occurred when trying to find a configuration file at `/Users/dhruv/playground/python`:\nNo pyproject.toml/ruff.toml/.ruff.toml file was found\n   0.041386s ERROR ruff_server::session Falling back to default configuration for `/Users/dhruv/playground/python`\n"
+[ERROR][2024-04-16 12:06:02] .../vim/lsp/rpc.lua:789	"rpc"	"/Users/dhruv/work/astral/ruff-test/target/debug/ruff"	"stderr"	"   0.044606s WARN ruff_server::server LSP client does not support dynamic capability registration - automatic configuration reloading will not be available.\n┐ruff_server::server::api::notifications::did_open::run{file=file:///Users/dhruv/playground/python/errors.py}\n┘\n"
+```
+
+This is not a high priority. We would need to look at all the messages using `tracing` and convert most of them to use the notification request instead.
+
+---
+
+_Label `server` added by @dhruvmanila on 2024-04-16 06:38_
+
+---
+
+_Comment by @dhruvmanila on 2024-04-16 06:38_
+
+cc @snowsignal 
+
+---
+
+_Assigned to @snowsignal by @snowsignal on 2024-04-16 21:04_
+
+---
+
+_Comment by @snowsignal on 2024-04-16 21:04_
+
+Thanks for opening an issue for this @dhruvmanila 
+
+---
+
+_Added to milestone `Ruff Server: Beta` by @snowsignal on 2024-04-16 21:08_
+
+---
+
+_Referenced in [astral-sh/ruff#11169](../../astral-sh/ruff/pulls/11169.md) on 2024-04-26 23:30_
+
+---
+
+_Removed from milestone `Ruff Server: Beta` by @snowsignal on 2024-05-22 09:47_
+
+---
+
+_Referenced in [astral-sh/ruff#11747](../../astral-sh/ruff/pulls/11747.md) on 2024-06-05 01:01_
+
+---
+
+_Comment by @snowsignal on 2024-06-09 22:37_
+
+We decided to continue using `stderr` for now. I'll keep this issue open to track the tracing rewrite.
+
+---
+
+_Closed by @snowsignal on 2024-06-11 18:29_
+
+---

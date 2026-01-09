@@ -1,0 +1,57 @@
+---
+number: 6927
+title: "Help: Overriding package source"
+type: issue
+state: closed
+author: lambda-science
+labels: []
+assignees: []
+created_at: 2024-09-02T06:44:43Z
+updated_at: 2024-09-02T07:43:27Z
+url: https://github.com/astral-sh/uv/issues/6927
+synced_at: 2026-01-07T13:12:17-06:00
+---
+
+# Help: Overriding package source
+
+---
+
+_Issue opened by @lambda-science on 2024-09-02 06:44_
+
+Hey
+I work on a monolith repo, that I set up with UV workspace.
+My app `b` is using my package `a` inside.
+So in my app `b`  `DockerFile` I have a simple `RUN uv sync`
+With a `pyproject.toml` as
+```
+dependencies = [
+    "a==0.5.1"
+```
+How can I modify `RUN uv sync` so the package `a` will not be retrieved from PyPi but installed in editable mode from local folder (that will be mounted as volume in the Docker Image in a specific `Dockerfile.dev` used only during development)
+Something like `RUN uv sync --override-source a /app/package/a -e` something like that ?
+
+I found `uv sync --no-source`  but I'm fetching another package from Git, that should be fetched from git (I want to change to activate the `--no-source` for one package only
+
+Thanks !
+
+---
+
+_Comment by @lambda-science on 2024-09-02 07:43_
+
+Solved with
+```toml
+[tool.uv.sources]
+a = { workspace = true }
+
+[tool.uv.workspace]
+members = [
+    "/code/b/pkgs/*"
+]
+```
+and `--no-source` in prod
+
+---
+
+_Closed by @lambda-science on 2024-09-02 07:43_
+
+---

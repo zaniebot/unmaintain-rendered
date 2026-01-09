@@ -1,0 +1,151 @@
+---
+number: 8352
+title: " How to Use uv for Publishing a Package to Private GitLab and Install from It"
+type: issue
+state: closed
+author: the-korean-coder
+labels:
+  - question
+assignees: []
+created_at: 2024-10-19T00:01:21Z
+updated_at: 2025-06-03T09:41:49Z
+url: https://github.com/astral-sh/uv/issues/8352
+synced_at: 2026-01-07T13:12:17-06:00
+---
+
+#  How to Use uv for Publishing a Package to Private GitLab and Install from It
+
+---
+
+_Issue opened by @the-korean-coder on 2024-10-19 00:01_
+
+Hi,
+
+I'm looking for guidance on how to:
+
+- Publish a Python package to a private GitLab repo using uv.
+- Install the package from the private GitLab repo in another project.
+Thanks!
+
+---
+
+_Comment by @FishAlchemist on 2024-10-19 07:54_
+
+### Q1: Publish a Python package to a private GitLab repo using uv.
+After I created the deploy tokens,  setting ``UV_PUBLISH_URL``、``UV_PUBLISH_USERNAME`` and ``UV_PUBLISH_PASSWORD``, then ``uv publish``
+https://docs.gitlab.com/ee/user/project/deploy_tokens/
+https://docs.astral.sh/uv/guides/publish/#publishing-your-package
+
+### Q2: Install the package from the private GitLab repo in another project.
+For Q2, you should be able to find the answer in the GitLab documentation. 
+https://docs.gitlab.com/ee/user/packages/pypi_repository/
+
+As for Q1, you can refer to it as well since they are quite similar.
+
+**Note:** Currently, UV does not support ``.pypirc``. https://github.com/astral-sh/uv/issues/7676
+
+Uploading packages locally is done this way for me, but it seems unnecessary to apply for Deploy tokens when uploading packages from GitLab CI/CD.
+
+---
+
+_Comment by @the-korean-coder on 2024-10-19 10:37_
+
+Thanks, i was able to publish my packages.
+Now, how do I add this package to an uv project using `uv add`? What would the exact syntax or command be for that?
+
+---
+
+_Comment by @FishAlchemist on 2024-10-19 12:27_
+
+> Thanks, i was able to publish my packages. Now, how do I add this package to an uv project using `uv add`? What would the exact syntax or command be for that?
+
+I haven't used any PyPI packages that require authentication. However, UV usually implements PEPs (Python Enhancement Proposals) and doesn't always introduce non-standard behaviors. Therefore, formats that pip can parse often only require minor modifications to work with UV.
+
+* This is the documentation for the project series: uv init, uv add, uv remove, uv sync, and uv lock.
+https://docs.astral.sh/uv/guides/projects/
+* This is the document about the incompatibility between UV and PIP.
+https://docs.astral.sh/uv/pip/compatibility/#pre-release-compatibility
+
+
+
+---
+
+_Label `question` added by @zanieb on 2024-10-24 12:41_
+
+---
+
+_Comment by @konstin on 2024-11-03 18:02_
+
+I think this has been sufficiently answered.
+
+---
+
+_Closed by @konstin on 2024-11-03 18:02_
+
+---
+
+_Comment by @timotk on 2024-12-18 10:33_
+
+I had the same issue (with publishing), and it still took me some time to figure it out. So I wrote [a blog post]( https://xebia.com/blog/how-to-publish-a-python-package-to-a-gitlab-package-registry-using-uv/) about it.
+
+Basically it boils down to the following `.gitlab-ci.yml`:
+
+```yaml
+stages:  
+  - publish  
+
+variables:  
+  PYTHON_VERSION: "3.13"  
+  UV_VERSION: "0.5.5"
+  UV_PUBLISH_URL: "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/pypi"  
+  UV_PUBLISH_USERNAME: "gitlab-ci-token"  
+  UV_PUBLISH_PASSWORD: "${CI_JOB_TOKEN}"  
+
+before_script:  
+  - pip install uv==${UV_VERSION}
+
+publish:  
+  stage: publish  
+  image: python:${PYTHON_VERSION}
+  script:  
+    # Set the version in pyproject.toml to the current git tag  
+    - VERSION=$(git describe --exact-match --tags)  
+    - uvx --from=toml-cli toml set --toml-path=pyproject.toml project.version $VERSION  
+    # Build and publish the package  
+    - uv build  
+    - uv publish dist/*.whl  
+  only:
+    - tags
+```
+
+- Gitlab provides the current Gitlab instance url (`${CI_API_V4_URL}`) and a token (`${CI_JOB_TOKEN}`).
+- `uv` picks up the [environment variables](https://docs.astral.sh/uv/configuration/environment/) and uses those as credentials. This is a little bit easier to read then putting them in the command itself.
+- I had to apply [this trick](https://github.com/astral-sh/uv/issues/6298#issuecomment-2335034247) for versioning since `uv` does not do dynamic versioning (yet).
+
+Hope this helps.
+
+---
+
+_Comment by @KirkBuah on 2025-06-03 09:17_
+
+Out of curiosity, why does `uv publish` use `UV_PUBLISH_PASSWORD` instead of `UV_PUBLISH_TOKEN` in this case?
+
+---
+
+_Comment by @FishAlchemist on 2025-06-03 09:29_
+
+@KirkBuah If you're looking for a more authoritative answer, I believe it's simply because that method is the one recommended in GitLab's official documentation.
+If you use other methods, GitLab doesn't guarantee they'll be supported in future versions.
+https://docs.gitlab.com/user/packages/pypi_repository/?tab=With+a+CI%2FCD+job+token#authenticate-with-the-gitlab-package-registry
+
+---
+
+_Comment by @konstin on 2025-06-03 09:41_
+
+`UV_PUBLISH_TOKEN` assumes the username `__token__` (PyPI's convention), while GitLab wants the username `gitlab-ci-token`, so we need to use `UV_PUBLISH_USERNAME`/`UV_PUBLISH_PASSWORD`
+
+---
+
+_Referenced in [astral-sh/uv#16236](../../astral-sh/uv/issues/16236.md) on 2025-10-10 17:08_
+
+---

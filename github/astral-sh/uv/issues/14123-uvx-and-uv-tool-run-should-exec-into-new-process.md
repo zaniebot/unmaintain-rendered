@@ -1,0 +1,81 @@
+---
+number: 14123
+title: "`uvx` and `uv tool run` should exec into new process"
+type: issue
+state: closed
+author: iwinux
+labels:
+  - duplicate
+  - enhancement
+assignees: []
+created_at: 2025-06-18T02:40:34Z
+updated_at: 2025-06-18T11:53:50Z
+url: https://github.com/astral-sh/uv/issues/14123
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# `uvx` and `uv tool run` should exec into new process
+
+---
+
+_Issue opened by @iwinux on 2025-06-18 02:40_
+
+## Current Behavior
+
+1. start `ipython` via `uvx ipython`
+2. `pgrep -fal ipython` shows 2 processes:
+    ```
+    1315 /usr/local/bin/uv tool uvx ipython
+    1316 /Users/limbo/.cache/uv/archive-v0/wcpt9UP5KQFF4PXopI6ut/bin/python /Users/limbo/.cache/uv/archive-v0/wcpt9UP5KQFF4PXopI6ut/bin/ipython
+    ```
+3. `pstree -p 1315` shows that PID 1315 is the parent process:
+    ```
+    -+= 00001 root /sbin/launchd
+    \-+= 29881 limbo -fish
+        \-+= 01315 limbo /usr/local/bin/uv tool uvx ipython
+        \--- 01316 limbo /Users/limbo/.cache/uv/archive-v0/wcpt9UP5KQFF4PXopI6ut/bin/python /Users/limbo/.cache/uv/archive-v0/wcpt9UP5KQFF4PXopI6ut/bin/ipython  
+    ```
+
+## Expected
+
+In dev shells it's no big difference, but when starting service daemons (systemd / launchd / etc.), we would expect the actual program to become the "root" process, without `uv` staying in the middle. Usually this is done by doing `exec` instead of starting a subprocess.
+
+---
+
+_Label `enhancement` added by @iwinux on 2025-06-18 02:40_
+
+---
+
+_Comment by @zanieb on 2025-06-18 02:53_
+
+This is a duplicate of https://github.com/astral-sh/uv/issues/3095
+
+---
+
+_Label `duplicate` added by @zanieb on 2025-06-18 02:53_
+
+---
+
+_Comment by @zanieb on 2025-06-18 02:54_
+
+Are you having any concrete problems with the process tree setup?
+
+---
+
+_Comment by @iwinux on 2025-06-18 03:07_
+
+Currently not yet. But indirect process handling raises concerns due to past bad experiences (from other tools). I would consider avoiding `uvx` in systemd unit / `Dockerfile` if this is difficult to fix at the uv side.
+
+Feel free to close this in favor of #3095 :)
+
+---
+
+_Comment by @zanieb on 2025-06-18 11:53_
+
+We forward signals to the child which has covered most problems we know about. Feel free to let us know if you encounter weird behavior.
+
+---
+
+_Closed by @zanieb on 2025-06-18 11:53_
+
+---

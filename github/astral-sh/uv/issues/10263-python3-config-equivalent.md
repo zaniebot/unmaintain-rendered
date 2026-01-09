@@ -1,0 +1,139 @@
+---
+number: 10263
+title: "`python3-config` equivalent?"
+type: issue
+state: open
+author: YouJiacheng
+labels:
+  - question
+assignees: []
+created_at: 2025-01-01T13:34:10Z
+updated_at: 2025-06-03T21:12:10Z
+url: https://github.com/astral-sh/uv/issues/10263
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# `python3-config` equivalent?
+
+---
+
+_Issue opened by @YouJiacheng on 2025-01-01 13:34_
+
+I want to use ThunderKittens and its Makefile requires `python3-config`
+https://github.com/HazyResearch/ThunderKittens/blob/main/kernels/example_bind/Makefile
+
+Currently I have two workarounds:
+1. `.venv/pyvenv.cfg` says `home = /root/.local/share/uv/python/cpython-3.12.8-linux-x86_64-gnu/bin`,
+so I can use `/root/.local/share/uv/python/cpython-3.12.8-linux-x86_64-gnu/bin/python3-config`.
+
+2. ~~`source .venv/bin/activate`~~ activate venv doesn't work.
+
+3. source `env.src` defined as follows
+```sh
+PATH="$(dirname $(realpath .venv/bin/python)):$PATH"
+export PATH
+```
+
+---
+
+_Referenced in [astral-sh/uv#10267](../../astral-sh/uv/issues/10267.md) on 2025-01-02 01:33_
+
+---
+
+_Comment by @samypr100 on 2025-01-04 00:02_
+
+Yes, you'll have to add it to your path if you rely on a specific python3-config as its not tied to a virtualenv but rather a specific python install.
+
+---
+
+_Label `question` added by @samypr100 on 2025-01-04 00:06_
+
+---
+
+_Comment by @krupan on 2025-06-03 02:15_
+
+Hi, I'm running into a similar problem.  I'm on an old system, uv has installed a more recent version of python, but it does not symlink `python*-config` into `.venv/bin`, so I a python extension I'm trying to build fails to build.  Are you saying I have to manually symlink that at `.venv/bin/` or add `~/.local/share/uv/python/blah/bin` to my PATH?  Doesn't that defeat all the convenience and safety that python virtual environments are supposed to provide?
+
+---
+
+_Comment by @samypr100 on 2025-06-03 02:34_
+
+@krupan I would suggest opening a new issue and adding the necessary details as indicated in https://github.com/astral-sh/uv/issues/9452 
+
+---
+
+_Comment by @geofft on 2025-06-03 03:18_
+
+I think continuing in this issue is fine but I'm specifically curious what the thing that expects python3-config is, if it's something public.
+
+From a very brief glance, it looks like the upstream `venv` module and the current version of `virtualenv` also don't symlink python3-config, but legacy `virtualenv` did. It does seem reasonable to me to add it, so I kind of want to know why `venv` and `virtualenv` don't.
+
+---
+
+_Comment by @samypr100 on 2025-06-03 03:36_
+
+> so I kind of want to know why venv and virtualenv don't.
+
+Likely because it's not part of PEP 405
+
+---
+
+_Comment by @krupan on 2025-06-03 17:36_
+
+From the python-config man page:
+
+> python-config helps compiling and linking programs, which embed the Python interpreter, or extension modules that can be loaded dynamically (at run time) into the interpreter.
+
+So, any python project that is going to include a custom module written in C is going to want to use python-config to help compile and link that C code.  It's going to want to use the python-config for the version of python that the rest of the project is using (from the virtual environment).
+
+I just read PEP 405 and it has a section on Include files (which are also necessary if you are building a module in C), and it admits another PEP might be needed just on the subject of Include files.  I would guess from that admission that they haven't thought much about python-config either, unfortunately.
+
+---
+
+_Comment by @geofft on 2025-06-03 18:14_
+
+Also worth noting that PEP 405 was finalized in 2012 and virtualenv-legacy added the script in 2015 (pypa/virtualenv@a2292600206e7307b06fde6b8f59a82ac3477910).
+
+I would expect that these third-party extensions also do not work right with environments created by stdlib venv or current (non-legacy) virtualenv, right? I kind of think the right thing to do is to add python3-config to those two in addition to our venv creation code.
+
+---
+
+_Comment by @zanieb on 2025-06-03 18:30_
+
+@geofft I think if we are going to consider changing virtual environment creation in uv we need to open an issue upstream in CPython first to understand if this is something there's general consensus on.
+
+---
+
+_Comment by @geofft on 2025-06-03 18:38_
+
+Yes, that's what I meant to say, sorry - I am pretty convinced this is a bug in all three, but it seems like a good baseline for uv's behavior to match stdlib venv's behavior (including bugs) to the extent possible, and so the first starting point is to see if CPython considers it a bug in stdlib venv, too.
+
+I think demonstrating that certain third-party packages build on legacy virtualenv but not stdlib venv (or non-legacy virtualenv) would be useful in filing that bug. I feel like I remember making use of python3-config in a legacy virtualenv to build something, and I'll try to remember where.
+
+(Also, for what it's worth, my reading of PEP 405 is that the list of files mentioned as "a typical virtual environment layout on a POSIX system" is a non-normative sample, and the lack of a file there is not meant to say that it shouldn't be in a venv, and also that the sentence "the internal virtual environment layout mimics the layout of the Python installation itself on each platform" before it is the normative one, and argues in favor of having files like python3-config that are in the Python installation's bin directory also present in the venv bin directories.)
+
+---
+
+_Comment by @krupan on 2025-06-03 19:39_
+
+Well said @geofft 
+
+FWIW, there are a number of people around the internet also asking why `pydoc` is not part of the virtual environment as well.  It's a weird thing that not every binary from the python installation's bin directory is added to the virtual environment's bin directory.  At least with pydoc you can do `python -m pydoc` to run the correct pydoc for the virtual environment (as awkard as that is), but you can't use the same trick for python-config
+
+---
+
+_Comment by @samypr100 on 2025-06-03 21:12_
+
+> [@geofft](https://github.com/geofft) I think if we are going to consider changing virtual environment creation in uv we need to open an issue upstream in CPython first to understand if this is something there's general consensus on.
+
+Agreed, I found some other historical discussions here https://github.com/pypa/virtualenv/issues/1808 implying the same
+
+---
+
+_Referenced in [python/cpython#135147](../../python/cpython/issues/135147.md) on 2025-06-04 18:21_
+
+---
+
+_Referenced in [Tencent-Hunyuan/Hunyuan3D-2.1#42](../../Tencent-Hunyuan/Hunyuan3D-2.1/issues/42.md) on 2025-08-20 08:20_
+
+---

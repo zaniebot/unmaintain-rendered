@@ -1,0 +1,45 @@
+---
+number: 116
+title: No suggestion for misspelling of --help
+type: issue
+state: closed
+author: kbknapp
+labels:
+  - C-bug
+assignees: []
+created_at: 2015-05-12T21:36:11Z
+updated_at: 2015-05-12T22:13:18Z
+url: https://github.com/clap-rs/clap/issues/116
+synced_at: 2026-01-07T13:12:19-06:00
+---
+
+# No suggestion for misspelling of --help
+
+---
+
+_Issue opened by @kbknapp on 2015-05-12 21:36_
+
+If you misspell --help you do not get a suggestion.
+
+
+---
+
+_Label `bug` added by @kbknapp on 2015-05-12 21:36_
+
+---
+
+_Assigned to @kbknapp by @kbknapp on 2015-05-12 21:36_
+
+---
+
+_Added to milestone `1.0 Release` by @kbknapp on 2015-05-12 21:36_
+
+---
+
+_Renamed from "No suggestion for mispelling of --help" to "No suggestion for misspelling of --help" by @kbknapp on 2015-05-12 21:36_
+
+---
+
+_Closed by @kbknapp on 2015-05-12 22:13_
+
+---

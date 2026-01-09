@@ -1,0 +1,1070 @@
+---
+number: 11071
+title: "uv pip install Fails with \"does not appear to be a Python project\" When Installing from Git Repository with Subdirectory"
+type: issue
+state: closed
+author: alon710
+labels:
+  - bug
+assignees: []
+created_at: 2025-01-29T17:02:40Z
+updated_at: 2025-01-29T18:58:30Z
+url: https://github.com/astral-sh/uv/issues/11071
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# uv pip install Fails with "does not appear to be a Python project" When Installing from Git Repository with Subdirectory
+
+---
+
+_Issue opened by @alon710 on 2025-01-29 17:02_
+
+### Question
+
+### uv pip install Fails with "does not appear to be a Python project" When Installing from Git Repository with Subdirectory
+
+I'm attempting to install a Python package from a specific branch of a Git repository using the following command:
+
+```bash
+uv pip install git+ssh://git@bitbucket.org/project/repository.git@branch-name#egg=package-name&subdirectory=subdirectory
+```
+
+But I am encountering this error:
+
+```bash
+ERROR: package-name from git+ssh://git@bitbucket.org/project/repository.git@branch-name#egg=package-name does not appear to be a Python project: neither 'setup.py' nor 'pyproject.toml' found.
+```
+
+What I have tried:
+
+Checked for `pyproject.toml`: The subdirectory contains the necessary Python files, and `pyproject.toml` is located in the root directory. To verify, I ran:
+
+```bash
+cd package_directory && uv pip install -e .
+```
+
+This worked successfully.
+
+Question:
+How can I correctly install this Python package from the Git repository when pip is not recognizing the pyproject.toml file?
+
+Here's my pyproject.toml file (I'm using UV as the project manager):
+
+```toml
+[project]
+name = "name"
+version = "1.0.0"
+description = "description"
+authors = [{ name = "name", email = "email@gmail.com" }]
+requires-python = ">3.9,<4.0"
+dependencies = [
+  "pydantic>=2.9.2,<3",
+  "boto3>=1.35.54,<2",
+  "structlog>=24.4.0,<25",
+  "pymongo>=4.10.1,<5",
+  "opentelemetry-sdk>=1.28.2,<2",
+  "httpx>=0.27.0,<0.28",
+]
+
+[dependency-groups]
+dev = [
+  "mypy>=1.14.1",
+  "pre-commit>=4.0.1",
+  "pytest>=8.3.4",
+  "respx>=0.22.0",
+  "ruff>=0.9.2",
+]
+```
+
+### Platform
+
+Darwin 24.2.0 arm64
+
+### Version
+
+uv 0.5.21 (3478c068b 2025-01-17)
+
+---
+
+_Label `question` added by @alon710 on 2025-01-29 17:02_
+
+---
+
+_Comment by @alon710 on 2025-01-29 17:03_
+
+[Stackoverflow question](https://stackoverflow.com/questions/79397184/pip-install-from-git-repository-fails-with-does-not-appear-to-be-a-python-proje)
+
+---
+
+_Comment by @charliermarsh on 2025-01-29 17:04_
+
+Hmm... It's strange that the error is omitting the `subdirectory` part of the fragment. Can you share `--verbose` logs, with any details redacted?
+
+---
+
+_Comment by @alon710 on 2025-01-29 17:07_
+
+> Hmm... It's strange that the error is omitting the `subdirectory` part of the fragment. Can you share `--verbose` logs, with any details redacted?
+
+Sure
+
+```bash
+
+(.venv) alonb@M-NXT1100 ~/.vscode/extensions/ms-python.python-2024.23.2025012801-darwin-arm64/python_files/deactivate/zsh $ uv -vvv pip install git+ssh://git@bitbucket.org/nexite/backend.git@c61bf1a553db5911babe6298ed842799f61112c4#egg=pynexite&subdirectory=pynexite
+[1] 93613
+(.venv) alonb@M-NXT1100 ~/.vscode/extensions/ms-python.python-2024.23.2025012801-darwin-arm64/python_files/deactivate/zsh $     0.000399s DEBUG uv uv 0.5.21 (3478c068b 2025-01-17)
+ uv_requirements::specification::from_source source=git+ssh://git@bitbucket.org/nexite/backend.git@c61bf1a553db5911babe6298ed842799f61112c4#egg=pynexite
+    0.007027s DEBUG uv_python::discovery Searching for default Python interpreter in virtual environments
+    0.008352s DEBUG uv_python::discovery Found `cpython-3.12.8-macos-aarch64-none` at `/Users/alonb/code/backend/backend-for-frontend/.venv/bin/python3` (active virtual environment)
+Using Python 3.12.8 environment at: /Users/alonb/code/backend/backend-for-frontend/.venv
+    0.010382s DEBUG uv_fs Acquired lock for `/Users/alonb/code/backend/backend-for-frontend/.venv`
+    0.011562s DEBUG uv::commands::pip::install At least one requirement is not satisfied: git+ssh://git@bitbucket.org/nexite/backend.git@c61bf1a553db5911babe6298ed842799f61112c4#egg=pynexite
+ uv_client::linehaul::linehaul 
+    0.014054s DEBUG uv_client::base_client Using request timeout of 30s
+ uv_resolver::flat_index::from_entries 
+    0.018499s DEBUG uv_git::resolver Fetching source distribution from Git: ssh://git@bitbucket.org/nexite/backend.git
+    0.020127s DEBUG uv_fs Acquired lock for `ssh://bitbucket.org/nexite/backend`
+ uv_git::source::fetch repository=ssh://git@bitbucket.org/nexite/backend.git, rev=Some(GitSha(GitOid { len: 40, bytes: [99, 54, 49, 98, 102, 49, 97, 53, 53, 51, 100, 98, 53, 57, 49, 49, 98, 97, 98, 101, 54, 50, 57, 56, 101, 100, 56, 52, 50, 55, 57, 57, 102, 54, 49, 49, 49, 50, 99, 52] }))
+    0.059807s  39ms DEBUG uv_git::source Using existing Git source `ssh://git@bitbucket.org/nexite/backend.git`
+    0.109726s DEBUG uv_fs Released lock at `/Users/alonb/Library/Caches/uv/git-v0/locks/eba7607c071a1fd5`
+    0.111807s DEBUG uv_fs Acquired lock for `/Users/alonb/Library/Caches/uv/sdists-v6/git/8dab2d4650846e3e/c61bf1a553db5911`
+    0.111842s DEBUG uv_distribution::source No static `pyproject.toml` available for: git+ssh://git@bitbucket.org/nexite/backend.git@c61bf1a553db5911babe6298ed842799f61112c4#egg=pynexite (MissingPyprojectToml)
+    0.111871s DEBUG uv_distribution::source No static `PKG-INFO` available for: git+ssh://git@bitbucket.org/nexite/backend.git@c61bf1a553db5911babe6298ed842799f61112c4#egg=pynexite (MissingPkgInfo)
+    0.112030s DEBUG uv_distribution::source No static `egg-info` available for: git+ssh://git@bitbucket.org/nexite/backend.git@c61bf1a553db5911babe6298ed842799f61112c4#egg=pynexite (MissingEggInfo)
+ uv_distribution::source::build_metadata dist=git+ssh://git@bitbucket.org/nexite/backend.git@c61bf1a553db5911babe6298ed842799f61112c4#egg=pynexite
+    0.112082s   0ms DEBUG uv_distribution::source Preparing metadata for: git+ssh://git@bitbucket.org/nexite/backend.git@c61bf1a553db5911babe6298ed842799f61112c4#egg=pynexite
+   uv_dispatch::setup_build version_id="git+ssh://git@bitbucket.org/nexite/backend.git@c61bf1a553db5911babe6298ed842799f61112c4#egg=pynexite", subdirectory=None
+    0.113930s DEBUG uv_fs Released lock at `/Users/alonb/Library/Caches/uv/sdists-v6/git/8dab2d4650846e3e/c61bf1a553db5911/.lock`
+    0.114866s DEBUG uv_fs Released lock at `/Users/alonb/code/backend/backend-for-frontend/.venv/.lock`
+error: /Users/alonb/Library/Caches/uv/git-v0/checkouts/eba7607c071a1fd5/c61bf1a55 does not appear to be a Python project, as neither `pyproject.toml` nor `setup.py` are present in the directory
+
+[1]  + 93613 exit 2     uv -vvv pip install 
+```
+
+When I check the directory
+```bash
+ ls -lah /Users/alonb/Library/Caches/uv/git-v0/checkouts/eba7607c071a1fd5/c61bf1a55
+```
+
+Seems like it ignored the subdirecotry and went to the root dir of my repo
+
+---
+
+_Comment by @charliermarsh on 2025-01-29 17:19_
+
+Does it work if you omit the `egg=pynexite` piece?
+
+---
+
+_Comment by @charliermarsh on 2025-01-29 17:20_
+
+(If so it's a real bug, just curious if that resolves it.)
+
+---
+
+_Comment by @alon710 on 2025-01-29 17:29_
+
+> Does it work if you omit the `egg=pynexite` piece?
+
+Seems like it worked
+
+```bash
+(.venv) alonb@M-NXT1100 ~/code/backend/backend-for-frontend (release/be) $ rm -rf .venv
+ *  History restored 
+
+(.venv) alonb@M-NXT1100 ~/code/backend/backend-for-frontend (release/be) $ uv -vvv pip install git+ssh://git@bitbucket.org/nexite/backend.git@c61bf1a553db5911babe6298ed842799f61112c4#subdirectory=pynexite
+    0.000400s DEBUG uv uv 0.5.21 (3478c068b 2025-01-17)
+ uv_requirements::specification::from_source source=git+ssh://git@bitbucket.org/nexite/backend.git@c61bf1a553db5911babe6298ed842799f61112c4#subdirectory=pynexite
+    0.006224s DEBUG uv_python::discovery Searching for default Python interpreter in virtual environments
+    0.008056s DEBUG uv_python::discovery Found `cpython-3.12.8-macos-aarch64-none` at `/Users/alonb/code/backend/backend-for-frontend/.venv/bin/python3` (virtual environment)
+    0.008817s DEBUG uv::commands::pip::operations Using Python 3.12.8 environment at: .venv
+    0.009183s DEBUG uv_fs Acquired lock for `.venv`
+    0.010558s DEBUG uv::commands::pip::install At least one requirement is not satisfied: git+ssh://git@bitbucket.org/nexite/backend.git@c61bf1a553db5911babe6298ed842799f61112c4#subdirectory=pynexite
+ uv_client::linehaul::linehaul 
+    0.012738s DEBUG uv_client::base_client Using request timeout of 30s
+ uv_resolver::flat_index::from_entries 
+    0.017664s DEBUG uv_git::resolver Fetching source distribution from Git: ssh://git@bitbucket.org/nexite/backend.git
+    0.019697s DEBUG uv_fs Acquired lock for `ssh://bitbucket.org/nexite/backend`
+ uv_git::source::fetch repository=ssh://git@bitbucket.org/nexite/backend.git, rev=Some(GitSha(GitOid { len: 40, bytes: [99, 54, 49, 98, 102, 49, 97, 53, 53, 51, 100, 98, 53, 57, 49, 49, 98, 97, 98, 101, 54, 50, 57, 56, 101, 100, 56, 52, 50, 55, 57, 57, 102, 54, 49, 49, 49, 50, 99, 52] }))
+    0.056566s  36ms DEBUG uv_git::source Using existing Git source `ssh://git@bitbucket.org/nexite/backend.git`
+    0.103690s DEBUG uv_fs Released lock at `/Users/alonb/Library/Caches/uv/git-v0/locks/eba7607c071a1fd5`
+    0.105658s DEBUG uv_fs Acquired lock for `/Users/alonb/Library/Caches/uv/sdists-v6/git/53c5e8da26189cae/c61bf1a553db5911`
+    0.106565s DEBUG uv_distribution::source Found static `pyproject.toml` for: git+ssh://git@bitbucket.org/nexite/backend.git@c61bf1a553db5911babe6298ed842799f61112c4#subdirectory=pynexite
+    0.106722s DEBUG uv_workspace::workspace No workspace root found, using project root
+    0.107446s DEBUG uv_fs Released lock at `/Users/alonb/Library/Caches/uv/sdists-v6/git/53c5e8da26189cae/c61bf1a553db5911/.lock`
+ uv_resolver::resolver::solve 
+    0.111375s   0ms DEBUG uv_resolver::resolver Solving with installed Python version: 3.12.8
+    0.111418s   0ms DEBUG uv_resolver::resolver Solving with target Python version: >=3.12.8
+   uv_resolver::resolver::get_dependencies_forking package=root, version=0a0.dev0
+     uv_resolver::resolver::get_dependencies package=root, version=0a0.dev0
+    0.112661s   1ms DEBUG uv_resolver::resolver Adding direct dependency: pynexite*
+    0.113788s   2ms DEBUG uv_resolver::resolver Searching for a compatible version of pynexite @ git+ssh://git@bitbucket.org/nexite/backend.git@c61bf1a553db5911babe6298ed842799f61112c4#subdirectory=pynexite (*)
+   uv_resolver::resolver::get_dependencies_forking package=pynexite, version=1.0.0
+     uv_resolver::resolver::get_dependencies package=pynexite, version=1.0.0
+    0.113835s   2ms DEBUG uv_resolver::resolver Adding transitive dependency for pynexite==1.0.0: pydantic>=2.9.2, <3
+    0.113839s   2ms DEBUG uv_resolver::resolver Adding transitive dependency for pynexite==1.0.0: boto3>=1.35.54, <2
+    0.113841s   2ms DEBUG uv_resolver::resolver Adding transitive dependency for pynexite==1.0.0: structlog>=24.4.0, <25
+    0.113846s   2ms DEBUG uv_resolver::resolver Adding transitive dependency for pynexite==1.0.0: pymongo>=4.10.1, <5
+    0.113848s   2ms DEBUG uv_resolver::resolver Adding transitive dependency for pynexite==1.0.0: opentelemetry-sdk>=1.28.2, <2
+    0.113850s   2ms DEBUG uv_resolver::resolver Adding transitive dependency for pynexite==1.0.0: httpx>=0.27.0, <0.28
+ uv_resolver::resolver::process_request request=Versions pydantic
+   uv_client::registry_client::simple_api package=pydantic
+     uv_client::cached_client::get_cacheable_with_retry 
+       uv_client::cached_client::get_cacheable 
+         uv_client::cached_client::read_and_parse_cache file=/Users/alonb/Library/Caches/uv/simple-v15/pypi/pydantic.rkyv
+ uv_resolver::resolver::process_request request=Versions boto3
+   uv_client::registry_client::simple_api package=boto3
+     uv_client::cached_client::get_cacheable_with_retry 
+       uv_client::cached_client::get_cacheable 
+         uv_client::cached_client::read_and_parse_cache file=/Users/alonb/Library/Caches/uv/simple-v15/pypi/boto3.rkyv
+ uv_resolver::resolver::process_request request=Versions structlog
+   uv_client::registry_client::simple_api package=structlog
+     uv_client::cached_client::get_cacheable_with_retry 
+       uv_client::cached_client::get_cacheable 
+         uv_client::cached_client::read_and_parse_cache file=/Users/alonb/Library/Caches/uv/simple-v15/pypi/structlog.rkyv
+ uv_resolver::resolver::process_request request=Versions pymongo
+   uv_client::registry_client::simple_api package=pymongo
+     uv_client::cached_client::get_cacheable_with_retry 
+       uv_client::cached_client::get_cacheable 
+         uv_client::cached_client::read_and_parse_cache file=/Users/alonb/Library/Caches/uv/simple-v15/pypi/pymongo.rkyv
+ uv_resolver::resolver::process_request request=Versions opentelemetry-sdk
+   uv_client::registry_client::simple_api package=opentelemetry-sdk
+     uv_client::cached_client::get_cacheable_with_retry 
+       uv_client::cached_client::get_cacheable 
+         uv_client::cached_client::read_and_parse_cache file=/Users/alonb/Library/Caches/uv/simple-v15/pypi/opentelemetry-sdk.rkyv
+ uv_resolver::resolver::process_request request=Versions httpx
+   uv_client::registry_client::simple_api package=httpx
+     uv_client::cached_client::get_cacheable_with_retry 
+       uv_client::cached_client::get_cacheable 
+         uv_client::cached_client::read_and_parse_cache file=/Users/alonb/Library/Caches/uv/simple-v15/pypi/httpx.rkyv
+ uv_resolver::resolver::process_request request=Prefetch httpx >=0.27.0, <0.28
+ uv_resolver::resolver::process_request request=Prefetch opentelemetry-sdk >=1.28.2, <2
+ uv_resolver::resolver::process_request request=Prefetch pymongo >=4.10.1, <5
+ uv_resolver::resolver::process_request request=Prefetch structlog >=24.4.0, <25
+ uv_resolver::resolver::process_request request=Prefetch boto3 >=1.35.54, <2
+ uv_resolver::resolver::process_request request=Prefetch pydantic >=2.9.2, <3
+ uv_client::cached_client::from_path_sync path="/Users/alonb/Library/Caches/uv/simple-v15/pypi/structlog.rkyv"
+ uv_client::cached_client::from_path_sync path="/Users/alonb/Library/Caches/uv/simple-v15/pypi/pydantic.rkyv"
+ uv_client::cached_client::from_path_sync path="/Users/alonb/Library/Caches/uv/simple-v15/pypi/boto3.rkyv"
+ uv_client::cached_client::from_path_sync path="/Users/alonb/Library/Caches/uv/simple-v15/pypi/httpx.rkyv"
+ uv_client::cached_client::from_path_sync path="/Users/alonb/Library/Caches/uv/simple-v15/pypi/opentelemetry-sdk.rkyv"
+ uv_client::cached_client::from_path_sync path="/Users/alonb/Library/Caches/uv/simple-v15/pypi/pymongo.rkyv"
+          0.116685s   2ms DEBUG uv_client::cached_client Found fresh response for: https://pypi.org/simple/structlog/
+   uv_resolver::version_map::from_metadata 
+          0.117479s   2ms DEBUG uv_client::cached_client Found fresh response for: https://pypi.org/simple/opentelemetry-sdk/
+   uv_resolver::version_map::from_metadata 
+          0.117497s   2ms DEBUG uv_client::cached_client Found fresh response for: https://pypi.org/simple/httpx/
+   uv_resolver::version_map::from_metadata 
+          0.117517s   3ms DEBUG uv_client::cached_client Found fresh response for: https://pypi.org/simple/pydantic/
+   uv_resolver::version_map::from_metadata 
+          0.117625s   3ms DEBUG uv_client::cached_client Found fresh response for: https://pypi.org/simple/boto3/
+    0.117639s   6ms DEBUG uv_resolver::resolver Searching for a compatible version of pydantic (>=2.9.2, <3)
+   uv_resolver::version_map::from_metadata 
+          0.118091s   3ms DEBUG uv_client::cached_client Found fresh response for: https://pypi.org/simple/pymongo/
+    0.118685s   7ms DEBUG uv_resolver::resolver Selecting: pydantic==2.10.6 [compatible] (pydantic-2.10.6-py3-none-any.whl)
+   uv_resolver::resolver::get_dependencies_forking package=pydantic, version=2.10.6
+     uv_resolver::resolver::get_dependencies package=pydantic, version=2.10.6
+   uv_resolver::version_map::from_metadata 
+   uv_distribution::distribution_database::get_or_build_wheel_metadata dist=structlog==24.4.0
+     uv_client::registry_client::wheel_metadata built_dist=structlog==24.4.0
+       uv_client::cached_client::get_serde_with_retry 
+         uv_client::cached_client::get_cacheable_with_retry 
+           uv_client::cached_client::get_cacheable 
+             uv_client::cached_client::read_and_parse_cache file=/Users/alonb/Library/Caches/uv/wheels-v3/pypi/structlog/structlog-24.4.0-py3-none-any.msgpack
+   uv_distribution::distribution_database::get_or_build_wheel_metadata dist=opentelemetry-sdk==1.29.0
+     uv_client::registry_client::wheel_metadata built_dist=opentelemetry-sdk==1.29.0
+       uv_client::cached_client::get_serde_with_retry 
+         uv_client::cached_client::get_cacheable_with_retry 
+           uv_client::cached_client::get_cacheable 
+             uv_client::cached_client::read_and_parse_cache file=/Users/alonb/Library/Caches/uv/wheels-v3/pypi/opentelemetry-sdk/opentelemetry_sdk-1.29.0-py3-none-any.msgpack
+ uv_client::cached_client::from_path_sync path="/Users/alonb/Library/Caches/uv/wheels-v3/pypi/structlog/structlog-24.4.0-py3-none-any.msgpack"
+   uv_distribution::distribution_database::get_or_build_wheel_metadata dist=httpx==0.27.2
+ uv_client::cached_client::from_path_sync path="/Users/alonb/Library/Caches/uv/wheels-v3/pypi/opentelemetry-sdk/opentelemetry_sdk-1.29.0-py3-none-any.msgpack"
+     uv_client::registry_client::wheel_metadata built_dist=httpx==0.27.2
+       uv_client::cached_client::get_serde_with_retry 
+         uv_client::cached_client::get_cacheable_with_retry 
+           uv_client::cached_client::get_cacheable 
+             uv_client::cached_client::read_and_parse_cache file=/Users/alonb/Library/Caches/uv/wheels-v3/pypi/httpx/httpx-0.27.2-py3-none-any.msgpack
+   uv_distribution::distribution_database::get_or_build_wheel_metadata dist=boto3==1.36.8
+     uv_client::registry_client::wheel_metadata built_dist=boto3==1.36.8
+       uv_client::cached_client::get_serde_with_retry 
+         uv_client::cached_client::get_cacheable_with_retry 
+           uv_client::cached_client::get_cacheable 
+             uv_client::cached_client::read_and_parse_cache file=/Users/alonb/Library/Caches/uv/wheels-v3/pypi/boto3/boto3-1.36.8-py3-none-any.msgpack
+ uv_client::cached_client::from_path_sync path="/Users/alonb/Library/Caches/uv/wheels-v3/pypi/httpx/httpx-0.27.2-py3-none-any.msgpack"
+ uv_client::cached_client::from_path_sync path="/Users/alonb/Library/Caches/uv/wheels-v3/pypi/boto3/boto3-1.36.8-py3-none-any.msgpack"
+   uv_distribution::distribution_database::get_or_build_wheel_metadata dist=pymongo==4.11
+     uv_client::registry_client::wheel_metadata built_dist=pymongo==4.11
+       uv_client::cached_client::get_serde_with_retry 
+         uv_client::cached_client::get_cacheable_with_retry 
+           uv_client::cached_client::get_cacheable 
+             uv_client::cached_client::read_and_parse_cache file=/Users/alonb/Library/Caches/uv/wheels-v3/pypi/pymongo/pymongo-4.11-cp312-cp312-macosx_11_0_arm64.msgpack
+ uv_client::cached_client::from_path_sync path="/Users/alonb/Library/Caches/uv/wheels-v3/pypi/pymongo/pymongo-4.11-cp312-cp312-macosx_11_0_arm64.msgpack"
+ uv_resolver::resolver::process_request request=Metadata pydantic==2.10.6
+   uv_distribution::distribution_database::get_or_build_wheel_metadata dist=pydantic==2.10.6
+     uv_client::registry_client::wheel_metadata built_dist=pydantic==2.10.6
+       uv_client::cached_client::get_serde_with_retry 
+         uv_client::cached_client::get_cacheable_with_retry 
+           uv_client::cached_client::get_cacheable 
+             uv_client::cached_client::read_and_parse_cache file=/Users/alonb/Library/Caches/uv/wheels-v3/pypi/pydantic/pydantic-2.10.6-py3-none-any.msgpack
+              0.119857s   0ms DEBUG uv_client::cached_client Found fresh response for: https://files.pythonhosted.org/packages/bf/65/813fc133609ebcb1299be6a42e5aea99d6344afb35ccb43f67e7daaa3b92/structlog-24.4.0-py3-none-any.whl.metadata
+ uv_client::cached_client::from_path_sync path="/Users/alonb/Library/Caches/uv/wheels-v3/pypi/pydantic/pydantic-2.10.6-py3-none-any.msgpack"
+              0.120819s   1ms DEBUG uv_client::cached_client Found fresh response for: https://files.pythonhosted.org/packages/d1/1d/512b86af21795fb463726665e2f61db77d384e8779fdcf4cb0ceec47866d/opentelemetry_sdk-1.29.0-py3-none-any.whl.metadata
+              0.120832s   1ms DEBUG uv_client::cached_client Found fresh response for: https://files.pythonhosted.org/packages/56/95/9377bcb415797e44274b51d46e3249eba641711cf3348050f76ee7b15ffc/httpx-0.27.2-py3-none-any.whl.metadata
+              0.120864s   1ms DEBUG uv_client::cached_client Found fresh response for: https://files.pythonhosted.org/packages/00/e3/471839c8705ae024d6eb3af65bd2fac85b33561c04048ff846d22d5ed9d4/pymongo-4.11-cp312-cp312-macosx_11_0_arm64.whl.metadata
+              0.121564s   1ms DEBUG uv_client::cached_client Found fresh response for: https://files.pythonhosted.org/packages/8e/59/58cff44147802cb20a6d185e4e18df19b7238566195114adc6397e0c8dbb/boto3-1.36.8-py3-none-any.whl.metadata
+              0.121575s   1ms DEBUG uv_client::cached_client Found fresh response for: https://files.pythonhosted.org/packages/f4/3c/8cc1cc84deffa6e25d2d0c688ebb80635dfdbf1dbea3e30c541c8cf4d860/pydantic-2.10.6-py3-none-any.whl.metadata
+    0.121607s  10ms DEBUG uv_resolver::resolver Adding transitive dependency for pydantic==2.10.6: annotated-types>=0.6.0
+    0.121614s  10ms DEBUG uv_resolver::resolver Adding transitive dependency for pydantic==2.10.6: pydantic-core>=2.27.2, <2.27.2+
+    0.121626s  10ms DEBUG uv_resolver::resolver Adding transitive dependency for pydantic==2.10.6: typing-extensions>=4.12.2
+ uv_resolver::resolver::process_request request=Versions annotated-types
+   uv_client::registry_client::simple_api package=annotated-types
+     uv_client::cached_client::get_cacheable_with_retry 
+       uv_client::cached_client::get_cacheable 
+         uv_client::cached_client::read_and_parse_cache file=/Users/alonb/Library/Caches/uv/simple-v15/pypi/annotated-types.rkyv
+ uv_resolver::resolver::process_request request=Versions pydantic-core
+   uv_client::registry_client::simple_api package=pydantic-core
+     uv_client::cached_client::get_cacheable_with_retry 
+ uv_client::cached_client::from_path_sync path="/Users/alonb/Library/Caches/uv/simple-v15/pypi/annotated-types.rkyv"
+       uv_client::cached_client::get_cacheable 
+         uv_client::cached_client::read_and_parse_cache file=/Users/alonb/Library/Caches/uv/simple-v15/pypi/pydantic-core.rkyv
+ uv_resolver::resolver::process_request request=Versions typing-extensions
+   uv_client::registry_client::simple_api package=typing-extensions
+     uv_client::cached_client::get_cacheable_with_retry 
+       uv_client::cached_client::get_cacheable 
+         uv_client::cached_client::read_and_parse_cache file=/Users/alonb/Library/Caches/uv/simple-v15/pypi/typing-extensions.rkyv
+ uv_client::cached_client::from_path_sync path="/Users/alonb/Library/Caches/uv/simple-v15/pypi/pydantic-core.rkyv"
+ uv_resolver::resolver::process_request request=Prefetch typing-extensions >=4.12.2
+ uv_resolver::resolver::process_request request=Prefetch pydantic-core >=2.27.2, <2.27.2+
+ uv_resolver::resolver::process_request request=Prefetch annotated-types >=0.6.0
+ uv_client::cached_client::from_path_sync path="/Users/alonb/Library/Caches/uv/simple-v15/pypi/typing-extensions.rkyv"
+          0.122390s   0ms DEBUG uv_client::cached_client Found fresh response for: https://pypi.org/simple/annotated-types/
+   uv_resolver::version_map::from_metadata 
+   uv_distribution::distribution_database::get_or_build_wheel_metadata dist=annotated-types==0.7.0
+     uv_client::registry_client::wheel_metadata built_dist=annotated-types==0.7.0
+       uv_client::cached_client::get_serde_with_retry 
+         uv_client::cached_client::get_cacheable_with_retry 
+           uv_client::cached_client::get_cacheable 
+             uv_client::cached_client::read_and_parse_cache file=/Users/alonb/Library/Caches/uv/wheels-v3/pypi/annotated-types/annotated_types-0.7.0-py3-none-any.msgpack
+ uv_client::cached_client::from_path_sync path="/Users/alonb/Library/Caches/uv/wheels-v3/pypi/annotated-types/annotated_types-0.7.0-py3-none-any.msgpack"
+          0.122541s   0ms DEBUG uv_client::cached_client Found fresh response for: https://pypi.org/simple/typing-extensions/
+   uv_resolver::version_map::from_metadata 
+   uv_distribution::distribution_database::get_or_build_wheel_metadata dist=typing-extensions==4.12.2
+     uv_client::registry_client::wheel_metadata built_dist=typing-extensions==4.12.2
+       uv_client::cached_client::get_serde_with_retry 
+         uv_client::cached_client::get_cacheable_with_retry 
+           uv_client::cached_client::get_cacheable 
+             uv_client::cached_client::read_and_parse_cache file=/Users/alonb/Library/Caches/uv/wheels-v3/pypi/typing-extensions/typing_extensions-4.12.2-py3-none-any.msgpack
+ uv_client::cached_client::from_path_sync path="/Users/alonb/Library/Caches/uv/wheels-v3/pypi/typing-extensions/typing_extensions-4.12.2-py3-none-any.msgpack"
+              0.122786s   0ms DEBUG uv_client::cached_client Found fresh response for: https://files.pythonhosted.org/packages/78/b6/6307fbef88d9b5ee7421e68d78a9f162e0da4900bc5f5793f6d3d0e34fb8/annotated_types-0.7.0-py3-none-any.whl.metadata
+              0.122870s   0ms DEBUG uv_client::cached_client Found fresh response for: https://files.pythonhosted.org/packages/26/9f/ad63fc0248c5379346306f8668cda6e2e2e9c95e01216d2b8ffd9ff037d0/typing_extensions-4.12.2-py3-none-any.whl.metadata
+          0.125145s   3ms DEBUG uv_client::cached_client Found fresh response for: https://pypi.org/simple/pydantic-core/
+   uv_resolver::version_map::from_metadata 
+    0.125824s  14ms DEBUG uv_resolver::resolver Searching for a compatible version of pydantic-core (>=2.27.2, <2.27.2+)
+    0.125837s  14ms DEBUG uv_resolver::resolver Selecting: pydantic-core==2.27.2 [compatible] (pydantic_core-2.27.2-cp312-cp312-macosx_11_0_arm64.whl)
+   uv_distribution::distribution_database::get_or_build_wheel_metadata dist=pydantic-core==2.27.2
+     uv_client::registry_client::wheel_metadata built_dist=pydantic-core==2.27.2
+       uv_client::cached_client::get_serde_with_retry 
+         uv_client::cached_client::get_cacheable_with_retry 
+           uv_client::cached_client::get_cacheable 
+             uv_client::cached_client::read_and_parse_cache file=/Users/alonb/Library/Caches/uv/wheels-v3/pypi/pydantic-core/pydantic_core-2.27.2-cp312-cp312-macosx_11_0_arm64.msgpack
+ uv_client::cached_client::from_path_sync path="/Users/alonb/Library/Caches/uv/wheels-v3/pypi/pydantic-core/pydantic_core-2.27.2-cp312-cp312-macosx_11_0_arm64.msgpack"
+   uv_resolver::resolver::get_dependencies_forking package=pydantic-core, version=2.27.2
+     uv_resolver::resolver::get_dependencies package=pydantic-core, version=2.27.2
+              0.126363s   0ms DEBUG uv_client::cached_client Found fresh response for: https://files.pythonhosted.org/packages/d3/f3/c97e80721735868313c58b89d2de85fa80fe8dfeeed84dc51598b92a135e/pydantic_core-2.27.2-cp312-cp312-macosx_11_0_arm64.whl.metadata
+    0.126405s  15ms DEBUG uv_resolver::resolver Adding transitive dependency for pydantic-core==2.27.2: typing-extensions>=4.6.0, <4.7.0 | >=4.7.0+
+    0.126419s  15ms DEBUG uv_resolver::resolver Searching for a compatible version of boto3 (>=1.35.54, <2)
+    0.126423s  15ms DEBUG uv_resolver::resolver Selecting: boto3==1.36.8 [compatible] (boto3-1.36.8-py3-none-any.whl)
+   uv_resolver::resolver::get_dependencies_forking package=boto3, version=1.36.8
+     uv_resolver::resolver::get_dependencies package=boto3, version=1.36.8
+    0.126437s  15ms DEBUG uv_resolver::resolver Adding transitive dependency for boto3==1.36.8: botocore>=1.36.8, <1.37.0
+    0.126440s  15ms DEBUG uv_resolver::resolver Adding transitive dependency for boto3==1.36.8: jmespath>=0.7.1, <2.0.0
+    0.126442s  15ms DEBUG uv_resolver::resolver Adding transitive dependency for boto3==1.36.8: s3transfer>=0.11.0, <0.12.0
+    0.126458s  15ms DEBUG uv_resolver::resolver Searching for a compatible version of structlog (>=24.4.0, <25)
+    0.126470s  15ms DEBUG uv_resolver::resolver Selecting: structlog==24.4.0 [compatible] (structlog-24.4.0-py3-none-any.whl)
+   uv_resolver::resolver::get_dependencies_forking package=structlog, version=24.4.0
+     uv_resolver::resolver::get_dependencies package=structlog, version=24.4.0
+ uv_resolver::resolver::process_request request=Versions botocore
+   uv_client::registry_client::simple_api package=botocore
+    0.126495s  15ms DEBUG uv_resolver::resolver Searching for a compatible version of pymongo (>=4.10.1, <5)
+    0.126500s  15ms DEBUG uv_resolver::resolver Selecting: pymongo==4.11 [compatible] (pymongo-4.11-cp312-cp312-macosx_11_0_arm64.whl)
+     uv_client::cached_client::get_cacheable_with_retry 
+       uv_client::cached_client::get_cacheable 
+         uv_client::cached_client::read_and_parse_cache file=/Users/alonb/Library/Caches/uv/simple-v15/pypi/botocore.rkyv
+ uv_resolver::resolver::process_request request=Versions jmespath
+   uv_client::registry_client::simple_api package=jmespath
+     uv_client::cached_client::get_cacheable_with_retry 
+ uv_client::cached_client::from_path_sync path="/Users/alonb/Library/Caches/uv/simple-v15/pypi/botocore.rkyv"
+   uv_resolver::resolver::get_dependencies_forking package=pymongo, version=4.11
+     uv_resolver::resolver::get_dependencies package=pymongo, version=4.11
+    0.126537s  15ms DEBUG uv_resolver::resolver Adding transitive dependency for pymongo==4.11: dnspython>=1.16.0, <3.0.0
+    0.126547s  15ms DEBUG uv_resolver::resolver Searching for a compatible version of opentelemetry-sdk (>=1.28.2, <2)
+    0.126550s  15ms DEBUG uv_resolver::resolver Selecting: opentelemetry-sdk==1.29.0 [compatible] (opentelemetry_sdk-1.29.0-py3-none-any.whl)
+   uv_resolver::resolver::get_dependencies_forking package=opentelemetry-sdk, version=1.29.0
+     uv_resolver::resolver::get_dependencies package=opentelemetry-sdk, version=1.29.0
+    0.126564s  15ms DEBUG uv_resolver::resolver Adding transitive dependency for opentelemetry-sdk==1.29.0: opentelemetry-api>=1.29.0, <1.29.0+
+    0.126568s  15ms DEBUG uv_resolver::resolver Adding transitive dependency for opentelemetry-sdk==1.29.0: opentelemetry-semantic-conventions>=0.50b0, <0.50b0+
+       uv_client::cached_client::get_cacheable 
+         uv_client::cached_client::read_and_parse_cache file=/Users/alonb/Library/Caches/uv/simple-v15/pypi/jmespath.rkyv
+    0.126580s  15ms DEBUG uv_resolver::resolver Adding transitive dependency for opentelemetry-sdk==1.29.0: typing-extensions>=3.7.4
+ uv_resolver::resolver::process_request request=Versions s3transfer
+   uv_client::registry_client::simple_api package=s3transfer
+     uv_client::cached_client::get_cacheable_with_retry 
+       uv_client::cached_client::get_cacheable 
+         uv_client::cached_client::read_and_parse_cache file=/Users/alonb/Library/Caches/uv/simple-v15/pypi/s3transfer.rkyv
+ uv_client::cached_client::from_path_sync path="/Users/alonb/Library/Caches/uv/simple-v15/pypi/jmespath.rkyv"
+ uv_client::cached_client::from_path_sync path="/Users/alonb/Library/Caches/uv/simple-v15/pypi/s3transfer.rkyv"
+ uv_resolver::resolver::process_request request=Prefetch s3transfer >=0.11.0, <0.12.0
+ uv_resolver::resolver::process_request request=Prefetch jmespath >=0.7.1, <2.0.0
+ uv_resolver::resolver::process_request request=Prefetch botocore >=1.36.8, <1.37.0
+ uv_resolver::resolver::process_request request=Versions dnspython
+   uv_client::registry_client::simple_api package=dnspython
+     uv_client::cached_client::get_cacheable_with_retry 
+       uv_client::cached_client::get_cacheable 
+         uv_client::cached_client::read_and_parse_cache file=/Users/alonb/Library/Caches/uv/simple-v15/pypi/dnspython.rkyv
+ uv_resolver::resolver::process_request request=Prefetch dnspython >=1.16.0, <3.0.0
+ uv_resolver::resolver::process_request request=Versions opentelemetry-api
+   uv_client::registry_client::simple_api package=opentelemetry-api
+ uv_client::cached_client::from_path_sync path="/Users/alonb/Library/Caches/uv/simple-v15/pypi/dnspython.rkyv"
+     uv_client::cached_client::get_cacheable_with_retry 
+       uv_client::cached_client::get_cacheable 
+         uv_client::cached_client::read_and_parse_cache file=/Users/alonb/Library/Caches/uv/simple-v15/pypi/opentelemetry-api.rkyv
+ uv_resolver::resolver::process_request request=Versions opentelemetry-semantic-conventions
+   uv_client::registry_client::simple_api package=opentelemetry-semantic-conventions
+ uv_client::cached_client::from_path_sync path="/Users/alonb/Library/Caches/uv/simple-v15/pypi/opentelemetry-api.rkyv"
+     uv_client::cached_client::get_cacheable_with_retry 
+       uv_client::cached_client::get_cacheable 
+         uv_client::cached_client::read_and_parse_cache file=/Users/alonb/Library/Caches/uv/simple-v15/pypi/opentelemetry-semantic-conventions.rkyv
+ uv_resolver::resolver::process_request request=Prefetch opentelemetry-semantic-conventions >=0.50b0, <0.50b0+
+ uv_resolver::resolver::process_request request=Prefetch opentelemetry-api >=1.29.0, <1.29.0+
+ uv_client::cached_client::from_path_sync path="/Users/alonb/Library/Caches/uv/simple-v15/pypi/opentelemetry-semantic-conventions.rkyv"
+          0.127084s   0ms DEBUG uv_client::cached_client Found fresh response for: https://pypi.org/simple/dnspython/
+   uv_resolver::version_map::from_metadata 
+   uv_distribution::distribution_database::get_or_build_wheel_metadata dist=dnspython==2.7.0
+     uv_client::registry_client::wheel_metadata built_dist=dnspython==2.7.0
+       uv_client::cached_client::get_serde_with_retry 
+         uv_client::cached_client::get_cacheable_with_retry 
+           uv_client::cached_client::get_cacheable 
+             uv_client::cached_client::read_and_parse_cache file=/Users/alonb/Library/Caches/uv/wheels-v3/pypi/dnspython/dnspython-2.7.0-py3-none-any.msgpack
+ uv_client::cached_client::from_path_sync path="/Users/alonb/Library/Caches/uv/wheels-v3/pypi/dnspython/dnspython-2.7.0-py3-none-any.msgpack"
+          0.127193s   0ms DEBUG uv_client::cached_client Found fresh response for: https://pypi.org/simple/s3transfer/
+   uv_resolver::version_map::from_metadata 
+          0.127211s   0ms DEBUG uv_client::cached_client Found fresh response for: https://pypi.org/simple/jmespath/
+   uv_resolver::version_map::from_metadata 
+   uv_distribution::distribution_database::get_or_build_wheel_metadata dist=s3transfer==0.11.2
+     uv_client::registry_client::wheel_metadata built_dist=s3transfer==0.11.2
+       uv_client::cached_client::get_serde_with_retry 
+         uv_client::cached_client::get_cacheable_with_retry 
+           uv_client::cached_client::get_cacheable 
+             uv_client::cached_client::read_and_parse_cache file=/Users/alonb/Library/Caches/uv/wheels-v3/pypi/s3transfer/s3transfer-0.11.2-py3-none-any.msgpack
+   uv_distribution::distribution_database::get_or_build_wheel_metadata dist=jmespath==1.0.1
+     uv_client::registry_client::wheel_metadata built_dist=jmespath==1.0.1
+ uv_client::cached_client::from_path_sync path="/Users/alonb/Library/Caches/uv/wheels-v3/pypi/s3transfer/s3transfer-0.11.2-py3-none-any.msgpack"
+       uv_client::cached_client::get_serde_with_retry 
+         uv_client::cached_client::get_cacheable_with_retry 
+           uv_client::cached_client::get_cacheable 
+             uv_client::cached_client::read_and_parse_cache file=/Users/alonb/Library/Caches/uv/wheels-v3/pypi/jmespath/jmespath-1.0.1-py3-none-any.msgpack
+ uv_client::cached_client::from_path_sync path="/Users/alonb/Library/Caches/uv/wheels-v3/pypi/jmespath/jmespath-1.0.1-py3-none-any.msgpack"
+          0.127419s   0ms DEBUG uv_client::cached_client Found fresh response for: https://pypi.org/simple/opentelemetry-semantic-conventions/
+   uv_resolver::version_map::from_metadata 
+          0.127435s   0ms DEBUG uv_client::cached_client Found fresh response for: https://pypi.org/simple/opentelemetry-api/
+   uv_resolver::version_map::from_metadata 
+    0.127452s  16ms DEBUG uv_resolver::resolver Searching for a compatible version of opentelemetry-api (>=1.29.0, <1.29.0+)
+   uv_distribution::distribution_database::get_or_build_wheel_metadata dist=opentelemetry-semantic-conventions==0.50b0
+     uv_client::registry_client::wheel_metadata built_dist=opentelemetry-semantic-conventions==0.50b0
+    0.127471s  16ms DEBUG uv_resolver::resolver Selecting: opentelemetry-api==1.29.0 [compatible] (opentelemetry_api-1.29.0-py3-none-any.whl)
+   uv_resolver::resolver::get_dependencies_forking package=opentelemetry-api, version=1.29.0
+     uv_resolver::resolver::get_dependencies package=opentelemetry-api, version=1.29.0
+       uv_client::cached_client::get_serde_with_retry 
+         uv_client::cached_client::get_cacheable_with_retry 
+           uv_client::cached_client::get_cacheable 
+             uv_client::cached_client::read_and_parse_cache file=/Users/alonb/Library/Caches/uv/wheels-v3/pypi/opentelemetry-semantic-conventions/opentelemetry_semantic_conventions-0.50b0-py3-none-any.msgpack
+              0.127705s   0ms DEBUG uv_client::cached_client Found fresh response for: https://files.pythonhosted.org/packages/68/1b/e0a87d256e40e8c888847551b20a017a6b98139178505dc7ffb96f04e954/dnspython-2.7.0-py3-none-any.whl.metadata
+ uv_client::cached_client::from_path_sync path="/Users/alonb/Library/Caches/uv/wheels-v3/pypi/opentelemetry-semantic-conventions/opentelemetry_semantic_conventions-0.50b0-py3-none-any.msgpack"
+ uv_resolver::resolver::process_request request=Metadata opentelemetry-api==1.29.0
+   uv_distribution::distribution_database::get_or_build_wheel_metadata dist=opentelemetry-api==1.29.0
+     uv_client::registry_client::wheel_metadata built_dist=opentelemetry-api==1.29.0
+       uv_client::cached_client::get_serde_with_retry 
+         uv_client::cached_client::get_cacheable_with_retry 
+           uv_client::cached_client::get_cacheable 
+             uv_client::cached_client::read_and_parse_cache file=/Users/alonb/Library/Caches/uv/wheels-v3/pypi/opentelemetry-api/opentelemetry_api-1.29.0-py3-none-any.msgpack
+              0.127869s   0ms DEBUG uv_client::cached_client Found fresh response for: https://files.pythonhosted.org/packages/31/b4/b9b800c45527aadd64d5b442f9b932b00648617eb5d63d2c7a6587b7cafc/jmespath-1.0.1-py3-none-any.whl.metadata
+ uv_client::cached_client::from_path_sync path="/Users/alonb/Library/Caches/uv/wheels-v3/pypi/opentelemetry-api/opentelemetry_api-1.29.0-py3-none-any.msgpack"
+              0.127898s   0ms DEBUG uv_client::cached_client Found fresh response for: https://files.pythonhosted.org/packages/1b/ac/e7dc469e49048dc57f62e0c555d2ee3117fa30813d2a1a2962cce3a2a82a/s3transfer-0.11.2-py3-none-any.whl.metadata
+              0.128042s   0ms DEBUG uv_client::cached_client Found fresh response for: https://files.pythonhosted.org/packages/da/fb/dc15fad105450a015e913cfa4f5c27b6a5f1bea8fb649f8cae11e699c8af/opentelemetry_semantic_conventions-0.50b0-py3-none-any.whl.metadata
+              0.128175s   0ms DEBUG uv_client::cached_client Found fresh response for: https://files.pythonhosted.org/packages/43/53/5249ea860d417a26a3a6f1bdedfc0748c4f081a3adaec3d398bc0f7c6a71/opentelemetry_api-1.29.0-py3-none-any.whl.metadata
+    0.128198s  16ms DEBUG uv_resolver::resolver Adding transitive dependency for opentelemetry-api==1.29.0: deprecated>=1.2.6
+    0.128202s  16ms DEBUG uv_resolver::resolver Adding transitive dependency for opentelemetry-api==1.29.0: importlib-metadata>=6.0, <=8.5.0+
+ uv_resolver::resolver::process_request request=Versions deprecated
+    0.128217s  16ms DEBUG uv_resolver::resolver Searching for a compatible version of opentelemetry-semantic-conventions (>=0.50b0, <0.50b0+)
+    0.128222s  16ms DEBUG uv_resolver::resolver Selecting: opentelemetry-semantic-conventions==0.50b0 [compatible] (opentelemetry_semantic_conventions-0.50b0-py3-none-any.whl)
+   uv_client::registry_client::simple_api package=deprecated
+   uv_resolver::resolver::get_dependencies_forking package=opentelemetry-semantic-conventions, version=0.50b0
+     uv_client::cached_client::get_cacheable_with_retry 
+       uv_client::cached_client::get_cacheable 
+         uv_client::cached_client::read_and_parse_cache file=/Users/alonb/Library/Caches/uv/simple-v15/pypi/deprecated.rkyv
+ uv_resolver::resolver::process_request request=Versions importlib-metadata
+   uv_client::registry_client::simple_api package=importlib-metadata
+     uv_resolver::resolver::get_dependencies package=opentelemetry-semantic-conventions, version=0.50b0
+     uv_client::cached_client::get_cacheable_with_retry 
+       uv_client::cached_client::get_cacheable 
+         uv_client::cached_client::read_and_parse_cache file=/Users/alonb/Library/Caches/uv/simple-v15/pypi/importlib-metadata.rkyv
+ uv_resolver::resolver::process_request request=Prefetch importlib-metadata >=6.0, <=8.5.0+
+ uv_resolver::resolver::process_request request=Prefetch deprecated >=1.2.6
+ uv_client::cached_client::from_path_sync path="/Users/alonb/Library/Caches/uv/simple-v15/pypi/deprecated.rkyv"
+ uv_client::cached_client::from_path_sync path="/Users/alonb/Library/Caches/uv/simple-v15/pypi/importlib-metadata.rkyv"
+    0.128342s  16ms DEBUG uv_resolver::resolver Adding transitive dependency for opentelemetry-semantic-conventions==0.50b0: deprecated>=1.2.6
+    0.128367s  17ms DEBUG uv_resolver::resolver Adding transitive dependency for opentelemetry-semantic-conventions==0.50b0: opentelemetry-api>=1.29.0, <1.29.0+
+    0.128382s  17ms DEBUG uv_resolver::resolver Searching for a compatible version of httpx (>=0.27.0, <0.28)
+    0.128391s  17ms DEBUG uv_resolver::resolver Selecting: httpx==0.27.2 [compatible] (httpx-0.27.2-py3-none-any.whl)
+   uv_resolver::resolver::get_dependencies_forking package=httpx, version=0.27.2
+     uv_resolver::resolver::get_dependencies package=httpx, version=0.27.2
+    0.128462s  17ms DEBUG uv_resolver::resolver Adding transitive dependency for httpx==0.27.2: anyio*
+    0.128465s  17ms DEBUG uv_resolver::resolver Adding transitive dependency for httpx==0.27.2: certifi*
+    0.128938s  17ms DEBUG uv_resolver::resolver Adding transitive dependency for httpx==0.27.2: httpcore>=1.dev0, <2.dev0
+    0.128955s  17ms DEBUG uv_resolver::resolver Adding transitive dependency for httpx==0.27.2: idna*
+    0.128960s  17ms DEBUG uv_resolver::resolver Adding transitive dependency for httpx==0.27.2: sniffio*
+    0.128990s  17ms DEBUG uv_resolver::resolver Searching for a compatible version of annotated-types (>=0.6.0)
+    0.128996s  17ms DEBUG uv_resolver::resolver Selecting: annotated-types==0.7.0 [compatible] (annotated_types-0.7.0-py3-none-any.whl)
+   uv_resolver::resolver::get_dependencies_forking package=annotated-types, version=0.7.0
+     uv_resolver::resolver::get_dependencies package=annotated-types, version=0.7.0
+    0.129007s  17ms DEBUG uv_resolver::resolver Searching for a compatible version of typing-extensions (>=4.12.2)
+    0.129026s  17ms DEBUG uv_resolver::resolver Selecting: typing-extensions==4.12.2 [compatible] (typing_extensions-4.12.2-py3-none-any.whl)
+   uv_resolver::resolver::get_dependencies_forking package=typing-extensions, version=4.12.2
+     uv_resolver::resolver::get_dependencies package=typing-extensions, version=4.12.2
+ uv_resolver::resolver::process_request request=Versions anyio
+   uv_client::registry_client::simple_api package=anyio
+     uv_client::cached_client::get_cacheable_with_retry 
+       uv_client::cached_client::get_cacheable 
+         uv_client::cached_client::read_and_parse_cache file=/Users/alonb/Library/Caches/uv/simple-v15/pypi/anyio.rkyv
+ uv_resolver::resolver::process_request request=Versions certifi
+   uv_client::registry_client::simple_api package=certifi
+     uv_client::cached_client::get_cacheable_with_retry 
+       uv_client::cached_client::get_cacheable 
+         uv_client::cached_client::read_and_parse_cache file=/Users/alonb/Library/Caches/uv/simple-v15/pypi/certifi.rkyv
+ uv_resolver::resolver::process_request request=Versions httpcore
+   uv_client::registry_client::simple_api package=httpcore
+     uv_client::cached_client::get_cacheable_with_retry 
+       uv_client::cached_client::get_cacheable 
+ uv_client::cached_client::from_path_sync path="/Users/alonb/Library/Caches/uv/simple-v15/pypi/certifi.rkyv"
+         uv_client::cached_client::read_and_parse_cache file=/Users/alonb/Library/Caches/uv/simple-v15/pypi/httpcore.rkyv
+ uv_resolver::resolver::process_request request=Versions idna
+   uv_client::registry_client::simple_api package=idna
+     uv_client::cached_client::get_cacheable_with_retry 
+       uv_client::cached_client::get_cacheable 
+ uv_client::cached_client::from_path_sync path="/Users/alonb/Library/Caches/uv/simple-v15/pypi/httpcore.rkyv"
+ uv_client::cached_client::from_path_sync path="/Users/alonb/Library/Caches/uv/simple-v15/pypi/anyio.rkyv"
+         uv_client::cached_client::read_and_parse_cache file=/Users/alonb/Library/Caches/uv/simple-v15/pypi/idna.rkyv
+ uv_resolver::resolver::process_request request=Versions sniffio
+   uv_client::registry_client::simple_api package=sniffio
+     uv_client::cached_client::get_cacheable_with_retry 
+       uv_client::cached_client::get_cacheable 
+         uv_client::cached_client::read_and_parse_cache file=/Users/alonb/Library/Caches/uv/simple-v15/pypi/sniffio.rkyv
+ uv_client::cached_client::from_path_sync path="/Users/alonb/Library/Caches/uv/simple-v15/pypi/idna.rkyv"
+ uv_resolver::resolver::process_request request=Prefetch sniffio *
+ uv_resolver::resolver::process_request request=Prefetch idna *
+ uv_resolver::resolver::process_request request=Prefetch httpcore >=1.dev0, <2.dev0
+ uv_resolver::resolver::process_request request=Prefetch certifi *
+ uv_resolver::resolver::process_request request=Prefetch anyio *
+          0.129497s   1ms DEBUG uv_client::cached_client Found fresh response for: https://pypi.org/simple/deprecated/
+   uv_resolver::version_map::from_metadata 
+   uv_distribution::distribution_database::get_or_build_wheel_metadata dist=deprecated==1.2.18
+     uv_client::registry_client::wheel_metadata built_dist=deprecated==1.2.18
+       uv_client::cached_client::get_serde_with_retry 
+         uv_client::cached_client::get_cacheable_with_retry 
+           uv_client::cached_client::get_cacheable 
+             uv_client::cached_client::read_and_parse_cache file=/Users/alonb/Library/Caches/uv/wheels-v3/pypi/deprecated/deprecated-1.2.18-py2.py3-none-any.msgpack
+ uv_client::cached_client::from_path_sync path="/Users/alonb/Library/Caches/uv/simple-v15/pypi/sniffio.rkyv"
+          0.129812s   1ms DEBUG uv_client::cached_client Found fresh response for: https://pypi.org/simple/importlib-metadata/
+ uv_client::cached_client::from_path_sync path="/Users/alonb/Library/Caches/uv/wheels-v3/pypi/deprecated/deprecated-1.2.18-py2.py3-none-any.msgpack"
+   uv_resolver::version_map::from_metadata 
+          0.129864s   3ms DEBUG uv_client::cached_client Found fresh response for: https://pypi.org/simple/botocore/
+   uv_resolver::version_map::from_metadata 
+   uv_distribution::distribution_database::get_or_build_wheel_metadata dist=importlib-metadata==8.5.0
+     uv_client::registry_client::wheel_metadata built_dist=importlib-metadata==8.5.0
+       uv_client::cached_client::get_serde_with_retry 
+         uv_client::cached_client::get_cacheable_with_retry 
+           uv_client::cached_client::get_cacheable 
+             uv_client::cached_client::read_and_parse_cache file=/Users/alonb/Library/Caches/uv/wheels-v3/pypi/importlib-metadata/importlib_metadata-8.5.0-py3-none-any.msgpack
+              0.130517s   0ms DEBUG uv_client::cached_client Found fresh response for: https://files.pythonhosted.org/packages/6e/c6/ac0b6c1e2d138f1002bcf799d330bd6d85084fece321e662a14223794041/Deprecated-1.2.18-py2.py3-none-any.whl.metadata
+          0.130549s   1ms DEBUG uv_client::cached_client Found fresh response for: https://pypi.org/simple/idna/
+    0.130675s  19ms DEBUG uv_resolver::resolver Searching for a compatible version of botocore (>=1.36.8, <1.37.0)
+ uv_client::cached_client::from_path_sync path="/Users/alonb/Library/Caches/uv/wheels-v3/pypi/importlib-metadata/importlib_metadata-8.5.0-py3-none-any.msgpack"
+    0.130719s  19ms DEBUG uv_resolver::resolver Selecting: botocore==1.36.8 [compatible] (botocore-1.36.8-py3-none-any.whl)
+   uv_resolver::version_map::from_metadata 
+          0.130767s   1ms DEBUG uv_client::cached_client Found fresh response for: https://pypi.org/simple/sniffio/
+   uv_resolver::version_map::from_metadata 
+   uv_resolver::resolver::get_dependencies_forking package=botocore, version=1.36.8
+     uv_resolver::resolver::get_dependencies package=botocore, version=1.36.8
+          0.130804s   1ms DEBUG uv_client::cached_client Found fresh response for: https://pypi.org/simple/certifi/
+   uv_resolver::version_map::from_metadata 
+          0.130886s   1ms DEBUG uv_client::cached_client Found fresh response for: https://pypi.org/simple/httpcore/
+   uv_resolver::version_map::from_metadata 
+   uv_distribution::distribution_database::get_or_build_wheel_metadata dist=idna==3.10
+     uv_client::registry_client::wheel_metadata built_dist=idna==3.10
+       uv_client::cached_client::get_serde_with_retry 
+         uv_client::cached_client::get_cacheable_with_retry 
+           uv_client::cached_client::get_cacheable 
+             uv_client::cached_client::read_and_parse_cache file=/Users/alonb/Library/Caches/uv/wheels-v3/pypi/idna/idna-3.10-py3-none-any.msgpack
+ uv_resolver::resolver::process_request request=Metadata botocore==1.36.8
+   uv_distribution::distribution_database::get_or_build_wheel_metadata dist=botocore==1.36.8
+     uv_client::registry_client::wheel_metadata built_dist=botocore==1.36.8
+       uv_client::cached_client::get_serde_with_retry 
+         uv_client::cached_client::get_cacheable_with_retry 
+           uv_client::cached_client::get_cacheable 
+             uv_client::cached_client::read_and_parse_cache file=/Users/alonb/Library/Caches/uv/wheels-v3/pypi/botocore/botocore-1.36.8-py3-none-any.msgpack
+ uv_client::cached_client::from_path_sync path="/Users/alonb/Library/Caches/uv/wheels-v3/pypi/idna/idna-3.10-py3-none-any.msgpack"
+   uv_distribution::distribution_database::get_or_build_wheel_metadata dist=sniffio==1.3.1
+ uv_client::cached_client::from_path_sync path="/Users/alonb/Library/Caches/uv/wheels-v3/pypi/botocore/botocore-1.36.8-py3-none-any.msgpack"
+     uv_client::registry_client::wheel_metadata built_dist=sniffio==1.3.1
+       uv_client::cached_client::get_serde_with_retry 
+         uv_client::cached_client::get_cacheable_with_retry 
+           uv_client::cached_client::get_cacheable 
+             uv_client::cached_client::read_and_parse_cache file=/Users/alonb/Library/Caches/uv/wheels-v3/pypi/sniffio/sniffio-1.3.1-py3-none-any.msgpack
+   uv_distribution::distribution_database::get_or_build_wheel_metadata dist=certifi==2024.12.14
+     uv_client::registry_client::wheel_metadata built_dist=certifi==2024.12.14
+       uv_client::cached_client::get_serde_with_retry 
+         uv_client::cached_client::get_cacheable_with_retry 
+           uv_client::cached_client::get_cacheable 
+             uv_client::cached_client::read_and_parse_cache file=/Users/alonb/Library/Caches/uv/wheels-v3/pypi/certifi/certifi-2024.12.14-py3-none-any.msgpack
+ uv_client::cached_client::from_path_sync path="/Users/alonb/Library/Caches/uv/wheels-v3/pypi/sniffio/sniffio-1.3.1-py3-none-any.msgpack"
+ uv_client::cached_client::from_path_sync path="/Users/alonb/Library/Caches/uv/wheels-v3/pypi/certifi/certifi-2024.12.14-py3-none-any.msgpack"
+          0.132628s   3ms DEBUG uv_client::cached_client Found fresh response for: https://pypi.org/simple/anyio/
+   uv_resolver::version_map::from_metadata 
+              0.132829s   2ms DEBUG uv_client::cached_client Found fresh response for: https://files.pythonhosted.org/packages/a0/d9/a1e041c5e7caa9a05c925f4bdbdfb7f006d1f74996af53467bc394c97be7/importlib_metadata-8.5.0-py3-none-any.whl.metadata
+   uv_distribution::distribution_database::get_or_build_wheel_metadata dist=httpcore==1.0.7
+     uv_client::registry_client::wheel_metadata built_dist=httpcore==1.0.7
+       uv_client::cached_client::get_serde_with_retry 
+         uv_client::cached_client::get_cacheable_with_retry 
+           uv_client::cached_client::get_cacheable 
+             uv_client::cached_client::read_and_parse_cache file=/Users/alonb/Library/Caches/uv/wheels-v3/pypi/httpcore/httpcore-1.0.7-py3-none-any.msgpack
+              0.133304s   2ms DEBUG uv_client::cached_client Found fresh response for: https://files.pythonhosted.org/packages/3e/05/43bae794c8e5f42d79e1c24205bc0c7447b3909a446de46cf231fa6b39dd/botocore-1.36.8-py3-none-any.whl.metadata
+              0.133342s   2ms DEBUG uv_client::cached_client Found fresh response for: https://files.pythonhosted.org/packages/76/c6/c88e154df9c4e1a2a66ccf0005a88dfb2650c1dffb6f5ce603dfbd452ce3/idna-3.10-py3-none-any.whl.metadata
+ uv_client::cached_client::from_path_sync path="/Users/alonb/Library/Caches/uv/wheels-v3/pypi/httpcore/httpcore-1.0.7-py3-none-any.msgpack"
+   uv_distribution::distribution_database::get_or_build_wheel_metadata dist=anyio==4.8.0
+     uv_client::registry_client::wheel_metadata built_dist=anyio==4.8.0
+       uv_client::cached_client::get_serde_with_retry 
+         uv_client::cached_client::get_cacheable_with_retry 
+           uv_client::cached_client::get_cacheable 
+             uv_client::cached_client::read_and_parse_cache file=/Users/alonb/Library/Caches/uv/wheels-v3/pypi/anyio/anyio-4.8.0-py3-none-any.msgpack
+              0.133608s   2ms DEBUG uv_client::cached_client Found fresh response for: https://files.pythonhosted.org/packages/e9/44/75a9c9421471a6c4805dbf2356f7c181a29c1879239abab1ea2cc8f38b40/sniffio-1.3.1-py3-none-any.whl.metadata
+              0.141522s   9ms DEBUG uv_client::cached_client Found fresh response for: https://files.pythonhosted.org/packages/a5/32/8f6669fc4798494966bf446c8c4a162e0b5d893dff088afddf76414f70e1/certifi-2024.12.14-py3-none-any.whl.metadata
+ uv_client::cached_client::from_path_sync path="/Users/alonb/Library/Caches/uv/wheels-v3/pypi/anyio/anyio-4.8.0-py3-none-any.msgpack"
+    0.141689s  30ms DEBUG uv_resolver::resolver Adding transitive dependency for botocore==1.36.8: jmespath>=0.7.1, <2.0.0
+    0.141712s  30ms DEBUG uv_resolver::resolver Adding transitive dependency for botocore==1.36.8: python-dateutil>=2.1, <3.0.0
+    0.141716s  30ms DEBUG uv_resolver::resolver Adding transitive dependency for botocore==1.36.8: urllib3{python_full_version >= '3.10'}>=1.25.4, <2.2.0 | >=2.2.0+, <3
+              0.141922s   8ms DEBUG uv_client::cached_client Found fresh response for: https://files.pythonhosted.org/packages/87/f5/72347bc88306acb359581ac4d52f23c0ef445b57157adedb9aee0cd689d2/httpcore-1.0.7-py3-none-any.whl.metadata
+ uv_resolver::resolver::process_request request=Versions python-dateutil
+   uv_client::registry_client::simple_api package=python-dateutil
+     uv_client::cached_client::get_cacheable_with_retry 
+       uv_client::cached_client::get_cacheable 
+         uv_client::cached_client::read_and_parse_cache file=/Users/alonb/Library/Caches/uv/simple-v15/pypi/python-dateutil.rkyv
+ uv_resolver::resolver::process_request request=Versions urllib3
+   uv_client::registry_client::simple_api package=urllib3
+     uv_client::cached_client::get_cacheable_with_retry 
+       uv_client::cached_client::get_cacheable 
+         uv_client::cached_client::read_and_parse_cache file=/Users/alonb/Library/Caches/uv/simple-v15/pypi/urllib3.rkyv
+ uv_client::cached_client::from_path_sync path="/Users/alonb/Library/Caches/uv/simple-v15/pypi/python-dateutil.rkyv"
+ uv_resolver::resolver::process_request request=Prefetch python-dateutil >=2.1, <3.0.0
+ uv_client::cached_client::from_path_sync path="/Users/alonb/Library/Caches/uv/simple-v15/pypi/urllib3.rkyv"
+              0.142523s   9ms DEBUG uv_client::cached_client Found fresh response for: https://files.pythonhosted.org/packages/46/eb/e7f063ad1fec6b3178a3cd82d1a3c4de82cccf283fc42746168188e1cdd5/anyio-4.8.0-py3-none-any.whl.metadata
+          0.143142s   1ms DEBUG uv_client::cached_client Found fresh response for: https://pypi.org/simple/python-dateutil/
+   uv_resolver::version_map::from_metadata 
+   uv_distribution::distribution_database::get_or_build_wheel_metadata dist=python-dateutil==2.9.0.post0
+     uv_client::registry_client::wheel_metadata built_dist=python-dateutil==2.9.0.post0
+       uv_client::cached_client::get_serde_with_retry 
+         uv_client::cached_client::get_cacheable_with_retry 
+           uv_client::cached_client::get_cacheable 
+             uv_client::cached_client::read_and_parse_cache file=/Users/alonb/Library/Caches/uv/wheels-v3/pypi/python-dateutil/python_dateutil-2.9.0.post0-py2.py3-none-any.msgpack
+ uv_client::cached_client::from_path_sync path="/Users/alonb/Library/Caches/uv/wheels-v3/pypi/python-dateutil/python_dateutil-2.9.0.post0-py2.py3-none-any.msgpack"
+          0.143637s   1ms DEBUG uv_client::cached_client Found fresh response for: https://pypi.org/simple/urllib3/
+   uv_resolver::version_map::from_metadata 
+              0.143667s   0ms DEBUG uv_client::cached_client Found fresh response for: https://files.pythonhosted.org/packages/ec/57/56b9bcc3c9c6a792fcbaf139543cee77261f3651ca9da0c93f5c1221264b/python_dateutil-2.9.0.post0-py2.py3-none-any.whl.metadata
+    0.143682s  32ms DEBUG uv_resolver::resolver Searching for a compatible version of urllib3{python_full_version >= '3.10'} (>=1.25.4, <2.2.0 | >=2.2.0+, <3)
+    0.143694s  32ms DEBUG uv_resolver::resolver Selecting: urllib3==2.3.0 [compatible] (urllib3-2.3.0-py3-none-any.whl)
+   uv_resolver::resolver::get_dependencies_forking package=urllib3{python_full_version >= '3.10'}, version=2.3.0
+     uv_resolver::resolver::get_dependencies package=urllib3{python_full_version >= '3.10'}, version=2.3.0
+    0.143782s  32ms DEBUG uv_resolver::resolver Adding transitive dependency for urllib3==2.3.0: urllib3==2.3.0
+    0.143786s  32ms DEBUG uv_resolver::resolver Adding transitive dependency for urllib3==2.3.0: urllib3{python_full_version >= '3.10'}==2.3.0
+    0.143845s  32ms DEBUG uv_resolver::resolver Searching for a compatible version of jmespath (>=0.7.1, <2.0.0)
+    0.143849s  32ms DEBUG uv_resolver::resolver Selecting: jmespath==1.0.1 [compatible] (jmespath-1.0.1-py3-none-any.whl)
+   uv_resolver::resolver::get_dependencies_forking package=jmespath, version=1.0.1
+     uv_resolver::resolver::get_dependencies package=jmespath, version=1.0.1
+ uv_resolver::resolver::process_request request=Prefetch urllib3 ==2.3.0
+    0.143987s  32ms DEBUG uv_resolver::resolver Searching for a compatible version of s3transfer (>=0.11.0, <0.12.0)
+    0.144008s  32ms DEBUG uv_resolver::resolver Selecting: s3transfer==0.11.2 [compatible] (s3transfer-0.11.2-py3-none-any.whl)
+   uv_resolver::resolver::get_dependencies_forking package=s3transfer, version=0.11.2
+     uv_resolver::resolver::get_dependencies package=s3transfer, version=0.11.2
+   uv_distribution::distribution_database::get_or_build_wheel_metadata dist=urllib3==2.3.0
+     uv_client::registry_client::wheel_metadata built_dist=urllib3==2.3.0
+    0.144097s  32ms DEBUG uv_resolver::resolver Adding transitive dependency for s3transfer==0.11.2: botocore>=1.36.0, <2.0a0
+    0.144130s  32ms DEBUG uv_resolver::resolver Searching for a compatible version of dnspython (>=1.16.0, <3.0.0)
+    0.144145s  32ms DEBUG uv_resolver::resolver Selecting: dnspython==2.7.0 [compatible] (dnspython-2.7.0-py3-none-any.whl)
+   uv_resolver::resolver::get_dependencies_forking package=dnspython, version=2.7.0
+     uv_resolver::resolver::get_dependencies package=dnspython, version=2.7.0
+    0.144159s  32ms DEBUG uv_resolver::resolver Searching for a compatible version of deprecated (>=1.2.6)
+    0.144163s  32ms DEBUG uv_resolver::resolver Selecting: deprecated==1.2.18 [compatible] (Deprecated-1.2.18-py2.py3-none-any.whl)
+   uv_resolver::resolver::get_dependencies_forking package=deprecated, version=1.2.18
+     uv_resolver::resolver::get_dependencies package=deprecated, version=1.2.18
+       uv_client::cached_client::get_serde_with_retry 
+         uv_client::cached_client::get_cacheable_with_retry 
+           uv_client::cached_client::get_cacheable 
+             uv_client::cached_client::read_and_parse_cache file=/Users/alonb/Library/Caches/uv/wheels-v3/pypi/urllib3/urllib3-2.3.0-py3-none-any.msgpack
+ uv_client::cached_client::from_path_sync path="/Users/alonb/Library/Caches/uv/wheels-v3/pypi/urllib3/urllib3-2.3.0-py3-none-any.msgpack"
+    0.144260s  32ms DEBUG uv_resolver::resolver Adding transitive dependency for deprecated==1.2.18: wrapt>=1.10, <2
+    0.144269s  32ms DEBUG uv_resolver::resolver Searching for a compatible version of importlib-metadata (>=6.0, <=8.5.0+)
+    0.144299s  32ms DEBUG uv_resolver::resolver Selecting: importlib-metadata==8.5.0 [compatible] (importlib_metadata-8.5.0-py3-none-any.whl)
+   uv_resolver::resolver::get_dependencies_forking package=importlib-metadata, version=8.5.0
+     uv_resolver::resolver::get_dependencies package=importlib-metadata, version=8.5.0
+    0.144311s  32ms DEBUG uv_resolver::resolver Adding transitive dependency for importlib-metadata==8.5.0: zipp>=3.20
+    0.144319s  32ms DEBUG uv_resolver::resolver Searching for a compatible version of anyio (*)
+    0.144322s  32ms DEBUG uv_resolver::resolver Selecting: anyio==4.8.0 [compatible] (anyio-4.8.0-py3-none-any.whl)
+   uv_resolver::resolver::get_dependencies_forking package=anyio, version=4.8.0
+     uv_resolver::resolver::get_dependencies package=anyio, version=4.8.0
+    0.144518s  33ms DEBUG uv_resolver::resolver Adding transitive dependency for anyio==4.8.0: idna>=2.8
+    0.144531s  33ms DEBUG uv_resolver::resolver Adding transitive dependency for anyio==4.8.0: sniffio>=1.1
+ uv_resolver::resolver::process_request request=Versions wrapt
+    0.144558s  33ms DEBUG uv_resolver::resolver Adding transitive dependency for anyio==4.8.0: typing-extensions{python_full_version < '3.13'}>=4.5
+    0.144569s  33ms DEBUG uv_resolver::resolver Searching for a compatible version of typing-extensions{python_full_version < '3.13'} (>=4.5)
+    0.144573s  33ms DEBUG uv_resolver::resolver Selecting: typing-extensions==4.12.2 [compatible] (typing_extensions-4.12.2-py3-none-any.whl)
+   uv_resolver::resolver::get_dependencies_forking package=typing-extensions{python_full_version < '3.13'}, version=4.12.2
+     uv_resolver::resolver::get_dependencies package=typing-extensions{python_full_version < '3.13'}, version=4.12.2
+    0.144581s  33ms DEBUG uv_resolver::resolver Adding transitive dependency for typing-extensions==4.12.2: typing-extensions==4.12.2
+    0.144630s  33ms DEBUG uv_resolver::resolver Adding transitive dependency for typing-extensions==4.12.2: typing-extensions{python_full_version < '3.13'}==4.12.2
+    0.144638s  33ms DEBUG uv_resolver::resolver Searching for a compatible version of typing-extensions{python_full_version < '3.13'} (==4.12.2)
+    0.144642s  33ms DEBUG uv_resolver::resolver Selecting: typing-extensions==4.12.2 [compatible] (typing_extensions-4.12.2-py3-none-any.whl)
+   uv_resolver::resolver::get_dependencies_forking package=typing-extensions{python_full_version < '3.13'}, version=4.12.2
+     uv_resolver::resolver::get_dependencies package=typing-extensions{python_full_version < '3.13'}, version=4.12.2
+    0.144667s  33ms DEBUG uv_resolver::resolver Searching for a compatible version of certifi (*)
+    0.144670s  33ms DEBUG uv_resolver::resolver Selecting: certifi==2024.12.14 [compatible] (certifi-2024.12.14-py3-none-any.whl)
+   uv_resolver::resolver::get_dependencies_forking package=certifi, version=2024.12.14
+     uv_resolver::resolver::get_dependencies package=certifi, version=2024.12.14
+    0.144771s  33ms DEBUG uv_resolver::resolver Searching for a compatible version of httpcore (>=1.dev0, <2.dev0)
+    0.145035s  33ms DEBUG uv_resolver::resolver Selecting: httpcore==1.0.7 [compatible] (httpcore-1.0.7-py3-none-any.whl)
+   uv_resolver::resolver::get_dependencies_forking package=httpcore, version=1.0.7
+     uv_resolver::resolver::get_dependencies package=httpcore, version=1.0.7
+   uv_client::registry_client::simple_api package=wrapt
+     uv_client::cached_client::get_cacheable_with_retry 
+    0.145123s  33ms DEBUG uv_resolver::resolver Adding transitive dependency for httpcore==1.0.7: certifi*
+    0.145134s  33ms DEBUG uv_resolver::resolver Adding transitive dependency for httpcore==1.0.7: h11>=0.13, <0.15
+    0.145155s  33ms DEBUG uv_resolver::resolver Searching for a compatible version of idna (>=2.8)
+    0.145163s  33ms DEBUG uv_resolver::resolver Selecting: idna==3.10 [compatible] (idna-3.10-py3-none-any.whl)
+   uv_resolver::resolver::get_dependencies_forking package=idna, version=3.10
+     uv_resolver::resolver::get_dependencies package=idna, version=3.10
+    0.145186s  33ms DEBUG uv_resolver::resolver Searching for a compatible version of sniffio (>=1.1)
+    0.145192s  33ms DEBUG uv_resolver::resolver Selecting: sniffio==1.3.1 [compatible] (sniffio-1.3.1-py3-none-any.whl)
+   uv_resolver::resolver::get_dependencies_forking package=sniffio, version=1.3.1
+     uv_resolver::resolver::get_dependencies package=sniffio, version=1.3.1
+    0.145210s  33ms DEBUG uv_resolver::resolver Searching for a compatible version of python-dateutil (>=2.1, <3.0.0)
+       uv_client::cached_client::get_cacheable 
+         uv_client::cached_client::read_and_parse_cache file=/Users/alonb/Library/Caches/uv/simple-v15/pypi/wrapt.rkyv
+ uv_resolver::resolver::process_request request=Prefetch wrapt >=1.10, <2
+              0.145237s   1ms DEBUG uv_client::cached_client Found fresh response for: https://files.pythonhosted.org/packages/c8/19/4ec628951a74043532ca2cf5d97b7b14863931476d117c471e8e2b1eb39f/urllib3-2.3.0-py3-none-any.whl.metadata
+    0.145286s  33ms DEBUG uv_resolver::resolver Selecting: python-dateutil==2.9.0.post0 [compatible] (python_dateutil-2.9.0.post0-py2.py3-none-any.whl)
+   uv_resolver::resolver::get_dependencies_forking package=python-dateutil, version=2.9.0.post0
+     uv_resolver::resolver::get_dependencies package=python-dateutil, version=2.9.0.post0
+ uv_client::cached_client::from_path_sync path="/Users/alonb/Library/Caches/uv/simple-v15/pypi/wrapt.rkyv"
+ uv_resolver::resolver::process_request request=Versions zipp
+   uv_client::registry_client::simple_api package=zipp
+     uv_client::cached_client::get_cacheable_with_retry 
+       uv_client::cached_client::get_cacheable 
+         uv_client::cached_client::read_and_parse_cache file=/Users/alonb/Library/Caches/uv/simple-v15/pypi/zipp.rkyv
+ uv_resolver::resolver::process_request request=Prefetch zipp >=3.20
+ uv_resolver::resolver::process_request request=Prefetch idna >=2.8
+ uv_resolver::resolver::process_request request=Prefetch sniffio >=1.1
+ uv_resolver::resolver::process_request request=Versions h11
+   uv_client::registry_client::simple_api package=h11
+     uv_client::cached_client::get_cacheable_with_retry 
+       uv_client::cached_client::get_cacheable 
+         uv_client::cached_client::read_and_parse_cache file=/Users/alonb/Library/Caches/uv/simple-v15/pypi/h11.rkyv
+ uv_resolver::resolver::process_request request=Prefetch h11 >=0.13, <0.15
+ uv_client::cached_client::from_path_sync path="/Users/alonb/Library/Caches/uv/simple-v15/pypi/zipp.rkyv"
+ uv_client::cached_client::from_path_sync path="/Users/alonb/Library/Caches/uv/simple-v15/pypi/h11.rkyv"
+    0.145973s  34ms DEBUG uv_resolver::resolver Adding transitive dependency for python-dateutil==2.9.0.post0: six>=1.5
+    0.146191s  34ms DEBUG uv_resolver::resolver Searching for a compatible version of urllib3 (==2.3.0)
+ uv_resolver::resolver::process_request request=Versions six
+   uv_client::registry_client::simple_api package=six
+     uv_client::cached_client::get_cacheable_with_retry 
+       uv_client::cached_client::get_cacheable 
+         uv_client::cached_client::read_and_parse_cache file=/Users/alonb/Library/Caches/uv/simple-v15/pypi/six.rkyv
+    0.146384s  35ms DEBUG uv_resolver::resolver Selecting: urllib3==2.3.0 [compatible] (urllib3-2.3.0-py3-none-any.whl)
+   uv_resolver::resolver::get_dependencies_forking package=urllib3, version=2.3.0
+     uv_resolver::resolver::get_dependencies package=urllib3, version=2.3.0
+ uv_resolver::resolver::process_request request=Prefetch six >=1.5
+    0.146498s  35ms DEBUG uv_resolver::resolver Searching for a compatible version of urllib3{python_full_version >= '3.10'} (==2.3.0)
+    0.146551s  35ms DEBUG uv_resolver::resolver Selecting: urllib3==2.3.0 [compatible] (urllib3-2.3.0-py3-none-any.whl)
+   uv_resolver::resolver::get_dependencies_forking package=urllib3{python_full_version >= '3.10'}, version=2.3.0
+     uv_resolver::resolver::get_dependencies package=urllib3{python_full_version >= '3.10'}, version=2.3.0
+ uv_client::cached_client::from_path_sync path="/Users/alonb/Library/Caches/uv/simple-v15/pypi/six.rkyv"
+          0.146944s   1ms DEBUG uv_client::cached_client Found fresh response for: https://pypi.org/simple/h11/
+   uv_resolver::version_map::from_metadata 
+   uv_distribution::distribution_database::get_or_build_wheel_metadata dist=h11==0.14.0
+     uv_client::registry_client::wheel_metadata built_dist=h11==0.14.0
+       uv_client::cached_client::get_serde_with_retry 
+         uv_client::cached_client::get_cacheable_with_retry 
+           uv_client::cached_client::get_cacheable 
+             uv_client::cached_client::read_and_parse_cache file=/Users/alonb/Library/Caches/uv/wheels-v3/pypi/h11/h11-0.14.0-py3-none-any.msgpack
+          0.147088s   1ms DEBUG uv_client::cached_client Found fresh response for: https://pypi.org/simple/zipp/
+   uv_resolver::version_map::from_metadata 
+ uv_client::cached_client::from_path_sync path="/Users/alonb/Library/Caches/uv/wheels-v3/pypi/h11/h11-0.14.0-py3-none-any.msgpack"
+   uv_distribution::distribution_database::get_or_build_wheel_metadata dist=zipp==3.21.0
+     uv_client::registry_client::wheel_metadata built_dist=zipp==3.21.0
+       uv_client::cached_client::get_serde_with_retry 
+         uv_client::cached_client::get_cacheable_with_retry 
+           uv_client::cached_client::get_cacheable 
+             uv_client::cached_client::read_and_parse_cache file=/Users/alonb/Library/Caches/uv/wheels-v3/pypi/zipp/zipp-3.21.0-py3-none-any.msgpack
+ uv_client::cached_client::from_path_sync path="/Users/alonb/Library/Caches/uv/wheels-v3/pypi/zipp/zipp-3.21.0-py3-none-any.msgpack"
+              0.147315s   0ms DEBUG uv_client::cached_client Found fresh response for: https://files.pythonhosted.org/packages/95/04/ff642e65ad6b90db43e668d70ffb6736436c7ce41fcc549f4e9472234127/h11-0.14.0-py3-none-any.whl.metadata
+              0.147592s   0ms DEBUG uv_client::cached_client Found fresh response for: https://files.pythonhosted.org/packages/b7/1a/7e4798e9339adc931158c9d69ecc34f5e6791489d469f5e50ec15e35f458/zipp-3.21.0-py3-none-any.whl.metadata
+          0.147672s   1ms DEBUG uv_client::cached_client Found fresh response for: https://pypi.org/simple/six/
+   uv_resolver::version_map::from_metadata 
+          0.147703s   2ms DEBUG uv_client::cached_client Found fresh response for: https://pypi.org/simple/wrapt/
+   uv_resolver::version_map::from_metadata 
+   uv_distribution::distribution_database::get_or_build_wheel_metadata dist=six==1.17.0
+     uv_client::registry_client::wheel_metadata built_dist=six==1.17.0
+    0.147960s  36ms DEBUG uv_resolver::resolver Searching for a compatible version of wrapt (>=1.10, <2)
+       uv_client::cached_client::get_serde_with_retry 
+         uv_client::cached_client::get_cacheable_with_retry 
+           uv_client::cached_client::get_cacheable 
+             uv_client::cached_client::read_and_parse_cache file=/Users/alonb/Library/Caches/uv/wheels-v3/pypi/six/six-1.17.0-py2.py3-none-any.msgpack
+ uv_client::cached_client::from_path_sync path="/Users/alonb/Library/Caches/uv/wheels-v3/pypi/six/six-1.17.0-py2.py3-none-any.msgpack"
+    0.148053s  36ms DEBUG uv_resolver::resolver Selecting: wrapt==1.17.2 [compatible] (wrapt-1.17.2-cp312-cp312-macosx_11_0_arm64.whl)
+   uv_resolver::resolver::get_dependencies_forking package=wrapt, version=1.17.2
+     uv_resolver::resolver::get_dependencies package=wrapt, version=1.17.2
+ uv_resolver::resolver::process_request request=Metadata wrapt==1.17.2
+   uv_distribution::distribution_database::get_or_build_wheel_metadata dist=wrapt==1.17.2
+     uv_client::registry_client::wheel_metadata built_dist=wrapt==1.17.2
+       uv_client::cached_client::get_serde_with_retry 
+         uv_client::cached_client::get_cacheable_with_retry 
+           uv_client::cached_client::get_cacheable 
+             uv_client::cached_client::read_and_parse_cache file=/Users/alonb/Library/Caches/uv/wheels-v3/pypi/wrapt/wrapt-1.17.2-cp312-cp312-macosx_11_0_arm64.msgpack
+ uv_client::cached_client::from_path_sync path="/Users/alonb/Library/Caches/uv/wheels-v3/pypi/wrapt/wrapt-1.17.2-cp312-cp312-macosx_11_0_arm64.msgpack"
+              0.148466s   0ms DEBUG uv_client::cached_client Found fresh response for: https://files.pythonhosted.org/packages/b7/ce/149a00dd41f10bc29e5921b496af8b574d8413afcd5e30dfa0ed46c2cc5e/six-1.17.0-py2.py3-none-any.whl.metadata
+              0.148513s   0ms DEBUG uv_client::cached_client Found fresh response for: https://files.pythonhosted.org/packages/48/2a/97928387d6ed1c1ebbfd4efc4133a0633546bec8481a2dd5ec961313a1c7/wrapt-1.17.2-cp312-cp312-macosx_11_0_arm64.whl.metadata
+    0.148554s  37ms DEBUG uv_resolver::resolver Searching for a compatible version of zipp (>=3.20)
+    0.148563s  37ms DEBUG uv_resolver::resolver Selecting: zipp==3.21.0 [compatible] (zipp-3.21.0-py3-none-any.whl)
+   uv_resolver::resolver::get_dependencies_forking package=zipp, version=3.21.0
+     uv_resolver::resolver::get_dependencies package=zipp, version=3.21.0
+    0.148584s  37ms DEBUG uv_resolver::resolver Searching for a compatible version of h11 (>=0.13, <0.15)
+    0.148587s  37ms DEBUG uv_resolver::resolver Selecting: h11==0.14.0 [compatible] (h11-0.14.0-py3-none-any.whl)
+   uv_resolver::resolver::get_dependencies_forking package=h11, version=0.14.0
+     uv_resolver::resolver::get_dependencies package=h11, version=0.14.0
+    0.148597s  37ms DEBUG uv_resolver::resolver Searching for a compatible version of six (>=1.5)
+    0.148657s  37ms DEBUG uv_resolver::resolver Selecting: six==1.17.0 [compatible] (six-1.17.0-py2.py3-none-any.whl)
+   uv_resolver::resolver::get_dependencies_forking package=six, version=1.17.0
+     uv_resolver::resolver::get_dependencies package=six, version=1.17.0
+    0.148845s  37ms DEBUG uv_resolver::resolver::batch_prefetch Tried 29 versions: annotated-types 1, anyio 1, boto3 1, botocore 1, certifi 1, deprecated 1, dnspython 1, h11 1, httpcore 1, httpx 1, idna 1, importlib-metadata 1, jmespath 1, opentelemetry-api 1, opentelemetry-sdk 1, opentelemetry-semantic-conventions 1, pydantic 1, pydantic-core 1, pymongo 1, pynexite 1, python-dateutil 1, s3transfer 1, six 1, sniffio 1, structlog 1, typing-extensions 1, urllib3 1, wrapt 1, zipp 1
+    0.148866s  37ms DEBUG uv_resolver::resolver marker environment resolution took 0.037s
+Resolved 29 packages in 134ms
+    0.152593s DEBUG uv_installer::plan Requirement already cached: opentelemetry-api==1.29.0
+    0.153750s DEBUG uv_installer::plan Requirement already cached: httpcore==1.0.7
+    0.154257s DEBUG uv_installer::plan Requirement already cached: annotated-types==0.7.0
+    0.155018s DEBUG uv_installer::plan Requirement already cached: structlog==24.4.0
+    0.156062s DEBUG uv_installer::plan Requirement already cached: s3transfer==0.11.2
+    0.156372s DEBUG uv_installer::plan Requirement already cached: python-dateutil==2.9.0.post0
+    0.156837s DEBUG uv_installer::plan Requirement already cached: six==1.17.0
+    0.157085s DEBUG uv_installer::plan Requirement already cached: sniffio==1.3.1
+    0.157389s DEBUG uv_installer::plan Requirement already cached: jmespath==1.0.1
+    0.158018s DEBUG uv_installer::plan Requirement already cached: typing-extensions==4.12.2
+    0.158928s DEBUG uv_installer::plan Requirement already cached: wrapt==1.17.2
+    0.159379s DEBUG uv_installer::plan Requirement already cached: dnspython==2.7.0
+    0.160512s DEBUG uv_installer::plan Requirement already cached: pymongo==4.11
+    0.161030s DEBUG uv_installer::plan Requirement already cached: opentelemetry-sdk==1.29.0
+    0.161413s DEBUG uv_installer::plan Requirement already cached: h11==0.14.0
+    0.161934s DEBUG uv_installer::plan Requirement already cached: opentelemetry-semantic-conventions==0.50b0
+    0.162853s DEBUG uv_installer::plan Requirement already cached: httpx==0.27.2
+    0.163590s DEBUG uv_installer::plan Requirement already cached: urllib3==2.3.0
+    0.164371s DEBUG uv_installer::plan Requirement already cached: anyio==4.8.0
+    0.165769s DEBUG uv_installer::plan Requirement already cached: pydantic==2.10.6
+    0.166207s DEBUG uv_installer::plan Requirement already cached: certifi==2024.12.14
+    0.167476s DEBUG uv_installer::plan Requirement already cached: botocore==1.36.8
+    0.168930s DEBUG uv_installer::plan Requirement already cached: boto3==1.36.8
+    0.169304s DEBUG uv_installer::plan Requirement already cached: deprecated==1.2.18
+    0.169526s DEBUG uv_installer::plan Requirement already cached: importlib-metadata==8.5.0
+    0.170357s DEBUG uv_installer::plan Requirement already cached: pydantic-core==2.27.2
+    0.170846s DEBUG uv_installer::plan Requirement already cached: idna==3.10
+    0.170985s DEBUG uv_installer::plan Git source requirement already cached: pynexite==1.0.0 (from git+ssh://git@bitbucket.org/nexite/backend.git@c61bf1a553db5911babe6298ed842799f61112c4#subdirectory=pynexite)
+    0.171161s DEBUG uv_installer::plan Requirement already cached: zipp==3.21.0
+    0.171237s DEBUG uv_installer::plan Preserving seed package: pip==25.0
+ uv_installer::installer::install_blocking num_wheels=29
+   uv_installer::installer::install num_wheels=29
+ uv_install_wheel::linker::install_wheel wheel=structlog-24.4.0-py3-none-any.whl
+ uv_install_wheel::linker::install_wheel wheel=opentelemetry_api-1.29.0-py3-none-any.whl
+ uv_install_wheel::linker::install_wheel wheel=pymongo-4.11-cp312-cp312-macosx_11_0_arm64.whl
+ uv_install_wheel::linker::install_wheel wheel=httpcore-1.0.7-py3-none-any.whl
+ uv_install_wheel::linker::install_wheel wheel=wrapt-1.17.2-cp312-cp312-macosx_11_0_arm64.whl
+ uv_install_wheel::linker::install_wheel wheel=h11-0.14.0-py3-none-any.whl
+ uv_install_wheel::linker::install_wheel wheel=annotated_types-0.7.0-py3-none-any.whl
+ uv_install_wheel::linker::install_wheel wheel=opentelemetry_sdk-1.29.0-py3-none-any.whl
+ uv_install_wheel::linker::install_wheel wheel=jmespath-1.0.1-py3-none-any.whl
+ uv_install_wheel::linker::install_wheel wheel=botocore-1.36.8-py3-none-any.whl
+ uv_install_wheel::linker::install_wheel wheel=sniffio-1.3.1-py3-none-any.whl
+   uv_install_wheel::linker::link_wheel_files 
+   uv_install_wheel::linker::link_wheel_files 
+   uv_install_wheel::linker::link_wheel_files 
+   uv_install_wheel::linker::link_wheel_files 
+   uv_install_wheel::linker::link_wheel_files 
+   uv_install_wheel::linker::link_wheel_files 
+   uv_install_wheel::linker::link_wheel_files 
+   uv_install_wheel::linker::link_wheel_files 
+   uv_install_wheel::linker::link_wheel_files 
+   uv_install_wheel::linker::link_wheel_files 
+   uv_install_wheel::linker::link_wheel_files 
+   uv_install_wheel::wheel::install_data 
+ uv_install_wheel::linker::install_wheel wheel=dnspython-2.7.0-py3-none-any.whl
+ uv_install_wheel::linker::install_wheel wheel=typing_extensions-4.12.2-py3-none-any.whl
+   uv_install_wheel::linker::link_wheel_files 
+   uv_install_wheel::linker::link_wheel_files 
+ uv_install_wheel::linker::install_wheel wheel=pydantic_core-2.27.2-cp312-cp312-macosx_11_0_arm64.whl
+ uv_install_wheel::linker::install_wheel wheel=opentelemetry_semantic_conventions-0.50b0-py3-none-any.whl
+   uv_install_wheel::linker::link_wheel_files 
+   uv_install_wheel::linker::link_wheel_files 
+ uv_install_wheel::linker::install_wheel wheel=urllib3-2.3.0-py3-none-any.whl
+ uv_install_wheel::linker::install_wheel wheel=s3transfer-0.11.2-py3-none-any.whl
+ uv_install_wheel::linker::install_wheel wheel=httpx-0.27.2-py3-none-any.whl
+   uv_install_wheel::linker::link_wheel_files 
+   uv_install_wheel::linker::link_wheel_files 
+   uv_install_wheel::linker::link_wheel_files 
+ uv_install_wheel::linker::install_wheel wheel=deprecated-1.2.18-py2.py3-none-any.whl
+ uv_install_wheel::linker::install_wheel wheel=boto3-1.36.8-py3-none-any.whl
+   uv_install_wheel::linker::link_wheel_files 
+   uv_install_wheel::linker::link_wheel_files 
+ uv_install_wheel::linker::install_wheel wheel=pynexite-1.0.0-py3-none-any.whl
+ uv_install_wheel::linker::install_wheel wheel=idna-3.10-py3-none-any.whl
+   uv_install_wheel::linker::link_wheel_files 
+   uv_install_wheel::linker::link_wheel_files 
+ uv_install_wheel::linker::install_wheel wheel=importlib_metadata-8.5.0-py3-none-any.whl
+   uv_install_wheel::linker::link_wheel_files 
+ uv_install_wheel::linker::install_wheel wheel=python_dateutil-2.9.0.post0-py2.py3-none-any.whl
+ uv_install_wheel::linker::install_wheel wheel=pydantic-2.10.6-py3-none-any.whl
+ uv_install_wheel::linker::install_wheel wheel=anyio-4.8.0-py3-none-any.whl
+   uv_install_wheel::linker::link_wheel_files 
+   uv_install_wheel::linker::link_wheel_files 
+   uv_install_wheel::linker::link_wheel_files 
+ uv_install_wheel::linker::install_wheel wheel=certifi-2024.12.14-py3-none-any.whl
+   uv_install_wheel::linker::link_wheel_files 
+ uv_install_wheel::linker::install_wheel wheel=six-1.17.0-py2.py3-none-any.whl
+ uv_install_wheel::linker::install_wheel wheel=zipp-3.21.0-py3-none-any.whl
+   uv_install_wheel::linker::link_wheel_files 
+   uv_install_wheel::linker::link_wheel_files 
+Installed 29 packages in 90ms
+ + annotated-types==0.7.0
+ + anyio==4.8.0
+ + boto3==1.36.8
+ + botocore==1.36.8
+ + certifi==2024.12.14
+ + deprecated==1.2.18
+ + dnspython==2.7.0
+ + h11==0.14.0
+ + httpcore==1.0.7
+ + httpx==0.27.2
+ + idna==3.10
+ + importlib-metadata==8.5.0
+ + jmespath==1.0.1
+ + opentelemetry-api==1.29.0
+ + opentelemetry-sdk==1.29.0
+ + opentelemetry-semantic-conventions==0.50b0
+ + pydantic==2.10.6
+ + pydantic-core==2.27.2
+ + pymongo==4.11
+ + pynexite==1.0.0 (from git+ssh://git@bitbucket.org/nexite/backend.git@c61bf1a553db5911babe6298ed842799f61112c4#subdirectory=pynexite)
+ + python-dateutil==2.9.0.post0
+ + s3transfer==0.11.2
+ + six==1.17.0
+ + sniffio==1.3.1
+ + structlog==24.4.0
+ + typing-extensions==4.12.2
+ + urllib3==2.3.0
+ + wrapt==1.17.2
+ + zipp==3.21.0
+    0.263833s DEBUG uv_fs Released lock at `/Users/alonb/code/backend/backend-for-frontend/.venv/.lock`
+(.venv) alonb@M-NXT1100 ~/code/backend/backend-for-frontend (release/be) $ uv pip freeze
+annotated-types==0.7.0
+anyio==4.8.0
+boto3==1.36.8
+botocore==1.36.8
+certifi==2024.12.14
+deprecated==1.2.18
+dnspython==2.7.0
+h11==0.14.0
+httpcore==1.0.7
+httpx==0.27.2
+idna==3.10
+importlib-metadata==8.5.0
+jmespath==1.0.1
+opentelemetry-api==1.29.0
+opentelemetry-sdk==1.29.0
+opentelemetry-semantic-conventions==0.50b0
+pip==25.0
+pydantic==2.10.6
+pydantic-core==2.27.2
+pymongo==4.11
+pynexite @ git+ssh://git@bitbucket.org/nexite/backend.git@c61bf1a553db5911babe6298ed842799f61112c4#subdirectory=pynexite
+python-dateutil==2.9.0.post0
+s3transfer==0.11.2
+six==1.17.0
+sniffio==1.3.1
+structlog==24.4.0
+typing-extensions==4.12.2
+urllib3==2.3.0
+wrapt==1.17.2
+zipp==3.21.0
+(.venv) alonb@M-NXT1100 ~/code/backend/backend-for-frontend (release/be) $ 
+```
+
+---
+
+_Comment by @charliermarsh on 2025-01-29 17:30_
+
+Okay cool, thanks. I can fix that.
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2025-01-29 17:30_
+
+---
+
+_Label `question` removed by @charliermarsh on 2025-01-29 17:30_
+
+---
+
+_Label `bug` added by @charliermarsh on 2025-01-29 17:30_
+
+---
+
+_Comment by @charliermarsh on 2025-01-29 18:45_
+
+Sorry... One thing: can you confirm that you're wrapping the URL in quotes? Like:
+
+```
+uv pip install "git+ssh://git@bitbucket.org/project/repository.git@branch-name#egg=package-name&subdirectory=subdirectory"
+```
+
+Otherwise, the `&` is interpreted by the shell.
+
+---
+
+_Comment by @alon710 on 2025-01-29 18:57_
+
+> Sorry... One thing: can you confirm that you're wrapping the URL in quotes? Like:
+> 
+> ```
+> uv pip install "git+ssh://git@bitbucket.org/project/repository.git@branch-name#egg=package-name&subdirectory=subdirectory"
+> ```
+> 
+> Otherwise, the `&` is interpreted by the shell.
+
+It worked
+Sorry for the hassle
+
+---
+
+_Comment by @charliermarsh on 2025-01-29 18:58_
+
+I also missed that! It's ok. Glad to resolve.
+
+---
+
+_Closed by @charliermarsh on 2025-01-29 18:58_
+
+---

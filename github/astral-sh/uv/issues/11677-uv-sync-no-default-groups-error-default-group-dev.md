@@ -1,0 +1,40 @@
+---
+number: 11677
+title: "uv sync --no-default-groups: error Default group `dev` (from `tool.uv.default-groups`) is not defined in `dependency-groups` table"
+type: issue
+state: closed
+author: JWCS
+labels:
+  - enhancement
+assignees: []
+created_at: 2025-02-20T20:11:37Z
+updated_at: 2025-02-20T20:14:19Z
+url: https://github.com/astral-sh/uv/issues/11677
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# uv sync --no-default-groups: error Default group `dev` (from `tool.uv.default-groups`) is not defined in `dependency-groups` table
+
+---
+
+_Issue opened by @JWCS on 2025-02-20 20:11_
+
+### Summary
+
+IMO, --no-default-groups shouldn't error on the pyproject.toml not defining a group. An external user may be trying to only install core dependencies (no extras are included by default), and so use this flag as a common default. Warning at best?
+
+Edit: only happens when explicitly have tool.uv.default-groups defined with a group, that's not defined, which is a sufficiently weird case to warrant this error. When not explicitly defined, no error, which is what I expected. 
+
+### Example
+
+_No response_
+
+---
+
+_Label `enhancement` added by @JWCS on 2025-02-20 20:11_
+
+---
+
+_Closed by @JWCS on 2025-02-20 20:12_
+
+---

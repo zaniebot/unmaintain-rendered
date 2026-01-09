@@ -1,0 +1,148 @@
+---
+number: 2756
+title: "ArgEnum support `hidden` attribute"
+type: issue
+state: closed
+author: ModProg
+labels: []
+assignees: []
+created_at: 2021-09-07T12:06:02Z
+updated_at: 2021-09-19T10:29:10Z
+url: https://github.com/clap-rs/clap/issues/2756
+synced_at: 2026-01-07T13:12:19-06:00
+---
+
+# ArgEnum support `hidden` attribute
+
+---
+
+_Issue opened by @ModProg on 2021-09-07 12:06_
+
+### Please complete the following tasks
+
+- [X] I have searched the [discussions](https://github.com/clap-rs/clap/discussions)
+- [X] I have searched the existing issues
+
+### Clap Version
+
+master
+
+### Describe your use case
+
+I want to hide one value in an ArgEnum from for example `[possible values: GitHub, Test]`
+
+### Describe the solution you'd like
+
+I would like to write this, and only have GitHub show up:
+
+```rs
+#[derive(ArgEnum)]
+#[clap(rename_all = "pascal_case")]
+enum CodeProviders {
+    GitHub,
+    #[clap(hidden(true))]
+    Test,
+}
+```
+
+### Alternatives, if applicable
+
+_No response_
+
+### Additional Context
+
+_No response_
+
+---
+
+_Label `T: new feature` added by @ModProg on 2021-09-07 12:06_
+
+---
+
+_Comment by @pksunkara on 2021-09-07 12:08_
+
+Hmm.. can probably be implemented something similar to https://github.com/clap-rs/clap/pull/2733. But looking at all these issues, do we need an `ArgValue` builder?
+
+---
+
+_Comment by @ModProg on 2021-09-07 12:17_
+
+> Hmm.. can probably be implemented something similar to #2733. But looking at all these issues, do we need an `ArgValue` builder?
+
+I thought this could be implemented by just omitting it from the possible_values function, but that is used for validation as well if I understand your answer correctly?
+
+---
+
+_Comment by @pksunkara on 2021-09-07 12:19_
+
+> but that is used for validation as well
+
+Yup, try the `skip` attribute on that value and try to use that value. It will lead to error.
+
+---
+
+_Comment by @epage on 2021-09-07 14:01_
+
+I've been considering some related API problems and I was wondering if we should have an `ArgValue` that includes
+- Name
+- About
+- Hidden
+- Completion Hint
+- etc
+
+We'd then change the signature for `possible_values` to
+```rust
+fn possible_values(values: impl Iterator<Item=impl Into<ArgValue>>)
+```
+where `impl From<&str> for ArgValue` sets the name.
+
+- We currently accept a slice but just to treat it as an iterator, so we can generalize to an iterator
+- Using `Into<ArgValue>` keeps the API simple for the common case while allowing for the complex cases
+- We'd be able to stop ballooning the API for each case (hints, about, names, etc)
+  - For the singular cases, we could still have the individual functions
+
+---
+
+_Comment by @pksunkara on 2021-09-07 14:15_
+
+Design looks good to me.
+
+---
+
+_Label `C: arg enums` added by @pksunkara on 2021-09-07 14:16_
+
+---
+
+_Comment by @epage on 2021-09-07 14:19_
+
+This would be a breaking change, technically.  Should we tag with 3.0?
+
+Oh, and it should be `IntoIterator` and not `Iterator`
+
+---
+
+_Comment by @ModProg on 2021-09-07 15:07_
+
+I experimented in #2758 with something very similar, I would "upgrade" that to the proposed implementation.
+
+---
+
+_Added to milestone `3.0` by @pksunkara on 2021-09-07 15:33_
+
+---
+
+_Referenced in [clap-rs/clap#2758](../../clap-rs/clap/pulls/2758.md) on 2021-09-07 16:08_
+
+---
+
+_Referenced in [clap-rs/clap#2762](../../clap-rs/clap/pulls/2762.md) on 2021-09-09 12:52_
+
+---
+
+_Closed by @pksunkara on 2021-09-19 10:29_
+
+---
+
+_Referenced in [clap-rs/clap#3061](../../clap-rs/clap/issues/3061.md) on 2021-12-06 12:58_
+
+---

@@ -1,0 +1,83 @@
+---
+number: 11125
+title: "SIM911 false positive (with bad autofix) on non-`zip` attribute calls"
+type: issue
+state: closed
+author: lukas-folle-snkeos
+labels:
+  - bug
+assignees: []
+created_at: 2024-04-24T12:51:47Z
+updated_at: 2024-04-24T13:05:19Z
+url: https://github.com/astral-sh/ruff/issues/11125
+synced_at: 2026-01-07T13:12:15-06:00
+---
+
+# SIM911 false positive (with bad autofix) on non-`zip` attribute calls
+
+---
+
+_Issue opened by @lukas-folle-snkeos on 2024-04-24 12:51_
+
+## Description
+Running the ruff format on `plt.bar(dict_a.keys(), dict_a.values())` is formatted by ruff to `dict_a.items()` which seems to be an issue.
+
+This is the pre-commit config I am using
+```yaml
+- repo:
+https://github.com/astral-sh/ruff-pre-commit
+  rev: 21d9bff1d62aaf03230baa6b804b9074255fa9b8 # v0.4.1
+  hooks:
+    - id: ruff
+      args:
+        - --output-format
+        - full
+        - --fix
+      types_or: [python, pyi, jupyter]
+    - id: ruff-format
+      types_or: [python, pyi, jupyter]
+```
+
+## Example
+```python
+from matplotlib.pyplot import plt
+
+dict_a = {"A":1, "B":2, "C":3}
+
+plt.bar(dict_a.keys(), dict_a.values())
+```
+Resolves this to:
+```python
+dict_a = {"A": 1, "B": 2, "C": 3}
+
+dict_a.items()
+```
+
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2024-04-24 12:53_
+
+---
+
+_Label `bug` added by @charliermarsh on 2024-04-24 12:53_
+
+---
+
+_Comment by @charliermarsh on 2024-04-24 12:53_
+
+Thanks, will fix this now!
+
+---
+
+_Referenced in [astral-sh/ruff#11126](../../astral-sh/ruff/pulls/11126.md) on 2024-04-24 12:56_
+
+---
+
+_Renamed from "[Bug] Ruff format strange behaviour on `matplotlib.bar`" to "SIM911 false positive (with bad autofix) on non-`zip` attribute calls" by @AlexWaygood on 2024-04-24 13:05_
+
+---
+
+_Closed by @charliermarsh on 2024-04-24 13:05_
+
+---

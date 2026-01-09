@@ -1,0 +1,157 @@
+---
+number: 2260
+title: UnknownIssuer in docker image run from nox
+type: issue
+state: closed
+author: marvin8
+labels:
+  - question
+assignees: []
+created_at: 2024-03-07T02:43:27Z
+updated_at: 2024-03-07T20:29:44Z
+url: https://github.com/astral-sh/uv/issues/2260
+synced_at: 2026-01-07T13:12:17-06:00
+---
+
+# UnknownIssuer in docker image run from nox
+
+---
+
+_Issue opened by @marvin8 on 2024-03-07 02:43_
+
+I have a docker image with the latest supported versions of Python and the latest version of [Nox](https://github.com/wntrblm/nox/releases/tag/2024.03.02) for my CI environment.
+
+I am attempting to use `uv` to speed up my CI.
+
+Unfortunately `uv` returns an error about `UnknownIssuer` when trying to install dependencies.
+
+Here is the [output of my CI run](https://ci.codeberg.org/repos/12828/pipeline/39/5)
+
+For reference the docker image was built using the below dockerfile:
+
+```
+from debian:12-slim as builder
+
+RUN apt-get --assume-yes update
+RUN apt-get --assume-yes upgrade
+RUN apt-get --assume-yes install git make build-essential libssl-dev zlib1g-dev \
+       libbz2-dev libreadline-dev libsqlite3-dev wget curl llvm \
+       libncurses5-dev libncursesw5-dev xz-utils tk-dev ca-certificates librust-rustls-native-certs-dev
+
+WORKDIR /
+RUN curl https://www.python.org/ftp/python/3.12.2/Python-3.12.2.tgz -o Python-3.12.2.tgz
+RUN tar xfz Python-3.12.2.tgz
+WORKDIR /Python-3.12.2
+RUN ./configure --enable-optimizations --with-ensurepip=install
+RUN make
+RUN make altinstall
+
+WORKDIR /
+RUN curl https://www.python.org/ftp/python/3.11.8/Python-3.11.8.tgz -o Python-3.11.8.tgz
+RUN tar xfz Python-3.11.8.tgz
+WORKDIR /Python-3.11.8
+RUN ./configure --enable-optimizations --with-ensurepip=install
+RUN make
+RUN make altinstall
+
+WORKDIR /
+RUN curl https://www.python.org/ftp/python/3.10.13/Python-3.10.13.tgz -o Python-3.10.13.tgz
+RUN tar xfz Python-3.10.13.tgz
+WORKDIR Python-3.10.13
+RUN ./configure --enable-optimizations --with-ensurepip=install
+RUN make
+RUN make altinstall
+
+WORKDIR /
+RUN curl https://www.python.org/ftp/python/3.9.18/Python-3.9.18.tgz -o Python-3.9.18.tgz
+RUN tar xfz Python-3.9.18.tgz
+WORKDIR Python-3.9.18
+RUN ./configure --enable-optimizations --with-ensurepip=install
+RUN make
+RUN make altinstall
+
+WORKDIR /
+RUN curl https://www.python.org/ftp/python/3.8.18/Python-3.8.18.tgz -o Python-3.8.18.tgz
+RUN tar xfz Python-3.8.18.tgz
+WORKDIR Python-3.8.18
+RUN ./configure --enable-optimizations --with-ensurepip=install
+RUN make
+RUN make altinstall
+
+
+from debian:12-slim
+RUN uname -a
+
+RUN apt-get --assume-yes update
+RUN apt-get --assume-yes install libssl3 libsqlite3-0
+
+COPY --from=builder /usr/local/bin /usr/local/bin
+COPY --from=builder /usr/local/lib /usr/local/lib
+
+RUN python3.8 --version
+RUN python3.9 --version
+RUN python3.10 --version
+RUN python3.11 --version
+RUN python3.12 --version
+
+RUN python3.11 -m pip install nox[uv]
+
+RUN nox --version
+```
+I am looking for any ideas why UV returns an `UknownIssuer` error where as pip works without any issues.
+
+---
+
+_Comment by @zanieb on 2024-03-07 03:48_
+
+I'm not sure, but it sounds like something's wrong with your image's certificates. `pip` doesn't use the system truststore by default but we do (#1512).
+
+Similar issue in https://github.com/astral-sh/uv/issues/1819 but they were using custom certificates.
+
+---
+
+_Label `question` added by @zanieb on 2024-03-07 03:48_
+
+---
+
+_Comment by @marvin8 on 2024-03-07 03:59_
+
+Thanks... reading through #1512 it feels that maybe using debian-slim as a starting point for my image may not be the best. I'll experiment a bit and will report back.
+
+
+---
+
+_Comment by @zanieb on 2024-03-07 04:10_
+
+Thanks! Happy to help if I can but usually these aren't related to `uv` itself.
+
+---
+
+_Comment by @marvin8 on 2024-03-07 04:14_
+
+> usually these aren't related to `uv` itself.
+
+Yeah... fully appreciate that. I was more looking for hints on where to look next.
+
+Anyway, thanks for your help and insight. (I wasn't aware that pip doesn't use the system trust store. With that info I realize now, that having pip work is **no** indication that my system trust store is in good shape :)
+
+
+---
+
+_Comment by @zanieb on 2024-03-07 04:16_
+
+You can check if `pip` works with your system trust store: https://pip.pypa.io/en/stable/topics/https-certificates/#using-system-certificate-stores
+
+---
+
+_Comment by @marvin8 on 2024-03-07 20:29_
+
+I have re-worked my docker image file to be based on Alpine (instead of debian) and this error has disappeared. So it seems that the the [comment](https://github.com/astral-sh/uv/pull/1512#issuecomment-1948875134) in #1512 was spot on.
+
+Thanks for your help. Closing this now.
+
+---
+
+_Closed by @marvin8 on 2024-03-07 20:29_
+
+---

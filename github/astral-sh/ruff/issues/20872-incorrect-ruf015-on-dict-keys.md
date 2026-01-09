@@ -1,0 +1,108 @@
+---
+number: 20872
+title: "Incorrect `RUF015` on `dict.keys()`"
+type: issue
+state: closed
+author: Paillat-dev
+labels:
+  - question
+assignees: []
+created_at: 2025-10-14T20:20:36Z
+updated_at: 2025-10-14T20:44:35Z
+url: https://github.com/astral-sh/ruff/issues/20872
+synced_at: 2026-01-07T13:12:16-06:00
+---
+
+# Incorrect `RUF015` on `dict.keys()`
+
+---
+
+_Issue opened by @Paillat-dev on 2025-10-14 20:20_
+
+### Summary
+
+When selecting the first element of some dictionary keys with `list(my_dict.keys())[0]`, a `RUF015` warning is created. However, `dict_keys` is *not* an iterator, and doesn't implement `__next__`.
+
+
+```py
+# test.py
+
+my_dict: dict[str, int] = {"1": 1, "2": 2}
+
+print(list(my_dict.keys())[0])
+```
+```
+PS C:\Users\usr\Downloads\test> uvx ruff check --isolated --select RUF015 .\test.py
+RUF015 Prefer `next(iter(my_dict.keys()))` over single element slice
+ --> test.py:3:7
+  |
+1 | my_dict: dict[str, int] = {"1": 1, "2": 2}
+2 |
+3 | print(list(my_dict.keys())[0])
+  |       ^^^^^^^^^^^^^^^^^^^^^^^
+  |
+help: Replace with `next(iter(my_dict.keys()))`
+
+Found 1 error.
+No fixes available (1 hidden fix can be enabled with the `--unsafe-fixes` option).
+```
+Command: `uvx ruff check --isolated --select RUF015 test.py`
+
+Playground link: https://play.ruff.rs/60539f52-984b-496a-bbce-278094a277ca
+
+`dict_keys` items do not support `next`, but ruff's `RUF015` incorrectly suggests that one should instead use:
+```py
+my_dict: dict[str, int] = {"1": 1, "2": 2}
+
+print(next(my_dict.keys()))
+```
+
+but the above code leads to
+```
+Traceback (most recent call last):
+  File "<python-input-0>", line 3, in <module>
+    print(next(my_dict.keys()))
+          ~~~~^^^^^^^^^^^^^^^^
+TypeError: 'dict_keys' object is not an iterator
+```
+
+Currently, ruff incorrectly suggests the user to make code changes that would crash at runtime, and an unsafe fix is even present.
+
+The **expected result** would be ruff not to create a `RUF015` warning when something that looks like a `dict_keys` object is passed (e.g. the user uses `.keys()`). Alternatively, the unsafe fix could at least not be presented in such cases.
+
+### Version
+
+`ruff 0.14.0`
+
+---
+
+_Label `question` added by @dylwil3 on 2025-10-14 20:37_
+
+---
+
+_Comment by @dylwil3 on 2025-10-14 20:38_
+
+Yes this is a little confusing, but the help text says:
+
+```
+Replace with `next(iter(my_dict.keys()))`
+```
+
+_not_ to replace with `next(my_dict.keys())`. And the former does work:
+
+```pycon
+>>> next(iter({"a":1}))
+'a'
+```
+
+---
+
+_Comment by @Paillat-dev on 2025-10-14 20:44_
+
+I actually misread this and completely missed the `iter()`. That's on me 😅 
+
+---
+
+_Closed by @Paillat-dev on 2025-10-14 20:44_
+
+---

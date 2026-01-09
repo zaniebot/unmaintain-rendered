@@ -1,0 +1,289 @@
+---
+number: 5591
+title: "Setting flag argument's env var to `flase` still flagged as conflicting"
+type: issue
+state: open
+author: elichai
+labels:
+  - C-bug
+  - M-breaking-change
+  - S-waiting-on-decision
+  - A-parsing
+assignees: []
+created_at: 2024-07-21T15:24:10Z
+updated_at: 2026-01-05T15:11:44Z
+url: https://github.com/clap-rs/clap/issues/5591
+synced_at: 2026-01-07T13:12:20-06:00
+---
+
+# Setting flag argument's env var to `flase` still flagged as conflicting
+
+---
+
+_Issue opened by @elichai on 2024-07-21 15:24_
+
+### Please complete the following tasks
+
+- [X] I have searched the [discussions](https://github.com/clap-rs/clap/discussions)
+- [X] I have searched the [open](https://github.com/clap-rs/clap/issues) and [rejected](https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed) issues
+
+### Rust Version
+
+1.79.0
+
+### Clap Version
+
+4.5.9
+
+### Minimal reproducible code
+
+```rust
+use clap::{arg, value_parser, ArgGroup, Command};
+
+fn main() {
+    std::env::set_var("MEMORY_STORAGE", "false");
+    std::env::set_var(
+        "POSTGRES_CONNECTION_STRING",
+        "postgres://user:password@localhost:5432/db",
+    );
+
+    let matches = Command::new("sample")
+        .group(
+            ArgGroup::new("storage")
+                .args(["memory-storage", "postgres"])
+                .multiple(false)
+                .required(true),
+        )
+        .arg(
+            arg!(--"memory-storage" "Use an in-memory storage backend")
+                .value_parser(value_parser!(bool))
+                .env("MEMORY_STORAGE"),
+        )
+        .arg(
+            arg!(-p --postgres <CONNECTION_STRING> "A postgreSQL connection string")
+                .env("POSTGRES_CONNECTION_STRING"),
+        )
+        .get_matches();
+
+    println!("{matches:?}");
+}
+```
+
+
+### Steps to reproduce the bug with the above code
+
+```
+cargo add clap --features env
+```
+
+### Actual Behaviour
+
+```
+error: the argument '--memory-storage' cannot be used with '--postgres <CONNECTION_STRING>'
+
+Usage: sample <--memory-storage|--postgres <CONNECTION_STRING>>
+
+For more information, try '--help'.
+```
+
+### Expected Behaviour
+
+When I set a flag's env variable to `false` I expect it to not be flagged as conflicting and that it will properly use the postgres connection string
+
+### Additional Context
+
+_No response_
+
+### Debug Output
+
+```
+[clap_builder::builder::command]Command::_do_parse
+[clap_builder::builder::command]Command::_build: name="sample"
+[clap_builder::builder::command]Command::_propagate:sample
+[clap_builder::builder::command]Command::_check_help_and_version:sample expand_help_tree=false
+[clap_builder::builder::command]Command::long_help_exists
+[clap_builder::builder::command]Command::_check_help_and_version: Building default --help
+[clap_builder::builder::command]Command::_propagate_global_args:sample
+[clap_builder::builder::debug_asserts]Command::_debug_asserts
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:memory-storage
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:postgres
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:help
+[clap_builder::builder::debug_asserts]Command::_verify_positionals
+[clap_builder::parser::parser]Parser::get_matches_with
+[clap_builder::parser::parser]Parser::add_env
+[clap_builder::parser::parser]Parser::add_env: Checking arg `--memory-storage`
+[clap_builder::parser::parser]Parser::add_env: Found an opt with value="false"
+[clap_builder::parser::parser]Parser::react action=SetTrue, identifier=None, source=EnvVariable
+[clap_builder::parser::arg_matcher]ArgMatcher::start_custom_arg: id="memory-storage", source=EnvVariable
+[clap_builder::builder::command]Command::groups_for_arg: id="memory-storage"
+[clap_builder::parser::arg_matcher]ArgMatcher::start_custom_arg: id="storage", source=EnvVariable
+[clap_builder::parser::parser]Parser::push_arg_values: ["false"]
+[clap_builder::parser::parser]Parser::add_single_val_to_arg: cur_idx:=1
+[clap_builder::parser::parser]Parser::add_env: Checking arg `--postgres <CONNECTION_STRING>`
+[clap_builder::parser::parser]Parser::add_env: Found an opt with value="postgres://user:password@localhost:5432/db"
+[clap_builder::parser::parser]Parser::react action=Set, identifier=None, source=EnvVariable
+[clap_builder::parser::arg_matcher]ArgMatcher::start_custom_arg: id="postgres", source=EnvVariable
+[clap_builder::builder::command]Command::groups_for_arg: id="postgres"
+[clap_builder::parser::arg_matcher]ArgMatcher::start_custom_arg: id="storage", source=EnvVariable
+[clap_builder::parser::parser]Parser::push_arg_values: ["postgres://user:password@localhost:5432/db"]
+[clap_builder::parser::parser]Parser::add_single_val_to_arg: cur_idx:=2
+[clap_builder::parser::arg_matcher]ArgMatcher::needs_more_vals: o=postgres, pending=0
+[clap_builder::parser::arg_matcher]ArgMatcher::needs_more_vals: expected=1, actual=0
+[clap_builder::parser::parser]Parser::react not enough values passed in, leaving it to the validator to complain
+[clap_builder::parser::parser]Parser::add_env: Checking arg `--help`
+[clap_builder::parser::parser]Parser::add_defaults
+[clap_builder::parser::parser]Parser::add_defaults:iter:memory-storage:
+[clap_builder::parser::parser]Parser::add_default_value: doesn't have conditional defaults
+[clap_builder::parser::parser]Parser::add_default_value:iter:memory-storage: has default vals
+[clap_builder::parser::parser]Parser::add_default_value:iter:memory-storage: was used
+[clap_builder::parser::parser]Parser::add_defaults:iter:postgres:
+[clap_builder::parser::parser]Parser::add_default_value: doesn't have conditional defaults
+[clap_builder::parser::parser]Parser::add_default_value:iter:postgres: doesn't have default vals
+[clap_builder::parser::parser]Parser::add_defaults:iter:help:
+[clap_builder::parser::parser]Parser::add_default_value: doesn't have conditional defaults
+[clap_builder::parser::parser]Parser::add_default_value:iter:help: doesn't have default vals
+[clap_builder::parser::validator]Validator::validate
+[clap_builder::builder::command]Command::groups_for_arg: id="memory-storage"
+[clap_builder::parser::validator]Conflicts::gather_direct_conflicts id="memory-storage", conflicts=["postgres"]
+[clap_builder::parser::validator]Conflicts::gather_direct_conflicts id="storage", conflicts=[]
+[clap_builder::builder::command]Command::groups_for_arg: id="postgres"
+[clap_builder::parser::validator]Conflicts::gather_direct_conflicts id="postgres", conflicts=["memory-storage"]
+[clap_builder::parser::validator]Validator::validate_conflicts
+[clap_builder::parser::validator]Validator::validate_exclusive
+[clap_builder::parser::validator]Validator::validate_exclusive:iter:"memory-storage"
+[clap_builder::parser::validator]Validator::validate_exclusive:iter:"storage"
+[clap_builder::parser::validator]Validator::validate_exclusive:iter:"postgres"
+[clap_builder::parser::validator]Validator::validate_conflicts::iter: id="memory-storage"
+[clap_builder::parser::validator]Conflicts::gather_conflicts: arg="memory-storage"
+[clap_builder::parser::validator]Conflicts::gather_conflicts: conflicts=["postgres", "postgres"]
+[clap_builder::parser::validator]Validator::build_conflict_err: name="memory-storage"
+[ clap_builder::output::usage]Usage::create_usage_with_title
+[ clap_builder::output::usage]Usage::create_usage_no_title
+[ clap_builder::output::usage]Usage::create_smart_usage
+[ clap_builder::output::usage]Usage::write_arg_usage; incl_reqs=true
+[ clap_builder::output::usage]Usage::write_args: incls=["memory-storage"]
+[ clap_builder::output::usage]Usage::get_args: unrolled_reqs=["storage"]
+[clap_builder::builder::command]Command::unroll_args_in_group: group="storage"
+[clap_builder::builder::command]Command::unroll_args_in_group:iter: entity="memory-storage"
+[clap_builder::builder::command]Command::unroll_args_in_group:iter: this is an arg
+[clap_builder::builder::command]Command::unroll_args_in_group:iter: entity="postgres"
+[clap_builder::builder::command]Command::unroll_args_in_group:iter: this is an arg
+[clap_builder::builder::command]Command::unroll_args_in_group: group="storage"
+[clap_builder::builder::command]Command::unroll_args_in_group:iter: entity="memory-storage"
+[clap_builder::builder::command]Command::unroll_args_in_group:iter: this is an arg
+[clap_builder::builder::command]Command::unroll_args_in_group:iter: entity="postgres"
+[clap_builder::builder::command]Command::unroll_args_in_group:iter: this is an arg
+[ clap_builder::output::usage]Usage::create_usage_with_title: usage=Usage: wat <--memory-storage|--postgres <CONNECTION_STRING>>
+[clap_builder::builder::command]Command::color: Color setting...
+[clap_builder::builder::command]Auto
+[clap_builder::builder::command]Command::color: Color setting...
+[clap_builder::builder::command]Auto
+```
+
+---
+
+_Label `C-bug` added by @elichai on 2024-07-21 15:24_
+
+---
+
+_Comment by @konstin on 2025-05-13 07:12_
+
+We have a similar problem in uv, where boolean env vars cannot be reset, causing conflicts (https://github.com/astral-sh/uv/issues/13385). This affects a number of arguments in uv that have both a default value and conflict with another argument.
+
+```rust
+use clap::Parser;
+
+#[derive(Debug, Parser)]
+pub struct Args {
+    /// Don't resolve.
+    #[arg(long, env = "FROZEN", value_parser = clap::builder::BoolishValueParser::new(), conflicts_with_all = ["check"])]
+    frozen: bool,
+
+    /// Check that the resolution is valid.
+    #[arg(long, env = "CHECK", value_parser = clap::builder::BoolishValueParser::new())]
+    check: bool,
+}
+
+fn main() {
+    let args = Args::parse();
+    println!("Args: {args:?}");
+}
+```
+
+```
+$ CHECK=0 mini-uv --frozen
+error: the argument '--frozen' cannot be used with '--check'
+
+Usage: clap-conflicts --frozen
+
+For more information, try '--help'.
+```
+
+---
+
+_Referenced in [astral-sh/uv#13385](../../astral-sh/uv/issues/13385.md) on 2025-05-13 07:13_
+
+---
+
+_Comment by @NellyWhads on 2025-05-14 22:10_
+
+Is there perhaps a high level suggested change? I could try to take a look over the weekend?
+
+---
+
+_Referenced in [astral-sh/uv#17321](../../astral-sh/uv/pulls/17321.md) on 2026-01-05 12:47_
+
+---
+
+_Referenced in [clap-rs/clap#6211](../../clap-rs/clap/pulls/6211.md) on 2026-01-05 15:00_
+
+---
+
+_Label `A-parsing` added by @epage on 2026-01-05 15:04_
+
+---
+
+_Comment by @epage on 2026-01-05 15:10_
+
+This very much ties into #3572
+
+From https://github.com/clap-rs/clap/issues/3572#issuecomment-1077690873
+
+> [#3421](https://github.com/clap-rs/clap/pull/3421) changed `arg_required_else_help` to ignore defaults to align with [#3420](https://github.com/clap-rs/clap/pull/3420) where all our requirement and conflict handling was updated to ignore defaults. [#3420](https://github.com/clap-rs/clap/pull/3420) was a continuation of [#3020](https://github.com/clap-rs/clap/pull/3020) and [#2950](https://github.com/clap-rs/clap/pull/2950).
+> 
+> In [#2950](https://github.com/clap-rs/clap/pull/2950), we [discussed](https://github.com/clap-rs/clap/pull/2950#discussion_r736905259) how we should handle env variables and it was proposed that we treat them like user supplied values.
+> 
+> So the questions for this issue
+> 
+>     * What is the ideal behavior of `arg_required_else_help` be when env variables are set and how important is that?
+>       
+>       * Show `--help` if there is no `ValueSource::CommandLine` value
+>         
+>         * Note: this would be a breaking change as this is dependent on the context while checking for defaults was not because that is static and turned a non-working case to a working case
+>       * Fallback to any errors associated with values being set to `ValueSource::EnvVariable`
+>       * Show `--help` if `is_subcommand_required` and there is no subcommand
+> 
+>     * If we want to reconsider the handling of `ValueSource::EnvVariable` here, should we do it elsewhere?
+>       
+>       * Note: this would be a breaking change as this is dependent on the context while checking for defaults was not because that is static and turned a non-working case to a working case
+> 
+> 
+> [@pksunkara](https://github.com/pksunkara) since you were involved in the past discussion, I'd be curious to know what your thoughts are? I think showing `--help` on a missing required subcommand is an easy choice but also wondering about the larger picture on this about env variables.
+
+
+
+---
+
+_Label `S-waiting-on-decision` added by @epage on 2026-01-05 15:10_
+
+---
+
+_Label `M-breaking-change` added by @epage on 2026-01-05 15:10_
+
+---
+
+_Comment by @epage on 2026-01-05 15:11_
+
+Marking this as a breaking change as a pre-caution and if anyone wants to do this before clap v5, you'll need to make the case for why this isn't a breaking change.
+
+---

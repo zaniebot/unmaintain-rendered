@@ -1,0 +1,50 @@
+---
+number: 8098
+title: "[Feature Request] Fetch project metadata from user level `uv.toml` for `pyproject.toml`"
+type: issue
+state: open
+author: dpprdan
+labels: []
+assignees: []
+created_at: 2024-10-10T15:48:22Z
+updated_at: 2024-10-14T15:16:00Z
+url: https://github.com/astral-sh/uv/issues/8098
+synced_at: 2026-01-07T13:12:17-06:00
+---
+
+# [Feature Request] Fetch project metadata from user level `uv.toml` for `pyproject.toml`
+
+---
+
+_Issue opened by @dpprdan on 2024-10-10 15:48_
+
+In #7718 we discussed to fetch project metadata from user level `uv.toml` to in insert in `pyproject.toml` on `uv init`. 
+
+In particular the `authors`/`maintainers`, `license` and `classifiers` fields come to mind, but possibly others as well, maybe even something like the `[build-system]` table.
+
+(Probably obvious, because configured over inferred, but `authors` from `uv.toml` should take precedence over `--author-from git`/#7756).
+
+---
+
+_Referenced in [astral-sh/uv#8099](../../astral-sh/uv/issues/8099.md) on 2024-10-10 21:25_
+
+---
+
+_Comment by @Ravencentric on 2024-10-13 17:05_
+
+I just created another project without explicitly adding `--package` and thus got the default `app` pyproject.toml. It's not a big deal but it's certainly a bit annoying. Would love to be able to change this default in a user-level `uv.toml`.
+
+---
+
+_Comment by @greywidget on 2024-10-14 15:15_
+
+Would this feature potentially fetch my settings for:
+- [tool.mypy]
+- [tool.ruff]
+- [tool.ruff.lint]
+
+Thanks for all of your hard work on this awesome project, it's very much appreciated!
+
+Also (apologies if it's inappropriate to be asking this here) - I liked the new feature of adding the `--author-from` option to `uv init` and I wondered if that can be set as the default (locally) somehow to save my typing it each time or creating an alias?
+
+---

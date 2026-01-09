@@ -1,0 +1,81 @@
+---
+number: 8773
+title: "`uv pip install -r pyproject.toml --extra linters` alias"
+type: issue
+state: closed
+author: chirizxc
+labels:
+  - question
+assignees: []
+created_at: 2024-11-03T10:14:07Z
+updated_at: 2024-11-03T13:25:51Z
+url: https://github.com/astral-sh/uv/issues/8773
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# `uv pip install -r pyproject.toml --extra linters` alias
+
+---
+
+_Issue opened by @chirizxc on 2024-11-03 10:14_
+
+uv vesrion: uv 0.4.29 (85f9a0d0e 2024-10-30)
+os: windows 10
+
+pyproject.toml example
+```
+[project]
+dependencies = [
+    "cachetools==5.5.0",
+]
+
+[project.optional-dependencies]
+linters = [
+    "ruff==0.7.2",
+]
+```
+
+how install only ruff using `uv sync`? without [pip interface](https://docs.astral.sh/uv/getting-started/features/#the-pip-interface)
+
+
+
+
+---
+
+_Comment by @charliermarsh on 2024-11-03 13:09_
+
+If you want to install _only_ one group, you need to use `dependency-groups` rather than `project.optional-dependencies`:
+
+```toml
+[project]
+dependencies = [
+    "cachetools==5.5.0",
+]
+
+[dependency-groups]
+linters = [
+    "ruff==0.7.2",
+]
+```
+
+Then you'd run `uv sync --only-group linters`.
+
+---
+
+_Label `question` added by @charliermarsh on 2024-11-03 13:09_
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2024-11-03 13:10_
+
+---
+
+_Closed by @charliermarsh on 2024-11-03 13:10_
+
+---
+
+_Comment by @chirizxc on 2024-11-03 13:25_
+
+Thanks!
+
+---

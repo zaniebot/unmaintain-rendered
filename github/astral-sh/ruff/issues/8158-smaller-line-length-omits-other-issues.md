@@ -1,0 +1,51 @@
+---
+number: 8158
+title: Smaller line length omits other issues
+type: issue
+state: closed
+author: pespinel
+labels: []
+assignees: []
+created_at: 2023-10-24T08:41:31Z
+updated_at: 2023-10-24T13:52:24Z
+url: https://github.com/astral-sh/ruff/issues/8158
+synced_at: 2026-01-07T13:12:15-06:00
+---
+
+# Smaller line length omits other issues
+
+---
+
+_Issue opened by @pespinel on 2023-10-24 08:41_
+
+I've just seen that extending the line length on the ruff configuration brings "new" issues that are omitted when using a smaller line length:
+
+
+line-length: 120
+
+![Captura de pantalla 2023-10-24 a las 10 20 31](https://github.com/astral-sh/ruff/assets/37797002/68ca011a-ee06-4e72-be33-efd9851ab222)
+
+line-length: 140
+![Captura de pantalla 2023-10-24 a las 10 20 58](https://github.com/astral-sh/ruff/assets/37797002/abce83b8-0ac7-4d54-8c6b-6157b105a473)
+
+
+Ruff command: `ruff check .`
+Ruff version: `0.1.1`
+
+---
+
+_Comment by @tdulcet on 2023-10-24 09:40_
+
+Also see #8106, where I requested support for showing all autofixes regardless of line length.
+
+---
+
+_Comment by @zanieb on 2023-10-24 13:52_
+
+I'm going to close this as a duplicate of #8106; thanks for raising!
+
+---
+
+_Closed by @zanieb on 2023-10-24 13:52_
+
+---

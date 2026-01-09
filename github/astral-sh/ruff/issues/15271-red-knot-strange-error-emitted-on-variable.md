@@ -1,0 +1,101 @@
+---
+number: 15271
+title: "[red-knot] Strange error emitted on variable annotated with `type[EllipsisType]`"
+type: issue
+state: closed
+author: AlexWaygood
+labels:
+  - bug
+  - ty
+assignees: []
+created_at: 2025-01-05T15:59:40Z
+updated_at: 2025-01-05T17:17:17Z
+url: https://github.com/astral-sh/ruff/issues/15271
+synced_at: 2026-01-07T13:12:16-06:00
+---
+
+# [red-knot] Strange error emitted on variable annotated with `type[EllipsisType]`
+
+---
+
+_Issue opened by @AlexWaygood on 2025-01-05 15:59_
+
+I feel like this should be fine:
+
+```py
+from types import EllipsisType
+
+some_variable: type[EllipsisType] = type(...)
+```
+
+But if I run `cargo run -p red_knot --project ../experiment --python-version="3.10"`, red-knot complains:
+
+```
+error[lint:invalid-assignment] /Users/alexw/dev/experiment/foo.py:3:1 Implicit shadowing of class `EllipsisType`; annotate to make it explicit if this is intentional
+```
+
+I'm not sure what exactly red-knot thinks I'm shadowing here 😄 The variable must be explicitly annotated for the error to occur.
+
+---
+
+_Label `red-knot` added by @AlexWaygood on 2025-01-05 15:59_
+
+---
+
+_Label `bug` added by @AlexWaygood on 2025-01-05 16:04_
+
+---
+
+_Comment by @AlexWaygood on 2025-01-05 16:06_
+
+The error also goes away if I make this change:
+
+```diff
+  from types import EllipsisType
+
+- some_variable: type[EllipsisType] = type(...)
++ some_variable: type[EllipsisType] = EllipsisType
+```
+
+---
+
+_Comment by @InSyncWithFoo on 2025-01-05 17:11_
+
+For some reason, this is not reproducible via Markdown tests:
+
+`````md
+```toml
+[environment]
+python-version = "3.10"
+```
+
+```py
+from types import EllipsisType
+
+some_variable: type[EllipsisType] = type(...)
+```
+`````
+
+```text
+file.md:36 unexpected error: [invalid-assignment] "Object of type `type` is not assignable to `type[EllipsisType]`"
+```
+
+---
+
+_Comment by @AlexWaygood on 2025-01-05 17:17_
+
+Oh, shoot, this doesn't repro on `main`, only on one of my PR branches.
+
+...And I think it's "correct" (with our current logic) to emit an error there anyway, because we don't yet apply any special casing to `type()` -- the inferred type of `type(...)` is probably just `Instance(<builtins.type>)`.
+
+Thanks!
+
+---
+
+_Closed by @AlexWaygood on 2025-01-05 17:17_
+
+---
+
+_Referenced in [astral-sh/ruff#15272](../../astral-sh/ruff/pulls/15272.md) on 2025-01-05 22:16_
+
+---

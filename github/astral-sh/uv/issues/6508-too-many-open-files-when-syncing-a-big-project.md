@@ -1,0 +1,82 @@
+---
+number: 6508
+title: Too many open files when syncing a big project
+type: issue
+state: closed
+author: yoav-orca
+labels:
+  - question
+assignees: []
+created_at: 2024-08-23T12:10:52Z
+updated_at: 2024-08-28T15:06:05Z
+url: https://github.com/astral-sh/uv/issues/6508
+synced_at: 2026-01-07T13:12:17-06:00
+---
+
+# Too many open files when syncing a big project
+
+---
+
+_Issue opened by @yoav-orca on 2024-08-23 12:10_
+
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with uv.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
+* The current uv platform.
+* The current uv version (`uv --version`).
+-->
+
+* The current uv platform - macOS
+* The current uv version (`uv --version`): `uv 0.3.2 (c5440001c 2024-08-23)`
+
+When trying to resolve a very big project (413 direct dependencies and 673 indirect dependencies).
+I can't share the specific requirements.
+I'm consistently running out of fds:
+
+```
+error: Failed to write to the client cache
+  Caused by: Too many open files (os error 24) at path "/Users/yoavalon/.cache/uv/simple-v12/pypi/.tmpPKond8"
+```
+
+
+---
+
+_Comment by @charliermarsh on 2024-08-23 12:52_
+
+macOS has a very low open-file limit. Running `ulimit -n 16000` should unblock you here.
+
+---
+
+_Comment by @FCamborda on 2024-08-23 13:01_
+
+if you are running this when building with Docker, there are CLI flags to control the file handle limit during that process.
+
+---
+
+_Label `question` added by @zanieb on 2024-08-23 13:34_
+
+---
+
+_Comment by @zanieb on 2024-08-23 13:35_
+
+Unfortunately not much we can do about this — the default is weirdly low.
+
+---
+
+_Comment by @charliermarsh on 2024-08-28 15:06_
+
+Going to close. The answer is above for future readers, but if it continues to come up we can add to the docs explicitly.
+
+---
+
+_Closed by @charliermarsh on 2024-08-28 15:06_
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2024-08-28 15:06_
+
+---

@@ -1,0 +1,72 @@
+---
+number: 7082
+title: Can I constraint build requirements with uv build?
+type: issue
+state: closed
+author: notatallshaw
+labels:
+  - enhancement
+assignees: []
+created_at: 2024-09-05T13:26:29Z
+updated_at: 2024-09-05T18:46:38Z
+url: https://github.com/astral-sh/uv/issues/7082
+synced_at: 2026-01-07T13:12:17-06:00
+---
+
+# Can I constraint build requirements with uv build?
+
+---
+
+_Issue opened by @notatallshaw on 2024-09-05 13:26_
+
+I tried using the new uv build with a pyproject.toml that looks like this:
+
+```toml
+[build-system]
+requires = ["setuptools==74.1.1", "wheel==0.44.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "minimal_project"
+version = "0.1.0"
+```
+
+I created a `build-constraints.txt` file that looks like this (the versions contradict the build requires and hashes are purposefully wrong):
+
+```
+setuptools==69.0.0 --hash=sha256:fc91b5f89e392ef5b77fe143b17e32f65d3024744fba66dc3afe07201684d766
+wheel==0.40.0 --hash=sha256:2376a90c98cc337d18623527a97c31797bd02bad0033d41547043a1cbfbe4481
+```
+
+
+I then set `UV_BUILD_CONSTRAINT` to point to my `build-constraints.txt`, and then I ran `uv build .`, but I did not get an error that these versions or hashes are wrong. 
+
+Is there a way to constrain build requirements during building? I specifically think of scenarios where I don't control the contents of an sdist, or there are recursive build requirements I want to constrain.
+
+---
+
+_Comment by @charliermarsh on 2024-09-05 13:27_
+
+It's not supported yet but I'll probably do it today. I think it's covered in #7065.
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2024-09-05 13:29_
+
+---
+
+_Label `enhancement` added by @charliermarsh on 2024-09-05 13:38_
+
+---
+
+_Referenced in [astral-sh/uv#7085](../../astral-sh/uv/pulls/7085.md) on 2024-09-05 15:25_
+
+---
+
+_Closed by @charliermarsh on 2024-09-05 18:46_
+
+---
+
+_Closed by @charliermarsh on 2024-09-05 18:46_
+
+---

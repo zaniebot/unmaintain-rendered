@@ -1,0 +1,66 @@
+---
+number: 13548
+title: "Support workspaces in `uv version`"
+type: issue
+state: closed
+author: AsafMah
+labels:
+  - enhancement
+assignees: []
+created_at: 2025-05-20T04:58:32Z
+updated_at: 2025-05-21T13:46:11Z
+url: https://github.com/astral-sh/uv/issues/13548
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# Support workspaces in `uv version`
+
+---
+
+_Issue opened by @AsafMah on 2025-05-20 04:58_
+
+### Summary
+
+Currently (as of version 0.7.6) the `uv version` command does not support workspaces.
+
+Meaning, that unlike most commands, it doesn't include the `package` and `all_packages` flags.
+I think that it should, for consistency.
+
+Furthermore, it would be nice to not have to re-specify the version on every project on the monorepo, and have them all automatically be synced to the root version.
+
+
+### Example
+
+_No response_
+
+---
+
+_Label `enhancement` added by @AsafMah on 2025-05-20 04:58_
+
+---
+
+_Assigned to @Gankra by @konstin on 2025-05-20 10:54_
+
+---
+
+_Comment by @Gankra on 2025-05-20 14:46_
+
+This is mostly fixed by the current version of #13317, although `--all-packages` isn't included (`uv add` and `uv remove` don't have that flag, although it's more plausible for `uv version`).
+
+---
+
+_Referenced in [astral-sh/uv#13317](../../astral-sh/uv/pulls/13317.md) on 2025-05-20 14:47_
+
+---
+
+_Closed by @Gankra on 2025-05-21 13:46_
+
+---
+
+_Closed by @Gankra on 2025-05-21 13:46_
+
+---
+
+_Referenced in [astral-sh/uv#13971](../../astral-sh/uv/issues/13971.md) on 2025-06-11 16:26_
+
+---

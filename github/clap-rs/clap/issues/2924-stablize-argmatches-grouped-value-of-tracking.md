@@ -1,0 +1,184 @@
+---
+number: 2924
+title: "Stablize `ArgMatches::grouped_value_of` Tracking Issue"
+type: issue
+state: closed
+author: epage
+labels:
+  - A-parsing
+  - C-tracking-issue
+  - S-blocked
+assignees: []
+created_at: 2021-10-23T14:57:49Z
+updated_at: 2023-01-13T12:52:32Z
+url: https://github.com/clap-rs/clap/issues/2924
+synced_at: 2026-01-07T13:12:19-06:00
+---
+
+# Stablize `ArgMatches::grouped_value_of` Tracking Issue
+
+---
+
+_Issue opened by @epage on 2021-10-23 14:57_
+
+Original request: https://github.com/clap-rs/clap/issues/1026
+
+Original PR: https://github.com/clap-rs/clap/pull/2297
+
+Feature flag: `unstable-grouped`
+
+Known issues
+- [x] Open question: how should this be exposed in `clap_derive` (see also #1772)
+- [x] Open question: update for new `get`/`remove` API (#4372)
+- [x] Evaluate new names as this can be confusing with `ArgGroup`, `occurrence` is normally what we call this
+- [x] Function is not documented (#3551)
+
+---
+
+_Assigned to @epage by @epage on 2021-10-23 14:57_
+
+---
+
+_Referenced in [clap-rs/clap#2926](../../clap-rs/clap/pulls/2926.md) on 2021-10-23 15:29_
+
+---
+
+_Label `T: stabilisation` added by @pksunkara on 2021-10-27 22:07_
+
+---
+
+_Label `C: matches` added by @pksunkara on 2021-10-27 22:07_
+
+---
+
+_Comment by @epage on 2021-11-04 18:40_
+
+For `_t` and `_os` variants, should we wait on https://github.com/clap-rs/clap/issues/2683 which will remove the need for them?  Or at least not block this feature on them?
+
+---
+
+_Comment by @pksunkara on 2021-11-05 07:24_
+
+I think that's a good idea, since I am getting the impression that we will probably be working on #2683 as the next big thing after v3 release. Unless you have different plans?
+
+---
+
+_Comment by @epage on 2021-11-05 13:27_
+
+> Unless you have different plans?
+
+That and a couple other changes that will lay the ground work for help, parser, and other validation changes.  I don't think we need to cram them all in but should keep an eye for changes that make it easier to get them in later.  #2911 is one example because it means we can attach the reflection traits to the `AppParser` without making them `&mut` to allow building since the type system will enforce that building has occurred.
+
+---
+
+_Referenced in [clap-rs/clap#2993](../../clap-rs/clap/pulls/2993.md) on 2021-11-05 14:24_
+
+---
+
+_Referenced in [clap-rs/clap#1772](../../clap-rs/clap/issues/1772.md) on 2021-11-05 14:24_
+
+---
+
+_Referenced in [epage/clapng#229](../../epage/clapng/issues/229.md) on 2021-12-06 22:22_
+
+---
+
+_Label `C: matches` removed by @epage on 2021-12-08 20:21_
+
+---
+
+_Label `A-parsing` added by @epage on 2021-12-08 20:21_
+
+---
+
+_Label `S-blocked` added by @epage on 2021-12-13 21:23_
+
+---
+
+_Referenced in [clap-rs/clap#3551](../../clap-rs/clap/pulls/3551.md) on 2022-03-10 04:29_
+
+---
+
+_Comment by @tmccombs on 2022-06-24 04:25_
+
+With the new action API, and typed arguments API, I wonder if the best way to expose this would be as a new `ArgAction::GroupedAppend` action, which is similar to the `ArgAction::Append` action, but, then the argument type changes from `T` to `Vec<T>`, and captures all arguments for each occurance/group. So then `get_many::<Vec<T>>()` would return a `ValuesRef<'_, Vec<T>>`.
+
+Or perhaps a more general API could be to have a way to specify an additional parsing function, that takes an iterator over the arguments to a single occurrence/group and returns a new single value. I'm not sure exactly how the typing would work on that though, if you were to allow using this in addition to a `value_parser`.
+
+---
+
+_Comment by @epage on 2022-06-26 03:06_
+
+Yes, `ArgAction` will hopefully help with this.  I don't think we can reuse `get_many` for this as the `value_parser` setting the stored type happens at a different level than the processing of actions and so the underlying type cannot be modified.  I suspect we'll need yet another set of functions.  We'll need to distinguish their name from `get_many` / `remove_many`.
+
+Depending on how this works out, my thought is to have `ArgAction::Extend` (current behavior) and `ArgAction::Append` (groups).  I think the reason I used `ArgAction::Append` in v3.2 is because internally we are appending right now and if we add a new function it'll just expose that.  We'd then just add `Extend` to not do that.   The downside is that it will have a higher migration cost as people are using `Append` now when they mean `Extend`.
+
+---
+
+_Referenced in [sharkdp/fd#1067](../../sharkdp/fd/pulls/1067.md) on 2022-09-06 15:18_
+
+---
+
+_Referenced in [clap-rs/clap#1404](../../clap-rs/clap/issues/1404.md) on 2022-11-14 23:33_
+
+---
+
+_Referenced in [clap-rs/clap#4544](../../clap-rs/clap/pulls/4544.md) on 2022-12-09 08:42_
+
+---
+
+_Comment by @tmccombs on 2022-12-10 05:52_
+
+For using the new get/remove API, what should the names of the functions be. In #4544 I used `get_groups`, `remove_groups`, etc. However, I'm not sure that is the best name, and would be happy to change it to something else. Some other possible options I can think of:
+
+- `get_many_grouped`
+- `get_grouped`
+- `get_grouped_values`
+- `get_as_groups`
+- `get_many_per_occurrence`
+
+I don't have a strong preference, among those, and maybe there is one I haven't thought of that would be better.
+
+---
+
+_Comment by @epage on 2022-12-10 12:28_
+
+I don't remember where the original conversation happened but the problem is that `group` is overloaded with `ArgGroup` and can be confusing.  We generally refer to each time an argument shows up as an "occurrence", so I think something like that in the name of each part of this feature would make sense.
+
+For example, `get_occurrences` could possibly work now that we've removed `occurrences_of`.  You had mentioned `get_many_per_occurrence` which I;m not as thrilled with but I am open to other ideas people have.
+
+---
+
+_Comment by @tmccombs on 2022-12-10 18:29_
+
+`get_occurences` would be fine with me.
+
+---
+
+_Referenced in [clap-rs/clap#4600](../../clap-rs/clap/pulls/4600.md) on 2023-01-03 06:29_
+
+---
+
+_Comment by @epage on 2023-01-10 14:44_
+
+@tmccombs any concerns with stablizing?
+
+---
+
+_Comment by @tmccombs on 2023-01-10 16:04_
+
+Not from me 
+
+---
+
+_Referenced in [clap-rs/clap#4635](../../clap-rs/clap/pulls/4635.md) on 2023-01-13 03:38_
+
+---
+
+_Closed by @epage on 2023-01-13 12:52_
+
+---
+
+_Referenced in [clap-rs/clap#2419](../../clap-rs/clap/issues/2419.md) on 2023-06-14 13:39_
+
+---

@@ -1,0 +1,67 @@
+---
+number: 10840
+title: False positive PLC0132 for NewType wrapped in Annotated
+type: issue
+state: closed
+author: minmax
+labels: []
+assignees: []
+created_at: 2024-04-08T22:39:39Z
+updated_at: 2024-04-11T02:13:26Z
+url: https://github.com/astral-sh/ruff/issues/10840
+synced_at: 2026-01-07T13:12:15-06:00
+---
+
+# False positive PLC0132 for NewType wrapped in Annotated
+
+---
+
+_Issue opened by @minmax on 2024-04-08 22:39_
+
+Ruff 0.3.5 false positive PLC0132 for NewType wrapped in Annotated
+
+```python
+MyIds = Annotated[NewType("WrongName", str), int] # PLC0132 doesn't work
+
+MyId = NewType("Id", str) # NewType` name `Id` does not match assigned variable name `MyId` PLC0132
+```
+
+
+Keywords: Annotated, NewType, PLC0132
+
+---
+
+_Label `bug` added by @charliermarsh on 2024-04-08 23:13_
+
+---
+
+_Comment by @charliermarsh on 2024-04-08 23:13_
+
+Thanks!
+
+---
+
+_Comment by @minmax on 2024-04-09 11:17_
+
+@erictraut [say's](https://github.com/microsoft/pyright/issues/7645#issuecomment-2043962935) that it is not a bug, so maybe this issuer need to be closed without fix/code.
+ 
+> Pyright is working correctly here. When you wrap a `NewType` with `Annotated`, the resulting object is no longer a `NewType`. It's a type alias. It's name does not need to match that of the (anonymous) NewType that was created.
+
+
+Related task in pyright repo: [7645](https://github.com/microsoft/pyright/issues/7645)
+
+---
+
+_Comment by @charliermarsh on 2024-04-11 02:13_
+
+Ah ok, thanks for following up!
+
+---
+
+_Closed by @charliermarsh on 2024-04-11 02:13_
+
+---
+
+_Label `bug` removed by @charliermarsh on 2024-04-11 02:13_
+
+---

@@ -1,0 +1,55 @@
+---
+number: 13323
+title: "Global cache for all users on a machine like `/uv`"
+type: issue
+state: closed
+author: Ruhrozz
+labels:
+  - enhancement
+assignees: []
+created_at: 2025-05-07T06:54:00Z
+updated_at: 2025-05-07T22:13:31Z
+url: https://github.com/astral-sh/uv/issues/13323
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# Global cache for all users on a machine like `/uv`
+
+---
+
+_Issue opened by @Ruhrozz on 2025-05-07 06:54_
+
+### Summary
+
+It would be a great feature to be able to use the same cache for every user. I imagine something like /nix/store for downloaded from pypi packages
+
+### Example
+
+_No response_
+
+---
+
+_Label `enhancement` added by @Ruhrozz on 2025-05-07 06:54_
+
+---
+
+_Comment by @woutervh on 2025-05-07 22:10_
+
+@Ruhrozz 
+you can set UV_CACHE_DIR
+
+see https://docs.astral.sh/uv/reference/cli/#uv-cache-prune--cache-dir
+
+---
+
+_Comment by @zanieb on 2025-05-07 22:13_
+
+We're tracking this in https://github.com/astral-sh/uv/issues/5611
+
+There are some complexities to the sharing the cache across users though.
+
+---
+
+_Closed by @zanieb on 2025-05-07 22:13_
+
+---

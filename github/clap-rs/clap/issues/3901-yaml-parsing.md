@@ -1,0 +1,121 @@
+---
+number: 3901
+title: YAML Parsing
+type: issue
+state: closed
+author: aress31
+labels:
+  - C-bug
+assignees: []
+created_at: 2022-07-08T22:35:30Z
+updated_at: 2022-07-11T22:00:39Z
+url: https://github.com/clap-rs/clap/issues/3901
+synced_at: 2026-01-07T13:12:20-06:00
+---
+
+# YAML Parsing
+
+---
+
+_Issue opened by @aress31 on 2022-07-08 22:35_
+
+### Please complete the following tasks
+
+- [X] I have searched the [discussions](https://github.com/clap-rs/clap/discussions)
+- [X] I have searched the [open](https://github.com/clap-rs/clap/issues) and [rejected](https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed) issues
+
+### Rust Version
+
+rustc 1.62.0 (a8314ef7d 2022-06-27)
+
+### Clap Version
+
+3.2.8
+
+### Minimal reproducible code
+
+- main.rs:
+```rust
+use clap::{App, Command, load_yaml};
+
+#[tokio::main]
+async fn main() -> Result<(), reqwest::Error> {
+    
+    let yaml = load_yaml!("args.yaml");
+    let matches = App::from(yaml).get_matches();
+}
+```
+
+- args.yaml:
+```yaml
+name: "tool"
+version: "0.1"
+about: "description"
+author: "m00am"
+
+subcommands:
+  - subcommand1:
+      args:
+        - path:
+            index: 1
+            required: true
+            default_value: "/tmp/"
+            help: "Dummy Path"
+  - subcommand2:
+      args:
+         - other_path:
+             index: 1
+             required: true
+             help: "A second dummy path"
+```
+
+
+### Steps to reproduce the bug with the above code
+
+- Result of `cargo build`:
+```
+error[E0308]: mismatched types
+ --> src\main.rs:7:29
+  |
+7 |     let matches = App::from(yaml).get_matches();
+  |                             ^^^^ expected struct `App`, found `&yaml_rust::yaml::Yaml`
+```
+
+### Actual Behaviour
+
+Failing with the above error message.
+
+### Expected Behaviour
+
+I have followed the documentation and am trying to get a very basic parsing of a `yaml structure` but for some reasons it does not work.
+
+### Additional Context
+
+_No response_
+
+### Debug Output
+
+_No response_
+
+---
+
+_Label `C-bug` added by @aress31 on 2022-07-08 22:35_
+
+---
+
+_Comment by @epage on 2022-07-11 22:00_
+
+rustdoc might not be showing it on `From` impls but you need the `yaml` feature.
+
+> I have followed the documentation and am trying to get a very basic parsing of a yaml structure but for some reasons it does not work.
+.  
+Which documentation?  We've stripped almost all of it out because of #3087.  See https://github.com/aobatact/clap-serde for a possible replacement.
+
+
+Considering this feature is deprecated and will soon be removed, I'm going to close this as we are not going to be improving the documentation around this.
+
+---
+
+_Closed by @epage on 2022-07-11 22:00_
+
+---

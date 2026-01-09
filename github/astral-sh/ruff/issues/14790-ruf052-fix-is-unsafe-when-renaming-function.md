@@ -1,0 +1,93 @@
+---
+number: 14790
+title: RUF052 fix is unsafe when renaming function parameters
+type: issue
+state: closed
+author: dscorbett
+labels:
+  - bug
+  - fixes
+  - preview
+assignees: []
+created_at: 2024-12-05T14:23:53Z
+updated_at: 2024-12-06T14:54:44Z
+url: https://github.com/astral-sh/ruff/issues/14790
+synced_at: 2026-01-07T13:12:16-06:00
+---
+
+# RUF052 fix is unsafe when renaming function parameters
+
+---
+
+_Issue opened by @dscorbett on 2024-12-05 14:23_
+
+The fix for [`used-dummy-variable` (RUF052)](https://docs.astral.sh/ruff/rules/used-dummy-variable/) in Ruff 0.8.2 can introduce errors when renaming a function parameter. It should be marked unsafe in that context unless the parameter is positional-only.
+
+```console
+$ cat ruf052.py
+def f(_x):
+    return _x
+print(f(_x=1))
+
+$ python ruf052.py
+1
+
+$ ruff check --isolated --preview --select RUF052 ruf052.py --fix
+Found 1 error (1 fixed, 0 remaining).
+
+$ cat ruf052.py
+def f(x):
+    return x
+print(f(_x=1))
+
+$ python ruf052.py
+Traceback (most recent call last):
+  File "ruf052.py", line 3, in <module>
+    print(f(_x=1))
+          ^^^^^^^
+TypeError: f() got an unexpected keyword argument '_x'
+```
+
+---
+
+_Label `bug` added by @MichaReiser on 2024-12-05 14:28_
+
+---
+
+_Label `fixes` added by @AlexWaygood on 2024-12-05 17:19_
+
+---
+
+_Comment by @AlexWaygood on 2024-12-05 17:33_
+
+Great catch @dscorbett. We can probably do two things here:
+1. If we see that the binging comes from a function parameter, we can change the autofix so that it iterates through the uses of the function in the function's defining module and also changes those uses
+2. If the function is explicitly marked as private to the module (the module has `__all__` and the function does not appear in `__all__`), we can probably still mark it as safe if we do (1), but otherwise we'd have to mark it as unsafe if the binding comes from a parameter
+
+---
+
+_Comment by @MichaReiser on 2024-12-05 17:43_
+
+I like what you propose, but I think it might also just be fine to mark the fix as unsafe for now when the binding comes from a parameter (there are just so many things to consider; what if the function overrides another method?)
+
+---
+
+_Referenced in [astral-sh/ruff#14796](../../astral-sh/ruff/issues/14796.md) on 2024-12-05 21:26_
+
+---
+
+_Label `preview` added by @dylwil3 on 2024-12-05 23:06_
+
+---
+
+_Referenced in [astral-sh/ruff#14799](../../astral-sh/ruff/issues/14799.md) on 2024-12-06 08:57_
+
+---
+
+_Referenced in [astral-sh/ruff#14818](../../astral-sh/ruff/pulls/14818.md) on 2024-12-06 13:56_
+
+---
+
+_Closed by @AlexWaygood on 2024-12-06 14:54_
+
+---

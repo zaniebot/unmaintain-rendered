@@ -1,0 +1,112 @@
+---
+number: 7932
+title: Legacy Windows Server (2008)
+type: issue
+state: open
+author: inoa-jboliveira
+labels:
+  - windows
+  - compatibility
+assignees: []
+created_at: 2024-10-04T17:33:57Z
+updated_at: 2025-03-26T01:49:07Z
+url: https://github.com/astral-sh/uv/issues/7932
+synced_at: 2026-01-07T13:12:17-06:00
+---
+
+# Legacy Windows Server (2008)
+
+---
+
+_Issue opened by @inoa-jboliveira on 2024-10-04 17:33_
+
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with uv.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
+* The current uv platform.
+* The current uv version (`uv --version`).
+-->
+I have a legacy client using Windows server 2008 and a couple on windows server 2012. Both are discontinued by Microsoft and I understand if there are no plans to even support them.
+
+**Up to uv version 0.1.39 it works as intended on these systems**, but on v 0.1.40 it starts failing with bcrypt
+
+![uv-0 1 40](https://github.com/user-attachments/assets/067d30aa-91d9-447f-bcae-108920e47574)
+
+On version 0.4.7 and later the error seems more critical with 0xc0000005 as the only info
+
+![uv-0 4 7](https://github.com/user-attachments/assets/e77628b2-6bc1-4c8a-a9e5-35372b17715a)
+
+
+If it is simple enough, would be possible to have it running again?
+
+
+---
+
+_Label `windows` added by @charliermarsh on 2024-12-27 14:37_
+
+---
+
+_Comment by @nickolay on 2025-01-08 18:37_
+
+About ProcessPrng, per https://github.com/rustdesk/rustdesk/discussions/7503 it's a rust issue https://github.com/rust-lang/rust/pull/121337 ; you have to compile for Windows 7 / 2008 as a separate target...
+
+---
+
+_Label `compatibility` added by @zanieb on 2025-01-08 18:42_
+
+---
+
+_Comment by @zanieb on 2025-01-08 18:43_
+
+This isn't something we'll prioritize, but if it's not invasive to get it working and someone wants to do so — that's fine.
+
+You may need to build from source as described by @nickolay
+
+---
+
+_Comment by @inoa-jboliveira on 2025-01-08 20:01_
+
+Just as consideration, today Windows 7 [has 2.4% market share](https://gs.statcounter.com/os-version-market-share/windows/desktop/worldwide) being the 3rd most used version of windows. I think it is still a relevant platform due to driver support for legacy hardware. 
+
+I see uv does upgrade rust toolchain very often, but I don't know if you use features from latest version as soon as they are available. It might be the case to hold off until a new feature is needed.
+
+For Windows 7/2008, Rust 1.75 is the last working
+For Windows 8/2012, Rust 1.76 is the one
+
+I am not recommending you to go back to these versions if using new features already, but it would be interesting to reconsider any drop in support before upgrading rust version. Maybe some push back to rust-lang because these changes does not benefit people writing Rust software.
+
+---
+
+_Comment by @zanieb on 2025-01-08 20:41_
+
+We are using new features on the latest version of Rust — though we may be able to avoid it.
+
+---
+
+_Comment by @nickolay on 2025-03-26 01:49_
+
+For the reference, I was able to build a version that runs on 2008R2 like this:
+
+```
+$ rustup toolchain install nightly
+$ rustup component add rust-src --toolchain nightly-x86_64-pc-windows-msvc
+
+# add to (uv_git_workdir)/.cargo/config.toml:
+[target.x86_64-win7-windows-msvc]
+rustflags = [
+  "-L", "C:/Users/Nickolay/scoop/persist/rustup/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/windows_x86_64_msvc-0.48.5/lib/",
+]
+
+$ cargo +nightly build -Z build-std --target="x86_64-win7-windows-msvc"  # --release
+```
+
+(`cargo 1.87.0-nightly (307cbfda3 2025-03-20)` building from e4c98e976f36f6f1e1d5eff2874cb984a78b28e5)
+
+
+uvx-produced executables run with "Segmentation fault", but that's a different issue — basic uv commands (with python pre-installed) work fine.
+
+---

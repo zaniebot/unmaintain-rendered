@@ -1,0 +1,120 @@
+---
+number: 10889
+title: PLR1730 min / max reversed detected / auto-fix
+type: issue
+state: closed
+author: ilius
+labels:
+  - bug
+assignees: []
+created_at: 2024-04-11T17:35:01Z
+updated_at: 2024-04-11T18:16:14Z
+url: https://github.com/astral-sh/ruff/issues/10889
+synced_at: 2026-01-07T13:12:15-06:00
+---
+
+# PLR1730 min / max reversed detected / auto-fix
+
+---
+
+_Issue opened by @ilius on 2024-04-11 17:35_
+
+<!--
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+Sample code:
+```
+def fix_out_of_range(x: int, min_x: int, max_x: int) -> int:
+	if x < min_x:
+		x = min_x
+	if x > max_x:
+		x = max_x
+	return x
+```
+
+Command: `ruff check --preview --select PLR test.py`
+
+Result:
+```
+test.py:3:2: PLR1730 [*] Replace `if` statement with `x = min(x, min_x)`
+  |
+2 |   def fix_out_of_range(x: int, min_x: int, max_x: int) -> int:
+3 |       if x < min_x:
+  |  _____^
+4 | |         x = min_x
+  | |_________________^ PLR1730
+5 |       if x > max_x:
+6 |           x = max_x
+  |
+  = help: Replace with `x = min(x, min_x)`
+
+test.py:5:2: PLR1730 [*] Replace `if` statement with `x = max(x, max_x)`
+  |
+3 |       if x < min_x:
+4 |           x = min_x
+5 |       if x > max_x:
+  |  _____^
+6 | |         x = max_x
+  | |_________________^ PLR1730
+7 |       return x
+  |
+  = help: Replace with `x = max(x, max_x)`
+
+Found 2 errors.
+[*] 2 fixable with the `--fix` option.
+```
+
+The min / max are reversed.
+The first one must be a `max`, second one `min`.
+Passing `--fix` will break the code:
+```
+def fix_out_of_range(x: int, min_x: int, max_x: int) -> int:
+	x = min(x, min_x)
+	x = max(x, max_x)
+	return x
+```
+
+The correct fix:
+```
+def fix_out_of_range(x: int, min_x: int, max_x: int) -> int:
+	x = max(x, min_x)
+	x = min(x, max_x)
+	return x
+```
+
+
+
+---
+
+_Label `bug` added by @charliermarsh on 2024-04-11 17:36_
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2024-04-11 17:36_
+
+---
+
+_Comment by @charliermarsh on 2024-04-11 17:36_
+
+Thanks, this is my bad.
+
+---
+
+_Comment by @charliermarsh on 2024-04-11 17:41_
+
+Even looking at this error report I thought `x = min(x, min_x)` was correct initially. The reversing logic is breaking my brain.
+
+---
+
+_Referenced in [astral-sh/ruff#10890](../../astral-sh/ruff/pulls/10890.md) on 2024-04-11 17:45_
+
+---
+
+_Closed by @charliermarsh on 2024-04-11 18:16_
+
+---

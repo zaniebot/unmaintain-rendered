@@ -1,0 +1,178 @@
+---
+number: 16508
+title: "Suggesting `uv add --sync-constraints [URL or file path]` to simply update pyproject.toml constraints"
+type: issue
+state: open
+author: agosmou
+labels:
+  - enhancement
+assignees: []
+created_at: 2025-10-30T07:30:35Z
+updated_at: 2026-01-06T21:57:33Z
+url: https://github.com/astral-sh/uv/issues/16508
+synced_at: 2026-01-07T13:12:19-06:00
+---
+
+# Suggesting `uv add --sync-constraints [URL or file path]` to simply update pyproject.toml constraints
+
+---
+
+_Issue opened by @agosmou on 2025-10-30 07:30_
+
+### Summary
+
+I'd like to suggest adding a flag to `uv add` such as:
+`uv add --sync-constraints https://example.com/my-constraints.txt` 
+or  
+`uv add --sync-constraints path/to/file/requirements.txt`
+
+This would only fetch and update the constraints file section in the `pyproject.toml`, making the constraints explicit/static and reproducible for future operations (i.e. uv lock/sync).
+
+### Example:
+
+Remote constraints file at https://example.com/my-constraints.txt
+```
+boto3==1.40.61
+```
+
+pyproject.toml BEFORE syncing:
+```
+[project]
+dependencies = ["boto3"]
+
+[tool.uv]
+constraint-dependencies = ["boto3==1.40.00"]
+```
+
+Run proposed command:
+```
+uv add --sync-constraints https://example.com/my-constraints.txt
+```
+
+pyproject.toml AFTER syncing:
+```
+[project]
+dependencies = ["boto3"]
+
+[tool.uv]
+constraint-dependencies = ["boto3==1.40.61"] # <--- updated
+```
+
+### Context
+- There was some discussion on this previously so this is an idea forked from this discussion: https://github.com/astral-sh/uv/issues/6518
+- https://docs.astral.sh/uv/reference/cli/#uv-add
+- https://docs.astral.sh/uv/reference/settings/#constraint-dependencies
+- https://packaging.python.org/en/latest/guides/writing-pyproject-toml/
+
+---
+
+_Label `enhancement` added by @agosmou on 2025-10-30 07:30_
+
+---
+
+_Comment by @rogersei on 2025-11-19 22:15_
+
+Another possible approach could be to allow setting the constraints file as a parameter in pyproject.toml - the goal of either one of these is to prevent having to always pass in the `--constraints <>` flag on a `uv add` command because that's kind of error prone, especially if you have some projects that need constraints and others that don't.
+
+Our current use case is that we're using uv for writing Apache Airflow DAGs and code - and that is a LONG constraint file (which I manually converted to constraints in our project and do not want to do again when we update)
+
+---
+
+_Comment by @agosmou on 2025-11-19 22:48_
+
+> Another possible approach could be to allow setting the constraints file as a parameter in pyproject.toml - the goal of either one of these is to prevent having to always pass in the `--constraints <>` flag on a `uv add` command because that's kind of error prone, especially if you have some projects that need constraints and others that don't.
+
+
+
+From #6518 it seemed like they want static pyproject.toml dependencies
+
+
+What about something like:
+
+uv add --init-constraints example.com
+Or
+uv add --init-constraints path-to-file
+
+
+And then the pyproject.toml will fill in the constraints and save the source. Any future uv sync could check the source and update if there is a diff? 
+
+Idk brainstorming to iron this out and could use some input 
+
+---
+
+
+I have a similar use case but feel like I could be satisfied in the meantime by something like:
+
+uv add --sync-constraints example.com && uv sync
+
+
+---
+
+_Comment by @zanieb on 2025-11-20 00:19_
+
+I wonder if `uv add --constraints ...` without any package name should just import the constraints as described?
+
+---
+
+_Comment by @agosmou on 2025-11-20 00:53_
+
+> I wonder if `uv add --constraints ...` without any package name should just import the constraints as described?
+
+Yeah I think this syntax is nice and the scope is decent
+
+uv add --constraints constraints.txt
+Or
+uv add --constraints example.com
+
+
+
+And then we could pair with a:
+
+uv sync 
+
+seamlessly without the crazy manual wrangling of constraints 👍
+
+---
+
+_Comment by @agosmou on 2025-11-23 23:01_
+
+
+> uv add --constraints constraints.txt
+> Or
+> uv add --constraints example.com
+
+
+@zanieb 
+Should I start trying to work through this? I don't think there are more requirements than what we've discussed already. 
+
+---
+
+_Comment by @zanieb on 2025-11-24 16:46_
+
+Feel free to put up a pull request.
+
+---
+
+_Comment by @agosmou on 2025-11-26 09:46_
+
+> Feel free to put up a pull request.
+
+Will do!
+
+---
+
+_Referenced in [gcavanunez/uv#1](../../gcavanunez/uv/pulls/1.md) on 2025-12-06 21:51_
+
+---
+
+_Referenced in [astral-sh/uv#12490](../../astral-sh/uv/issues/12490.md) on 2025-12-08 15:06_
+
+---
+
+_Comment by @agosmou on 2025-12-15 22:33_
+
+Was wrapping up the semester and just finished. Will get something in this week!
+
+Update: getting back to this following the holidays 
+
+---

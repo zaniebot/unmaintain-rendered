@@ -1,0 +1,99 @@
+---
+number: 11100
+title: "`W505` reported as `E501` a.k.a doc-line-too-long"
+type: issue
+state: closed
+author: Borda
+labels:
+  - question
+assignees: []
+created_at: 2024-04-23T07:36:43Z
+updated_at: 2024-04-26T07:04:43Z
+url: https://github.com/astral-sh/ruff/issues/11100
+synced_at: 2026-01-07T13:12:15-06:00
+---
+
+# `W505` reported as `E501` a.k.a doc-line-too-long
+
+---
+
+_Issue opened by @Borda on 2024-04-23 07:36_
+
+it could be just my wrong understanding or expectations but running formatting on https://github.com/unit8co/darts/pull/2341, and they would like to make 88 line-length for code only and docstring differently, so I found [`W505`](https://docs.astral.sh/ruff/rules/doc-line-too-long/)
+which I wanted to ignore, but it turned out it is not reported but `E501`. Well, `E501` is correct, but it is a superset, and `W505` would better describe the case...
+
+using:
+```yaml
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.4.1
+    hooks:
+      - id: ruff
+```
+
+---
+
+_Referenced in [unit8co/darts#2341](../../unit8co/darts/pulls/2341.md) on 2024-04-23 07:37_
+
+---
+
+_Comment by @charliermarsh on 2024-04-23 13:04_
+
+Yes I believe it's intentional that we report E501 on any overlong lines, and W505 on overlong lines in documentation. I think this is by design. What's the problem that it's causing?
+
+---
+
+_Comment by @Borda on 2024-04-23 13:45_
+
+> I think this is by design. What's the problem that it's causing?
+
+`W505` is expected but I get only `E501` instead... Even for the docstrings...
+See https://github.com/unit8co/darts/actions/runs/8796510911/job/24139512314?pr=2341 
+
+---
+
+_Comment by @charliermarsh on 2024-04-23 15:08_
+
+Oh, did you set https://docs.astral.sh/ruff/settings/#lint_pycodestyle_max-doc-length? If that's not set, the rule has no effect (mentioned in the rule docs: https://docs.astral.sh/ruff/rules/doc-line-too-long/).
+
+---
+
+_Label `question` added by @charliermarsh on 2024-04-23 15:08_
+
+---
+
+_Comment by @Borda on 2024-04-23 15:29_
+
+Aha, no... Let me try and thanks for your quick response 🙏
+
+---
+
+_Closed by @Borda on 2024-04-23 20:04_
+
+---
+
+_Comment by @dyve on 2024-04-26 07:04_
+
+@charliermarsh I still don't quite follow, would very much appreciate another explanation.
+
+Given the example below, what ruff configuration (if any) would trigger only W505 on `Trigger 1` and `Trigger 2` (both docstrings) and only E501 on `Trigger 3`. The use case I have is that I actually want longer docstrings (up to 180 chars) to pass `ruff check`.
+
+```python
+def foo():
+    """Trigger 1. Between 120 and 180. Between 120 and 180. Between 120 and 180. Between 120 and 180. Between 120 and 180. Between 120 and 180."""
+    return "foo"
+
+
+def bar():
+    """
+    Return bar.
+
+    Trigger 2. Between 120 and 180. Between 120 and 180. Between 120 and 180. Between 120 and 180. Between 120 and 180. Between 120 and 180.
+    """
+    return "foo"
+
+
+def error():
+    return "Trigger 3. Between 120 and 180. Between 120 and 180. Between 120 and 180. Between 120 and 180. Between 120 and 180. Between 120 and 180."
+```
+
+---

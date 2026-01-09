@@ -1,0 +1,152 @@
+---
+number: 16966
+title: "Add a stub `debug` subcommand to `uv pip` announcing its intentional absence"
+type: pull_request
+state: closed
+author: EliteTK
+labels:
+  - compatibility
+assignees: []
+base: main
+head: tk/pip-debug
+created_at: 2025-12-03T14:44:05Z
+updated_at: 2025-12-04T04:35:20Z
+url: https://github.com/astral-sh/uv/pull/16966
+synced_at: 2026-01-07T13:12:19-06:00
+---
+
+# Add a stub `debug` subcommand to `uv pip` announcing its intentional absence
+
+---
+
+_Pull request opened by @EliteTK on 2025-12-03 14:44_
+
+## Summary
+
+Inform users who encounter #16879 that `uv pip debug` is currently intentionally not implemented. 
+
+## Test Plan
+
+Added an integration test for the warning, ran the test suite.
+
+---
+
+_Review requested from @zanieb by @EliteTK on 2025-12-03 14:44_
+
+---
+
+_Label `compatibility` added by @EliteTK on 2025-12-03 14:44_
+
+---
+
+_@EliteTK reviewed on 2025-12-03 14:45_
+
+---
+
+_Review comment by @EliteTK on `crates/uv-cli/src/lib.rs`:2738 on 2025-12-03 14:45_
+
+Was unsure if this was a good idea or not, but it means that if someone passes one of the known `pip debug` options, they won't get an unknown option error.
+
+---
+
+_@EliteTK reviewed on 2025-12-03 14:46_
+
+---
+
+_Review comment by @EliteTK on `crates/uv/src/lib.rs`:1060 on 2025-12-03 14:46_
+
+I know normally things would call e.g. `commands::pip_debug()` but it seemed like a lot of unnecessary boilerplate to achieve this result.
+
+---
+
+_@zanieb reviewed on 2025-12-03 14:50_
+
+---
+
+_Review comment by @zanieb on `crates/uv/src/lib.rs`:1060 on 2025-12-03 14:50_
+
+I think we should use `error: ...` instead of a warning.
+
+---
+
+_@zanieb reviewed on 2025-12-03 14:51_
+
+---
+
+_Review comment by @zanieb on `crates/uv/tests/it/pip_debug.rs`:13 on 2025-12-03 14:51_
+
+We might want to match the message of the pip compat args?
+
+https://github.com/astral-sh/uv/blob/2df06ebfbc2d4df90d47ef9a9e631ba9926712e0/crates/uv-cli/src/compat.rs#L338
+
+so
+
+> pip's `debug` command is unsupported
+
+---
+
+_@EliteTK reviewed on 2025-12-03 14:59_
+
+---
+
+_Review comment by @EliteTK on `crates/uv/tests/it/pip_debug.rs`:13 on 2025-12-03 14:59_
+
+Ah, I did not find those when I grepped.
+
+What should be the suggested alternative? Just normal `pip debug`?
+
+---
+
+_@zanieb reviewed on 2025-12-03 15:00_
+
+---
+
+_Review comment by @zanieb on `crates/uv/tests/it/pip_debug.rs`:13 on 2025-12-03 15:00_
+
+I don't think we have a great alternative. I guess we could recommend `uvx pip debug`?
+
+---
+
+_@zanieb reviewed on 2025-12-03 15:01_
+
+---
+
+_Review comment by @zanieb on `crates/uv/tests/it/pip_debug.rs`:13 on 2025-12-03 15:01_
+
+I might couch it with "consider using" instead of saying "use ..."
+
+---
+
+_@EliteTK reviewed on 2025-12-03 15:09_
+
+---
+
+_Review comment by @EliteTK on `crates/uv/src/lib.rs`:1060 on 2025-12-03 15:09_
+
+I've decided to steal the approach from the compat args which does indeed produce an error.
+
+---
+
+_@zanieb approved on 2025-12-03 15:19_
+
+---
+
+_Merged by @EliteTK on 2025-12-03 16:10_
+
+---
+
+_Closed by @EliteTK on 2025-12-03 16:10_
+
+---
+
+_Branch deleted on 2025-12-03 16:10_
+
+---
+
+_@TBTY-Dev approved on 2025-12-04 04:35_
+
+---
+
+_Referenced in [Homebrew/homebrew-core#257541](../../Homebrew/homebrew-core/pulls/257541.md) on 2025-12-06 14:23_
+
+---

@@ -1,0 +1,863 @@
+---
+number: 13520
+title: ruff server and CLI format brackets differently on long lines
+type: issue
+state: closed
+author: pdecat
+labels:
+  - question
+  - server
+assignees: []
+created_at: 2024-09-26T07:50:18Z
+updated_at: 2025-01-07T05:16:10Z
+url: https://github.com/astral-sh/ruff/issues/13520
+synced_at: 2026-01-07T13:12:15-06:00
+---
+
+# ruff server and CLI format brackets differently on long lines
+
+---
+
+_Issue opened by @pdecat on 2024-09-26 07:50_
+
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* List of keywords you searched for before creating this issue. Write them down here so that others can find this issue more easily and help provide feedback.
+  e.g. "RUF001", "unused variable", "Jupyter notebook"
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+The following code formatted with `ruff server` from VSCodium:
+```py
+testtesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttest = ",".join([
+    testtesttesttest for testtesttesttest in ["a", "b"]
+])
+```
+is changed to the following with `ruff format`:
+```py
+testtesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttest = ",".join(
+    [testtesttesttest for testtesttesttest in ["a", "b"]]
+)
+```
+
+A few notes:
+* `ruff --version`: 0.6.7 both from VSCodium and CLI.
+* `ruff check` is ok with both (`All checks passed!`).
+* tried with `line-length` set to 88 or 130 (our preferred setting), same behavior. 
+
+Verbose logging from VSCodium when reformatting what the CLI produced:
+```
+2024-09-26 09:45:23.206 [info] [Trace - 9:45:23 AM] Sending request 'textDocument/formatting - (8)'.
+2024-09-26 09:45:23.206 [info] Params: {
+    "textDocument": {
+        "uri": "file:///home/patrick/workspaces/tests/ruff/test.py"
+    },
+    "options": {
+        "tabSize": 4,
+        "insertSpaces": true,
+        "insertFinalNewline": true
+    }
+}
+
+
+2024-09-26 09:45:23.207 [info] [Trace - 9:45:23 AM] Received response 'textDocument/formatting - (8)' in 1ms.
+2024-09-26 09:45:23.208 [info] Result: [
+    {
+        "newText": "testtesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttest = \",\".join([\n    testtesttesttest for testtesttesttest in [\"a\", \"b\"]\n])\n",
+        "range": {
+            "end": {
+                "character": 0,
+                "line": 3
+            },
+            "start": {
+                "character": 0,
+                "line": 0
+            }
+        }
+    }
+]
+```
+
+Verbose logging from CLI:
+```
+# ruff format --verbose test.py
+[2024-09-26][09:47:28][ruff::resolve][DEBUG] Using Ruff default settings
+[2024-09-26][09:47:28][ruff::commands::format][DEBUG] format_path; path=/home/patrick/workspaces/tests/ruff/test.py
+[2024-09-26][09:47:28][tracing::span][DEBUG] Printer::print;
+[2024-09-26][09:47:28][ruff::commands::format][DEBUG] Formatted 1 files in 463.54µs
+1 file reformatted
+```
+
+Verbose logging from ruff_python_formatter:
+```
+# cargo run --bin ruff_python_formatter -- --emit stdout --print-comments --print-ir ~/workspaces/tests/ruff/test.py
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.21s
+     Running `target/debug/ruff_python_formatter --emit stdout --print-comments --print-ir /home/patrick/workspaces/tests/ruff/test.py`
+[
+  "testtesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttest = ",
+  best_fit_parenthesize("#optional_parentheses-1", [
+    "\",\".join(",
+    fits_expanded(propagate_expand: false, condition: if_group_fits_on_line("#optional_parentheses-1"), [
+      group([
+        indent([
+          soft_line_break,
+          group([
+            "[",
+            group([
+              indent([
+                soft_line_break,
+                group([
+                  group(["testtesttesttest"]),
+                  soft_line_break_or_space,
+                  "for testtesttesttest in [",
+                  group([
+                    indent([
+                      soft_line_break,
+                      "\"a\",",
+                      soft_line_break_or_space,
+                      "\"b\"",
+                      if_group_breaks([","])
+                    ]),
+                    soft_line_break
+                  ]),
+                  "]"
+                ])
+              ]),
+              soft_line_break
+            ]),
+            "]"
+          ])
+        ]),
+        soft_line_break
+      ])
+    ]),
+    ")"
+  ]),
+  hard_line_break
+]
+{}
+testtesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttest = ",".join(
+    [testtesttesttest for testtesttesttest in ["a", "b"]]
+)
+```
+
+<details>
+<summary>VSCodium ruff initialization logs</summary>
+
+```
+2024-09-26 09:53:03.693 [info] Name: Ruff
+2024-09-26 09:53:03.693 [info] Module: ruff
+2024-09-26 09:53:03.693 [info] Python extension loading
+2024-09-26 09:53:03.693 [info] Waiting for interpreter from python extension.
+2024-09-26 09:53:03.693 [info] Python extension loaded
+2024-09-26 09:53:03.693 [info] Using interpreter: /home/patrick/.local/share/mise/installs/python/3.12/bin/python
+2024-09-26 09:53:03.693 [info] Using environment executable: /home/patrick/.local/share/mise/shims/ruff
+2024-09-26 09:53:03.693 [info] Found Ruff 0.6.7 at /home/patrick/.local/share/mise/shims/ruff
+2024-09-26 09:53:03.693 [info] Server run command: /home/patrick/.local/share/mise/shims/ruff server
+2024-09-26 09:53:03.693 [info] Server: Start requested.
+2024-09-26 09:53:03.693 [info] [Trace - 9:53:03 AM] Sending request 'initialize - (0)'.
+2024-09-26 09:53:03.694 [info] Params: {
+    "processId": 2893542,
+    "clientInfo": {
+        "name": "VSCodium",
+        "version": "1.93.1"
+    },
+    "locale": "en",
+    "rootPath": "/home/patrick/workspaces/tests/ruff",
+    "rootUri": "file:///home/patrick/workspaces/tests/ruff",
+    "capabilities": {
+        "workspace": {
+            "applyEdit": true,
+            "workspaceEdit": {
+                "documentChanges": true,
+                "resourceOperations": [
+                    "create",
+                    "rename",
+                    "delete"
+                ],
+                "failureHandling": "textOnlyTransactional",
+                "normalizesLineEndings": true,
+                "changeAnnotationSupport": {
+                    "groupsOnLabel": true
+                }
+            },
+            "configuration": true,
+            "didChangeWatchedFiles": {
+                "dynamicRegistration": true,
+                "relativePatternSupport": true
+            },
+            "symbol": {
+                "dynamicRegistration": true,
+                "symbolKind": {
+                    "valueSet": [
+                        1,
+                        2,
+                        3,
+                        4,
+                        5,
+                        6,
+                        7,
+                        8,
+                        9,
+                        10,
+                        11,
+                        12,
+                        13,
+                        14,
+                        15,
+                        16,
+                        17,
+                        18,
+                        19,
+                        20,
+                        21,
+                        22,
+                        23,
+                        24,
+                        25,
+                        26
+                    ]
+                },
+                "tagSupport": {
+                    "valueSet": [
+                        1
+                    ]
+                },
+                "resolveSupport": {
+                    "properties": [
+                        "location.range"
+                    ]
+                }
+            },
+            "codeLens": {
+                "refreshSupport": true
+            },
+            "executeCommand": {
+                "dynamicRegistration": true
+            },
+            "didChangeConfiguration": {
+                "dynamicRegistration": true
+            },
+            "workspaceFolders": true,
+            "semanticTokens": {
+                "refreshSupport": true
+            },
+            "fileOperations": {
+                "dynamicRegistration": true,
+                "didCreate": true,
+                "didRename": true,
+                "didDelete": true,
+                "willCreate": true,
+                "willRename": true,
+                "willDelete": true
+            },
+            "inlineValue": {
+                "refreshSupport": true
+            },
+            "inlayHint": {
+                "refreshSupport": true
+            },
+            "diagnostics": {
+                "refreshSupport": true
+            }
+        },
+        "textDocument": {
+            "publishDiagnostics": {
+                "relatedInformation": true,
+                "versionSupport": false,
+                "tagSupport": {
+                    "valueSet": [
+                        1,
+                        2
+                    ]
+                },
+                "codeDescriptionSupport": true,
+                "dataSupport": true
+            },
+            "synchronization": {
+                "dynamicRegistration": true,
+                "willSave": true,
+                "willSaveWaitUntil": true,
+                "didSave": true
+            },
+            "completion": {
+                "dynamicRegistration": true,
+                "contextSupport": true,
+                "completionItem": {
+                    "snippetSupport": true,
+                    "commitCharactersSupport": true,
+                    "documentationFormat": [
+                        "markdown",
+                        "plaintext"
+                    ],
+                    "deprecatedSupport": true,
+                    "preselectSupport": true,
+                    "tagSupport": {
+                        "valueSet": [
+                            1
+                        ]
+                    },
+                    "insertReplaceSupport": true,
+                    "resolveSupport": {
+                        "properties": [
+                            "documentation",
+                            "detail",
+                            "additionalTextEdits"
+                        ]
+                    },
+                    "insertTextModeSupport": {
+                        "valueSet": [
+                            1,
+                            2
+                        ]
+                    },
+                    "labelDetailsSupport": true
+                },
+                "insertTextMode": 2,
+                "completionItemKind": {
+                    "valueSet": [
+                        1,
+                        2,
+                        3,
+                        4,
+                        5,
+                        6,
+                        7,
+                        8,
+                        9,
+                        10,
+                        11,
+                        12,
+                        13,
+                        14,
+                        15,
+                        16,
+                        17,
+                        18,
+                        19,
+                        20,
+                        21,
+                        22,
+                        23,
+                        24,
+                        25
+                    ]
+                },
+                "completionList": {
+                    "itemDefaults": [
+                        "commitCharacters",
+                        "editRange",
+                        "insertTextFormat",
+                        "insertTextMode"
+                    ]
+                }
+            },
+            "hover": {
+                "dynamicRegistration": true,
+                "contentFormat": [
+                    "markdown",
+                    "plaintext"
+                ]
+            },
+            "signatureHelp": {
+                "dynamicRegistration": true,
+                "signatureInformation": {
+                    "documentationFormat": [
+                        "markdown",
+                        "plaintext"
+                    ],
+                    "parameterInformation": {
+                        "labelOffsetSupport": true
+                    },
+                    "activeParameterSupport": true
+                },
+                "contextSupport": true
+            },
+            "definition": {
+                "dynamicRegistration": true,
+                "linkSupport": true
+            },
+            "references": {
+                "dynamicRegistration": true
+            },
+            "documentHighlight": {
+                "dynamicRegistration": true
+            },
+            "documentSymbol": {
+                "dynamicRegistration": true,
+                "symbolKind": {
+                    "valueSet": [
+                        1,
+                        2,
+                        3,
+                        4,
+                        5,
+                        6,
+                        7,
+                        8,
+                        9,
+                        10,
+                        11,
+                        12,
+                        13,
+                        14,
+                        15,
+                        16,
+                        17,
+                        18,
+                        19,
+                        20,
+                        21,
+                        22,
+                        23,
+                        24,
+                        25,
+                        26
+                    ]
+                },
+                "hierarchicalDocumentSymbolSupport": true,
+                "tagSupport": {
+                    "valueSet": [
+                        1
+                    ]
+                },
+                "labelSupport": true
+            },
+            "codeAction": {
+                "dynamicRegistration": true,
+                "isPreferredSupport": true,
+                "disabledSupport": true,
+                "dataSupport": true,
+                "resolveSupport": {
+                    "properties": [
+                        "edit"
+                    ]
+                },
+                "codeActionLiteralSupport": {
+                    "codeActionKind": {
+                        "valueSet": [
+                            "",
+                            "quickfix",
+                            "refactor",
+                            "refactor.extract",
+                            "refactor.inline",
+                            "refactor.rewrite",
+                            "source",
+                            "source.organizeImports"
+                        ]
+                    }
+                },
+                "honorsChangeAnnotations": false
+            },
+            "codeLens": {
+                "dynamicRegistration": true
+            },
+            "formatting": {
+                "dynamicRegistration": true
+            },
+            "rangeFormatting": {
+                "dynamicRegistration": true
+            },
+            "onTypeFormatting": {
+                "dynamicRegistration": true
+            },
+            "rename": {
+                "dynamicRegistration": true,
+                "prepareSupport": true,
+                "prepareSupportDefaultBehavior": 1,
+                "honorsChangeAnnotations": true
+            },
+            "documentLink": {
+                "dynamicRegistration": true,
+                "tooltipSupport": true
+            },
+            "typeDefinition": {
+                "dynamicRegistration": true,
+                "linkSupport": true
+            },
+            "implementation": {
+                "dynamicRegistration": true,
+                "linkSupport": true
+            },
+            "colorProvider": {
+                "dynamicRegistration": true
+            },
+            "foldingRange": {
+                "dynamicRegistration": true,
+                "rangeLimit": 5000,
+                "lineFoldingOnly": true,
+                "foldingRangeKind": {
+                    "valueSet": [
+                        "comment",
+                        "imports",
+                        "region"
+                    ]
+                },
+                "foldingRange": {
+                    "collapsedText": false
+                }
+            },
+            "declaration": {
+                "dynamicRegistration": true,
+                "linkSupport": true
+            },
+            "selectionRange": {
+                "dynamicRegistration": true
+            },
+            "callHierarchy": {
+                "dynamicRegistration": true
+            },
+            "semanticTokens": {
+                "dynamicRegistration": true,
+                "tokenTypes": [
+                    "namespace",
+                    "type",
+                    "class",
+                    "enum",
+                    "interface",
+                    "struct",
+                    "typeParameter",
+                    "parameter",
+                    "variable",
+                    "property",
+                    "enumMember",
+                    "event",
+                    "function",
+                    "method",
+                    "macro",
+                    "keyword",
+                    "modifier",
+                    "comment",
+                    "string",
+                    "number",
+                    "regexp",
+                    "operator",
+                    "decorator"
+                ],
+                "tokenModifiers": [
+                    "declaration",
+                    "definition",
+                    "readonly",
+                    "static",
+                    "deprecated",
+                    "abstract",
+                    "async",
+                    "modification",
+                    "documentation",
+                    "defaultLibrary"
+                ],
+                "formats": [
+                    "relative"
+                ],
+                "requests": {
+                    "range": true,
+                    "full": {
+                        "delta": true
+                    }
+                },
+                "multilineTokenSupport": false,
+                "overlappingTokenSupport": false,
+                "serverCancelSupport": true,
+                "augmentsSyntaxTokens": true
+            },
+            "linkedEditingRange": {
+                "dynamicRegistration": true
+            },
+            "typeHierarchy": {
+                "dynamicRegistration": true
+            },
+            "inlineValue": {
+                "dynamicRegistration": true
+            },
+            "inlayHint": {
+                "dynamicRegistration": true,
+                "resolveSupport": {
+                    "properties": [
+                        "tooltip",
+                        "textEdits",
+                        "label.tooltip",
+                        "label.location",
+                        "label.command"
+                    ]
+                }
+            },
+            "diagnostic": {
+                "dynamicRegistration": true,
+                "relatedDocumentSupport": false
+            }
+        },
+        "window": {
+            "showMessage": {
+                "messageActionItem": {
+                    "additionalPropertiesSupport": true
+                }
+            },
+            "showDocument": {
+                "support": true
+            },
+            "workDoneProgress": true
+        },
+        "general": {
+            "staleRequestSupport": {
+                "cancel": true,
+                "retryOnContentModified": [
+                    "textDocument/semanticTokens/full",
+                    "textDocument/semanticTokens/range",
+                    "textDocument/semanticTokens/full/delta"
+                ]
+            },
+            "regularExpressions": {
+                "engine": "ECMAScript",
+                "version": "ES2020"
+            },
+            "markdown": {
+                "parser": "marked",
+                "version": "1.1.0"
+            },
+            "positionEncodings": [
+                "utf-16"
+            ]
+        },
+        "notebookDocument": {
+            "synchronization": {
+                "dynamicRegistration": true,
+                "executionSummarySupport": true
+            }
+        }
+    },
+    "initializationOptions": {
+        "settings": [
+            {
+                "nativeServer": "on",
+                "cwd": "/home/patrick/workspaces/tests/ruff",
+                "workspace": "file:///home/patrick/workspaces/tests/ruff",
+                "path": [],
+                "ignoreStandardLibrary": true,
+                "interpreter": [
+                    "/home/patrick/.local/share/mise/installs/python/3.12/bin/python"
+                ],
+                "configuration": null,
+                "importStrategy": "fromEnvironment",
+                "codeAction": {
+                    "fixViolation": {
+                        "enable": true
+                    },
+                    "disableRuleComment": {
+                        "enable": true
+                    }
+                },
+                "lint": {
+                    "enable": true,
+                    "run": "onType",
+                    "args": [],
+                    "preview": null,
+                    "select": null,
+                    "extendSelect": null,
+                    "ignore": null
+                },
+                "format": {
+                    "args": [],
+                    "preview": true
+                },
+                "enable": true,
+                "organizeImports": true,
+                "fixAll": true,
+                "showNotifications": "off",
+                "exclude": null,
+                "lineLength": 130,
+                "configurationPreference": "filesystemFirst",
+                "showSyntaxErrors": true,
+                "logLevel": "trace",
+                "logFile": "~/.ruff-server.log"
+            }
+        ],
+        "globalSettings": {
+            "nativeServer": "on",
+            "cwd": "/home/patrick",
+            "workspace": "/home/patrick",
+            "path": [],
+            "ignoreStandardLibrary": true,
+            "interpreter": [],
+            "configuration": null,
+            "importStrategy": "fromEnvironment",
+            "codeAction": {
+                "fixViolation": {
+                    "enable": true
+                },
+                "disableRuleComment": {
+                    "enable": true
+                }
+            },
+            "lint": {
+                "enable": true,
+                "run": "onType",
+                "args": []
+            },
+            "format": {
+                "args": [],
+                "preview": true
+            },
+            "enable": true,
+            "organizeImports": true,
+            "fixAll": true,
+            "showNotifications": "off",
+            "lineLength": 130,
+            "configurationPreference": "filesystemFirst",
+            "showSyntaxErrors": true,
+            "logLevel": "trace",
+            "logFile": "~/.ruff-server.log"
+        }
+    },
+    "trace": "verbose",
+    "workspaceFolders": [
+        {
+            "uri": "file:///home/patrick/workspaces/tests/ruff",
+            "name": "ruff"
+        }
+    ]
+}
+
+
+2024-09-26 09:53:03.696 [info] [Trace - 9:53:03 AM] Received response 'initialize - (0)' in 4ms.
+2024-09-26 09:53:03.696 [info] Result: {
+    "capabilities": {
+        "codeActionProvider": {
+            "codeActionKinds": [
+                "quickfix",
+                "source.fixAll.ruff",
+                "source.organizeImports.ruff",
+                "notebook.source.fixAll.ruff",
+                "notebook.source.organizeImports.ruff"
+            ],
+            "resolveProvider": true,
+            "workDoneProgress": true
+        },
+        "diagnosticProvider": {
+            "identifier": "Ruff",
+            "interFileDependencies": false,
+            "workDoneProgress": true,
+            "workspaceDiagnostics": false
+        },
+        "documentFormattingProvider": true,
+        "documentRangeFormattingProvider": true,
+        "executeCommandProvider": {
+            "commands": [
+                "ruff.applyFormat",
+                "ruff.applyAutofix",
+                "ruff.applyOrganizeImports",
+                "ruff.printDebugInformation"
+            ],
+            "workDoneProgress": false
+        },
+        "hoverProvider": true,
+        "notebookDocumentSync": {
+            "notebookSelector": [
+                {
+                    "cells": [
+                        {
+                            "language": "python"
+                        }
+                    ]
+                }
+            ],
+            "save": false
+        },
+        "positionEncoding": "utf-16",
+        "textDocumentSync": {
+            "change": 2,
+            "openClose": true,
+            "willSave": false,
+            "willSaveWaitUntil": false
+        },
+        "workspace": {
+            "workspaceFolders": {
+                "changeNotifications": true,
+                "supported": true
+            }
+        }
+    },
+    "serverInfo": {
+        "name": "ruff",
+        "version": "0.6.7"
+    }
+}
+
+
+2024-09-26 09:53:03.696 [info] [Trace - 9:53:03 AM] Sending notification 'initialized'.
+2024-09-26 09:53:03.696 [info] Params: {}
+
+
+2024-09-26 09:53:03.719 [info] [Trace - 9:53:03 AM] Received request 'client/registerCapability - (1)'.
+2024-09-26 09:53:03.719 [info] Params: {
+    "registrations": [
+        {
+            "id": "ruff-server-watch",
+            "method": "workspace/didChangeWatchedFiles",
+            "registerOptions": {
+                "watchers": [
+                    {
+                        "globPattern": "**/.ruff.toml"
+                    },
+                    {
+                        "globPattern": "**/ruff.toml"
+                    },
+                    {
+                        "globPattern": "**/pyproject.toml"
+                    }
+                ]
+            }
+        }
+    ]
+}
+
+
+2024-09-26 09:53:03.719 [info] [Trace - 9:53:03 AM] Sending response 'client/registerCapability - (1)'. Processing request took 0ms
+2024-09-26 09:53:03.719 [info] No result returned.
+
+
+2024-09-26 09:53:03.942 [info] [Trace - 9:53:03 AM] Sending notification '$/setTrace'.
+2024-09-26 09:53:03.942 [info] Params: {
+    "value": "verbose"
+}
+```
+
+</details>
+
+
+---
+
+_Label `question` added by @MichaReiser on 2024-09-26 08:19_
+
+---
+
+_Comment by @MichaReiser on 2024-09-26 08:22_
+
+Hi @pdecat 
+
+The first formatting uses ruff's preview style formatting (enabled with `ruff.preview = true` or `ruff.format.preview = true`) here the second uses the stable formatting. 
+
+That's why I suspect that you either have overridden the ruff configuration in VS code or the extension doesn't pick up the same configuration (for some reason). Could you share your Ruff vs code extension settings with us and double check if you set the preview option in the settings or the CLI?
+
+
+---
+
+_Comment by @pdecat on 2024-09-26 11:50_
+
+Hi @MichaReiser, `preview` was indeed the culprit in my VSCodium user settings :facepalm: I don't remember when I enabled it, and it was the only code fragment in my projects to trigger this behavior.
+
+Thank you so much! 
+
+---
+
+_Closed by @pdecat on 2024-09-26 11:50_
+
+---
+
+_Label `server` added by @dhruvmanila on 2025-01-07 05:16_
+
+---

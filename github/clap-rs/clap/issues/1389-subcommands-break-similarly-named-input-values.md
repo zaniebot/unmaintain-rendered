@@ -1,0 +1,219 @@
+---
+number: 1389
+title: Subcommands break similarly named input values
+type: issue
+state: closed
+author: conways-glider
+labels: []
+assignees: []
+created_at: 2018-11-29T02:58:26Z
+updated_at: 2018-12-13T16:54:24Z
+url: https://github.com/clap-rs/clap/issues/1389
+synced_at: 2026-01-07T13:12:19-06:00
+---
+
+# Subcommands break similarly named input values
+
+---
+
+_Issue opened by @conways-glider on 2018-11-29 02:58_
+
+### Rust Version
+
+1.30.1
+
+### Affected Version of clap
+
+2.32.0
+
+### Bug or Feature Request Summary
+
+In the example posted in the README (https://github.com/clap-rs/clap#quick-example), if I try to pass the string `test.txt`, the program errors, and does not parse my input.
+
+It will break on any file extension or even `tesst.txt`. When removing the subcommand, the example passes flawlessly.
+
+### Expected Behavior Summary
+
+Subcommands are distinctly read from input
+
+### Actual Behavior Summary
+
+Subcommands can render args broken for certain commands.
+An example output is:
+```sh
+$ cargo run -- "test.txt"
+error: The subcommand 'test.txt' wasn't recognized
+	Did you mean 'test'?
+
+If you believe you received this message in error, try re-running with 'sandbox -- test.txt'
+
+USAGE:
+    sandbox [FLAGS] [OPTIONS] <INPUT> [SUBCOMMAND]
+
+For more information try --help
+```
+
+### Steps to Reproduce the issue
+
+Copy & Paste the linked example (https://github.com/clap-rs/clap#quick-example) and try to pass the argument `test.txt`.
+
+
+### Sample Code or Link to Sample Code
+
+```rust
+// (Full example with detailed comments in examples/01b_quick_example.rs)
+//
+// This example demonstrates clap's full 'builder pattern' style of creating arguments which is
+// more verbose, but allows easier editing, and at times more advanced options, or the possibility
+// to generate arguments dynamically.
+extern crate clap;
+use clap::{Arg, App, SubCommand};
+
+fn main() {
+    let matches = App::new("My Super Program")
+                          .version("1.0")
+                          .author("Kevin K. <kbknapp@gmail.com>")
+                          .about("Does awesome things")
+                          .arg(Arg::with_name("config")
+                               .short("c")
+                               .long("config")
+                               .value_name("FILE")
+                               .help("Sets a custom config file")
+                               .takes_value(true))
+                          .arg(Arg::with_name("INPUT")
+                               .help("Sets the input file to use")
+                               .required(true)
+                               .index(1))
+                          .arg(Arg::with_name("v")
+                               .short("v")
+                               .multiple(true)
+                               .help("Sets the level of verbosity"))
+                          .subcommand(SubCommand::with_name("test")
+                                      .about("controls testing features")
+                                      .version("1.3")
+                                      .author("Someone E. <someone_else@other.com>")
+                                      .arg(Arg::with_name("debug")
+                                          .short("d")
+                                          .help("print debug information verbosely")))
+                          .get_matches();
+
+    // Gets a value for config if supplied by user, or defaults to "default.conf"
+    let config = matches.value_of("config").unwrap_or("default.conf");
+    println!("Value for config: {}", config);
+
+    // Calling .unwrap() is safe here because "INPUT" is required (if "INPUT" wasn't
+    // required we could have used an 'if let' to conditionally get the value)
+    println!("Using input file: {}", matches.value_of("INPUT").unwrap());
+
+    // Vary the output based on how many times the user used the "verbose" flag
+    // (i.e. 'myprog -v -v -v' or 'myprog -vvv' vs 'myprog -v'
+    match matches.occurrences_of("v") {
+        0 => println!("No verbose info"),
+        1 => println!("Some verbose info"),
+        2 => println!("Tons of verbose info"),
+        3 | _ => println!("Don't be crazy"),
+    }
+
+    // You can handle information about subcommands by requesting their matches by name
+    // (as below), requesting just the name used, or both at the same time
+    if let Some(matches) = matches.subcommand_matches("test") {
+        if matches.is_present("debug") {
+            println!("Printing debug info...");
+        } else {
+            println!("Printing normally...");
+        }
+    }
+}
+```
+
+
+### Debug output
+
+<details>
+<summary> Debug Output </summary>
+<pre>
+<code>
+$ cargo run -- "test.txt"
+    Finished dev [unoptimized + debuginfo] target(s) in 0.01s                                                                               
+     Running `target/debug/sandbox test.txt`
+DEBUG:clap:Parser::add_subcommand: term_w=None, name=test
+DEBUG:clap:Parser::propagate_settings: self=My Super Program, g_settings=AppFlags(
+    (empty)
+)
+DEBUG:clap:Parser::propagate_settings: sc=test, settings=AppFlags(
+    NEEDS_LONG_HELP | NEEDS_LONG_VERSION | NEEDS_SC_HELP | UTF8_NONE | COLOR_AUTO
+), g_settings=AppFlags(
+    (empty)
+)
+DEBUG:clap:Parser::propagate_settings: self=test, g_settings=AppFlags(
+    (empty)
+)
+DEBUG:clap:Parser::get_matches_with;
+DEBUG:clap:Parser::create_help_and_version;
+DEBUG:clap:Parser::create_help_and_version: Building --help
+DEBUG:clap:Parser::create_help_and_version: Building --version
+DEBUG:clap:Parser::create_help_and_version: Building help
+DEBUG:clap:Parser::get_matches_with: Begin parsing '"test.txt"' ([116, 101, 115, 116, 46, 116, 120, 116])
+DEBUG:clap:Parser::is_new_arg:"test.txt":NotFound
+DEBUG:clap:Parser::is_new_arg: arg_allows_tac=false
+DEBUG:clap:Parser::is_new_arg: probably value
+DEBUG:clap:Parser::is_new_arg: starts_new_arg=false
+DEBUG:clap:Parser::possible_subcommand: arg="test.txt"
+DEBUG:clap:Parser::get_matches_with: possible_sc=false, sc=None
+DEBUG:clap:usage::create_usage_with_title;
+DEBUG:clap:usage::create_usage_no_title;
+DEBUG:clap:usage::get_required_usage_from: reqs=["INPUT"], extra=None
+DEBUG:clap:usage::get_required_usage_from: after init desc_reqs=[]
+DEBUG:clap:usage::get_required_usage_from: no more children
+DEBUG:clap:usage::get_required_usage_from: final desc_reqs=["INPUT"]
+DEBUG:clap:usage::get_required_usage_from: args_in_groups=[]
+DEBUG:clap:usage::needs_flags_tag;
+DEBUG:clap:usage::needs_flags_tag:iter: f=v;
+DEBUG:clap:Parser::groups_for_arg: name=v
+DEBUG:clap:Parser::groups_for_arg: No groups defined
+DEBUG:clap:usage::needs_flags_tag:iter: [FLAGS] required
+DEBUG:clap:usage::create_help_usage: usage=sandbox [FLAGS] [OPTIONS] <INPUT> [SUBCOMMAND]
+DEBUG:clap:Parser::color;
+DEBUG:clap:Parser::color: Color setting...Auto
+DEBUG:clap:is_a_tty: stderr=true
+DEBUG:clap:Colorizer::error;
+DEBUG:clap:Colorizer::warning;
+DEBUG:clap:Colorizer::good;
+DEBUG:clap:Colorizer::good;
+DEBUG:clap:Colorizer::good;
+error: The subcommand 'test.txt' wasn't recognized
+	Did you mean 'test'?
+
+If you believe you received this message in error, try re-running with 'sandbox -- test.txt'
+
+USAGE:
+    sandbox [FLAGS] [OPTIONS] <INPUT> [SUBCOMMAND]
+
+For more information try --help
+
+</code>
+</pre>
+</details>
+
+
+---
+
+_Renamed from "Subcommands break some input values" to "Subcommands break similarly named input values" by @conways-glider on 2018-11-29 04:17_
+
+---
+
+_Comment by @conways-glider on 2018-11-30 20:27_
+
+Upon digging in, it seems related to the `suggestions` feature. When providing `test.txt`, it errors and asks if I meant `test`. When providing `hello`, it errors and asks if I mean `help`. I think the `suggestions` feature has issues with accepting an arg that doesn't use `short` or `long`, such as the required input arg.
+
+---
+
+_Comment by @conways-glider on 2018-12-13 16:54_
+
+Upon further review, it looks like this is a dupe of https://github.com/clap-rs/clap/issues/878
+
+---
+
+_Closed by @conways-glider on 2018-12-13 16:54_
+
+---

@@ -1,0 +1,138 @@
+---
+number: 7997
+title: Extend Git cache-keys to include Git tags
+type: issue
+state: closed
+author: my1e5
+labels: []
+assignees: []
+created_at: 2024-10-08T09:14:45Z
+updated_at: 2024-10-16T15:13:31Z
+url: https://github.com/astral-sh/uv/issues/7997
+synced_at: 2026-01-07T13:12:17-06:00
+---
+
+# Extend Git cache-keys to include Git tags
+
+---
+
+_Issue opened by @my1e5 on 2024-10-08 09:14_
+
+For projects with dynamic metadata, you can set 
+```
+[tool.uv]
+cache-keys = [{ git = true }]
+```
+to rebuild the project whenever the commit hash changes.
+
+However, many dynamic versioning plugins use Git tags (as well as the commit hashes) to generate version numbers. It would be nice if uv could be extended to check for new Git tags as well as changes to the commit hash. 
+
+Related: https://github.com/astral-sh/uv/issues/7866
+
+## MRE
+
+Set up a simple dynamic version library
+
+```
+$ uv init --lib foo
+```
+Edit the `pyproject.toml` to use a dynamic version, the hatch vcs plugin and uv `git=true` `cache-keys`.
+```
+[project]
+name = "foo"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = []
+dynamic = ["version"]
+
+[build-system]
+requires = ["hatchling", "hatch-vcs"]
+build-backend = "hatchling.build"
+
+[tool.hatch.version]
+source = "vcs"
+
+[tool.uv]
+cache-keys = [{ git = true }]
+```
+Run `uv sync`
+```
+$ uv sync
+.
+ + foo==0.1.dev0+d20241008 (from file:///Users/.../foo)
+```
+All good so far - there isn't any Git commit history.
+
+Make a commit and sync again.
+```
+$ git add .
+$ git commit -m "initial"
+[main (root-commit) b54fcd8] initial
+ 7 files changed, 37 insertions(+)
+ .
+$ uv sync
+.
+ - foo==0.1.dev0+d20241008 (from file:///Users/.../foo)
+ + foo==0.1.dev1+gb54fcd8 (from file:///Users/.../foo)
+ ```
+ Now it is retrieving the Git commit hash. And if we make some changes and a new commit, `uv sync` will automatically detect this change in the commit hash
+ ```
+$ git commit -m "second commit"
+[main 8ced712] second commit
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+$ uv sync
+.
+ - foo==0.1.dev1+gb54fcd8 (from file:///Users/.../foo)
+ + foo==0.1.dev2+g8ced712 (from file:///Users/.../foo)
+ ```
+But let's say we now go and tag the initial commit. This should lead to an updated version number based off of this new tag info. But currently, `uv sync` does not detect this because it only looks for a change in the commit hash.
+```
+$ git tag v1.0.0 b54fcd8
+$ uv sync
+Resolved 1 package in 1ms
+Audited 1 package in 0.39ms
+```
+But if we `--reinstall` we get the desired outcome.
+```
+$ uv sync --reinstall
+.
+ - foo==0.1.dev2+g8ced712 (from file:///Users/.../foo)
+ + foo==1.0.1.dev1+g8ced712 (from file:///Users/.../foo)
+ ```
+Note that if I now checkout the initial commit it will update the version number correctly without the need for `--reinstall` because it has detected a change in the commit hash. 
+```
+$ git checkout b54fcd8
+$ uv sync
+.
+ - foo==1.0.1.dev1+g8ced712 (from file:///Users/.../foo)
+ + foo==1.0.0 (from file:///Users/.../foo)
+ ```
+To conclude, everything currently works as stated in the docs. Just it would be nice if the Git cache keys experience could somehow be made seamless by integrating Git tags as well.
+
+```
+$ uv --version
+uv 0.4.19 (a451fb685 2024-10-07)
+```
+
+---
+
+_Referenced in [astral-sh/uv#8259](../../astral-sh/uv/pulls/8259.md) on 2024-10-16 14:45_
+
+---
+
+_Closed by @charliermarsh on 2024-10-16 15:13_
+
+---
+
+_Closed by @charliermarsh on 2024-10-16 15:13_
+
+---
+
+_Referenced in [astral-sh/uv#7866](../../astral-sh/uv/issues/7866.md) on 2024-10-17 22:06_
+
+---
+
+_Referenced in [astral-sh/uv#6860](../../astral-sh/uv/issues/6860.md) on 2024-11-11 23:26_
+
+---

@@ -1,0 +1,185 @@
+---
+number: 9640
+title: Inconsistent or incorrect package resolution for PyTorch when using environment markers
+type: issue
+state: closed
+author: asalaria-cisco
+labels:
+  - bug
+assignees: []
+created_at: 2024-12-04T14:08:51Z
+updated_at: 2024-12-10T15:57:25Z
+url: https://github.com/astral-sh/uv/issues/9640
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# Inconsistent or incorrect package resolution for PyTorch when using environment markers
+
+---
+
+_Issue opened by @asalaria-cisco on 2024-12-04 14:08_
+
+I am following the [instructions in documentations](https://docs.astral.sh/uv/guides/integration/pytorch/#configuring-accelerators-with-optional-dependencies), to allow CPU-only builds in some cases, but CUDA-enabled builds in others.
+
+I am using Linux and uv version `0.5.6`. 
+My machine has an NIVIDIA GPU but let's say I want to only install a CPU version of PyTorch.
+Starting from an empty folder, I run:
+
+```
+uv init
+uv venv --python 3.12
+source .venv/bin/activate
+```
+
+Then I edited the `pyproject.toml` to look like this (following the documentation):
+
+```
+[project]
+name = "test"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [ ]
+
+[project.optional-dependencies]
+cpu = [ "torch>=2.5.1" ]
+cu124 = [ "torch>=2.5.1" ]
+
+[tool.uv]
+conflicts = [ [{ extra = "cpu" }, { extra = "cu124" },] ]
+
+[tool.uv.sources]
+torch = [
+  { index = "pytorch-cpu", extra = "cpu", marker = "platform_system != 'Darwin'" },
+  { index = "pytorch-cu124", extra = "cu124" },
+]
+
+[[tool.uv.index]]
+name = "pytorch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
+explicit = true
+
+[[tool.uv.index]]
+name = "pytorch-cu124"
+url = "https://download.pytorch.org/whl/cu124"
+explicit = true
+```
+Running `uv sync` I get:
+
+```
+$ uv sync --extra cpu
+Resolved 26 packages in 1.52s
+Installed 1 package in 113ms
+ + torch==2.5.1+cpu
+```
+
+Bug number 1: only `torch` and no other package, has been installed!
+Immediately running `uv syc` again adds the missing dependencies:
+
+```
+$ uv sync --extra cpu
+Resolved 26 packages in 1ms
+Installed 9 packages in 25ms
+ + filelock==3.16.1
+ + fsspec==2024.10.0
+ + jinja2==3.1.4
+ + markupsafe==3.0.2
+ + mpmath==1.3.0
+ + networkx==3.4.2
+ + setuptools==75.6.0
+ + sympy==1.13.1
+ + typing-extensions==4.12.2
+```
+
+This adds back the missing dependencies.
+
+Now for the second and more complex issue. If I add a dependency to the `pyproject.toml` that itself has `torch` as a dependency, things start to break. Modifying the `pyproject.toml` by adding `ragatouille` as a project dependency (nothing unique to this package, other similar packages produce the same results):
+
+```
+[project]
+name = "test"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [ "ragatouille" ]
+
+.... the rest the same as above ....
+```
+
+Now running `uv syc` we hit the second bug:
+```
+$ uv sync --extra cpu
+warning: Missing version constraint (e.g., a lower bound) for `ragatouille`
+Resolved 141 packages in 1.84s
+Installed 128 packages in 913ms
+...
+```
+
+Among the packages installed, we get a second copy of `torch` with CUDA dependency!
+```
+$ uv pip list | grep -e "torch\|nvidia"
+fast-pytorch-kmeans                     0.2.0.1
+nvidia-cublas-cu12                      12.4.5.8
+nvidia-cuda-cupti-cu12                  12.4.127
+nvidia-cuda-nvrtc-cu12                  12.4.127
+nvidia-cuda-runtime-cu12                12.4.127
+nvidia-cudnn-cu12                       9.1.0.70
+nvidia-cufft-cu12                       11.2.1.3
+nvidia-curand-cu12                      10.3.5.147
+nvidia-cusolver-cu12                    11.6.1.9
+nvidia-cusparse-cu12                    12.3.1.170
+nvidia-ml-py                            12.560.30
+nvidia-nccl-cu12                        2.21.5
+nvidia-nvjitlink-cu12                   12.4.127
+nvidia-nvtx-cu12                        12.4.127
+torch                                   2.5.1
+torch                                   2.5.1+cpu
+```
+
+It seems that the constraint that was put in the `pyporject.toml` to use the specific index to look for torch (i.e. using CPU version), was not used when resolving the dependencies of `ragatouille`. It is worth mentioning that moving `ragatouille` from project dependencies to the optional ones (i.e. adding it along `torch` to the `cpu` and `gpu` optional decadency lists) also results in installing two versions of `torch`, CPU and GPU.
+
+---
+
+_Comment by @charliermarsh on 2024-12-04 14:12_
+
+The second issue is a duplicate of #9289. It's being worked on actively.
+
+---
+
+_Comment by @eginhard on 2024-12-04 14:15_
+
+And the first might be the same underlying issue as #9622
+
+---
+
+_Comment by @BurntSushi on 2024-12-04 14:21_
+
+I can confirm that the first bug is resolved by #9370.
+
+On my Linux machine, if I test the second bug with `ragatouille`, I get:
+
+```
+error: Distribution `voyager==2.0.9 @ registry+https://pypi.org/simple` can't be installed because it doesn't have a source distribution or wheel for the current platform
+```
+
+But if I use `torchmetrics` instead (which I think is the same idea, since it depends on `torch`), then that bug is also resolved by #9370.
+
+---
+
+_Label `bug` added by @charliermarsh on 2024-12-06 00:16_
+
+---
+
+_Referenced in [astral-sh/uv#9370](../../astral-sh/uv/pulls/9370.md) on 2024-12-06 17:13_
+
+---
+
+_Closed by @BurntSushi on 2024-12-10 15:57_
+
+---
+
+_Closed by @BurntSushi on 2024-12-10 15:57_
+
+---

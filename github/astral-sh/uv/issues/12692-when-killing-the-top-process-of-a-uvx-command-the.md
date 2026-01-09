@@ -1,0 +1,87 @@
+---
+number: 12692
+title: "When killing the top process of a `uvx` command, the process keeps running in the background"
+type: issue
+state: closed
+author: schnow265
+labels:
+  - bug
+assignees: []
+created_at: 2025-04-06T12:30:53Z
+updated_at: 2025-04-06T18:33:10Z
+url: https://github.com/astral-sh/uv/issues/12692
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# When killing the top process of a `uvx` command, the process keeps running in the background
+
+---
+
+_Issue opened by @schnow265 on 2025-04-06 12:30_
+
+### Summary
+
+When running an `uvx` command and then killing the top process via Process Explorer, a `uv` process keeps on running.
+
+Here is a screenshot from Process Explorer showcasing a simple `uvx mcp-server-git`:
+
+![Image](https://github.com/user-attachments/assets/46ffa50c-8227-41b4-882b-263f7dc45adc)
+
+However, when killing the uvx process using Process Explorer, the uv process which started the mcp-server-git executable remains. This is bad, since the terminal is now non-interactable.
+
+![Image](https://github.com/user-attachments/assets/4792cda9-e399-410d-8cce-76a96d750e68)
+
+This is not just an issue with this package. Here is an example with openwebui:
+
+![Image](https://github.com/user-attachments/assets/9b489f96-a3a9-4148-bd4e-abd30f3b1a40)
+
+This is an issue, sine VSCode now supports MCP servers, and when stopping a server started with `uvx`, and then stopping it via VSCode, it causes the process to still run in the background.
+
+(Image taken before stopping)
+![Image](https://github.com/user-attachments/assets/c9f45409-a0cb-4c88-9ee9-88636435938d)
+
+(Image taken after "Stopping" server)
+![Image](https://github.com/user-attachments/assets/d0869f07-fd2b-47df-9edf-842db445d640)
+
+(Image taken after killing the orphaned uv process, starting the server back up and clicking restart)
+![Image](https://github.com/user-attachments/assets/3290bf3c-bd24-4f06-a08d-a30568496a75)
+
+### Platform
+
+Windows 11 22H2 x86_64
+
+### Version
+
+uv 0.6.12 (e4e03833f 2025-04-02)
+
+### Python version
+
+Python 3.11.9
+
+---
+
+_Label `bug` added by @schnow265 on 2025-04-06 12:30_
+
+---
+
+_Comment by @zanieb on 2025-04-06 15:34_
+
+Is this a duplicate of https://github.com/astral-sh/uv/issues/11817 ?
+
+---
+
+_Comment by @zanieb on 2025-04-06 15:51_
+
+(I think VS Code should probably stop the process group?)
+
+---
+
+_Comment by @schnow265 on 2025-04-06 18:33_
+
+yep looks like it, thanks anyway
+
+---
+
+_Closed by @schnow265 on 2025-04-06 18:33_
+
+---

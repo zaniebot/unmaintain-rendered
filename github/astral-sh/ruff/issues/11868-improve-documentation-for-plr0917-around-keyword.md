@@ -1,0 +1,93 @@
+---
+number: 11868
+title: "Improve documentation for `PLR0917` around keyword only parameters"
+type: issue
+state: closed
+author: Renkai
+labels:
+  - documentation
+assignees: []
+created_at: 2024-06-14T06:41:36Z
+updated_at: 2024-06-23T15:16:10Z
+url: https://github.com/astral-sh/ruff/issues/11868
+synced_at: 2026-01-07T13:12:15-06:00
+---
+
+# Improve documentation for `PLR0917` around keyword only parameters
+
+---
+
+_Issue opened by @Renkai on 2024-06-14 06:41_
+
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* List of keywords you searched for before creating this issue. Write them down here so that others can find this issue more easily and help provide feedback.
+  e.g. "RUF001", "unused variable", "Jupyter notebook"
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+By the document, `PLR0917` shall only happen in a function call, not in the function definition.
+https://docs.astral.sh/ruff/rules/too-many-positional/
+
+But in the tests, it will fail in the function definition.
+From the tests, it's more like `too-many-no-default` rather than `too-many-positional`
+
+https://github.com/astral-sh/ruff/blob/main/crates/ruff_linter/resources/test/fixtures/pylint/too_many_positional.py
+
+---
+
+_Comment by @dhruvmanila on 2024-06-14 09:28_
+
+Hi, thanks for opening this issue!
+
+> By the document, `PLR0917` shall only happen in a function call, not in the function definition.
+> [docs.astral.sh/ruff/rules/too-many-positional](https://docs.astral.sh/ruff/rules/too-many-positional/)
+
+Can you clarify this bit? I might be misunderstanding what you're trying to say but from my perspective the docs does mean _function definitions_: 
+
+> "Checks for function definitions that include too many positional arguments."
+
+---
+
+_Label `question` added by @dhruvmanila on 2024-06-14 09:28_
+
+---
+
+_Comment by @Renkai on 2024-06-15 00:40_
+
+Sorry I misunderstood the document earlier, that's because I didn't know to use `*` to force keyword argument is a feature of Python language. I thought it's a feature of linter shall only be check in the function call not function definition. Maybe we can add this to document of linter to avoid misunderstanding.
+
+https://docs.python.org/3/tutorial/controlflow.html#special-parameters
+
+---
+
+_Label `documentation` added by @zanieb on 2024-06-15 01:06_
+
+---
+
+_Comment by @dhruvmanila on 2024-06-18 06:24_
+
+Happy to accept a PR to improve the documentation. Maybe we can provide a reference to https://docs.python.org/3/tutorial/controlflow.html#special-parameters.
+
+---
+
+_Label `question` removed by @dhruvmanila on 2024-06-18 06:24_
+
+---
+
+_Renamed from "PLR0917 wrong implementation" to "Improve documentation for `PLR0917` around keyword only parameters" by @dhruvmanila on 2024-06-18 06:25_
+
+---
+
+_Referenced in [astral-sh/ruff#11978](../../astral-sh/ruff/pulls/11978.md) on 2024-06-21 23:15_
+
+---
+
+_Closed by @charliermarsh on 2024-06-23 15:16_
+
+---

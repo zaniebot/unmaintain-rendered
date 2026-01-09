@@ -1,0 +1,43 @@
+---
+number: 8629
+title: how  find comma, when check code
+type: issue
+state: closed
+author: me-v2
+labels: []
+assignees: []
+created_at: 2024-10-28T02:00:16Z
+updated_at: 2024-10-28T12:27:08Z
+url: https://github.com/astral-sh/uv/issues/8629
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# how  find comma, when check code
+
+---
+
+_Issue opened by @me-v2 on 2024-10-28 02:00_
+
+sometime, use forget comma in code end.  this is error issues. how check it or support it .
+
+![CleanShot 2024-10-28 at 09 58 08](https://github.com/user-attachments/assets/10fac284-388b-479e-96a4-332e7fccfc1a)
+
+
+---
+
+_Comment by @FishAlchemist on 2024-10-28 09:49_
+
+Are you looking for Ruff? I don't think UV supports code lint or format.
+https://github.com/astral-sh/ruff
+
+---
+
+_Closed by @charliermarsh on 2024-10-28 12:26_
+
+---
+
+_Comment by @charliermarsh on 2024-10-28 12:27_
+
+Yeah looks like this is intended for Ruff.
+
+---

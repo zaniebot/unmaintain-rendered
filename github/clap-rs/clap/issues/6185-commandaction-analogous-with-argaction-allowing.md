@@ -1,0 +1,91 @@
+---
+number: 6185
+title: "`CommandAction` analogous with `ArgAction` allowing Custom \"help\" subcommand"
+type: issue
+state: open
+author: jerusdp
+labels:
+  - C-enhancement
+  - A-builder
+  - A-parsing
+  - S-triage
+  - S-waiting-on-design
+assignees: []
+created_at: 2025-11-18T16:27:11Z
+updated_at: 2025-11-18T16:30:18Z
+url: https://github.com/clap-rs/clap/issues/6185
+synced_at: 2026-01-07T13:12:20-06:00
+---
+
+# `CommandAction` analogous with `ArgAction` allowing Custom "help" subcommand
+
+---
+
+_Issue opened by @jerusdp on 2025-11-18 16:27_
+
+### Please complete the following tasks
+
+- [x] I have searched the [discussions](https://github.com/clap-rs/clap/discussions)
+- [x] I have searched the [open](https://github.com/clap-rs/clap/issues) and [rejected](https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed) issues
+
+### Clap Version
+
+4.5.51
+
+### Describe your use case
+
+During discussion of the solution of implemention for  #1553  the best solution to providing a custom header on the `help` sub-command was identified as requiring CommandAction with a `help` action analogous to the actions provided in `ArgAction` to generate a custom`help` argument. 
+
+### Describe the solution you'd like
+
+## Introduction 
+
+The objective is to provide the user with a facility to place the help subcommand under a custom header. Currently this can be worked around by renaming the default heading. Providing the user a `CommandAction::Help` will allow them to configure a custom `help` subcommand following the same process that is currently used to generate a custom `help`  argument e.g. `-?`. The custom command can then be place under a custom header using `Command::help_heading`.
+
+## Design Statements
+
+| Statement | Comment |
+| --- | --- |
+| MUST provide Command::CommandAction enum| The key objective of the change |
+| MUST provide `help` value for enum | Commands with the `help` action will trigger help |
+| MUST provide `user` value for enum | Command with the `user` action must be handled by the user|
+| MUST set the `user` action as the default | |
+| WILL NOT propagate custom help commands  | Not sure this is the right call ❓  | 
+
+### Alternatives, if applicable
+
+_No response_
+
+### Additional Context
+
+_No response_
+
+---
+
+_Label `C-enhancement` added by @jerusdp on 2025-11-18 16:27_
+
+---
+
+_Label `S-triage` added by @jerusdp on 2025-11-18 16:27_
+
+---
+
+_Label `A-builder` added by @epage on 2025-11-18 16:28_
+
+---
+
+_Label `A-parsing` added by @epage on 2025-11-18 16:28_
+
+---
+
+_Label `S-waiting-on-design` added by @epage on 2025-11-18 16:28_
+
+---
+
+_Comment by @epage on 2025-11-18 16:30_
+
+Related
+- #5251
+- #4395
+
+---

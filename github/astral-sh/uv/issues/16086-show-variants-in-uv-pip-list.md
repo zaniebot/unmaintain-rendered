@@ -1,0 +1,45 @@
+---
+number: 16086
+title: "Show variants in `uv pip list`"
+type: issue
+state: closed
+author: charliermarsh
+labels:
+  - enhancement
+  - preview
+assignees: []
+created_at: 2025-10-01T15:59:48Z
+updated_at: 2025-10-02T00:11:52Z
+url: https://github.com/astral-sh/uv/issues/16086
+synced_at: 2026-01-07T13:12:19-06:00
+---
+
+# Show variants in `uv pip list`
+
+---
+
+_Issue opened by @charliermarsh on 2025-10-01 15:59_
+
+For the variant-enable prototype, we should show the installed variant in `uv pip list` -- helpful for debugging and demos.
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2025-10-01 15:59_
+
+---
+
+_Label `enhancement` added by @charliermarsh on 2025-10-01 15:59_
+
+---
+
+_Label `preview` added by @charliermarsh on 2025-10-01 15:59_
+
+---
+
+_Referenced in [astral-sh/uv#16091](../../astral-sh/uv/pulls/16091.md) on 2025-10-01 19:55_
+
+---
+
+_Closed by @charliermarsh on 2025-10-02 00:11_
+
+---

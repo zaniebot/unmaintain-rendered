@@ -1,0 +1,189 @@
+---
+number: 8771
+title: uv run with only a dependency-group
+type: issue
+state: closed
+author: nijel
+labels:
+  - question
+assignees: []
+created_at: 2024-11-03T09:37:39Z
+updated_at: 2024-11-05T13:43:05Z
+url: https://github.com/astral-sh/uv/issues/8771
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# uv run with only a dependency-group
+
+---
+
+_Issue opened by @nijel on 2024-11-03 09:37_
+
+I'd like to execute a tool of version pinned as a dependency group (PEP 735) in `pyproject.toml`. I was thinking about using `uv run` for that, but I don't see a way to omit it installing project.
+
+Let's have the following in `pyproject.toml`:
+
+```toml
+[dependency-groups]
+pre-commit = [
+  "pre-commit==4.0.1"
+]
+```
+
+What works:
+
+```
+uv sync --only-group pre-commit
+.venv/bin/pre-commit run --all
+```
+
+What I'd like to use:
+
+```
+uv run --only-group pre-commit pre-commit run --all
+```
+
+But this does install whole project (what takes long and needs additional system deps thus fails at CI). On the other side, I don't care if the project is actually installed and keeping it installed is also fine (unlike the `uv sync` approach above).
+
+Maybe I'm just unable to find the command and/or parameters in the documentation...
+
+---
+
+_Comment by @charliermarsh on 2024-11-03 13:10_
+
+`uv run --only-group pre-commit --no-install-project`?
+
+---
+
+_Label `question` added by @charliermarsh on 2024-11-03 13:10_
+
+---
+
+_Comment by @nijel on 2024-11-03 15:12_
+
+Is this something in the upcoming release? I'm using 0.4.29:
+
+```
+$ uv run --no-install-project --only-group pre-commit pre-commit run
+error: unexpected argument '--no-install-project' found
+
+  tip: a similar argument exists: '--no-reinstall'
+
+Usage: uv run [OPTIONS] [COMMAND]
+
+For more information, try '--help'
+```
+
+---
+
+_Comment by @zanieb on 2024-11-03 15:19_
+
+I think we actually only support that option in `uv sync`, since we only intended it to be used for constructing the environment in separate steps not actually running commands in a partial environment. `--only-group` is supposed to omit the project — I'm surprised that it does not in `uv run`.
+
+---
+
+_Comment by @charliermarsh on 2024-11-03 21:22_
+
+I just confirmed locally that `--only-group pre-commit` doesn't actually install the project. Does your project have dynamic metadata or something @nijel? Something that would _require_ us to build the project, in order to resolve the dependencies or versions?
+
+---
+
+_Comment by @nijel on 2024-11-04 07:01_
+
+Yes, it has a dynamic version. I somehow didn't expect that would trigger build just to figure out the package version.
+
+---
+
+_Comment by @nijel on 2024-11-04 07:12_
+
+But even removing the dynamic version doesn't solve this. It appears that the dependency resolution happens, what in turn triggers building packages which are not available as wheels. These are then not installed in the virtualenv (I should have noticed this earlier, but I assumed that when uv builds wheels, it builds them to install them).
+
+This is the beginning of the verbose log:
+
+```
+$ uv run -v  --only-group pre-commit pre-commit run
+DEBUG uv 0.4.29
+DEBUG Found project root: `/tmp/weblate`
+DEBUG No workspace root found, using project root
+DEBUG Discovered project `weblate` at: /tmp/weblate
+DEBUG Searching for Python >=3.11 in managed installations or system path
+DEBUG Searching for managed installations at `/home/nijel/.local/share/uv/python`
+DEBUG Found managed installation `cpython-3.13.0rc2-linux-x86_64-gnu`
+DEBUG Found `cpython-3.13.0rc2-linux-x86_64-gnu` at `/home/nijel/.local/share/uv/python/cpython-3.13.0rc2-linux-x86_64-gnu/bin/python3.13` (managed installations)
+DEBUG Skipping pre-release cpython-3.13.0rc2-linux-x86_64-gnu
+DEBUG Found `cpython-3.11.2-linux-x86_64-gnu` at `/usr/bin/python3` (search path)
+Using CPython 3.11.2 interpreter at: /usr/bin/python3
+Creating virtual environment at: .venv
+DEBUG Using request timeout of 30s
+DEBUG Found static `pyproject.toml` for: weblate @ file:///tmp/weblate
+DEBUG No workspace root found, using project root
+DEBUG Solving with installed Python version: 3.11.2
+DEBUG Solving with target Python version: >=3.11
+DEBUG Adding direct dependency: weblate*
+DEBUG Adding direct dependency: weblate[alibaba]*
+DEBUG Adding direct dependency: weblate[all]*
+DEBUG Adding direct dependency: weblate[amazon]*
+DEBUG Adding direct dependency: weblate[antispam]*
+DEBUG Adding direct dependency: weblate[gerrit]*
+DEBUG Adding direct dependency: weblate[google]*
+DEBUG Adding direct dependency: weblate[ldap]*
+DEBUG Adding direct dependency: weblate[mercurial]*
+DEBUG Adding direct dependency: weblate[mysql]*
+DEBUG Adding direct dependency: weblate[openai]*
+DEBUG Adding direct dependency: weblate[postgres]*
+DEBUG Adding direct dependency: weblate[saml]*
+DEBUG Adding direct dependency: weblate[zxcvbn]*
+DEBUG Searching for a compatible version of weblate @ file:///tmp/weblate (*)
+DEBUG Adding transitive dependency for weblate==1: weblate==1
+DEBUG Adding transitive dependency for weblate==1: weblate[zxcvbn]==1
+DEBUG Searching for a compatible version of weblate @ file:///tmp/weblate (==1)
+DEBUG Adding transitive dependency for weblate==1: aeidon>=1.14.1, <1.16
+DEBUG Adding transitive dependency for weblate==1: ahocorasick-rs>=0.20.0, <0.23.0
+DEBUG Adding transitive dependency for weblate==1: borgbackup>=1.2.5, <1.5
+```
+
+The `pyproject.toml` is here: https://github.com/WeblateOrg/weblate/blob/2430e2a888312f024e4c90e3c336d0ee76166014/pyproject.toml (I only edited it to get rid of the dynamic version).
+
+---
+
+_Referenced in [WeblateOrg/weblate#12925](../../WeblateOrg/weblate/pulls/12925.md) on 2024-11-04 07:13_
+
+---
+
+_Comment by @zanieb on 2024-11-04 12:29_
+
+We still need to create a lockfile for the full project — there are no "partial" locks at this time. We should skip doing the resolution if the lockfile is up to date. You can use `--frozen` to skip checking if it is up to date entirely, but then you might not have the correct dependencies.
+
+---
+
+_Comment by @nijel on 2024-11-04 12:35_
+
+Ah, creating lockfile explains it. I will probably use `--frozen` for now.
+
+Still, having a way to avoid complex dependency resolution to run a single command based on dependencies specified in a dependency group would be useful.
+
+---
+
+_Comment by @zanieb on 2024-11-04 12:37_
+
+It's sort of antithetical to the intent of the lockfile though. For example, you shouldn't get different versions of the packages in your dependency group depending on if you run it with `--only-group` or not.
+
+---
+
+_Comment by @nijel on 2024-11-04 13:16_
+
+Actually, I was not aware of the lock file before, and I had no intention to use it. I understand that it might be useful (and I will give it a try), but what I really wanted is to use dependency groups to pin tool versions and then use uv to execute the pinned version. If using lock file is the way to do it, I will give it a try.
+
+---
+
+_Comment by @zanieb on 2024-11-04 13:23_
+
+Yeah I'd recommend just adding pre-commit with a lower bound and the lockfile will take care of pinning the version for you.
+
+I understand it's a bit more complicated, but the goal is to create a consistent experience when working on projects.
+
+---
+
+_Closed by @nijel on 2024-11-05 13:43_
+
+---

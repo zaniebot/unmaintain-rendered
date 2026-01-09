@@ -1,0 +1,56 @@
+---
+number: 6299
+title: "Formatter: `MatchCase`"
+type: issue
+state: closed
+author: dhruvmanila
+labels:
+  - formatter
+assignees: []
+created_at: 2023-08-03T06:51:29Z
+updated_at: 2023-08-11T13:50:27Z
+url: https://github.com/astral-sh/ruff/issues/6299
+synced_at: 2026-01-07T13:12:15-06:00
+---
+
+# Formatter: `MatchCase`
+
+---
+
+_Issue opened by @dhruvmanila on 2023-08-03 06:51_
+
+_No description provided._
+
+---
+
+_Referenced in [astral-sh/ruff#5834](../../astral-sh/ruff/issues/5834.md) on 2023-08-03 06:51_
+
+---
+
+_Renamed from "Format `MatchCase`" to "Formatter: `MatchCase`" by @dhruvmanila on 2023-08-03 06:52_
+
+---
+
+_Assigned to @dhruvmanila by @dhruvmanila on 2023-08-03 06:52_
+
+---
+
+_Label `formatter` added by @dhruvmanila on 2023-08-03 06:52_
+
+---
+
+_Referenced in [astral-sh/ruff#6286](../../astral-sh/ruff/pulls/6286.md) on 2023-08-03 06:53_
+
+---
+
+_Added to milestone `Formatter: Alpha` by @dhruvmanila on 2023-08-03 07:01_
+
+---
+
+_Referenced in [astral-sh/ruff#6360](../../astral-sh/ruff/pulls/6360.md) on 2023-08-05 04:22_
+
+---
+
+_Closed by @dhruvmanila on 2023-08-11 13:50_
+
+---

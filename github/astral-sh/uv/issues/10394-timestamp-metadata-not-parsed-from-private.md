@@ -1,0 +1,155 @@
+---
+number: 10394
+title: "Timestamp metadata not parsed from private package index. Unexpected behavior for `--exclude-newer` option"
+type: issue
+state: closed
+author: alfredocarella
+labels:
+  - external
+assignees: []
+created_at: 2025-01-08T14:08:52Z
+updated_at: 2025-03-24T17:17:54Z
+url: https://github.com/astral-sh/uv/issues/10394
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# Timestamp metadata not parsed from private package index. Unexpected behavior for `--exclude-newer` option
+
+---
+
+_Issue opened by @alfredocarella on 2025-01-08 14:08_
+
+The package upload timestamp appears to be missing when searching a private (Azure artifacts) package index.
+This prevents the option `--exclude-newer` from being used correctly.
+
+Running this command
+`uv run --verbose --no-env-file --default-index https://VssSessionToken@pkgs.dev.azure.com/my-organization/_packaging/my-feedname/pypi/simple/ --keyring-provider subprocess --exclude-newer 2025-01-06 -s minimal_script.py
+`
+produces the following output:
+```
+←[34mDEBUG←[39m uv 0.5.15 (eb6ad9a4f 2025-01-06)
+Reading inline script metadata from `minimal_script.py`
+DEBUG Reading Python requests from version file at `C:\Users\myuser\workspace\testfolder\.python-version`
+DEBUG Using Python request `3.12` from version file at `.python-version`
+DEBUG Using Python request Python 3.12 from version file at `.python-version`
+DEBUG Searching for Python 3.12 in virtual environments, managed installations, search path, or registry
+DEBUG Found `cpython-3.12.4-windows-x86_64-none` at `C:/Users/myuser/workspace/testfolder/.venv\Scripts\python.exe` (active virtual environment)
+DEBUG Caching via base interpreter: `C:\Users\myuser\AppData\Local\Programs\Python\Python312\python.exe`
+DEBUG Using request timeout of 30s
+DEBUG Solving with installed Python version: 3.12.4
+DEBUG Solving with target Python version: >=3.12.4
+DEBUG Adding direct dependency: requests*
+DEBUG No cache entry for: https://pkgs.dev.azure.com/my-organization/_packaging/my-feedname/pypi/simple/requests/
+DEBUG No netrc file found
+DEBUG Checking keyring for credentials for VssSessionToken@https://pkgs.dev.azure.com/my-organization/_packaging/my-feedname/pypi/simple/requests/
+DEBUG Found credentials in keyring for https://pkgs.dev.azure.com/my-organization/_packaging/my-feedname/pypi/simple/requests/
+DEBUG Searching for a compatible version of requests (*)
+warning: requests-2.32.3-py3-none-any.whl is missing an upload date, but user provided: 2025-01-06T23:00:00Z
+warning: requests-2.31.0-py3-none-any.whl is missing an upload date, but user provided: 2025-01-06T23:00:00Z
+warning: requests-2.30.0-py3-none-any.whl is missing an upload date, but user provided: 2025-01-06T23:00:00Z
+warning: requests-2.29.0-py3-none-any.whl is missing an upload date, but user provided: 2025-01-06T23:00:00Z
+warning: requests-2.28.2-py3-none-any.whl is missing an upload date, but user provided: 2025-01-06T23:00:00Z
+warning: requests-2.28.1-py3-none-any.whl is missing an upload date, but user provided: 2025-01-06T23:00:00Z
+warning: requests-2.28.0-py3-none-any.whl is missing an upload date, but user provided: 2025-01-06T23:00:00Z
+warning: requests-2.27.1-py2.py3-none-any.whl is missing an upload date, but user provided: 2025-01-06T23:00:00Z
+warning: requests-2.24.0-py2.py3-none-any.whl is missing an upload date, but user provided: 2025-01-06T23:00:00Z
+DEBUG No compatible version found for: requests
+  × No solution found when resolving script dependencies:
+  ╰─▶ Because there are no versions of requests and you require requests, we can conclude that your requirements are unsatisfiable.
+```
+
+The contents of minimal_script.py are:
+```
+# /// script
+# requires-python = ">=3.12"
+# dependencies = [
+#     "requests",
+# ]
+# ///
+
+import requests
+
+print(f"{requests.__version__ = }")
+
+```
+The script runs correctly when the option `--exclude-newer 2025-01-06` is removed.
+
+---
+
+_Comment by @konstin on 2025-01-08 14:10_
+
+Are there upload dates in the html or json output of azure?
+
+---
+
+_Comment by @alfredocarella on 2025-01-08 14:25_
+
+Yes, of course. The timestamps are present and displayed in the Azure page. Sorry I forgot to mention it.
+
+---
+
+_Comment by @charliermarsh on 2025-01-08 14:31_
+
+Can you include a redacted example of the HTML page or JSON response, so we can see the upload date format? E.g., for `https://pkgs.dev.azure.com/my-organization/_packaging/my-feedname/pypi/simple/requests/`.
+
+---
+
+_Label `needs-mre` added by @charliermarsh on 2025-01-08 14:31_
+
+---
+
+_Comment by @alfredocarella on 2025-01-09 08:42_
+
+I see from @charliermarsh's clarification that I may have misunderstood the first question by @konstin.
+
+The page `https://dev.azure.com/my-organization/Python/_artifacts/feed/my-feedname/` shows a list with the index packages with their upload times ("push dates").
+
+However, the output of `https://pkgs.dev.azure.com/my-organization/_packaging/my-feedname/pypi/simple/requests/` looks like this (i.e. no upload times):
+```
+<!DOCTYPE html>
+<html><head>
+<meta http-equiv="content-type" content="text/html; charset=windows-1252"><title>Links for requests</title></head><body><h1>Links for requests</h1><a href="https://pkgs.dev.azure.com/my-organization/_packaging/69bbb63b-ee6d-49c6-9931-58e60e787a3f/pypi/download/requests/2.32.3/requests-2.32.3-py3-none-any.whl#sha256=70761cfe03c773ceb22aa2f671b4757976145175cdfca038c02654d061d6dcc6" data-requires-python="&gt;=3.8">requests-2.32.3-py3-none-any.whl</a><br><a href="https://pkgs.dev.azure.com/my-organization/_packaging/69bbb63b-ee6d-49c6-9931-58e60e787a3f/pypi/download/requests/2.31/requests-2.31.0-py3-none-any.whl#sha256=58cd2187c01e70e6e26505bca751777aa9f2ee0b7f4300988b709f44e013003f" data-requires-python="&gt;=3.7">requests-2.31.0-py3-none-any.whl</a><br><a href="https://pkgs.dev.azure.com/my-organization/_packaging/69bbb63b-ee6d-49c6-9931-58e60e787a3f/pypi/download/requests/2.30/requests-2.30.0-py3-none-any.whl#sha256=10e94cc4f3121ee6da529d358cdaeaff2f1c409cd377dbc72b825852f2f7e294" data-requires-python="&gt;=3.7">requests-2.30.0-py3-none-any.whl</a><br><a href="https://pkgs.dev.azure.com/my-organization/_packaging/69bbb63b-ee6d-49c6-9931-58e60e787a3f/pypi/download/requests/2.29/requests-2.29.0-py3-none-any.whl#sha256=e8f3c9be120d3333921d213eef078af392fba3933ab7ed2d1cba3b56f2568c3b" data-requires-python="&gt;=3.7">requests-2.29.0-py3-none-any.whl</a><br><a href="https://pkgs.dev.azure.com/my-organization/_packaging/69bbb63b-ee6d-49c6-9931-58e60e787a3f/pypi/download/requests/2.28.2/requests-2.28.2-py3-none-any.whl#sha256=64299f4909223da747622c030b781c0d7811e359c37124b4bd368fb8c6518baa" data-requires-python="&gt;=3.7,&lt;4">requests-2.28.2-py3-none-any.whl</a><br><a href="https://pkgs.dev.azure.com/my-organization/_packaging/69bbb63b-ee6d-49c6-9931-58e60e787a3f/pypi/download/requests/2.28.1/requests-2.28.1-py3-none-any.whl#sha256=8fefa2a1a1365bf5520aac41836fbee479da67864514bdb821f31ce07ce65349" data-requires-python="&gt;=3.7,&lt;4">requests-2.28.1-py3-none-any.whl</a><br><a href="https://pkgs.dev.azure.com/my-organization/_packaging/69bbb63b-ee6d-49c6-9931-58e60e787a3f/pypi/download/requests/2.28/requests-2.28.0-py3-none-any.whl#sha256=bc7861137fbce630f17b03d3ad02ad0bf978c844f3536d0edda6499dafce2b6f" data-requires-python="&gt;=3.7,&lt;4">requests-2.28.0-py3-none-any.whl</a><br><a href="https://pkgs.dev.azure.com/my-organization/_packaging/69bbb63b-ee6d-49c6-9931-58e60e787a3f/pypi/download/requests/2.27.1/requests-2.27.1-py2.py3-none-any.whl#sha256=f22fa1e554c9ddfd16e6e41ac79759e17be9e492b3587efa038054674760e72d" data-requires-python="&gt;=2.7,!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*,!=3.4.*,!=3.5.*">requests-2.27.1-py2.py3-none-any.whl</a><br><a href="https://pkgs.dev.azure.com/my-organization/_packaging/69bbb63b-ee6d-49c6-9931-58e60e787a3f/pypi/download/requests/2.24/requests-2.24.0-py2.py3-none-any.whl#sha256=fe75cc94a9443b9246fc7049224f75604b113c36acb93f87b80ed42c44cbb898" data-requires-python="&gt;=2.7,!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*,!=3.4.*">requests-2.24.0-py2.py3-none-any.whl</a><br></body></html>
+```
+
+
+---
+
+_Comment by @konstin on 2025-01-09 09:31_
+
+To support `--exclude-newer`, uv needs to get the timestamps of the files from the index as `upload-time`. PyPI has this information in the JSON output (which is selected over the html output if available): https://pypi.org/simple/requests/?format=application/vnd.pypi.simple.v1+json. Without this timestamp in the azure simple API, we can't determine which files to exclude and which files to include.
+
+---
+
+_Label `needs-mre` removed by @konstin on 2025-01-09 09:31_
+
+---
+
+_Label `upstream` added by @konstin on 2025-01-09 09:31_
+
+---
+
+_Comment by @notatallshaw on 2025-01-09 17:24_
+
+@alfredocarella if you are able to open a ticket with Azure these are the relevant specifications they should implement:
+
+ * https://packaging.python.org/en/latest/specifications/simple-repository-api/#json-serialization
+ * https://packaging.python.org/en/latest/specifications/simple-repository-api/#additional-fields-for-the-simple-api-for-package-indexes
+
+Which were added in PEP 691 and PEP 700.
+
+---
+
+_Closed by @charliermarsh on 2025-01-13 02:45_
+
+---
+
+_Comment by @herebebeasties on 2025-03-24 17:17_
+
+This is also affecting torch. Any chance we could provide a manual override in uv to workaround these issues, rather than requiring upstream publishers to fix it?
+`warning: torch-2.6.0+cu124-cp310-cp310-linux_x86_64.whl is missing an upload date`
+
+---
+
+_Referenced in [astral-sh/uv#16813](../../astral-sh/uv/issues/16813.md) on 2025-11-21 21:27_
+
+---

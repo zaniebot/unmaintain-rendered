@@ -1,0 +1,47 @@
+---
+number: 14780
+title: "(🎁) new rule: useless f-string"
+type: issue
+state: closed
+author: KotlinIsland
+labels:
+  - rule
+  - needs-decision
+assignees: []
+created_at: 2024-12-05T00:22:26Z
+updated_at: 2024-12-05T03:59:59Z
+url: https://github.com/astral-sh/ruff/issues/14780
+synced_at: 2026-01-07T13:12:16-06:00
+---
+
+# (🎁) new rule: useless f-string
+
+---
+
+_Issue opened by @KotlinIsland on 2024-12-05 00:22_
+
+i see code like this:
+```py
+a = f"{b}"
+```
+pointless imo, just use `str(b)` or `format(b)`
+
+---
+
+_Label `rule` added by @AlexWaygood on 2024-12-05 01:15_
+
+---
+
+_Label `needs-decision` added by @AlexWaygood on 2024-12-05 01:15_
+
+---
+
+_Comment by @dhruvmanila on 2024-12-05 03:59_
+
+Duplicate of https://github.com/astral-sh/ruff/issues/10945.
+
+---
+
+_Closed by @dhruvmanila on 2024-12-05 03:59_
+
+---

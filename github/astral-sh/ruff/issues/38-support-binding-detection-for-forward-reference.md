@@ -1,0 +1,41 @@
+---
+number: 38
+title: Support binding detection for forward-reference type annotations
+type: issue
+state: closed
+author: charliermarsh
+labels:
+  - bug
+assignees: []
+created_at: 2022-08-28T14:47:15Z
+updated_at: 2022-08-29T16:31:17Z
+url: https://github.com/astral-sh/ruff/issues/38
+synced_at: 2026-01-07T13:12:14-06:00
+---
+
+# Support binding detection for forward-reference type annotations
+
+---
+
+_Issue opened by @charliermarsh on 2022-08-28 14:47_
+
+If you import a symbol, and only use it as a forward-reference type annotation, we mark the import as unused.
+
+
+---
+
+_Label `bug` added by @charliermarsh on 2022-08-28 14:47_
+
+---
+
+_Closed by @charliermarsh on 2022-08-29 16:31_
+
+---
+
+_Referenced in [Centaurioun/ruff#10](../../Centaurioun/ruff/pulls/10.md) on 2023-03-04 20:38_
+
+---
+
+_Referenced in [RealOrangeOne/django-plaintext-password#18](../../RealOrangeOne/django-plaintext-password/pulls/18.md) on 2023-06-08 05:24_
+
+---

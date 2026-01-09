@@ -1,0 +1,138 @@
+---
+number: 19135
+title: "PLC3002: false positive"
+type: issue
+state: open
+author: spaceone
+labels:
+  - bug
+  - rule
+assignees: []
+created_at: 2025-07-04T00:14:08Z
+updated_at: 2025-08-06T15:13:42Z
+url: https://github.com/astral-sh/ruff/issues/19135
+synced_at: 2026-01-07T13:12:16-06:00
+---
+
+# PLC3002: false positive
+
+---
+
+_Issue opened by @spaceone on 2025-07-04 00:14_
+
+### Summary
+
+```python
+import re
+
+
+class language:
+    choices = [ 
+        ('', ''),
+        ('af_ZA', 'Afrikaans/South Africa'),
+        ('af_ZA.UTF-8', 'Afrikaans/South Africa(UTF-8)'),
+        ('sq_AL', 'Albanian/Albania'),
+    ] 
+
+
+class languageCode:
+    _re = re.compile(r'^[a-z][a-z]_[A-Z][A-Z]$')
+    choices = (lambda m: [kv for kv in language.choices if m(kv[0])])(_re.match)  # noqa: PLC3002
+```
+
+contains `PLC3002` (last line) while it cannot be written as suggested:
+
+```python
+class languageCode:
+    _re = re.compile(r'^[a-z][a-z]_[A-Z][A-Z]$')
+    choices = [kv for kv in language.choices if _re.match(kv[0])]
+```
+→ causes `F821: Undefined name '_re'`
+
+### Version
+
+ruff 0.11.13
+
+---
+
+_Comment by @MeGaGiGaGon on 2025-07-04 00:45_
+
+Here's a much simpler example: https://play.ruff.rs/aa033d95-2050-4e59-9fa9-27438634a87f
+```py
+class A:
+    x = 1
+    y = [_ for _ in [1] if x]  # F821
+    y = (lambda test:[_ for _ in [1] if test])(x)  # PLC3002
+```
+
+---
+
+_Label `bug` added by @ntBre on 2025-07-04 12:57_
+
+---
+
+_Label `rule` added by @ntBre on 2025-07-04 12:57_
+
+---
+
+_Comment by @ntBre on 2025-07-04 13:03_
+
+Wow, another scoping quirk in classes. So `x` is in scope for the call, but not in the comprehension?
+
+It looks like it's also not in scope for the comprehension target, but it works in the iterator:
+
+```py
+class C:
+    x = 1
+    y = [2 for _ in [x]]  # Okay
+    z = [x for _ in [1]]  # Error
+```
+
+This almost feels like a CPython bug, but maybe it's intentional.
+
+---
+
+_Comment by @MeGaGiGaGon on 2025-07-04 14:19_
+
+It looks like it's intentional. I asked in the python discord, and ZeroIntensity pointed me to [`PEP709`](https://peps.python.org/pep-0709/). Apparently comprehensions used to operate like functions < 3.12, and that "isolation of scope" was kept even after they got inlined, so it's like expecting this to work
+```py
+class A:
+    x = 1
+    def foo():
+        print(x)
+    foo()
+```
+
+---
+
+_Comment by @ntBre on 2025-07-04 17:25_
+
+Nice, thanks for asking! There's even an example of this in the [docs](https://docs.python.org/3/reference/executionmodel.html#resolution-of-names). And I guess the reason this example works:
+
+```py
+class C:
+    x = 1
+    y = [2 for _ in [x]]  # Okay
+```
+
+is given [here](https://docs.python.org/3/reference/expressions.html#displays-for-lists-sets-and-dictionaries):
+
+> However, aside from the iterable expression in the leftmost for clause, the comprehension is executed in a separate implicitly nested scope.
+
+So it's all working as intended, just a bit surprising, at least to me!
+
+---
+
+_Comment by @mikeleppane on 2025-08-06 14:23_
+
+I will take a look at this.
+
+---
+
+_Assigned to @mikeleppane by @ntBre on 2025-08-06 15:13_
+
+---
+
+_Referenced in [astral-sh/ruff#19801](../../astral-sh/ruff/pulls/19801.md) on 2025-08-07 11:00_
+
+---

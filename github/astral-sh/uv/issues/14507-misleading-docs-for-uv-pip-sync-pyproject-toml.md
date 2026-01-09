@@ -1,0 +1,90 @@
+---
+number: 14507
+title: misleading docs for uv pip sync pyproject.toml
+type: issue
+state: closed
+author: Winand
+labels:
+  - documentation
+assignees: []
+created_at: 2025-07-08T14:12:09Z
+updated_at: 2025-07-08T20:13:04Z
+url: https://github.com/astral-sh/uv/issues/14507
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# misleading docs for uv pip sync pyproject.toml
+
+---
+
+_Issue opened by @Winand on 2025-07-08 14:12_
+
+### Summary
+
+According to #12644 and #12680 `uv pip sync` keeps only the dependencies from the input file.
+
+But when I read in [docs](https://docs.astral.sh/uv/pip/compile/#syncing-an-environment):
+
+> To sync an environment with a requirements.txt file:
+> 
+>     uv pip sync requirements.txt
+> 
+> To sync an environment with a pyproject.toml file:
+> 
+>     uv pip sync pyproject.toml
+
+I expect that `uv pip sync pyproject.toml` keeps transitive dependencies because usually _pyproject.toml_ includes only direct dependencies. Maybe it is worth noting that only the dependencies explicitly listed in _pyproject.toml_ will be kept?
+
+### Platform
+
+Windows 10
+
+### Version
+
+0.7.19
+
+### Python version
+
+Python 3.12
+
+---
+
+_Label `bug` added by @Winand on 2025-07-08 14:12_
+
+---
+
+_Comment by @charliermarsh on 2025-07-08 16:17_
+
+I honestly think we should remove that from the docs. It's almost always a mistake to use `pyproject.toml` with `uv pip sync`.
+
+---
+
+_Label `bug` removed by @charliermarsh on 2025-07-08 16:17_
+
+---
+
+_Label `documentation` added by @charliermarsh on 2025-07-08 16:17_
+
+---
+
+_Comment by @Winand on 2025-07-08 19:31_
+
+I agree.
+
+My use case is to install project dependencies from an alternative index in an environment without internet access. So I export them and pass to pip sync via stdin: `uv export --frozen | uv pip sync -` 
+
+At first I've thought that pip sync pyproject.toml does the same thing.
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2025-07-08 20:01_
+
+---
+
+_Referenced in [astral-sh/uv#14510](../../astral-sh/uv/pulls/14510.md) on 2025-07-08 20:02_
+
+---
+
+_Closed by @charliermarsh on 2025-07-08 20:13_
+
+---

@@ -1,0 +1,138 @@
+---
+number: 3621
+title: "`requirements.txt` allows editable paths to be quoted"
+type: issue
+state: open
+author: charliermarsh
+labels:
+  - compatibility
+assignees: []
+created_at: 2024-05-15T19:20:16Z
+updated_at: 2025-11-27T09:47:43Z
+url: https://github.com/astral-sh/uv/issues/3621
+synced_at: 2026-01-07T13:12:17-06:00
+---
+
+# `requirements.txt` allows editable paths to be quoted
+
+---
+
+_Issue opened by @charliermarsh on 2024-05-15 19:20_
+
+It seems like `requirements.txt` allows you to put editable paths in quotes (single or double). It does _not_ allow quotes elsewhere though:
+
+```
+# Ok
+-e "./scripts/packages/black_editable"
+
+# Not ok
+"./scripts/packages/black_editable"
+black @ "./scripts/packages/black_editable"
+```
+
+---
+
+_Label `compatibility` added by @charliermarsh on 2024-05-15 19:20_
+
+---
+
+_Comment by @charliermarsh on 2024-05-15 19:20_
+
+Low-priority, maybe we fix if it comes up.
+
+---
+
+_Comment by @Briandye1987 on 2024-07-01 03:45_
+
+# Ok
+-e "./scripts/packages/black_editable"
+
+# Not ok
+"./scripts/packages/black_editable"
+black @ "./scripts/packages/black_editable"
+
+---
+
+_Referenced in [astral-sh/uv#10417](../../astral-sh/uv/issues/10417.md) on 2025-01-08 23:18_
+
+---
+
+_Referenced in [astral-sh/uv#11592](../../astral-sh/uv/issues/11592.md) on 2025-02-18 14:29_
+
+---
+
+_Comment by @nkitsaini on 2025-02-19 13:28_
+
+I was poking into this and found some related compatibility issues, which might or might not make sense for uv to address. I am documenting them here as it might be efficient to batch together the implementation for these.
+
+
+**Case 1**: Pip treats options similar to shell arguments
+
+```
+-c file\ name
+
+# pip: reads `file name`
+# uv: reads `file\ name` (including forward slash)
+```
+
+
+**Case 2**: Pip allows splitting requirements in multiple lines by using `\`
+```
+httpx \
+  == 0.0.1
+
+# pip: tries to install `httpx == 0.0.1`
+# uv: errors out parsing forward slash
+```
+
+**Case 3**: Pip silently ignores some options
+```
+httpx == 0.0.1 -r ./requirement.txt
+
+# pip: installs httpx and silently ignores `requirement.txt`
+# uv: parsing error. (I feel this is the right thing to do here over maintaining compatibility)
+```
+
+
+
+
+
+
+**Pip's behaviour**
+
+1. Read file content
+2. Join lines depending on if they end with a forward slash
+3. Strip out comments (both inline and independent)
+4. replace environment variables
+5. For each line
+	a. split line by the first occurrence of ` -`
+	b. The first part is treated as requirement definition and second part is treated as options (editable, constraints etc.).
+    c. The first part (requirements) goes through a dedicated parser to split version, name, extras etc.
+    d. The second part (options) is parsed by treating them similar to POSIX shell arguments.
+
+Source: [1-4](https://github.com/pypa/pip/blob/ce9451518f17cedf1efb3481526ae760bfdbe1a5/src/pip/_internal/req/req_file.py#L177), [5.a-5.b](https://github.com/pypa/pip/blob/ce9451518f17cedf1efb3481526ae760bfdbe1a5/src/pip/_internal/req/req_file.py#L440), [5.c](https://github.com/pypa/pip/blob/ce9451518f17cedf1efb3481526ae760bfdbe1a5/src/pip/_vendor/packaging/requirements.py#L21), [5.d](https://github.com/pypa/pip/blob/ce9451518f17cedf1efb3481526ae760bfdbe1a5/src/pip/_internal/req/req_file.py#L447)
+
+
+
+
+---
+
+_Comment by @FreeHarry on 2025-11-27 09:47_
+
+If the path of the editable package contains spaces, then `pip` requires to put the path into quotes.
+
+```
+# Works in pip, but not in uv
+-e "./scripts/packages/subdir with spaces/black_editable"
+-e "./scripts/packages/pkg with spaces"
+
+
+# Works in uv, but not in pip (pip cannot find the path, because it stops at the first space)
+-e ./scripts/packages/subdir with spaces/black_editable
+-e ./scripts/packages/pkg with spaces
+```
+
+Since `requirements.txt` supports using quotes and requires it for tools like `pip`, `uv` should do the same to ensure compatibility.
+
+
+---

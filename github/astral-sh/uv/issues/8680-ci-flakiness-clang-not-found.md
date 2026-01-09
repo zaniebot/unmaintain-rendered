@@ -1,0 +1,42 @@
+---
+number: 8680
+title: "CI flakiness: clang not found"
+type: issue
+state: closed
+author: konstin
+labels:
+  - internal
+assignees: []
+created_at: 2024-10-29T19:16:45Z
+updated_at: 2025-01-14T18:59:40Z
+url: https://github.com/astral-sh/uv/issues/8680
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# CI flakiness: clang not found
+
+---
+
+_Issue opened by @konstin on 2024-10-29 19:16_
+
+Sometimes, the mac os build fails due to an error about clang not being found, e.g. https://github.com/astral-sh/uv/actions/runs/11580779758/job/32240068407
+
+>   = note: sh: line 1:  3503 Bus error: 10           /Applications/Xcode_15.4.app/Contents/Developer/usr/bin/xcodebuild -sdk /Applications/Xcode_15.4.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk -find clang 2> /dev/null
+          cc: error: sh -c '/Applications/Xcode_15.4.app/Contents/Developer/usr/bin/xcodebuild -sdk /Applications/Xcode_15.4.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk -find clang 2> /dev/null' failed with exit code 35328: (null) (errno=No such file or directory)
+          xcode-select: Failed to locate 'clang', requesting installation of command line developer tools.
+
+---
+
+_Label `internal` added by @konstin on 2024-10-29 19:16_
+
+---
+
+_Comment by @konstin on 2025-01-14 18:59_
+
+I haven't seen this anymore
+
+---
+
+_Closed by @konstin on 2025-01-14 18:59_
+
+---

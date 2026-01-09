@@ -1,0 +1,85 @@
+---
+number: 8058
+title: relocatable entrypoints stop working if symlinked to
+type: issue
+state: closed
+author: paveldikov
+labels:
+  - bug
+assignees: []
+created_at: 2024-10-09T21:27:20Z
+updated_at: 2024-10-10T12:00:57Z
+url: https://github.com/astral-sh/uv/issues/8058
+synced_at: 2026-01-07T13:12:17-06:00
+---
+
+# relocatable entrypoints stop working if symlinked to
+
+---
+
+_Issue opened by @paveldikov on 2024-10-09 21:27_
+
+The order of operations in the path canonicalisation is wrong, because of self-imposed usage of a very spartan subset of POSIX shell utilities (I'm sorry -- that was my doing 😰). Consider:
+
+```
+/some/path/to/venv
+|
+|- bin
+|     |- my-script
+|     |- python -> /usr/bin/python3.12
+\- lib
+
+/somewhere/completely/different
+|
+\- my-script -> /some/path/to/venv/bin/my-script
+```
+
+`my-script` has
+```
+#!/bin/sh
+'''exec' "$(CDPATH= cd -- "$(dirname -- "$0")" && echo "$PWD")"/'python' "$0" "$@"
+
+# ... more boilerplate, but in Python
+```
+
+When called as `/somewhere/completely/different/my-script` this evaluates as:
+```
+# interpolation
+'''exec' "$(CDPATH= cd -- "$(dirname -- "/somewhere/completely/different/my-script")" && echo "$PWD")"/'python' ........
+
+# inner subshell
+'''exec' "$(CDPATH= cd -- "/somewhere/completely/different/" && echo "$PWD")"/'python' ........
+
+# outer subshell
+'''exec' "/somewhere/completely/different/"/'python' ........
+
+# ultimately
+/somewhere/completely/different/python ........
+```
+
+Which of course does not exist! 🤦‍♂️
+
+The correct approach is to canonicalise `$0` first. Back when I first did this I stuck to pure POSIX out of deference for compatibility with legacy platforms and also vanilla MacOS. So `readlink -f` or `realpath` were out of the question.
+
+Well, it turns out that MacOS 13+ do ship `realpath` as default. And even better, 12 is just freshly unsupported. So I think we can refactor and simplify all occurrences of the `$(CDPATH= cd -- "$(dirname -- "$0")" && echo "$PWD")"/` pattern down to
+```
+"$(dirname -- "$(realpath -- "$0")")"/
+```
+which is much more readable, too.
+
+I can/should raise a PR, but I will need help with testing this across as many platforms as possible. I am not sure if I ever implemented a proper live-run test for the fancy shebangs... that would help immensely I reckon.
+
+
+---
+
+_Label `bug` added by @charliermarsh on 2024-10-09 23:07_
+
+---
+
+_Referenced in [astral-sh/uv#8079](../../astral-sh/uv/pulls/8079.md) on 2024-10-10 09:48_
+
+---
+
+_Closed by @charliermarsh on 2024-10-10 12:00_
+
+---

@@ -1,0 +1,128 @@
+---
+number: 1362
+title: is_present returns false for arguments in the environment that do not take a value
+type: issue
+state: closed
+author: Gisleburt
+labels: []
+assignees: []
+created_at: 2018-10-17T10:59:10Z
+updated_at: 2020-02-01T19:00:53Z
+url: https://github.com/clap-rs/clap/issues/1362
+synced_at: 2026-01-07T13:12:19-06:00
+---
+
+# is_present returns false for arguments in the environment that do not take a value
+
+---
+
+_Issue opened by @Gisleburt on 2018-10-17 10:59_
+
+### Rust Version
+
+```
+rustc 1.29.0 (aa3ca1994 2018-09-11)
+```
+
+### Affected Version of clap
+
+```
+2.32.0
+```
+
+### Bug or Feature Request Summary
+
+Bug
+
+### Expected Behavior Summary
+
+According to the documentation for `env`
+> If the user does not use this argument at runtime `[ArgMatches::is_present]` will return `true` if the variable is present in the environment
+
+### Actual Behavior Summary
+
+`is_present` still returns false if the arg does not take a value
+
+### Steps to Reproduce the issue
+
+Give an `Arg` an env value, make it not required and take no value.
+
+eg:
+```
+args:
+- test:
+    long: test
+    env: TEST
+    takes_value: false
+    required: false
+```
+
+Note: changine to "takes_value" to true, works, however it then isn't quite appropriate for the command line. In our specific case we have an arguement for `-y` which from the environment we want to enable with a variable called `RECKLESS_MODE` which we just set to `"true"`. 
+
+### Sample Code or Link to Sample Code
+
+https://github.com/Gisleburt/clap-env-bug
+
+### Debug output
+
+<details>
+<summary> Debug Output </summary>
+<pre>
+<code>
+
+DEBUG:clap:Parser::propagate_settings: self=clap_bug, g_settings=AppFlags(
+    (empty)
+)
+DEBUG:clap:Parser::get_matches_with;
+DEBUG:clap:Parser::create_help_and_version;
+DEBUG:clap:Parser::create_help_and_version: Building --help
+DEBUG:clap:Parser::create_help_and_version: Building --version
+DEBUG:clap:ArgMatcher::process_arg_overrides:None;
+DEBUG:clap:Parser::remove_overrides:[];
+DEBUG:clap:Validator::validate;
+DEBUG:clap:Parser::add_defaults;
+DEBUG:clap:Validator::validate_blacklist;
+DEBUG:clap:Validator::validate_required: required=[];
+DEBUG:clap:Validator::validate_matched_args;
+DEBUG:clap:usage::create_usage_with_title;
+DEBUG:clap:usage::create_usage_no_title;
+DEBUG:clap:usage::get_required_usage_from: reqs=[], extra=None
+DEBUG:clap:usage::get_required_usage_from: after init desc_reqs=[]
+DEBUG:clap:usage::get_required_usage_from: no more children
+DEBUG:clap:usage::get_required_usage_from: final desc_reqs=[]
+DEBUG:clap:usage::get_required_usage_from: args_in_groups=[]
+DEBUG:clap:usage::needs_flags_tag;
+DEBUG:clap:usage::needs_flags_tag:iter: f=test;
+DEBUG:clap:Parser::groups_for_arg: name=test
+DEBUG:clap:Parser::groups_for_arg: No groups defined
+DEBUG:clap:usage::needs_flags_tag:iter: [FLAGS] required
+DEBUG:clap:usage::create_help_usage: usage=clap-bug [FLAGS]
+DEBUG:clap:ArgMatcher::get_global_values: global_arg_vec=[]
+not present
+
+</code>
+</pre>
+</details>
+
+
+---
+
+_Comment by @Gisleburt on 2018-10-17 11:00_
+
+I should say we have a workaround, we can set `-y` where we're running it.
+
+---
+
+_Comment by @CreepySkeleton on 2020-02-01 15:47_
+
+`env` does not work with `takes_value(false)`, this code is ill-formed. Actually, there's no way to do it now, see https://github.com/clap-rs/clap/issues/1476. The issue you outlined is because of that one.
+
+---
+
+_Closed by @CreepySkeleton on 2020-02-01 15:47_
+
+---
+
+_Label `T: duplicate` added by @pksunkara on 2020-02-01 19:00_
+
+---

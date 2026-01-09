@@ -1,0 +1,109 @@
+---
+number: 10954
+title: repeat-until-convergence
+type: issue
+state: closed
+author: KDruzhkin
+labels: []
+assignees: []
+created_at: 2024-04-15T12:46:57Z
+updated_at: 2024-04-16T18:25:59Z
+url: https://github.com/astral-sh/ruff/issues/10954
+synced_at: 2026-01-07T13:12:15-06:00
+---
+
+# repeat-until-convergence
+
+---
+
+_Issue opened by @KDruzhkin on 2024-04-15 12:46_
+
+## TL;DR
+
+Some fixes, when applied, create conditions for other fixes.
+
+I would like to have a configuration option **to run `ruff check --fix` until convergence**, i.e. until no new changes can be made.
+
+```toml
+[tool.ruff.lint]
+repeat_until_convergence = true
+```
+
+I work in Visual Studio Code with Ruff extension. If the extension behaves differently from command-line `ruff check --fix`, it should be configurable as well.
+
+## An example
+
+Recently I went through a large code base, adding `from __future__ import annotations` where it missed. This simple change started a cascade of other changes.
+
+This code is flagged with **TCH002** ("Move `numpy.typing` into a type-checking block"):
+
+```python
+from __future__ import annotations
+
+from typing import TypeAlias
+
+import numpy.typing as t
+
+ID: TypeAlias = int
+
+
+def foo(x: t.NDArray) -> int:
+    return len(x)
+```
+
+I obediently `click Ctrl_+.` and select a quick fix.
+
+Now, *this* code is flagged with **I001** ("Import block is unsorted"):
+
+```python
+from __future__ import annotations
+
+from typing import TypeAlias, TYPE_CHECKING
+
+
+if TYPE_CHECKING:
+    import numpy.typing as t
+
+ID: TypeAlias = int
+
+
+def foo(x: t.NDArray) -> int:
+    return len(x)
+```
+
+Sometimes the chain is longer than two steps, but I cannot reproduce it now.
+
+## An analogy
+
+**Phonology** and **historical linguistics** study phonological rules, i.e. regularities of the form "change A to B in context C". At the verty heart of this study is the notion of ordering: one rule can trigger or block another rule:
+- https://en.wikipedia.org/wiki/Feeding_order
+- https://en.wikipedia.org/wiki/Bleeding_order
+
+
+## Further questions
+
+- Is the order of rules fixed or not? (Is it part of the public API?) If you change this order internally, can it be a breaking change?
+
+- Is it difficult to create a graph of interactions? If rule A can trigger (or block) rule B, I would like to see it in the documentation for the rules.
+
+## Keywords
+
+I have searched open issues with: 'recursive' (found #6254), 'iterative' (found #8272), 'fixed point' (found #10058), 'fixpoint', and 'convergence'.
+
+---
+
+_Comment by @KDruzhkin on 2024-04-16 18:25_
+
+Sorry, does not belong to **ruff** itself, but to **ruff-vscode**.
+
+https://github.com/astral-sh/ruff-vscode/issues/451.
+
+---
+
+_Closed by @KDruzhkin on 2024-04-16 18:25_
+
+---
+
+_Referenced in [astral-sh/ruff-vscode#451](../../astral-sh/ruff-vscode/issues/451.md) on 2024-04-16 18:29_
+
+---

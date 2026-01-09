@@ -1,0 +1,57 @@
+---
+number: 894
+title: Add Ruff to Conda
+type: issue
+state: closed
+author: charliermarsh
+labels: []
+assignees: []
+created_at: 2022-11-23T15:04:55Z
+updated_at: 2022-12-01T22:25:39Z
+url: https://github.com/astral-sh/ruff/issues/894
+synced_at: 2026-01-07T13:12:14-06:00
+---
+
+# Add Ruff to Conda
+
+---
+
+_Issue opened by @charliermarsh on 2022-11-23 15:04_
+
+_No description provided._
+
+---
+
+_Label `releases` added by @charliermarsh on 2022-11-23 15:04_
+
+---
+
+_Comment by @charliermarsh on 2022-11-23 15:05_
+
+\cc @wolfv :)
+
+---
+
+_Comment by @charliermarsh on 2022-11-25 01:25_
+
+https://github.com/conda-forge/staged-recipes/pull/21281
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2022-11-25 03:44_
+
+---
+
+_Referenced in [astral-sh/ruff#982](../../astral-sh/ruff/pulls/982.md) on 2022-12-01 17:19_
+
+---
+
+_Closed by @charliermarsh on 2022-12-01 17:19_
+
+---
+
+_Comment by @wolfv on 2022-12-01 22:25_
+
+Awesome!
+
+---

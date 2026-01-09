@@ -1,0 +1,181 @@
+---
+number: 1251
+title: "Format help option value as it's own column"
+type: issue
+state: closed
+author: polarathene
+labels:
+  - C-enhancement
+  - A-help
+  - E-medium
+  - S-wont-fix
+assignees: []
+created_at: 2018-04-18T10:24:46Z
+updated_at: 2022-01-11T18:45:31Z
+url: https://github.com/clap-rs/clap/issues/1251
+synced_at: 2026-01-07T13:12:19-06:00
+---
+
+# Format help option value as it's own column
+
+---
+
+_Issue opened by @polarathene on 2018-04-18 10:24_
+
+### Rust Version
+
+1.25
+
+### Affected Version of clap
+
+2.31.2
+
+### Expected Behavior Summary
+
+Ability to align option values into their own column, similar to how the help text is aligned.
+
+```
+OPTIONS:
+    -f, --file                    <PATH>        Specify the path to the shared memory file [current: /dev/shm/looking-glass]
+    -s, --use-spice                             Disable spice client
+    -c, --spice-host              <HOST>        Specify the spice host [current: 127.0.0.1] [default: 127.0.0.1]
+    -p, --spice-port              <PORT>        Specify the spice port [current: 5900] [default: 5900]
+    -J, --disable-cursor-scaling                Disable cursor position scaling
+    -M, --show-host-cursor                      Don't hide the host cursor
+    -k, --show-fps                              Enable FPS display
+    -g                            <NAME>        Force the use of a specific renderer [possible values: opengl, vulkan]
+    -o, --renderer-option         <OPTION>...   Specify a renderer option (ie: opengl:vsync=0) Alternatively specify "list" to
+                                                list all renderers and their options
+    -a, --auto-resize                           Auto resize the window to the guest
+    -n, --prevent-resize                        Don't allow the window to be manually resized
+    -r, --ignore-aspect-ratio                   Don't maintain the aspect ratio
+    -d, --borderless                            Borderless mode
+    -F, --borderless-fullscreen                 Borderless fullscreen mode
+    -x, --x-position              <XPOS>        Initial window X position [current: center]
+    -y, --y-position              <YPOS>        Initial window Y position [current: center]
+    -w, --width                   <WIDTH>       Initial window width [current: 1024]
+    -b, --height                  <HEIGHT>      Initial window width [current: 768]
+    -Q, --ignore-quit                           Ignore requests to quit (ie: Alt+F4)
+    -l, --license                               License information
+    -h, --help                                  Prints help information
+    -V, --version                               Prints version information
+```
+
+### Actual Behavior Summary
+
+```
+OPTIONS:
+    -f, --file <PATH>                    Specify the path to the shared memory file [current: /dev/shm/looking-glass]
+    -s, --use-spice                      Disable spice client
+    -c, --spice-host <HOST>              Specify the spice host [current: 127.0.0.1] [default: 127.0.0.1]
+    -p, --spice-port <PORT>              Specify the spice port [current: 5900] [default: 5900]
+    -J, --disable-cursor-scaling         Disable cursor position scaling
+    -M, --show-host-cursor               Don't hide the host cursor
+    -k, --show-fps                       Enable FPS display
+    -g <NAME>                            Force the use of a specific renderer [possible values: opengl, vulkan]
+    -o, --renderer-option <OPTION>...    Specify a renderer option (ie: opengl:vsync=0) Alternatively specify "list" to
+                                         list all renderers and their options
+    -a, --auto-resize                    Auto resize the window to the guest
+    -n, --prevent-resize                 Don't allow the window to be manually resized
+    -r, --ignore-aspect-ratio            Don't maintain the aspect ratio
+    -d, --borderless                     Borderless mode
+    -F, --borderless-fullscreen          Borderless fullscreen mode
+    -x, --x-position <XPOS>              Initial window X position [current: center]
+    -y, --y-position <YPOS>              Initial window Y position [current: center]
+    -w, --width <WIDTH>                  Initial window width [current: 1024]
+    -b, --height <HEIGHT>                Initial window width [current: 768]
+    -Q, --ignore-quit                    Ignore requests to quit (ie: Alt+F4)
+    -l, --license                        License information
+    -h, --help                           Prints help information
+    -V, --version                        Prints version information
+```
+
+---
+
+I guess I could have `-h` just show the short options with an `afterhelp` note to use `--help` for long options. I have no idea if the alignment is better UX improving readability or not, just something I noticed when I introduced long options it became less obvious which options took values at a glance. I take it I'd have a similar but less pronounced issue if I alter the layout to `-short <val> --long` too.
+
+In an issue on this repo, you mentioned you were working on a CLI UX mdbook, did you finish and release that anywhere?
+
+---
+
+_Comment by @kbknapp on 2018-06-05 01:43_
+
+Sorry for the wait, I've been away with my day job for a few weeks.
+
+I'm not opposed to adding a cargo feature to align argument values. I say cargo feature because this would require an additional dep of something like [`tabwriter`](https://github.com/BurntSushi/tabwriter). I can't say I'll be able to add this super soon, as I need to work on getting the 3.x alpha/beta out first, but if someone wants to work on this I'd be happy to mentor it.
+
+I haven't finished the CLI UX book, as I've been swamped the past few months (~year), but I still intend on working on it.
+
+---
+
+_Label `T: new feature` added by @kbknapp on 2018-06-05 01:43_
+
+---
+
+_Label `E: optional dep` added by @kbknapp on 2018-06-05 01:43_
+
+---
+
+_Label `P4: nice to have` added by @kbknapp on 2018-06-05 01:43_
+
+---
+
+_Label `C: help message` added by @kbknapp on 2018-06-05 01:43_
+
+---
+
+_Label `D: intermediate` added by @kbknapp on 2018-06-05 01:43_
+
+---
+
+_Label `M: mentored` added by @kbknapp on 2018-06-05 01:43_
+
+---
+
+_Added to milestone `3.1` by @pksunkara on 2020-04-09 07:14_
+
+---
+
+_Label `T: new feature` removed by @pksunkara on 2020-04-12 22:00_
+
+---
+
+_Label `T: new setting` added by @pksunkara on 2020-04-12 22:00_
+
+---
+
+_Referenced in [epage/clapng#95](../../epage/clapng/issues/95.md) on 2021-12-06 17:35_
+
+---
+
+_Label `E: optional dep` removed by @epage on 2021-12-08 20:35_
+
+---
+
+_Label `T: new setting` removed by @epage on 2021-12-08 20:37_
+
+---
+
+_Label `C-enhancement` added by @epage on 2021-12-08 20:37_
+
+---
+
+_Removed from milestone `3.1` by @epage on 2021-12-09 18:22_
+
+---
+
+_Comment by @epage on 2021-12-09 18:34_
+
+This is going to put a squeeze on line lengths.  I would lean instead towards styling these as part of #2963.
+
+I think I'm going to close in favor of that approach as the value of this adds doesn't feel like it outweighs the increased API surface area and additional  code for managing this.
+
+---
+
+_Closed by @epage on 2021-12-09 18:34_
+
+---
+
+_Label `S-wont-fix` added by @epage on 2022-01-11 18:45_
+
+---

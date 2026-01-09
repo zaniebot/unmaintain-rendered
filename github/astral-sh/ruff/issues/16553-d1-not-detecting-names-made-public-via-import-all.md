@@ -1,0 +1,47 @@
+---
+number: 16553
+title: "D1** not detecting names made public via import/__all__ idiom"
+type: issue
+state: open
+author: alicederyn
+labels:
+  - rule
+  - type-inference
+assignees: []
+created_at: 2025-03-07T14:01:00Z
+updated_at: 2025-03-07T15:24:38Z
+url: https://github.com/astral-sh/ruff/issues/16553
+synced_at: 2026-01-07T13:12:16-06:00
+---
+
+# D1** not detecting names made public via import/__all__ idiom
+
+---
+
+_Issue opened by @alicederyn on 2025-03-07 14:01_
+
+### Summary
+
+It's a common pattern to implement all one's code in private modules, and then have the top-level module export the names via `from ._child import SomethingPublic` and `__all__ = ["SomethingPublic"]`. This allows the code to be structured in a way that makes sense (small modules, helper functions grouped with the code that uses it), without that leaking out into the public API in a way which prevents restructuring later.
+
+Unfortunately the D1** rules don't recognize this idiom, so don't flag up any missing documentation for libraries written this way. It would be great if that could be supported!
+
+---
+
+_Label `rule` added by @MichaReiser on 2025-03-07 15:24_
+
+---
+
+_Label `type-inference` added by @MichaReiser on 2025-03-07 15:24_
+
+---
+
+_Comment by @MichaReiser on 2025-03-07 15:24_
+
+Thanks for opening this issue. 
+
+This does make sense but, unfortunately, requires multifile analysis. What's tricky about this is that `SomethingPublic` needs to know if it's re-exported in any other file (or at least, any parent module). This isn't something that Ruff can support today. We're working on a new multifile-analsys backend that can support those kind of queries but it will take us a good while before we can use it in Ruff. 
+
+
+
+---

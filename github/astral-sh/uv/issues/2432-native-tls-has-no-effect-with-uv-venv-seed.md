@@ -1,0 +1,63 @@
+---
+number: 2432
+title: "--native-tls has no effect with uv venv --seed"
+type: issue
+state: closed
+author: jtanx
+labels:
+  - bug
+assignees: []
+created_at: 2024-03-13T22:33:18Z
+updated_at: 2024-03-13T22:54:53Z
+url: https://github.com/astral-sh/uv/issues/2432
+synced_at: 2026-01-07T13:12:17-06:00
+---
+
+# --native-tls has no effect with uv venv --seed
+
+---
+
+_Issue opened by @jtanx on 2024-03-13 22:33_
+
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with uv.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
+* The current uv platform.
+* The current uv version (`uv --version`).
+-->
+
+I think this is some sort of regression in the latest version - issuing 
+
+```
+uv venv --seed --native-tls .venv
+```
+
+With a custom index leads to an Unknown issuer error but if I don't seed it and issue uv pip install on that venv with native tls that works 
+
+---
+
+_Label `bug` added by @charliermarsh on 2024-03-13 22:42_
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2024-03-13 22:42_
+
+---
+
+_Comment by @charliermarsh on 2024-03-13 22:42_
+
+Thanks, that's my fault. I'll fix now.
+
+---
+
+_Referenced in [astral-sh/uv#2433](../../astral-sh/uv/pulls/2433.md) on 2024-03-13 22:43_
+
+---
+
+_Closed by @charliermarsh on 2024-03-13 22:54_
+
+---

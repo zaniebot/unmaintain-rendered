@@ -1,0 +1,956 @@
+---
+number: 2560
+title: Old version of torch will be reinstalled.
+type: issue
+state: closed
+author: phalanx-hk
+labels:
+  - bug
+assignees: []
+created_at: 2024-03-20T04:39:19Z
+updated_at: 2024-04-03T05:57:38Z
+url: https://github.com/astral-sh/uv/issues/2560
+synced_at: 2026-01-07T13:12:17-06:00
+---
+
+# Old version of torch will be reinstalled.
+
+---
+
+_Issue opened by @phalanx-hk on 2024-03-20 04:39_
+
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with uv.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
+* The current uv platform.
+* The current uv version (`uv --version`).
+-->
+
+# Overview
+- uv version: 0.1.22
+- Problem
+  - Installing `timm==0.9.7` within `ngc docker container` will reinstall the old version of torch.
+  - torch version:
+    - ngc docker: 2.3.0a0+ebedce2
+    - version requested by timm: >=1.7
+
+# Steps to Reproduce
+Place the following `Dockerfile` and `compose.yml` in the current directory
+```Dockerfile
+FROM nvcr.io/nvidia/pytorch:24.02-py3
+
+ARG UID=1000
+ARG GID=1000
+ARG USERNAME=vscode
+
+ENV DEBIAN_FRONTEND=noninteractive \
+    LANG=ja_JP.UTF-8 \
+    TZ=Asia/Tokyo \
+    apt_get_server=ftp.jaist.ac.jp/pub/Linux \
+    PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    VIRTUAL_ENV=/usr/
+
+WORKDIR /workspace
+
+
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+RUN \
+    # apt
+    --mount=type=cache,target=/var/cache/apt \
+    --mount=type=cache,target=/var/lib/apt \
+    rm /etc/apt/apt.conf.d/docker-clean \
+    && sed -i s@archive.ubuntu.com@${apt_get_server}@g /etc/apt/sources.list \
+    && curl -sL https://raw.githubusercontent.com/eza-community/eza/main/deb.asc | gpg --dearmor -o /etc/apt/keyrings/gierens.gpg \
+    && echo "deb [signed-by=/etc/apt/keyrings/gierens.gpg] http://deb.gierens.de stable main" | tee /etc/apt/sources.list.d/gierens.list \
+    && chmod 644 /etc/apt/keyrings/gierens.gpg /etc/apt/sources.list.d/gierens.list \
+    && apt-get update \
+    && apt-get install -y --no-install-recommends \
+    bat \
+    fd-find \
+    ripgrep \
+    eza \
+    shellcheck \
+    tmux \
+    zsh \
+    sudo \
+    && ln -s "$(which batcat)" /usr/local/bin/bat \
+    && ln -s "$(which fdfind)" /usr/local/bin/fd \
+    # just command runner
+    && curl --proto '=https' --tlsv1.2 -sSf https://just.systems/install.sh | bash -s -- --to /usr/local/bin \
+    # hadolint
+    && curl -fSL "https://github.com/hadolint/hadolint/releases/download/$(curl -s https://api.github.com/repos/hadolint/hadolint/releases/latest | jq -r '.tag_name')/hadolint-Linux-x86_64" -o /usr/local/bin/hadolint \
+    && chmod +x /usr/local/bin/hadolint \
+    # uv
+    && pip install --no-cache-dir uv \
+    # add user
+    && groupadd --gid ${GID} ${USERNAME} \
+    && useradd -l --uid ${UID} --gid ${GID} -m ${USERNAME} \
+    && echo "${USERNAME} ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/${USERNAME}
+
+USER ${USERNAME}
+```
+
+```yaml
+services:
+  kaggle:
+    build:
+      dockerfile: ./Dockerfile
+      args:
+        - UID=${UID}
+        - GID=${GID}
+    restart: always
+    tty: true
+    volumes:
+      - type: bind
+        source: .
+        target: /workspace
+        read_only: false
+        consistency: cached
+    ipc: host
+    ulimits:
+      memlock: -1
+      stack: -1
+    ports:
+      - "8888:8888"
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              capabilities: [gpu]
+    command: jupyter lab --ip=0.0.0.0 --port 8888 --allow-root --NotebookApp.notebook_dir=/workspace --no-browser --LabApp.token=''
+
+```
+
+Run the following command
+```bash
+$ docker compose up -d
+$ docker compose exec kaggle sudo uv pip install timm==0.9.7
+```
+
+# Expected Result
+torch is not reinstalled because it meets the requirements of timm, only timm is installed.
+
+# Actual Result
+```bash
+Installed 15 packages in 187ms
+ + nvidia-cublas-cu12==12.1.3.1
+ + nvidia-cuda-cupti-cu12==12.1.105
+ + nvidia-cuda-nvrtc-cu12==12.1.105
+ + nvidia-cuda-runtime-cu12==12.1.105
+ + nvidia-cudnn-cu12==8.9.2.26
+ + nvidia-cufft-cu12==11.0.2.54
+ + nvidia-curand-cu12==10.3.2.106
+ + nvidia-cusolver-cu12==11.4.5.107
+ + nvidia-cusparse-cu12==12.1.0.106
+ + nvidia-nccl-cu12==2.19.3
+ + nvidia-nvjitlink-cu12==12.4.99
+ + nvidia-nvtx-cu12==12.1.105
+ + timm==0.9.7
+ - torch==2.3.0a0+ebedce2 (from file:///tmp/pip/torch-2.3.0a0%2Bebedce2-cp310-cp310-linux_x86_64.whl)
+ + torch==2.2.1
+ - torchvision==0.18.0a0 (from file:///opt/pytorch/vision)
+ + torchvision==0.17.1
+```
+
+---
+
+_Comment by @phalanx-hk on 2024-03-20 04:50_
+
+add detailed output when installed with `--verbose`.
+It looks like uv is not taking into account the torch already installed.
+```
+vscode@87c64796d33c:/workspace$ sudo uv pip install timm==0.9.7 --verbose
+DEBUG Found a virtualenv through VIRTUAL_ENV at: /usr/
+DEBUG Cached interpreter info for Python 3.10.12, skipping probing: /usr/bin/python
+DEBUG Using Python 3.10.12 environment at /usr/bin/python
+DEBUG Using registry request timeout of 300s
+DEBUG Solving with target Python version 3.10.12
+DEBUG Adding direct dependency: timm==0.9.7
+DEBUG No cache entry for: https://pypi.org/simple/timm/
+DEBUG No credentials found for: https://pypi.org/simple/timm/
+DEBUG Searching for a compatible version of timm (==0.9.7)
+DEBUG Selecting: timm==0.9.7 (timm-0.9.7-py3-none-any.whl)
+DEBUG No cache entry for: https://files.pythonhosted.org/packages/7a/bd/2c56be7a3b5bc71cf85a405246b89d5359f942c9f7fb6db6306d9d056092/timm-0.9.7-py3-none-any.whl.metadata
+DEBUG No credentials found for: https://files.pythonhosted.org/packages/7a/bd/2c56be7a3b5bc71cf85a405246b89d5359f942c9f7fb6db6306d9d056092/timm-0.9.7-py3-none-any.whl.metadata
+DEBUG Adding transitive dependency: torch>=1.7
+DEBUG Adding transitive dependency: torchvision*
+DEBUG Adding transitive dependency: pyyaml*
+DEBUG Adding transitive dependency: huggingface-hub*
+DEBUG Adding transitive dependency: safetensors*
+DEBUG No cache entry for: https://pypi.org/simple/torch/
+DEBUG No credentials found for already-seen URL: https://pypi.org/simple/torch/
+DEBUG No credentials found for: https://pypi.org/simple/torch/
+DEBUG No cache entry for: https://pypi.org/simple/torchvision/
+DEBUG No credentials found for already-seen URL: https://pypi.org/simple/torchvision/
+DEBUG No credentials found for: https://pypi.org/simple/torchvision/
+DEBUG Found stale response for: https://pypi.org/simple/huggingface-hub/
+DEBUG Sending revalidation request for: https://pypi.org/simple/huggingface-hub/
+DEBUG No credentials found for already-seen URL: https://pypi.org/simple/huggingface-hub/
+DEBUG No credentials found for: https://pypi.org/simple/huggingface-hub/
+DEBUG Found stale response for: https://pypi.org/simple/pyyaml/
+DEBUG Sending revalidation request for: https://pypi.org/simple/pyyaml/
+DEBUG No credentials found for already-seen URL: https://pypi.org/simple/pyyaml/
+DEBUG No credentials found for: https://pypi.org/simple/pyyaml/
+DEBUG Found stale response for: https://pypi.org/simple/safetensors/
+DEBUG Sending revalidation request for: https://pypi.org/simple/safetensors/
+DEBUG No credentials found for already-seen URL: https://pypi.org/simple/safetensors/
+DEBUG No credentials found for: https://pypi.org/simple/safetensors/
+DEBUG Found not-modified response for: https://pypi.org/simple/safetensors/
+DEBUG Found not-modified response for: https://pypi.org/simple/pyyaml/
+DEBUG Found not-modified response for: https://pypi.org/simple/huggingface-hub/
+DEBUG No cache entry for: https://files.pythonhosted.org/packages/a7/ad/fbe7d4cffb76da4e478438853b51305361c719cff929ab70a808e7fb75e7/torch-2.2.1-cp310-cp310-manylinux1_x86_64.whl.metadata
+DEBUG No credentials found for already-seen URL: https://files.pythonhosted.org/packages/a7/ad/fbe7d4cffb76da4e478438853b51305361c719cff929ab70a808e7fb75e7/torch-2.2.1-cp310-cp310-manylinux1_x86_64.whl.metadata
+DEBUG No credentials found for: https://files.pythonhosted.org/packages/a7/ad/fbe7d4cffb76da4e478438853b51305361c719cff929ab70a808e7fb75e7/torch-2.2.1-cp310-cp310-manylinux1_x86_64.whl.metadata
+DEBUG Searching for a compatible version of torch (>=1.7)
+DEBUG Selecting: torch==2.2.1 (torch-2.2.1-cp310-cp310-manylinux1_x86_64.whl)
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/29/61/bf33c6c85c55bc45a29eee3195848ff2d518d84735eb0e2d8cb42e0d285e/PyYAML-6.0.1-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata
+DEBUG No cache entry for: https://files.pythonhosted.org/packages/1a/e8/13432ae6be567b577a4c89d1bd50084e4d989b379a7be8050380b5ab3a6e/torchvision-0.17.1-cp310-cp310-manylinux1_x86_64.whl.metadata
+DEBUG No credentials found for already-seen URL: https://files.pythonhosted.org/packages/1a/e8/13432ae6be567b577a4c89d1bd50084e4d989b379a7be8050380b5ab3a6e/torchvision-0.17.1-cp310-cp310-manylinux1_x86_64.whl.metadata
+DEBUG No credentials found for: https://files.pythonhosted.org/packages/1a/e8/13432ae6be567b577a4c89d1bd50084e4d989b379a7be8050380b5ab3a6e/torchvision-0.17.1-cp310-cp310-manylinux1_x86_64.whl.metadata
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/ab/28/d4b691840d73126d4c9845f8a22dad033ac872509b6d3a0d93b456eef424/huggingface_hub-0.21.4-py3-none-any.whl.metadata
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/d0/ba/b2254fafc7f5fdc98a2fa4d5a5eeb029fbf9589ec87f2c230c3ac0a1dd53/safetensors-0.4.2-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata
+DEBUG Adding transitive dependency: filelock*
+DEBUG Adding transitive dependency: typing-extensions>=4.8.0
+DEBUG Adding transitive dependency: sympy*
+DEBUG Adding transitive dependency: networkx*
+DEBUG Adding transitive dependency: jinja2*
+DEBUG Adding transitive dependency: fsspec*
+DEBUG Adding transitive dependency: nvidia-cuda-nvrtc-cu12==12.1.105
+DEBUG Adding transitive dependency: nvidia-cuda-runtime-cu12==12.1.105
+DEBUG Adding transitive dependency: nvidia-cuda-cupti-cu12==12.1.105
+DEBUG Adding transitive dependency: nvidia-cudnn-cu12==8.9.2.26
+DEBUG Adding transitive dependency: nvidia-cublas-cu12==12.1.3.1
+DEBUG Adding transitive dependency: nvidia-cufft-cu12==11.0.2.54
+DEBUG Adding transitive dependency: nvidia-curand-cu12==10.3.2.106
+DEBUG Adding transitive dependency: nvidia-cusolver-cu12==11.4.5.107
+DEBUG Adding transitive dependency: nvidia-cusparse-cu12==12.1.0.106
+DEBUG Adding transitive dependency: nvidia-nccl-cu12==2.19.3
+DEBUG Adding transitive dependency: nvidia-nvtx-cu12==12.1.105
+DEBUG Adding transitive dependency: triton==2.2.0
+DEBUG Searching for a compatible version of torchvision (*)
+DEBUG Selecting: torchvision==0.17.1 (torchvision-0.17.1-cp310-cp310-manylinux1_x86_64.whl)
+DEBUG Adding transitive dependency: numpy*
+DEBUG Adding transitive dependency: torch==2.2.1
+DEBUG Adding transitive dependency: pillow>=5.3.0, <8.3.dev0 | >=8.4.dev0
+DEBUG Searching for a compatible version of pyyaml (*)
+DEBUG Selecting: pyyaml==6.0.1 (PyYAML-6.0.1-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl)
+DEBUG Searching for a compatible version of huggingface-hub (*)
+DEBUG Selecting: huggingface-hub==0.21.4 (huggingface_hub-0.21.4-py3-none-any.whl)
+DEBUG Adding transitive dependency: filelock*
+DEBUG Adding transitive dependency: fsspec>=2023.5.0
+DEBUG Adding transitive dependency: requests*
+DEBUG Adding transitive dependency: tqdm>=4.42.1
+DEBUG Adding transitive dependency: pyyaml>=5.1
+DEBUG Adding transitive dependency: typing-extensions>=3.7.4.3
+DEBUG Adding transitive dependency: packaging>=20.9
+DEBUG Searching for a compatible version of safetensors (*)
+DEBUG Selecting: safetensors==0.4.2 (safetensors-0.4.2-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl)
+DEBUG No cache entry for: https://pypi.org/simple/sympy/
+DEBUG No credentials found for already-seen URL: https://pypi.org/simple/sympy/
+DEBUG No credentials found for: https://pypi.org/simple/sympy/
+DEBUG No cache entry for: https://pypi.org/simple/networkx/
+DEBUG No credentials found for already-seen URL: https://pypi.org/simple/networkx/
+DEBUG No credentials found for: https://pypi.org/simple/networkx/
+DEBUG Found stale response for: https://pypi.org/simple/filelock/
+DEBUG Sending revalidation request for: https://pypi.org/simple/filelock/
+DEBUG No credentials found for already-seen URL: https://pypi.org/simple/filelock/
+DEBUG No credentials found for: https://pypi.org/simple/filelock/
+DEBUG Found stale response for: https://pypi.org/simple/typing-extensions/
+DEBUG Sending revalidation request for: https://pypi.org/simple/typing-extensions/
+DEBUG No credentials found for already-seen URL: https://pypi.org/simple/typing-extensions/
+DEBUG No credentials found for: https://pypi.org/simple/typing-extensions/
+DEBUG Found stale response for: https://pypi.org/simple/jinja2/
+DEBUG Sending revalidation request for: https://pypi.org/simple/jinja2/
+DEBUG No credentials found for already-seen URL: https://pypi.org/simple/jinja2/
+DEBUG No credentials found for: https://pypi.org/simple/jinja2/
+DEBUG No cache entry for: https://pypi.org/simple/nvidia-cuda-nvrtc-cu12/
+DEBUG No credentials found for already-seen URL: https://pypi.org/simple/nvidia-cuda-nvrtc-cu12/
+DEBUG No credentials found for: https://pypi.org/simple/nvidia-cuda-nvrtc-cu12/
+DEBUG Found stale response for: https://pypi.org/simple/fsspec/
+DEBUG Sending revalidation request for: https://pypi.org/simple/fsspec/
+DEBUG No credentials found for already-seen URL: https://pypi.org/simple/fsspec/
+DEBUG No credentials found for: https://pypi.org/simple/fsspec/
+DEBUG No cache entry for: https://pypi.org/simple/nvidia-cuda-cupti-cu12/
+DEBUG No credentials found for already-seen URL: https://pypi.org/simple/nvidia-cuda-cupti-cu12/
+DEBUG No credentials found for: https://pypi.org/simple/nvidia-cuda-cupti-cu12/
+DEBUG No cache entry for: https://pypi.org/simple/nvidia-cudnn-cu12/
+DEBUG No credentials found for already-seen URL: https://pypi.org/simple/nvidia-cudnn-cu12/
+DEBUG No credentials found for: https://pypi.org/simple/nvidia-cudnn-cu12/
+DEBUG No cache entry for: https://pypi.org/simple/nvidia-cublas-cu12/
+DEBUG No credentials found for already-seen URL: https://pypi.org/simple/nvidia-cublas-cu12/
+DEBUG No credentials found for: https://pypi.org/simple/nvidia-cublas-cu12/
+DEBUG No cache entry for: https://pypi.org/simple/nvidia-cuda-runtime-cu12/
+DEBUG No credentials found for already-seen URL: https://pypi.org/simple/nvidia-cuda-runtime-cu12/
+DEBUG No credentials found for: https://pypi.org/simple/nvidia-cuda-runtime-cu12/
+DEBUG No cache entry for: https://pypi.org/simple/nvidia-curand-cu12/
+DEBUG No credentials found for already-seen URL: https://pypi.org/simple/nvidia-curand-cu12/
+DEBUG No credentials found for: https://pypi.org/simple/nvidia-curand-cu12/
+DEBUG No cache entry for: https://pypi.org/simple/nvidia-cusolver-cu12/
+DEBUG No credentials found for already-seen URL: https://pypi.org/simple/nvidia-cusolver-cu12/
+DEBUG No credentials found for: https://pypi.org/simple/nvidia-cusolver-cu12/
+DEBUG No cache entry for: https://pypi.org/simple/nvidia-nccl-cu12/
+DEBUG No credentials found for already-seen URL: https://pypi.org/simple/nvidia-nccl-cu12/
+DEBUG No credentials found for: https://pypi.org/simple/nvidia-nccl-cu12/
+DEBUG No cache entry for: https://pypi.org/simple/nvidia-nvtx-cu12/
+DEBUG No credentials found for already-seen URL: https://pypi.org/simple/nvidia-nvtx-cu12/
+DEBUG No credentials found for: https://pypi.org/simple/nvidia-nvtx-cu12/
+DEBUG No cache entry for: https://pypi.org/simple/triton/
+DEBUG No credentials found for already-seen URL: https://pypi.org/simple/triton/
+DEBUG No credentials found for: https://pypi.org/simple/triton/
+DEBUG No cache entry for: https://pypi.org/simple/nvidia-cufft-cu12/
+DEBUG No credentials found for already-seen URL: https://pypi.org/simple/nvidia-cufft-cu12/
+DEBUG No credentials found for: https://pypi.org/simple/nvidia-cufft-cu12/
+DEBUG No cache entry for: https://pypi.org/simple/nvidia-cusparse-cu12/
+DEBUG No credentials found for already-seen URL: https://pypi.org/simple/nvidia-cusparse-cu12/
+DEBUG No credentials found for: https://pypi.org/simple/nvidia-cusparse-cu12/
+DEBUG Found stale response for: https://pypi.org/simple/tqdm/
+DEBUG Sending revalidation request for: https://pypi.org/simple/tqdm/
+DEBUG No credentials found for already-seen URL: https://pypi.org/simple/tqdm/
+DEBUG No credentials found for: https://pypi.org/simple/tqdm/
+DEBUG Found stale response for: https://pypi.org/simple/requests/
+DEBUG Sending revalidation request for: https://pypi.org/simple/requests/
+DEBUG No credentials found for already-seen URL: https://pypi.org/simple/requests/
+DEBUG No credentials found for: https://pypi.org/simple/requests/
+DEBUG Found stale response for: https://pypi.org/simple/packaging/
+DEBUG Sending revalidation request for: https://pypi.org/simple/packaging/
+DEBUG No credentials found for already-seen URL: https://pypi.org/simple/packaging/
+DEBUG No credentials found for: https://pypi.org/simple/packaging/
+DEBUG Found stale response for: https://pypi.org/simple/pillow/
+DEBUG Sending revalidation request for: https://pypi.org/simple/pillow/
+DEBUG No credentials found for already-seen URL: https://pypi.org/simple/pillow/
+DEBUG No credentials found for: https://pypi.org/simple/pillow/
+DEBUG Found stale response for: https://pypi.org/simple/numpy/
+DEBUG Sending revalidation request for: https://pypi.org/simple/numpy/
+DEBUG No credentials found for already-seen URL: https://pypi.org/simple/numpy/
+DEBUG No credentials found for: https://pypi.org/simple/numpy/
+DEBUG Found not-modified response for: https://pypi.org/simple/typing-extensions/
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/b7/f4/6a90020cd2d93349b442bfcb657d0dc91eee65491600b2cb1d388bc98e6b/typing_extensions-4.9.0-py3-none-any.whl.metadata
+DEBUG Found not-modified response for: https://pypi.org/simple/jinja2/
+DEBUG Found not-modified response for: https://pypi.org/simple/filelock/
+DEBUG Found not-modified response for: https://pypi.org/simple/requests/
+DEBUG Found not-modified response for: https://pypi.org/simple/fsspec/
+DEBUG Found not-modified response for: https://pypi.org/simple/packaging/
+DEBUG Found not-modified response for: https://pypi.org/simple/tqdm/
+DEBUG Found not-modified response for: https://pypi.org/simple/pillow/
+DEBUG Found not-modified response for: https://pypi.org/simple/numpy/
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/30/6d/6de6be2d02603ab56e72997708809e8a5b0fbfee080735109b40a3564843/Jinja2-3.1.3-py3-none-any.whl.metadata
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/81/54/84d42a0bee35edba99dee7b59a8d4970eccdd44b99fe728ed912106fc781/filelock-3.13.1-py3-none-any.whl.metadata
+DEBUG No cache entry for: https://files.pythonhosted.org/packages/44/31/4890b1c9abc496303412947fc7dcea3d14861720642b49e8ceed89636705/nvidia_curand_cu12-10.3.2.106-py3-none-manylinux1_x86_64.whl.metadata
+DEBUG No credentials found for already-seen URL: https://files.pythonhosted.org/packages/44/31/4890b1c9abc496303412947fc7dcea3d14861720642b49e8ceed89636705/nvidia_curand_cu12-10.3.2.106-py3-none-manylinux1_x86_64.whl.metadata
+DEBUG No credentials found for: https://files.pythonhosted.org/packages/44/31/4890b1c9abc496303412947fc7dcea3d14861720642b49e8ceed89636705/nvidia_curand_cu12-10.3.2.106-py3-none-manylinux1_x86_64.whl.metadata
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/70/8e/0e2d847013cb52cd35b38c009bb167a1a26b2ce6cd6965bf26b47bc0bf44/requests-2.31.0-py3-none-any.whl.metadata
+DEBUG No cache entry for: https://files.pythonhosted.org/packages/7e/00/6b218edd739ecfc60524e585ba8e6b00554dd908de2c9c66c1af3e44e18d/nvidia_cuda_cupti_cu12-12.1.105-py3-none-manylinux1_x86_64.whl.metadata
+DEBUG No credentials found for already-seen URL: https://files.pythonhosted.org/packages/7e/00/6b218edd739ecfc60524e585ba8e6b00554dd908de2c9c66c1af3e44e18d/nvidia_cuda_cupti_cu12-12.1.105-py3-none-manylinux1_x86_64.whl.metadata
+DEBUG No credentials found for: https://files.pythonhosted.org/packages/7e/00/6b218edd739ecfc60524e585ba8e6b00554dd908de2c9c66c1af3e44e18d/nvidia_cuda_cupti_cu12-12.1.105-py3-none-manylinux1_x86_64.whl.metadata
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/93/6d/66d48b03460768f523da62a57a7e14e5e95fdf339d79e996ce3cecda2cdb/fsspec-2024.3.1-py3-none-any.whl.metadata
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/ec/1a/610693ac4ee14fcdf2d9bf3c493370e4f2ef7ae2e19217d7a237ff42367d/packaging-23.2-py3-none-any.whl.metadata
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/00/e5/f12a80907d0884e6dff9c16d0c0114d81b8cd07dc3ae54c5e962cc83037e/tqdm-4.66.1-py3-none-any.whl.metadata
+DEBUG No cache entry for: https://files.pythonhosted.org/packages/d2/05/e6600db80270777c4a64238a98d442f0fd07cc8915be2a1c16da7f2b9e74/sympy-1.12-py3-none-any.whl.metadata
+DEBUG No credentials found for already-seen URL: https://files.pythonhosted.org/packages/d2/05/e6600db80270777c4a64238a98d442f0fd07cc8915be2a1c16da7f2b9e74/sympy-1.12-py3-none-any.whl.metadata
+DEBUG No credentials found for: https://files.pythonhosted.org/packages/d2/05/e6600db80270777c4a64238a98d442f0fd07cc8915be2a1c16da7f2b9e74/sympy-1.12-py3-none-any.whl.metadata
+DEBUG No cache entry for: https://files.pythonhosted.org/packages/37/6d/121efd7382d5b0284239f4ab1fc1590d86d34ed4a4a2fdb13b30ca8e5740/nvidia_cublas_cu12-12.1.3.1-py3-none-manylinux1_x86_64.whl.metadata
+DEBUG No credentials found for already-seen URL: https://files.pythonhosted.org/packages/37/6d/121efd7382d5b0284239f4ab1fc1590d86d34ed4a4a2fdb13b30ca8e5740/nvidia_cublas_cu12-12.1.3.1-py3-none-manylinux1_x86_64.whl.metadata
+DEBUG No credentials found for: https://files.pythonhosted.org/packages/37/6d/121efd7382d5b0284239f4ab1fc1590d86d34ed4a4a2fdb13b30ca8e5740/nvidia_cublas_cu12-12.1.3.1-py3-none-manylinux1_x86_64.whl.metadata
+DEBUG No cache entry for: https://files.pythonhosted.org/packages/eb/d5/c68b1d2cdfcc59e72e8a5949a37ddb22ae6cade80cd4a57a84d4c8b55472/nvidia_cuda_runtime_cu12-12.1.105-py3-none-manylinux1_x86_64.whl.metadata
+DEBUG No credentials found for already-seen URL: https://files.pythonhosted.org/packages/eb/d5/c68b1d2cdfcc59e72e8a5949a37ddb22ae6cade80cd4a57a84d4c8b55472/nvidia_cuda_runtime_cu12-12.1.105-py3-none-manylinux1_x86_64.whl.metadata
+DEBUG No credentials found for: https://files.pythonhosted.org/packages/eb/d5/c68b1d2cdfcc59e72e8a5949a37ddb22ae6cade80cd4a57a84d4c8b55472/nvidia_cuda_runtime_cu12-12.1.105-py3-none-manylinux1_x86_64.whl.metadata
+DEBUG No cache entry for: https://files.pythonhosted.org/packages/bc/1d/8de1e5c67099015c834315e333911273a8c6aaba78923dd1d1e25fc5f217/nvidia_cusolver_cu12-11.4.5.107-py3-none-manylinux1_x86_64.whl.metadata
+DEBUG No credentials found for already-seen URL: https://files.pythonhosted.org/packages/bc/1d/8de1e5c67099015c834315e333911273a8c6aaba78923dd1d1e25fc5f217/nvidia_cusolver_cu12-11.4.5.107-py3-none-manylinux1_x86_64.whl.metadata
+DEBUG No credentials found for: https://files.pythonhosted.org/packages/bc/1d/8de1e5c67099015c834315e333911273a8c6aaba78923dd1d1e25fc5f217/nvidia_cusolver_cu12-11.4.5.107-py3-none-manylinux1_x86_64.whl.metadata
+DEBUG No cache entry for: https://files.pythonhosted.org/packages/b6/9f/c64c03f49d6fbc56196664d05dba14e3a561038a81a638eeb47f4d4cfd48/nvidia_cuda_nvrtc_cu12-12.1.105-py3-none-manylinux1_x86_64.whl.metadata
+DEBUG No credentials found for already-seen URL: https://files.pythonhosted.org/packages/b6/9f/c64c03f49d6fbc56196664d05dba14e3a561038a81a638eeb47f4d4cfd48/nvidia_cuda_nvrtc_cu12-12.1.105-py3-none-manylinux1_x86_64.whl.metadata
+DEBUG No credentials found for: https://files.pythonhosted.org/packages/b6/9f/c64c03f49d6fbc56196664d05dba14e3a561038a81a638eeb47f4d4cfd48/nvidia_cuda_nvrtc_cu12-12.1.105-py3-none-manylinux1_x86_64.whl.metadata
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/cb/c3/98faa3e92cf866b9446c4842f1fe847e672b2f54e000cb984157b8095797/pillow-10.2.0-cp310-cp310-manylinux_2_28_x86_64.whl.metadata
+DEBUG No cache entry for: https://files.pythonhosted.org/packages/e9/93/aa6613aa70d6eb4868e667068b5a11feca9645498fd31b954b6c4bb82fa5/networkx-2.6.3-py3-none-any.whl.metadata
+DEBUG No credentials found for already-seen URL: https://files.pythonhosted.org/packages/e9/93/aa6613aa70d6eb4868e667068b5a11feca9645498fd31b954b6c4bb82fa5/networkx-2.6.3-py3-none-any.whl.metadata
+DEBUG No credentials found for: https://files.pythonhosted.org/packages/e9/93/aa6613aa70d6eb4868e667068b5a11feca9645498fd31b954b6c4bb82fa5/networkx-2.6.3-py3-none-any.whl.metadata
+DEBUG No cache entry for: https://files.pythonhosted.org/packages/ff/74/a2e2be7fb83aaedec84f391f082cf765dfb635e7caa9b49065f73e4835d8/nvidia_cudnn_cu12-8.9.2.26-py3-none-manylinux1_x86_64.whl.metadata
+DEBUG No credentials found for already-seen URL: https://files.pythonhosted.org/packages/ff/74/a2e2be7fb83aaedec84f391f082cf765dfb635e7caa9b49065f73e4835d8/nvidia_cudnn_cu12-8.9.2.26-py3-none-manylinux1_x86_64.whl.metadata
+DEBUG No credentials found for: https://files.pythonhosted.org/packages/ff/74/a2e2be7fb83aaedec84f391f082cf765dfb635e7caa9b49065f73e4835d8/nvidia_cudnn_cu12-8.9.2.26-py3-none-manylinux1_x86_64.whl.metadata
+DEBUG No cache entry for: https://files.pythonhosted.org/packages/95/05/ed974ce87fe8c8843855daa2136b3409ee1c126707ab54a8b72815c08b49/triton-2.2.0-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata
+DEBUG No credentials found for already-seen URL: https://files.pythonhosted.org/packages/95/05/ed974ce87fe8c8843855daa2136b3409ee1c126707ab54a8b72815c08b49/triton-2.2.0-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata
+DEBUG No credentials found for: https://files.pythonhosted.org/packages/95/05/ed974ce87fe8c8843855daa2136b3409ee1c126707ab54a8b72815c08b49/triton-2.2.0-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata
+DEBUG No cache entry for: https://files.pythonhosted.org/packages/65/5b/cfaeebf25cd9fdec14338ccb16f6b2c4c7fa9163aefcf057d86b9cc248bb/nvidia_cusparse_cu12-12.1.0.106-py3-none-manylinux1_x86_64.whl.metadata
+DEBUG No credentials found for already-seen URL: https://files.pythonhosted.org/packages/65/5b/cfaeebf25cd9fdec14338ccb16f6b2c4c7fa9163aefcf057d86b9cc248bb/nvidia_cusparse_cu12-12.1.0.106-py3-none-manylinux1_x86_64.whl.metadata
+DEBUG No credentials found for: https://files.pythonhosted.org/packages/65/5b/cfaeebf25cd9fdec14338ccb16f6b2c4c7fa9163aefcf057d86b9cc248bb/nvidia_cusparse_cu12-12.1.0.106-py3-none-manylinux1_x86_64.whl.metadata
+DEBUG No cache entry for: https://files.pythonhosted.org/packages/86/94/eb540db023ce1d162e7bea9f8f5aa781d57c65aed513c33ee9a5123ead4d/nvidia_cufft_cu12-11.0.2.54-py3-none-manylinux1_x86_64.whl.metadata
+DEBUG No credentials found for already-seen URL: https://files.pythonhosted.org/packages/86/94/eb540db023ce1d162e7bea9f8f5aa781d57c65aed513c33ee9a5123ead4d/nvidia_cufft_cu12-11.0.2.54-py3-none-manylinux1_x86_64.whl.metadata
+DEBUG No credentials found for: https://files.pythonhosted.org/packages/86/94/eb540db023ce1d162e7bea9f8f5aa781d57c65aed513c33ee9a5123ead4d/nvidia_cufft_cu12-11.0.2.54-py3-none-manylinux1_x86_64.whl.metadata
+DEBUG No cache entry for: https://files.pythonhosted.org/packages/da/d3/8057f0587683ed2fcd4dbfbdfdfa807b9160b809976099d36b8f60d08f03/nvidia_nvtx_cu12-12.1.105-py3-none-manylinux1_x86_64.whl.metadata
+DEBUG No credentials found for already-seen URL: https://files.pythonhosted.org/packages/da/d3/8057f0587683ed2fcd4dbfbdfdfa807b9160b809976099d36b8f60d08f03/nvidia_nvtx_cu12-12.1.105-py3-none-manylinux1_x86_64.whl.metadata
+DEBUG No credentials found for: https://files.pythonhosted.org/packages/da/d3/8057f0587683ed2fcd4dbfbdfdfa807b9160b809976099d36b8f60d08f03/nvidia_nvtx_cu12-12.1.105-py3-none-manylinux1_x86_64.whl.metadata
+DEBUG No cache entry for: https://files.pythonhosted.org/packages/38/00/d0d4e48aef772ad5aebcf70b73028f88db6e5640b36c38e90445b7a57c45/nvidia_nccl_cu12-2.19.3-py3-none-manylinux1_x86_64.whl.metadata
+DEBUG No credentials found for already-seen URL: https://files.pythonhosted.org/packages/38/00/d0d4e48aef772ad5aebcf70b73028f88db6e5640b36c38e90445b7a57c45/nvidia_nccl_cu12-2.19.3-py3-none-manylinux1_x86_64.whl.metadata
+DEBUG No credentials found for: https://files.pythonhosted.org/packages/38/00/d0d4e48aef772ad5aebcf70b73028f88db6e5640b36c38e90445b7a57c45/nvidia_nccl_cu12-2.19.3-py3-none-manylinux1_x86_64.whl.metadata
+DEBUG Searching for a compatible version of filelock (*)
+DEBUG Selecting: filelock==3.13.1 (filelock-3.13.1-py3-none-any.whl)
+DEBUG Searching for a compatible version of typing-extensions (>=4.8.0)
+DEBUG Selecting: typing-extensions==4.9.0 (typing_extensions-4.9.0-py3-none-any.whl)
+DEBUG Searching for a compatible version of sympy (*)
+DEBUG Selecting: sympy==1.12 (sympy-1.12-py3-none-any.whl)
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/10/be/ae5bf4737cb79ba437879915791f6f26d92583c738d7d960ad94e5c36adf/numpy-1.24.4-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata
+DEBUG Adding transitive dependency: mpmath>=0.19
+DEBUG Searching for a compatible version of networkx (*)
+DEBUG Selecting: networkx==2.6.3 (networkx-2.6.3-py3-none-any.whl)
+DEBUG No cache entry for: https://pypi.org/simple/mpmath/
+DEBUG No credentials found for already-seen URL: https://pypi.org/simple/mpmath/
+DEBUG No credentials found for: https://pypi.org/simple/mpmath/
+DEBUG Searching for a compatible version of jinja2 (*)
+DEBUG Selecting: jinja2==3.1.3 (Jinja2-3.1.3-py3-none-any.whl)
+DEBUG Adding transitive dependency: markupsafe>=2.0
+DEBUG Searching for a compatible version of fsspec (>=2023.5.0)
+DEBUG Selecting: fsspec==2024.3.1 (fsspec-2024.3.1-py3-none-any.whl)
+DEBUG Searching for a compatible version of nvidia-cuda-nvrtc-cu12 (==12.1.105)
+DEBUG Selecting: nvidia-cuda-nvrtc-cu12==12.1.105 (nvidia_cuda_nvrtc_cu12-12.1.105-py3-none-manylinux1_x86_64.whl)
+DEBUG Searching for a compatible version of nvidia-cuda-runtime-cu12 (==12.1.105)
+DEBUG Selecting: nvidia-cuda-runtime-cu12==12.1.105 (nvidia_cuda_runtime_cu12-12.1.105-py3-none-manylinux1_x86_64.whl)
+DEBUG Searching for a compatible version of nvidia-cuda-cupti-cu12 (==12.1.105)
+DEBUG Selecting: nvidia-cuda-cupti-cu12==12.1.105 (nvidia_cuda_cupti_cu12-12.1.105-py3-none-manylinux1_x86_64.whl)
+DEBUG Searching for a compatible version of nvidia-cudnn-cu12 (==8.9.2.26)
+DEBUG Selecting: nvidia-cudnn-cu12==8.9.2.26 (nvidia_cudnn_cu12-8.9.2.26-py3-none-manylinux1_x86_64.whl)
+DEBUG Adding transitive dependency: nvidia-cublas-cu12*
+DEBUG Searching for a compatible version of nvidia-cublas-cu12 (==12.1.3.1)
+DEBUG Selecting: nvidia-cublas-cu12==12.1.3.1 (nvidia_cublas_cu12-12.1.3.1-py3-none-manylinux1_x86_64.whl)
+DEBUG Found stale response for: https://pypi.org/simple/markupsafe/
+DEBUG Sending revalidation request for: https://pypi.org/simple/markupsafe/
+DEBUG No credentials found for already-seen URL: https://pypi.org/simple/markupsafe/
+DEBUG No credentials found for: https://pypi.org/simple/markupsafe/
+DEBUG Searching for a compatible version of nvidia-cufft-cu12 (==11.0.2.54)
+DEBUG Selecting: nvidia-cufft-cu12==11.0.2.54 (nvidia_cufft_cu12-11.0.2.54-py3-none-manylinux1_x86_64.whl)
+DEBUG Searching for a compatible version of nvidia-curand-cu12 (==10.3.2.106)
+DEBUG Selecting: nvidia-curand-cu12==10.3.2.106 (nvidia_curand_cu12-10.3.2.106-py3-none-manylinux1_x86_64.whl)
+DEBUG Searching for a compatible version of nvidia-cusolver-cu12 (==11.4.5.107)
+DEBUG Selecting: nvidia-cusolver-cu12==11.4.5.107 (nvidia_cusolver_cu12-11.4.5.107-py3-none-manylinux1_x86_64.whl)
+DEBUG Adding transitive dependency: nvidia-cublas-cu12*
+DEBUG Adding transitive dependency: nvidia-nvjitlink-cu12*
+DEBUG Adding transitive dependency: nvidia-cusparse-cu12*
+DEBUG Searching for a compatible version of nvidia-cusparse-cu12 (==12.1.0.106)
+DEBUG Selecting: nvidia-cusparse-cu12==12.1.0.106 (nvidia_cusparse_cu12-12.1.0.106-py3-none-manylinux1_x86_64.whl)
+DEBUG Adding transitive dependency: nvidia-nvjitlink-cu12*
+DEBUG Searching for a compatible version of nvidia-nccl-cu12 (==2.19.3)
+DEBUG Selecting: nvidia-nccl-cu12==2.19.3 (nvidia_nccl_cu12-2.19.3-py3-none-manylinux1_x86_64.whl)
+DEBUG Searching for a compatible version of nvidia-nvtx-cu12 (==12.1.105)
+DEBUG Selecting: nvidia-nvtx-cu12==12.1.105 (nvidia_nvtx_cu12-12.1.105-py3-none-manylinux1_x86_64.whl)
+DEBUG Searching for a compatible version of triton (==2.2.0)
+DEBUG Selecting: triton==2.2.0 (triton-2.2.0-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl)
+DEBUG Adding transitive dependency: filelock*
+DEBUG Searching for a compatible version of numpy (*)
+DEBUG Selecting: numpy==1.24.4 (numpy-1.24.4-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl)
+DEBUG Searching for a compatible version of pillow (>=5.3.0, <8.3.dev0 | >=8.4.dev0)
+DEBUG Selecting: pillow==10.2.0 (pillow-10.2.0-cp310-cp310-manylinux_2_28_x86_64.whl)
+DEBUG Searching for a compatible version of requests (*)
+DEBUG Selecting: requests==2.31.0 (requests-2.31.0-py3-none-any.whl)
+DEBUG Adding transitive dependency: charset-normalizer>=2, <4
+DEBUG Adding transitive dependency: idna>=2.5, <4
+DEBUG Adding transitive dependency: urllib3>=1.21.1, <3
+DEBUG Adding transitive dependency: certifi>=2017.4.17
+DEBUG Searching for a compatible version of tqdm (>=4.42.1)
+DEBUG Selecting: tqdm==4.66.1 (tqdm-4.66.1-py3-none-any.whl)
+DEBUG Searching for a compatible version of packaging (>=20.9)
+DEBUG Selecting: packaging==23.2 (packaging-23.2-py3-none-any.whl)
+DEBUG No cache entry for: https://pypi.org/simple/nvidia-nvjitlink-cu12/
+DEBUG No credentials found for already-seen URL: https://pypi.org/simple/nvidia-nvjitlink-cu12/
+DEBUG No credentials found for: https://pypi.org/simple/nvidia-nvjitlink-cu12/
+DEBUG Found stale response for: https://pypi.org/simple/idna/
+DEBUG Sending revalidation request for: https://pypi.org/simple/idna/
+DEBUG No credentials found for already-seen URL: https://pypi.org/simple/idna/
+DEBUG No credentials found for: https://pypi.org/simple/idna/
+DEBUG Found stale response for: https://pypi.org/simple/certifi/
+DEBUG Sending revalidation request for: https://pypi.org/simple/certifi/
+DEBUG No credentials found for already-seen URL: https://pypi.org/simple/certifi/
+DEBUG No credentials found for: https://pypi.org/simple/certifi/
+DEBUG Found stale response for: https://pypi.org/simple/urllib3/
+DEBUG Sending revalidation request for: https://pypi.org/simple/urllib3/
+DEBUG No credentials found for already-seen URL: https://pypi.org/simple/urllib3/
+DEBUG No credentials found for: https://pypi.org/simple/urllib3/
+DEBUG Found stale response for: https://pypi.org/simple/charset-normalizer/
+DEBUG Sending revalidation request for: https://pypi.org/simple/charset-normalizer/
+DEBUG No credentials found for already-seen URL: https://pypi.org/simple/charset-normalizer/
+DEBUG No credentials found for: https://pypi.org/simple/charset-normalizer/
+DEBUG Searching for a compatible version of mpmath (>=0.19)
+DEBUG Selecting: mpmath==1.3.0 (mpmath-1.3.0-py3-none-any.whl)
+DEBUG No cache entry for: https://files.pythonhosted.org/packages/43/e3/7d92a15f894aa0c9c4b49b8ee9ac9850d6e63b03c9c32c0367a13ae62209/mpmath-1.3.0-py3-none-any.whl.metadata
+DEBUG No credentials found for already-seen URL: https://files.pythonhosted.org/packages/43/e3/7d92a15f894aa0c9c4b49b8ee9ac9850d6e63b03c9c32c0367a13ae62209/mpmath-1.3.0-py3-none-any.whl.metadata
+DEBUG No credentials found for: https://files.pythonhosted.org/packages/43/e3/7d92a15f894aa0c9c4b49b8ee9ac9850d6e63b03c9c32c0367a13ae62209/mpmath-1.3.0-py3-none-any.whl.metadata
+DEBUG Found not-modified response for: https://pypi.org/simple/markupsafe/
+DEBUG Found not-modified response for: https://pypi.org/simple/urllib3/
+DEBUG Found not-modified response for: https://pypi.org/simple/charset-normalizer/
+DEBUG Found not-modified response for: https://pypi.org/simple/certifi/
+DEBUG Found not-modified response for: https://pypi.org/simple/idna/
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/a2/73/a68704750a7679d0b6d3ad7aa8d4da8e14e151ae82e6fee774e6e0d05ec8/urllib3-2.2.1-py3-none-any.whl.metadata
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/7c/52/2b1b570f6b8b803cef5ac28fdf78c0da318916c7d2fe9402a84d591b394c/MarkupSafe-2.1.5-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/ba/06/a07f096c664aeb9f01624f858c3add0a4e913d6c96257acb4fce61e7de14/certifi-2024.2.2-py3-none-any.whl.metadata
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/c2/e7/a82b05cf63a603df6e68d59ae6a68bf5064484a0718ea5033660af4b54a9/idna-3.6-py3-none-any.whl.metadata
+DEBUG No cache entry for: https://files.pythonhosted.org/packages/58/d1/d1c80553f9d5d07b6072bc132607d75a0ef3600e28e1890e11c0f55d7346/nvidia_nvjitlink_cu12-12.4.99-py3-none-manylinux2014_x86_64.whl.metadata
+DEBUG No credentials found for already-seen URL: https://files.pythonhosted.org/packages/58/d1/d1c80553f9d5d07b6072bc132607d75a0ef3600e28e1890e11c0f55d7346/nvidia_nvjitlink_cu12-12.4.99-py3-none-manylinux2014_x86_64.whl.metadata
+DEBUG No credentials found for: https://files.pythonhosted.org/packages/58/d1/d1c80553f9d5d07b6072bc132607d75a0ef3600e28e1890e11c0f55d7346/nvidia_nvjitlink_cu12-12.4.99-py3-none-manylinux2014_x86_64.whl.metadata
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/da/f1/3702ba2a7470666a62fd81c58a4c40be00670e5006a67f4d626e57f013ae/charset_normalizer-3.3.2-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata
+DEBUG Searching for a compatible version of markupsafe (>=2.0)
+DEBUG Selecting: markupsafe==2.1.5 (MarkupSafe-2.1.5-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl)
+DEBUG Searching for a compatible version of nvidia-nvjitlink-cu12 (*)
+DEBUG Selecting: nvidia-nvjitlink-cu12==12.4.99 (nvidia_nvjitlink_cu12-12.4.99-py3-none-manylinux2014_x86_64.whl)
+DEBUG Searching for a compatible version of charset-normalizer (>=2, <4)
+DEBUG Selecting: charset-normalizer==3.3.2 (charset_normalizer-3.3.2-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl)
+DEBUG Searching for a compatible version of idna (>=2.5, <4)
+DEBUG Selecting: idna==3.6 (idna-3.6-py3-none-any.whl)
+DEBUG Searching for a compatible version of urllib3 (>=1.21.1, <3)
+DEBUG Selecting: urllib3==2.2.1 (urllib3-2.2.1-py3-none-any.whl)
+DEBUG Searching for a compatible version of certifi (>=2017.4.17)
+DEBUG Selecting: certifi==2024.2.2 (certifi-2024.2.2-py3-none-any.whl)
+Resolved 36 packages in 93ms
+DEBUG Requirement already satisfied: certifi==2024.2.2
+DEBUG Requirement already satisfied: charset-normalizer==3.3.2
+DEBUG Requirement already satisfied: filelock==3.13.1
+DEBUG Requirement already satisfied: fsspec==2024.3.1
+DEBUG Requirement already satisfied: huggingface-hub==0.21.4
+DEBUG Requirement already satisfied: idna==3.6
+DEBUG Requirement already satisfied: jinja2==3.1.3
+DEBUG Requirement already satisfied: markupsafe==2.1.5
+DEBUG Requirement already satisfied: mpmath==1.3.0
+DEBUG Requirement already satisfied: networkx==2.6.3
+DEBUG Requirement already satisfied: numpy==1.24.4
+DEBUG Identified uncached requirement: nvidia-cublas-cu12 ==12.1.3.1
+DEBUG Identified uncached requirement: nvidia-cuda-cupti-cu12 ==12.1.105
+DEBUG Identified uncached requirement: nvidia-cuda-nvrtc-cu12 ==12.1.105
+DEBUG Identified uncached requirement: nvidia-cuda-runtime-cu12 ==12.1.105
+DEBUG Identified uncached requirement: nvidia-cudnn-cu12 ==8.9.2.26
+DEBUG Identified uncached requirement: nvidia-cufft-cu12 ==11.0.2.54
+DEBUG Identified uncached requirement: nvidia-curand-cu12 ==10.3.2.106
+DEBUG Identified uncached requirement: nvidia-cusolver-cu12 ==11.4.5.107
+DEBUG Identified uncached requirement: nvidia-cusparse-cu12 ==12.1.0.106
+DEBUG Identified uncached requirement: nvidia-nccl-cu12 ==2.19.3
+DEBUG Identified uncached requirement: nvidia-nvjitlink-cu12 ==12.4.99
+DEBUG Identified uncached requirement: nvidia-nvtx-cu12 ==12.1.105
+DEBUG Requirement already satisfied: packaging==23.2
+DEBUG Requirement already satisfied: pillow==10.2.0 (from file:///rapids/pillow-10.2.0-cp310-cp310-manylinux_2_28_x86_64.whl)
+DEBUG Requirement already satisfied: pyyaml==6.0.1
+DEBUG Requirement already satisfied: requests==2.31.0
+DEBUG Requirement already satisfied: safetensors==0.4.2
+DEBUG Requirement already satisfied: sympy==1.12
+DEBUG Identified uncached requirement: timm ==0.9.7
+DEBUG Identified uncached requirement: torch ==2.2.1
+DEBUG Identified uncached requirement: torchvision ==0.17.1
+DEBUG Requirement already satisfied: tqdm==4.66.1
+DEBUG Requirement already satisfied: triton==2.2.0+e28a256 (from file:///tmp/dist/triton-2.2.0%2Be28a256-cp310-cp310-linux_x86_64.whl)
+DEBUG Requirement already satisfied: typing-extensions==4.9.0
+DEBUG Requirement already satisfied: urllib3==2.2.1
+DEBUG Unnecessary package: smmap==5.0.1
+DEBUG Unnecessary package: gitpython==3.1.42
+DEBUG Unnecessary package: polars==0.20.16
+DEBUG Unnecessary package: nodeenv==1.8.0
+DEBUG Unnecessary package: mypy==1.9.0
+DEBUG Unnecessary package: tzdata==2024.1
+DEBUG Unnecessary package: pytest==8.1.1
+DEBUG Unnecessary package: rich==13.7.1
+DEBUG Unnecessary package: llvmlite==0.42.0
+DEBUG Unnecessary package: numba==0.59.1
+DEBUG Unnecessary package: ruff==0.3.0
+DEBUG Unnecessary package: streamlit==1.32.2
+DEBUG Unnecessary package: cfgv==3.4.0
+DEBUG Unnecessary package: identify==2.5.35
+DEBUG Unnecessary package: tenacity==8.2.3
+DEBUG Unnecessary package: alembic==1.13.1
+DEBUG Unnecessary package: pandas==2.2.1
+DEBUG Unnecessary package: docker-pycreds==0.4.0
+DEBUG Unnecessary package: wandb==0.16.4
+DEBUG Unnecessary package: gitdb==4.0.11
+DEBUG Unnecessary package: greenlet==3.0.3
+DEBUG Unnecessary package: text-unidecode==1.3
+DEBUG Unnecessary package: seaborn==0.13.2
+DEBUG Unnecessary package: optuna==3.6.0
+DEBUG Unnecessary package: lightgbm==4.3.0
+DEBUG Unnecessary package: sentry-sdk==1.42.0
+DEBUG Unnecessary package: tokenizers==0.15.2
+DEBUG Unnecessary package: mako==1.3.2
+DEBUG Unnecessary package: psutil==5.9.8
+DEBUG Unnecessary package: distlib==0.3.8
+DEBUG Unnecessary package: mypy-extensions==1.0.0
+DEBUG Unnecessary package: loguru==0.7.2
+DEBUG Unnecessary package: colorlog==6.8.2
+DEBUG Unnecessary package: catboost==1.2.3
+DEBUG Unnecessary package: pydeck==0.8.0
+DEBUG Unnecessary package: pydantic-core==2.16.3
+DEBUG Unnecessary package: python-slugify==8.0.4
+DEBUG Unnecessary package: blinker==1.7.0
+DEBUG Unnecessary package: pytz==2024.1
+DEBUG Unnecessary package: plotly==5.20.0
+DEBUG Unnecessary package: pre-commit==3.6.2
+DEBUG Unnecessary package: kaggle==1.6.6
+DEBUG Unnecessary package: graphviz==0.20.2
+DEBUG Unnecessary package: pyarrow==15.0.2
+DEBUG Unnecessary package: antlr4-python3-runtime==4.9.3
+DEBUG Unnecessary package: sqlalchemy==2.0.28
+DEBUG Unnecessary package: altair==5.2.0
+DEBUG Unnecessary package: watchdog==4.0.0
+DEBUG Unnecessary package: setproctitle==1.3.3
+DEBUG Unnecessary package: virtualenv==20.25.1
+DEBUG Unnecessary package: transformers==4.38.2
+DEBUG Unnecessary package: pydantic==2.6.3
+DEBUG Unnecessary package: hydra-core==1.3.2
+DEBUG Unnecessary package: appdirs==1.4.4
+DEBUG Unnecessary package: omegaconf==2.3.0
+DEBUG Preserving seed package: uv==0.1.22
+DEBUG Unnecessary package: transformer-engine==1.3.0+5b90b7f (from git+https://github.com/NVIDIA/TransformerEngine.git@5b90b7f5ed67b373bc5f843d1ac3b7a8999df08e)
+DEBUG Unnecessary package: einops==0.7.0
+DEBUG Unnecessary package: flash-attn==2.4.2
+DEBUG Unnecessary package: torch-tensorrt==2.3.0a0 (from file:///opt/pytorch/torch_tensorrt/dist/torch_tensorrt-2.3.0a0-cp310-cp310-linux_x86_64.whl)
+DEBUG Unnecessary package: sphinx-glpi-theme==0.6
+DEBUG Unnecessary package: nvidia-pyindex==1.0.9
+DEBUG Unnecessary package: prettytable==3.9.0
+DEBUG Unnecessary package: polygraphy==0.49.4
+DEBUG Unnecessary package: pytorch-quantization==2.1.2
+DEBUG Unnecessary package: uff==0.6.9 (from file:///workspace/TensorRT-8.6.3.1/uff/uff-0.6.9-py2.py3-none-any.whl)
+DEBUG Unnecessary package: tensorrt==8.6.3 (from file:///workspace/TensorRT-8.6.3.1/python/tensorrt-8.6.3-cp310-none-linux_x86_64.whl)
+DEBUG Unnecessary package: graphsurgeon==0.4.6 (from file:///workspace/TensorRT-8.6.3.1/graphsurgeon/graphsurgeon-0.4.6-py2.py3-none-any.whl)
+DEBUG Unnecessary package: cubinlinker==0.3.0+2.g405ac64 (from file:///rapids/cubinlinker-0.3.0%2B2.g405ac64-cp310-cp310-linux_x86_64.whl)
+DEBUG Unnecessary package: zipp==3.17.0 (from file:///rapids/zipp-3.17.0-py3-none-any.whl)
+DEBUG Unnecessary package: locket==1.0.0 (from file:///rapids/locket-1.0.0-py2.py3-none-any.whl)
+DEBUG Unnecessary package: rapids-dask-dependency==23.12.1 (from file:///rapids/rapids_dask_dependency-23.12.1-py3-none-any.whl)
+DEBUG Unnecessary package: partd==1.4.1 (from file:///rapids/partd-1.4.1-py3-none-any.whl)
+DEBUG Unnecessary package: frozenlist==1.4.1 (from file:///rapids/frozenlist-1.4.1-cp310-cp310-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl)
+DEBUG Unnecessary package: toolz==0.12.1 (from file:///rapids/toolz-0.12.1-py3-none-any.whl)
+DEBUG Unnecessary package: fastrlock==0.8.2 (from file:///rapids/fastrlock-0.8.2-cp310-cp310-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_28_x86_64.whl)
+DEBUG Unnecessary package: ptxcompiler==0.8.1+2.g0d406d6 (from file:///rapids/ptxcompiler-0.8.1%2B2.g0d406d6-cp310-cp310-linux_x86_64.whl)
+DEBUG Unnecessary package: nvtx==0.2.5 (from file:///rapids/nvtx-0.2.5-cp310-cp310-linux_x86_64.whl)
+DEBUG Unnecessary package: pynvml==11.4.1 (from file:///rapids/pynvml-11.4.1-py3-none-any.whl)
+DEBUG Unnecessary package: zict==3.0.0 (from file:///rapids/zict-3.0.0-py2.py3-none-any.whl)
+DEBUG Unnecessary package: yarl==1.9.4 (from file:///rapids/yarl-1.9.4-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl)
+DEBUG Unnecessary package: async-timeout==4.0.3 (from file:///rapids/async_timeout-4.0.3-py3-none-any.whl)
+DEBUG Unnecessary package: raft-dask==23.12.0 (from file:///rapids/raft_dask-23.12.0-cp310-cp310-linux_x86_64.whl)
+DEBUG Unnecessary package: pylibcugraphops==23.12.0 (from file:///rapids/pylibcugraphops-23.12.0-cp310-cp310-linux_x86_64.whl)
+DEBUG Unnecessary package: scipy==1.12.0 (from file:///rapids/scipy-1.12.0-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl)
+DEBUG Unnecessary package: cugraph-service-client==23.12.0 (from file:///rapids/cugraph_service_client-23.12.0-py3-none-any.whl)
+DEBUG Unnecessary package: pylibraft==23.12.0 (from file:///rapids/pylibraft-23.12.0-cp310-cp310-linux_x86_64.whl)
+DEBUG Unnecessary package: distributed==2023.11.0 (from file:///rapids/distributed-2023.11.0-py3-none-any.whl)
+DEBUG Unnecessary package: dask-cuda==23.12.0 (from file:///rapids/dask_cuda-23.12.0-py3-none-any.whl)
+DEBUG Unnecessary package: dask==2023.11.0 (from file:///rapids/dask-2023.11.0-py3-none-any.whl)
+DEBUG Unnecessary package: cugraph-service-server==23.12.0 (from file:///rapids/cugraph_service_server-23.12.0-py3-none-any.whl)
+DEBUG Unnecessary package: cupy-cuda12x==12.3.0 (from file:///rapids/cupy_cuda12x-12.3.0-cp310-cp310-manylinux2014_x86_64.whl)
+DEBUG Unnecessary package: aiosignal==1.3.1 (from file:///rapids/aiosignal-1.3.1-py3-none-any.whl)
+DEBUG Unnecessary package: xgboost==1.7.6 (from file:///rapids/xgboost-1.7.6-cp310-cp310-linux_x86_64.whl)
+DEBUG Unnecessary package: ucx-py==0.35.0 (from file:///rapids/ucx_py-0.35.0-cp310-cp310-linux_x86_64.whl)
+DEBUG Unnecessary package: cugraph-dgl==23.12.0 (from file:///rapids/cugraph_dgl-23.12.0-py3-none-any.whl)
+DEBUG Unnecessary package: aiohttp==3.9.1 (from file:///rapids/aiohttp-3.9.1-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl)
+DEBUG Unnecessary package: rmm==23.12.0 (from file:///rapids/rmm-23.12.0-cp310-cp310-linux_x86_64.whl)
+DEBUG Unnecessary package: ply==3.11 (from file:///rapids/ply-3.11-py2.py3-none-any.whl)
+DEBUG Unnecessary package: tblib==3.0.0 (from file:///rapids/tblib-3.0.0-py3-none-any.whl)
+DEBUG Unnecessary package: cudf==23.12.0 (from file:///rapids/cudf-23.12.0-cp310-cp310-linux_x86_64.whl)
+DEBUG Unnecessary package: dask-cudf==23.12.0 (from file:///rapids/dask_cudf-23.12.0-py3-none-any.whl)
+DEBUG Unnecessary package: cuml==23.12.0 (from file:///rapids/cuml-23.12.0-cp310-cp310-linux_x86_64.whl)
+DEBUG Unnecessary package: thriftpy2==0.4.17 (from file:///rapids/thriftpy2-0.4.17-cp310-cp310-linux_x86_64.whl)
+DEBUG Unnecessary package: importlib-metadata==7.0.1 (from file:///rapids/importlib_metadata-7.0.1-py3-none-any.whl)
+DEBUG Unnecessary package: cuda-python==12.3.0rc4+9.gdb8c48a.dirty (from file:///rapids/cuda_python-12.3.0rc4%2B9.gdb8c48a.dirty-cp310-cp310-linux_x86_64.whl)
+DEBUG Unnecessary package: treelite-runtime==3.9.1 (from file:///rapids/treelite_runtime-3.9.1-cp310-cp310-linux_x86_64.whl)
+DEBUG Unnecessary package: cugraph==23.12.0 (from file:///rapids/cugraph-23.12.0-cp310-cp310-linux_x86_64.whl)
+DEBUG Unnecessary package: scikit-learn==1.2.0 (from file:///rapids/scikit_learn-1.2.0-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl)
+DEBUG Unnecessary package: pylibcugraph==23.12.0 (from file:///rapids/pylibcugraph-23.12.0-cp310-cp310-linux_x86_64.whl)
+DEBUG Unnecessary package: cloudpickle==3.0.0 (from file:///rapids/cloudpickle-3.0.0-py3-none-any.whl)
+DEBUG Unnecessary package: multidict==6.0.4 (from file:///rapids/multidict-6.0.4-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl)
+DEBUG Unnecessary package: treelite==3.9.1 (from file:///rapids/treelite-3.9.1-cp310-cp310-linux_x86_64.whl)
+DEBUG Unnecessary package: tabulate==0.9.0
+DEBUG Unnecessary package: onnx==1.15.0rc2 (from file:///opt/pytorch/pytorch/third_party/onnx)
+DEBUG Unnecessary package: ninja==1.11.1.1
+DEBUG Unnecessary package: torchdata==0.7.1a0 (from file:///opt/pytorch/data)
+DEBUG Unnecessary package: apex==0.1 (from file:///opt/pytorch/apex)
+DEBUG Unnecessary package: pybind11-global==2.11.1
+DEBUG Unnecessary package: torchtext==0.17.0a0 (from file:///opt/pytorch/text)
+DEBUG Unnecessary package: kiwisolver==1.4.5
+DEBUG Unnecessary package: pycocotools==2.0+nv0.8.0 (from git+https://github.com/nvidia/cocoapi.git@d99cbf3823588ef09a2721655f46e509ebafb3d7#subdirectory=PythonAPI)
+DEBUG Unnecessary package: fonttools==4.48.1
+DEBUG Unnecessary package: pyparsing==3.1.1
+DEBUG Unnecessary package: matplotlib==3.8.2
+DEBUG Unnecessary package: contourpy==1.2.0
+DEBUG Unnecessary package: cycler==0.12.1
+DEBUG Unnecessary package: dm-tree==0.1.8
+DEBUG Unnecessary package: gast==0.5.4
+DEBUG Unnecessary package: nvidia-dali-cuda120==1.34.0
+DEBUG Unnecessary package: types-dataclasses==0.6.6
+DEBUG Unnecessary package: optree==0.10.0
+DEBUG Unnecessary package: opencv==4.7.0 (from file:///opencv-4.7.0/modules/python/package)
+DEBUG Unnecessary package: jupytext==1.16.1
+DEBUG Unnecessary package: mdurl==0.1.2
+DEBUG Unnecessary package: markdown-it-py==3.0.0
+DEBUG Unnecessary package: toml==0.10.2
+DEBUG Unnecessary package: jupyter-tensorboard==0.2.0 (from git+https://github.com/cliffwoolley/jupyter_tensorboard.git@ffa7e26138b82549453306e06b535a9ac36db17a)
+DEBUG Unnecessary package: mdit-py-plugins==0.4.0
+DEBUG Unnecessary package: bleach==6.1.0
+DEBUG Unnecessary package: webencodings==0.5.1
+DEBUG Unnecessary package: pyasn1==0.5.1
+DEBUG Unnecessary package: traitlets==5.9.0
+DEBUG Unnecessary package: defusedxml==0.7.1
+DEBUG Unnecessary package: debugpy==1.8.1
+DEBUG Unnecessary package: absl-py==2.1.0
+DEBUG Unnecessary package: oauthlib==3.2.2
+DEBUG Unnecessary package: ipython==8.21.0
+DEBUG Unnecessary package: rpds-py==0.17.1
+DEBUG Unnecessary package: pure-eval==0.2.2
+DEBUG Unnecessary package: jedi==0.19.1
+DEBUG Unnecessary package: referencing==0.33.0
+DEBUG Unnecessary package: tensorboard-plugin-wit==1.8.1
+DEBUG Unnecessary package: jsonschema-specifications==2023.12.1
+DEBUG Unnecessary package: google-auth-oauthlib==0.4.6
+DEBUG Unnecessary package: send2trash==1.8.2
+DEBUG Unnecessary package: python-hostlist==1.23.0
+DEBUG Unnecessary package: tinycss2==1.2.1
+DEBUG Unnecessary package: argon2-cffi==23.1.0
+DEBUG Unnecessary package: pyzmq==25.1.2
+DEBUG Unnecessary package: jupyterlab-pygments==0.3.0
+DEBUG Unnecessary package: requests-oauthlib==1.3.1
+DEBUG Unnecessary package: werkzeug==3.0.1
+DEBUG Unnecessary package: grpcio==1.60.1
+DEBUG Unnecessary package: executing==2.0.1
+DEBUG Unnecessary package: pexpect==4.9.0
+DEBUG Unnecessary package: matplotlib-inline==0.1.6
+DEBUG Unnecessary package: cachetools==5.3.2
+DEBUG Unnecessary package: wcwidth==0.2.13
+DEBUG Unnecessary package: google-auth==2.27.0
+DEBUG Unnecessary package: nbclient==0.9.0
+DEBUG Unnecessary package: prometheus-client==0.19.0
+DEBUG Unnecessary package: pygments==2.17.2
+DEBUG Unnecessary package: beautifulsoup4==4.12.3
+DEBUG Unnecessary package: mistune==3.0.2
+DEBUG Unnecessary package: notebook==6.4.10
+DEBUG Unnecessary package: pyasn1-modules==0.3.0
+DEBUG Unnecessary package: ptyprocess==0.7.0
+DEBUG Unnecessary package: prompt-toolkit==3.0.43
+DEBUG Unnecessary package: nbformat==5.9.2
+DEBUG Unnecessary package: nest-asyncio==1.6.0
+DEBUG Unnecessary package: fastjsonschema==2.19.1
+DEBUG Unnecessary package: tensorboard-data-server==0.6.1
+DEBUG Unnecessary package: tensorboard==2.9.0
+DEBUG Unnecessary package: parso==0.8.3
+DEBUG Unnecessary package: json5==0.9.14
+DEBUG Unnecessary package: jsonschema==4.21.1
+DEBUG Unnecessary package: stack-data==0.6.3
+DEBUG Unnecessary package: pandocfilters==1.5.1
+DEBUG Unnecessary package: argon2-cffi-bindings==21.2.0
+DEBUG Unnecessary package: jupyterlab==2.3.2
+DEBUG Unnecessary package: ipykernel==6.29.2
+DEBUG Unnecessary package: soupsieve==2.5
+DEBUG Unnecessary package: markdown==3.5.2
+DEBUG Unnecessary package: jupyterlab-server==1.2.0
+DEBUG Unnecessary package: asttokens==2.4.1
+DEBUG Unnecessary package: ipython-genutils==0.2.0
+DEBUG Unnecessary package: jupyter-client==8.6.0
+DEBUG Unnecessary package: python-dateutil==2.8.2
+DEBUG Unnecessary package: comm==0.2.1
+DEBUG Unnecessary package: jupyter-core==5.7.1
+DEBUG Unnecessary package: rsa==4.9
+DEBUG Unnecessary package: nbconvert==7.16.0
+DEBUG Unnecessary package: tornado==6.4
+DEBUG Unnecessary package: terminado==0.18.0
+DEBUG Unnecessary package: pytest-xdist==3.5.0
+DEBUG Unnecessary package: pooch==1.8.0
+DEBUG Unnecessary package: murmurhash==1.0.10
+DEBUG Unnecessary package: weasel==0.3.4
+DEBUG Unnecessary package: pluggy==1.4.0
+DEBUG Unnecessary package: catalogue==2.0.10
+DEBUG Unnecessary package: mkl-devel==2021.1.1
+DEBUG Unnecessary package: protobuf==4.24.4
+DEBUG Unnecessary package: spacy==3.7.2
+DEBUG Unnecessary package: xdoctest==1.0.2
+DEBUG Unnecessary package: iniconfig==2.0.0
+DEBUG Unnecessary package: typer==0.9.0
+DEBUG Unnecessary package: msgpack==1.0.7
+DEBUG Unnecessary package: execnet==2.0.2
+DEBUG Unnecessary package: platformdirs==4.2.0
+DEBUG Unnecessary package: annotated-types==0.6.0
+DEBUG Unnecessary package: spacy-loggers==1.0.5
+DEBUG Unnecessary package: cymem==2.0.8
+DEBUG Unnecessary package: cython==3.0.8
+DEBUG Unnecessary package: pycparser==2.21
+DEBUG Unnecessary package: threadpoolctl==3.2.0
+DEBUG Unnecessary package: mkl-include==2021.1.1
+DEBUG Unnecessary package: pytest-flakefinder==1.1.0
+DEBUG Unnecessary package: preshed==3.0.9
+DEBUG Unnecessary package: srsly==2.4.8
+DEBUG Unnecessary package: cloudpathlib==0.16.0
+DEBUG Unnecessary package: astunparse==1.6.3
+DEBUG Unnecessary package: confection==0.1.4
+DEBUG Unnecessary package: smart-open==6.4.0
+DEBUG Unnecessary package: tomli==2.0.1
+DEBUG Unnecessary package: thinc==8.2.3
+DEBUG Unnecessary package: langcodes==3.3.0
+DEBUG Unnecessary package: click==8.1.7
+DEBUG Unnecessary package: spacy-legacy==3.0.12
+DEBUG Unnecessary package: audioread==3.0.1
+DEBUG Unnecessary package: wasabi==1.1.2
+DEBUG Unnecessary package: hypothesis==5.35.1
+DEBUG Unnecessary package: soxr==0.3.7
+DEBUG Unnecessary package: sortedcontainers==2.4.0
+DEBUG Unnecessary package: attrs==23.2.0
+DEBUG Unnecessary package: mkl==2021.1.1
+DEBUG Unnecessary package: intel-openmp==2021.4.0
+DEBUG Unnecessary package: cffi==1.16.0
+DEBUG Unnecessary package: pytest-shard==0.1.2
+DEBUG Unnecessary package: decorator==5.1.1
+DEBUG Unnecessary package: joblib==1.3.2
+DEBUG Unnecessary package: regex==2023.12.25
+DEBUG Unnecessary package: lazy-loader==0.3
+DEBUG Unnecessary package: librosa==0.10.1
+DEBUG Unnecessary package: soundfile==0.12.1
+DEBUG Unnecessary package: expecttest==0.1.3
+DEBUG Unnecessary package: pybind11==2.11.1
+DEBUG Unnecessary package: pytest-rerunfailures==13.0
+DEBUG Unnecessary package: exceptiongroup==1.2.0
+DEBUG Unnecessary package: six==1.16.0
+DEBUG Unnecessary package: blis==0.7.11
+DEBUG Unnecessary package: tbb==2021.11.0
+DEBUG Unnecessary package: mock==5.1.0
+DEBUG Unnecessary package: cmake==3.28.1
+DEBUG Preserving seed package: setuptools==68.2.2
+DEBUG Preserving seed package: wheel==0.42.0
+DEBUG Preserving seed package: pip==24.0
+DEBUG No cache entry for: https://files.pythonhosted.org/packages/a7/ad/fbe7d4cffb76da4e478438853b51305361c719cff929ab70a808e7fb75e7/torch-2.2.1-cp310-cp310-manylinux1_x86_64.whl
+DEBUG No credentials found for already-seen URL: https://files.pythonhosted.org/packages/a7/ad/fbe7d4cffb76da4e478438853b51305361c719cff929ab70a808e7fb75e7/torch-2.2.1-cp310-cp310-manylinux1_x86_64.whl
+DEBUG No credentials found for: https://files.pythonhosted.org/packages/a7/ad/fbe7d4cffb76da4e478438853b51305361c719cff929ab70a808e7fb75e7/torch-2.2.1-cp310-cp310-manylinux1_x86_64.whl
+DEBUG No cache entry for: https://files.pythonhosted.org/packages/ff/74/a2e2be7fb83aaedec84f391f082cf765dfb635e7caa9b49065f73e4835d8/nvidia_cudnn_cu12-8.9.2.26-py3-none-manylinux1_x86_64.whl
+DEBUG No credentials found for already-seen URL: https://files.pythonhosted.org/packages/ff/74/a2e2be7fb83aaedec84f391f082cf765dfb635e7caa9b49065f73e4835d8/nvidia_cudnn_cu12-8.9.2.26-py3-none-manylinux1_x86_64.whl
+DEBUG No credentials found for: https://files.pythonhosted.org/packages/ff/74/a2e2be7fb83aaedec84f391f082cf765dfb635e7caa9b49065f73e4835d8/nvidia_cudnn_cu12-8.9.2.26-py3-none-manylinux1_x86_64.whl
+DEBUG No cache entry for: https://files.pythonhosted.org/packages/37/6d/121efd7382d5b0284239f4ab1fc1590d86d34ed4a4a2fdb13b30ca8e5740/nvidia_cublas_cu12-12.1.3.1-py3-none-manylinux1_x86_64.whl
+DEBUG No credentials found for already-seen URL: https://files.pythonhosted.org/packages/37/6d/121efd7382d5b0284239f4ab1fc1590d86d34ed4a4a2fdb13b30ca8e5740/nvidia_cublas_cu12-12.1.3.1-py3-none-manylinux1_x86_64.whl
+DEBUG No credentials found for: https://files.pythonhosted.org/packages/37/6d/121efd7382d5b0284239f4ab1fc1590d86d34ed4a4a2fdb13b30ca8e5740/nvidia_cublas_cu12-12.1.3.1-py3-none-manylinux1_x86_64.whl
+DEBUG No cache entry for: https://files.pythonhosted.org/packages/65/5b/cfaeebf25cd9fdec14338ccb16f6b2c4c7fa9163aefcf057d86b9cc248bb/nvidia_cusparse_cu12-12.1.0.106-py3-none-manylinux1_x86_64.whl
+DEBUG No credentials found for already-seen URL: https://files.pythonhosted.org/packages/65/5b/cfaeebf25cd9fdec14338ccb16f6b2c4c7fa9163aefcf057d86b9cc248bb/nvidia_cusparse_cu12-12.1.0.106-py3-none-manylinux1_x86_64.whl
+DEBUG No credentials found for: https://files.pythonhosted.org/packages/65/5b/cfaeebf25cd9fdec14338ccb16f6b2c4c7fa9163aefcf057d86b9cc248bb/nvidia_cusparse_cu12-12.1.0.106-py3-none-manylinux1_x86_64.whl
+DEBUG No cache entry for: https://files.pythonhosted.org/packages/38/00/d0d4e48aef772ad5aebcf70b73028f88db6e5640b36c38e90445b7a57c45/nvidia_nccl_cu12-2.19.3-py3-none-manylinux1_x86_64.whl
+DEBUG No credentials found for already-seen URL: https://files.pythonhosted.org/packages/38/00/d0d4e48aef772ad5aebcf70b73028f88db6e5640b36c38e90445b7a57c45/nvidia_nccl_cu12-2.19.3-py3-none-manylinux1_x86_64.whl
+DEBUG No credentials found for: https://files.pythonhosted.org/packages/38/00/d0d4e48aef772ad5aebcf70b73028f88db6e5640b36c38e90445b7a57c45/nvidia_nccl_cu12-2.19.3-py3-none-manylinux1_x86_64.whl
+DEBUG No cache entry for: https://files.pythonhosted.org/packages/bc/1d/8de1e5c67099015c834315e333911273a8c6aaba78923dd1d1e25fc5f217/nvidia_cusolver_cu12-11.4.5.107-py3-none-manylinux1_x86_64.whl
+DEBUG No credentials found for already-seen URL: https://files.pythonhosted.org/packages/bc/1d/8de1e5c67099015c834315e333911273a8c6aaba78923dd1d1e25fc5f217/nvidia_cusolver_cu12-11.4.5.107-py3-none-manylinux1_x86_64.whl
+DEBUG No credentials found for: https://files.pythonhosted.org/packages/bc/1d/8de1e5c67099015c834315e333911273a8c6aaba78923dd1d1e25fc5f217/nvidia_cusolver_cu12-11.4.5.107-py3-none-manylinux1_x86_64.whl
+DEBUG No cache entry for: https://files.pythonhosted.org/packages/86/94/eb540db023ce1d162e7bea9f8f5aa781d57c65aed513c33ee9a5123ead4d/nvidia_cufft_cu12-11.0.2.54-py3-none-manylinux1_x86_64.whl
+DEBUG No credentials found for already-seen URL: https://files.pythonhosted.org/packages/86/94/eb540db023ce1d162e7bea9f8f5aa781d57c65aed513c33ee9a5123ead4d/nvidia_cufft_cu12-11.0.2.54-py3-none-manylinux1_x86_64.whl
+DEBUG No credentials found for: https://files.pythonhosted.org/packages/86/94/eb540db023ce1d162e7bea9f8f5aa781d57c65aed513c33ee9a5123ead4d/nvidia_cufft_cu12-11.0.2.54-py3-none-manylinux1_x86_64.whl
+DEBUG No cache entry for: https://files.pythonhosted.org/packages/44/31/4890b1c9abc496303412947fc7dcea3d14861720642b49e8ceed89636705/nvidia_curand_cu12-10.3.2.106-py3-none-manylinux1_x86_64.whl
+DEBUG No credentials found for already-seen URL: https://files.pythonhosted.org/packages/44/31/4890b1c9abc496303412947fc7dcea3d14861720642b49e8ceed89636705/nvidia_curand_cu12-10.3.2.106-py3-none-manylinux1_x86_64.whl
+DEBUG No credentials found for: https://files.pythonhosted.org/packages/44/31/4890b1c9abc496303412947fc7dcea3d14861720642b49e8ceed89636705/nvidia_curand_cu12-10.3.2.106-py3-none-manylinux1_x86_64.whl
+DEBUG No cache entry for: https://files.pythonhosted.org/packages/b6/9f/c64c03f49d6fbc56196664d05dba14e3a561038a81a638eeb47f4d4cfd48/nvidia_cuda_nvrtc_cu12-12.1.105-py3-none-manylinux1_x86_64.whl
+DEBUG No credentials found for already-seen URL: https://files.pythonhosted.org/packages/b6/9f/c64c03f49d6fbc56196664d05dba14e3a561038a81a638eeb47f4d4cfd48/nvidia_cuda_nvrtc_cu12-12.1.105-py3-none-manylinux1_x86_64.whl
+DEBUG No credentials found for: https://files.pythonhosted.org/packages/b6/9f/c64c03f49d6fbc56196664d05dba14e3a561038a81a638eeb47f4d4cfd48/nvidia_cuda_nvrtc_cu12-12.1.105-py3-none-manylinux1_x86_64.whl
+DEBUG No cache entry for: https://files.pythonhosted.org/packages/58/d1/d1c80553f9d5d07b6072bc132607d75a0ef3600e28e1890e11c0f55d7346/nvidia_nvjitlink_cu12-12.4.99-py3-none-manylinux2014_x86_64.whl
+DEBUG No credentials found for already-seen URL: https://files.pythonhosted.org/packages/58/d1/d1c80553f9d5d07b6072bc132607d75a0ef3600e28e1890e11c0f55d7346/nvidia_nvjitlink_cu12-12.4.99-py3-none-manylinux2014_x86_64.whl
+DEBUG No credentials found for: https://files.pythonhosted.org/packages/58/d1/d1c80553f9d5d07b6072bc132607d75a0ef3600e28e1890e11c0f55d7346/nvidia_nvjitlink_cu12-12.4.99-py3-none-manylinux2014_x86_64.whl
+DEBUG No cache entry for: https://files.pythonhosted.org/packages/7e/00/6b218edd739ecfc60524e585ba8e6b00554dd908de2c9c66c1af3e44e18d/nvidia_cuda_cupti_cu12-12.1.105-py3-none-manylinux1_x86_64.whl
+DEBUG No credentials found for already-seen URL: https://files.pythonhosted.org/packages/7e/00/6b218edd739ecfc60524e585ba8e6b00554dd908de2c9c66c1af3e44e18d/nvidia_cuda_cupti_cu12-12.1.105-py3-none-manylinux1_x86_64.whl
+DEBUG No credentials found for: https://files.pythonhosted.org/packages/7e/00/6b218edd739ecfc60524e585ba8e6b00554dd908de2c9c66c1af3e44e18d/nvidia_cuda_cupti_cu12-12.1.105-py3-none-manylinux1_x86_64.whl
+DEBUG No cache entry for: https://files.pythonhosted.org/packages/1a/e8/13432ae6be567b577a4c89d1bd50084e4d989b379a7be8050380b5ab3a6e/torchvision-0.17.1-cp310-cp310-manylinux1_x86_64.whl
+DEBUG No credentials found for already-seen URL: https://files.pythonhosted.org/packages/1a/e8/13432ae6be567b577a4c89d1bd50084e4d989b379a7be8050380b5ab3a6e/torchvision-0.17.1-cp310-cp310-manylinux1_x86_64.whl
+DEBUG No credentials found for: https://files.pythonhosted.org/packages/1a/e8/13432ae6be567b577a4c89d1bd50084e4d989b379a7be8050380b5ab3a6e/torchvision-0.17.1-cp310-cp310-manylinux1_x86_64.whl
+DEBUG No cache entry for: https://files.pythonhosted.org/packages/7a/bd/2c56be7a3b5bc71cf85a405246b89d5359f942c9f7fb6db6306d9d056092/timm-0.9.7-py3-none-any.whl
+DEBUG No credentials found for already-seen URL: https://files.pythonhosted.org/packages/7a/bd/2c56be7a3b5bc71cf85a405246b89d5359f942c9f7fb6db6306d9d056092/timm-0.9.7-py3-none-any.whl
+DEBUG No credentials found for: https://files.pythonhosted.org/packages/7a/bd/2c56be7a3b5bc71cf85a405246b89d5359f942c9f7fb6db6306d9d056092/timm-0.9.7-py3-none-any.whl
+DEBUG No cache entry for: https://files.pythonhosted.org/packages/eb/d5/c68b1d2cdfcc59e72e8a5949a37ddb22ae6cade80cd4a57a84d4c8b55472/nvidia_cuda_runtime_cu12-12.1.105-py3-none-manylinux1_x86_64.whl
+DEBUG No credentials found for already-seen URL: https://files.pythonhosted.org/packages/eb/d5/c68b1d2cdfcc59e72e8a5949a37ddb22ae6cade80cd4a57a84d4c8b55472/nvidia_cuda_runtime_cu12-12.1.105-py3-none-manylinux1_x86_64.whl
+DEBUG No credentials found for: https://files.pythonhosted.org/packages/eb/d5/c68b1d2cdfcc59e72e8a5949a37ddb22ae6cade80cd4a57a84d4c8b55472/nvidia_cuda_runtime_cu12-12.1.105-py3-none-manylinux1_x86_64.whl
+DEBUG No cache entry for: https://files.pythonhosted.org/packages/da/d3/8057f0587683ed2fcd4dbfbdfdfa807b9160b809976099d36b8f60d08f03/nvidia_nvtx_cu12-12.1.105-py3-none-manylinux1_x86_64.whl
+DEBUG No credentials found for already-seen URL: https://files.pythonhosted.org/packages/da/d3/8057f0587683ed2fcd4dbfbdfdfa807b9160b809976099d36b8f60d08f03/nvidia_nvtx_cu12-12.1.105-py3-none-manylinux1_x86_64.whl
+DEBUG No credentials found for: https://files.pythonhosted.org/packages/da/d3/8057f0587683ed2fcd4dbfbdfdfa807b9160b809976099d36b8f60d08f03/nvidia_nvtx_cu12-12.1.105-py3-none-manylinux1_x86_64.whl
+Downloaded 15 packages in 34.05s
+DEBUG Uninstalled torch (12263 files, 743 directories)
+DEBUG Uninstalled torchvision (494 files, 51 directories)
+Installed 15 packages in 187ms
+ + nvidia-cublas-cu12==12.1.3.1
+ + nvidia-cuda-cupti-cu12==12.1.105
+ + nvidia-cuda-nvrtc-cu12==12.1.105
+ + nvidia-cuda-runtime-cu12==12.1.105
+ + nvidia-cudnn-cu12==8.9.2.26
+ + nvidia-cufft-cu12==11.0.2.54
+ + nvidia-curand-cu12==10.3.2.106
+ + nvidia-cusolver-cu12==11.4.5.107
+ + nvidia-cusparse-cu12==12.1.0.106
+ + nvidia-nccl-cu12==2.19.3
+ + nvidia-nvjitlink-cu12==12.4.99
+ + nvidia-nvtx-cu12==12.1.105
+ + timm==0.9.7
+ - torch==2.3.0a0+ebedce2 (from file:///tmp/pip/torch-2.3.0a0%2Bebedce2-cp310-cp310-linux_x86_64.whl)
+ + torch==2.2.1
+ - torchvision==0.18.0a0 (from file:///opt/pytorch/vision)
+ + torchvision==0.17.1
+```
+
+---
+
+_Comment by @charliermarsh on 2024-03-20 13:57_
+
+Thanks for the clear write-up. This is actually the same as https://github.com/astral-sh/uv/issues/1661, as far as I can tell: you have an already-installed version of Torch that you want to retain, but it doesn't exist on the index, so we don't find it during `pip install` resolution. I'll try to fix that bug this week or next depending on how much time I have.
+
+---
+
+_Comment by @charliermarsh on 2024-03-20 13:57_
+
+Closing as a duplicate (though a non-obvious one).
+
+---
+
+_Closed by @charliermarsh on 2024-03-20 13:57_
+
+---
+
+_Label `bug` added by @charliermarsh on 2024-03-20 13:57_
+
+---
+
+_Comment by @bamps53 on 2024-03-20 22:08_
+
+FYI, as a temporary workaround, we can create an overrides.txt file like this:
+
+```
+torch @ file:///tmp/pip/torch-2.3.0a0%2Bebedce2-cp310-cp310-linux_x86_64.whl
+torch-tensorrt @ file:///opt/pytorch/torch_tensorrt/dist/torch_tensorrt-2.3.0a0-cp310-cp310-linux_x86_64.whl
+torchdata @ file:///opt/pytorch/data
+torchtext @ file:///opt/pytorch/text
+torchvision @ file:///opt/pytorch/vision
+triton @ file:///tmp/dist/triton-2.2.0%2Be28a256-cp310-cp310-linux_x86_64.whl
+```
+
+Using the command `sudo uv pip install timm==0.9.7 --override overrides.txt` works fine.
+
+However, this approach is not effective if you need to downgrade torch.
+
+---
+
+_Comment by @charliermarsh on 2024-03-20 22:08_
+
+Ahh interesting. That makes sense.
+
+---
+
+_Comment by @bamps53 on 2024-03-20 22:22_
+
+@charliermarsh 
+In my opinion, it is unrealistic to accurately resolve all custom build versions such as `torch-2.3.0a0`. (or even just commit hash for some case)
+If we could manually register the library version (for instance, I would like to register torch as 2.3.0), it would provide a more flexible way to handle corner cases.
+
+---
+
+_Referenced in [astral-sh/uv#2596](../../astral-sh/uv/pulls/2596.md) on 2024-03-21 21:50_
+
+---
+
+_Comment by @zanieb on 2024-04-01 21:32_
+
+Hi! This should be addressed in the latest release ([0.1.27](https://github.com/astral-sh/uv/releases/tag/0.1.27)) via #2596.
+
+Let us know if you have any problems.
+
+---
+
+_Comment by @phalanx-hk on 2024-04-03 05:57_
+
+Thanks!
+Latest version completely resolve this problem.
+```bash
+$ sudo uv pip install timm
+Resolved 23 packages in 46ms
+Installed 1 package in 6ms
+ + timm==0.9.16
+```
+
+---

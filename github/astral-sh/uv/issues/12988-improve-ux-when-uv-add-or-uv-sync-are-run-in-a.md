@@ -1,0 +1,73 @@
+---
+number: 12988
+title: "Improve UX when `uv add` or `uv sync` are run in a directory with no `pyproject.toml`"
+type: issue
+state: open
+author: edmorley
+labels:
+  - enhancement
+  - help wanted
+  - error messages
+assignees: []
+created_at: 2025-04-20T13:06:39Z
+updated_at: 2025-04-21T02:07:49Z
+url: https://github.com/astral-sh/uv/issues/12988
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# Improve UX when `uv add` or `uv sync` are run in a directory with no `pyproject.toml`
+
+---
+
+_Issue opened by @edmorley on 2025-04-20 13:06_
+
+### Summary
+
+Currently if `uv add` or `uv sync` are run in a directory with no `pyproject.toml`, the resultant error message is:
+
+```
+$ mkdir testcase-uv && cd $_
+$ uv add urllib3
+error: No `pyproject.toml` found in current directory or any parent directory
+$ uv sync
+error: No `pyproject.toml` found in current directory or any parent directory
+```
+
+To improve the UX for users migrating from pip (or uv's `uv pip` interface), it would help if this error message hinted that the user should probably run `uv init` or else see the uv getting started docs.
+
+
+### Example
+
+Perhaps something roughly like this?
+
+```
+$ uv add urllib3
+error: No `pyproject.toml` found in current directory or any parent directory.
+To create one run `uv init`, or see: https://docs.astral.sh/uv/guides/projects/
+```
+
+---
+
+_Label `enhancement` added by @edmorley on 2025-04-20 13:06_
+
+---
+
+_Label `error messages` added by @zanieb on 2025-04-20 16:04_
+
+---
+
+_Comment by @zanieb on 2025-04-20 16:05_
+
+We probably want to use the `hint:` or `help:` formatting here. Makes sense though.
+
+So far, we don't link to the documentation because it's not versioned and therefore not guaranteed to be stable.
+
+---
+
+_Label `help wanted` added by @charliermarsh on 2025-04-21 02:07_
+
+---
+
+_Referenced in [astral-sh/uv#13021](../../astral-sh/uv/pulls/13021.md) on 2025-04-21 19:35_
+
+---

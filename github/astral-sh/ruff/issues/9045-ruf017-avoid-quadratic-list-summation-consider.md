@@ -1,0 +1,137 @@
+---
+number: 9045
+title: "RUF017 Avoid quadratic list summation: consider itertools.chain.from_iterable"
+type: issue
+state: closed
+author: RonnyPfannschmidt
+labels:
+  - rule
+assignees: []
+created_at: 2023-12-07T11:16:59Z
+updated_at: 2024-08-15T23:09:10Z
+url: https://github.com/astral-sh/ruff/issues/9045
+synced_at: 2026-01-07T13:12:15-06:00
+---
+
+# RUF017 Avoid quadratic list summation: consider itertools.chain.from_iterable
+
+---
+
+_Issue opened by @RonnyPfannschmidt on 2023-12-07 11:16_
+
+currently `RUF017`
+
+takes 
+```python
+mess = [[1], [1,2],[1], [1,2],[1], [1,2]]
+
+tags = sorted(sum([x for x in mess], []))
+```
+
+and turns it into 
+```python
+import functools
+import operator
+mess = [[1], [1,2],[1], [1,2],[1], [1,2]]
+
+tags = sorted(functools.reduce(operator.iadd, [x for x in mess], []))
+```
+
+instead of the more idiomatic
+
+```python
+import itertools
+
+mess = [[1], [1,2],[1], [1,2],[1], [1,2]]
+
+tags = sorted(itertools.chain.from_iterable(mess))
+```
+
+based on the applications of the pattern i have seen so far, i would almost always recommend to replace
+the sum with a `list(chain.from_iterable(...))`
+
+with the additional "optimization" of in-lining list comprehensions and/or generator expressions when applicable
+
+
+---
+
+_Comment by @charliermarsh on 2023-12-07 14:09_
+
+This makes sense... We could at least do this for cases in which it's directly within a `sorted` or similar.
+
+---
+
+_Label `rule` added by @charliermarsh on 2023-12-07 14:09_
+
+---
+
+_Comment by @charliermarsh on 2023-12-07 14:22_
+
+Interestingly, though, the `functools.reduce` variant does seem to be quite a bit faster.
+
+```python
+import timeit
+
+code1 = """
+tags = sorted(itertools.chain.from_iterable(mess))
+"""
+
+code2 = """
+tags = sorted(functools.reduce(operator.iadd, [x for x in mess], []))
+"""
+
+repeats = 10000
+
+time1 = timeit.timeit(stmt=code1, setup='import itertools\nmess = [[i, i + 1] for i in range(10000)]', number=repeats)
+print(f"{time1} seconds")
+
+time2 = timeit.timeit(stmt=code2, setup='import itertools\nimport functools\nimport operator\nmess = [[i] for i in range(10000)]', number=repeats)
+print(f"{time2} seconds")
+```
+
+Yields:
+
+```
+4.019917957950383 seconds
+2.7585187909426168 seconds
+```
+
+---
+
+_Comment by @RonnyPfannschmidt on 2023-12-07 14:33_
+
+I suspect this relates to different optimization levels of the Code paths 
+
+---
+
+_Comment by @hauntsaninja on 2023-12-12 05:09_
+
+Here's some more benchmarking from when we added this: https://github.com/astral-sh/ruff/issues/5073#issuecomment-1591836349
+
+---
+
+_Comment by @Skylion007 on 2023-12-22 15:34_
+
+This would be covered under a REFURB/FURB ([FURB179](https://github.com/dosisod/refurb/blob/master/refurb/checks/itertools/use_chain_from_iterable.py)) rule when we choose to implement it. https://github.com/astral-sh/ruff/issues/1348
+
+---
+
+_Referenced in [astral-sh/ruff#10088](../../astral-sh/ruff/issues/10088.md) on 2024-02-22 23:58_
+
+---
+
+_Comment by @hauntsaninja on 2024-08-15 23:07_
+
+I'd recommend closing this issue, since the functools variant is meaningfully faster: https://github.com/astral-sh/ruff/issues/5073#issuecomment-1591836349
+
+---
+
+_Closed by @charliermarsh on 2024-08-15 23:08_
+
+---
+
+_Comment by @charliermarsh on 2024-08-15 23:09_
+
+I agree.
+
+---

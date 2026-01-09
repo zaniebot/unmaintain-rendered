@@ -1,0 +1,53 @@
+---
+number: 6050
+title: "[Proposal] New setting for `pep8-naming`: `extend-ignore-names`"
+type: issue
+state: closed
+author: tylerlaprade
+labels:
+  - configuration
+  - accepted
+assignees: []
+created_at: 2023-07-25T02:17:31Z
+updated_at: 2023-07-29T11:41:06Z
+url: https://github.com/astral-sh/ruff/issues/6050
+synced_at: 2026-01-07T13:12:15-06:00
+---
+
+# [Proposal] New setting for `pep8-naming`: `extend-ignore-names`
+
+---
+
+_Issue opened by @tylerlaprade on 2023-07-25 02:17_
+
+I really like the thoughtful defaults for this setting, so I don't want to override them or manually copy them over just so I can add one additional name to be ignored.
+
+---
+
+_Label `configuration` added by @charliermarsh on 2023-07-25 14:09_
+
+---
+
+_Label `needs-decision` added by @charliermarsh on 2023-07-25 14:09_
+
+---
+
+_Label `needs-decision` removed by @charliermarsh on 2023-07-28 04:38_
+
+---
+
+_Label `accepted` added by @charliermarsh on 2023-07-28 04:38_
+
+---
+
+_Assigned to @dhruvmanila by @dhruvmanila on 2023-07-29 10:51_
+
+---
+
+_Referenced in [astral-sh/ruff#6169](../../astral-sh/ruff/pulls/6169.md) on 2023-07-29 11:07_
+
+---
+
+_Closed by @dhruvmanila on 2023-07-29 11:41_
+
+---

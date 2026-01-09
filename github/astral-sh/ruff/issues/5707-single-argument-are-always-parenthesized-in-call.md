@@ -1,0 +1,49 @@
+---
+number: 5707
+title: Single argument are always parenthesized in call expressions
+type: issue
+state: closed
+author: MichaReiser
+labels:
+  - bug
+  - formatter
+assignees: []
+created_at: 2023-07-12T11:28:20Z
+updated_at: 2023-07-12T16:21:30Z
+url: https://github.com/astral-sh/ruff/issues/5707
+synced_at: 2026-01-07T13:12:15-06:00
+---
+
+# Single argument are always parenthesized in call expressions
+
+---
+
+_Issue opened by @MichaReiser on 2023-07-12 11:28_
+
+```python
+# Input
+call(a)
+
+# Output
+call((a))
+```
+
+Because `FormatExpr` incorrectly assumes that the `()` from the call expression are parentheses 
+
+---
+
+_Label `bug` added by @MichaReiser on 2023-07-12 11:28_
+
+---
+
+_Label `formatter` added by @MichaReiser on 2023-07-12 11:28_
+
+---
+
+_Assigned to @MichaReiser by @MichaReiser on 2023-07-12 11:28_
+
+---
+
+_Closed by @MichaReiser on 2023-07-12 16:21_
+
+---

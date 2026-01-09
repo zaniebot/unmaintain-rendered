@@ -1,0 +1,94 @@
+---
+number: 2292
+title: Is an venv created by uv updatable by pip?
+type: issue
+state: closed
+author: echoix
+labels:
+  - question
+assignees: []
+created_at: 2024-03-08T00:45:54Z
+updated_at: 2024-03-08T02:24:15Z
+url: https://github.com/astral-sh/uv/issues/2292
+synced_at: 2026-01-07T13:12:17-06:00
+---
+
+# Is an venv created by uv updatable by pip?
+
+---
+
+_Issue opened by @echoix on 2024-03-08 00:45_
+
+I'm one of the maintainers of [Megalinter](https://github.com/oxsecurity/megalinter), a tool and action that combines many linters to run on code. Most of our work is essentially integrating all these projects of different environments together. It is known to be very configurable to be able to use it any project.
+
+
+I've been following the project since it was announced, and am exploring the suitability of using uv for installing the Python-based linters when building the docker images. Since all these tools have vastly different dependencies, they are installed in virtual environments. Currently, installing these Python tools take a larger part of the 20-25 minutes taken for the docker build step. That's why if uv, as Python package install tool, could be faster to do the job, it will shine nicely. 
+
+However, as mentioned, since it is a project that is known to be configurable  to adapt to the user's project's particularities, it is possible for users to add commands to install additional tools before running, or changing to a particular version if the image doesn't fit their needs. Some of them would have pip install commands in these venvs (all inside the alpine-based container).
+
+So, would a venv created by uv, still be compatible (enough) for pip to modify that environment? We wouldn't want to shove uv as a change for all our users, but would love to use it for ourselves initially.
+
+
+Thanks again for your project, it's amazing how much progress was made in the last two weeks!
+
+---
+
+_Referenced in [oxsecurity/megalinter#3389](../../oxsecurity/megalinter/issues/3389.md) on 2024-03-08 00:46_
+
+---
+
+_Comment by @charliermarsh on 2024-03-08 01:12_
+
+Yeah, it should be totally fine to create a virtualenv with `uv`, install stuff into it, and then expect users to use `pip` to modify it further. I wouldn't expect any issues with that.
+
+The only caveat is that, by default, we don't add `pip` to `uv`-created virtualenvs, because... by default, we assume you can just install with `uv`. So if you run `uv venv`, the `.venv` _won't_ include `pip`, and if you activate that virtualenv and run `pip install`, that will probably resolve to the `pip` on your system, etc. Instead, in this case, you'd would want to run `uv venv --seed` to make sure we include `pip`. (It adds a small amount of overhead, but is still very fast.)
+
+In short: if you create your virtualenvs with `uv venv --seed` and install packages into them, they should be indistinguishable to users from those created by `python -m venv` or `virtualenv`. They can activate them the same way, run `pip install` the same way, etc.
+
+---
+
+_Label `question` added by @charliermarsh on 2024-03-08 01:13_
+
+---
+
+_Comment by @echoix on 2024-03-08 01:17_
+
+Oh that's a fast answer!
+
+Okay great, if it only takes us to make sure we add pip inside these venvs, that's easy!
+
+We activate them when we run the tools, and the users need to work around this if they absolutely need to change things. Usually it happens for projects using mypy to check their code, mypy is really picky and usually needs some extra dependencies specific to the project it will be checking. 
+
+---
+
+_Comment by @echoix on 2024-03-08 01:20_
+
+Oh, and last question, does uv still need to exist once the packages in the venv are installed, or it could be removed at install time and the venv would work as expected at runtime?
+
+---
+
+_Comment by @charliermarsh on 2024-03-08 01:38_
+
+> Oh, and last question, does uv still need to exist once the packages in the venv are installed, or it could be removed at install time and the venv would work as expected at runtime?
+
+`uv` doesn't need to exist afterwards, it could be removed!
+
+I typically don't install `uv` into the virtualenv at all. `uv` can exist anywhere on the system and install into any virtualenv or Python interpreter, so there's generally no need to install it in the environment.
+
+---
+
+_Comment by @echoix on 2024-03-08 01:53_
+
+I meant in the system at all: when building docker images, you want to limit files that needs to be saved at each layer. You'd want to clean unnecessary files in the same layer as they are created. So, I was exploring the need to have this persisted or not. Your answer confirms my impression then.
+
+---
+
+_Closed by @echoix on 2024-03-08 02:03_
+
+---
+
+_Comment by @charliermarsh on 2024-03-08 02:24_
+
+👍 Totally fine to remove the `uv` binary and the `uv` cache too.
+
+---

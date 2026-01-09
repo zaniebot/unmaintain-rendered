@@ -1,0 +1,129 @@
+---
+number: 12928
+title: PYI034 false positive if Self is a quoted annotation
+type: issue
+state: closed
+author: BenGale93
+labels:
+  - accepted
+assignees: []
+created_at: 2024-08-16T12:45:19Z
+updated_at: 2024-09-02T13:40:07Z
+url: https://github.com/astral-sh/ruff/issues/12928
+synced_at: 2026-01-07T13:12:15-06:00
+---
+
+# PYI034 false positive if Self is a quoted annotation
+
+---
+
+_Issue opened by @BenGale93 on 2024-08-16 12:45_
+
+List of keywords searched:
+* PYI034
+
+Code example:
+
+```python
+import typing as t
+
+if t.TYPE_CHECKING:
+    from typing_extensions import Self
+
+
+class Foo:
+    def __init__(self, x: int) -> None:
+        self.x = x
+
+    def __iadd__(self, other: "Self") -> "Self":
+        """Adds two Foo objects together."""
+        self.x += other.x
+        return self
+```
+
+Command: `ruff check file.py --isolated --select=PYI034`
+
+Ruff Version: 0.5.7
+
+I'd be happy to try and fix this as I have some Rust experience. Please let me know if I can be of help.
+
+---
+
+_Label `help wanted` added by @AlexWaygood on 2024-08-16 13:04_
+
+---
+
+_Label `accepted` added by @AlexWaygood on 2024-08-16 13:04_
+
+---
+
+_Comment by @AlexWaygood on 2024-08-16 13:05_
+
+> I'd be happy to try and fix this as I have some Rust experience. Please let me know if I can be of help.
+
+Please feel free! We have logic elsewhere for handling quoted annotations, so I'd definitely go and check how other rules do this kind of thing first
+
+---
+
+_Comment by @BenGale93 on 2024-08-16 20:00_
+
+I think this might be more of a fundamental issue.
+
+If I extend the example:
+
+```python
+import typing as t
+
+if t.TYPE_CHECKING:
+    from typing import Any
+
+    from typing_extensions import Self
+
+
+class Foo:
+    def __init__(self, x: int) -> None:
+        self.x = x
+
+    def __iadd__(self, other: "Self") -> "Self":
+        self.x += other.x
+        return self
+
+    def __eq__(self, value: "Any") -> bool:
+        return True
+```
+
+PYI031 should pick up the `Any` in the `__eq__` but it doesn't. Appreciate the example is a little contrived.
+
+I've been combing through the code on how to resolve it but I'm struggling. Any suggestions?
+
+---
+
+_Comment by @AlexWaygood on 2024-08-17 13:17_
+
+Hmm, yeah, this was a bit more complicated than I realised. Unfortunately in order to figure out how to fix it, I've basically had to go ahead and implement the fix locally, so I might just go ahead and file a PR myself if that's okay :/ Sorry -- I thought this was a good contributor issue but I think I was mistaken.
+
+---
+
+_Referenced in [astral-sh/ruff#12951](../../astral-sh/ruff/pulls/12951.md) on 2024-08-17 14:11_
+
+---
+
+_Comment by @AlexWaygood on 2024-08-17 14:12_
+
+I've filed #12951
+
+---
+
+_Label `help wanted` removed by @AlexWaygood on 2024-08-17 14:51_
+
+---
+
+_Comment by @BenGale93 on 2024-08-18 07:01_
+
+Thanks @AlexWaygood! No worries about taking over, I'm certain I would have never come up with that fix.
+
+---
+
+_Closed by @AlexWaygood on 2024-09-02 13:40_
+
+---

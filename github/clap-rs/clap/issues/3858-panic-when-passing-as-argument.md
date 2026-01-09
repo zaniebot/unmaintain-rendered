@@ -1,0 +1,87 @@
+---
+number: 3858
+title: "Panic when passing `--=` as argument"
+type: issue
+state: closed
+author: chrisduerr
+labels:
+  - C-bug
+assignees: []
+created_at: 2022-06-21T04:19:20Z
+updated_at: 2022-06-21T14:30:20Z
+url: https://github.com/clap-rs/clap/issues/3858
+synced_at: 2026-01-07T13:12:20-06:00
+---
+
+# Panic when passing `--=` as argument
+
+---
+
+_Issue opened by @chrisduerr on 2022-06-21 04:19_
+
+### Please complete the following tasks
+
+- [X] I have searched the [discussions](https://github.com/clap-rs/clap/discussions)
+- [X] I have searched the [open](https://github.com/clap-rs/clap/issues) and [rejected](https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed) issues
+
+### Rust Version
+
+rustc 1.63.0-nightly (546c826f0 2022-06-12)
+
+### Clap Version
+
+git+https://github.com/clap-rs/clap#dabb5713d4d60b52deaef21c42c9d9dae57f5def
+
+### Minimal reproducible code
+
+```rust
+use clap::Parser;
+
+#[derive(Parser)]
+#[clap()]
+pub struct Options {
+}
+
+fn main() {
+    let mut options = Options::parse();
+}
+```
+
+
+### Steps to reproduce the bug with the above code
+
+```
+cargo run -- --=
+
+### Actual Behaviour
+
+```
+thread 'main' panicked at 'Some(RawOsStr(""))', /home/undeadleech/.cargo/git/checkouts/clap-78dbe9b58f9073fe/dabb571/src/parser/parser.rs:741:13
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+```
+
+### Expected Behaviour
+
+I'd expect an error similar to any other of clap's errors indicating that the arguments passed weren't quite right. It shouldn't crash the parser.
+
+### Additional Context
+
+Kinda ran into this by accident, I have no reason why I would want this to work, but avoiding a crash seems sensible.
+
+### Debug Output
+
+_No response_
+
+---
+
+_Label `C-bug` added by @chrisduerr on 2022-06-21 04:19_
+
+---
+
+_Referenced in [clap-rs/clap#3860](../../clap-rs/clap/pulls/3860.md) on 2022-06-21 13:53_
+
+---
+
+_Closed by @epage on 2022-06-21 14:30_
+
+---

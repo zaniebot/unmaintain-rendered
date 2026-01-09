@@ -1,0 +1,201 @@
+---
+number: 3307
+title: "[clap_derive] version conflict with `proc-macro2`"
+type: issue
+state: closed
+author: hasezoey
+labels:
+  - C-bug
+  - A-derive
+  - S-waiting-on-author
+assignees: []
+created_at: 2022-01-18T03:45:25Z
+updated_at: 2022-12-21T01:21:29Z
+url: https://github.com/clap-rs/clap/issues/3307
+synced_at: 2026-01-07T13:12:19-06:00
+---
+
+# [clap_derive] version conflict with `proc-macro2`
+
+---
+
+_Issue opened by @hasezoey on 2022-01-18 03:45_
+
+### Please complete the following tasks
+
+- [X] I have searched the [discussions](https://github.com/clap-rs/clap/discussions)
+- [X] I have searched the existing issues
+
+### Rust Version
+
+rustc 1.58.0 (02072b482 2022-01-11)
+
+### Clap Version
+
+3.0.9
+
+### Minimal reproducible code
+
+clap features used: `"derive", "wrap_help", "env"`
+
+```rust
+use clap::*;
+
+fn main() {}
+```
+
+
+### Steps to reproduce the bug with the above code
+
+1. cargo build
+
+### Actual Behaviour
+
+```
+error: failed to select a version for `proc-macro2`.
+    ... required by package `clap_derive v3.0.0`
+    ... which satisfies dependency `clap_derive = "^3.0.0"` of package `clap v3.0.9`
+    ... which satisfies dependency `clap = "^3.0.9"` (locked to 3.0.9) of package `yt-downloader-rust v0.4.0 (/mnt/projects/rust/yt-downloader)`
+versions that meet the requirements `^1.0.28` are: 1.0.36, 1.0.35, 1.0.34, 1.0.33, 1.0.32, 1.0.31, 1.0.30, 1.0.29, 1.0.28
+
+all possible versions conflict with previously selected packages.
+
+  previously selected package `proc-macro2 v1.0.26`
+    ... which satisfies dependency `proc-macro2 = "^1.0.20"` (locked to 1.0.26) of package `quote v1.0.9`
+    ... which satisfies dependency `quote = "^1.0.9"` (locked to 1.0.9) of package `clap_derive v3.0.0`
+    ... which satisfies dependency `clap_derive = "^3.0.0"` of package `clap v3.0.9`
+    ... which satisfies dependency `clap = "^3.0.9"` (locked to 3.0.9) of package `yt-downloader-rust v0.4.0 (/mnt/projects/rust/yt-downloader)`
+
+failed to select a version for `proc-macro2` which could resolve this conflict
+```
+
+
+### Expected Behaviour
+
+no version conflict error
+
+### Additional Context
+
+Currently, `clap_derive` requires `quote` at locked version `1.0.9` which in turn required `proc-macro2` at locked version `1.0.20`, but `clap_derive` requires locked version of `1.0.28` for `proc-macro2`
+
+How can this be fixed:
+- upgrade all version to match
+- unlock the patch version for at least one of the mentioned packages with [symbol `~`](https://doc.rust-lang.org/cargo/reference/specifying-dependencies.html#tilde-requirements) (like `~1.0.9`)
+
+### Debug Output
+
+_No response_
+
+---
+
+_Label `C-bug` added by @hasezoey on 2022-01-18 03:45_
+
+---
+
+_Comment by @hasezoey on 2022-01-18 03:47_
+
+for reference see `clap_derive` `Cargo.toml`:
+https://github.com/clap-rs/clap/blob/bd1bf66279c3e965a0d4d73135d952bfd3c270eb/clap_derive/Cargo.toml#L35-L36
+
+and `quote`'s `Cargo.toml` for version `1.0.9`:
+https://github.com/dtolnay/quote/blob/68ebadbc1b4242531c5a78fbba01c648bd58c8e7/Cargo.toml#L16
+
+---
+
+_Comment by @epage on 2022-01-18 16:48_
+
+Can you provide your `Cargo.toml` file?  I am not able to reproduce this.
+
+> Currently, clap_derive requires quote at locked version 1.0.9 which in turn required proc-macro2 at locked version 1.0.20, but clap_derive requires locked version of 1.0.28 for proc-macro2
+
+`quote = "1.0.9"` is short for `quote = "^1.0.9"` which means "be semver compatible, but at least `1.0.9`.  proc-macro2 and quote should gracefully resolve, like they are currently doing on my machine and CI.
+
+---
+
+_Label `A-derive` added by @epage on 2022-01-18 16:48_
+
+---
+
+_Label `S-waiting-on-author` added by @epage on 2022-01-18 16:48_
+
+---
+
+_Comment by @epage on 2022-01-18 16:50_
+
+I've not run into this myself but this almost sounds like the `Cargo.lock` file has gotten into an inconsistent state where two different dependency branches are locked to different versions of `proc-macro2`.  
+
+An easy way to verify this is to backup your `Cargo.lock` (which happens automatically if you have it committed), delete it, and rebuild.
+
+---
+
+_Comment by @hasezoey on 2022-01-19 00:10_
+
+> quote = "1.0.9" is short for quote = "^1.0.9" which means "be semver compatible, but at least 1.0.9. proc-macro2 and quote should gracefully resolve, like they are currently doing on my machine and CI.
+
+right, forgot rust handles non-operator versions differently than js packages
+but if that is not the case, it just makes the situation more unclear
+
+> Can you provide your Cargo.toml file? I am not able to reproduce this.
+
+sure, the project it is happening on is open-source:
+- https://github.com/hasezoey/yt-downloader-rust/blob/309d77a1a8b7812ef730a7c974512160679b88ac/Cargo.toml#L8-L21
+
+Reproduction:
+- clone repository
+- checkout to commit `309d77a1a8b7812ef730a7c974512160679b88ac`
+- build once (`cargo build --all`)
+- replace feature `yaml` with `derive` in `Cargo.toml` for dependency `clap`
+- try to build (`cargo build --all`)
+
+> I've not run into this myself but this almost sounds like the Cargo.lock file has gotten into an inconsistent state where two different dependency branches are locked to different versions of proc-macro2.
+
+i had now also tried deleting the file, which suddenly everything compiled again (i dont quite understand why though)
+
+i had even tried compiling with only clap dependencies (the other dependencies commented out)
+
+---
+
+_Comment by @epage on 2022-01-19 01:05_
+
+Looks like this is unexpected cargo behavior, so closing this out.  No idea if cargo has an issue already or not for this problem or if this is expected.
+
+> i had even tried compiling with only clap dependencies (the other dependencies commented out)
+
+Removing dependencies in `Cargo.toml` won't necessarily cause the versions to be re-evaluated in `Cargo.lock`. 
+
+---
+
+_Closed by @epage on 2022-01-19 01:05_
+
+---
+
+_Referenced in [rust-lang/cargo#10307](../../rust-lang/cargo/issues/10307.md) on 2022-01-19 01:13_
+
+---
+
+_Comment by @hasezoey on 2022-01-19 01:14_
+
+> Removing dependencies in Cargo.toml won't necessarily cause the versions to be re-evaluated in Cargo.lock.
+
+i just mentioned i tried this, though i had no clue if this even affected anything
+
+> Looks like this is unexpected cargo behavior, so closing this out. No idea if cargo has an issue already or not for this problem or if this is expected.
+
+yes definitely looks like a cargo issue, filed as https://github.com/rust-lang/cargo/issues/10307, for anyone interested 
+
+---
+
+_Comment by @ta32 on 2022-12-21 01:21_
+
+I had this issue after adding the feature derive.
+
+I deleted the cargo.lock file but the issue persisted ( I think it was because I had the project open with clion?)
+
+I just added the dependency it wanted to the cargo.toml directly
+eg: proc-macro2 = "1.0.28"
+
+The lock file was modified and I removed the dependency and it built.
+
+There is an issue open in cargo. https://github.com/rust-lang/cargo/issues/10307
+
+---

@@ -1,0 +1,64 @@
+---
+number: 4825
+title: "Parser Idempotency: Generator drops indentation on nested def"
+type: issue
+state: closed
+author: addisoncrump
+labels:
+  - bug
+assignees: []
+created_at: 2023-06-03T04:53:14Z
+updated_at: 2023-06-05T20:13:10Z
+url: https://github.com/astral-sh/ruff/issues/4825
+synced_at: 2026-01-07T13:12:14-06:00
+---
+
+# Parser Idempotency: Generator drops indentation on nested def
+
+---
+
+_Issue opened by @addisoncrump on 2023-06-03 04:53_
+
+The following source code is incorrectly round-tripped by `ruff_python_ast::source_code::round_trip`:
+```py
+def d():
+    def e():
+        pass
+```
+
+The result is:
+```py
+def d():
+
+    
+def e():
+        pass
+```
+
+Which is invalid syntax.
+
+This error does not seem to persist to the Ruff command line. The cause appears to be that [newlines are explicitly invoked for `def` and some other types](https://github.com/charliermarsh/ruff/blob/c89d2f835e1854828e70f6e16114581f1b0b7bc9/crates/ruff_python_ast/src/source_code/generator.rs#L219), but the indent is not applied afterward. This appears to affect all types of `def` in `unparse_stmt`, so I'm not quite sure how this isn't propagating to frontend.
+
+Discovered by #4822 
+
+---
+
+_Label `bug` added by @charliermarsh on 2023-06-04 02:07_
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2023-06-05 19:54_
+
+---
+
+_Referenced in [astral-sh/ruff#4875](../../astral-sh/ruff/pulls/4875.md) on 2023-06-05 20:03_
+
+---
+
+_Closed by @charliermarsh on 2023-06-05 20:13_
+
+---
+
+_Referenced in [astral-sh/ruff#4972](../../astral-sh/ruff/issues/4972.md) on 2023-06-09 22:04_
+
+---

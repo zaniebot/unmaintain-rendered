@@ -1,0 +1,232 @@
+---
+number: 7623
+title: "Panic when formatting file `assertion failed: matches!(paren.kind(), SimpleTokenKind :: LParen | SimpleTokenKind :: LBrace |\\n    SimpleTokenKind :: LBracket)',`"
+type: issue
+state: closed
+author: qarmin
+labels:
+  - bug
+  - formatter
+assignees: []
+created_at: 2023-09-23T19:33:02Z
+updated_at: 2023-09-24T02:08:46Z
+url: https://github.com/astral-sh/ruff/issues/7623
+synced_at: 2026-01-07T13:12:15-06:00
+---
+
+# Panic when formatting file `assertion failed: matches!(paren.kind(), SimpleTokenKind :: LParen | SimpleTokenKind :: LBrace |\n    SimpleTokenKind :: LBracket)',`
+
+---
+
+_Issue opened by @qarmin on 2023-09-23 19:33_
+
+Ruff 0.0.291 (latest changes from main branch)
+```
+ruff format *.py
+```
+
+file content(at least simple cpython script shows that this is valid python file):
+```
+def _ndarray_constant_handler(
+) -> Sequence[ir.Value]:
+        return _numpy_array_constant(
+        )
+        collapsed_val = val[
+            tuple(
+                0 if ax in zero_stride_axes else slice(None)  # type: ignore
+                for ax in range(val.ndim)
+            )
+        ]  # type: ignore
+```
+
+error
+```
+
+
+warning: `ruff format` is a work-in-progress, subject to change at any time, and intended only for experimentation.
+error: Panicked while formatting /home/rafal/test/tmp_folder/PY_FILE_TEST_118552_IDX_0_RAND_40668302771669824998752.py: This indicates a bug in Ruff. If you could open an issue at:
+
+    https://github.com/astral-sh/ruff/issues/new?title=%5BFormatter%20panic%5D
+
+...with the relevant file contents, the `pyproject.toml` settings, and the following stack trace, we'd be very appreciative!
+
+panicked at 'assertion failed: matches!(paren.kind(), SimpleTokenKind :: LParen | SimpleTokenKind :: LBrace |\n    SimpleTokenKind :: LBracket)', crates/ruff_python_formatter/src/comments/placement.rs:1954:9
+Backtrace:    0: ruff_cli::panic::catch_unwind::{{closure}}
+             at /home/rafal/test/ruff/crates/ruff_cli/src/panic.rs:31:25
+   1: <alloc::boxed::Box<F,A> as core::ops::function::Fn<Args>>::call
+             at /rustc/5680fa18feaa87f3ff04063800aec256c3d4b4be/library/alloc/src/boxed.rs:2007:9
+   2: std::panicking::rust_panic_with_hook
+             at /rustc/5680fa18feaa87f3ff04063800aec256c3d4b4be/library/std/src/panicking.rs:709:13
+   3: std::panicking::begin_panic_handler::{{closure}}
+             at /rustc/5680fa18feaa87f3ff04063800aec256c3d4b4be/library/std/src/panicking.rs:595:13
+   4: std::sys_common::backtrace::__rust_end_short_backtrace
+             at /rustc/5680fa18feaa87f3ff04063800aec256c3d4b4be/library/std/src/sys_common/backtrace.rs:151:18
+   5: rust_begin_unwind
+             at /rustc/5680fa18feaa87f3ff04063800aec256c3d4b4be/library/std/src/panicking.rs:593:5
+   6: core::panicking::panic_fmt
+             at /rustc/5680fa18feaa87f3ff04063800aec256c3d4b4be/library/core/src/panicking.rs:67:14
+   7: core::panicking::panic
+             at /rustc/5680fa18feaa87f3ff04063800aec256c3d4b4be/library/core/src/panicking.rs:117:5
+   8: ruff_python_formatter::comments::placement::handle_bracketed_end_of_line_comment
+   9: ruff_python_formatter::comments::placement::handle_enclosed_comment
+  10: ruff_python_formatter::comments::placement::place_comment::{{closure}}
+             at /home/rafal/test/ruff/crates/ruff_python_formatter/src/comments/placement.rs:30:28
+  11: ruff_python_formatter::comments::visitor::CommentPlacement::or_else
+             at /home/rafal/test/ruff/crates/ruff_python_formatter/src/comments/visitor.rs:511:39
+  12: ruff_python_formatter::comments::placement::place_comment
+             at /home/rafal/test/ruff/crates/ruff_python_formatter/src/comments/placement.rs:27:5
+  13: <ruff_python_formatter::comments::visitor::CommentsMapBuilder as ruff_python_formatter::comments::visitor::PushComment>::push_comment
+             at /home/rafal/test/ruff/crates/ruff_python_formatter/src/comments/visitor.rs:545:25
+  14: <ruff_python_formatter::comments::visitor::CommentsVisitor as ruff_python_ast::visitor::preorder::PreorderVisitor>::enter_node
+             at /home/rafal/test/ruff/crates/ruff_python_formatter/src/comments/visitor.rs:93:13
+  15: ruff_python_ast::visitor::preorder::walk_comprehension
+             at /home/rafal/test/ruff/crates/ruff_python_ast/src/visitor/preorder.rs:300:8
+  16: ruff_python_ast::visitor::preorder::PreorderVisitor::visit_comprehension
+             at /home/rafal/test/ruff/crates/ruff_python_ast/src/visitor/preorder.rs:69:9
+  17: <ruff_python_ast::nodes::ExprSetComp as ruff_python_ast::node::AstNode>::visit_preorder
+             at /home/rafal/test/ruff/crates/ruff_python_ast/src/node.rs:2276:13
+  18: ruff_python_ast::visitor::preorder::walk_expr
+  19: ruff_python_ast::visitor::preorder::PreorderVisitor::visit_expr
+             at /home/rafal/test/ruff/crates/ruff_python_ast/src/visitor/preorder.rs:36:9
+  20: <ruff_python_ast::nodes::Arguments as ruff_python_ast::node::AstNode>::visit_preorder
+             at /home/rafal/test/ruff/crates/ruff_python_ast/src/node.rs:3554:43
+  21: ruff_python_ast::visitor::preorder::walk_arguments
+             at /home/rafal/test/ruff/crates/ruff_python_ast/src/visitor/preorder.rs:350:9
+  22: ruff_python_ast::visitor::preorder::walk_expr
+             at /home/rafal/test/ruff/crates/ruff_python_ast/src/visitor/preorder.rs:277:33
+  23: ruff_python_ast::visitor::preorder::PreorderVisitor::visit_expr
+             at /home/rafal/test/ruff/crates/ruff_python_ast/src/visitor/preorder.rs:36:9
+  24: ruff_python_ast::visitor::preorder::walk_expr
+             at /home/rafal/test/ruff/crates/ruff_python_ast/src/visitor/preorder.rs:282:38
+  25: ruff_python_ast::visitor::preorder::PreorderVisitor::visit_expr
+             at /home/rafal/test/ruff/crates/ruff_python_ast/src/visitor/preorder.rs:36:9
+  26: ruff_python_ast::visitor::preorder::walk_stmt
+  27: ruff_python_ast::visitor::preorder::PreorderVisitor::visit_stmt
+             at /home/rafal/test/ruff/crates/ruff_python_ast/src/visitor/preorder.rs:26:9
+  28: ruff_python_ast::visitor::preorder::walk_body
+             at /home/rafal/test/ruff/crates/ruff_python_ast/src/visitor/preorder.rs:178:9
+  29: <ruff_python_formatter::comments::visitor::CommentsVisitor as ruff_python_ast::visitor::preorder::PreorderVisitor>::visit_body
+             at /home/rafal/test/ruff/crates/ruff_python_formatter/src/comments/visitor.rs:155:21
+  30: ruff_python_ast::visitor::preorder::walk_stmt
+  31: <ruff_python_ast::nodes::ModModule as ruff_python_ast::node::AstNode>::visit_preorder
+             at /home/rafal/test/ruff/crates/ruff_python_ast/src/node.rs:694:9
+  32: ruff_python_ast::visitor::preorder::walk_module
+             at /home/rafal/test/ruff/crates/ruff_python_ast/src/visitor/preorder.rs:165:36
+  33: ruff_python_ast::visitor::preorder::PreorderVisitor::visit_mod
+             at /home/rafal/test/ruff/crates/ruff_python_ast/src/visitor/preorder.rs:21:9
+  34: ruff_python_formatter::comments::visitor::CommentsVisitor::visit
+             at /home/rafal/test/ruff/crates/ruff_python_formatter/src/comments/visitor.rs:56:14
+  35: ruff_python_formatter::comments::Comments::from_ast
+             at /home/rafal/test/ruff/crates/ruff_python_formatter/src/comments/mod.rs:346:13
+  36: ruff_python_formatter::format_node
+             at /home/rafal/test/ruff/crates/ruff_python_formatter/src/lib.rs:156:20
+  37: ruff_python_formatter::format_module
+             at /home/rafal/test/ruff/crates/ruff_python_formatter/src/lib.rs:145:21
+  38: ruff_cli::commands::format::format_path
+             at /home/rafal/test/ruff/crates/ruff_cli/src/commands/format.rs:154:21
+  39: ruff_cli::commands::format::format::{{closure}}::{{closure}}
+             at /home/rafal/test/ruff/crates/ruff_cli/src/commands/format.rs:79:29
+  40: std::panicking::try::do_call
+             at /rustc/5680fa18feaa87f3ff04063800aec256c3d4b4be/library/std/src/panicking.rs:500:40
+  41: std::panicking::try
+             at /rustc/5680fa18feaa87f3ff04063800aec256c3d4b4be/library/std/src/panicking.rs:464:19
+  42: std::panic::catch_unwind
+             at /rustc/5680fa18feaa87f3ff04063800aec256c3d4b4be/library/std/src/panic.rs:142:14
+  43: ruff_cli::panic::catch_unwind
+             at /home/rafal/test/ruff/crates/ruff_cli/src/panic.rs:40:18
+  44: ruff_cli::commands::format::format::{{closure}}
+             at /home/rafal/test/ruff/crates/ruff_cli/src/commands/format.rs:78:31
+  45: <rayon::iter::filter_map::FilterMapFolder<C,P> as rayon::iter::plumbing::Folder<T>>::consume
+             at /home/rafal/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rayon-1.8.0/src/iter/filter_map.rs:123:36
+  46: rayon::iter::plumbing::Folder::consume_iter
+             at /home/rafal/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rayon-1.8.0/src/iter/plumbing/mod.rs:179:20
+  47: rayon::iter::plumbing::Producer::fold_with
+             at /home/rafal/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rayon-1.8.0/src/iter/plumbing/mod.rs:110:9
+  48: rayon::iter::plumbing::bridge_producer_consumer::helper
+             at /home/rafal/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rayon-1.8.0/src/iter/plumbing/mod.rs:438:13
+  49: rayon::iter::plumbing::bridge_producer_consumer
+             at /home/rafal/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rayon-1.8.0/src/iter/plumbing/mod.rs:397:12
+  50: <rayon::iter::plumbing::bridge::Callback<C> as rayon::iter::plumbing::ProducerCallback<I>>::callback
+             at /home/rafal/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rayon-1.8.0/src/iter/plumbing/mod.rs:373:13
+  51: <rayon::vec::Drain<T> as rayon::iter::IndexedParallelIterator>::with_producer
+             at /home/rafal/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rayon-1.8.0/src/vec.rs:147:13
+  52: <rayon::vec::IntoIter<T> as rayon::iter::IndexedParallelIterator>::with_producer
+             at /home/rafal/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rayon-1.8.0/src/vec.rs:83:9
+  53: rayon::iter::plumbing::bridge
+             at /home/rafal/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rayon-1.8.0/src/iter/plumbing/mod.rs:357:12
+  54: <rayon::vec::IntoIter<T> as rayon::iter::ParallelIterator>::drive_unindexed
+             at /home/rafal/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rayon-1.8.0/src/vec.rs:58:9
+  55: <rayon::iter::filter_map::FilterMap<I,P> as rayon::iter::ParallelIterator>::drive_unindexed
+             at /home/rafal/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rayon-1.8.0/src/iter/filter_map.rs:46:9
+  56: <rayon::iter::unzip::UnzipB<I,OP,CA> as rayon::iter::ParallelIterator>::drive_unindexed
+             at /home/rafal/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rayon-1.8.0/src/iter/unzip.rs:271:22
+  57: rayon::iter::extend::<impl rayon::iter::ParallelExtend<T> for alloc::vec::Vec<T>>::par_extend
+             at /home/rafal/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rayon-1.8.0/src/iter/extend.rs:586:28
+  58: <rayon::iter::unzip::UnzipA<I,OP,FromB> as rayon::iter::ParallelIterator>::drive_unindexed
+             at /home/rafal/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rayon-1.8.0/src/iter/unzip.rs:221:13
+  59: rayon::iter::extend::<impl rayon::iter::ParallelExtend<T> for alloc::vec::Vec<T>>::par_extend
+             at /home/rafal/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rayon-1.8.0/src/iter/extend.rs:586:28
+  60: rayon::iter::unzip::execute_into
+             at /home/rafal/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rayon-1.8.0/src/iter/unzip.rs:54:5
+  61: rayon::iter::unzip::execute
+             at /home/rafal/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rayon-1.8.0/src/iter/unzip.rs:38:5
+  62: rayon::iter::unzip::partition_map
+             at /home/rafal/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rayon-1.8.0/src/iter/unzip.rs:164:5
+  63: rayon::iter::ParallelIterator::partition_map
+             at /home/rafal/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rayon-1.8.0/src/iter/mod.rs:2183:9
+  64: ruff_cli::commands::format::format
+             at /home/rafal/test/ruff/crates/ruff_cli/src/commands/format.rs:91:10
+  65: ruff_cli::format
+             at /home/rafal/test/ruff/crates/ruff_cli/src/lib.rs:179:9
+  66: ruff_cli::run
+             at /home/rafal/test/ruff/crates/ruff_cli/src/lib.rs:164:34
+  67: ruff::main
+             at /home/rafal/test/ruff/crates/ruff_cli/src/bin/ruff.rs:49:11
+  68: core::ops::function::FnOnce::call_once
+             at /rustc/5680fa18feaa87f3ff04063800aec256c3d4b4be/library/core/src/ops/function.rs:250:5
+  69: std::sys_common::backtrace::__rust_begin_short_backtrace
+             at /rustc/5680fa18feaa87f3ff04063800aec256c3d4b4be/library/std/src/sys_common/backtrace.rs:135:18
+  70: main
+  71: __libc_start_call_main
+             at ./csu/../sysdeps/nptl/libc_start_call_main.h:58:16
+  72: __libc_start_main_impl
+             at ./csu/../csu/libc-start.c:360:3
+  73: _start
+
+
+```
+
+[python_compressed.zip](https://github.com/astral-sh/ruff/files/12707173/python_compressed.zip)
+
+
+---
+
+_Label `bug` added by @charliermarsh on 2023-09-23 19:33_
+
+---
+
+_Label `formatter` added by @charliermarsh on 2023-09-23 19:33_
+
+---
+
+_Comment by @charliermarsh on 2023-09-23 19:33_
+
+Thanks!
+
+---
+
+_Added to milestone `Formatter: Beta` by @charliermarsh on 2023-09-23 19:33_
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2023-09-23 22:57_
+
+---
+
+_Referenced in [astral-sh/ruff#7627](../../astral-sh/ruff/pulls/7627.md) on 2023-09-24 01:57_
+
+---
+
+_Closed by @charliermarsh on 2023-09-24 02:08_
+
+---

@@ -1,0 +1,198 @@
+---
+number: 14554
+title: Checking file with rule TC006 cause panic
+type: issue
+state: closed
+author: qarmin
+labels:
+  - bug
+assignees: []
+created_at: 2024-11-23T06:41:28Z
+updated_at: 2024-11-27T17:58:49Z
+url: https://github.com/astral-sh/ruff/issues/14554
+synced_at: 2026-01-07T13:12:16-06:00
+---
+
+# Checking file with rule TC006 cause panic
+
+---
+
+_Issue opened by @qarmin on 2024-11-23 06:41_
+
+
+ruff 0.8.0+1366 (3fda2d17c 2024-11-22)
+```
+ruff check *.py --select TC006 --no-cache  --preview --output-format concise --isolated
+```
+
+file content(at the bottom should be attached raw, not formatted file - github removes some non-printable characters, so copying from here may not work):
+```
+import typing
+typing.cast(M-())
+```
+
+error
+```
+All checks passed!
+
+warning: The following rules have been removed and ignoring them has no effect:
+    - E999
+
+error: Panicked while linting /tmp/tmp_folder/data/1577327832906158432.py: This indicates a bug in Ruff. If you could open an issue at:
+
+    https://github.com/astral-sh/ruff/issues/new?title=%5BLinter%20panic%5D
+
+...with the relevant file contents, the `pyproject.toml` settings, and the following stack trace, we'd be very appreciative!
+
+panicked at crates/ruff_linter/src/rules/flake8_type_checking/helpers.rs:431:17:
+assertion `left == right` failed
+  left: Sub
+ right: BitOr
+Backtrace:    0: ruff::panic::catch_unwind::{{closure}}
+             at ./ruff/crates/ruff/src/panic.rs:31:25
+   1: <alloc::boxed::Box<F,A> as core::ops::function::Fn<Args>>::call
+             at /rustc/b19329a37cedf2027517ae22c87cf201f93d776e/library/alloc/src/boxed.rs:1986:9
+   2: std::panicking::rust_panic_with_hook
+             at /rustc/b19329a37cedf2027517ae22c87cf201f93d776e/library/std/src/panicking.rs:809:13
+   3: std::panicking::begin_panic_handler::{{closure}}
+             at /rustc/b19329a37cedf2027517ae22c87cf201f93d776e/library/std/src/panicking.rs:674:13
+   4: std::sys::backtrace::__rust_end_short_backtrace
+             at /rustc/b19329a37cedf2027517ae22c87cf201f93d776e/library/std/src/sys/backtrace.rs:170:18
+   5: rust_begin_unwind
+             at /rustc/b19329a37cedf2027517ae22c87cf201f93d776e/library/std/src/panicking.rs:665:5
+   6: core::panicking::panic_fmt
+             at /rustc/b19329a37cedf2027517ae22c87cf201f93d776e/library/core/src/panicking.rs:76:14
+   7: core::panicking::assert_failed_inner
+   8: core::panicking::assert_failed
+             at /home/runner/.rustup/toolchains/nightly-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/panicking.rs:373:5
+   9: <ruff_linter::rules::flake8_type_checking::helpers::QuoteAnnotator as ruff_python_ast::visitor::source_order::SourceOrderVisitor>::visit_expr
+             at ./ruff/crates/ruff_linter/src/rules/flake8_type_checking/helpers.rs:431:17
+  10: ruff_linter::rules::flake8_type_checking::helpers::quote_type_expression
+             at ./ruff/crates/ruff_linter/src/rules/flake8_type_checking/helpers.rs:291:5
+  11: ruff_linter::rules::flake8_type_checking::rules::runtime_cast_value::runtime_cast_value
+             at ./ruff/crates/ruff_linter/src/rules/flake8_type_checking/rules/runtime_cast_value.rs:57:16
+  12: <ruff_linter::checkers::ast::Checker as ruff_python_ast::visitor::Visitor>::visit_expr
+             at ./ruff/crates/ruff_linter/src/checkers/ast/mod.rs:1285:33
+  13: <ruff_linter::checkers::ast::Checker as ruff_python_ast::visitor::Visitor>::visit_stmt
+             at ./ruff/crates/ruff_linter/src/checkers/ast/mod.rs:1025:18
+  14: <ruff_linter::checkers::ast::Checker as ruff_python_ast::visitor::Visitor>::visit_body
+             at ./ruff/crates/ruff_linter/src/checkers/ast/mod.rs:1674:13
+  15: ruff_linter::checkers::ast::check_ast
+             at ./ruff/crates/ruff_linter/src/checkers/ast/mod.rs:2540:5
+  16: ruff_linter::linter::check_path
+             at ./ruff/crates/ruff_linter/src/linter.rs:148:36
+  17: ruff_linter::linter::lint_only
+             at ./ruff/crates/ruff_linter/src/linter.rs:411:23
+  18: ruff::diagnostics::lint_path
+             at ./ruff/crates/ruff/src/diagnostics.rs:322:22
+  19: ruff::commands::check::lint_path::{{closure}}
+             at ./ruff/crates/ruff/src/commands/check.rs:195:9
+  20: std::panicking::try::do_call
+             at /home/runner/.rustup/toolchains/nightly-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/std/src/panicking.rs:557:40
+  21: __rust_try
+  22: std::panicking::try
+             at /home/runner/.rustup/toolchains/nightly-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/std/src/panicking.rs:520:19
+  23: std::panic::catch_unwind
+             at /home/runner/.rustup/toolchains/nightly-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/std/src/panic.rs:358:14
+  24: ruff::panic::catch_unwind
+             at ./ruff/crates/ruff/src/panic.rs:40:18
+  25: ruff::commands::check::lint_path
+             at ./ruff/crates/ruff/src/commands/check.rs:194:18
+  26: ruff::commands::check::check::{{closure}}
+             at ./ruff/crates/ruff/src/commands/check.rs:96:17
+  27: <rayon::iter::filter_map::FilterMapFolder<C,P> as rayon::iter::plumbing::Folder<T>>::consume
+             at /home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rayon-1.10.0/src/iter/filter_map.rs:123:36
+  28: rayon::iter::plumbing::Folder::consume_iter
+             at /home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rayon-1.10.0/src/iter/plumbing/mod.rs:178:20
+  29: rayon::iter::plumbing::Producer::fold_with
+             at /home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rayon-1.10.0/src/iter/plumbing/mod.rs:109:9
+  30: rayon::iter::plumbing::bridge_producer_consumer::helper
+             at /home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rayon-1.10.0/src/iter/plumbing/mod.rs:437:13
+  31: rayon::iter::plumbing::bridge_producer_consumer
+             at /home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rayon-1.10.0/src/iter/plumbing/mod.rs:396:12
+  32: <rayon::iter::plumbing::bridge::Callback<C> as rayon::iter::plumbing::ProducerCallback<I>>::callback
+             at /home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rayon-1.10.0/src/iter/plumbing/mod.rs:372:13
+  33: <rayon::slice::Iter<T> as rayon::iter::IndexedParallelIterator>::with_producer
+             at /home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rayon-1.10.0/src/slice/mod.rs:826:9
+  34: rayon::iter::plumbing::bridge
+             at /home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rayon-1.10.0/src/iter/plumbing/mod.rs:356:12
+  35: <rayon::slice::Iter<T> as rayon::iter::ParallelIterator>::drive_unindexed
+             at /home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rayon-1.10.0/src/slice/mod.rs:802:9
+  36: <rayon::iter::filter_map::FilterMap<I,P> as rayon::iter::ParallelIterator>::drive_unindexed
+             at /home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rayon-1.10.0/src/iter/filter_map.rs:46:9
+  37: <rayon::iter::fold::Fold<I,ID,F> as rayon::iter::ParallelIterator>::drive_unindexed
+             at /home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rayon-1.10.0/src/iter/fold.rs:59:9
+  38: rayon::iter::reduce::reduce
+             at /home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rayon-1.10.0/src/iter/reduce.rs:15:5
+  39: rayon::iter::ParallelIterator::reduce
+             at /home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rayon-1.10.0/src/iter/mod.rs:998:9
+  40: ruff::commands::check::check
+             at ./ruff/crates/ruff/src/commands/check.rs:166:10
+  41: ruff::check
+             at ./ruff/crates/ruff/src/lib.rs:416:13
+  42: ruff::run
+             at ./ruff/crates/ruff/src/lib.rs:188:33
+  43: ruff::main
+             at ./ruff/crates/ruff/src/main.rs:44:11
+  44: core::ops::function::FnOnce::call_once
+             at /home/runner/.rustup/toolchains/nightly-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/ops/function.rs:250:5
+  45: std::sys::backtrace::__rust_begin_short_backtrace
+             at /home/runner/.rustup/toolchains/nightly-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/std/src/sys/backtrace.rs:154:18
+  46: std::rt::lang_start::{{closure}}
+             at /home/runner/.rustup/toolchains/nightly-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/std/src/rt.rs:195:18
+  47: core::ops::function::impls::<impl core::ops::function::FnOnce<A> for &F>::call_once
+             at /rustc/b19329a37cedf2027517ae22c87cf201f93d776e/library/core/src/ops/function.rs:284:13
+  48: std::panicking::try::do_call
+             at /rustc/b19329a37cedf2027517ae22c87cf201f93d776e/library/std/src/panicking.rs:557:40
+  49: std::panicking::try
+             at /rustc/b19329a37cedf2027517ae22c87cf201f93d776e/library/std/src/panicking.rs:520:19
+  50: std::panic::catch_unwind
+             at /rustc/b19329a37cedf2027517ae22c87cf201f93d776e/library/std/src/panic.rs:358:14
+  51: std::rt::lang_start_internal::{{closure}}
+             at /rustc/b19329a37cedf2027517ae22c87cf201f93d776e/library/std/src/rt.rs:174:48
+  52: std::panicking::try::do_call
+             at /rustc/b19329a37cedf2027517ae22c87cf201f93d776e/library/std/src/panicking.rs:557:40
+  53: std::panicking::try
+             at /rustc/b19329a37cedf2027517ae22c87cf201f93d776e/library/std/src/panicking.rs:520:19
+  54: std::panic::catch_unwind
+             at /rustc/b19329a37cedf2027517ae22c87cf201f93d776e/library/std/src/panic.rs:358:14
+  55: std::rt::lang_start_internal
+             at /rustc/b19329a37cedf2027517ae22c87cf201f93d776e/library/std/src/rt.rs:174:20
+  56: std::rt::lang_start
+             at /home/runner/.rustup/toolchains/nightly-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/std/src/rt.rs:194:17
+  57: <unknown>
+  58: __libc_start_main
+  59: _start
+
+```
+
+CC @Daverball 
+
+Ruff build, that was used to reproduce problem(compiled on Ubuntu 22.04 with relase mode + debug symbols + debug assertions + overflow checks) - https://github.com/qarmin/Automated-Fuzzer/releases/download/Nightly/ruff.7z
+
+[python_compressed.zip](https://github.com/user-attachments/files/17878758/python_compressed.zip)
+
+
+---
+
+_Comment by @Daverball on 2024-11-23 07:28_
+
+I'm guessing this is the same problem as #14538, since it uses the same function to add quotes to the type expression and this also involves an empty tuple. It looks like empty tuples somehow get converted to the empty string by that function on the way back, so the type expression would become `M-` which is not a valid expression.
+
+---
+
+_Label `bug` added by @AlexWaygood on 2024-11-23 10:06_
+
+---
+
+_Referenced in [astral-sh/ruff#14614](../../astral-sh/ruff/pulls/14614.md) on 2024-11-26 16:19_
+
+---
+
+_Referenced in [astral-sh/ruff#14634](../../astral-sh/ruff/pulls/14634.md) on 2024-11-27 13:48_
+
+---
+
+_Closed by @MichaReiser on 2024-11-27 17:58_
+
+---

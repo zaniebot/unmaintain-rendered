@@ -1,0 +1,64 @@
+---
+number: 12451
+title: allow multiple installations of a tool with different names in the bin folder
+type: issue
+state: closed
+author: jabbera
+labels:
+  - duplicate
+  - enhancement
+assignees: []
+created_at: 2025-03-24T20:18:10Z
+updated_at: 2025-04-01T20:51:54Z
+url: https://github.com/astral-sh/uv/issues/12451
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# allow multiple installations of a tool with different names in the bin folder
+
+---
+
+_Issue opened by @jabbera on 2025-03-24 20:18_
+
+### Summary
+
+When installing a tool I'd like to be able install multiple versions at the same time and to control the target name of the link created in the bin folder IE:
+
+uv tool install tox # creates: ${UV_TOOL_BIN_DIR}/tox
+uv tool install tox --with tox-uv --target-bin-name tox-uv # creates {UV_TOOL_BIN_DIR}/tox-uv. tox command doesn't not have the tox-uv plugin
+
+### Example
+
+We are currently moving to uv from not having uv and loving it. Being able to run multiple versions of a tool would be great. It would make it easier to test upgrades and tools with plugins! Thanks for listening. 
+
+---
+
+_Label `enhancement` added by @jabbera on 2025-03-24 20:18_
+
+---
+
+_Comment by @jonbiemond on 2025-04-01 05:37_
+
+An example of how this is supported in `pipx`: https://github.com/pypa/pipx/pull/445
+
+---
+
+_Comment by @zanieb on 2025-04-01 20:35_
+
+Duplicate of https://github.com/astral-sh/uv/issues/6365, I think.
+
+---
+
+_Label `duplicate` added by @zanieb on 2025-04-01 20:35_
+
+---
+
+_Comment by @jabbera on 2025-04-01 20:51_
+
+@zanieb : agreed.
+
+---
+
+_Closed by @jabbera on 2025-04-01 20:51_
+
+---

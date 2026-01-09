@@ -1,0 +1,101 @@
+---
+number: 166
+title: "Add support for `--upgrade`"
+type: issue
+state: closed
+author: charliermarsh
+labels:
+  - enhancement
+assignees: []
+created_at: 2023-10-22T22:45:48Z
+updated_at: 2024-02-16T03:28:31Z
+url: https://github.com/astral-sh/uv/issues/166
+synced_at: 2026-01-07T13:12:16-06:00
+---
+
+# Add support for `--upgrade`
+
+---
+
+_Issue opened by @charliermarsh on 2023-10-22 22:45_
+
+By default, we're supposed to avoid upgrading packages by looking at the locked resolution. `pip-compile` supports selective upgrades although I'm not sure that's necessary.
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2023-10-23 03:20_
+
+---
+
+_Added to milestone `Initial release` by @charliermarsh on 2023-10-24 19:17_
+
+---
+
+_Label `enhancement` added by @charliermarsh on 2023-10-24 19:17_
+
+---
+
+_Referenced in [astral-sh/uv#187](../../astral-sh/uv/pulls/187.md) on 2023-10-26 04:26_
+
+---
+
+_Closed by @charliermarsh on 2023-10-26 04:29_
+
+---
+
+_Comment by @matthewfeickert on 2024-02-16 03:24_
+
+@charliermarsh As `uv` is 
+
+https://github.com/astral-sh/uv/blob/8ef396e849c35f378831cfe873517c0cde472a74/README.md?plain=1#L10-L11
+
+I'm a bit confused why `--ugprade` is only supported in for the `pip-compile` mode and not the `pip` mode.
+
+For example I would expect for the following to work:
+
+```console
+$ docker run --rm -ti python:3.12 /bin/bash
+root@87f3a80b206d:/# python -m venv venv && . venv/bin/activate
+(venv) root@87f3a80b206d:/# python -m pip --quiet install uv
+(venv) root@87f3a80b206d:/# uv --version
+uv 0.1.1
+(venv) root@87f3a80b206d:/# uv pip install 'awkward<2.6.0'
+Resolved 4 packages in 900ms
+Downloaded 4 packages in 1.21s
+Installed 4 packages in 22ms
+ + awkward==2.5.2
+ + awkward-cpp==28
+ + numpy==1.26.4
+ + packaging==23.2
+(venv) root@87f3a80b206d:/# uv pip install --upgrade awkward
+error: unexpected argument '--upgrade' found
+
+  tip: to pass '--upgrade' as a value, use '-- --upgrade'
+
+Usage: uv pip install [OPTIONS] <PACKAGE|--requirement <REQUIREMENT>|--editable <EDITABLE>>
+
+For more information, try '--help'.
+(venv) root@87f3a80b206d:/#
+```
+
+Was there a particular design decision to avoid allowing this? Or would this be in scope in the future in your mind?
+
+---
+
+_Comment by @charliermarsh on 2024-02-16 03:25_
+
+@matthewfeickert - This was just an oversight -- @zanieb added it a few hours ago: https://github.com/astral-sh/uv/pull/1379. I'll probably cut another release tonight.
+
+---
+
+_Comment by @matthewfeickert on 2024-02-16 03:26_
+
+Ah thanks! Sorry I was only looking in the Issues, not the PRs as the last release was 5 hours ago. You're all just moving fast! :rocket: 
+
+---
+
+_Comment by @charliermarsh on 2024-02-16 03:28_
+
+I'm just glad it's now open source, having fun wading through the issues :)
+
+---

@@ -1,0 +1,27 @@
+---
+number: 75
+title: Add some integration tests
+type: issue
+state: closed
+author: charliermarsh
+labels: []
+assignees: []
+created_at: 2023-10-09T04:04:12Z
+updated_at: 2023-10-22T04:15:28Z
+url: https://github.com/astral-sh/uv/issues/75
+synced_at: 2026-01-07T13:12:16-06:00
+---
+
+# Add some integration tests
+
+---
+
+_Issue opened by @charliermarsh on 2023-10-09 04:04_
+
+We're sorely lacking test coverage here, but at least some end-to-end integration tests would be useful.
+
+---
+
+_Closed by @charliermarsh on 2023-10-22 04:15_
+
+---

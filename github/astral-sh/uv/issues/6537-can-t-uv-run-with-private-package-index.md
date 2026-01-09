@@ -1,0 +1,157 @@
+---
+number: 6537
+title: "Can't `uv run --with` private package index"
+type: issue
+state: closed
+author: jacob-bush-shopify
+labels: []
+assignees: []
+created_at: 2024-08-23T18:26:44Z
+updated_at: 2024-08-23T20:13:07Z
+url: https://github.com/astral-sh/uv/issues/6537
+synced_at: 2026-01-07T13:12:17-06:00
+---
+
+# Can't `uv run --with` private package index
+
+---
+
+_Issue opened by @jacob-bush-shopify on 2024-08-23 18:26_
+
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with uv.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
+* The current uv platform.
+* The current uv version (`uv --version`).
+-->
+
+```
+> uv -V
+uv 0.3.2 (c5440001c 2024-08-23)
+```
+
+We have a private package index:
+```
+> pip config list
+global.extra-index-url='https://pypi.python.org/simple'
+global.index-url='https:*****'
+```
+
+Private packages can be installed with `uv` without any issue:
+```
+> uv pip install privately-hosted-package
+Resolved 38 packages in 3.54s
+Installed 38 packages in 44ms
+```
+
+But trying to run a command using `--with` does not work:
+```
+> uv run --with privately-hosted-package echo "success"
+  × No solution found when resolving `--with` dependencies:
+  ╰─▶ Because privately-hosted-package was not found in the package registry and you require
+      privately-hosted-package, we can conclude that your requirements are unsatisfiable.
+```
+
+Note that manually specifying the index urls seems to work fine:
+```
+> uv run --with privately-hosted-package --index-url 'https://*****' --extra-index-url 'https://pypi.python.org/simple' echo "success" 
+success
+```
+
+
+---
+
+_Comment by @zanieb on 2024-08-23 18:41_
+
+Hi! We don't read the pip configuration file (see #1404)
+
+You can specify your index URL in a uv configuration file? https://docs.astral.sh/uv/configuration/files/
+
+---
+
+_Comment by @jacob-bush-shopify on 2024-08-23 18:58_
+
+> Hi! We don't read the pip configuration file 
+
+Interesting. Any idea why `uv pip install` worked then?
+
+---
+
+_Comment by @jacob-bush-shopify on 2024-08-23 19:01_
+
+> You can specify your index URL in a uv configuration file? https://docs.astral.sh/uv/configuration/files/
+
+That could be a good option, thank you.
+
+
+
+---
+
+_Comment by @charliermarsh on 2024-08-23 19:20_
+
+Is it possible you have the index URL set in a configuration file somewhere already?
+
+---
+
+_Comment by @zanieb on 2024-08-23 19:26_
+
+Oh, sorry I missed that part. That's confusing. Were they run in the same directory?
+
+---
+
+_Comment by @zanieb on 2024-08-23 19:26_
+
+Is the index URL in a uv configuration file in a `[uv.pip]` section instead of `[uv]`?
+
+---
+
+_Comment by @jacob-bush-shopify on 2024-08-23 20:11_
+
+> Is it possible you have the index URL set in a configuration file somewhere already?
+
+Turns out: yes. Looks like some process created it for me
+```
+> find ~/.config -name uv.toml
+/Users/jacobbush/.config/uv/uv.toml
+```
+
+> Oh, sorry I missed that part. That's confusing. Were they run in the same directory?
+
+Yup!
+
+> Is the index URL in a uv configuration file in a [uv.pip] section instead of [uv]?
+
+```
+> cat /Users/jacobbush/.config/uv/uv.toml
+[pip]
+index-url = "https://token:*****"
+extra-index-url = ["https://pypi.python.org/simple"]
+```
+
+Looks like it?
+
+
+---
+
+_Comment by @jacob-bush-shopify on 2024-08-23 20:12_
+
+> Is the index URL in a uv configuration file in a [uv.pip] section instead of [uv]?
+
+This was the issue
+Removing the table header from the `uv.toml` file lets me execute `uv run --with privately-hosted-package echo "success"`
+
+---
+
+_Comment by @zanieb on 2024-08-23 20:13_
+
+Awesome! Documentation on that at https://docs.astral.sh/uv/configuration/files/#configuring-the-pip-interface
+
+---
+
+_Closed by @zanieb on 2024-08-23 20:13_
+
+---

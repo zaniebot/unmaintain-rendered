@@ -1,0 +1,66 @@
+---
+number: 2210
+title: ruff --explain BLE001 wrong
+type: issue
+state: closed
+author: spaceone
+labels:
+  - bug
+assignees: []
+created_at: 2023-01-26T18:15:20Z
+updated_at: 2023-01-26T18:55:11Z
+url: https://github.com/astral-sh/ruff/issues/2210
+synced_at: 2026-01-07T13:12:14-06:00
+---
+
+# ruff --explain BLE001 wrong
+
+---
+
+_Issue opened by @spaceone on 2023-01-26 18:15_
+
+```
+$ ruff --explain BLE001
+blind-except
+
+Code: BLE001 (flake8-bugbear)
+
+Message formats:
+
+* Do not catch blind exception: `{name}
+```
+says it comes from `flake8-bugbear` while it comes from https://pypi.org/project/flake8-blind-except/.
+
+I guess it's because of substring matching, where `B` is sorted before `BLE`.
+
+---
+
+_Comment by @charliermarsh on 2023-01-26 18:22_
+
+\cc @not-my-profile, maybe from a recent refactor?
+
+---
+
+_Label `bug` added by @charliermarsh on 2023-01-26 18:22_
+
+---
+
+_Comment by @not-my-profile on 2023-01-26 18:34_
+
+Ah yes my bad ... fix incoming!
+
+---
+
+_Referenced in [astral-sh/ruff#2215](../../astral-sh/ruff/pulls/2215.md) on 2023-01-26 18:37_
+
+---
+
+_Closed by @charliermarsh on 2023-01-26 18:53_
+
+---
+
+_Comment by @charliermarsh on 2023-01-26 18:55_
+
+Thanks!
+
+---

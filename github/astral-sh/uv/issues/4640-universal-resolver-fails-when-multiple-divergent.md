@@ -1,0 +1,227 @@
+---
+number: 4640
+title: Universal resolver fails when multiple divergent constraints are provided
+type: issue
+state: closed
+author: charliermarsh
+labels:
+  - bug
+  - resolver
+  - preview
+assignees: []
+created_at: 2024-06-28T23:14:30Z
+updated_at: 2024-08-13T15:35:48Z
+url: https://github.com/astral-sh/uv/issues/4640
+synced_at: 2026-01-07T13:12:17-06:00
+---
+
+# Universal resolver fails when multiple divergent constraints are provided
+
+---
+
+_Issue opened by @charliermarsh on 2024-06-28 23:14_
+
+Given:
+
+```
+requests
+requests==2.32.3 ; python_version >= '3.12'
+requests==2.32.0 ; python_version < '3.12'
+```
+
+Running `uv pip compile requirements.txt --universal` fails with:
+
+```
+  × No solution found when resolving dependencies:
+  ╰─▶ Because requests{python_version >= '3.12'}==2.32.3 depends on requests==2.32.3 and you require requests{python_version >= '3.12'}==2.32.3, we can conclude that your requirements and requests{python_version < '3.12'}==2.32.0 are
+      incompatible.
+      And because you require requests{python_version < '3.12'}==2.32.0, we can conclude that the requirements are unsatisfiable.
+```
+
+This seems a bit silly, but it's maybe not quite as silly if you view it as constraints. Imagine your `requirements.txt` is:
+
+```
+requests
+```
+
+And then your `constraints.txt` is:
+
+```
+requests==2.32.3 ; python_version >= '3.12'
+requests==2.32.0 ; python_version < '3.12'
+```
+
+This would also fail.
+
+
+---
+
+_Label `bug` added by @charliermarsh on 2024-06-28 23:14_
+
+---
+
+_Label `preview` added by @charliermarsh on 2024-06-28 23:14_
+
+---
+
+_Label `lock` added by @charliermarsh on 2024-06-28 23:14_
+
+---
+
+_Label `lock` removed by @charliermarsh on 2024-06-28 23:14_
+
+---
+
+_Label `resolver` added by @charliermarsh on 2024-06-28 23:14_
+
+---
+
+_Comment by @charliermarsh on 2024-06-29 16:40_
+
+I added a test (that shows the failure) in https://github.com/astral-sh/uv/pull/4648.
+
+---
+
+_Comment by @davidfritzsche on 2024-06-30 20:40_
+
+It would be great if the universal resolver would support situations like this. For a software package at work we would like to support a very broad range of Python versions (Python 3.7 - Python 3.12) and a common problem is the numerical Python stack (numpy, pandas) the software depends on. Quite often there is no numpy version which would offer upstream wheels for all Python versions we want to support. Having support for a forked resolution of numpy in such cases would be great. Maybe the fact of having Python version specific requirements/constraints could be a marker when forking is wished for.
+
+---
+
+_Comment by @charliermarsh on 2024-06-30 20:43_
+
+To be clear, the resolver does support divergent requirements, for example this resolves without issue:
+
+```
+requests==2.32.3 ; python_version >= '3.12'
+requests==2.32.0 ; python_version < '3.12'
+```
+
+It's the blanket `requests` that's causing problems (for details related to the internal implementation).
+
+---
+
+_Comment by @davidfritzsche on 2024-06-30 21:24_
+
+I have some difficulties with `numpy` (macOS, uv 0.2.18). With a requirements.in
+
+```
+numpy >=1.26; python_version>="3.9"
+numpy <1.26; python_version<"3.9"
+```
+
+I cannot univeral-lock for Python >= 3.8:
+
+```shell
+$ uv pip compile -p 3.8 --universal requirements.in
+  × No solution found when resolving dependencies:
+  ╰─▶ Because only the following versions of numpy{python_version >= '3.9'} are available:
+          numpy{python_version >= '3.9'}<=1.26.0
+          numpy{python_version >= '3.9'}==1.26.1
+          numpy{python_version >= '3.9'}==1.26.2
+          numpy{python_version >= '3.9'}==1.26.3
+          numpy{python_version >= '3.9'}==1.26.4
+          numpy{python_version >= '3.9'}==2.0.0
+      and the requested Python version (3.8) does not satisfy Python>=3.9, we can conclude that any of:
+          numpy{python_version >= '3.9'}>=1.26.0,<1.26.2
+          numpy{python_version >= '3.9'}>1.26.2,<1.26.3
+          numpy{python_version >= '3.9'}>1.26.3,<1.26.4
+          numpy{python_version >= '3.9'}>1.26.4,<2.0.0
+          numpy{python_version >= '3.9'}>2.0.0
+       are incompatible.
+      And because the requested Python version (3.8) does not satisfy Python>=3.9 and you require
+      numpy{python_version >= '3.9'}>=1.26, we can conclude that the requirements are unsatisfiable.
+```
+
+---
+
+_Comment by @charliermarsh on 2024-06-30 21:27_
+
+Thanks, that should work but likely a separate issue.
+
+---
+
+_Comment by @charliermarsh on 2024-06-30 21:29_
+
+It works in the general case, e.g.:
+
+```
+anyio >= 3 ; python_version >= '3.9'
+anyio < 3 ; python_version < '3.9'
+```
+
+My guess is that the issue in your case is that `numpy >=1.26` doesn't support Python 3.8, and we're still trying to lock for your `requires-python` in that branch (i.e., we're still trying to enforce that every dependency supports Python 3.8 and later, instead of narrowing the requirement in that branch). I will create a separate issue.
+
+---
+
+_Referenced in [astral-sh/uv#4669](../../astral-sh/uv/issues/4669.md) on 2024-06-30 21:30_
+
+---
+
+_Comment by @charliermarsh on 2024-07-01 22:08_
+
+Conceptually, could we model this as:
+
+```
+requests ; sys_platform != 'darwin' and sys_platform != 'linux'
+requests==2.32.3 ; sys_platform == 'darwin'
+requests==2.32.0 ; sys_platform == 'linux'
+```
+
+@BurntSushi?
+
+---
+
+_Comment by @BurntSushi on 2024-07-02 15:14_
+
+The way forking works currently is that it looks for conflicting dependency specifications with non-overlapping markers. If conflicting dependency specifications are found but have overlapping markers, then a fork doesn't occur. So I think that if you start with something like:
+
+```
+requests
+requests==2.32.3 ; python_version >= '3.12'
+requests==2.32.0 ; python_version < '3.12'
+```
+
+Then because `requests` has no markers, it is considered overlapping with any other dependency specification on `requests`. So in this case, I believe no fork occurs at all. (I haven't actually confirmed that though.)
+
+The suggestion of treating the `requests` specification as if its markers are non-overlapping _by construction_ with each other specification is interesting. I'm not sure we can do that in the general case, but if we have some information like "`requests` was from `requirements.in`/`pyproject.toml`" and "the others are extra constraints added," then _maybe_ it makes sense to massage the specification from `requirements.in` to be non-overlapping with the constraints given? Are there cases where we would do this and it would be undesirable?
+
+Another option, perhaps, is to improve the error message and require the user to change their dependency specification to add the non-overlapping marker. But I'm not sure how well that works with specifying constraints.
+
+---
+
+_Referenced in [astral-sh/uv#4732](../../astral-sh/uv/issues/4732.md) on 2024-07-02 16:58_
+
+---
+
+_Assigned to @BurntSushi by @BurntSushi on 2024-07-08 13:54_
+
+---
+
+_Referenced in [astral-sh/uv#4996](../../astral-sh/uv/pulls/4996.md) on 2024-07-11 18:07_
+
+---
+
+_Referenced in [astral-sh/uv#5344](../../astral-sh/uv/issues/5344.md) on 2024-07-23 16:52_
+
+---
+
+_Referenced in [astral-sh/uv#5488](../../astral-sh/uv/pulls/5488.md) on 2024-07-26 18:43_
+
+---
+
+_Referenced in [astral-sh/uv#5597](../../astral-sh/uv/pulls/5597.md) on 2024-07-30 12:42_
+
+---
+
+_Referenced in [astral-sh/uv#5733](../../astral-sh/uv/pulls/5733.md) on 2024-08-02 18:30_
+
+---
+
+_Referenced in [astral-sh/uv#5887](../../astral-sh/uv/pulls/5887.md) on 2024-08-07 18:51_
+
+---
+
+_Closed by @BurntSushi on 2024-08-13 15:35_
+
+---

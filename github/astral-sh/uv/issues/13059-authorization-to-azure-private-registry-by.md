@@ -1,0 +1,178 @@
+---
+number: 13059
+title: "Authorization to azure private registry by environment variable doesn't work"
+type: issue
+state: open
+author: krasnikau-andrei
+labels:
+  - bug
+assignees: []
+created_at: 2025-04-22T18:41:03Z
+updated_at: 2025-04-23T18:44:46Z
+url: https://github.com/astral-sh/uv/issues/13059
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# Authorization to azure private registry by environment variable doesn't work
+
+---
+
+_Issue opened by @krasnikau-andrei on 2025-04-22 18:41_
+
+### Summary
+
+I set variables like this
+```
+export UV_INDEX_PROJECTX_PYTHON_USERNAME=org-name2
+export UV_INDEX_PROJECTX_PYTHON_PASSWORD=<PAT for org-name2>
+
+export UV_INDEX_PROJECTY_PYTHON_USERNAME=org-name2
+export UV_INDEX_PROJECTY_PYTHON_PASSWORD=<PAT for org-name2>
+
+export UV_INDEX_PROJECTZ_PYTHON_USERNAME=org-name1
+export UV_INDEX_PROJECTZ_PYTHON_PASSWORD=<PAT for org-name1>
+```
+
+my pyproject.toml contains
+```toml
+...
+
+[[tool.uv.index]]
+name = "projectx-python"
+url = "https://pkgs.dev.azure.com/org-name2/ProjectX/_packaging/projectx-python/pypi/simple/"
+explicit = true
+
+[[tool.uv.index]]
+name = "projecty-python"
+url = "https://pkgs.dev.azure.com/org-name2/ProjectY/_packaging/projecty_python/pypi/simple/"
+explicit = true
+
+[[tool.uv.index]]
+name = "projectz-python"
+url = "https://pkgs.dev.azure.com/org-name1/ProjectZ/_packaging/projectz-python/pypi/simple/"
+explicit = true
+
+...
+```
+
+If I do `uv sync -vvv` I get
+```log
+TRACE poll
+TRACE poll_complete
+TRACE schedule_pending_open
+TRACE flushing buffer
+TRACE drop_stream_ref; stream=Stream { id: StreamId(21), state: State { inner: Closed(EndStream) }, is_counted: false, ref_count: 2, next_pending_send: None, is_pending_send: false, send_flow: FlowControl { window_size: Window(8388608), available: Window(0) }, requested_send_capacity: 0, buffered_send_data: 0, send_task: None, pending_send: Deque { indices: None }, next_pending_send_capacity: None, is_pending_send_capacity: false, send_capacity_inc: false, next_open: None, is_pending_open: false, is_pending_push: false, next_pending_accept: None, is_pending_accept: false, recv_flow: FlowControl { window_size: Window(2097152), available: Window(2097152) }, in_flight_recv_data: 0, next_window_update: None, is_pending_window_update: false, reset_at: None, next_reset_expire: None, pending_recv: Deque { indices: Some(Indices { head: 25, tail: 25 }) }, is_recv: true, recv_task: None, push_task: None, pending_push_promises: Queue { indices: None, _p: PhantomData<h2::proto::streams::stream::NextAccept> }, content_length: Remaining(0) }
+TRACE transition_after; stream=StreamId(21); state=State { inner: Closed(EndStream) }; is_closed=true; pending_send_empty=true; buffered_send_data=0; num_recv=0; num_send=0
+TRACE drop_stream_ref; stream=Stream { id: StreamId(19), state: State { inner: Closed(EndStream) }, is_counted: false, ref_count: 1, next_pending_send: None, is_pending_send: false, send_flow: FlowControl { window_size: Window(8388608), available: Window(0) }, requested_send_capacity: 0, buffered_send_data: 0, send_task: None, pending_send: Deque { indices: None }, next_pending_send_capacity: None, is_pending_send_capacity: false, send_capacity_inc: false, next_open: None, is_pending_open: false, is_pending_push: false, next_pending_accept: None, is_pending_accept: false, recv_flow: FlowControl { window_size: Window(2096809), available: Window(2096809) }, in_flight_recv_data: 343, next_window_update: None, is_pending_window_update: false, reset_at: None, next_reset_expire: None, pending_recv: Deque { indices: None }, is_recv: false, recv_task: None, push_task: None, pending_push_promises: Queue { indices: None, _p: PhantomData<h2::proto::streams::stream::NextAccept> }, content_length: Remaining(0) }
+TRACE auto-release closed stream (StreamId(19)) capacity: 343
+TRACE release_connection_capacity; size=343, connection in_flight_data=343
+TRACE transition_after; stream=StreamId(19); state=State { inner: Closed(EndStream) }; is_closed=true; pending_send_empty=true; buffered_send_data=0; num_recv=0; num_send=0
+TRACE drop_stream_ref; stream=Stream { id: StreamId(21), state: State { inner: Closed(EndStream) }, is_counted: false, ref_count: 1, next_pending_send: None, is_pending_send: false, send_flow: FlowControl { window_size: Window(8388608), available: Window(0) }, requested_send_capacity: 0, buffered_send_data: 0, send_task: None, pending_send: Deque { indices: None }, next_pending_send_capacity: None, is_pending_send_capacity: false, send_capacity_inc: false, next_open: None, is_pending_open: false, is_pending_push: false, next_pending_accept: None, is_pending_accept: false, recv_flow: FlowControl { window_size: Window(2097152), available: Window(2097152) }, in_flight_recv_data: 0, next_window_update: None, is_pending_window_update: false, reset_at: None, next_reset_expire: None, pending_recv: Deque { indices: None }, is_recv: false, recv_task: None, push_task: None, pending_push_promises: Queue { indices: None, _p: PhantomData<h2::proto::streams::stream::NextAccept> }, content_length: Remaining(0) }
+TRACE transition_after; stream=StreamId(21); state=State { inner: Closed(EndStream) }; is_closed=true; pending_send_empty=true; buffered_send_data=0; num_recv=0; num_send=0
+TRACE Considering retry of error: Error { kind: WrappedReqwestError(Url { scheme: "https", cannot_be_a_base: false, username: "", password: None, host: Some(Domain("pkgs.dev.azure.com")), port: None, path: "/org-name2/.../_packaging/.../pypi/download/.../.../...-...-py3-none-any.whl", query: None, fragment: None }, WrappedReqwestError(Reqwest(reqwest::Error { kind: Status(401), url: "https://pkgs.dev.azure.com/org-name2/.../_packaging/.../pypi/download/.../.../...-...-py3-none-any.whl" }))) }
+TRACE Cannot retry error: not an IO error
+DEBUG Released lock at `C:\Users\User_Name\AppData\Local\uv\cache\wheels-v5\index\9b9bef920e2ef195\...\...-...-py3-none-any.lock`
+TRACE Streams::recv_eof
+TRACE Streams::recv_eof
+error: Failed to fetch: `https://pkgs.dev.azure.com/org-name2/.../_packaging/.../pypi/download/.../.../...-...-py3-none-any.whl`
+  Caused by: HTTP status client error (401 Unauthorized) for url (https://pkgs.dev.azure.com/org-name2/.../_packaging/.../pypi/download/.../.../...-...-py3-none-any.whl)
+```
+
+I know that PAT is valid because this line works fine
+```bash
+uv pip install --index-url https://org-name:<PAT for org-name1>@pkgs.dev.azure.com/org-name1/ProjectZ/_packaging/projectz-python/pypi/simple/ projectz-package
+```
+Also, if I put purposefully incorrect PATs I will get a different error.
+```log
+... depends on projectz-package==...
+  projectz-package not found in the package registry
+  × No solution found when resolving dependencies:
+  ╰─▶ Because projectz-package was not found in the package registry and your
+      project depends on projectz-package==..., we can conclude that
+      your project's requirements are unsatisfiable.
+
+      hint: An index URL
+      (https://pkgs.dev.azure.com/org-name1/ProjectZ/_packaging/projectz-python/pypi/simple/)
+      could not be queried due to a lack of valid authentication credentials
+      (401 Unauthorized).
+
+      hint: An index URL
+      (https://pkgs.dev.azure.com/org-name2/ProjectY/_packaging/projecty_python/pypi/simple/)
+      could not be queried due to a lack of valid authentication credentials
+      (401 Unauthorized).
+
+      hint: An index URL
+      (https://pkgs.dev.azure.com/org-name2/ProjectX/_packaging/projectx-python/pypi/simple/)
+      could not be queried due to a lack of valid authentication credentials
+      (401 Unauthorized).
+TRACE Streams::recv_eof
+```
+
+
+### Platform
+
+Windows 11
+
+### Version
+
+uv 0.6.14 (a4cec56dc 2025-04-09)
+
+### Python version
+
+can't execute `uv run python --version`
+
+---
+
+_Label `bug` added by @krasnikau-andrei on 2025-04-22 18:41_
+
+---
+
+_Comment by @krasnikau-andrei on 2025-04-22 18:48_
+
+Same issue even when I use
+```toml
+[[tool.uv.index]]
+name = "repository1"
+url = "https://repo1:<PAT1>@pkgs.dev.azure.com/repo1/Project1/_packaging/some-other-repo/pypi/simple/"
+explicit = true
+
+[[tool.uv.index]]
+name = "repository2"
+url = "https://repo2:<PAT2>@pkgs.dev.azure.com/repo2/Project2/_packaging/some-repo/pypi/simple/"
+explicit = true
+```
+
+---
+
+_Assigned to @jtfmumm by @jtfmumm on 2025-04-23 07:47_
+
+---
+
+_Comment by @jtfmumm on 2025-04-23 10:39_
+
+Thanks for the detailed report! This is related to the fix on #12717 (part of the upcoming `0.7.0` release), but it looks like that fix won't address your specific problem. I am currently working on an improvement to #12717 that will handle cases like this. 
+
+---
+
+_Comment by @jtfmumm on 2025-04-23 15:18_
+
+The problem here is that Azure is returning file URLs with UUIDs in place of the human-readable `<PROJECT>` and `<FEED>` values in the Azure index URL: `https://pkgs.dev.azure.com/<ORG>/<PROJECT>/_packaging/<FEED>/pypi/simple/`. This is only an issue when you are using Azure indexes from separate organizations where realm-level caching isn't enough to cover more than one. 
+
+As a workaround for now, you can update your configured index URLs to include the UUIDs. Those are the UUIDs you see in the URL in the error message.
+
+You could also use this rough command using `httpie` and `jq` to get the UUIDs for your projects and feeds (fill in the value for `<ORG>` and make sure the `$PAT` env var is set in the command):
+```
+http -a :$PAT https://feeds.dev.azure.com/<ORG>/_apis/packaging/feeds?api-version=7.1-preview.1 | jq -r '
+  .value
+  | group_by(.project.id)[]
+  | .[0] as $p
+  | "PROJECT: \($p.project.name) -- \($p.project.id)"
+  , (map("  FEED: \(.name) -- \(.id)"))
+'
+```
+
+---
+
+_Referenced in [astral-sh/uv#13044](../../astral-sh/uv/issues/13044.md) on 2025-04-23 15:26_
+
+---

@@ -1,0 +1,50 @@
+---
+number: 5391
+title: Support for legacy code base - baseline
+type: issue
+state: closed
+author: Pixel-Minions
+labels:
+  - suppression
+assignees: []
+created_at: 2023-06-27T14:16:38Z
+updated_at: 2023-06-27T15:28:15Z
+url: https://github.com/astral-sh/ruff/issues/5391
+synced_at: 2026-01-07T13:12:15-06:00
+---
+
+# Support for legacy code base - baseline
+
+---
+
+_Issue opened by @Pixel-Minions on 2023-06-27 14:16_
+
+Hi, 
+
+Thank for such a cool tool.
+I am currently working with a huge monolithic old code base. I am planning to use a linter like ruff with only new code, so I don't have old errors appearing in thr console. It is possible to create a baseline so only the new code gets lint?
+
+
+---
+
+_Comment by @charliermarsh on 2023-06-27 15:27_
+
+Thank you :)
+
+I think this is a duplicate of #1149. Unfortunately, it's not something we support right now -- maybe some day. The only alternatives you would have are (1) running `ruff check --add-noqa /path/to/src` to automatically add suppression comments to existing violations, or (2) only enabling a subset of checks for now, and fixing all violations for that subset.
+
+---
+
+_Closed by @charliermarsh on 2023-06-27 15:27_
+
+---
+
+_Label `noqa` added by @charliermarsh on 2023-06-27 15:27_
+
+---
+
+_Comment by @charliermarsh on 2023-06-27 15:28_
+
+(I do empathize with this need and acknowledge that we don't have a great solution for it right now.)
+
+---

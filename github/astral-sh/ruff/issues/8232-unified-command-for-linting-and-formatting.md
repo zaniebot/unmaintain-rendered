@@ -1,0 +1,688 @@
+---
+number: 8232
+title: Unified command for linting and formatting
+type: issue
+state: open
+author: zanieb
+labels:
+  - cli
+  - formatter
+assignees: []
+created_at: 2023-10-25T22:07:07Z
+updated_at: 2025-10-09T02:24:01Z
+url: https://github.com/astral-sh/ruff/issues/8232
+synced_at: 2026-01-07T13:12:15-06:00
+---
+
+# Unified command for linting and formatting
+
+---
+
+_Issue opened by @zanieb on 2023-10-25 22:07_
+
+It should be possible to _check_ if files would be formatted _and_ if there are any lint violations in a single Ruff invocation.
+
+It should be possible to _apply_ linter fixes and formatting changes in a single Ruff invocation.
+
+The design of this interface is still being discussed internally. This issue will be updated as development continues.
+
+Previous discussion at https://github.com/astral-sh/ruff/discussions/7310#discussioncomment-7376397, https://github.com/astral-sh/ruff/discussions/7310#discussioncomment-7102010, and https://github.com/astral-sh/ruff/issues/7232
+
+
+---
+
+_Added to milestone `Formatter: Stable` by @zanieb on 2023-10-25 22:07_
+
+---
+
+_Referenced in [astral-sh/ruff#8229](../../astral-sh/ruff/issues/8229.md) on 2023-10-25 22:08_
+
+---
+
+_Comment by @zanieb on 2023-10-25 22:21_
+
+Roughly, one proposed interface would be the generalization of `ruff check` and the addition of flags such as `--lint` / `--no-lint` and `--format` / `--no-format` to enable specific tools. These flags would also be configurable in the settings as `ruff.check.lint` and `ruff.check.format` (or `ruff.lint.enabled` and `ruff.format.enabled`).
+
+On `ruff check --format`, unformatted files would be flagged as a violations (similar to lint rule violations).
+On `ruff check --format --fix`, unformatted files would be formatted.
+
+Further configuration of each tool would be done from the respective `ruff.lint` and `lint.format` sections.
+
+I believe, eventually, it would be ideal for `--format` (and any other future tools) to be enabled by default when running `ruff check`.
+
+This approach would require significant consideration of our existing check diagnostic and violation design, as it is very lint focused at the moment. Consideration should be made for the possibility of future tools that would raise diagnostics, such as a type checker.
+
+It's an open question whether a dedicated `ruff lint` command would be added.
+
+
+---
+
+_Referenced in [GenericMappingTools/pygmt#2770](../../GenericMappingTools/pygmt/pulls/2770.md) on 2023-10-26 00:09_
+
+---
+
+_Referenced in [astral-sh/ruff#8087](../../astral-sh/ruff/issues/8087.md) on 2023-10-26 02:44_
+
+---
+
+_Comment by @T-256 on 2023-10-26 07:09_
+
+If you ask me about how to join into one command, my answer (and I think most of users) would be put formatter as a lint rule.
+Like https://github.com/astral-sh/ruff/discussions/7310#discussioncomment-7102104, in my opinion formatter actually is linter rule(s) with safe-autofix: `ruff check . --select E,FMT --fix`
+
+@zanieb I'm pretty sure you also considered this, but I didn't find why you ignored this approach. Can you show what are blockers for this design? solving those blockers maybe less expensive for team (and users)?
+
+For now, I think `--add-noqa` (and `--watch`?) won't work as desired on this approach.
+
+---
+
+_Comment by @MichaReiser on 2023-10-26 07:36_
+
+We discussed this internally. Building the formatter as a linter raised a couple of design questions:
+
+* The formatter would need to support `noqa` suppression comments
+* The `CLI` would be fundamentally different from how editors work where editors use different commands for formatting and linting. 
+* How would we support enabling preview style formatting for the formatter without enabling preview behavior of other lint rules. 
+
+Overall, formatting just felt different enough. 
+
+---
+
+_Comment by @hmvp on 2023-10-26 08:07_
+
+> We discussed this internally. Building the formatter as a linter raised a couple of design questions:
+> 
+>     * The formatter would need to support `noqa` suppression comments
+> 
+Isn't that the job of the linting mechanism that works based on whether the formatting check would find anything.. How does this work for I001 (isort)?
+>     * The `CLI` would be fundamentally different from how editors work where editors use different commands for formatting and linting.
+> 
+I feel it makes sense to keep formatting also as a separate command for these use cases
+>     * How would we support enabling preview style formatting for the formatter without enabling preview behavior of other lint rules.
+Make it two different rules? You can even (if not configured explicit) enable the preview rule in preview and disable the normal formatting rule...
+> 
+> 
+> Overall, formatting just felt different enough.
+I kind of disagree. But if it is, import sorting also falls in this category...
+
+
+---
+
+_Comment by @T-256 on 2023-10-26 08:08_
+
+Thanks, I didn't realize these issues, here are my proposed solutions for them:
+
+> * The formatter would need to support `noqa` suppression comments
+
+A. Use `#fmt:` comments for formatting violations.
+B. We can warn `noqa` suppression is not available for this rule.
+
+
+> * The `CLI` would be fundamentally different from how editors work where editors use different commands for formatting and linting.
+
+For formatting, editors can keep current behavior, also for linting and autofixes I don't think `FMT` requires any change to output structure.
+
+
+> * How would we support enabling preview style formatting for the formatter without enabling preview behavior of other lint rules.
+
+Add `format-preview` and `lint-preview`. (`--(no-)preview` will apply for both linter and formatter)
+
+
+---
+
+_Comment by @zanieb on 2023-10-26 19:18_
+
+> How does this work for I001 (isort)?
+
+> I kind of disagree. But if it is, import sorting also falls in this category...
+
+We are also of the opinion that import sorting is not well suited to be a lint rule. We are still trying to figure out the best way to resolve that.
+
+> Add format-preview and lint-preview...
+
+We already have this as `ruff.lint.preview` and `ruff.format.preview`. If the formatter is implemented as a lint rule then it would be confusing that it's unaffected by `lint.preview` though.
+
+I was originally a strong proponent of using a lint code for the formatter. Here are some notes:
+
+> A new formatting lint category i.e. `FMT`. Formatter violations could be implemented as rules e.g.
+> 
+> - `FMT001` file would be formatted
+> - `FMT002` invalid placement of fmt pragma
+> 
+> Some thoughts:
+> 
+> - Avoids collision with `--format <style>`
+> - Simple integration with existing CLI
+> - Does it make sense to have more than one format code?
+> - How does this interact with existing linter `noqa` pragmas?
+> - Can users ignore individual format violation codes?
+> - Can we feasibly split formatting into discrete pieces?
+> - Avoids adding new options to the CLI
+> - Formatter violations are not special-cased
+> - A file requiring formatting would not work well with our current diagnostic system
+> - Harder to discover, i.e. `--extend-select FMT` is not intuitive
+>     - However, users are likely to be using `ruff format` separately when getting started
+>     - However, if formatting is on by default in the future then opt-out with `--ignore FMT` is simple
+> - Easy for us to add this to the default rule set in the future
+
+The problem with this approach is that there are _many_ special cases where the formatter does not behave like a lint rule. While it's feasible to just push the formatter into the linter, we want to do better.
+
+---
+
+_Comment by @jaap3 on 2023-10-27 09:39_
+
+I have no strong opinion, just fyi. I always used https://pypi.org/project/flake8-isort/ and https://pypi.org/project/flake8-black/. Basically the lining check for those plugins is "would isort or black make any changes?". To me that was good enough, never considered adding suppression comment (failure means, just run the formatter).
+
+---
+
+_Comment by @Sarcasm on 2023-10-27 12:08_
+
+FWIW, the way I use ruff is wrapped in 2 commands:
+
+The `lint` command which runs:
+
+```
+ruff check --show-source --show-fixes ...
+black --check --diff --quiet ...
+# and other commands for other languages than python
+```
+
+I use this in CI for example.
+I guess I could have used `check` too but it predates my use of ruff (and I kinda like `lint` as an intent to verify the code, not act on it, it's a read-only/safe command always).
+
+The `fix` command which runs:
+
+```
+ruff check --fix-only --select F401,I001 ...
+black ...
+# and other commands for other languages than python
+```
+
+I use this when I want to cleanup my code, e.g. before commit.
+
+I like that `fix` is a top level command instead of a `check` option, because checking and fixing are different intentions IMHO.
+But I also combines the 2 commands often, where I `fix` then `lint` all at once.
+
+I say this because a top-level `fix` command that do formatting + autofixing of lint issues is maybe less weird than `check --fix --format`, it's easy to type/remember.
+
+---
+
+_Comment by @zanieb on 2023-10-27 13:50_
+
+I also have a long proposal adding a `ruff fix` command to resolve some of the awkwardness of putting everything in `check` — it's hard to be certain it will be worth the investment though. I'm glad to hear you think it'd be helpful!
+
+I think regardless there needs to be a way for `ruff check` to indicate when files are not formatted.
+
+---
+
+_Referenced in [python-lsp/python-lsp-ruff#53](../../python-lsp/python-lsp-ruff/issues/53.md) on 2023-10-30 12:41_
+
+---
+
+_Referenced in [astral-sh/ruff#8367](../../astral-sh/ruff/issues/8367.md) on 2023-10-30 20:56_
+
+---
+
+_Label `cli` added by @charliermarsh on 2023-10-30 23:33_
+
+---
+
+_Label `formatter` added by @charliermarsh on 2023-10-30 23:33_
+
+---
+
+_Referenced in [astral-sh/ruff#8535](../../astral-sh/ruff/issues/8535.md) on 2023-11-07 14:50_
+
+---
+
+_Comment by @thernstig on 2023-11-08 17:34_
+
+@zanieb I believe `ruff check` should be deprecated altogether, and you should use `ruff fix` to do both `ruff format` and `ruff lint ---fix` (https://github.com/astral-sh/ruff/issues/8535). With the caveat that it is clearly documented that since `ruff fix` would do `ruff lint --fix`, it _could be_ a potentially dangerous operation if the lint changes are not reviewed.
+
+(Maybe there is a better term then both `ruff check` and `ruff fix` we have not thought of?)
+
+---
+
+_Referenced in [python-lsp/python-lsp-ruff#57](../../python-lsp/python-lsp-ruff/pulls/57.md) on 2023-11-11 10:34_
+
+---
+
+_Comment by @jhossbach on 2023-11-15 12:57_
+
+@zanieb Did you discuss whether this unified command will be implemented in the near future? I am asking because I am considering merging https://github.com/python-lsp/python-lsp-ruff/pull/57 as an intermediary solution.
+
+---
+
+_Comment by @zanieb on 2023-11-15 17:42_
+
+@jhossbach I'd recommend moving forward with an intermediary solution as there's still quite a bit of work to be done on this issue.
+
+---
+
+_Referenced in [astral-sh/ruff#9064](../../astral-sh/ruff/issues/9064.md) on 2023-12-09 00:57_
+
+---
+
+_Referenced in [johnthagen/python-blueprint#199](../../johnthagen/python-blueprint/issues/199.md) on 2023-12-11 13:19_
+
+---
+
+_Referenced in [astral-sh/ruff-lsp#335](../../astral-sh/ruff-lsp/issues/335.md) on 2023-12-11 22:09_
+
+---
+
+_Referenced in [astral-sh/ruff#9117](../../astral-sh/ruff/pulls/9117.md) on 2023-12-13 19:06_
+
+---
+
+_Comment by @T-256 on 2023-12-14 08:55_
+
+FWIW Hatch did it: https://hatch.pypa.io/latest/cli/reference/#hatch-fmt
+
+---
+
+_Referenced in [astral-sh/ruff-vscode#363](../../astral-sh/ruff-vscode/issues/363.md) on 2023-12-14 19:11_
+
+---
+
+_Referenced in [astral-sh/ruff#3694](../../astral-sh/ruff/issues/3694.md) on 2023-12-21 14:35_
+
+---
+
+_Comment by @shayn-orca on 2024-01-28 09:03_
+
+This would be a good QoL fix for us. Is there an open PR we could jump on this fix this, or is there stuff to be hashed out in the discussion still? 
+
+---
+
+_Comment by @zanieb on 2024-01-28 15:50_
+
+We need to do some design work around this still and reach consensus internally. We're focusing on stabilizing the formatter first.
+
+---
+
+_Referenced in [astral-sh/ruff#9763](../../astral-sh/ruff/pulls/9763.md) on 2024-02-01 21:25_
+
+---
+
+_Referenced in [apache/opendal#4135](../../apache/opendal/pulls/4135.md) on 2024-02-03 18:26_
+
+---
+
+_Removed from milestone `Formatter: Stable` by @MichaReiser on 2024-02-06 01:45_
+
+---
+
+_Referenced in [numtide/treefmt#11](../../numtide/treefmt/issues/11.md) on 2024-02-16 18:14_
+
+---
+
+_Referenced in [astral-sh/ruff#10013](../../astral-sh/ruff/issues/10013.md) on 2024-02-19 07:34_
+
+---
+
+_Referenced in [nomad-coe/workflow-parsers#34](../../nomad-coe/workflow-parsers/pulls/34.md) on 2024-02-22 13:35_
+
+---
+
+_Comment by @Avasam on 2024-02-23 23:50_
+
+(copying my comment over since the other issue was closed in favor of this one) https://github.com/astral-sh/ruff/issues/8535#issuecomment-1858925442
+> My thoughts:
+> `ruff lint`: only lints by default
+> `ruff format`: formats by default
+> `ruff check`: shorthand for `ruff lint && ruff format --check`
+> `ruff fix`: shorthand for `ruff lint --fix && ruff format`
+
+---
+
+_Comment by @shayn-orca on 2024-02-25 08:35_
+
+@Avasam My only question here is why would I ever want to run `ruff lint` without `ruff format --check`? As far as I'm concerned, there are only two states - code it wrong or code is right. Why does the classification between `lint` and `format` matters? 
+
+---
+
+_Comment by @MichaReiser on 2024-02-25 09:10_
+
+@shayn-orca I think that's generally right and `check` would probably become the most used command. However, I think there are a couple of workflows that are worth considering:
+
+* Let's imagine that `ruff` does type checking too and you're in the middle of a larger refactor but you're done refactoring it locally and want to verify if it works as expected. Running the type checker isn't that useful because you know that there are plenty of type checking errors. But let's run the formatter and see if there any lints. 
+* Adding more involved analysis like multifile analysis or type checking will inevitably make `ruff check` slower and you don't want to wait for all the analysis to complete if you only want to format your files
+* The opposite is also true. I almost never run `cargo fmt` because my IDE keeps the file formatted. 
+* One challenge with unifying the commands under `ruff check` is that `format` writes by default, whereas `lint` only checks. I don't know what the best default for incorrectly formatted code should be: Should we show the full diff or only mention that it isn't correctly formatted? The full diff is useful in CI but is probably very noisy when running in the CLI where I'm preliminary interested in lint errors because I trust the formatter. That's where a dedicated `lint` command could be useful 
+
+I don't know the right answers to this. Maybe we end up with a single command or we keep separate commands. I think a lot of this depends on how fast ruff is when we add more involved analysis (and plugins?). It might also be easier to start with separate commands as an intermediate step (which also feels more familiar to users) before making the big step to a single command.
+
+---
+
+_Comment by @shayn-orca on 2024-02-25 09:45_
+
+> Let's imagine that ruff does type checking too and you're in the middle of a larger refactor but you're done refactoring it locally and want to verify if it works as expected. Running the type checker isn't that useful because you know that there are plenty of type checking errors. But let's run the formatter and see if there any lints.
+
+That's true for any subset of linters, not just format VS lint. When you're doing such a large refactor, picking the linters you want to run with a separate config file/CLI args is a common way out as an escape hatch.
+
+> Adding more involved analysis like multifile analysis or type checking will inevitably make ruff check slower and you don't want to wait for all the analysis to complete if you only want to format your files
+
+1. Ruff is so fast, I don't care
+2. Just fail fast by putting the faster lints first in the pipeline?
+
+> One challenge with unifying the commands under ruff check is that format writes by default
+
+I mean `ruff format --check`, which doesn't write anything.
+
+---
+
+_Comment by @Avasam on 2024-02-25 17:32_
+
+> @Avasam My only question here is why would I ever want to run `ruff lint` without `ruff format --check`? [...] ]Why does the classification between `lint` and `format` matters?
+
+Because Ruff isn't the only formatter/style checker, and forcing the formatter with the linter only hurts adoption. Even for someone using both, tooling integration may demand to keep those somewhat separate.
+
+
+
+---
+
+_Comment by @mmerickel on 2024-02-25 18:05_
+
+> Because Ruff isn't the only formatter/style checker, and forcing the formatter with the linter only hurts adoption. Even for someone use both, tooling integration may demand to keep those somewhat separate.
+
+That just indicates that the formatter should be opt-in exactly like every other rule in ruff right now. Not that it needs to be a completely separate subcommand.
+
+---
+
+_Referenced in [astral-sh/rye#804](../../astral-sh/rye/issues/804.md) on 2024-02-27 20:24_
+
+---
+
+_Referenced in [jaraco/skeleton#112](../../jaraco/skeleton/issues/112.md) on 2024-03-21 20:32_
+
+---
+
+_Referenced in [christophermadsen/emacs-lazy-ruff#2](../../christophermadsen/emacs-lazy-ruff/pulls/2.md) on 2024-04-02 10:27_
+
+---
+
+_Referenced in [python/typeshed#11734](../../python/typeshed/pulls/11734.md) on 2024-04-08 18:03_
+
+---
+
+_Referenced in [oxsecurity/megalinter#3486](../../oxsecurity/megalinter/pulls/3486.md) on 2024-04-13 16:32_
+
+---
+
+_Referenced in [astral-sh/ruff#11749](../../astral-sh/ruff/issues/11749.md) on 2024-06-05 11:03_
+
+---
+
+_Referenced in [MTES-MCT/ecobalyse#617](../../MTES-MCT/ecobalyse/pulls/617.md) on 2024-06-05 14:49_
+
+---
+
+_Referenced in [astral-sh/ruff#11756](../../astral-sh/ruff/issues/11756.md) on 2024-06-07 22:23_
+
+---
+
+_Referenced in [Couchers-org/couchers#4428](../../Couchers-org/couchers/pulls/4428.md) on 2024-06-10 08:46_
+
+---
+
+_Referenced in [astral-sh/ruff#11803](../../astral-sh/ruff/pulls/11803.md) on 2024-06-11 12:43_
+
+---
+
+_Referenced in [astral-sh/ruff#12003](../../astral-sh/ruff/issues/12003.md) on 2024-06-24 04:23_
+
+---
+
+_Referenced in [mozilla-services/merino-py#541](../../mozilla-services/merino-py/pulls/541.md) on 2024-06-24 13:59_
+
+---
+
+_Comment by @hmvp on 2024-07-04 07:21_
+
+Another datapoint here:
+
+I want to configure ruff to run in the gitlab CI. `ruff check` supports `--output-format=gitlab`, `ruff format` does not..  
+Also I need to run two commands in one step, so even if `format` would support gitlab output I still need to merge both (or run two job with the extra overhead)
+
+Regardless of the discussion related to the structure of commands, it would help me in this if `rust check` would have a lint rule that is basically "Run ruff format --check" and report if a file is not formatted... Similar to the isort rule...
+
+---
+
+_Referenced in [astral-sh/ruff-pre-commit#74](../../astral-sh/ruff-pre-commit/issues/74.md) on 2024-07-05 14:52_
+
+---
+
+_Referenced in [astral-sh/ruff#12901](../../astral-sh/ruff/issues/12901.md) on 2024-08-15 05:29_
+
+---
+
+_Referenced in [opensafely-core/job-server#4559](../../opensafely-core/job-server/pulls/4559.md) on 2024-09-03 17:02_
+
+---
+
+_Referenced in [freqtrade/freqtrade#10619](../../freqtrade/freqtrade/pulls/10619.md) on 2024-09-09 04:34_
+
+---
+
+_Referenced in [astral-sh/ruff#13364](../../astral-sh/ruff/issues/13364.md) on 2024-09-16 07:55_
+
+---
+
+_Comment by @AndreuCodina on 2024-10-14 19:24_
+
+In .NET we have a single command for the linter, type checker and formatter with `dotnet build` (https://learn.microsoft.com/en-us/community/content/how-to-enforce-dotnet-format-using-editorconfig-github-actions#enforcing-code-style-on-build). Meanwhile you can run them separately, it's a cognitive overhead for me.
+
+---
+
+_Referenced in [astral-sh/ruff#13822](../../astral-sh/ruff/issues/13822.md) on 2024-10-22 11:30_
+
+---
+
+_Referenced in [multi-build/multibuild#533](../../multi-build/multibuild/pulls/533.md) on 2024-10-23 09:18_
+
+---
+
+_Referenced in [mckinsey/vizro#719](../../mckinsey/vizro/issues/719.md) on 2024-11-11 10:00_
+
+---
+
+_Referenced in [JoshHayes/emacs-ruff-format#1](../../JoshHayes/emacs-ruff-format/issues/1.md) on 2024-11-19 09:06_
+
+---
+
+_Referenced in [pygame-community/pygame-ce#3237](../../pygame-community/pygame-ce/pulls/3237.md) on 2024-11-24 16:47_
+
+---
+
+_Referenced in [astral-sh/ruff#3946](../../astral-sh/ruff/issues/3946.md) on 2024-12-02 14:45_
+
+---
+
+_Comment by @sanmai-NL on 2024-12-02 14:46_
+
+Please design in such a way to accommodate a future feature `ssort` (https://github.com/astral-sh/ruff/issues/3946).
+
+---
+
+_Referenced in [astral-sh/ruff-action#23](../../astral-sh/ruff-action/issues/23.md) on 2024-12-07 20:51_
+
+---
+
+_Comment by @zyv on 2025-02-01 11:37_
+
+> We need to do some design work around this still and reach consensus internally. We're focusing on stabilizing the formatter first.
+
+The documentation still says this is "planned" for now. Any update on the status of this?
+
+It seems that a lot of questions and opinions revolve around `check` and `format`, like what to do with options, what order to use, whether to write by default or not, etc. Isn't it better to introduce a new command that unifies both specifically for fixing like
+
+```
+ruff fix --format --lint
+```
+
+The options can be designed to accommodate all opinions / cases, and not disrupt users of `check` and `format`.
+
+---
+
+_Comment by @bombsimon on 2025-02-01 14:35_
+
+> Isn't it better to introduce a new command
+
+I think the design should account for other use cases than just the CLI tool. I'm subscribing to this issue because I use `ruff` LSP in my text editor and I want to have an easy way to apply both fixes from the linter rules and from the formatter on save. Currently I need to both ask the LSP to format my code and then ask it to run a code action for things like e.g. sorting imports. Some suggestions here like the one of running the formatter as a linter would potentially solve that which a new CLI command would not necessarily do.
+
+Edit: I realize the title for this issue says "command" so maybe I'm in the wrong issue. It sounds like they could be related though 🤔 
+
+---
+
+_Comment by @monk-time on 2025-02-01 14:58_
+
+> The documentation still says this is "planned" for now. Any update on the status of this?
+
+Seems like the team is a bit stretched atm with most of the high-level design work last year going into `uv` and now switching to `red-knot`. There are three big remaining issues left after `ruff` stabilized: unified command, rule categorization and rule aliasing. All three AFAIK have been in a "planned" status for 1-2 years, there have been multiple indications that the team agrees they need to be resolved, and all three would require careful approach and coordinated effort as they would likely necessitate changing the user-facing interface and overhauling the docs. But my perception (and I might be wrong of course) is that the work has been mostly going into other projects (no less fantastic and well-appreciated), and these core ruff issues have been postponed - hopefully not abandoned.
+
+---
+
+_Comment by @zyv on 2025-02-01 17:48_
+
+> these core ruff issues have been postponed - hopefully not abandoned.
+
+Thanks for the update, this is really helpful for those trying to understand the status of the issue. It's unfortunate that Astral doesn't have the resources for everything, but the awesome work they are doing is still greatly appreciated.
+
+---
+
+_Comment by @zanieb on 2025-02-01 18:39_
+
+We're still making progress towards this goal, e.g., a limitation blocking an implementation of this (that we'd be happy with) is that Ruff's diagnostic system is entangled deeply with the linter and cannot represent files that need to be formatted. In red-knot, we're building a new diagnostic system so we can power features like this. We trying to avoid solving these problems multiple times, because, as pointed out above, we have limited resources and ambitious goals.
+
+The other Ruff projects mentioned above (rule re-categorization and aliasing) are definitely not abandoned. We just need to execute them very carefully to avoid causing churn for our users and our attention is elsewhere at the moment.
+
+---
+
+_Referenced in [powa-team/powa-web#258](../../powa-team/powa-web/pulls/258.md) on 2025-02-08 01:11_
+
+---
+
+_Referenced in [astral-sh/ruff#16093](../../astral-sh/ruff/issues/16093.md) on 2025-02-11 08:08_
+
+---
+
+_Comment by @carlosgmartin on 2025-02-20 00:07_
+
+IMO, it would be ideal for the simple, short command `ruff` to do "everything that most people would want it [Ruff] to do". (Subject to more specific configuration, if any, in `pyproject.toml`.)
+
+---
+
+_Comment by @makukha on 2025-02-27 15:09_
+
+> IMO, it would be ideal for the simple, short command `ruff` to do "everything that most people would want it [Ruff] to do". (Subject to more specific configuration, if any, in `pyproject.toml`.)
+
+Not sure if this is a good idea. `format` is destructive, `check` is not.
+
+I prefer fixing lint errors before formatting issues. And I don't rely on ruff's auto formatting, but prefer to fix lint/format errors manually (sometimes it's better to rename variable than to break lines).
+
+---
+
+_Comment by @MichaReiser on 2025-02-27 15:13_
+
+> IMO, it would be ideal for the simple, short command ruff to do "everything that most people would want it [Ruff] to do". (Subject to more specific configuration, if any, in pyproject.toml.)
+
+I do see how it is appealing to have a short command but using `ruff` could lead to ambiguity. E.g. does `ruff format` check and format the folder called `format` or does it run the `format` command? It would mean that each new command is a breaking change because it risks breaking an existing workflow.
+
+---
+
+_Comment by @jamesmyatt on 2025-02-27 15:36_
+
+The recommendation when doing autofixes is to fix before format since fixes aren't guaranteed to be formatted correctly.
+
+What about extending the "format" command with options like `--fix-first` or `--fix-select=...`? For example: `ruff check --fix --select=I . & ruff format .` could become `ruff format --fix-select=I .`
+
+---
+
+_Comment by @carlosgmartin on 2025-02-27 18:01_
+
+@makukha But most people *do* want to format.
+
+Therefore, make *that* the default and the alternative opt-in (via an extra flag or configuration).
+
+Defaults should follow majority use.
+
+@MichaReiser As an example, consider `ruff --format --files format path2 path3`, where the last 3 words (including `format`) refer to actual paths. This approach is unambiguous and compatible with my proposal.
+
+---
+
+_Comment by @makukha on 2025-02-27 21:32_
+
+> @makukha But most people *do* want to format.
+> 
+> Therefore, make *that* the default and the alternative opt-in (via an extra flag or configuration).
+> 
+> Defaults should follow majority use.
+
+I do want to format too, but I like flexibility. Checking and formatting are different operations, and it's fine to have different commands for different operations to avoid options clash etc. Extra flag would be just an implicit command.
+
+IMO, the answer to the question whether to combine `check` and `format` should be positive only if the dominating use case is `ruff check; ruff format` (in one invocation). For me, this is not the case, and I can't say for the majority.
+
+To be more specific, my workflow is:
+
+1. `ruff check && ruff format --check` — yes, they *seem* to be combined. This combination is also a part of the pre-commit hook
+2. Fix `ruff check` warnings
+3. Commit (bypassing pre-commit hook) to distinguish ruff updates on the next step
+4. `ruff format`
+5. Manually inspect all changes made by ruff, rewrite or ignore some cases
+
+---
+
+_Comment by @carlosgmartin on 2025-02-27 21:38_
+
+@makukha What I mean is, you can let `ruff --lint-only` (for example) do only linting, and let plain `ruff` do what most people want Ruff to do (both linting and formatting, and possibly anything else).
+
+---
+
+_Comment by @zanieb on 2025-02-27 21:46_
+
+Hi! I'd like to limit debate here as there are lots of people watching this issue for updates on this feature. Feel free to open a GitHub Discussion to discuss the merits of various details and alternative approaches, thanks!
+
+---
+
+_Referenced in [VOICEVOX/voicevox_engine#1563](../../VOICEVOX/voicevox_engine/pulls/1563.md) on 2025-03-22 12:04_
+
+---
+
+_Referenced in [johnthagen/python-blueprint#95](../../johnthagen/python-blueprint/issues/95.md) on 2025-07-13 20:45_
+
+---
+
+_Referenced in [astral-sh/ruff-pre-commit#120](../../astral-sh/ruff-pre-commit/issues/120.md) on 2025-07-26 11:49_
+
+---
+
+_Referenced in [astral-sh/ruff-pre-commit#127](../../astral-sh/ruff-pre-commit/pulls/127.md) on 2025-07-26 11:54_
+
+---
+
+_Referenced in [os-autoinst/os-autoinst-scripts#445](../../os-autoinst/os-autoinst-scripts/pulls/445.md) on 2025-08-13 09:06_
+
+---
+
+_Comment by @waynew on 2025-10-09 02:24_
+
+FWIW I got tired of remembering this invocation, so I just wrote https://pypi.org/project/ruffup/ -- 
+
+```
+uv tool install ruffup
+cd /path/to/your/fine/python
+ruffup
+```
+
+Silly? Maybe. Effective? Yes!
+
+---
+
+_Referenced in [astral-sh/ruff#20964](../../astral-sh/ruff/issues/20964.md) on 2025-10-20 07:29_
+
+---
+
+_Referenced in [c0rychu/uvlink#25](../../c0rychu/uvlink/pulls/25.md) on 2025-11-30 12:14_
+
+---

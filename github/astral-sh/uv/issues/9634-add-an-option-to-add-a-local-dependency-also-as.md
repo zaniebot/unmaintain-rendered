@@ -1,0 +1,119 @@
+---
+number: 9634
+title: "Add an option to add a local dependency also as workspace member for `uv add`"
+type: issue
+state: open
+author: NicholasPini
+labels:
+  - enhancement
+  - help wanted
+assignees: []
+created_at: 2024-12-04T10:18:01Z
+updated_at: 2024-12-28T12:46:02Z
+url: https://github.com/astral-sh/uv/issues/9634
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# Add an option to add a local dependency also as workspace member for `uv add`
+
+---
+
+_Issue opened by @NicholasPini on 2024-12-04 10:18_
+
+I'm working with a bit of an unorthodox setup: I have a bunch of different, independent projects. Some of these projects are utilities meant to be used by other projects, and I found that the easiest way to manage this setup is to make the "main" projects workspaces that depend on the utilities packages, which are also members of these workspaces. Something like this:
+```
+main_folder
+ - workspace A (members and dependencies: utility A, utility B)
+ - workspace B (members and dependencies: utility A)
+ - workspace C (members and dependencies: utility B)
+ - utility A (an uv project)
+ - utility B (an uv project)
+```
+
+I know that workspaces are supposed to contain in their folders their members, but this setup lets me deal with uv sync/build/etc without repeating the command for the utilities projects by using `--all-packages`. Also, I can easily copy pyproject.toml and uv.lock of a workspace and its utilities, and call `uv sync --no-install-workspace` to easily install all the dependencies of the entire workspace in a Docker container, without installing the projects and utilities themselves.
+
+That said, I can add a local dependency in the CLI using `uv add /path/to/package`, but I then have to manually edit the pyproject.toml file to make that package also a workspace member.
+
+Would it make sense to have some kind of option, something like `--as-member`, so that `uv add --as-member /path/to/package` would add `package` as a dependency *and* as a workspace member?
+
+---
+
+_Comment by @jamesbraza on 2024-12-06 00:11_
+
+Does `uv add --editable /path/to/package` work for you?
+
+---
+
+_Comment by @charliermarsh on 2024-12-06 00:15_
+
+I think this makes sense? I don't think you can do this from the CLI today. IIRC, if you `uv add /path/to/package` and `/path/to/package` matches `members`, it does mark it as a workspace package; but if it's not in `members`, I don't _think_ we have a way to add it as such.
+
+---
+
+_Label `help wanted` added by @charliermarsh on 2024-12-06 00:15_
+
+---
+
+_Label `enhancement` added by @charliermarsh on 2024-12-06 00:15_
+
+---
+
+_Comment by @NicholasPini on 2024-12-06 09:35_
+
+EDIT: Never mind, this was caused by missing `__init__.py` files in the package directory. Not sure why this was not necessary when using workspaces, oh well.
+
+> Does `uv add --editable /path/to/package` work for you?
+
+I'm facing problems with this approach. Basically, in my Dockerfile I recreate the same identical folder structure that I have in my repo. If I have project A depending on the local project B, I create these folders:
+```
+app
+ - project_a
+   - pyproject.toml
+   - uv.lock
+   - README.md
+   - src (this is empty)
+ - project_B 
+   - pyproject.toml
+   - uv.lock
+   - README.md
+   - src (this is empty)
+```
+
+`src` is empty because the Python files are actually pulled from S3 later, when the Docker container is already built.
+
+Here is the problem: if project_A is a workspace with project_B as member, I can run `uv sync --locked --no-dev --no-install-workspace` and I can install all the dependencies without actually having the source files, but I cannot do the same if project_A simply depends on project_B. I can run `uv sync --locked --no-dev --no-install-project --no-editable` in the project_B folder, and it works. But as soon as I run `uv sync --locked --no-dev --no-install-project --no-editable` in the project_A folder, I get this error:
+```
+1.245       ValueError: Unable to determine which files to ship
+1.245       inside the wheel using the following heuristics:
+1.245       https://hatch.pypa.io/latest/plugins/builder/wheel/#default-file-selection
+1.245 
+1.245       The most likely cause of this is that there is no directory that matches
+1.245       the name of your project (utils_2).
+1.245 
+1.245       At least one file selection option must be defined
+1.245       in the `tool.hatch.build.targets.wheel` table, see:
+1.245       https://hatch.pypa.io/latest/config/build/
+1.245 
+1.245       As an example, if you intend to ship a directory named `foo` that
+1.245       resides within a `src` directory located at the root of your project,
+1.245       you can define the following:
+1.245 
+1.245       [tool.hatch.build.targets.wheel]
+1.245       packages = ["src/foo"]
+```
+
+---
+
+_Comment by @MrMegaMango on 2024-12-28 12:23_
+
+it's confusing as a new Python user to differentiate when to use --editable vs workspace for local package import to work 
+
+---
+
+_Comment by @NicholasPini on 2024-12-28 12:46_
+
+> it's confusing as a new Python user to differentiate when to use --editable vs workspace for local package import to work
+
+This can already be the case, it's just that there's no option to add an already existing workspace member in the CLI. I mean, creating a project inside a project automatically makes it a workspace member by default.
+
+---

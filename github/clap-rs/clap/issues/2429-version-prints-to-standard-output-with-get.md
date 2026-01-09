@@ -1,0 +1,169 @@
+---
+number: 2429
+title: "\"--version\" Prints to standard output with `get_matches_safe()`"
+type: issue
+state: closed
+author: gerard-ryan-immersaview
+labels:
+  - C-bug
+assignees: []
+created_at: 2021-04-01T03:51:23Z
+updated_at: 2021-04-01T04:05:45Z
+url: https://github.com/clap-rs/clap/issues/2429
+synced_at: 2026-01-07T13:12:19-06:00
+---
+
+# "--version" Prints to standard output with `get_matches_safe()`
+
+---
+
+_Issue opened by @gerard-ryan-immersaview on 2021-04-01 03:51_
+
+### Please complete the following tasks
+
+- [X] I have searched the [discussions](https://github.com/clap-rs/clap/discussions)
+- [X] I have searched the existing issues
+
+### Rust Version
+
+rustc 1.50.0 (cb75ad5db 2021-02-10)
+
+### Clap Version
+
+2.33.3
+
+### Minimal reproducible code
+
+```rust
+fn main() {
+    let _ = clap::App::new("clap-version-test")
+        .get_matches_safe().or_else(|error| {
+            println!("'{:?}'", error);
+            Err(error)
+        });
+}
+```
+
+
+### Steps to reproduce the bug with the above code
+
+1. `cargo run -- --help`
+2. `cargo run -- --version`
+
+### Actual Behaviour
+
+`--help` output:
+```
+$ cargo run -- --help
+    Finished dev [unoptimized + debuginfo] target(s) in 0.03s
+     Running `target\debug\clap-version.exe --help`
+'Error { message: "clap-version-test \n\nUSAGE:\n    clap-version.exe\n\nFLAGS:\n    -h, --help       Prints help information\n    -V, --version    Prints version information", kind: HelpDisplayed, info: None }'
+```
+
+`--version` output:
+```
+cargo run -- --version
+   Compiling clap-version v0.1.0 (D:\Users\gerard.ryan\Desktop\clap-version)
+    Finished dev [unoptimized + debuginfo] target(s) in 0.62s
+     Running `target\debug\clap-version.exe --version`
+clap-version-test 'Error { message: "", kind: VersionDisplayed, info: None }'
+```
+
+### Expected Behaviour
+
+The version output behaves similarly to the help output.
+```
+cargo run -- --version
+   Compiling clap-version v0.1.0 (D:\Users\gerard.ryan\Desktop\clap-version)
+    Finished dev [unoptimized + debuginfo] target(s) in 0.62s
+     Running `target\debug\clap-version.exe --version`
+'Error { message: "clap-version-test ", kind: VersionDisplayed, info: None }'
+```
+
+### Additional Context
+
+Windows: 20H2 (OS Build 19042.867)
+Toolchain: 1.50.0-x86_64-pc-windows-msvc
+Visual Studio: Profesional 2019 16.9.2
+
+### Debug Output
+
+```
+cargo build --verbose
+   Compiling winapi v0.3.9
+   Compiling bitflags v1.2.1
+   Compiling unicode-width v0.1.8
+   Compiling vec_map v0.8.2
+   Compiling strsim v0.8.0
+     Running `rustc --crate-name build_script_build C:\Users\gerard.ryan\.cargo\registry\src\github.com-1ecc6299db9ec823\winapi-0.3.9\build.rs --error-format=json --json=diagnostic-rendere
+d-ansi --crate-type bin --emit=dep-info,link -C embed-bitcode=no -C debuginfo=2 --cfg "feature=\"consoleapi\"" --cfg "feature=\"errhandlingapi\"" --cfg "feature=\"minwinbase\"" --cfg "feat
+ure=\"minwindef\"" --cfg "feature=\"processenv\"" --cfg "feature=\"winbase\"" -C metadata=bf7dde444f80a0c9 -C extra-filename=-bf7dde444f80a0c9 --out-dir D:\Users\gerard.ryan\Desktop\clap-v
+ersion\target\debug\build\winapi-bf7dde444f80a0c9 -L dependency=D:\Users\gerard.ryan\Desktop\clap-version\target\debug\deps --cap-lints allow`
+     Running `rustc --crate-name build_script_build C:\Users\gerard.ryan\.cargo\registry\src\github.com-1ecc6299db9ec823\bitflags-1.2.1\build.rs --error-format=json --json=diagnostic-rende
+red-ansi --crate-type bin --emit=dep-info,link -C embed-bitcode=no -C debuginfo=2 --cfg "feature=\"default\"" -C metadata=4ad544e8fc9b91c9 -C extra-filename=-4ad544e8fc9b91c9 --out-dir D:\
+Users\gerard.ryan\Desktop\clap-version\target\debug\build\bitflags-4ad544e8fc9b91c9 -L dependency=D:\Users\gerard.ryan\Desktop\clap-version\target\debug\deps --cap-lints allow`
+     Running `rustc --crate-name unicode_width C:\Users\gerard.ryan\.cargo\registry\src\github.com-1ecc6299db9ec823\unicode-width-0.1.8\src\lib.rs --error-format=json --json=diagnostic-ren
+dered-ansi,artifacts --crate-type lib --emit=dep-info,metadata,link -C embed-bitcode=no -C debuginfo=2 --cfg "feature=\"default\"" -C metadata=cf68dca962f2242c -C extra-filename=-cf68dca96
+2f2242c --out-dir D:\Users\gerard.ryan\Desktop\clap-version\target\debug\deps -L dependency=D:\Users\gerard.ryan\Desktop\clap-version\target\debug\deps --cap-lints allow`
+     Running `rustc --crate-name vec_map C:\Users\gerard.ryan\.cargo\registry\src\github.com-1ecc6299db9ec823\vec_map-0.8.2\src\lib.rs --error-format=json --json=diagnostic-rendered-ansi,a
+rtifacts --crate-type lib --emit=dep-info,metadata,link -C embed-bitcode=no -C debuginfo=2 -C metadata=94ced0c0acfb5c21 -C extra-filename=-94ced0c0acfb5c21 --out-dir D:\Users\gerard.ryan\D
+esktop\clap-version\target\debug\deps -L dependency=D:\Users\gerard.ryan\Desktop\clap-version\target\debug\deps --cap-lints allow`
+     Running `rustc --crate-name strsim C:\Users\gerard.ryan\.cargo\registry\src\github.com-1ecc6299db9ec823\strsim-0.8.0\src\lib.rs --error-format=json --json=diagnostic-rendered-ansi,art
+ifacts --crate-type lib --emit=dep-info,metadata,link -C embed-bitcode=no -C debuginfo=2 -C metadata=122152890de853b9 -C extra-filename=-122152890de853b9 --out-dir D:\Users\gerard.ryan\Des
+ktop\clap-version\target\debug\deps -L dependency=D:\Users\gerard.ryan\Desktop\clap-version\target\debug\deps --cap-lints allow`
+   Compiling textwrap v0.11.0
+     Running `rustc --crate-name textwrap C:\Users\gerard.ryan\.cargo\registry\src\github.com-1ecc6299db9ec823\textwrap-0.11.0\src\lib.rs --error-format=json --json=diagnostic-rendered-ans
+i,artifacts --crate-type lib --emit=dep-info,metadata,link -C embed-bitcode=no -C debuginfo=2 -C metadata=6c6f27b10ba71a41 -C extra-filename=-6c6f27b10ba71a41 --out-dir D:\Users\gerard.rya
+n\Desktop\clap-version\target\debug\deps -L dependency=D:\Users\gerard.ryan\Desktop\clap-version\target\debug\deps --extern unicode_width=D:\Users\gerard.ryan\Desktop\clap-version\target\d
+ebug\deps\libunicode_width-cf68dca962f2242c.rmeta --cap-lints allow`
+     Running `D:\Users\gerard.ryan\Desktop\clap-version\target\debug\build\bitflags-4ad544e8fc9b91c9\build-script-build`
+     Running `D:\Users\gerard.ryan\Desktop\clap-version\target\debug\build\winapi-bf7dde444f80a0c9\build-script-build`
+     Running `rustc --crate-name bitflags C:\Users\gerard.ryan\.cargo\registry\src\github.com-1ecc6299db9ec823\bitflags-1.2.1\src\lib.rs --error-format=json --json=diagnostic-rendered-ansi
+,artifacts --crate-type lib --emit=dep-info,metadata,link -C embed-bitcode=no -C debuginfo=2 --cfg "feature=\"default\"" -C metadata=82fb5b4d1ff6ce3a -C extra-filename=-82fb5b4d1ff6ce3a --
+out-dir D:\Users\gerard.ryan\Desktop\clap-version\target\debug\deps -L dependency=D:\Users\gerard.ryan\Desktop\clap-version\target\debug\deps --cap-lints allow --cfg bitflags_const_fn`
+     Running `rustc --crate-name winapi C:\Users\gerard.ryan\.cargo\registry\src\github.com-1ecc6299db9ec823\winapi-0.3.9\src\lib.rs --error-format=json --json=diagnostic-rendered-ansi,art
+ifacts --crate-type lib --emit=dep-info,metadata,link -C embed-bitcode=no -C debuginfo=2 --cfg "feature=\"consoleapi\"" --cfg "feature=\"errhandlingapi\"" --cfg "feature=\"minwinbase\"" --
+cfg "feature=\"minwindef\"" --cfg "feature=\"processenv\"" --cfg "feature=\"winbase\"" -C metadata=2376685cce1a5772 -C extra-filename=-2376685cce1a5772 --out-dir D:\Users\gerard.ryan\Deskt
+op\clap-version\target\debug\deps -L dependency=D:\Users\gerard.ryan\Desktop\clap-version\target\debug\deps --cap-lints allow --cfg "feature=\"vadefs\"" --cfg "feature=\"reason\"" --cfg "f
+eature=\"guiddef\"" --cfg "feature=\"ntdef\"" --cfg "feature=\"basetsd\"" --cfg "feature=\"windef\"" --cfg "feature=\"processthreadsapi\"" --cfg "feature=\"excpt\"" --cfg "feature=\"ktmtyp
+es\"" --cfg "feature=\"wincontypes\"" --cfg "feature=\"wingdi\"" --cfg "feature=\"cfg\"" --cfg "feature=\"libloaderapi\"" --cfg "feature=\"winnt\"" --cfg "feature=\"devpropdef\"" --cfg "fe
+ature=\"winreg\"" --cfg "feature=\"cfgmgr32\"" --cfg "feature=\"vcruntime\"" --cfg "feature=\"ntstatus\"" --cfg "feature=\"fileapi\"" --cfg "feature=\"wincon\"" -l dylib=advapi32 -l dylib=
+cfgmgr32 -l dylib=gdi32 -l dylib=kernel32 -l dylib=msimg32 -l dylib=opengl32 -l dylib=user32 -l dylib=winspool`
+   Compiling atty v0.2.14
+     Running `rustc --crate-name atty C:\Users\gerard.ryan\.cargo\registry\src\github.com-1ecc6299db9ec823\atty-0.2.14\src\lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifa
+cts --crate-type lib --emit=dep-info,metadata,link -C embed-bitcode=no -C debuginfo=2 -C metadata=57b15f5d4123f291 -C extra-filename=-57b15f5d4123f291 --out-dir D:\Users\gerard.ryan\Deskto
+p\clap-version\target\debug\deps -L dependency=D:\Users\gerard.ryan\Desktop\clap-version\target\debug\deps --extern winapi=D:\Users\gerard.ryan\Desktop\clap-version\target\debug\deps\libwi
+napi-2376685cce1a5772.rmeta --cap-lints allow`
+   Compiling clap v2.33.3
+     Running `rustc --crate-name clap C:\Users\gerard.ryan\.cargo\registry\src\github.com-1ecc6299db9ec823\clap-2.33.3\src\lib.rs --error-format=json --json=diagnostic-rendered-ansi --crat
+e-type lib --emit=dep-info,metadata,link -C embed-bitcode=no -C debuginfo=2 --cfg "feature=\"ansi_term\"" --cfg "feature=\"atty\"" --cfg "feature=\"color\"" --cfg "feature=\"debug\"" --cfg
+ "feature=\"default\"" --cfg "feature=\"strsim\"" --cfg "feature=\"suggestions\"" --cfg "feature=\"vec_map\"" -C metadata=f5ee5fc014a79943 -C extra-filename=-f5ee5fc014a79943 --out-dir D:\
+Users\gerard.ryan\Desktop\clap-version\target\debug\deps -L dependency=D:\Users\gerard.ryan\Desktop\clap-version\target\debug\deps --extern atty=D:\Users\gerard.ryan\Desktop\clap-version\t
+arget\debug\deps\libatty-57b15f5d4123f291.rmeta --extern bitflags=D:\Users\gerard.ryan\Desktop\clap-version\target\debug\deps\libbitflags-82fb5b4d1ff6ce3a.rmeta --extern strsim=D:\Users\ge
+rard.ryan\Desktop\clap-version\target\debug\deps\libstrsim-122152890de853b9.rmeta --extern textwrap=D:\Users\gerard.ryan\Desktop\clap-version\target\debug\deps\libtextwrap-6c6f27b10ba71a41
+.rmeta --extern unicode_width=D:\Users\gerard.ryan\Desktop\clap-version\target\debug\deps\libunicode_width-cf68dca962f2242c.rmeta --extern vec_map=D:\Users\gerard.ryan\Desktop\clap-version
+\target\debug\deps\libvec_map-94ced0c0acfb5c21.rmeta --cap-lints allow`
+   Compiling clap-version v0.1.0 (D:\Users\gerard.ryan\Desktop\clap-version)
+     Running `rustc --crate-name clap_version --edition=2018 src\main.rs --error-format=json --json=diagnostic-rendered-ansi --crate-type bin --emit=dep-info,link -C embed-bitcode=no -C de
+buginfo=2 -C metadata=2cd4326a03ad006c --out-dir D:\Users\gerard.ryan\Desktop\clap-version\target\debug\deps -C incremental=D:\Users\gerard.ryan\Desktop\clap-version\target\debug\increment
+al -L dependency=D:\Users\gerard.ryan\Desktop\clap-version\target\debug\deps --extern clap=D:\Users\gerard.ryan\Desktop\clap-version\target\debug\deps\libclap-f5ee5fc014a79943.rlib`
+    Finished dev [unoptimized + debuginfo] target(s) in 8.82s
+```
+
+
+
+---
+
+_Label `T: bug` added by @gerard-ryan-immersaview on 2021-04-01 03:51_
+
+---
+
+_Comment by @ldm0 on 2021-04-01 04:04_
+
+Thanks for reporting! This has already been fixed by https://github.com/clap-rs/clap/pull/1602. But we are not maintaining v2 branch anymore. You can switch to v3 or current master.
+
+---
+
+_Closed by @ldm0 on 2021-04-01 04:04_
+
+---

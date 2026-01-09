@@ -1,0 +1,72 @@
+---
+number: 12953
+title: "`contains_effect` should consider f-strings to have effects"
+type: issue
+state: open
+author: dscorbett
+labels:
+  - help wanted
+assignees: []
+created_at: 2024-08-17T14:24:06Z
+updated_at: 2024-08-19T00:13:30Z
+url: https://github.com/astral-sh/ruff/issues/12953
+synced_at: 2026-01-07T13:12:15-06:00
+---
+
+# `contains_effect` should consider f-strings to have effects
+
+---
+
+_Issue opened by @dscorbett on 2024-08-17 14:24_
+
+`contains_effect` should consider f-strings to have effects because of the implicit `__str__` or `__repr__` call. This affects any rule that relies on `contains_effect`; here is an example with [RUF019](https://docs.astral.sh/ruff/rules/unnecessary-key-check/).
+```console
+$ ruff --version
+ruff 0.6.1
+$ cat ruf019.py
+class C:
+    def __init__(self):
+        self.i = 0
+
+    def __str__(self):
+        self.i += 1
+        return str(self.i)
+
+
+if __name__ == "__main__":
+    c = C()
+    dct = {"1": "a", "2": "b"}
+    if f"{c}" in dct and dct[f"{c}"]:
+        pass
+    print(c.i)
+$ python ruf019.py
+2
+$ ruff check --isolated --select RUF019 ruf019.py --fix
+Found 1 error (1 fixed, 0 remaining).
+$ python ruf019.py
+1
+```
+
+Some f-strings can be statically proven to not have effects, if they contain no formatted expressions (`f"x"`) or they only format values of types formatting which is known not to have effects (`f"{1}"`).
+
+---
+
+_Label `help wanted` added by @MichaReiser on 2024-08-17 14:27_
+
+---
+
+_Comment by @charliermarsh on 2024-08-18 22:32_
+
+I would vote against changing this... The same could be said for attribute accesses, and we don't include those. I would say that rules that rely on detecting effects should have unsafe fixes, in general, instead of taking away user access to the fixes entirely.
+
+---
+
+_Comment by @dscorbett on 2024-08-19 00:13_
+
+Some expressions, like literals, definitely don’t have side effects, so their fixes needn’t be marked unsafe. `contains_effect` could have three return values, indicating the availability of safe fixes (definitely no side effect), unsafe fixes (maybe a side effect, but probably not), and no fixes (probably a side effect).
+
+---
+
+_Referenced in [astral-sh/ruff#13127](../../astral-sh/ruff/pulls/13127.md) on 2024-08-27 20:36_
+
+---

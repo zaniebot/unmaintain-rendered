@@ -1,0 +1,33 @@
+---
+number: 17075
+title: Cache Python downloads by default
+type: pull_request
+state: open
+author: zanieb
+labels:
+  - enhancement
+assignees: []
+draft: true
+base: main
+head: zb/python-cache-default
+created_at: 2025-12-10T16:40:29Z
+updated_at: 2025-12-10T19:38:38Z
+url: https://github.com/astral-sh/uv/pull/17075
+synced_at: 2026-01-07T13:12:19-06:00
+---
+
+# Cache Python downloads by default
+
+---
+
+_Pull request opened by @zanieb on 2025-12-10 16:40_
+
+i.e., without requiring opt-in via `UV_PYTHON_CACHE_DIR`
+
+Best viewed with whitespace ignored as we dedent a block https://github.com/astral-sh/uv/pull/17075/files?diff=unified&w=1
+
+---
+
+_Label `enhancement` added by @zanieb on 2025-12-10 16:40_
+
+---

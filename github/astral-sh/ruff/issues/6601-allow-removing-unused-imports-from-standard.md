@@ -1,0 +1,88 @@
+---
+number: 6601
+title: Allow removing unused imports from standard library only
+type: issue
+state: open
+author: hotpxl
+labels:
+  - configuration
+  - needs-decision
+assignees: []
+created_at: 2023-08-15T19:43:08Z
+updated_at: 2025-02-11T20:32:11Z
+url: https://github.com/astral-sh/ruff/issues/6601
+synced_at: 2026-01-07T13:12:15-06:00
+---
+
+# Allow removing unused imports from standard library only
+
+---
+
+_Issue opened by @hotpxl on 2023-08-15 19:43_
+
+[autoflake](https://github.com/PyCQA/autoflake) can be configured to remove unused imports from standard library only. This is useful when we have [PEP 604](https://beta.ruff.rs/docs/rules/non-pep604-annotation/) and [PEP 585](https://beta.ruff.rs/docs/rules/non-pep585-annotation/) autofix enabled but not [unused-import](https://beta.ruff.rs/docs/rules/unused-import/). The reason I don't have unused-import enabled is because of legacy code that depends on implicit exports and/or side effects so it's not safe to just enable it yet.
+
+Can we add this feature to remove unused imports from standard library only?
+
+---
+
+_Comment by @dhruvmanila on 2023-08-16 03:32_
+
+Can you describe your use-case here? From what I understand, you've enabled the 2 linked rules with auto-fix which should remove those typing imports if I'm not mistaken.
+
+---
+
+_Comment by @charliermarsh on 2023-08-16 03:43_
+
+I think the request is to remove standard library imports _only_ and leave any unused first-party imports, because the codebase seems to have effectful first-party imports.
+
+---
+
+_Label `needs-decision` added by @charliermarsh on 2023-08-16 03:43_
+
+---
+
+_Comment by @Avasam on 2023-10-28 17:45_
+
+Pycln already considers 
+> All Python standrad modules are considered as imports without side effects except ([this](https://www.python.org/dev/peps/pep-0020/), [antigravity](http://python-history.blogspot.com/2010/06/import-antigravity.html), [rlcompleter](https://docs.python.org/3.8/library/rlcompleter.html)).
+
+\- https://hadialqattan.github.io/pycln/#/?id=side-effects
+
+So this would partially implement the "Side-effect detection" part of https://github.com/astral-sh/ruff/issues/8149 that doesn't need multi-file analysis.
+
+---
+
+_Comment by @zanieb on 2023-10-29 05:17_
+
+An alternative to a setting is to just mark this rule's fix as unsafe in your project.
+
+However, I think this setting would be reasonable to include. Is there a name suggestion?
+
+
+---
+
+_Label `configuration` added by @zanieb on 2023-10-29 05:18_
+
+---
+
+_Comment by @Avasam on 2025-02-11 20:30_
+
+> However, I think this setting would be reasonable to include. Is there a name suggestion?
+
+I see a lack of answer, so let me throw in something.
+
+1. Following autoflake: `remove-all-unused-imports` (defaults to True to avoid changing behaviour). Where `remove-all-unused-imports=False` only removes imports for stdlib.
+2. Using the rule's name: `unused-imports-stdlib-only` (defaults to False to avoid changing behaviour)
+3. Pycln-like approach: `remove-unused-imports-no-side-effect-only` + `extend-known-no-side-effect` where `remove-unused-imports-no-side-effect-only=True` will cause stdlib modules + those listed in `extend-known-no-side-effect` only to be removed. This would halfway implement https://github.com/astral-sh/ruff/issues/8149
+
+Personally I wouldn't go with option 3, because it wouldn't completely remove my need for pycln, whilst 1 or 2 would allow me to not have to disable [unused-import (F401)](https://docs.astral.sh/ruff/rules/unused-import/#unused-import-f401) in `pywin32` *and* catch some odd cases where pycln doesn't cleanup stdlib.
+
+Option 1 could be confused for enabling the import-removal behaviour in the first place. I like option 2 best.
+
+
+---
+
+_Referenced in [astral-sh/ruff#18728](../../astral-sh/ruff/issues/18728.md) on 2025-06-18 15:25_
+
+---

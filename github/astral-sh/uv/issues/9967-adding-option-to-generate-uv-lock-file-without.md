@@ -1,0 +1,140 @@
+---
+number: 9967
+title: Adding option to generate uv.lock file without the Development dependencies
+type: issue
+state: closed
+author: borisgurzhovski-itgma
+labels:
+  - question
+assignees: []
+created_at: 2024-12-17T11:23:28Z
+updated_at: 2025-08-12T08:08:42Z
+url: https://github.com/astral-sh/uv/issues/9967
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# Adding option to generate uv.lock file without the Development dependencies
+
+---
+
+_Issue opened by @borisgurzhovski-itgma on 2024-12-17 11:23_
+
+Is it possible (maybe add it as future improvement) to add an option to generate an `uv.lock` file which won't include the Development dependencies?
+ 
+Something similar to the `--no-dev` option, that won't install the Development dependencies when runing `uv run` or `uv sync`, but this will generate the `uv.lock` without them.
+
+I am running the version 0.5.6
+On a Docker container from python:3.9.20-slim-bookworm image
+Command I am running is  `uv.lock` (full command is: `docker run -it --rm --volume "$PWD":/app DOCKER_NAME uv lock`)
+
+Verbose output is:
+`DEBUG uv 0.5.6`
+`DEBUG Found workspace root: '/app'`
+`DEBUG Adding current workspace member: '/app'`
+`DEBUG Reading Python requests from version file at '/app/.python-version'`
+`DEBUG Using Python request '3.9.20' from version file at '.python-version'`
+`DEBUG The virtual environment's Python version satisfies '3.9.20'`
+`DEBUG Using request timeout of 30s`
+`DEBUG Found static 'pyproject.toml' for: xxx @ file:///app`
+`DEBUG No workspace root found, using project root`
+`DEBUG Existing 'uv.lock' satisfies workspace requirements`
+ 
+Thanks in advance.
+
+---
+
+_Comment by @charliermarsh on 2024-12-17 20:14_
+
+What's the motivation for omitting development dependencies from the lockfile itself?
+
+---
+
+_Label `question` added by @charliermarsh on 2024-12-17 20:14_
+
+---
+
+_Comment by @borisgurzhovski-itgma on 2024-12-19 10:15_
+
+Hi Charlie, thank you for your reply. 
+
+I think it will be more clear/better overview of the file, if the development dependencies are not in the lock file.
+Anyway this is just my perspective.
+
+Thank you for your time.
+
+---
+
+_Comment by @charliermarsh on 2024-12-27 13:53_
+
+Got it! I'm going to pass on this suggestion for now as I think it makes sense to lock with the dev dependencies regardless.
+
+---
+
+_Closed by @charliermarsh on 2024-12-27 13:53_
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2024-12-27 13:53_
+
+---
+
+_Referenced in [astral-sh/uv#11645](../../astral-sh/uv/issues/11645.md) on 2025-02-21 02:19_
+
+---
+
+_Comment by @snoweuph on 2025-08-11 14:39_
+
+How was this implemented, can't find the doc, and It's closed as completed.
+
+My usecase for a lockfile without dev dependencies is to let Gitlab generate an SBOM without them (as dev Dependencies don't make sense in an SBOM after all)
+
+if it isn't actually implemented, how about allowing `uv export` to also export to the `uv.lock` format. (because it doesn't seem to be able to do that rn)
+
+```sh
+$ uv --version
+uv 0.8.8
+
+
+$ uv export --no-dev --help
+Export the project's lockfile to an alternate format
+
+Usage: uv export [OPTIONS]
+
+Options:
+      --format <FORMAT>                    The format to which `uv.lock` should be exported [possible values: requirements.txt,
+                                           pylock.toml]
+``` 
+
+---
+
+_Comment by @hasansezertasan on 2025-08-12 08:08_
+
+> How was this implemented, can't find the doc, and It's closed as completed.
+
+Checkout @charliermarsh's https://github.com/astral-sh/uv/issues/9967#issuecomment-2563723505.
+
+> My usecase for a lockfile without dev dependencies is to let Gitlab generate an SBOM without them (as dev Dependencies don't make sense in an SBOM after all)
+> 
+> if it isn't actually implemented, how about allowing `uv export` to also export to the `uv.lock` format. (because it doesn't seem to be able to do that rn)
+> 
+> $ uv --version
+> uv 0.8.8
+> 
+> 
+> $ uv export --no-dev --help
+> Export the project's lockfile to an alternate format
+> 
+> Usage: uv export [OPTIONS]
+> 
+> Options:
+>       --format <FORMAT>                    The format to which `uv.lock` should be exported [possible values: requirements.txt,
+>                                            pylock.toml]
+
+Checkout the docs. [I think it's what you are looking for](https://docs.astral.sh/uv/concepts/projects/sync/#exporting-the-lockfile).
+
+
+---
+
+_Referenced in [Maxioum/Peeler#102](../../Maxioum/Peeler/issues/102.md) on 2025-10-08 10:03_
+
+---

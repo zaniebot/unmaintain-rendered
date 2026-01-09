@@ -1,0 +1,63 @@
+---
+number: 7451
+title: PLW3201 conflicts with attrs initialization best practices
+type: issue
+state: closed
+author: cclauss
+labels:
+  - bug
+  - good first issue
+  - help wanted
+assignees: []
+created_at: 2023-09-17T09:26:04Z
+updated_at: 2023-09-17T20:13:35Z
+url: https://github.com/astral-sh/ruff/issues/7451
+synced_at: 2026-01-07T13:12:15-06:00
+---
+
+# PLW3201 conflicts with attrs initialization best practices
+
+---
+
+_Issue opened by @cclauss on 2023-09-17 09:26_
+
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+https://www.attrs.org/en/stable/init.html#hooking-yourself-into-initialization recommends dunder methods: `.__attrs_pre_init__`, `.__attrs_post_init__`, and `.__attrs_init__` which PLW3201 (bad-dunder-method-name) flags.
+
+
+---
+
+_Comment by @charliermarsh on 2023-09-17 16:17_
+
+We should add these.
+
+---
+
+_Label `bug` added by @charliermarsh on 2023-09-17 16:17_
+
+---
+
+_Label `good first issue` added by @charliermarsh on 2023-09-17 16:17_
+
+---
+
+_Label `help wanted` added by @charliermarsh on 2023-09-17 16:17_
+
+---
+
+_Referenced in [astral-sh/ruff#7472](../../astral-sh/ruff/pulls/7472.md) on 2023-09-17 19:49_
+
+---
+
+_Closed by @charliermarsh on 2023-09-17 20:13_
+
+---

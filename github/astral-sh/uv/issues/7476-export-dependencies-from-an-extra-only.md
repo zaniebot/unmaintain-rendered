@@ -1,0 +1,59 @@
+---
+number: 7476
+title: export dependencies from an extra only
+type: issue
+state: closed
+author: mivanit
+labels: []
+assignees: []
+created_at: 2024-09-17T18:58:07Z
+updated_at: 2024-10-25T00:49:19Z
+url: https://github.com/astral-sh/uv/issues/7476
+synced_at: 2026-01-07T13:12:17-06:00
+---
+
+# export dependencies from an extra only
+
+---
+
+_Issue opened by @mivanit on 2024-09-17 18:58_
+
+Have `uv export` support exporting only the requirements listed in an extra, without package dependencies or dev dependencies.
+
+# Use Case
+
+For CI, it's common to have a separate job which only does some lint checks or something similar, where the package itself and dependencies are not required. With poetry, I'd do something like
+```
+[tool.poetry.group.lint.dependencies]
+pycln = "^2.1.3"
+ruff = "^0.4.8"
+```
+and then
+```
+poetry export --only lint --output lint-requirements.txt
+```
+and then in CI just pip install from this `lint-requirements.txt` file. This significantly speeds up setting up the CI environment for these checks.
+
+# Feature suggestion
+
+add an option to `uv export` called `--only-extra <extra>` or something similar, which only resolves the dependencies listed under the passed extra.
+
+`uv export --no-emit-project` prevents the current project from being emitted as a dep, but the current project's dependencies still are. `--only-dev` added in #7367 is very close to this, but unless there is a way to group dev dependencies that I'm unaware of it still doesn't fully support what I'm requesting here (ie `pytest` is in the dev dependencies but not required for just running `ruff`)
+
+This is a pretty niche use case, and doesn't actually restrict functionality (only slightly less CI time wasted).
+
+# potential workarounds
+
+I haven't yet tried the `--only-dev` option from #7367 since the latest release at time of writing is `0.4.10`, but it may be possible to have dev dependencies be empty, and just have those deps be in extras called `dev-test` and `dev-lint` or something, and use `--only-dev` in combination with `--extra dev-lint`
+
+---
+
+_Comment by @nsoranzo on 2024-10-21 17:55_
+
+Looks like this should be solved by https://github.com/astral-sh/uv/pull/8332 ?
+
+---
+
+_Closed by @mivanit on 2024-10-25 00:49_
+
+---

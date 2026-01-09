@@ -1,0 +1,46 @@
+---
+number: 2411
+title: "Implement `flake8-self`"
+type: issue
+state: closed
+author: ngnpope
+labels:
+  - plugin
+assignees: []
+created_at: 2023-01-31T20:25:05Z
+updated_at: 2023-02-02T12:58:16Z
+url: https://github.com/astral-sh/ruff/issues/2411
+synced_at: 2026-01-07T13:12:14-06:00
+---
+
+# Implement `flake8-self`
+
+---
+
+_Issue opened by @ngnpope on 2023-01-31 20:25_
+
+[GitHub](https://github.com/Korijn/flake8-self), [PyPI](https://pypi.org/project/flake8-self/).
+
+- [ ] [`SLF001`]():  Private member access
+
+Detects accessing a private attribute, e.g. `obj._private`, but allows for `self._private`, `cls._private`, and `mcs._private` (for in metaclasses). It doesn't currently check that `cls._private` is only within a class method, etc., which is something that could be improved. It also always allows access to dunders, e.g. `obj.__eq__`.
+
+---
+
+_Comment by @spaceone on 2023-01-31 20:43_
+
+I would like to differentiate the rule between `_private` and `__private`/`_Class__private` members. Maybe `SLF001` and `SLF002`.
+
+---
+
+_Label `plugin` added by @charliermarsh on 2023-01-31 23:05_
+
+---
+
+_Referenced in [astral-sh/ruff#2470](../../astral-sh/ruff/pulls/2470.md) on 2023-02-02 11:39_
+
+---
+
+_Closed by @charliermarsh on 2023-02-02 12:58_
+
+---

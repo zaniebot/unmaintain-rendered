@@ -1,0 +1,220 @@
+---
+number: 3898
+title: "`uv pip install -e` and its PEP-660-style editable installs break vscode import resolution (and probably static type checkers)"
+type: issue
+state: closed
+author: ThiefMaster
+labels:
+  - question
+assignees: []
+created_at: 2024-05-29T08:30:51Z
+updated_at: 2025-02-20T16:11:43Z
+url: https://github.com/astral-sh/uv/issues/3898
+synced_at: 2026-01-07T13:12:17-06:00
+---
+
+# `uv pip install -e` and its PEP-660-style editable installs break vscode import resolution (and probably static type checkers)
+
+---
+
+_Issue opened by @ThiefMaster on 2024-05-29 08:30_
+
+My context is that I have a main package and some related packages. Everything is installed in editable mode for development.
+
+When using standard `pip` with setuptools installed, this creates an egg-link file inside site-packages which is looked up just fine by type checkers including Pyright (which powers the vscode Python/Pylance extension).
+
+However, when using `uv pip install -e`, the package is installed in PEP-660 mode with a `__editable__.<pkgname+version>.pth` and `__editable___<pkgname+version>_finder.py`, ie using a dynamic import hook.
+
+Of course static analyzers generally do not understand those, and don't even try to extract the information from the "dynamic" code even though it would be trivial to do (by simply parsing the `MAPPING` dict from the `..._finder.py`).
+
+While this is not directly uv's fault, and I generally agree with not outputting legacy stuff, this is causing a problem when IDEs can no longer properly resolve imports. And at least the pyright/pylance developers don't seem to be willing to add any workarounds on their side, so they'd rather wait for the Python ecosystem to agree on something that does not require dynamic import lookups. But that probably needs someone to be willing to write a PEP and get it accepted which all takes some time.
+
+Some related issues/comments:
+
+- https://github.com/microsoft/pylance-release/issues/3473#issuecomment-2133566168
+- https://github.com/microsoft/pyright/issues/3880#issuecomment-2134083781
+- https://github.com/microsoft/pylance-release/issues/5894#issuecomment-2133544837
+
+Is there any chance `uv` can do something about this, such as providing an option to generate an egg-link instead of a PEP660-style `__editable__*.pth`, even though it's slightly more legacy?
+
+---
+
+_Comment by @h-mayorquin on 2024-07-19 02:16_
+
+To be honest I am bit confused. Pip passess the implementation responsability of editable installs to the backend:
+
+https://pip.pypa.io/en/stable/topics/local-project-installs/#editable-installs
+
+Doesn't uv does the same? 
+
+For packages built with setuptools there are a coupe of [configuration options ](https://setuptools.pypa.io/en/latest/userguide/development_mode.html) used at installation time. That said,  I am not sure if the latest version of setuptools [works the way that OP proposes here](https://setuptools.pypa.io/en/latest/history.html#id298) anymore.
+
+For reference, when building with hatch works with the default that allows static analysis tools to work by default:
+https://github.com/pypa/hatch/issues/1629#issuecomment-2237849607
+I am not sure what uv pip install -e would do if the build backend was hatchling. 
+
+Any chance a mantainer could chime in, clarify the state of affairs and say whether this is:
+* Important but not resources to addres it at the moment.
+* Not important, unlikely to be addressed.
+
+
+
+---
+
+_Comment by @zanieb on 2024-07-19 02:33_
+
+I agree this issue is not clear. I'm not the expert on this area, but a `hatch` build backend doesn't use a dynamic `.pth`
+
+```
+❯ uv venv
+Using Python 3.12.3 interpreter at: /opt/homebrew/opt/python@3.12/bin/python3.12
+Creating virtualenv at: .venv
+Activate with: source .venv/bin/activate
+❯ grep "build-system" -A 2 ../packse/pyproject.toml
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+❯ uv pip install -e ../packse -q                                                                                      
+❯ cat .venv/lib/python3.12/site-packages/_packse.pth
+/Users/zb/workspace/packse/src%     
+```
+
+This seems like a problem with `setuptools`? In their [documentation](https://setuptools.pypa.io/en/latest/userguide/development_mode.html#legacy-behavior) they note:
+
+> Setuptools offers no guarantee of which technique will be used to perform an editable installation. This will vary from project to project and may change depending on the specific version of setuptools being used.
+
+It seems possible that you're getting different versions of setuptools depending on if you're using uv or pip? Having you tried using `--config-settings` to configure this?
+
+---
+
+_Label `question` added by @zanieb on 2024-07-19 02:34_
+
+---
+
+_Comment by @konstin on 2024-07-19 08:33_
+
+This is a known problem with setuptools: https://github.com/pypa/setuptools/issues/3518, it also affects e.g. mypy: https://github.com/python/mypy/issues/13392. It's unfortunately not something we can do anything about, i recommend using one of the workarounds in the linked issues or switching to a different backend such as hatchling or flit.
+
+---
+
+_Closed by @konstin on 2024-07-19 08:33_
+
+---
+
+_Comment by @ThiefMaster on 2024-07-19 08:53_
+
+> It's unfortunately not something we can do anything about
+
+Why not offer a way to do an editable install using the classic static resolution (egg-link) instead of the dynamic one? A while ago I noticed that `pip` does this when setuptools *is* installed, while it uses the dynamic resolve when setuptools is *not* installed.
+
+I never really looked into alternative build backends, but I assume this also means changing all the related configs (setup.cfg etc.) in the project, which is a mess if you have many projects and you either end up with one using something different than all the others, or having to update all of them for consistency...
+
+---
+
+_Comment by @konstin on 2024-07-19 08:59_
+
+The old egg mechanism was never standardized and is basically pip-setuptools special casing; in uv, we support PEP 660, the standard editable installs that work across build backends. Pip has also deprecated its current behavior and will remove it in the 25.0 release (https://github.com/pypa/pip/issues/11457).
+
+---
+
+_Referenced in [dagster-io/dagster#24029](../../dagster-io/dagster/pulls/24029.md) on 2024-08-28 21:00_
+
+---
+
+_Comment by @samimia-swks on 2024-11-22 23:46_
+
+For poeple stumbling on this thread, adding this to pyproject.toml makes pylance happy. https://github.com/pypa/setuptools/issues/3518 suggests the removal of 'compat' has been pushed back, so this will work for now...
+
+```
+[tool.uv]
+    config-settings = { editable_mode = "compat" }
+```
+
+---
+
+_Comment by @iloveitaly on 2024-11-26 01:17_
+
+Dependencies defined like this:
+
+```
+[tool.uv.sources.activemodel]
+path = "pypi/activemodel"
+editable = true
+```
+
+Were not recognized by VS Code. This config did fix the issue (underscore, not dash):
+
+```
+[tool.uv]
+config_settings = { editable_mode = "compat" }
+```
+
+---
+
+_Comment by @ssbarnea on 2025-01-14 15:25_
+
+As of today uv **requires** dash separator for key name:
+
+```toml
+[tool.uv]
+config-settings = { editable_mode = "compat" }
+```
+
+---
+
+_Comment by @tonydavis629 on 2025-02-09 23:26_
+
+> As of today uv **requires** dash separator for key name:
+> 
+> [tool.uv]
+> config-settings = { editable_mode = "compat" }
+
+This should maybe be the default setting when using `uv init`? This has been bothering me.
+
+---
+
+_Referenced in [astral-sh/uv#11488](../../astral-sh/uv/issues/11488.md) on 2025-02-13 19:02_
+
+---
+
+_Comment by @zanieb on 2025-02-13 19:33_
+
+`uv init` doesn't use setuptools by default. Regardless, this is a setuptools problem. It's not for us to decide their default behavior.
+
+---
+
+_Comment by @danieleds on 2025-02-20 16:04_
+
+Is anyone getting the following error after adding the suggested `editable_mode = "compat"` to the project?
+
+```
+  × Failed to build `numpy==1.26.4`
+  ├─▶ The build backend returned an error
+  ╰─▶ Call to `mesonpy.build_wheel` failed (exit status: 1)
+
+      [stdout]
+
+      ('\x1b[31m',)meson-python: error: Unknown option "editable_mode". Did you mean "editable-verbose"?
+
+      hint: This usually indicates a problem with the package or the build environment.
+```
+
+EDIT: I think it's linked to this issue: https://github.com/astral-sh/uv/issues/10940
+
+---
+
+_Referenced in [pytest-dev/pytest#13324](../../pytest-dev/pytest/issues/13324.md) on 2025-03-24 08:28_
+
+---
+
+_Referenced in [astral-sh/uv#11455](../../astral-sh/uv/issues/11455.md) on 2025-07-03 23:09_
+
+---
+
+_Referenced in [microsoft/pyright#10888](../../microsoft/pyright/pulls/10888.md) on 2025-09-03 10:20_
+
+---
+
+_Referenced in [astral-sh/uv#15652](../../astral-sh/uv/issues/15652.md) on 2025-09-03 10:20_
+
+---

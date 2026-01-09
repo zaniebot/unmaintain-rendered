@@ -1,0 +1,130 @@
+---
+number: 12666
+title: Strange behavior with tools.uv.sources and tools.uv.index
+type: issue
+state: open
+author: khaume
+labels:
+  - needs-mre
+assignees: []
+created_at: 2025-04-04T09:43:22Z
+updated_at: 2025-04-04T19:15:40Z
+url: https://github.com/astral-sh/uv/issues/12666
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# Strange behavior with tools.uv.sources and tools.uv.index
+
+---
+
+_Issue opened by @khaume on 2025-04-04 09:43_
+
+### Summary
+
+I'm experimenting with using our private package repository for certain packages.
+
+
+`pyproject.toml` file:
+
+```toml
+dependencies = [
+    "private_package>=2.7"
+]
+
+[tool.uv.sources]
+private_package = { index = "IndexName" }
+
+[[tool.uv.index]]
+name = "IndexName"
+url = "https://pkgs.dev.azure.com/company/_packaging/ArtifactName/pypi/simple/"
+explicit = true
+```
+
+when running `uv sync`, it complains about authorization unless I add the environment variables `UV_INDEX_INDEXNAME_NAME` and `UV_INDEX_INDEXNAME_PASSWORD`, just as expected (based on [this discussion](https://github.com/astral-sh/uv/issues/6421#issuecomment-2427738561)) even though `UV_INDEX` is defined with a full user:password index url.
+If deleting the specific tool.uv.sources and .index, it works by using the `UV_INDEX` env var to authorize (also as expected).
+
+However, when I build a Docker image and run `uv sync` in the build instruction, it works when having defined `UV_INDEX`, i.e., it does not require `UV_INDEX_INDEXNAME_NAME` and `UV_INDEX_INDEXNAME_PASSWORD`.
+
+This is also the case when running the resulting docker image.. Inside the container I can do `uv add private_package -U` without having the specific environment variables defined. It works if just `UV_INDEX` is defined.
+
+Is this a windows/ubuntu issue or am I missing something?
+
+### Platform
+
+Windows 11 / Linux 5.15
+
+### Version
+
+uv 0.6.12 (e4e03833f 2025-04-02)
+
+### Python version
+
+Python 3.11
+
+---
+
+_Label `bug` added by @khaume on 2025-04-04 09:43_
+
+---
+
+_Comment by @charliermarsh on 2025-04-04 12:43_
+
+Hmm, I would expect all of those flows to work if you _just_ provided `UV_INDEX` with the credentials (even though `UV_INDEX_INDEXNAME_NAME` would be preferable). I wonder why it's _not_ working when running `uv sync` on your own machine? Can you share the `-v` (verbose) logs, and redact any credentials?
+
+The problem with using `UV_INDEX` instead of the credential variables is that it basically defines an entirely separate index _without_ `explicit = true`, so _other_ packages will _also_ use that index (not just `private_package`).
+
+
+---
+
+_Label `bug` removed by @charliermarsh on 2025-04-04 12:43_
+
+---
+
+_Label `needs-mre` added by @charliermarsh on 2025-04-04 12:43_
+
+---
+
+_Comment by @khaume on 2025-04-04 19:15_
+
+Testing once again, I can confirm that if the `tool.uv.sources` and `.index` are defined in `pyproject.toml` then it does not work if the specific index env vars are not set, even though `UV_INDEX` is set. 
+
+If I remove the `tool.uv.sources` and `.index` parts of the `pyproject.toml` file, then it does work with `UV_INDEX`. 
+
+Here is the verbose output
+
+```text
+(venv) C:\Users\user\Documents\repos\project>uv sync -U -v
+DEBUG uv 0.6.12 (e4e03833f 2025-04-02)
+DEBUG Found project root: `C:\Users\user\Documents\repos\project`
+DEBUG No workspace root found, using project root
+DEBUG Acquired lock for `C:\Users\user\Documents\repos\project`
+DEBUG Reading Python requests from version file at `C:\Users\user\Documents\repos\project\.python-version`
+DEBUG Using Python request `3.11` from version file at `.python-version`
+warning: `VIRTUAL_ENV=venv` does not match the project environment path `.venv` and will be ignored; use `--active` to target the active environment instead
+DEBUG Checking for Python environment at `.venv`
+DEBUG The virtual environment's Python version satisfies `3.11`
+DEBUG Released lock at `C:\Users\user\AppData\Local\Temp\uv-78998a54b191bd3e.lock`
+DEBUG Using request timeout of 30s
+DEBUG Ignoring existing lockfile due to `--upgrade`
+DEBUG Found static `pyproject.toml` for: project @ file:///C:/Users/user/Documents/repos/project
+DEBUG No workspace root found, using project root
+DEBUG Solving with installed Python version: 3.11.9
+DEBUG Solving with target Python version: >=3.11
+DEBUG Adding direct dependency: project*
+DEBUG Searching for a compatible version of project @ file:///C:/Users/user/Documents/repos/project (*)
+DEBUG Adding direct dependency: private_package>=2.7
+DEBUG Acquired lock for `C:\Users\user\AppData\Local\uv\cache\simple-v15\index\9ef19ba820518c37\private_package.lock`
+DEBUG No cache entry for: https://pkgs.dev.azure.com/dongenergy-p/_packaging/ArtifactName/pypi/simple/private_package/
+DEBUG Released lock at `C:\Users\user\AppData\Local\uv\cache\simple-v15\index\9ef19ba820518c37\private_package.lock`
+DEBUG Searching for a compatible version of private_package (>=2.7)
+DEBUG No compatible version found for: private_package
+DEBUG Recording unit propagation conflict of private_package from incompatibility of (project)
+DEBUG Searching for a compatible version of project @ file:///C:/Users/user/Documents/repos/project (<0.1.0 | >0.1.0)
+DEBUG No compatible version found for: project
+  x No solution found when resolving dependencies:
+  `-> Because private_package was not found in the package registry and your project depends on private_package>=2.7, we can conclude that your project's requirements are unsatisfiable.
+
+      hint: An index URL (https://pkgs.dev.azure.com/dongenergy-p/_packaging/ArtifactName/pypi/simple/) could not be queried due to a lack of valid authentication credentials (401 Unauthorized). 
+```
+
+---

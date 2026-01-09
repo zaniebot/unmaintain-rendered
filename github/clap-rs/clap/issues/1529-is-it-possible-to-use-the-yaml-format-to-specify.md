@@ -1,0 +1,122 @@
+---
+number: 1529
+title: Is it possible to use the YAML format to specify that arguments have defaults?
+type: issue
+state: closed
+author: kozross
+labels: []
+assignees: []
+created_at: 2019-07-30T03:12:08Z
+updated_at: 2020-02-01T12:59:47Z
+url: https://github.com/clap-rs/clap/issues/1529
+synced_at: 2026-01-07T13:12:19-06:00
+---
+
+# Is it possible to use the YAML format to specify that arguments have defaults?
+
+---
+
+_Issue opened by @kozross on 2019-07-30 03:12_
+
+Suppose I want to have an option ``--output-dir``, which defaults to ``.``. Is there a way, using the YAML file method of CLI generation, to have the resulting help text inform me of this? For example, an entry like this in the YAML file:
+
+```yaml
+# Some not-relevant stuff
+args:
+    - output-dir:
+        long: output-dir
+        value_name: DIR
+        help: Directory to emit files into
+        takes_value: true
+# More not-relevant stuff follows....
+```
+Will produce the following help text:
+
+```sh
+# Some not-relevant stuff
+OPTIONS:
+        --output-dir <DIR>      Directory to emit files into
+# More not-relevant stuff
+```
+
+What I'm after is something like:
+
+```yaml
+# Some not-relevant stuff
+args:
+    - output-dir:
+        long: output-dir
+        value_name: DIR
+        help: Directory to emit files into
+        takes_value: true
+        default_value: .
+# More not-relevant stuff follows....
+```
+
+Which would produce something like:
+
+```sh
+# Some not-relevant stuff
+OPTIONS:
+        --output-dir <DIR>      Directory to emit files into (default .)
+# More not-relevant stuff
+```
+
+Can clap already do this (and I missed it)? If not, could we get this as an option? I find informing users of a default in a consistent manner to be very useful, both as a developer and a user.
+
+---
+
+_Comment by @zrzka on 2019-08-20 13:04_
+
+It's possible. I actually used it in my answer [here](https://stackoverflow.com/a/57570627/581190) few hours ago.
+
+```yaml
+name: clap-yaml
+version: "1.0"
+author: Zrzka
+about: Stackoverflow sample
+args:
+  - lang:
+      short: l
+      long: lang
+      default_value: cz
+      takes_value: true
+      possible_values:
+        - cz
+        - en
+```
+
+```sh
+$ target/debug/clap-yaml --help
+clap-yaml 1.0
+Zrzka
+Stackoverflow sample
+
+USAGE:
+    clap-yaml [OPTIONS]
+
+FLAGS:
+    -h, --help       Prints help information
+    -V, --version    Prints version information
+
+OPTIONS:
+    -l, --lang <lang>     [default: cz]  [possible values: cz, en]
+```
+
+---
+
+_Comment by @kozross on 2019-08-20 17:36_
+
+@zrzka Thank you! I didn't find this documented anywhere, but perhaps I just wasn't looking carefully enough.
+
+---
+
+_Comment by @CreepySkeleton on 2020-02-01 12:59_
+
+Looks like it's fixed, feel free to reopen
+
+---
+
+_Closed by @CreepySkeleton on 2020-02-01 12:59_
+
+---

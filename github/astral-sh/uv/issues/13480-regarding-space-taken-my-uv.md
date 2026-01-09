@@ -1,0 +1,68 @@
+---
+number: 13480
+title: Regarding Space taken my uv
+type: issue
+state: closed
+author: harsha20032020
+labels:
+  - question
+assignees: []
+created_at: 2025-05-15T20:18:36Z
+updated_at: 2025-05-15T20:33:16Z
+url: https://github.com/astral-sh/uv/issues/13480
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# Regarding Space taken my uv
+
+---
+
+_Issue opened by @harsha20032020 on 2025-05-15 20:18_
+
+### Question
+
+Hi, I just wanted to know if there are any commands, etc, to clean unused stuff in UV? right now uv folder takes up to 40 gigs in my .cache and its primarily in a folder called archive-v0, its looks to be a lot of gibberish files.
+
+### Platform
+
+Linux
+
+### Version
+
+0.6.17
+
+---
+
+_Label `question` added by @harsha20032020 on 2025-05-15 20:18_
+
+---
+
+_Comment by @konstin on 2025-05-15 20:19_
+
+There is `uv cache prune` (https://docs.astral.sh/uv/reference/cli/#uv-cache-prune)
+
+---
+
+_Comment by @charliermarsh on 2025-05-15 20:21_
+
+(`archive-v0` is actually, like, all the important stuff. That's where we store the unpacked package files, downloaded from the registry. When we install, we just create pointers (hardlinks) to those files, so that installing the same package in many environments doesn't take up any additional space.)
+
+---
+
+_Comment by @harsha20032020 on 2025-05-15 20:24_
+
+@charliermarsh that makes sense but i definitely do not have 40 gigs worth of packages across all of my libraries. But ill update this once after running uv cache prune as @konstin suggested.
+
+Also, thanks for UV....probably the best package manager I've used after suffering through conda  and being wayyy faster than venv.
+
+---
+
+_Comment by @harsha20032020 on 2025-05-15 20:33_
+
+Yeah, the cache purge takes down the space to 25 gigs, I think that's normal. Thanks guys.
+
+---
+
+_Closed by @harsha20032020 on 2025-05-15 20:33_
+
+---

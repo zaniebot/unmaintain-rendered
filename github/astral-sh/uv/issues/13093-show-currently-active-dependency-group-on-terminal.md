@@ -1,0 +1,56 @@
+---
+number: 13093
+title: Show currently active dependency group on terminal
+type: issue
+state: open
+author: alelom
+labels:
+  - enhancement
+assignees: []
+created_at: 2025-04-24T15:26:18Z
+updated_at: 2025-05-21T12:05:19Z
+url: https://github.com/astral-sh/uv/issues/13093
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# Show currently active dependency group on terminal
+
+---
+
+_Issue opened by @alelom on 2025-04-24 15:26_
+
+### Summary
+
+It would be nice to show on the terminal the currently active dependency group, similarly to what venv/virtualenv/conda etc do:
+
+```
+(dev) user@machine:~/git/projectname$  
+```
+
+This naturally wouldn't represent the environment per se (being `.venv`) but it would give clear indication of what dependency group is active.
+
+
+---
+
+_Label `enhancement` added by @alelom on 2025-04-24 15:26_
+
+---
+
+_Renamed from "Command to show which dependency group is currently active, and/or show it on terminal" to "Show dependency group is currently active (via command and/or on terminal)" by @alelom on 2025-04-24 15:27_
+
+---
+
+_Renamed from "Show dependency group is currently active (via command and/or on terminal)" to "Show currently active dependency group (via command and/or on terminal)" by @alelom on 2025-04-24 15:27_
+
+---
+
+_Renamed from "Show currently active dependency group (via command and/or on terminal)" to "Show currently active dependency group on terminal" by @alelom on 2025-04-24 15:30_
+
+---
+
+_Comment by @charliermarsh on 2025-05-21 12:05_
+
+Unfortunately we don't actually "know" which groups are active -- that isn't tracked after the install. And what would we show if there are multiple groups?
+
+
+---

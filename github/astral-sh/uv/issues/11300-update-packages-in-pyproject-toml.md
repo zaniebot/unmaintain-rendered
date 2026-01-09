@@ -1,0 +1,65 @@
+---
+number: 11300
+title: Update packages in pyproject.toml
+type: issue
+state: closed
+author: wanderleihuttel
+labels:
+  - question
+assignees: []
+created_at: 2025-02-06T23:46:22Z
+updated_at: 2025-02-06T23:52:34Z
+url: https://github.com/astral-sh/uv/issues/11300
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# Update packages in pyproject.toml
+
+---
+
+_Issue opened by @wanderleihuttel on 2025-02-06 23:46_
+
+### Question
+
+Hello
+
+I'm running uv 5.2.9 in Windows 11.
+In the "pyproject.toml" I have the dependency of "sqlalchemy>=2.0.37", but is installed "sqlalchemy>=2.0.38".
+How can I upgrade pyproject.toml using some uv command?
+
+I've read this topic ans try some commands, but didn't worked.
+https://docs.astral.sh/uv/pip/compile/#locking-requirements
+
+This command generate a requirements.txt and there sqlalchemy
+```
+uv pip compile pyproject.toml -o requirements.txt is "sqlalchemy==2.0.38"
+```
+
+I would like to update pyproject.toml and set dependency to sqlalchemy>=2.0.38. but not manually.
+
+Thanks
+
+
+### Platform
+
+Windows 11 x86_64 
+
+### Version
+
+uv 0.5.2.9
+
+---
+
+_Label `question` added by @wanderleihuttel on 2025-02-06 23:46_
+
+---
+
+_Comment by @zanieb on 2025-02-06 23:52_
+
+We're tracking this in https://github.com/astral-sh/uv/issues/6794
+
+---
+
+_Closed by @zanieb on 2025-02-06 23:52_
+
+---

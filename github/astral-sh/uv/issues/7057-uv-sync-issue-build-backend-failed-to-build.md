@@ -1,0 +1,287 @@
+---
+number: 7057
+title: "`uv sync` issue `Build backend failed to build editable through build_editable()`"
+type: issue
+state: closed
+author: sbdchd
+labels:
+  - question
+assignees: []
+created_at: 2024-09-05T00:19:33Z
+updated_at: 2024-09-05T00:46:04Z
+url: https://github.com/astral-sh/uv/issues/7057
+synced_at: 2026-01-07T13:12:17-06:00
+---
+
+# `uv sync` issue `Build backend failed to build editable through build_editable()`
+
+---
+
+_Issue opened by @sbdchd on 2024-09-05 00:19_
+
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with uv.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
+* The current uv platform.
+* The current uv version (`uv --version`).
+-->
+
+platform: macOS m1
+uv version: `uv 0.4.5 (42b6bfbad 2024-09-04)`
+
+error:
+```
+❯ uv sync       
+Resolved 143 packages in 2ms
+error: Failed to prepare distributions
+  Caused by: Failed to fetch wheel: backend @ file:///Users/steve/projects/recipeyak/backend
+  Caused by: Build backend failed to build editable through `build_editable()` with exit status: 1
+--- stdout:
+
+--- stderr:
+Traceback (most recent call last):
+  File "<string>", line 11, in <module>
+  File "/Users/steve/.cache/uv/builds-v0/.tmp0olTuB/lib/python3.11/site-packages/hatchling/build.py", line 83, in build_editable
+    return os.path.basename(next(builder.build(directory=wheel_directory, versions=['editable'])))
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/steve/.cache/uv/builds-v0/.tmp0olTuB/lib/python3.11/site-packages/hatchling/builders/plugin/interface.py", line 90, in build
+    self.metadata.validate_fields()
+  File "/Users/steve/.cache/uv/builds-v0/.tmp0olTuB/lib/python3.11/site-packages/hatchling/metadata/core.py", line 266, in validate_fields
+    self.core.validate_fields()
+  File "/Users/steve/.cache/uv/builds-v0/.tmp0olTuB/lib/python3.11/site-packages/hatchling/metadata/core.py", line 1376, in validate_fields
+    getattr(self, attribute)
+  File "/Users/steve/.cache/uv/builds-v0/.tmp0olTuB/lib/python3.11/site-packages/hatchling/metadata/core.py", line 833, in authors
+    raise TypeError(message)
+TypeError: Author #1 of field `project.authors` must be an inline table
+---
+```
+
+
+pyproject.toml:
+
+```
+[project]
+name = "backend"
+version = "0.1.0"
+description = ""
+authors = ["foo", "bar"]
+
+requires-python = ">=3.10"
+dependencies = [
+    "django~=3.2.9",
+    "dj-database-url==0.4.2",
+    "gunicorn==20.1.0",
+    "django-user-sessions~=1.6",
+    "python-dotenv==0.21.0",
+    "djangorestframework-types~=0.2.0",
+    "orjson==3.8.1",
+    "psycopg2-binary~=2.9.3",
+    "boto3~=1.24.44",
+    "yarl~=1.8.1",
+    "advocate~=1.0.0",
+    "pillow~=9.3.0",
+    "httpx~=0.23.1",
+    "asyncpg~=0.27.0",
+    "asyncpg-stubs~=0.27.0",
+    "typer~=0.7.0",
+    "structlog~=22.3.0",
+    "types-pillow~=9.3.0",
+    "pillow-heif~=0.9.0",
+    "tldextract~=3.4.0",
+    "sentry-sdk~=1.35.0",
+    "ably~=2.0.1",
+    "recipe-scrapers~=14.52.0",
+    "algoliasearch~=3.0.0",
+    "async-timeout~=4.0.3",
+    "aiohttp~=3.9.1",
+    "ruamel-yaml~=0.18.5",
+    "pydantic-settings~=2.1.0",
+    "jsonref~=1.1.0",
+    "pywatchman~=2.0.0",
+    "pydantic[email]~=2.5.3",
+]
+
+[tool.uv]
+dev-dependencies = [
+    "pytest==7.2.0",
+    "pytest-django==4.5.2",
+    "ipdb~=0.13.9",
+    "django-types~=0.19.1",
+    "types-pyyaml~=6.0.0",
+    "types-requests~=2.25.11",
+    "syrupy~=3.0.5",
+    "types-urllib3~=1.26.23",
+    "types-dj-database-url~=1.0.0",
+    "mypy~=1.7.0",
+    "bpython~=0.24",
+    "ruff~=0.3.5",
+    "pytest-xdist~=3.5.0",
+    "boto3-stubs[s3]~=1.24.44",
+]
+
+[tool.ruff]
+src = ["recipeyak"]
+target-version = "py311"
+
+[tool.ruff.lint]
+select = [
+    "E",
+    "F",
+    "TID252",
+    "I001",
+    "T20",
+    "C4",
+    "UP",
+    "N",
+    "BLE",
+    "B",
+    "RET",
+    "SIM",
+    "ARG",
+    "DTZ",
+    "ERA",
+    "PTH",
+    "TCH",
+    "PYI",
+    "PT",
+    "INP001",
+    "T100",
+    "PGH003",
+    "RUF",
+]
+ignore = [
+    "E501", # line length is handled by black
+    "ARG001", # pytest fixtures mess with this
+    "ARG002", # sometimes parent classes require params
+    "N806", # django migrations violate this a lot
+    "B008", # type.Argument violates this
+    "N815", # we mix and match casing in serializers
+    "ARG005", # monkey patching false positive with *args, and **kwargs
+    "N805", # false positive with pydantic
+    "N802", # DRF serializers mess with this
+    "RET505", # if, elif, else are fine with returns
+    "RET507", # if, elif, else with continue is also fine
+    "RET508", # if, elif, else with break is also fine
+    "TCH003", # not until autofixable
+    "TCH002", # not until autofixable
+    "TCH001", # not until autofixable
+    "PT004", # makes the function appear unused to pyright
+]
+unfixable = ["ERA001"] # we want to check ourselves before we delete commented out code. Also this doesn't cleanup all of it.
+
+[tool.ruff.lint.per-file-ignores]
+"recipeyak/migrations/*" = [
+    # it's very common to use class vars in Django migrations.
+    "RUF012",
+]
+
+[tool.ruff.lint.flake8-pytest-style]
+fixture-parentheses = false
+
+[tool.ruff.lint.isort]
+known-third-party = ["django"]
+known-first-party = ["recipeyak"]
+
+[tool.ruff.lint.flake8-tidy-imports]
+# Disallow all relative imports.
+ban-relative-imports = "all"
+
+[tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE = "recipeyak.django.settings"
+python_files = "*_test.py *_tests.py"
+addopts = "-s --pdbcls IPython.terminal.debugger:TerminalPdb --reuse-db -p no:warnings -p no:pastebin -p no:nose -p no:doctest -p no:freeze_support -p no:stepwise -p no:python_path -p no:setuponly -p no:setupplan -p no:legacypath-tmpdir -p no:unittest"
+testpaths = "recipeyak"
+
+
+[tool.mypy]
+mypy_path = "./typings"
+files = ["**/*.py"]
+
+show_column_numbers = true
+show_error_codes = true
+
+disallow_any_unimported=false
+disallow_any_expr=false
+disallow_any_decorated=false
+disallow_any_explicit=false
+disallow_any_generics=true
+disallow_subclassing_any=false
+
+disallow_untyped_calls=false
+disallow_untyped_defs=true
+disallow_incomplete_defs=true
+check_untyped_defs=true
+disallow_untyped_decorators=true
+
+no_implicit_optional=true
+strict_optional=true
+
+warn_redundant_casts=true
+warn_unused_ignores=true
+warn_no_return=true
+warn_return_any=true
+# doesn't consider how methods can change the value of properties
+warn_unreachable=false
+
+strict_equality=true
+
+ignore_missing_imports=false
+
+plugins = [
+  "pydantic.mypy"
+]
+
+[[tool.mypy.overrides]]
+module = [
+    'icalendar.*',
+    'advocate.*',
+    'user_sessions.*',
+    'ably.*',
+    'ruamel.*'
+]
+ignore_missing_imports = true
+
+[tool.pydantic-mypy]
+init_forbid_extra = true
+init_typed = true
+warn_required_dynamic_aliases = true
+warn_untyped_fields = true
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+```
+
+---
+
+_Comment by @charliermarsh on 2024-09-05 00:22_
+
+It looks like this comes from Hatchling. I think it's correct per the spec?
+
+---
+
+_Label `question` added by @zanieb on 2024-09-05 00:33_
+
+---
+
+_Comment by @sbdchd on 2024-09-05 00:34_
+
+ah I thought it was related to upgrading from 0.3.3 but checked it out on that version and it's broken there too, oops!
+
+---
+
+_Closed by @sbdchd on 2024-09-05 00:34_
+
+---
+
+_Comment by @sbdchd on 2024-09-05 00:46_
+
+Turns out poetry and pypa/hatchling have different structures for authors
+
+https://github.com/pypa/packaging.python.org/issues/1134
+
+---

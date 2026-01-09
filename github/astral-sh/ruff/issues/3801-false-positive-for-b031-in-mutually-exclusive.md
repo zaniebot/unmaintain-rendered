@@ -1,0 +1,108 @@
+---
+number: 3801
+title: "False positive for `B031` in mutually exclusive branches"
+type: issue
+state: closed
+author: janosh
+labels:
+  - bug
+assignees: []
+created_at: 2023-03-29T22:42:18Z
+updated_at: 2023-04-04T12:45:31Z
+url: https://github.com/astral-sh/ruff/issues/3801
+synced_at: 2026-01-07T13:12:14-06:00
+---
+
+# False positive for `B031` in mutually exclusive branches
+
+---
+
+_Issue opened by @janosh on 2023-03-29 22:42_
+
+Ruff v0.0.260
+
+```py
+# t.py
+import itertools
+
+for key, group in itertools.groupby("foobar"):
+    if True:
+        print(key, len(tuple(group)))
+    else:
+        print(key, len(tuple(group)))  # B031
+```
+
+```sh
+ruff t.py --select B
+```
+
+raises false positive `flake8-bugbear` B031
+
+> Using the generator returned from `itertools.groupby()` more than once will do nothing on the second usage
+
+
+---
+
+_Comment by @charliermarsh on 2023-03-29 23:01_
+
+Is this incorrect? `flake8-bugbear` flags line 7 too.
+
+---
+
+_Label `question` added by @charliermarsh on 2023-03-29 23:02_
+
+---
+
+_Comment by @janosh on 2023-03-29 23:03_
+
+If the generator uses are in mutually exclusive execution paths, I think this error should not be raised.
+
+---
+
+_Comment by @charliermarsh on 2023-03-29 23:15_
+
+Ahh yeah, I see. It might be difficult to detect this reliably.
+
+---
+
+_Label `question` removed by @charliermarsh on 2023-03-29 23:15_
+
+---
+
+_Label `bug` added by @charliermarsh on 2023-03-29 23:15_
+
+---
+
+_Comment by @charliermarsh on 2023-03-29 23:15_
+
+(But yes, it's a false positive.)
+
+---
+
+_Renamed from "False positive B031" to "False positive for `B031` in mutually exclusive branches" by @charliermarsh on 2023-03-29 23:15_
+
+---
+
+_Referenced in [astral-sh/ruff#3829](../../astral-sh/ruff/issues/3829.md) on 2023-03-31 16:22_
+
+---
+
+_Referenced in [astral-sh/ruff#3844](../../astral-sh/ruff/pulls/3844.md) on 2023-04-01 05:03_
+
+---
+
+_Closed by @charliermarsh on 2023-04-04 02:33_
+
+---
+
+_Comment by @AA-Turner on 2023-04-04 12:45_
+
+Thank you @dhruvmanila @charliermarsh!
+
+A
+
+---
+
+_Referenced in [astral-sh/ruff#4050](../../astral-sh/ruff/issues/4050.md) on 2023-04-20 17:58_
+
+---

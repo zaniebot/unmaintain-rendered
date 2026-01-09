@@ -1,0 +1,169 @@
+---
+number: 14809
+title: How does requirements.in file ordering affect output?
+type: issue
+state: closed
+author: JulianKenwood
+labels:
+  - question
+assignees: []
+created_at: 2025-07-22T11:58:14Z
+updated_at: 2025-08-04T17:53:18Z
+url: https://github.com/astral-sh/uv/issues/14809
+synced_at: 2026-01-07T13:12:19-06:00
+---
+
+# How does requirements.in file ordering affect output?
+
+---
+
+_Issue opened by @JulianKenwood on 2025-07-22 11:58_
+
+### Question
+
+## Dependency Resolution Differs with requirements.in Order
+
+I encountered a situation where the output produced by `uv pip compile` from a `requirements.in` file varied depending on the order of the packages listed. It appears that when there are conflicting requirements, the resolver will prefer downgrading the package that is listed later in the `requirements.in` file.
+
+### Example
+
+Suppose I have two dependencies:
+
+- **internal-package**
+  - Version 2.0.0 pins `sqlalchemy<2`
+  - Version 1.0.0 requires `sqlalchemy` (no version pin)
+- **sqlalchemy**
+
+#### Ordering 1
+
+If my `requirements.in` contains:
+```
+sqlalchemy
+internal-package
+```
+The compiled `requirements.txt` is:
+```
+sqlalchemy==2.X.Y  # latest
+internal-package==1.0.0
+```
+
+#### Ordering 2
+
+If I reverse the order:
+```
+internal-package
+sqlalchemy
+```
+The compiled `requirements.txt` is:
+```
+internal-package==2.0.0  # latest
+sqlalchemy==1.X.Y
+```
+
+It seems as though priority is given to dependencies listed earlier in `requirements.in` but I could not find any mention of this in the documentation on dependency resolution.
+
+**Is this intended behavior?** For our use case, we expected the result from Ordering 2.
+
+### Platform
+
+MacOS 15.5 arm64
+
+### Version
+
+uv 0.7.2 (481d05d8d 2025-04-30)
+
+---
+
+_Label `question` added by @JulianKenwood on 2025-07-22 11:58_
+
+---
+
+_Comment by @zanieb on 2025-07-22 12:05_
+
+Yes, priority is given to requirements earlier in the file. As described in the example at https://docs.astral.sh/uv/concepts/resolution/#basic-examples a resolution has multiple possible solutions and requirement ordering is one of the heuristics we use to make decisions about solve order.
+
+---
+
+_Comment by @zanieb on 2025-07-22 12:06_
+
+I'd put bounds on the packages in your input requirements.
+
+---
+
+_Comment by @JulianKenwood on 2025-07-22 14:28_
+
+> Yes, priority is given to requirements earlier in the file. As described in the example at https://docs.astral.sh/uv/concepts/resolution/#basic-examples a resolution has multiple possible solutions and requirement ordering is one of the heuristics we use to make decisions about solve order.
+
+I can't see any part of the documentation where it says that requirement ordering is a heuristic. The closest I can see on the matter is the following:
+```
+Both are valid solutions, and different resolution algorithms may yield either result.
+```
+
+Changing package order to set priority seems reasonable, but piptools’ pip-compile doesn’t work that way from what I can tell. I wouldn’t want to rely on this behavior unless it was explicitly documented as being part of the API.
+
+> I'd put bounds on the packages in your input requirements.
+
+The exact set of pins I would need to add would require me to examine all my dependencies (both direct and indirect), gather all their version constraints, and then decide which versions I actually want to pin. I also don't know the exact set of pins in advance, because each dependency version can have its own constraints (and additional constraints from indirect dependencies), and I don't know which versions will be chosen by the dependency resolver.
+
+My package could also be a library where I might want to use non-lower bound pins more sparingly.
+
+The package I'm building doesn't directly care what version of sqlalchemy is installed so saying it needs a pin might be misleading. 
+
+
+---
+
+_Comment by @charliermarsh on 2025-07-22 14:32_
+
+If you "want" a certain output given multiple valid solutions, then you should give the resolver more guidance. I'd suggest adding a constraints file if you don't want to make it part of your own dependency declarations, and don't want to rely on the ordering of the requirements.
+
+
+---
+
+_Comment by @zanieb on 2025-07-22 14:46_
+
+> The package I'm building doesn't directly care what version of sqlalchemy is installed so saying it needs a pin might be misleading.
+
+If you don't care what version of `sqlalchemy` you get, then what is the problem? Is it that you care what version of `internal-package` you get? If so, why not add a lower bound to that dependency?
+
+> I wouldn’t want to rely on this behavior unless it was explicitly documented as being part of the API.
+
+You shouldn't rely on this behavior, resolution is very complicated and without constraints there's no way to guarantee the algorithm will not take a different path than you expect.
+
+
+---
+
+_Comment by @notatallshaw on 2025-07-22 15:00_
+
+FYI this is somewhat documented here: https://docs.astral.sh/uv/pip/compatibility/#package-priority
+
+Ordering of input requirements is used as part of the resolution choice for both uv and pip. As pip-tools uses pip under the hood it is also affected by user order, though less so as noted in the comparability guide. 
+
+---
+
+_Comment by @JulianKenwood on 2025-07-23 06:58_
+
+> > The package I'm building doesn't directly care what version of sqlalchemy is installed so saying it needs a pin might be misleading.
+> 
+> If you don't care what version of `sqlalchemy` you get, then what is the problem? Is it that you care what version of `internal-package` you get? If so, why not add a lower bound to that dependency?
+> 
+> > I wouldn’t want to rely on this behavior unless it was explicitly documented as being part of the API.
+> 
+> You shouldn't rely on this behavior, resolution is very complicated and without constraints there's no way to guarantee the algorithm will not take a different path than you expect.
+
+Sorry, let me clarify what I meant here.
+
+From my package's perspective, the version of `sqlalchemy` is irrelevant and during development it would've worked the same regardless of whether 1.X.Y or 2.X.Y was picked.
+
+I then decided I needed `internal-package`. `internal-package` **does** care what version of sqlalchemy it uses. The latest version of `internal-package`has a pin on `sqlalchemy < 2`. The earlier version of `internal-package` does not have the same pin because it predates `sqlalchemy 2`
+
+> FYI this is somewhat documented here: https://docs.astral.sh/uv/pip/compatibility/#package-priority
+> 
+> Ordering of input requirements is used as part of the resolution choice for both uv and pip. As pip-tools uses pip under the hood it is also affected by user order, though less so as noted in the comparability guide.
+
+This is exactly what I was looking for. Thank you for the link. 
+
+---
+
+_Closed by @charliermarsh on 2025-08-04 17:53_
+
+---

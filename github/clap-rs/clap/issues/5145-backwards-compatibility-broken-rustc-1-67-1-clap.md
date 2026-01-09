@@ -1,0 +1,127 @@
+---
+number: 5145
+title: Backwards compatibility broken? rustc 1.67.1 clap 4.1.4  (msrv increased without clap version changed)
+type: issue
+state: closed
+author: alparty
+labels:
+  - C-bug
+assignees: []
+created_at: 2023-09-28T15:45:20Z
+updated_at: 2023-09-28T16:10:07Z
+url: https://github.com/clap-rs/clap/issues/5145
+synced_at: 2026-01-07T13:12:20-06:00
+---
+
+# Backwards compatibility broken? rustc 1.67.1 clap 4.1.4  (msrv increased without clap version changed)
+
+---
+
+_Issue opened by @alparty on 2023-09-28 15:45_
+
+### Please complete the following tasks
+
+- [X] I have searched the [discussions](https://github.com/clap-rs/clap/discussions)
+- [X] I have searched the [open](https://github.com/clap-rs/clap/issues) and [rejected](https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed) issues
+
+### Rust Version
+
+rustc 1.67.1 (d5a82bbd2 2023-02-07)
+
+### Clap Version
+
+4.1.4
+
+### Minimal reproducible code
+
+```rust
+fn main() {}
+```
+
+
+### Steps to reproduce the bug with the above code
+
+With 
+```
+rustup toolchain list
+1.67-x86_64-unknown-linux-gnu (default)
+```
+Create a new project with cargo new , add clap as dependency to your Cargo.toml file.
+```
+[package]
+name = "test-proj"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+clap = { version = "4.1", features = ["derive", "env"] }
+```
+Now run cargo check:
+
+### Actual Behaviour
+
+```
+cargo check
+    Updating crates.io index
+error: package `clap_derive v4.4.2` cannot be built because it requires rustc 1.70.0 or newer, while the currently active rustc version is 1.67.1
+Either upgrade to rustc 1.70.0 or newer, or use
+cargo update -p clap_derive@4.4.2 --precise ver
+where `ver` is the latest version of `clap_derive` supporting rustc 1.67.1
+```
+
+### Expected Behaviour
+
+Should check without errors.
+When Cargo.toml selects `clap = { version = "4.1", features = ["derive", "env"] }` cargo check should not try to pull clap version 4.4.5.
+
+### Additional Context
+
+In this project we can't update to a newer toolchain yet, and are stuck with 1.67 for the time being.
+I have a hunch this error might actually come from cargo, as after running `cargo check`and investigating the Cargo.lock  file it seems cargo pulled the latest version of clap and not the one specified in Cargo.toml:
+```toml
+[[package]]
+name = "clap"
+version = "4.4.5"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "824956d0dca8334758a5b7f7e50518d66ea319330cbceedcf76905c2f6ab30e3"
+dependencies = [
+ "clap_builder",
+ "clap_derive",
+]
+```
+
+### Debug Output
+
+_No response_
+
+---
+
+_Label `C-bug` added by @alparty on 2023-09-28 15:45_
+
+---
+
+_Comment by @epage on 2023-09-28 15:57_
+
+In the community, MSRV bumps are no generally considered a breaking change.  It is a change in builld environment requirements much like new versions of Rust requiring new Linux kernels, new versions of macOS, etc.
+
+Our [documented policy](https://github.com/clap-rs/clap/blob/master/CONTRIBUTING.md#compatibility-expectations) is that we'll reserve MSRV bumps for minor version bumps.  This does not extend to our dependencies as that would require [setting upper bounds on our dependencies](https://doc.rust-lang.org/nightly/cargo/reference/specifying-dependencies.html#multiple-version-requirements).
+
+With stable rust, the main way to deal with this is to [commit your lockfile](https://doc.rust-lang.org/nightly/cargo/faq.html#why-have-cargolock-in-version-control) and use `cargo update` to specify the dependency versions you need (e.g. `cargo update -p clap --precise 4.1.0`). 
+
+We are working on improving this situation [in cargo](https://github.com/rust-lang/cargo/issues/9930).  As of now, you can run `cargo +nightly generate-lockfile -Zmsrv-policy` to pull in the right dependency versions.  The error messages from this are known to be terrible and the above tracking issue includes tracking the work to improve them.
+
+---
+
+_Closed by @epage on 2023-09-28 15:57_
+
+---
+
+_Comment by @alparty on 2023-09-28 16:10_
+
+All right, thanks.
+
+---
+
+_Referenced in [clap-rs/clap#5158](../../clap-rs/clap/issues/5158.md) on 2023-10-04 18:21_
+
+---

@@ -1,0 +1,107 @@
+---
+number: 14840
+title: "[red-knot] `...` should be treated as a valid parameter default for any annotation in a stub file"
+type: issue
+state: closed
+author: AlexWaygood
+labels:
+  - bug
+  - help wanted
+  - ty
+assignees: []
+created_at: 2024-12-08T17:55:17Z
+updated_at: 2025-01-05T19:11:33Z
+url: https://github.com/astral-sh/ruff/issues/14840
+synced_at: 2026-01-07T13:12:16-06:00
+---
+
+# [red-knot] `...` should be treated as a valid parameter default for any annotation in a stub file
+
+---
+
+_Issue opened by @AlexWaygood on 2024-12-08 17:55_
+
+The [typing spec](https://typing.readthedocs.io/en/latest/spec/distributing.html#value-expressions) states that in stub files:
+
+> In locations where value expressions can appear, such as the right-hand side of assignment statements and function parameter defaults, type checkers should support the following expressions:
+> 
+> - The ellipsis literal, ..., which can stand in for any value
+
+Following https://github.com/astral-sh/ruff/pull/14802, we now have a huge number of false positives when running red-knot directly over stub files, due to the fact that we don't yet implement this special case, which is very commonly utilised in stubs. E.g. here's a small portion of the errors emitted when running red-knot over typeshed:
+
+```
+error[invalid-parameter-default] /Users/alexw/dev/typeshed/stdlib/asyncio/base_events.pyi:118:13 Default value of type `EllipsisType | ellipsis` is not assignable to annotated parameter type `int`
+error[invalid-parameter-default] /Users/alexw/dev/typeshed/stdlib/asyncio/base_events.pyi:158:13 Default value of type `EllipsisType | ellipsis` is not assignable to annotated parameter type `str`
+error[invalid-parameter-default] /Users/alexw/dev/typeshed/stdlib/asyncio/base_events.pyi:159:13 Default value of type `EllipsisType | ellipsis` is not assignable to annotated parameter type `int`
+error[invalid-parameter-default] /Users/alexw/dev/typeshed/stdlib/asyncio/base_events.pyi:197:13 Default value of type `EllipsisType | ellipsis` is not assignable to annotated parameter type `str`
+error[invalid-parameter-default] /Users/alexw/dev/typeshed/stdlib/asyncio/base_events.pyi:198:13 Default value of type `EllipsisType | ellipsis` is not assignable to annotated parameter type `int`
+error[invalid-parameter-default] /Users/alexw/dev/typeshed/stdlib/asyncio/base_events.pyi:237:13 Default value of type `EllipsisType | ellipsis` is not assignable to annotated parameter type `int`
+error[invalid-parameter-default] /Users/alexw/dev/typeshed/stdlib/asyncio/base_events.pyi:239:13 Default value of type `EllipsisType | ellipsis` is not assignable to annotated parameter type `int`
+error[invalid-parameter-default] /Users/alexw/dev/typeshed/stdlib/asyncio/base_events.pyi:240:13 Default value of type `EllipsisType | ellipsis` is not assignable to annotated parameter type `int`
+error[invalid-parameter-default] /Users/alexw/dev/typeshed/stdlib/asyncio/base_events.pyi:258:13 Default value of type `EllipsisType | ellipsis` is not assignable to annotated parameter type `int`
+error[invalid-parameter-default] /Users/alexw/dev/typeshed/stdlib/asyncio/base_events.pyi:259:13 Default value of type `EllipsisType | ellipsis` is not assignable to annotated parameter type `int`
+error[invalid-parameter-default] /Users/alexw/dev/typeshed/stdlib/asyncio/base_events.pyi:260:13 Default value of type `EllipsisType | ellipsis` is not assignable to annotated parameter type `socket`
+error[invalid-parameter-default] /Users/alexw/dev/typeshed/stdlib/asyncio/base_events.pyi:276:13 Default value of type `EllipsisType | ellipsis` is not assignable to annotated parameter type `int`
+error[invalid-parameter-default] /Users/alexw/dev/typeshed/stdlib/asyncio/base_events.pyi:278:13 Default value of type `EllipsisType | ellipsis` is not assignable to annotated parameter type `int`
+error[invalid-parameter-default] /Users/alexw/dev/typeshed/stdlib/asyncio/base_events.pyi:279:13 Default value of type `EllipsisType | ellipsis` is not assignable to annotated parameter type `int`
+error[invalid-parameter-default] /Users/alexw/dev/typeshed/stdlib/asyncio/base_events.pyi:296:13 Default value of type `EllipsisType | ellipsis` is not assignable to annotated parameter type `int`
+error[invalid-parameter-default] /Users/alexw/dev/typeshed/stdlib/asyncio/base_events.pyi:297:13 Default value of type `EllipsisType | ellipsis` is not assignable to annotated parameter type `int`
+error[invalid-parameter-default] /Users/alexw/dev/typeshed/stdlib/asyncio/base_events.pyi:298:13 Default value of type `EllipsisType | ellipsis` is not assignable to annotated parameter type `socket`
+error[invalid-parameter-default] /Users/alexw/dev/typeshed/stdlib/asyncio/base_events.pyi:313:13 Default value of type `EllipsisType | ellipsis` is not assignable to annotated parameter type `int`
+error[invalid-parameter-default] /Users/alexw/dev/typeshed/stdlib/asyncio/base_events.pyi:315:13 Default value of type `EllipsisType | ellipsis` is not assignable to annotated parameter type `int`
+error[invalid-parameter-default] /Users/alexw/dev/typeshed/stdlib/asyncio/base_events.pyi:316:13 Default value of type `EllipsisType | ellipsis` is not assignable to annotated parameter type `int`
+error[invalid-parameter-default] /Users/alexw/dev/typeshed/stdlib/asyncio/base_events.pyi:332:13 Default value of type `EllipsisType | ellipsis` is not assignable to annotated parameter type `int`
+error[invalid-parameter-default] /Users/alexw/dev/typeshed/stdlib/asyncio/base_events.pyi:333:13 Default value of type `EllipsisType | ellipsis` is not assignable to annotated parameter type `int`
+error[invalid-parameter-default] /Users/alexw/dev/typeshed/stdlib/asyncio/base_events.pyi:334:13 Default value of type `EllipsisType | ellipsis` is not assignable to annotated parameter type `socket`
+error[invalid-parameter-default] /Users/alexw/dev/typeshed/stdlib/asyncio/base_events.pyi:414:13 Default value of type `EllipsisType | ellipsis` is not assignable to annotated parameter type `bool | None`
+```
+
+
+
+---
+
+_Label `bug` added by @AlexWaygood on 2024-12-08 17:55_
+
+---
+
+_Label `red-knot` added by @AlexWaygood on 2024-12-08 17:55_
+
+---
+
+_Added to milestone `Red Knot 2024` by @carljm on 2024-12-10 01:11_
+
+---
+
+_Label `help wanted` added by @carljm on 2024-12-10 01:11_
+
+---
+
+_Comment by @Glyphack on 2024-12-12 21:49_
+
+I want to work on this, what command did you run to get the output? I tried passing typeshed pass to `--current-directory` but I get a panic.
+
+---
+
+_Comment by @AlexWaygood on 2024-12-12 21:54_
+
+> I want to work on this, what command did you run to get the output? I tried passing typeshed pass to `--current-directory` but I get a panic.
+
+On Ruff's `main` branch, with a local clone of typeshed at `../typeshed` (relative to my Ruff repository), I ran `cargo run -p red_knot --curent-directory ../typeshed`. I didn't get a panic, just a huge number of diagnostics. (Many of the diagnostics emitted are true positives, since typeshed has a very unconventional directory structure. I wouldn't expect red-knot to be able to resolve a lot of the imports in typeshed's third-party stubs, for example. But none of the `...`-related errors are true positives.)
+
+---
+
+_Assigned to @Glyphack by @carljm on 2024-12-14 02:20_
+
+---
+
+_Referenced in [astral-sh/ruff#14982](../../astral-sh/ruff/pulls/14982.md) on 2024-12-15 12:01_
+
+---
+
+_Closed by @carljm on 2025-01-05 19:11_
+
+---
+
+_Closed by @carljm on 2025-01-05 19:11_
+
+---

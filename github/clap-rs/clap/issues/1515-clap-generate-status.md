@@ -1,0 +1,57 @@
+---
+number: 1515
+title: Clap_Generate status?
+type: issue
+state: closed
+author: rharriso
+labels: []
+assignees: []
+created_at: 2019-07-05T00:00:59Z
+updated_at: 2020-02-06T19:28:28Z
+url: https://github.com/clap-rs/clap/issues/1515
+synced_at: 2026-01-07T13:12:19-06:00
+---
+
+# Clap_Generate status?
+
+---
+
+_Issue opened by @rharriso on 2019-07-05 00:00_
+
+What is the plan for clap_generate? It’s currently not compatible with v3-master, hasn’t been released, and hasn’t had any activity in a year.
+
+I wasn’t able to find any roadmap or discussion around that crate. Would it make sense to readd that functionality to this repo? 
+
+---
+
+_Referenced in [clap-rs/clap#1518](../../clap-rs/clap/issues/1518.md) on 2019-07-07 20:26_
+
+---
+
+_Comment by @Dylan-DPC-zz on 2019-09-17 15:22_
+
+It's difficult to maintain compatibility between 2-3 projects in a way that's within our bandwidth (sadly). If you can fix the compatibility issues, we would appreciate a PR :) Thanks
+
+---
+
+_Comment by @rharriso on 2019-09-17 20:44_
+
+Whats the motivation for keeping them separated then? It seems like an unhelpful split if it makes keeping things compatible more difficult.
+
+---
+
+_Comment by @Dylan-DPC-zz on 2019-09-20 15:26_
+
+@rharriso the reason it's kept separated because it was started independently of clap and better to keep them separately as it wouldn't initially depend on clap releases and hence clap won't be a bottleneck. 
+
+---
+
+_Closed by @rharriso on 2020-01-27 01:43_
+
+---
+
+_Comment by @pksunkara on 2020-02-06 19:28_
+
+I am working on https://github.com/clap-rs/clap/pull/1678 which should make the crate ready for 3.0 release.
+
+---

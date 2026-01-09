@@ -1,0 +1,277 @@
+---
+number: 5072
+title: Official docker image
+type: issue
+state: closed
+author: daveisfera
+labels:
+  - release
+assignees: []
+created_at: 2023-06-14T03:06:14Z
+updated_at: 2023-12-07T14:56:33Z
+url: https://github.com/astral-sh/ruff/issues/5072
+synced_at: 2026-01-07T13:12:15-06:00
+---
+
+# Official docker image
+
+---
+
+_Issue opened by @daveisfera on 2023-06-14 03:06_
+
+Could an official docker image be created for `ruff`, so it's easier to run in CI environments?
+
+---
+
+_Label `release` added by @charliermarsh on 2023-06-14 03:24_
+
+---
+
+_Comment by @Werni2A on 2023-06-14 17:31_
+
+Not official but you could use [GitLab's implementation of the container](https://hub.docker.com/r/pipelinecomponents/ruff)
+
+---
+
+_Comment by @daveisfera on 2023-06-15 00:59_
+
+That looks like a decent option to start with, but it is using it's own versioning system and the advantage of an official `ruff` image would be that it would track with the version numbers of this project
+
+---
+
+_Comment by @konstin on 2023-06-22 05:57_
+
+I know it's not really what you've been asking for, but would
+```shell
+docker run --rm --entrypoint bash -v $(pwd):/io python:3.11 -c "python -m pip install ruff==0.0.274 && ruff /io"
+```
+work for you? It has the version number and takes about 3.5s on my machine. I've been looking for an image with pipx which would be nicer but couldn't find a well maintained one.
+
+---
+
+_Comment by @daveisfera on 2023-10-24 22:28_
+
+> I know it's not really what you've been asking for, but would
+> 
+> ```shell
+> docker run --rm --entrypoint bash -v $(pwd):/io python:3.11 -c "python -m pip install ruff==0.0.274 && ruff /io"
+> ```
+> 
+> work for you? It has the version number and takes about 3.5s on my machine. I've been looking for an image with pipx which would be nicer but couldn't find a well maintained one.
+
+That's definitely possible, but then that has to be downloaded and installed each time. Hoping for something simpler for CI
+
+---
+
+_Assigned to @zanieb by @zanieb on 2023-10-25 02:58_
+
+---
+
+_Comment by @konstin on 2023-10-25 08:59_
+
+What CI system are you using and how does a docker image (vs., let's say `pipx run ruff=0.1`) integrate into you use case there?
+
+---
+
+_Comment by @daveisfera on 2023-10-25 13:02_
+
+We're using GitHub Actions, so I could use the available action for that, but I prefer using a container to run the process because then we can be sure that what's run on the developers machine is the exact same process. Maybe that's overly paranoid on my part, but my quick poking around didn't show an easy way to run `ruff` as a File Watcher with a guaranteed version on every developers machine, but with the container approach, when the commit is made to update the version in GitHub Actions it rolls out to ever developer machine at the same time and that's really the solution I'm looking for
+
+---
+
+_Comment by @daveisfera on 2023-11-07 19:55_
+
+Here's `Dockerfile`s for building a minimal image with multi-arch support:
+
+Alpine:
+```
+FROM alpine:3.18
+
+WORKDIR /usr/local/bin
+
+ENV RUFF_VERSION 0.1.4
+
+RUN export RUFF_ARCH=$(uname -m) && \
+  wget -qO- "https://github.com/astral-sh/ruff/releases/download/v${RUFF_VERSION}/ruff-${RUFF_ARCH}-unknown-linux-musl.tar.gz" | tar xz
+
+CMD ["/usr/local/bin/ruff"]
+```
+
+Debian:
+```
+FROM debian:bookworm-slim
+
+WORKDIR /usr/local/bin
+
+ENV RUFF_VERSION 0.1.4
+
+RUN export RUFF_ARCH=$(uname -m); \
+    savedAptMark="$(apt-mark showmanual)"; \
+    apt-get update; \
+    apt-get install -y --no-install-recommends \
+        ca-certificates \
+        wget \
+    ; \
+    \
+    wget -qO- "https://github.com/astral-sh/ruff/releases/download/v${RUFF_VERSION}/ruff-${RUFF_ARCH}-unknown-linux-gnu.tar.gz" | tar xz; \
+    \
+    apt-mark auto '.*' > /dev/null; \
+    apt-mark manual $savedAptMark; \
+    apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false; \
+    rm -rf /var/lib/apt/lists/*; \
+    \
+    /usr/local/bin/ruff --version
+
+CMD ["/usr/local/bin/ruff"]
+```
+
+---
+
+_Comment by @zanieb on 2023-11-07 20:24_
+
+Are there clear trade-offs to pulling the builds from GitHub vs including a build image step? I think using a `build` image would be nice for:
+
+- Building non-release images e.g. a nightly image
+- Building images locally
+
+There's, of course, some complexity added there.
+
+It'd also be nice to use [distroless](https://github.com/GoogleContainerTools/distroless)? Multi-arch support added in https://github.com/GoogleContainerTools/distroless/pull/591
+
+---
+
+_Comment by @daveisfera on 2023-11-07 20:51_
+
+> Are there clear trade-offs to pulling the builds from GitHub vs including a build image step? I think using a `build` image would be nice for:
+> 
+> * Building non-release images e.g. a nightly image
+> * Building images locally
+> 
+> There's, of course, some complexity added there.
+
+I think that would be great! I just couldn't find any info on how to build `ruff` and since [multi-stage builds are basically unsupported in official images](https://github.com/docker-library/faq#multi-stage-builds), it's hard to make a small image while building without jumping through a lot of hoops.
+
+> It'd also be nice to use [distroless](https://github.com/GoogleContainerTools/distroless)? Multi-arch support added in [GoogleContainerTools/distroless#591](https://github.com/GoogleContainerTools/distroless/pull/591)
+
+In my experience, `distroless` isn't worth the trouble in cases like this (especially since there's already support for `musl`). The smallest base image they provide is 15 MB and the Alpine image is half that size, so if you want really small, Alpine is the smaller option and has other benefits when it comes to debugging and other fun stuff
+
+---
+
+_Comment by @zanieb on 2023-11-07 21:04_
+
+Huh interesting, they say otherwise?
+
+> The smallest distroless image, gcr.io/distroless/static-debian11, is around 2 MiB. That's about 50% of the size of alpine (~5 MiB).
+
+---
+
+_Comment by @zanieb on 2023-11-07 21:07_
+
+> since [multi-stage builds are basically unsupported in official images](https://github.com/docker-library/faq#multi-stage-builds), it's hard to make a small image while building without jumping through a lot of hoops.
+
+Oh interesting, I presumed this issue was requesting an `astral-sh/ruff` image on DockerHub but you're looking for a `ruff` image in the Docker official images program?
+
+---
+
+_Comment by @daveisfera on 2023-11-07 23:12_
+
+> Huh interesting, they say otherwise?
+> 
+> > The smallest distroless image, gcr.io/distroless/static-debian11, is around 2 MiB. That's about 50% of the size of alpine (~5 MiB).
+
+I was looking at the `base` image, so it does seem like you could make it smaller than Alpine. Sorry for the misinformation there.
+
+I tried running the currently built images with `distroless` and they don't work because the required libraries aren't there. It would have to be built from source with static linking. Are there instructions on how to build `ruff` so I could give that a whirl?
+
+> > since [multi-stage builds are basically unsupported in official images](https://github.com/docker-library/faq#multi-stage-builds), it's hard to make a small image while building without jumping through a lot of hoops.
+> 
+> Oh interesting, I presumed this issue was requesting an `astral-sh/ruff` image on DockerHub but you're looking for a `ruff` image in the Docker official images program?
+
+I'm fine with it being wherever, but if it's not an official image, then [rate limits will apply](https://docs.docker.com/docker-hub/download-rate-limit/) and for a tool like this, I think that would be a problem
+
+---
+
+_Comment by @zanieb on 2023-11-07 23:42_
+
+Ah that's complicated since we build Python wheels using Maturin:
+- https://github.com/astral-sh/ruff/blob/main/.github/workflows/release.yaml#L208-L213
+- https://github.com/PyO3/maturin-action
+- https://github.com/PyO3/maturin
+
+@konstin definitely knows more about this than me.
+
+---
+
+_Referenced in [astral-sh/ruff#8552](../../astral-sh/ruff/issues/8552.md) on 2023-11-08 04:50_
+
+---
+
+_Comment by @daveisfera on 2023-11-08 05:23_
+
+> Ah that's complicated since we build Python wheels using Maturin:
+> 
+> * https://github.com/astral-sh/ruff/blob/main/.github/workflows/release.yaml#L208-L213
+> * https://github.com/PyO3/maturin-action
+> * https://github.com/PyO3/maturin
+
+Ideally, `pip`/`python` wouldn't be involved in this at all. I'm assuming that `ruff` can be built directly from source and that's what would be put in this image
+
+---
+
+_Comment by @konstin on 2023-11-08 10:48_
+
+We can put the statically linked binary in a scratch image: https://github.com/astral-sh/ruff/pull/8554
+
+```Dockerfile
+FROM rust:1.73 as build
+
+RUN apt update && apt install musl musl-dev musl-tools
+RUN rustup target add x86_64-unknown-linux-musl
+COPY crates crates
+COPY Cargo.toml Cargo.toml
+COPY Cargo.lock Cargo.lock
+RUN cargo build --bin ruff --release --target x86_64-unknown-linux-musl
+# Optimize binary size
+RUN strip --strip-all target/x86_64-unknown-linux-musl/release/ruff
+
+FROM scratch
+COPY --from=build target/x86_64-unknown-linux-musl/release/ruff /ruff
+WORKDIR /io
+ENTRYPOINT ["/ruff"]
+````
+
+```console
+$ docker run -v .:/io --rm ruff check --select G004 .
+scripts/check_ecosystem.py:51:26: G004 Logging statement uses f-string
+scripts/check_ecosystem.py:55:22: G004 Logging statement uses f-string
+scripts/check_ecosystem.py:84:13: G004 Logging statement uses f-string
+scripts/check_ecosystem.py:177:18: G004 Logging statement uses f-string
+scripts/check_ecosystem.py:200:18: G004 Logging statement uses f-string
+scripts/check_ecosystem.py:354:18: G004 Logging statement uses f-string
+scripts/check_ecosystem.py:477:18: G004 Logging statement uses f-string
+Found 7 errors.
+```
+
+```console
+$ docker image ls ruff
+ REPOSITORY   TAG       IMAGE ID       CREATED         SIZE
+ ruff         latest    505876b0f817   2 minutes ago   16.2MB
+```
+
+I've never worked with docker multi arch, so i'd be happy if someone wants to port the dockerfile.
+
+---
+
+_Comment by @konstin on 2023-12-07 14:56_
+
+The docker image is available at https://ghcr.io/astral-sh/ruff
+
+---
+
+_Closed by @konstin on 2023-12-07 14:56_
+
+---
+
+_Referenced in [astral-sh/ruff#14119](../../astral-sh/ruff/issues/14119.md) on 2024-11-06 00:56_
+
+---

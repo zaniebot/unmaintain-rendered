@@ -1,0 +1,63 @@
+---
+number: 5808
+title: "PYTHONPATH support for `uv` Python Package"
+type: issue
+state: closed
+author: ulucs
+labels:
+  - question
+assignees: []
+created_at: 2024-08-06T07:33:43Z
+updated_at: 2024-10-21T21:19:51Z
+url: https://github.com/astral-sh/uv/issues/5808
+synced_at: 2026-01-07T13:12:17-06:00
+---
+
+# PYTHONPATH support for `uv` Python Package
+
+---
+
+_Issue opened by @ulucs on 2024-08-06 07:33_
+
+(Sort-of related to, and would fix: https://github.com/astral-sh/uv/issues/4450)
+
+Python supports a myriad of methods to declare dependency locations, not all of which can be correctly identified by the `uv` Python package. For example, `PYTHONPATH`:
+
+```
+❯ PYTHONPATH=$VENV_PATH/lib/python3.10/site-packages python
+Python 3.10.14 (main, Mar 19 2024, 21:46:16) [Clang 16.0.6 ] on darwin
+Type "help", "copyright", "credits" or "license" for more information.
+>>> import uv
+>>> uv.find_uv_bin()
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+  File "$VENV_PATH/lib/python3.10/site-packages/uv/__init__.py", line 30, in find_uv_bin
+    raise FileNotFoundError(path)
+FileNotFoundError: /Users/(thats_me)/.local/bin/uv
+```
+
+which throws, even though the `uv` package is located in the environment.
+
+## Expected Behavior
+
+`uv.find_uv_bin()` correctly identifies that its binary should be located in `$VENV_PATH/bin` and returns `$VENV_PATH/bin/uv`
+
+## Resonable Other Behavior
+
+`uv.find_uv_bin()` falls back to fetching the binary location from `$PATH`, and gives the responsibility of correctly setting it to the process which populated `$PYTHONPATH`
+
+---
+
+_Comment by @zanieb on 2024-08-06 14:50_
+
+Forgive my ignorance here, but isn't `PYTHONPATH` just a module search path? I don't quite see how we can "correctly" infer the virtual environment bin path from just the `PYTHONPATH`.
+
+---
+
+_Label `question` added by @zanieb on 2024-08-06 14:50_
+
+---
+
+_Closed by @zanieb on 2024-10-21 21:19_
+
+---

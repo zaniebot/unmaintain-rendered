@@ -1,0 +1,56 @@
+---
+number: 5433
+title: Test for regressions with something like crater/mypy_primer
+type: issue
+state: closed
+author: qarmin
+labels: []
+assignees: []
+created_at: 2023-06-29T05:29:36Z
+updated_at: 2023-06-29T08:18:52Z
+url: https://github.com/astral-sh/ruff/issues/5433
+synced_at: 2026-01-07T13:12:15-06:00
+---
+
+# Test for regressions with something like crater/mypy_primer
+
+---
+
+_Issue opened by @qarmin on 2023-06-29 05:29_
+
+Currently, regressions in new versions are automatically checked by running tests in CI.
+
+Project rely on users and fuzzers to find regressions between new releases, but this could be automated in some way.
+
+Rust and mypy also use in CI crater/mypy_primer - tools that can check for differences/regressions in hundreds of projects
+https://github.com/hauntsaninja/mypy_primer
+https://github.com/rust-lang/crater
+
+Example how mypy_primer works from its README
+```
+    Clones a copy of mypy (potentially from a fork you specified)
+    Checks out a "new" and "old" revision of mypy
+    Clones a hardcoded list of projects (potentially filtered by you)
+    Installs necessary stubs and dependencies per project
+    Runs the appropriate mypy command per project
+    Shows you the potentially differing results!
+    Lets you bisect to find the mypy commit that causes a given change
+```
+
+---
+
+_Comment by @charliermarsh on 2023-06-29 07:41_
+
+I believe we already have this - have you seen the “ecosystem checks” which appear on CI and in the repo? It does what you describe, unless I’m misunderstanding.
+
+---
+
+_Comment by @qarmin on 2023-06-29 08:18_
+
+Yes, this is indeed what I was writing about
+
+---
+
+_Closed by @qarmin on 2023-06-29 08:18_
+
+---

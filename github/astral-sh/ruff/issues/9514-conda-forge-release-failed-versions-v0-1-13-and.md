@@ -1,0 +1,60 @@
+---
+number: 9514
+title: Conda forge release failed (versions v0.1.13 and v0.1.12)
+type: issue
+state: closed
+author: vigneshmanick
+labels:
+  - release
+assignees: []
+created_at: 2024-01-14T14:05:37Z
+updated_at: 2024-01-23T15:47:30Z
+url: https://github.com/astral-sh/ruff/issues/9514
+synced_at: 2026-01-07T13:12:15-06:00
+---
+
+# Conda forge release failed (versions v0.1.13 and v0.1.12)
+
+---
+
+_Issue opened by @vigneshmanick on 2024-01-14 14:05_
+
+Hello,
+
+The conda forge releases for v0.1.13 and v0.1.12 has not yet been completed. Can you please have a look? 
+
+We have in our CI ruff being used in both PIP and via conda. The issue is that as soon as ruff is released, the PIP versions are available sooner compared to the conda versions (sometimes like this instance the release is not available in conda at all). 
+
+In our use case, we use ruff via both PIP and conda. The problem is that one of the workflows fails since the latest version is used there and the other workflow from conda cannot reproduce the issues since the same version is not available there. Fixing it in dev environment involves installing ruff via conda, so unless the release is available there is no way for devs to fix and push the commits.
+
+Suggestion here, check that the conda release is also available like PIP so that the versions are coordinated and in sync.
+
+Thanks again for the awesome tool!
+
+---
+
+_Comment by @charliermarsh on 2024-01-14 21:23_
+
+Sorry about that -- it looks like something was flakey on the Conda side. I re-ran both builds, and they finished up moments ago successfully.
+
+---
+
+_Closed by @charliermarsh on 2024-01-14 21:23_
+
+---
+
+_Label `release` added by @charliermarsh on 2024-01-14 21:23_
+
+---
+
+_Comment by @vigneshmanick on 2024-01-23 15:41_
+
+@charliermarsh sorry for the bother again. This happened with the recent version too. https://github.com/conda-forge/ruff-feedstock/pull/163 
+
+---
+
+_Comment by @charliermarsh on 2024-01-23 15:47_
+
+Ah sorry, that looks like a real failure based on build changes we made. I need to update the repo. Thanks.
+
+---

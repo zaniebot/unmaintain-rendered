@@ -1,0 +1,174 @@
+---
+number: 8447
+title: "`ruff` exits with `code 0` if there's a SyntaxError but rule `E999` is not selected"
+type: issue
+state: closed
+author: gavriil-deshaw
+labels:
+  - bug
+  - help wanted
+assignees: []
+created_at: 2023-11-02T15:44:46Z
+updated_at: 2024-06-27T12:46:47Z
+url: https://github.com/astral-sh/ruff/issues/8447
+synced_at: 2026-01-07T13:12:15-06:00
+---
+
+# `ruff` exits with `code 0` if there's a SyntaxError but rule `E999` is not selected
+
+---
+
+_Issue opened by @gavriil-deshaw on 2023-11-02 15:44_
+
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+As per the title, if the rule with code `E999` is not included in the configuration, then `ruff` will terminate successfully even if there's a `SyntaxError`. So, for example, if one wanted to run `ruff` against only the [Pylfakes rules](https://docs.astral.sh/ruff/rules/#pyflakes-f), the logical configuration for the rules would be `--select F`, but this doesn't work as expected.
+
+Specifically, running `ruff --select F <filename.py>` exits with `code 0` even if there's a `SyntaxError` - it does print `error: Failed to parse` but it doesn't raise an error. I believe this shouldn't be the default behavior as it would allow `ruff` to succeed in automated pipelines even with a `SyntaxError` (and possibly other `F` code errors). As a workaround for the mentioned use-case, one can also include `E999` in the selected rules. However, this isn't very intuitive since having a `SyntaxError` means that an AST can't be generated and so, even if `E999` isn't really a `Pyflakes` error, the python code can't be run. 
+
+FWIW, [ruff rules](https://docs.astral.sh/ruff/rules/) list `E999` as a `pycodestyle` error code, while in reality it's a code returned by `flake8` when it [can't generate an AST](https://flake8.pycqa.org/en/latest/user/error-codes.html) for a given file. The equivalent `pycodestyle` code is `E901 SyntaxError or IndentationError` as listed [here](https://pycodestyle.pycqa.org/en/latest/intro.html#error-codes).
+
+---
+
+_Comment by @zanieb on 2023-11-02 15:46_
+
+Seems reasonable to change the exit code if we fail to parse any files — I'm unsure of the difficulty to implement this.
+
+---
+
+_Label `bug` added by @zanieb on 2023-11-02 15:46_
+
+---
+
+_Label `help wanted` added by @zanieb on 2023-11-02 15:46_
+
+---
+
+_Comment by @gavriil-deshaw on 2023-11-02 17:00_
+
+Thanks for your prompt response!
+
+Would it be unreasonable to exit with `code 1` after a `ParseError`? I'm not Rust expert, so I might be missing something, but I seem to have that working with a 2-line change. It works as intended and all the tests pass (`cargo test | rg '; [1-9]?* failed' | wc -l` outputs `0`). If this isn't the desired behavior, an alternative would be to add cli option that would trigger this.
+
+What do you think?
+
+---
+
+_Comment by @zanieb on 2023-11-02 17:05_
+
+What's the two line change? :)
+
+I think we want to still lint the remaining files, so only exit at the end.
+
+---
+
+_Comment by @charliermarsh on 2023-11-02 17:40_
+
+I need to think on this... There's been a lot of back and forth on this behavior:
+
+- https://github.com/astral-sh/ruff/issues/196
+- https://github.com/astral-sh/ruff/pull/199
+- https://github.com/astral-sh/ruff/issues/2473
+- https://github.com/astral-sh/ruff/pull/2505
+- https://github.com/astral-sh/ruff/pull/2697
+- https://github.com/astral-sh/ruff/pull/3665
+
+---
+
+_Comment by @gavriil-deshaw on 2023-11-02 18:06_
+
+@zanieb I did it by just exiting with `code 1` after displaying the `ParseError`, but that indeed means that the remaining files aren't linted. IMHO, this is a more intuitive behavior, but I imagine that it might break things for people who accommodate for the current behavior.
+
+@charliermarsh what if you just add a cli option to exit if there's a `ParseError`? I think that's reasonable, if it's easily doable.
+
+In any case, you obviously know the codebase (and other related issues logged) better than I do, so I'll leave this up to you :))
+
+Thanks!
+
+---
+
+_Comment by @zanieb on 2023-11-02 18:57_
+
+I don't think exiting on the first error is an acceptable solution, unfortunately. We have people that rely on the current behavior and we can perform some lints despite syntax errors in a file.
+
+---
+
+_Comment by @tusharsadhwani on 2024-05-02 18:47_
+
+This affects writing rules as well, you write a new rule `E123`, and you run:
+
+```console
+$ cargo run -p ruff -- check foo.py --no-cache --preview --select E123
+    Finished dev [unoptimized + debuginfo] target(s) in 0.13s
+     Running `target/debug/ruff check foo.py --no-cache --preview --select E123`
+error: Failed to parse foo.py:1:5: Simple statements must be separated by newlines or semicolons
+All checks passed!
+```
+
+The last line gives a false sense of everything working.
+
+---
+
+I think putting a `seen_parse_error` boolean flag in `LinterResult` and propagating it up to `Diagnostics` would be an okay strategy to implement this?
+
+---
+
+_Comment by @zanieb on 2024-05-02 18:54_
+
+I believe @dhruvmanila might eventually be looking into how we can surface parse errors as diagnostics?
+
+---
+
+_Comment by @dhruvmanila on 2024-05-09 12:08_
+
+Yes, ideally the syntax errors should be surfaced using the same diagnostic system Ruff uses to display lint errors. There are still some outstanding questions with regards to the exit code and how should `E999` be used here but it should get clear when I start working on it.
+
+---
+
+_Comment by @dhruvmanila on 2024-06-19 03:31_
+
+I'll look into this today.
+
+---
+
+_Assigned to @dhruvmanila by @dhruvmanila on 2024-06-19 03:31_
+
+---
+
+_Comment by @dhruvmanila on 2024-06-24 12:42_
+
+I think this will depend on https://github.com/astral-sh/ruff/pull/11901 which will remove `E999` from being considered for any disablement methods which means that if there's any syntax error in the file, Ruff will always provide diagnostics for the same and will exit with a non-zero code. 
+
+---
+
+_Referenced in [astral-sh/ruff#11901](../../astral-sh/ruff/pulls/11901.md) on 2024-06-26 09:41_
+
+---
+
+_Referenced in [astral-sh/ruff#12005](../../astral-sh/ruff/pulls/12005.md) on 2024-06-27 07:07_
+
+---
+
+_Comment by @dhruvmanila on 2024-06-27 11:41_
+
+Resolved in #11901 and will be released in v0.5.0.
+
+---
+
+_Closed by @dhruvmanila on 2024-06-27 11:41_
+
+---
+
+_Comment by @gavriil-deshaw on 2024-06-27 12:46_
+
+Perfect, thanks for handling this!
+
+---

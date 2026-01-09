@@ -1,0 +1,97 @@
+---
+number: 4348
+title: Overriding one sub-setting nulls out other inherited settings
+type: issue
+state: closed
+author: hotpxl
+labels:
+  - configuration
+assignees: []
+created_at: 2023-05-10T14:56:19Z
+updated_at: 2023-05-15T02:35:00Z
+url: https://github.com/astral-sh/ruff/issues/4348
+synced_at: 2026-01-07T13:12:14-06:00
+---
+
+# Overriding one sub-setting nulls out other inherited settings
+
+---
+
+_Issue opened by @hotpxl on 2023-05-10 14:56_
+
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+## Problem description
+I'm using `extend` to extend the base configuration from a parent directory, then override `isort.required-imports`. But as soon as I override `isort.required-imports`, other settings under `isort` section from the parent configuration are lost. I was expecting to only override the sub-setting I specified and inherit the rest.
+
+For reproducing the issue, I have the following tree:
+```
+root/
+  .ruff.toml
+  subdir/
+    .ruff.toml
+    a.py
+```
+
+`root/.ruff.toml` has 
+```
+select = ["I"]
+
+[isort]
+required-imports = ["from __future__ import annotations"]
+forced-separate = ["my_utils"]
+```
+
+`root/subdir/.ruff.toml` has
+```
+extend = "../.ruff.toml"
+
+[isort]
+required-imports = []
+```
+
+`root/subdir/a.py` has
+```
+import my_utils
+import other_utils
+
+my_utils.a()
+other_utils.b()
+```
+
+When I run `ruff check --fix **/**`, ruff *does not* split my_utils and other_utils imports, unless I also add `forced-separate = ["my_utils"]` to `root/subdir/.ruff.toml`.
+
+(I can also verify this behavior using `--show-settings`)
+
+---
+
+_Label `configuration` added by @charliermarsh on 2023-05-10 15:29_
+
+---
+
+_Comment by @charliermarsh on 2023-05-12 01:34_
+
+I agree -- we should be overriding on a per-key basis, not a per-section basis.
+
+---
+
+_Referenced in [astral-sh/ruff#4431](../../astral-sh/ruff/pulls/4431.md) on 2023-05-14 14:12_
+
+---
+
+_Closed by @charliermarsh on 2023-05-15 02:35_
+
+---
+
+_Referenced in [astral-sh/ruff#9872](../../astral-sh/ruff/issues/9872.md) on 2024-02-07 12:02_
+
+---

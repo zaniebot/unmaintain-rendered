@@ -1,0 +1,129 @@
+---
+number: 15785
+title: "Document the `NO_PROXY` environment variable support and schema"
+type: issue
+state: closed
+author: albertino87
+labels:
+  - documentation
+  - good first issue
+assignees: []
+created_at: 2025-09-11T11:41:54Z
+updated_at: 2025-09-12T17:11:06Z
+url: https://github.com/astral-sh/uv/issues/15785
+synced_at: 2026-01-07T13:12:19-06:00
+---
+
+# Document the `NO_PROXY` environment variable support and schema
+
+---
+
+_Issue opened by @albertino87 on 2025-09-11 11:41_
+
+### Summary
+
+Hello,
+i have a windows corporate machine that is behind a proxy but uses a local repo for the python packages which does not require any proxy.
+I have the environment variable `no_proxy` set on the local python repo
+When I run for example
+`pip install black`
+it works fine, but if I try
+`uv pip install black`
+I get:
+<img width="849" height="69" alt="Image" src="https://github.com/user-attachments/assets/0b3cedca-c170-4927-b428-cc8f06d8210a" />
+If I go to this page: https://docs.astral.sh/uv/reference/environment/ there is no NO_PROXY variable.
+Can you please fix it?
+Many thanks
+
+
+### Platform
+
+Windows Server 2012
+
+### Version
+
+0.8.15
+
+### Python version
+
+python 3.12.5
+
+---
+
+_Label `bug` added by @albertino87 on 2025-09-11 11:41_
+
+---
+
+_Comment by @zanieb on 2025-09-11 12:40_
+
+Hm, as far as I can tell, the reqwest client (which we use) respects NO_PROXY, e.g., https://github.com/seanmonstar/reqwest/pull/877
+
+I'm not sure why it wouldn't be working.
+
+---
+
+_Comment by @albertino87 on 2025-09-11 18:25_
+
+I'm not a rust developer, I am not sure how things work but are you sure you're including the latest version of the reqwest library?
+
+---
+
+_Referenced in [seanmonstar/reqwest#2815](../../seanmonstar/reqwest/issues/2815.md) on 2025-09-11 18:26_
+
+---
+
+_Comment by @fleetingbytes on 2025-09-12 01:58_
+
+> I'm not a rust developer, I am not sure how things work but are you sure you're including the latest version of the reqwest library?
+
+The uv [depends on](https://github.com/astral-sh/uv/blob/21a92c1632cd09536c6258466bf209c06dc3a0bd/Cargo.toml#L154) reqwest 0.12.22
+
+---
+
+_Label `external` added by @charliermarsh on 2025-09-12 14:59_
+
+---
+
+_Comment by @charliermarsh on 2025-09-12 15:00_
+
+It looks like this was answered over in `reqwest`: https://github.com/seanmonstar/reqwest/issues/2815#issuecomment-3285529671. We should add it to our docs though?
+
+---
+
+_Label `bug` removed by @charliermarsh on 2025-09-12 15:00_
+
+---
+
+_Label `external` removed by @charliermarsh on 2025-09-12 15:00_
+
+---
+
+_Label `documentation` added by @charliermarsh on 2025-09-12 15:00_
+
+---
+
+_Comment by @zanieb on 2025-09-12 15:35_
+
+Yeah we should
+
+---
+
+_Renamed from "uv not respecting the no_proxy setting" to "Document the `NO_PROXY` environment variable support and schema" by @zanieb on 2025-09-12 15:35_
+
+---
+
+_Label `good first issue` added by @zanieb on 2025-09-12 15:35_
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2025-09-12 16:14_
+
+---
+
+_Referenced in [astral-sh/uv#15816](../../astral-sh/uv/pulls/15816.md) on 2025-09-12 16:23_
+
+---
+
+_Closed by @charliermarsh on 2025-09-12 17:11_
+
+---

@@ -1,0 +1,331 @@
+---
+number: 3295
+title: Avoid autoremoval of imported pytest fixtures
+type: issue
+state: closed
+author: peterroelants
+labels:
+  - bug
+assignees: []
+created_at: 2023-03-01T19:35:37Z
+updated_at: 2025-01-29T16:04:45Z
+url: https://github.com/astral-sh/ruff/issues/3295
+synced_at: 2026-01-07T13:12:14-06:00
+---
+
+# Avoid autoremoval of imported pytest fixtures
+
+---
+
+_Issue opened by @peterroelants on 2023-03-01 19:35_
+
+Currently imported pytest fixtures are removed by the ruff autoremoval feature (unused import). After running ruff my tests fail because the fixtures are removed.
+
+Example
+```python
+from fixtures import some_fixture # reported as unused and removed
+
+def test_something(some_fixture):
+    assert something
+```
+
+Tested on `ruff 0.0.253`
+
+
+---
+
+_Label `bug` added by @charliermarsh on 2023-03-01 19:38_
+
+---
+
+_Comment by @bluetech on 2023-03-01 19:57_
+
+Why do you import the fixture? It shouldn't be needed generally.
+
+---
+
+_Comment by @peterroelants on 2023-03-01 20:01_
+
+> Why do you import the fixture? It shouldn't be needed generally.
+
+It's not in a conftest.py file, it's in a separate library.
+If I don't import in this case, my tests don't work anymore.
+
+
+---
+
+_Comment by @charliermarsh on 2023-03-01 20:04_
+
+I'm admittedly not familiar enough with `pytest` to know what to do here. How does `some_fixture` end up getting used? Because it has the same name as the function argument?
+
+---
+
+_Comment by @edgarrmondragon on 2023-03-01 20:05_
+
+> It's not in a conftest.py file, it's in a separate library.
+> If I don't import in this case, my tests don't work anymore.
+
+The usual pattern is to use `pytest_plugins` to enable them:
+
+```python
+# conftest.py
+
+pytest_plugins = ("my_library.pytest_plugin",)
+```
+
+https://docs.pytest.org/en/7.1.x/how-to/plugins.html#requiring-loading-plugins-in-a-test-module-or-conftest-file
+
+> I'm admittedly not familiar enough with `pytest` to know what to do here. How does `some_fixture` end up getting used? Because it has the same name as the function argument?
+
+Yup. Pytest does dependency injection based on the function name. You can also override the fixture name in the decorator call.
+
+---
+
+_Comment by @peterroelants on 2023-03-01 20:06_
+
+> The usual pattern is to use `pytest_plugins` to enable them:
+
+I'm using workarounds, e.g. `pytest_plugins = []` or just asserting that `some_fixture` is there. But it's still valid code which is turned into non-working code after running ruff.
+
+
+
+---
+
+_Comment by @bluetech on 2023-03-01 20:31_
+
+@edgarrmondragon's suggested solution is not really a workaround, it's preferred way to do it, because importing fixtures might lead to subtle problems. pytest docs recommend against importing fixtures: https://docs.pytest.org/en/7.2.x/how-to/fixtures.html#using-fixtures-from-other-projects
+
+I understand your concern about ruff breaking code, but since it points to a real problem IMO ruff should not add special code for it.
+
+---
+
+_Comment by @peterroelants on 2023-03-01 21:02_
+
+> but since it points to a real problem IMO ruff should not add special code for it.
+
+I've been thinking and I agree. Ruff should not concern it with the intricacies of pytest. Thanks for the discussion and references, I will close the issue.
+
+---
+
+_Closed by @peterroelants on 2023-03-01 21:02_
+
+---
+
+_Referenced in [astral-sh/ruff#4046](../../astral-sh/ruff/issues/4046.md) on 2023-04-20 20:48_
+
+---
+
+_Referenced in [astral-sh/ruff#2044](../../astral-sh/ruff/issues/2044.md) on 2023-07-05 21:47_
+
+---
+
+_Comment by @emosenkis on 2023-08-09 18:43_
+
+I'm a little confused by this conclusion - pytest's docs only recommend against importing fixtures from *other* projects. Is there any recommendation against importing fixtures from elsewhere in your own project? Likewise, `F811` gets triggered anytime a fixture is used in the same file that defines it. AFAIK, this is an accepted pattern for defining fixtures that are not broadly useful outside of a single test module.
+
+---
+
+_Comment by @zanieb on 2023-08-09 18:45_
+
+I agree this is a common pattern e.g. https://github.com/PrefectHQ/prefect/blob/16f46ca49838cbdb250d113bb149f13ca819302d/tests/conftest.py#L68-L78
+
+I'm not sure it's feasible for Ruff to address this though.
+
+---
+
+_Referenced in [astral-sh/ruff#10662](../../astral-sh/ruff/issues/10662.md) on 2024-03-30 00:47_
+
+---
+
+_Comment by @mistercrunch on 2024-04-23 20:46_
+
+I'm fine with the verdict, but wanted to add a note +1 in issues I hit while trying to enable ruff on https://github.com/apache/superset , somehow we've been using this import pattern across the 1700 test modules ...
+
+---
+
+_Comment by @AntiSol on 2024-06-14 03:35_
+
+I have to say I agree with @emosenkis on this one, the conclusion reached here doesn't make much sense to me at all.
+
+as @emosenkis points out, the dox linked to only recommend against importing fixtures from other _projects_, it makes no mention of importing from other modules in the same project. The documentation linked to also mentions only "minor consequences", not anything severe - to my reading importing from another module is fine.
+
+Further, in my case adding the fixture in question to conftest rather than leaving it where it is currently defined would cause a circular import - that's why it's defined where it is, e.g:
+
+conftest.py:
+```python
+
+...
+
+def some_helper():
+    some_logic_here(thing_defined_in_conftest)
+    something = more_logic(other_thing_defined_in_conftest)
+    return something
+
+```
+
+test_thing.py:
+```python
+
+from thing import Thing
+from conftest import some_helper
+
+@fixture(scope='function')
+def my_thing() -> Thing:
+    something = some_helper()
+    other_logic_here()
+    return Thing()
+   
+```
+
+test_other_thing.py:
+```python
+
+from thing import Thing
+from test_thing import my_thing
+
+def test_something(my_thing:Thing)
+    some_logic()
+    do_things_with(my_thing)
+    assert things_about(my_thing)
+```
+
+In this case the `some_helper` function could be moved out of conftest, but since it uses a bunch of things which are defined in conftest, wherever I move it to would also still need to import conftest (presumably inside the `some_helper` function, to avoid circular imports, something that's ugly and will [trip its own warning](https://docs.astral.sh/ruff/rules/module-import-not-at-top-of-file/)). Another option could potentially be to duplicate the fixture in multiple files, a violation of DRY. It seems clear to me that best practice is to import the fixture from the other file where it is defined.
+
+I think ruff should be addressing this, and as far as I can see it shouldn't be too difficult to do - all you need to do is find the definition for any unused items which are being imported and see if they're wrapped by a pytest @fixture decorator before removing them.
+
+I intend to continue importing my fixtures from other modules in line with best practice, unless someone can suggest a better/cleaner alternative. I'll have to consider whether to turn off the 'remove unused imports' option until such time as this code-breaking behaviour is changed :cry: 
+
+---
+
+_Comment by @charliermarsh on 2024-06-14 03:50_
+
+Hmm. I'm pretty hesitant to re-implement pytest logic in Ruff directly, which is effectively what we'd be doing here. We also don't support doing that kind of lookup across files right now so we couldn't support it even if we wanted to (though we could in the future once we've shipped multi-file analysis and type inference). E.g., in this case, we have no way of knowing that that `my_thing` is wrapped in a fixture:
+
+```python
+from thing import Thing
+from test_thing import my_thing
+
+def test_something(my_thing:Thing)
+    some_logic()
+    do_things_with(my_thing)
+    assert things_about(my_thing)
+```
+
+---
+
+_Comment by @AntiSol on 2024-06-14 04:16_
+
+Thanks for the quick response :) 
+
+You'd have to go find the definition for `my_thing` and figure out whether it's wrapped in the fixture decorator. I suppose that could be one of those "harder than it sounds" problems.
+
+I suppose a less-automagic and less-complicated fix would be to allow me to maintain a list of imports which are allowed to be unused, i.e something like this in pyproject.toml:
+```toml
+[tool.ruff.lint]
+ignore_unused_imports = [
+    'my_thing', # or maybe 'test_thing.my_thing'?
+]
+```
+
+maybe something like `f401_ignorelist` would be a better name :shrug: 
+
+Something like this would also generalise: i.e it allows fixing this issue for things other than pytest fixtures that have the same problem (I can see it being an issue for anything that uses dependency injection using a similar pattern to pytest), without either littering my code with #noqa's, or turning off F401 altogether (which is what I have reluctantly done).
+
+and as a bonus I could write a thing to find all my fixtures and add them in here, too.
+
+---
+
+_Comment by @stefanv on 2024-06-21 19:22_
+
+Just to re-iterate on the point made above: this takes *working* code and breaks it. I think Ruff should, as a matter of principle, never do that.
+
+---
+
+_Referenced in [a16z/halmos#354](../../a16z/halmos/pulls/354.md) on 2024-08-26 18:20_
+
+---
+
+_Comment by @pelson on 2024-10-21 08:01_
+
+> I'm pretty hesitant to re-implement pytest logic in Ruff directly
+
+I fully understand that! As a data-point, I note that PyCharm must have also re-implemented the logic, as it is able to determine which fixtures are used and which aren't (screenshot to show coloring):
+
+![screenshot_of_fixture_code](https://github.com/user-attachments/assets/a43c926c-f2cf-4913-bc13-08086a38e01a)
+
+As already highlighted, the workaround cited from the `pytest` docs is not apply to local imports (from my reading at least), and furthermore cannot be applied in general if there are fixtures in the test suite of the same name but intended for different sub-package context (for example, I have a fixture called `client` which is a different type of client depending on which sub-package I am testing). This is because `conftest.py`'s `pytest_plugins` option can _only_ be used at the top level (https://docs.pytest.org/en/stable/deprecations.html#pytest-plugins-in-non-top-level-conftest-files).
+
+A workaround that hasn't been mentioned yet is to re-export the imports to trick `ruff` into thinking you are declaring the fixture as part of the public interface.
+
+So:
+
+```
+from fixtures import some_fixture # reported as unused and removed
+
+def test_something(some_fixture):
+    assert something
+```
+
+Becomes:
+
+```
+from fixtures import some_fixture as some_fixture  # re-exported to avoid F401
+
+def test_something(some_fixture):
+    assert something
+```
+
+
+> Just to re-iterate on the point made above: this takes working code and breaks it. I think Ruff should, as a matter of principle, never do that.
+
+Whilst I appreciate the idea, I find this view to be a bit too extreme - since imports can have side-effects (even though they shouldn't) then you can _never_ consider any import to be a safe fix removal. The same applies for importing in order to expose an interface - in practice `ruff` has converged on re-exporting as the solution to avoid such "breaking" fixes (or you use `__all__` (which ruff also understands)), and my impression is that this is good enough in most cases. In other words, the benefit of automatically removing unused imports is worth the cost of having to re-export imports with side-effects, in _most cases_.
+
+
+One option that `ruff` may be able to do would be to split "mostly safe" from "probably unsafe" fixes. It could do this by identifying the imported target (if it exists) and determining if this target name is used as an argument in any function defined in the file. Having looked at the behaviour of `pytest` fixtures, I believe this would be consistent with how they work and doesn't require any multi-file analysis.
+
+
+---
+
+_Referenced in [python-poetry/poetry#9748](../../python-poetry/poetry/pulls/9748.md) on 2024-11-01 10:25_
+
+---
+
+_Comment by @dynamicalsystem on 2024-11-07 04:57_
+
+> A workaround that hasn't been mentioned yet is to re-export the imports to trick `ruff` into thinking you are declaring the fixture as part of the public interface.
+> 
+> ```python 
+> from fixtures import some_fixture # reported as unused and removed
+> 
+> def test_something(some_fixture):
+>     assert something
+> ```
+> 
+> Becomes:
+> 
+> ```python 
+> from fixtures import some_fixture as some_fixture  # re-exported to avoid F401
+> 
+> def test_something(some_fixture):
+>     assert something
+> ```
+
+What would stop Ruff making this a linting rule? Is it able to identify the import as a fixture and apply the export if missing? If so, why can't it ignore F401 if it identifies the import as a fixture?
+
+---
+
+_Referenced in [astral-sh/ruff#14539](../../astral-sh/ruff/issues/14539.md) on 2024-11-22 20:38_
+
+---
+
+_Comment by @pelson on 2025-01-29 16:04_
+
+> Is it able to identify the import as a fixture and apply the export if missing?
+
+I think this relates to the point that @charliermarsh was making in https://github.com/astral-sh/ruff/issues/3295#issuecomment-2167159143. Namely, that requires inference to determine that the imported thing is a fixture.
+
+The workaround I proposed above still feels to me like a bit of a workaround. I wonder if [the heuristic that I suggested](https://github.com/astral-sh/ruff/issues/3295#issuecomment-2425912707) might just be good enough to address the majority of cases:
+
+> One option that ruff may be able to do would be to split "mostly safe" from "probably unsafe" fixes. It could do this by identifying the imported target (if it exists) and determining if this target name is used as an argument in any function defined in the file.
+
+---

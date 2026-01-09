@@ -1,0 +1,116 @@
+---
+number: 14166
+title: "Uv not failing to install library when library doesn't exist for python version"
+type: issue
+state: closed
+author: Ryang20718
+labels:
+  - question
+assignees: []
+created_at: 2025-06-20T18:38:00Z
+updated_at: 2025-06-20T20:02:10Z
+url: https://github.com/astral-sh/uv/issues/14166
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# Uv not failing to install library when library doesn't exist for python version
+
+---
+
+_Issue opened by @Ryang20718 on 2025-06-20 18:38_
+
+### Summary
+
+When installing a version of a library that doesn't support a python version, uv should fail
+
+Simple repro
+
+requirements.txt
+```
+scale-sensor-fusion-io==0.3.0
+```
+
+https://pypi.org/project/scale-sensor-fusion-io/0.3.0/ doesn't have a whl for 3.12
+`uv pip install -r requirements.txt --python-version=3.12`
+
+
+```
+Resolved 19 packages in 391ms
+Installed 19 packages in 155ms
+ + dacite2==2.0.0
+ + ffmpeg-python==0.2.0
+ + future==1.0.0
+ + numpy==1.26.4
+ + opencv-python==4.11.0.86
+ + pandas==2.3.0
+ + pyquaternion==0.9.9
+ + python-dateutil==2.9.0.post0
+ + pyturbojpeg==1.8.0
+ + pytz==2025.2
+ + scale-json-binary==0.0.7
+ + scale-sensor-fusion-io==0.3.0
+ + scipy==1.15.3
+ + six==1.17.0
+ + sk-video==1.1.10
+ + tqdm==4.67.1
+ + typing-extensions==4.14.0
+ + tzdata==2025.2
+ + ujson==5.10.0
+```
+
+### Platform
+
+ubuntu 20.04
+
+### Version
+
+uv 0.7.13
+
+### Python version
+
+Python 3.12.10
+
+---
+
+_Label `bug` added by @Ryang20718 on 2025-06-20 18:38_
+
+---
+
+_Comment by @oconnor663 on 2025-06-20 18:47_
+
+~~It looks like the `pyproject.toml` in that package doesn't have a `requires-python` field. Instead it has this:~~
+
+```toml
+[tool.poetry.dependencies]
+python = ">=3.8,<3.12"
+```
+
+~~Could that be the issue here?~~
+
+---
+
+_Comment by @zanieb on 2025-06-20 19:05_
+
+This package does have a wheel that's ABI compatible with any Python version, i.e., https://pypi.org/project/scale-sensor-fusion-io/0.3.0/#files includes `scale_sensor_fusion_io-0.3.0-py3-none-any.whl`
+
+What you're seeing here is that uv ignores upper bounds on Python requirements.
+
+---
+
+_Label `bug` removed by @zanieb on 2025-06-20 19:05_
+
+---
+
+_Label `question` added by @zanieb on 2025-06-20 19:05_
+
+---
+
+_Comment by @zanieb on 2025-06-20 19:05_
+
+See https://github.com/astral-sh/uv/issues/8374#issuecomment-2424246009
+
+---
+
+_Closed by @charliermarsh on 2025-06-20 20:02_
+
+---

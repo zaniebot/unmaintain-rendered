@@ -1,0 +1,67 @@
+---
+number: 4511
+title: "Consider adding `uv new`"
+type: issue
+state: closed
+author: vlad-ivanov-name
+labels:
+  - duplicate
+  - projects
+assignees: []
+created_at: 2024-06-25T09:41:24Z
+updated_at: 2024-06-25T16:45:35Z
+url: https://github.com/astral-sh/uv/issues/4511
+synced_at: 2026-01-07T13:12:17-06:00
+---
+
+# Consider adding `uv new`
+
+---
+
+_Issue opened by @vlad-ivanov-name on 2024-06-25 09:41_
+
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with uv.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
+* The current uv platform.
+* The current uv version (`uv --version`).
+-->
+
+Given that `uv` is getting more and more project management features, from UX point of view it feels like `uv` should have `uv new` to create a new `pyproject.toml` file. Ideally this should integrate with other uv facilities such as toolchain management and lockfiles
+
+
+---
+
+_Label `project-management` added by @zanieb on 2024-06-25 12:49_
+
+---
+
+_Comment by @ibraheemdev on 2024-06-25 15:13_
+
+Related tracking issue for `uv init`: https://github.com/astral-sh/uv/issues/1360.
+
+---
+
+_Comment by @zanieb on 2024-06-25 15:16_
+
+Let's track over in that one.
+
+---
+
+_Closed by @zanieb on 2024-06-25 15:16_
+
+---
+
+_Label `duplicate` added by @zanieb on 2024-06-25 15:16_
+
+---
+
+_Comment by @vlad-ivanov-name on 2024-06-25 16:45_
+
+Whoops, sorry -- I did search `uv new` but not `uv init` 😅 
+
+---

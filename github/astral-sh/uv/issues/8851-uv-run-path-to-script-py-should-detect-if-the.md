@@ -1,0 +1,44 @@
+---
+number: 8851
+title: "`uv run /path/to/script.py` should detect if the script is in a project"
+type: issue
+state: open
+author: ceejatec
+labels: []
+assignees: []
+created_at: 2024-11-06T01:45:04Z
+updated_at: 2025-09-29T06:45:25Z
+url: https://github.com/astral-sh/uv/issues/8851
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# `uv run /path/to/script.py` should detect if the script is in a project
+
+---
+
+_Issue opened by @ceejatec on 2024-11-06 01:45_
+
+I've got a number of scripts that have associated `pyproject.toml` files to declare dependencies, so I can make use of `uv.lock` files. I'd like to then run them from other directories with `uv run /path/to/script.py`. However, I end up having to run `uv run --project /path/to /path/to/script.py` instead.
+
+My gut says that if a script is located somewhere under a `pyproject.toml`, it's not unreasonable to assume it's intended to be run in the context of that project. I'd like it to behave exactly as though the full `uv run --project /path/to /path/to/script.py` command was invoked, including creating or using `/path/to/.venv` , etc.
+
+There's already a `uv run --no-project` option for doing the reverse.
+
+P.S. I know I could use inline script dependency management here instead, but I feel like it's a little bit limited compared to a full project. In particular, there's no equivalent of `uv.lock`. I've experimented with the `exclude-newer` option, but I can't tell whether that always works predictably. In particular, if I set that to, say, a month ago, then running `uv run` often will start compiling dependencies like pandas, rather than finding a wheel. Does that sound like a bug, or do I have unreasonable expectations here?
+
+---
+
+_Comment by @distbit0 on 2024-11-09 16:05_
+
+YESS!!!! This would be extremely useful
+
+---
+
+_Comment by @vladzen13 on 2025-09-29 06:45_
+
+Yeah! I just got into the same issue.
+
+It also works if you use something like this, btw
+uv run --directory=/path/to/project  relative/path/to/script.py
+
+---

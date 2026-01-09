@@ -1,0 +1,48 @@
+---
+number: 9544
+title: W391 implementation is missing despite being checked off
+type: issue
+state: closed
+author: sihil
+labels:
+  - documentation
+assignees: []
+created_at: 2024-01-16T07:53:01Z
+updated_at: 2024-01-16T19:37:49Z
+url: https://github.com/astral-sh/ruff/issues/9544
+synced_at: 2026-01-07T13:12:15-06:00
+---
+
+# W391 implementation is missing despite being checked off
+
+---
+
+_Issue opened by @sihil on 2024-01-16 07:53_
+
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+In a pycodestyle tracking issue https://github.com/astral-sh/ruff/issues/2402 the rule for `W391` is checked but this does not exist in the ruff codebase. In fact there is a [comment noting this](https://github.com/astral-sh/ruff/issues/2402#issuecomment-1855323380). Can this be unchecked so the tracking and expectations is right and, ultimately, tackled?
+
+---
+
+_Comment by @charliermarsh on 2024-01-16 19:37_
+
+Thanks, I unchecked it -- not sure how that happened!
+
+---
+
+_Closed by @charliermarsh on 2024-01-16 19:37_
+
+---
+
+_Label `documentation` added by @charliermarsh on 2024-01-16 19:37_
+
+---

@@ -1,0 +1,115 @@
+---
+number: 13085
+title: "[red-knot] assert that we don't create multiple definitions for one node"
+type: issue
+state: closed
+author: carljm
+labels:
+  - ty
+assignees: []
+created_at: 2024-08-23T22:00:43Z
+updated_at: 2024-09-04T05:53:34Z
+url: https://github.com/astral-sh/ruff/issues/13085
+synced_at: 2026-01-07T13:12:15-06:00
+---
+
+# [red-knot] assert that we don't create multiple definitions for one node
+
+---
+
+_Issue opened by @carljm on 2024-08-23 22:00_
+
+I don't think this should happen, and if it does that suggests a bug. But a quick attempt to add the assert caused a panic, so apparently we are already relying on this. We should figure out why/where, fix it, and add the assert.
+
+
+---
+
+_Label `red-knot` added by @carljm on 2024-08-23 22:00_
+
+---
+
+_Referenced in [astral-sh/ruff#13075](../../astral-sh/ruff/pulls/13075.md) on 2024-08-23 22:01_
+
+---
+
+_Comment by @carljm on 2024-08-23 22:02_
+
+See https://github.com/astral-sh/ruff/pull/13075#discussion_r1729363001 for previous attempt to add the assert.
+
+---
+
+_Comment by @dylwil3 on 2024-08-24 05:27_
+
+It looks like it's only one corpus example that panics with the new debug assertion (commenting it out makes the test pass):
+
+```python
+async def foo():
+    l = {k: v async for k, v in gen()}
+    return [i for i in l]
+```
+
+A more minimal example that causes a panic is this:
+
+```python
+{i: j for i, j in gen}
+```
+
+In each case the repeated definition is the `Comprehension`.
+
+All of the following cause the test to fail for the same reason:
+
+```python
+{i: j for i, j in gen}
+{i for i, j in gen}
+{0: 0 for i,j in gen}
+{0 for i,j in gen}
+[i for i,j in gen]
+[j for i,j in gen]
+[0 for i,j in gen]
+```
+
+These cases pass:
+
+```python
+{x[0]: x[1] for x in gen}
+{0: 0 for x in gen}
+```
+
+So it seems like issue is the tuple of elements... and indeed, if you remove the `debug_assert_eq` and inspect how many definitions get added for
+
+```python
+[_ for a,b,c,d,e in gen]
+```
+
+you'll find it's 5.
+
+But that's as far as I got and I should probably go to sleep 💤 
+
+
+---
+
+_Comment by @carljm on 2024-08-24 09:57_
+
+That's good data; looks like the problem is we don't handle unpacking in comprehension iteration vars. 
+
+---
+
+_Assigned to @dhruvmanila by @dhruvmanila on 2024-09-02 11:37_
+
+---
+
+_Referenced in [astral-sh/ruff#13213](../../astral-sh/ruff/pulls/13213.md) on 2024-09-02 12:41_
+
+---
+
+_Referenced in [astral-sh/ruff#13214](../../astral-sh/ruff/pulls/13214.md) on 2024-09-02 12:46_
+
+---
+
+_Closed by @dhruvmanila on 2024-09-04 05:53_
+
+---
+
+_Closed by @dhruvmanila on 2024-09-04 05:53_
+
+---

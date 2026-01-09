@@ -1,0 +1,76 @@
+---
+number: 4226
+title: Expose a hidden(non-visible) aliases
+type: issue
+state: open
+author: aobatact
+labels:
+  - C-enhancement
+  - A-builder
+  - S-triage
+assignees: []
+created_at: 2022-09-18T14:13:24Z
+updated_at: 2022-09-28T16:18:10Z
+url: https://github.com/clap-rs/clap/issues/4226
+synced_at: 2026-01-07T13:12:20-06:00
+---
+
+# Expose a hidden(non-visible) aliases
+
+---
+
+_Issue opened by @aobatact on 2022-09-18 14:13_
+
+### Please complete the following tasks
+
+- [X] I have searched the [discussions](https://github.com/clap-rs/clap/discussions)
+- [X] I have searched the [open](https://github.com/clap-rs/clap/issues) and [rejected](https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed) issues
+
+### Clap Version
+
+3.2.22
+
+### Describe your use case
+
+While I'm working with adding a `Serialize` impl at [clap-serde#46](https://github.com/aobatact/clap-serde/pull/46), I wanted to get hidden aliases separate from visible ones. Thought it is possible to get them by using `get_all_*_aliases` and `get_visible_*_aliases`, it would be efficient and convenient to have a `get_hidden_*_aliases` methods. 
+
+### Describe the solution you'd like
+
+Expose a `get_hidden_*_aliases` to `Command` and `Arg`.
+
+
+### Alternatives, if applicable
+
+Status quo and users get hidden aliases by subtracting `get_visible_aliases` from `get_all_*_aliases`.
+
+### Additional Context
+
+_No response_
+
+---
+
+_Label `C-enhancement` added by @aobatact on 2022-09-18 14:13_
+
+---
+
+_Referenced in [clap-rs/clap#4227](../../clap-rs/clap/pulls/4227.md) on 2022-09-18 14:23_
+
+---
+
+_Comment by @epage on 2022-09-19 14:18_
+
+Kind of like how clap switched from possible values being a `&str` to `PossibleValue`, I wonder if we should have an `Alias<T>` which has a `hide` method on it.
+
+---
+
+_Label `A-builder` added by @epage on 2022-09-28 16:18_
+
+---
+
+_Label `S-triage` added by @epage on 2022-09-28 16:18_
+
+---
+
+_Referenced in [clap-rs/clap#4416](../../clap-rs/clap/issues/4416.md) on 2022-10-22 20:08_
+
+---

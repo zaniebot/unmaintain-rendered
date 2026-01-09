@@ -1,0 +1,159 @@
+---
+number: 10099
+title: priority of packages that exist on multiple indexes
+type: issue
+state: closed
+author: youkaichao
+labels:
+  - question
+assignees: []
+created_at: 2024-12-22T17:58:19Z
+updated_at: 2024-12-22T21:15:17Z
+url: https://github.com/astral-sh/uv/issues/10099
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# priority of packages that exist on multiple indexes
+
+---
+
+_Issue opened by @youkaichao on 2024-12-22 17:58_
+
+Hi, I'm a developer from the https://github.com/vllm-project/vllm project, and we love `uv`! Thanks for the great project, it's really fast!
+
+Recently, I'm looking into the issues https://github.com/vllm-project/vllm/issues/9244 and https://github.com/astral-sh/uv/issues/8082 .
+
+To be compatible with `uv`, I have changed the way to host nightly wheels in https://github.com/vllm-project/vllm/pull/11404 . And now `uv pip install --pre -U vllm --extra-index-url=https://dsefy9jmd4lqu.cloudfront.net/nightly/` works.
+
+Surprisingly, `uv pip install --pre vllm --extra-index-url https://dsefy9jmd4lqu.cloudfront.net/33f460b17a54acb3b6cc0b03f4a17876cff5eafd/` also works. It will install `0.6.3.dev28+g33f460b1.d20240927` version.
+
+However, if I directly use `pip` , it does not work. `pip` tries to install the latest version `0.6.5` from pypi, ignoring the pre-released version.
+
+So, my guess:
+
+when I specify `--pre`, `uv` will only look for pre-released versions excluding released versions, while `pip` will only include pre-released versions but sort all versions available to determine the latest version.
+
+Is this understanding correct?
+
+If this is correct, I'd like to know, if the difference in behavior a desired feature or a bug that will be fixed later?
+
+To be clear, I want this feature. My use case is, I want people to be able to install any dev version of vllm by simply changing the commit hash in the index, so that they can easily bisect vLLM's behavior to find the relevant commit they care about.
+
+---
+
+_Comment by @youkaichao on 2024-12-22 17:59_
+
+I'm using uv 0.5.11
+
+---
+
+_Comment by @zanieb on 2024-12-22 18:09_
+
+Please see https://docs.astral.sh/uv/pip/compatibility/#pre-release-compatibility — let me know if you still have questions.
+
+---
+
+_Label `question` added by @zanieb on 2024-12-22 18:09_
+
+---
+
+_Comment by @youkaichao on 2024-12-22 18:52_
+
+Thanks for the quick response!
+
+I read the doc, but still don't understand.
+
+In my case of `uv pip install --pre vllm --extra-index-url https://dsefy9jmd4lqu.cloudfront.net/33f460b17a54acb3b6cc0b03f4a17876cff5eafd/` , there are multiple released versions from pypi , and one pre-released version from the extra index url. And `uv` is doing the right thing I want, which is to use the latest pre-released version.
+
+The doc you link to, seems to be related to `dependency resolution`, while I assume my question is more about selecting the top-level root package to install in the first place.
+
+---
+
+_Comment by @youkaichao on 2024-12-22 19:39_
+
+In addition, I find another desired behavior from `uv`:
+
+`uv pip install --pre vllm -i https://dsefy9jmd4lqu.cloudfront.net/33f460b17a54acb3b6cc0b03f4a17876cff5eafd/` works (I'm using `-i` rather than `--extra-index-url`)
+
+`pip install --pre vllm -i https://dsefy9jmd4lqu.cloudfront.net/33f460b17a54acb3b6cc0b03f4a17876cff5eafd/` does not work because `pip` does not look up the default pypi index anymore.
+
+So, I like the behavior of `uv` to keep the default index, so that I don't need to host packages from the default pypi index, instead I can only host my package.
+
+I also want to know, is this a feature or a bug that will be fixed?
+
+**UPDATE**: I find this is not correct. `uv pip install --pre vllm -i https://dsefy9jmd4lqu.cloudfront.net/33f460b17a54acb3b6cc0b03f4a17876cff5eafd/` also fails in a new environment. Please ignore this comment.
+
+---
+
+_Comment by @charliermarsh on 2024-12-22 20:26_
+
+Thanks! Will read through a little later and see if I can give you an answer.
+
+---
+
+_Comment by @charliermarsh on 2024-12-22 20:41_
+
+Ok, so I believe the behavior here is intentional.
+
+The difference that you're experiencing (IIUC) is in how pip and uv treat "packages that exist on multiple indexes".
+
+In pip, if `vllm` exists across multiple indexes, then it will take all the versions that exist across all of those indexes, and choose the latest version. So, if you have `0.6.3.dev28+g33f460b1.d20240927` on your nightly index, but `0.6.5` on PyPI, it will always take the version from PyPI. That's also why the first index you mentioned above _does_ work with pip -- the latest version is `0.6.6.dev48+gf1d1bf62` which is higher than `0.6.5`, so it "beats" PyPI.
+
+uv operates differently. By default, we look at the indexes in order, and as soon as we find an index that includes the package, we stop, and don't check any subsequent indexes. This is a security measure (it prevents "dependency confusion" attacks), and can be opted-out with the `--index-strategy` setting: https://docs.astral.sh/uv/reference/settings/#index-strategy.
+
+So, if `vllm` users always use `--extra-index-url` to point to the nightly index, we'll always use the nightly version of `vllm` and ignore the version from PyPI.
+
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2024-12-22 20:41_
+
+---
+
+_Comment by @charliermarsh on 2024-12-22 20:41_
+
+More on this here: https://docs.astral.sh/uv/pip/compatibility/#packages-that-exist-on-multiple-indexes
+
+---
+
+_Comment by @charliermarsh on 2024-12-22 20:49_
+
+By the way, thank you for putting in the effort to make vLLM work better with uv, it's awesome.
+
+---
+
+_Comment by @youkaichao on 2024-12-22 21:05_
+
+From the doc [docs.astral.sh/uv/pip/compatibility#packages-that-exist-on-multiple-indexes](https://docs.astral.sh/uv/pip/compatibility/#packages-that-exist-on-multiple-indexes) :
+
+> uv's behavior is such that if a package exists on an internal index, it should always be installed from the internal index, and never from PyPI.
+
+this is amazing, and it is what I want! Now I can even remove the `--pre` flag, and `uv pip install vllm --extra-index-url https://dsefy9jmd4lqu.cloudfront.net/33f460b17a54acb3b6cc0b03f4a17876cff5eafd/` just works. Thank you!
+
+Welcome to join our slack workspace https://slack.vllm.ai to discuss together! I do think the package distribution system needs to change, given so many new things happening in the AI area like PyTorch with cuda versions / accelerator versions. It's unfortunate that `pip` did nothing about it. I find many examples in `uv` uses pytorch as an example, and `uv` designed many features for this complicated package management, which is really attractive to me.
+
+---
+
+_Renamed from "Is pre-release only a feature or a bug that will be fixed?" to "priority of packages that exist on multiple indexes" by @youkaichao on 2024-12-22 21:06_
+
+---
+
+_Comment by @charliermarsh on 2024-12-22 21:15_
+
+> Now I can even remove the `--pre` flag, and `uv pip install vllm --extra-index-url https://dsefy9jmd4lqu.cloudfront.net/33f460b17a54acb3b6cc0b03f4a17876cff5eafd/` just works. Thank you!
+
+Awesome! I believe that part works because, by default, if a package _only_ has pre-release versions, then we enable pre-releases. So in this case, if you provide the vLLM nightly index, and we only see the dev releases, it should "just work" as you said :)
+
+I'll join the Slack -- thanks for the invite and the kind words!
+
+---
+
+_Closed by @charliermarsh on 2024-12-22 21:15_
+
+---
+
+_Comment by @charliermarsh on 2024-12-22 21:15_
+
+(Closing but happy to answer questions.)
+
+---

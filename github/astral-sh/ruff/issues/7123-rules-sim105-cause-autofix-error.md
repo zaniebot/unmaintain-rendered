@@ -1,0 +1,88 @@
+---
+number: 7123
+title: Rules SIM105 cause autofix error
+type: issue
+state: closed
+author: qarmin
+labels:
+  - bug
+  - fuzzer
+assignees: []
+created_at: 2023-09-04T06:04:37Z
+updated_at: 2023-09-06T16:03:34Z
+url: https://github.com/astral-sh/ruff/issues/7123
+synced_at: 2026-01-07T13:12:15-06:00
+---
+
+# Rules SIM105 cause autofix error
+
+---
+
+_Issue opened by @qarmin on 2023-09-04 06:04_
+
+Ruff 0.0.287 (latest changes from main branch)
+```
+ruff  *.py --select SIM105 --no-cache --fix
+```
+
+file content(at least simple cpython script shows that this is valid python file):
+```
+def write_models(directory, Models):
+        try:
+            os.makedirs(model_dir);
+        except OSError:
+            pass;
+```
+
+error
+```
+/home/rafal/test/tmp_folder/9173.py:2:9: SIM105 Use `contextlib.suppress(OSError)` instead of `try`-`except`-`pass`
+Found 1 error.
+
+error: Autofix introduced a syntax error. Reverting all changes.
+
+This indicates a bug in `ruff`. If you could open an issue at:
+
+    https://github.com/astral-sh/ruff/issues/new?title=%5BAutofix%20error%5D
+
+...quoting the contents of `/home/rafal/test/tmp_folder/9173.py`, the rule codes SIM105, along with the `pyproject.toml` settings and executed command, we'd be very appreciative!
+
+```
+
+[python_compressed.zip](https://github.com/astral-sh/ruff/files/12509785/python_compressed.zip)
+
+
+---
+
+_Label `bug` added by @MichaReiser on 2023-09-04 06:27_
+
+---
+
+_Label `fuzzer` added by @MichaReiser on 2023-09-04 06:27_
+
+---
+
+_Comment by @dhruvmanila on 2023-09-04 07:45_
+
+As the node doesn't contain the semicolon, that's the only thing which is remaining after the fix which creates an invalid syntax error:
+```python
+import contextlib
+def write_models(directory, Models):
+        with contextlib.suppress(OSError):
+            os.makedirs(model_dir);
+;
+```
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2023-09-06 12:59_
+
+---
+
+_Referenced in [astral-sh/ruff#7191](../../astral-sh/ruff/pulls/7191.md) on 2023-09-06 13:27_
+
+---
+
+_Closed by @charliermarsh on 2023-09-06 16:03_
+
+---

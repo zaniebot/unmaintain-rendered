@@ -1,0 +1,89 @@
+---
+number: 15633
+title: Is it possible to run a script before every uv command?
+type: issue
+state: open
+author: kurt-rhee
+labels:
+  - question
+assignees: []
+created_at: 2025-09-02T15:40:45Z
+updated_at: 2025-09-05T16:09:25Z
+url: https://github.com/astral-sh/uv/issues/15633
+synced_at: 2026-01-07T13:12:19-06:00
+---
+
+# Is it possible to run a script before every uv command?
+
+---
+
+_Issue opened by @kurt-rhee on 2025-09-02 15:40_
+
+### Question
+
+I currently use uv to authenticate with AWS codeartifacts.  Some of my team members forgot to authenticate and get a permissions error when using `uv sync` since `pyproject.toml` refers to aws codeartifacts.
+
+I have written a script which runs with `uv run aws-auth` which authenticates with aws codeartifact.  
+
+Is it possible to run the script before `uv sync` and other commands run to automate the process of authenticating?
+
+### Platform
+
+Darwin 24.6.0 arm64
+
+### Version
+
+uv 0.8.9 (Homebrew 2025-08-12)
+
+---
+
+_Label `question` added by @kurt-rhee on 2025-09-02 15:40_
+
+---
+
+_Comment by @Sellig6792 on 2025-09-03 20:50_
+
+I don't think so, if you absolutely need it now you should write your own scripts files. In which you can do what you want then call the uv command
+
+I would like to try to implement this if it is accepted though. 
+
+
+---
+
+_Comment by @kurt-rhee on 2025-09-03 20:51_
+
+Thank you for letting me know and for wanting to implement it!
+
+---
+
+_Comment by @konstin on 2025-09-05 09:56_
+
+We have documentation on using AWS codeartifact with uv at: https://docs.astral.sh/uv/guides/integration/alternative-indexes/#aws-codeartifact. This should not require running commands manually, instead you can use a keyring plugin.
+
+---
+
+_Comment by @kurt-rhee on 2025-09-05 14:29_
+
+Thanks @konstin I'm not very familiar with keyring
+
+Do I need to set these environment variables each time I start a new shell?
+
+# Enable keyring authentication
+export UV_KEYRING_PROVIDER=subprocess
+
+# Set the username for the index
+export UV_INDEX_PRIVATE_REGISTRY_USERNAME=aws
+
+---
+
+_Comment by @konstin on 2025-09-05 15:13_
+
+No, see the note box just below in the docs. There's https://docs.astral.sh/uv/reference/settings/#keyring-provider and you can set a username for the index.
+
+---
+
+_Comment by @kurt-rhee on 2025-09-05 16:09_
+
+Got it thanks!
+
+---

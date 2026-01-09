@@ -1,0 +1,104 @@
+---
+number: 9394
+title: Unable to download Python 3.11.2 on Windows
+type: issue
+state: closed
+author: sk-ys
+labels:
+  - question
+  - external
+assignees: []
+created_at: 2024-11-24T12:03:16Z
+updated_at: 2024-11-25T01:16:29Z
+url: https://github.com/astral-sh/uv/issues/9394
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# Unable to download Python 3.11.2 on Windows
+
+---
+
+_Issue opened by @sk-ys on 2024-11-24 12:03_
+
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with uv.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
+* The current uv platform.
+* The current uv version (`uv --version`).
+-->
+
+* The command you invoked:
+  ```
+  > uv python install 3.11.2 --verbose
+  DEBUG uv 0.5.4 (c62c83c37 2024-11-20)
+  error: No download found for request: cpython-3.11.2-windows-x86_64-none
+  ```
+* The current uv platform: Windows 11 24H2 26100.2454
+* The current uv version: 0.5.4 (c62c83c37 2024-11-20)
+
+---
+
+_Comment by @FishAlchemist on 2024-11-24 12:57_
+
+uv 0.5.4 (c62c83c37 2024-11-20)
+No ``3.11.0`` and ``3.11.2``
+```
+cpython-3.11.10-windows-x86_64-none
+cpython-3.11.9-windows-x86_64-none 
+cpython-3.11.9-windows-x86_64-none 
+cpython-3.11.8-windows-x86_64-none 
+cpython-3.11.7-windows-x86_64-none 
+cpython-3.11.6-windows-x86_64-none 
+cpython-3.11.5-windows-x86_64-none 
+cpython-3.11.4-windows-x86_64-none 
+cpython-3.11.3-windows-x86_64-none 
+cpython-3.11.1-windows-x86_64-none 
+```
+![image](https://github.com/user-attachments/assets/5f086037-13ee-4259-bee4-e943193edf53)
+
+
+However, this seems to be an upstream issue, so I think it would be more appropriate to open an issue directly there.
+https://github.com/indygreg/python-build-standalone/
+It's also possible that uv just neglected to add them in the uv.
+
+---
+
+_Label `upstream` added by @charliermarsh on 2024-11-24 16:27_
+
+---
+
+_Comment by @charliermarsh on 2024-11-24 16:28_
+
+I think 3.11.2 was skipped in python-build-standalone: https://github.com/indygreg/python-build-standalone/releases/20230507. Is there a reason you need that specific patch...?
+
+---
+
+_Label `question` added by @charliermarsh on 2024-11-24 16:28_
+
+---
+
+_Comment by @sk-ys on 2024-11-24 17:58_
+
+@charliermarsh 
+Thank you for replying.
+My Raspberry Pi 5 uses Python 3.11.2, so I'm trying to develop the related components on my laptop.
+
+---
+
+_Comment by @charliermarsh on 2024-11-25 01:16_
+
+I think we're unlikely to re-add these, since patch releases are generally meant to be upgradeable without issue. So you should be able to use, e.g., 3.11.3 interchangeably.
+
+---
+
+_Closed by @charliermarsh on 2024-11-25 01:16_
+
+---
+
+_Referenced in [astral-sh/uv#16869](../../astral-sh/uv/issues/16869.md) on 2025-11-27 09:54_
+
+---

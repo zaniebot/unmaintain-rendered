@@ -1,0 +1,48 @@
+---
+number: 378
+title: Include registry URL in built wheel cache
+type: issue
+state: closed
+author: charliermarsh
+labels:
+  - bug
+assignees: []
+created_at: 2023-11-09T14:22:31Z
+updated_at: 2023-12-06T11:03:16Z
+url: https://github.com/astral-sh/uv/issues/378
+synced_at: 2026-01-07T13:12:16-06:00
+---
+
+# Include registry URL in built wheel cache
+
+---
+
+_Issue opened by @charliermarsh on 2023-11-09 14:22_
+
+_No description provided._
+
+---
+
+_Added to milestone `Feature complete` by @charliermarsh on 2023-11-09 14:26_
+
+---
+
+_Label `bug` added by @charliermarsh on 2023-11-09 14:26_
+
+---
+
+_Comment by @charliermarsh on 2023-12-06 02:35_
+
+We now do this, pretty sure?
+
+---
+
+_Closed by @charliermarsh on 2023-12-06 02:35_
+
+---
+
+_Comment by @konstin on 2023-12-06 11:03_
+
+yes!
+
+---

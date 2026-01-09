@@ -1,0 +1,176 @@
+---
+number: 14247
+title: "`uv python upgrade` does not repoint shims created by `uv python install --default`"
+type: issue
+state: closed
+author: euan-reid
+labels:
+  - bug
+assignees: []
+created_at: 2025-06-24T23:13:28Z
+updated_at: 2025-06-27T17:26:29Z
+url: https://github.com/astral-sh/uv/issues/14247
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# `uv python upgrade` does not repoint shims created by `uv python install --default`
+
+---
+
+_Issue opened by @euan-reid on 2025-06-24 23:13_
+
+### Summary
+
+I've been using `uv python install --default --preview` to get `python3`, `python 3.13`, etc available on the command line. Having tested out `uv python upgrade` the underlying Python got updated but the shims did not. Here's the console log:
+
+```
+PS C:\Users\eureid> uv python list
+cpython-3.14.0b2-windows-x86_64-none                 <download available>
+cpython-3.14.0b2+freethreaded-windows-x86_64-none    <download available>
+cpython-3.13.5-windows-x86_64-none                   <download available>
+cpython-3.13.5+freethreaded-windows-x86_64-none      <download available>
+cpython-3.13.4-windows-x86_64-none                   .local\bin\python3.exe
+cpython-3.13.4-windows-x86_64-none                   .local\bin\python3.13.exe
+cpython-3.13.4-windows-x86_64-none                   .local\bin\python.exe
+cpython-3.13.4-windows-x86_64-none                   AppData\Roaming\uv\python\cpython-3.13.4-windows-x86_64-none\python.exe
+cpython-3.13.4+freethreaded-windows-x86_64-none      AppData\Roaming\uv\python\cpython-3.13.4+freethreaded-windows-x86_64-none\python.exe                                                                                                       cpython-3.13.4+freethreaded-windows-x86_64-none      .local\bin\python3.13t.exe                                         cpython-3.12.11-windows-x86_64-none                  AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\python.exe                                                                                                                   cpython-3.12.11-windows-x86_64-none                  .local\bin\python3.12.exe                                          cpython-3.12.11-windows-x86_64-none                  <download available>                                               cpython-3.11.13-windows-x86_64-none                  AppData\Roaming\uv\python\cpython-3.11.13-windows-x86_64-none\python.exe
+cpython-3.11.13-windows-x86_64-none                  .local\bin\python3.11.exe
+cpython-3.11.13-windows-x86_64-none                  <download available>
+cpython-3.10.18-windows-x86_64-none                  AppData\Roaming\uv\python\cpython-3.10.18-windows-x86_64-none\python.exe
+cpython-3.10.18-windows-x86_64-none                  .local\bin\python3.10.exe
+cpython-3.10.18-windows-x86_64-none                  <download available>
+cpython-3.9.23-windows-x86_64-none                   AppData\Roaming\uv\python\cpython-3.9.23-windows-x86_64-none\python.exe
+cpython-3.9.23-windows-x86_64-none                   .local\bin\python3.9.exe
+cpython-3.9.23-windows-x86_64-none                   <download available>
+cpython-3.8.20-windows-x86_64-none                   <download available>
+pypy-3.11.11-windows-x86_64-none                     <download available>
+pypy-3.10.16-windows-x86_64-none                     <download available>
+pypy-3.9.19-windows-x86_64-none                      <download available>
+pypy-3.8.16-windows-x86_64-none                      <download available>
+graalpy-3.11.0-windows-x86_64-none                   <download available>
+graalpy-3.10.0-windows-x86_64-none                   <download available>
+
+PS C:\Users\eureid> uv python upgrade
+warning: `uv python upgrade` is experimental and may change without warning. Pass `--preview` to disable this warning
+Installed 2 versions in 9.44s
+ + cpython-3.13.5+freethreaded-windows-x86_64-none
+ + cpython-3.13.5-windows-x86_64-none
+
+PS C:\Users\eureid> uv python upgrade --preview
+Installed 2 versions in 21ms
+ + cpython-3.13.5+freethreaded-windows-x86_64-none (python3.13t.exe)
+ + cpython-3.13.5-windows-x86_64-none (python3.13.exe)
+
+PS C:\Users\eureid> uv python list
+cpython-3.14.0b2-windows-x86_64-none                 <download available>
+cpython-3.14.0b2+freethreaded-windows-x86_64-none    <download available>
+cpython-3.13.5-windows-x86_64-none                   AppData\Roaming\uv\python\cpython-3.13.5-windows-x86_64-none\python.exe
+cpython-3.13.5+freethreaded-windows-x86_64-none      AppData\Roaming\uv\python\cpython-3.13.5+freethreaded-windows-x86_64-none\python.exe
+cpython-3.13.5+freethreaded-windows-x86_64-none      <download available>
+cpython-3.13.4-windows-x86_64-none                   .local\bin\python3.exe
+cpython-3.13.4-windows-x86_64-none                   .local\bin\python.exe
+cpython-3.13.4-windows-x86_64-none                   AppData\Roaming\uv\python\cpython-3.13.4-windows-x86_64-none\python.exe
+cpython-3.13.4+freethreaded-windows-x86_64-none      AppData\Roaming\uv\python\cpython-3.13.4+freethreaded-windows-x86_64-none\python.exe
+cpython-3.12.11-windows-x86_64-none                  AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\python.exe
+cpython-3.12.11-windows-x86_64-none                  .local\bin\python3.12.exe
+cpython-3.12.11-windows-x86_64-none                  <download available>
+cpython-3.11.13-windows-x86_64-none                  AppData\Roaming\uv\python\cpython-3.11.13-windows-x86_64-none\python.exe
+cpython-3.11.13-windows-x86_64-none                  .local\bin\python3.11.exe
+cpython-3.11.13-windows-x86_64-none                  <download available>
+cpython-3.10.18-windows-x86_64-none                  AppData\Roaming\uv\python\cpython-3.10.18-windows-x86_64-none\python.exe
+cpython-3.10.18-windows-x86_64-none                  .local\bin\python3.10.exe
+cpython-3.10.18-windows-x86_64-none                  <download available>
+cpython-3.9.23-windows-x86_64-none                   AppData\Roaming\uv\python\cpython-3.9.23-windows-x86_64-none\python.exe
+cpython-3.9.23-windows-x86_64-none                   .local\bin\python3.9.exe
+cpython-3.9.23-windows-x86_64-none                   <download available>
+cpython-3.8.20-windows-x86_64-none                   <download available>
+pypy-3.11.11-windows-x86_64-none                     <download available>
+pypy-3.10.16-windows-x86_64-none                     <download available>
+pypy-3.9.19-windows-x86_64-none                      <download available>
+pypy-3.8.16-windows-x86_64-none                      <download available>
+graalpy-3.11.0-windows-x86_64-none                   <download available>
+graalpy-3.10.0-windows-x86_64-none                   <download available>
+```
+
+Since `upgrade` doesn't have a `--default` flag, I tried manually uninstalling the versions and seeing what happened, which got an interesting error about the executable already existing:
+
+```
+PS C:\Users\eureid> uv python uninstall 3.13.4
+Searching for Python versions matching: Python 3.13.4
+Uninstalled Python 3.13.4 in 532ms
+ - cpython-3.13.4-windows-x86_64-none (python.exe, python3.exe)
+
+PS C:\Users\eureid> uv python uninstall 3.13.4t
+Searching for Python versions matching: Python 3.13.4t
+Uninstalled Python 3.13.4 in 836ms
+ - cpython-3.13.4+freethreaded-windows-x86_64-none (python3t.exe, pythont.exe)
+
+PS C:\Users\eureid> uv python list
+cpython-3.14.0b2-windows-x86_64-none                 <download available>
+cpython-3.14.0b2+freethreaded-windows-x86_64-none    <download available>
+cpython-3.13.5-windows-x86_64-none                   AppData\Roaming\uv\python\cpython-3.13.5-windows-x86_64-none\python.exe
+cpython-3.13.5+freethreaded-windows-x86_64-none      AppData\Roaming\uv\python\cpython-3.13.5+freethreaded-windows-x86_64-none\python.exe
+cpython-3.13.5+freethreaded-windows-x86_64-none      <download available>
+cpython-3.12.11-windows-x86_64-none                  AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\python.exe
+cpython-3.12.11-windows-x86_64-none                  .local\bin\python3.12.exe
+cpython-3.12.11-windows-x86_64-none                  <download available>
+cpython-3.11.13-windows-x86_64-none                  AppData\Roaming\uv\python\cpython-3.11.13-windows-x86_64-none\python.exe
+cpython-3.11.13-windows-x86_64-none                  .local\bin\python3.11.exe
+cpython-3.11.13-windows-x86_64-none                  <download available>
+cpython-3.10.18-windows-x86_64-none                  AppData\Roaming\uv\python\cpython-3.10.18-windows-x86_64-none\python.exe
+cpython-3.10.18-windows-x86_64-none                  .local\bin\python3.10.exe
+cpython-3.10.18-windows-x86_64-none                  <download available>
+cpython-3.9.23-windows-x86_64-none                   AppData\Roaming\uv\python\cpython-3.9.23-windows-x86_64-none\python.exe
+cpython-3.9.23-windows-x86_64-none                   .local\bin\python3.9.exe
+cpython-3.9.23-windows-x86_64-none                   <download available>
+cpython-3.8.20-windows-x86_64-none                   <download available>
+pypy-3.11.11-windows-x86_64-none                     <download available>
+pypy-3.10.16-windows-x86_64-none                     <download available>
+pypy-3.9.19-windows-x86_64-none                      <download available>
+pypy-3.8.16-windows-x86_64-none                      <download available>
+graalpy-3.11.0-windows-x86_64-none                   <download available>
+graalpy-3.10.0-windows-x86_64-none                   <download available>
+
+PS C:\Users\eureid> uv python upgrade --preview
+warning: Executable already exists at `C:\Users\eureid\.local\bin\python3.13.exe` but is not managed by uv; use `uv python install 3.13 --force` to replace it
+warning: Executable already exists at `C:\Users\eureid\.local\bin\python3.13t.exe` but is not managed by uv; use `uv python install 3.13t --force` to replace it
+All versions already on latest supported patch release
+```
+
+### Platform
+
+Windows 11 x86_64
+
+### Version
+
+uv 0.7.14 (e7f596711 2025-06-23)
+
+### Python version
+
+_No response_
+
+---
+
+_Label `bug` added by @euan-reid on 2025-06-24 23:13_
+
+---
+
+_Assigned to @jtfmumm by @jtfmumm on 2025-06-25 05:33_
+
+---
+
+_Referenced in [astral-sh/uv#14261](../../astral-sh/uv/pulls/14261.md) on 2025-06-25 14:10_
+
+---
+
+_Comment by @jtfmumm on 2025-06-25 14:15_
+
+There was a missing check for the case where no Python version was specified. I've created a fix on #14261. 
+
+I wasn't able to replicate triggering the warning you pointed out (which is definitely confusing if that was a uv-managed bin link). I'll have to investigate that separately.
+
+---
+
+_Closed by @jtfmumm on 2025-06-27 17:26_
+
+---

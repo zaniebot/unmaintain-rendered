@@ -1,0 +1,134 @@
+---
+number: 10131
+title: Allow to declare modules/calls as deprecated
+type: issue
+state: closed
+author: CarliJoy
+labels:
+  - rule
+  - plugin
+assignees: []
+created_at: 2024-02-26T10:24:05Z
+updated_at: 2024-11-10T16:30:07Z
+url: https://github.com/astral-sh/ruff/issues/10131
+synced_at: 2026-01-07T13:12:15-06:00
+---
+
+# Allow to declare modules/calls as deprecated
+
+---
+
+_Issue opened by @CarliJoy on 2024-02-26 10:24_
+
+Working in larger groups it is sometime hard to enforce a common style.
+Therefore we established a Pylint plugin in which we can define some modules as "deprecated" in order to inform all contributors of preferred alternatives.
+
+I.e. instead of `os.path` use `pathlib` or instead of  `requests` use `httpx` or don't use `print` but use `logging.debug` instead.
+Or don't use `multiprocessing.Pool()` but `concurrent.futures.ProcessPoolExecutor`
+
+The Plugin takes either a module like `os.path` or a function/class call of a module like `multiprocessing.Pool()`. 
+
+In case of a module it warns only on the import of the given module.
+In case of a call it warn if the given function/class is import i.e. `from multiprocessing import Pool` or if only `import multiprocessing` is done, on every `multiprocessing.Pool` call.
+
+For each module/call one can define a custom string that is shown to the user, i.e. `Don't use os.path because pathlib is more flexible` or similar.
+Also one can define if the given error is only a mere convention or rather an error.
+
+Having a similar possibility in ruff is the last blocker for a migration.
+
+I guess also other teams would benefit from the possibility to mark certain modules/calls as deprecated/not wanted.
+
+Is it thinkable to add a rule, lets say `DEP` to ruff that allows to declare different modules as deprecated? 
+
+For example:
+
+```toml
+[[tool.ruff.lint.deprecation]]
+old = "os.path"
+new = "pathlib"
+code = "DEPE001"
+message = "Please use pathlib for paths"
+
+[[tool.ruff.lint.deprecation]]
+old = "print"
+code = "DEPC001"
+message = "Consider using logging.debug or click.echo instead of print to make the context of the output more clear."
+
+[[tool.ruff.lint.deprecation]]
+old = "multiprocessing.Pool()"
+new = "concurrent.futures.ProcessPoolExecutor"
+code = "DEPE002"
+message = "multiprocessing.Pool multiprocessing.Pool is susceptible to deadlocks in the context of OOM kills. Please use concurrent.futures.ProcessPoolExecutor or our custom implementation instead"
+
+[[tool.ruff.lint.deprecation]]
+old = "company_megalib"
+code = DEPE003"
+message = "Don't use company_megalib anymore but look at <URL> to get a possible replacement"
+```
+
+I haven't seen neither array declaration nor custom codes in ruff yet.
+Is this even wanted/okay?
+Maybe we should only allow a set of fixed codes like:
+ - `DEPE001`:  user-defined-deprecation-error
+ - `DEPC002`:  user-defined-deprecation-convention
+ -  …
+
+
+What do you think, could something like this become part of ruff?
+
+---
+
+_Comment by @sscherfke on 2024-02-26 11:46_
+
+Maybe the configuration can be simplyfied to sth. like this:
+
+```toml
+[tool.ruff.deprecated_modules]  # Results in warnings
+"old.modname" = "Plz use other.lib"
+"os.path" = "Please use pathlib"
+
+[tool.ruff.forbidden_modules]  # Results in errors
+requests = "Use must use httpx for web requests"
+```
+
+It's a bit less flexible, but more clear to read and easier to write.
+
+---
+
+_Label `rule` added by @MichaReiser on 2024-02-26 13:06_
+
+---
+
+_Label `plugin` added by @MichaReiser on 2024-02-26 13:06_
+
+---
+
+_Comment by @Taragolis on 2024-02-28 23:04_
+
+[banned-api (TID251)](https://docs.astral.sh/ruff/rules/banned-api/) ?
+
+
+---
+
+_Comment by @sscherfke on 2024-02-29 08:12_
+
+Here are the docs for it: https://docs.astral.sh/ruff/settings/#lint_flake8-tidy-imports_banned-api
+
+Looks good enough for me.  What do you think, @CarliJoy ?
+
+---
+
+_Referenced in [astral-sh/ruff#12693](../../astral-sh/ruff/issues/12693.md) on 2024-08-06 06:04_
+
+---
+
+_Closed by @MichaReiser on 2024-11-10 09:31_
+
+---
+
+_Comment by @CarliJoy on 2024-11-10 16:30_
+
+Sorry for the late reply @sscherfke implemented the banned-api rules and it works as expected.
+Thanks for the clean up MichaReiser 
+
+---

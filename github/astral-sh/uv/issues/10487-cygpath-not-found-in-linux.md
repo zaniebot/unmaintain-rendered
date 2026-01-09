@@ -1,0 +1,195 @@
+---
+number: 10487
+title: "`cygpath: not found` in linux"
+type: issue
+state: open
+author: adhami3310
+labels:
+  - bug
+assignees: []
+created_at: 2025-01-11T01:04:13Z
+updated_at: 2025-01-15T17:36:57Z
+url: https://github.com/astral-sh/uv/issues/10487
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# `cygpath: not found` in linux
+
+---
+
+_Issue opened by @adhami3310 on 2025-01-11 01:04_
+
+Regression in `0.5.17`
+
+I cannot particularly replicate this easily (happens inside of the docker build step). As far as I tested, `$OSTYPE` is `linux-gnu`.
+
+```
+/bin/sh: 82: /home/reflexuser/venv/bin/activate: cygpath: not found
+```
+
+The relevant code is:
+```bash
+if { [ "$OSTYPE" = "cygwin" ] || [ "$OSTYPE" = "msys" ]; } && command -v cygpath &> /dev/null ; then
+    VIRTUAL_ENV=$(cygpath -u "$VIRTUAL_ENV")
+fi
+```
+
+I don't see how it can reach the second file without cygpath not being available.
+
+
+Docker file:
+```
+FROM public.ecr.aws/p3v4g4o2/reflex-cloud-base:v0.0.7-py3.12
+
+ARG USERNAME=reflexuser
+USER $USERNAME
+ARG APP_DIR=/home/$USERNAME/app
+ARG VENV_DIR=/home/$USERNAME/venv
+
+RUN pip install uv
+RUN /home/$USERNAME/.local/bin/uv venv --no-cache $VENV_DIR
+RUN chmod +x $VENV_DIR/bin/activate
+
+
+COPY --chown=$USERNAME . $APP_DIR
+
+# FAILS HERE
+RUN . $VENV_DIR/bin/activate && /home/$USERNAME/.local/bin/uv pip install --no-color -q -r $APP_DIR/requirements.txt
+```
+
+---
+
+_Comment by @charliermarsh on 2025-01-11 02:37_
+
+\cc @Gankra for when you have time
+
+---
+
+_Label `bug` added by @charliermarsh on 2025-01-11 02:37_
+
+---
+
+_Comment by @charliermarsh on 2025-01-11 02:53_
+
+Do you know what the base image for public.ecr.aws/p3v4g4o2/reflex-cloud-base:v0.0.7-py3.12 is?
+
+---
+
+_Comment by @zanieb on 2025-01-11 04:51_
+
+This line did change in https://github.com/astral-sh/uv/pull/10397, before:
+
+```
+if ([ "$OSTYPE" = "cygwin" ] || [ "$OSTYPE" = "msys" ]) && $(command -v cygpath &> /dev/null) ; then
+```
+
+after
+
+```
+if { [ "$OSTYPE" = "cygwin" ] || [ "$OSTYPE" = "msys" ]; } && command -v cygpath &> /dev/null ; then
+```
+
+---
+
+_Comment by @zanieb on 2025-01-11 05:03_
+
+I reproduced with some debug output
+
+```
+ => CACHED [6/9] RUN cp /home/reflexuser/venv/bin/activate /home/reflexuser/venv/bin/activate.bak                                                                                                                                                        0.0s
+ => CACHED [7/9] RUN echo 'set -x' > /home/reflexuser/venv/bin/activate                                                                                                                                                                                  0.0s
+ => CACHED [8/9] RUN cat "/home/reflexuser/venv/bin/activate.bak" >> /home/reflexuser/venv/bin/activate                                                                                                                                                  0.0s
+ => ERROR [9/9] RUN . /home/reflexuser/venv/bin/activate && /home/reflexuser/.local/bin/uv pip install --no-color -q -r /home/reflexuser/app/requirements.txt                                                                                            0.2s
+------                                                                                                                                                                                                                                                        
+ > [9/9] RUN . /home/reflexuser/venv/bin/activate && /home/reflexuser/.local/bin/uv pip install --no-color -q -r /home/reflexuser/app/requirements.txt:
+0.083 + [ -n  ]
+0.084 + [ -n  ]
+0.084 + [ -n  ]
+0.085 + deactivate nondestructive
+0.085 + unset -f pydoc
+0.085 + [ -n  ]
+0.085 + [ -n  ]
+0.085 + hash -r
+0.086 + [ -n  ]
+0.086 + unset VIRTUAL_ENV
+0.086 + unset VIRTUAL_ENV_PROMPT
+0.086 + [ ! nondestructive = nondestructive ]
+0.086 + VIRTUAL_ENV=/home/reflexuser/venv
+0.087 + 
+0.087 + [  = cygwin ]
+0.087 + [  = msys ]
+0.087 + cygpath -u /home/reflexuser/venv
+0.087 /bin/sh: 83: /home/reflexuser/venv/bin/activate: cygpath: not found
+0.088 + VIRTUAL_ENV=
+0.088 + export VIRTUAL_ENV
+0.088 + _OLD_VIRTUAL_PATH=/usr/local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+0.088 + PATH=/bin:/usr/local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+0.088 + export PATH
+0.088 + [ x != x ]
+0.089 + basename 
+0.099 + VIRTUAL_ENV_PROMPT=() 
+0.099 + export VIRTUAL_ENV_PROMPT
+0.099 + [ -n  ]
+0.099 + [ -z  ]
+0.099 + _OLD_VIRTUAL_PS1=$ 
+0.099 + PS1=() $ 
+0.099 + export PS1
+0.099 + alias pydoc
+0.100 + true
+0.100 + hash -r
+0.100 + /home/reflexuser/.local/bin/uv pip install --no-color -q -r /home/reflexuser/app/requirements.txt
+0.164 error: File not found: `app/requirements.txt`
+------
+Dockerfile:19
+--------------------
+  17 |     RUN echo 'set -x' > $VENV_DIR/bin/activate
+  18 |     RUN cat "$VENV_DIR/bin/activate.bak" >> $VENV_DIR/bin/activate
+  19 | >>> RUN . $VENV_DIR/bin/activate && /home/$USERNAME/.local/bin/uv pip install --no-color -q -r $APP_DIR/requirements.txt
+  20 |     
+--------------------
+ERROR: failed to solve: process "/bin/sh -c . $VENV_DIR/bin/activate && /home/$USERNAME/.local/bin/uv pip install --no-color -q -r $APP_DIR/requirements.txt" did not complete successfully: exit code: 2
+```
+
+---
+
+_Referenced in [astral-sh/uv#10492](../../astral-sh/uv/pulls/10492.md) on 2025-01-11 05:11_
+
+---
+
+_Referenced in [whitphx/stlite#1257](../../whitphx/stlite/pulls/1257.md) on 2025-01-11 10:31_
+
+---
+
+_Referenced in [astral-sh/uv#10497](../../astral-sh/uv/pulls/10497.md) on 2025-01-11 14:10_
+
+---
+
+_Closed by @charliermarsh on 2025-01-11 14:23_
+
+---
+
+_Closed by @charliermarsh on 2025-01-11 14:23_
+
+---
+
+_Comment by @charliermarsh on 2025-01-11 14:23_
+
+I reverted this in https://github.com/astral-sh/uv/pull/10497, but I'll keep this open.
+
+---
+
+_Reopened by @charliermarsh on 2025-01-11 14:23_
+
+---
+
+_Comment by @adhami3310 on 2025-01-11 19:57_
+
+> Do you know what the base image for public.ecr.aws/p3v4g4o2/reflex-cloud-base:v0.0.7-py3.12 is?
+
+I believe it's python:3.12-slim 
+
+---
+
+_Assigned to @Gankra by @Gankra on 2025-01-15 17:36_
+
+---

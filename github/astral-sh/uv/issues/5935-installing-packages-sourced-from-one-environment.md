@@ -1,0 +1,147 @@
+---
+number: 5935
+title: Installing packages sourced from one environment to another
+type: issue
+state: closed
+author: chrisrodrigue
+labels:
+  - question
+assignees: []
+created_at: 2024-08-08T21:28:11Z
+updated_at: 2024-08-09T18:27:40Z
+url: https://github.com/astral-sh/uv/issues/5935
+synced_at: 2026-01-07T13:12:17-06:00
+---
+
+# Installing packages sourced from one environment to another
+
+---
+
+_Issue opened by @chrisrodrigue on 2024-08-08 21:28_
+
+Is there a way that I can utilize `uv` to install packages sourced from a conda base environment into a virtual environment created with `uv`?
+
+My use case is that I have an offline system with the Anaconda python distribution used solely for the bundled interpreter and  packages provided. 
+
+I don't really want to utilize `conda` for creating virtual environments with their YAML file approach. I'd much rather utilize `uv` for package management & virtual environment creation, and define my project dependencies the normal way with `pyproject.toml` (with the obvious limitation that any projects on the system have to utilize pinned versions of packages available in the Anaconda distribution). 
+
+Any suggestions would be appreciated.
+
+---
+
+_Comment by @zanieb on 2024-08-08 21:39_
+
+Maybe with `uv venv --system-site-packages`?
+
+---
+
+_Label `question` added by @zanieb on 2024-08-08 21:39_
+
+---
+
+_Comment by @chrisrodrigue on 2024-08-09 00:40_
+
+```
+PS C:\Users\user\git\project> uv venv --system-site-packages        
+Using Python 3.12.4 interpreter at: C:\ProgramData\anaconda3\python.exe
+Creating virtualenv at: .venv
+Activate with: .venv\Scripts\activate
+PS C:\Users\user\git\project> .venv\Scripts\activate  
+(project) PS C:\Users\user\git\project> uv pip list
+(project) PS C:\Users\user\git\project> uv sync --offline --no-build-isolation
+warning: `uv sync` is experimental and may change without warning
+  × No solution found when resolving dependencies:
+  ╰─▶ Because pytest was not found in the cache and project==0.1.0 depends on pytest==7.4.4, we can conclude that project==0.1.0 cannot be used.
+      And because only project==0.1.0 is available and you require project, we can conclude that the requirements are unsatisfiable.
+
+      hint: Packages were unavailable because the network was disabled
+(project) PS C:\Users\user\git\project> 
+```
+
+It seems like `uv` is not actually creating a venv with the system site-packages. It doesn't detect `pytest` as being already installed in the venv (`pytest==7.4.4` ships with Anaconda).
+
+Here's what the `pyproject.toml` looks like:
+```toml
+[build-system]
+requires = ["setuptools>=69.5.1"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "project"
+version = "0.1.0"
+requires-python = ">=3.12"
+dependencies = ["pytest==7.4.4"]
+
+[tool.uv]
+dev-dependencies = [
+  # Linting
+  "codespell >=2.3.0,<3",
+  "mypy >=1.11.1,<2",
+  "pip-audit >=2.7.3,<3",
+  "pre-commit >=3.8.0,<4",
+  "ruff >=0.5.6,<1",
+  # Testing
+  "pytest >=7.4.4,<8",
+  "pytest-cov >=5.0.0,<6",
+  "pytest-mock >=3.14.0,<4",
+  # Documentation
+  "mkdocs >=1.6.0,<2",
+  "mkdocs-material >=9.5.31,<10",
+  "mkdocstrings[python] >=0.25.2,<1",
+  # Release
+  "commitizen >=3.28.0,<4",
+  "cyclonedx-bom >=4.5.0,<5",
+]
+```
+
+---
+
+_Comment by @chrisrodrigue on 2024-08-09 00:45_
+
+It doesn't seem to be respecting `--no-dev` either:
+
+```
+(project) PS C:\Users\user\git\project> uv sync --offline --no-build-isolation --no-dev
+warning: `uv sync` is experimental and may change without warning
+  × No solution found when resolving dependencies:
+  ╰─▶ Because codespell was not found in the cache and project==0.1.0 depends on codespell>=2.3.0,<3, we can conclude that project==0.1.0 cannot   
+      be used.
+      And because project==0.1.0 depends on project:dev==0.1.0, we can conclude that project==0.1.0 cannot be used.
+      And because only project==0.1.0 is available and you require project, we can conclude that the requirements are unsatisfiable.
+
+      hint: Packages were unavailable because the network was disabled
+```
+
+---
+
+_Comment by @charliermarsh on 2024-08-09 00:59_
+
+We don't really respect `--system-site-packages`. We allow writing it to the virtualenv, but we don't actually query it, it just makes them available at the runtime.
+
+I think there's no way to accomplish what you're describing. If you were using the Conda environment and installing packages etc., we'd respect _those_, but we don't support reading packages from another environment.
+
+---
+
+_Comment by @charliermarsh on 2024-08-09 01:00_
+
+`--no-dev` applies when installing, not when resolving. To sync, we have to resolve, and the resolution is failing.
+
+---
+
+_Comment by @zanieb on 2024-08-09 18:25_
+
+I agree I don't think we can really support this. I think you'd have to use `uv pip install --no-deps` or something and remove all the existing dependencies from a `requirements.txt`?  Seems a bit weird.
+
+Sorry we aren't much help here. Let us know if you figure something out!
+
+---
+
+_Closed by @zanieb on 2024-08-09 18:25_
+
+---
+
+_Comment by @charliermarsh on 2024-08-09 18:27_
+
+I think we may eventually support using a system environment with `uv sync`, but I don't know that we can support this kind of "layered" environment.
+
+---

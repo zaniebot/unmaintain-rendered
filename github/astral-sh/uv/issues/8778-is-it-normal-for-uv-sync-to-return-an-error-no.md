@@ -1,0 +1,96 @@
+---
+number: 8778
+title: "Is it normal for `uv sync` to return an \"error: No `project` table found\" when used with `--group`?"
+type: issue
+state: closed
+author: ReinforcedKnowledge
+labels:
+  - question
+assignees: []
+created_at: 2024-11-03T17:26:48Z
+updated_at: 2024-11-03T18:42:52Z
+url: https://github.com/astral-sh/uv/issues/8778
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# Is it normal for `uv sync` to return an "error: No `project` table found" when used with `--group`?
+
+---
+
+_Issue opened by @ReinforcedKnowledge on 2024-11-03 17:26_
+
+Hi!
+
+I want to ask if it's normal that `uv sync --group <group>`, along with `uv sync --group <group> --no-install-project`, `uv sync --only-group <group>` and `uv sync --only-group <group> --no-install-project`, exits on the following error:
+
+```
+error: No `project` table found in: `/my_ds_project/pyproject.toml`
+```
+
+With the following toy `pyproject.toml`:
+```toml
+[dependency-groups]
+ds = [
+    "numpy>=2.1.3",
+    "pandas>=2.2.3",
+]
+```
+
+The commands work as intended when we add the `project` table, e.g.:
+```toml
+[project]
+name = "my_ds_project"
+version = "0.1.0"
+
+[dependency-groups]
+ds = [
+    "numpy>=2.1.3",
+    "pandas>=2.2.3",
+]
+```
+
+I'm not sure the behaviour totally follows [PEP 735](https://peps.python.org/pep-0735/) and I'm just misunderstanding it, or if it's a design choice to always require a `project` table in the presence of a `pyproject.toml` or it's just a bug on my platform.
+
+I'm using:
+- macOS, M1, Sequoia 15.0.1
+- uv version: 0.4.29 (85f9a0d0e 2024-10-30)
+
+---
+
+_Comment by @samypr100 on 2024-11-03 18:30_
+
+I think you'd still have to comply with the minimum requirements of [PEP 621](https://peps.python.org/pep-0621/) to be able to leverage [PEP 735](https://peps.python.org/pep-0735/) dependency groups. Hence, a `[project]` table would always be required unless the build backend generates it automatically on your behalf.
+
+---
+
+_Label `question` added by @samypr100 on 2024-11-03 18:31_
+
+---
+
+_Comment by @bluss on 2024-11-03 18:33_
+
+I think it's just a new feature and it will see more development soon. The following workaround has been mentioned (exactly this and no more needed), but it's an unintentional interaction of features..
+
+```toml
+[dependency-groups]
+ds = [
+    "numpy>=2.1.3",
+    "pandas>=2.2.3",
+]
+
+[tool.uv.workspace]
+```
+
+---
+
+_Comment by @ReinforcedKnowledge on 2024-11-03 18:42_
+
+Thank you for your responses @samypr100 and @bluss and for the workaround.
+
+I just wanted to make sure that it wasn't an issue with my installation / platform or me just misunderstanding the [PEP 735](https://peps.python.org/pep-0735/).
+
+---
+
+_Closed by @ReinforcedKnowledge on 2024-11-03 18:42_
+
+---

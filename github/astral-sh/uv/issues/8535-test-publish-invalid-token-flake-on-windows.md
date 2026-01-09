@@ -1,0 +1,100 @@
+---
+number: 8535
+title: "Test `publish::invalid_token` flake on Windows"
+type: issue
+state: open
+author: zanieb
+labels:
+  - internal
+assignees: []
+created_at: 2024-10-24T17:40:40Z
+updated_at: 2025-04-27T15:58:13Z
+url: https://github.com/astral-sh/uv/issues/8535
+synced_at: 2026-01-07T13:12:17-06:00
+---
+
+# Test `publish::invalid_token` flake on Windows
+
+---
+
+_Issue opened by @zanieb on 2024-10-24 17:40_
+
+```
+running 1 test
+test publish::invalid_token has been running for over 60 seconds
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ Snapshot Summary ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Snapshot: invalid_token
+Source: E:\uv:33
+───────────────────────────────────────────────────────────────────────────────
+Expression: snapshot
+───────────────────────────────────────────────────────────────────────────────
+-old snapshot
++new results
+────────────┬──────────────────────────────────────────────────────────────────
+    5     5 │ warning: `uv publish` is experimental and may change without warning
+    6     6 │ Publishing 1 file to https://test.pypi.org/legacy/
+    7     7 │ Uploading ok-1.0.0-py3-none-any.whl ([SIZE])
+    8     8 │ error: Failed to publish `../../scripts/links/ok-1.0.0-py3-none-any.whl` to https://test.pypi.org/legacy/
+    9       │-  Caused by: Permission denied (status code 403 Forbidden): 403 Invalid or non-existent authentication information. See https://test.pypi.org/help/#invalid-auth for more information.
+          9 │+  Caused by: Upload failed with status 403 Forbidden
+         10 │+  Caused by: error decoding response body
+         11 │+  Caused by: request or response body error
+         12 │+  Caused by: error reading a body from connection
+         13 │+  Caused by: stream error received: unspecific protocol error detected
+────────────┴──────────────────────────────────────────────────────────────────
+Stopped on the first failure. Run `cargo insta test` to run all snapshots.
+test publish::invalid_token ... FAILED
+
+failures:
+
+failures:
+    publish::invalid_token
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 1132 filtered out; finished in 64.83s
+
+
+--- STDERR:              uv::it publish::invalid_token ---
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ Unfiltered output ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+----- stdout -----
+
+----- stderr -----
+warning: `uv publish` is experimental and may change without warning
+Publishing 1 file to https://test.pypi.org/legacy/
+Uploading ok-1.0.0-py3-none-any.whl (875.0B)
+error: Failed to publish `..\..\scripts\links\ok-1.0.0-py3-none-any.whl` to https://test.pypi.org/legacy/
+  Caused by: Upload failed with status 403 Forbidden
+  Caused by: error decoding response body
+  Caused by: request or response body error
+  Caused by: error reading a body from connection
+  Caused by: stream error received: unspecific protocol error detected
+
+────────────────────────────────────────────────────────────────────────────────
+
+thread 'publish::invalid_token' panicked at E:/.cargo\registry\src\index.crates.io-6f17d22bba15001f\insta-1.40.0\src\runtime.rs:548:9:
+snapshot assertion for 'invalid_token' failed in line 33
+```
+
+https://github.com/astral-sh/uv/actions/runs/11503449422/attempts/1?pr=8420
+
+---
+
+_Label `internal` added by @zanieb on 2024-10-24 17:40_
+
+---
+
+_Comment by @konstin on 2024-11-03 18:03_
+
+This one is awkward because it would require retrying an error that failed with the right error code.
+
+---
+
+_Referenced in [astral-sh/uv#7839](../../astral-sh/uv/issues/7839.md) on 2024-11-03 18:09_
+
+---
+
+_Comment by @charliermarsh on 2025-04-27 15:58_
+
+Failed again here: https://github.com/astral-sh/uv/actions/runs/14693636376/job/41232349959?pr=13132
+
+---

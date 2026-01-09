@@ -1,0 +1,84 @@
+---
+number: 19362
+title: "[website] When hitting enter key in search field, browser navigates to first result - rather than opening a full page of search results which is what I would expect"
+type: issue
+state: open
+author: corneliusroemer
+labels:
+  - documentation
+assignees: []
+created_at: 2025-07-15T16:31:22Z
+updated_at: 2025-07-15T17:26:00Z
+url: https://github.com/astral-sh/ruff/issues/19362
+synced_at: 2026-01-07T13:12:16-06:00
+---
+
+# [website] When hitting enter key in search field, browser navigates to first result - rather than opening a full page of search results which is what I would expect
+
+---
+
+_Issue opened by @corneliusroemer on 2025-07-15 16:31_
+
+### Summary
+
+I was surprised that when I type something in the ruff documentation website's search bar and hit enter, ~the search modal collapses~ the browser navigates to the first result. 
+
+My gut expectation was to land on a full page version of the search results instead with more screen real estate dedicated to search results (and maybe a URL to share).
+
+In the screenshare the navigation doesn't show visibly because the first result is identical with the current page, so all that changes is that the modal collapses (this was the original issue I filed here before @ntBre's observations made me realize I had hit a special case)
+
+![Image](https://github.com/user-attachments/assets/3b667e89-6186-4c5e-a0a0-6a3126559406)
+
+### Version
+
+Production website live as of 2025-07-15 16:31 UTC
+
+---
+
+_Comment by @ntBre on 2025-07-15 16:49_
+
+Thanks for the report, that does seem a bit unintuitive. It looks like pressing enter jumps to the first result when I tested it. 
+
+I think we use the [search](https://squidfunk.github.io/mkdocs-material/plugins/search/) plugin for MkDocs to get this functionality, so I'm not sure how much we can do here, but someone more knowledgeable about our docs setup might have some ideas.
+
+---
+
+_Label `documentation` added by @ntBre on 2025-07-15 16:49_
+
+---
+
+_Comment by @corneliusroemer on 2025-07-15 16:56_
+
+@ntBre Thanks for your reproduction attempt and feedback, that helped me narrow things down. I can confirm that hitting Enter navigates to the first result. This is also counterintuitive, because the first entry does not seem to have focus which is what my a11y gut feeling tells me - possibly wrongly so).
+
+In the recorded case, I was already on the first result, so the navigation to the page itself appears as if the search is just closed. I'll rephrase the issue.
+
+@ntBre if you are limited by what the search plugin for MkDocs offers the `upstream` label might be appropriate to add to the issue as well. I'm happy to make an issue upstream.
+
+---
+
+_Renamed from "[website] When hitting enter key in search field, search modal collapses instead of entering full screen mode or dedicated page" to "[website] When hitting enter key in search field, browser navigates to first result - rather than opening a full page of search results which is what I would expect" by @corneliusroemer on 2025-07-15 16:57_
+
+---
+
+_Comment by @ntBre on 2025-07-15 17:15_
+
+No problem! Yeah I noticed that same-page behavior from the recording in my testing too.
+
+I'm not sure that we should make an upstream issue. This could be out of date, but I found a relevant issue that gives me the impression that it's working as intended: https://github.com/squidfunk/mkdocs-material/issues/1832#issuecomment-664231930.
+
+---
+
+_Comment by @corneliusroemer on 2025-07-15 17:25_
+
+Having just made an issue about something else I noticed that feels more clearly buggy (https://github.com/squidfunk/mkdocs-material/issues/8334) I'm taking back my offer to make an upstream issue - the official requirements the maintainer lists for "acceptable" issues are a bit over the top in my view, I didn't expect that.
+
+---
+
+_Referenced in [astral-sh/ruff#19369](../../astral-sh/ruff/issues/19369.md) on 2025-07-15 18:15_
+
+---
+
+_Referenced in [astral-sh/ruff#19373](../../astral-sh/ruff/pulls/19373.md) on 2025-07-15 19:12_
+
+---

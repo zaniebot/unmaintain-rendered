@@ -1,0 +1,264 @@
+---
+number: 5069
+title: "[clap_complete] Not working on zsh"
+type: issue
+state: closed
+author: liby
+labels:
+  - C-bug
+assignees: []
+created_at: 2023-08-12T09:43:21Z
+updated_at: 2023-08-12T14:03:18Z
+url: https://github.com/clap-rs/clap/issues/5069
+synced_at: 2026-01-07T13:12:20-06:00
+---
+
+# [clap_complete] Not working on zsh
+
+---
+
+_Issue opened by @liby on 2023-08-12 09:43_
+
+### Please complete the following tasks
+
+- [X] I have searched the [discussions](https://github.com/clap-rs/clap/discussions)
+- [X] I have searched the [open](https://github.com/clap-rs/clap/issues) and [rejected](https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed) issues
+
+### Rust Version
+
+rustc 1.73.0-nightly (a6f8aa5a0 2023-08-11)
+
+### Clap Version
+
+4.3.21
+
+### Minimal reproducible code
+
+https://github.com/malwaredb/malwaredb-rs
+
+```rust
+//! How to generate shell completions.
+//! Instructions based on [Clap](https://github.com/clap-rs/clap/blob/master/clap_complete/examples/completion-derive.rs).
+//!
+//! Usage with zsh:
+//! ```console
+//! $ cargo run --features=admin --bin mdb_server -- --generate=zsh > /usr/local/share/zsh/site-functions/_completion_derive
+//! $ compinit
+//! $ ./target/debug/mdb_server --<TAB>
+//! ```
+//! fish:
+//! ```console
+//! $ cargo run --features=admin --bin mdb_server -- --generate=fish > completion_derive.fish
+//! $ . ./completion_derive.fish
+//! $ ./target/debug/mdb_server --<TAB>
+//! ```
+//! bash:
+//! ```console
+//! $ cargo run --features=admin --bin mdb_server -- --generate=bash > completion_derive.bash
+//! $ source completion_derive.bash
+//! $ ./target/debug/mdb_server --<TAB>
+//! ```
+
+#[cfg(feature = "admin")]
+mod admin;
+mod config;
+mod run;
+
+use std::process::ExitCode;
+
+use clap::{Command, Parser, Subcommand};
+use clap_complete::{generate, Generator, Shell};
+
+/// Malware Database
+///
+/// Malware Database maintains the bookkeeping for unknown, malicious, and benign binaries
+/// using a database, and optionally storing the files in a given location for later retrieval.
+#[derive(Parser, Debug, Clone, PartialEq)]
+#[command(author, version, about)]
+pub struct Options {
+    #[arg(long = "generate", value_enum)]
+    pub(crate) generator: Option<Shell>,
+    /// Subcommands (with their own options)
+    #[clap(subcommand)]
+    cmd: Option<Subcommands>,
+}
+
+impl Options {
+    pub async fn execute(self) -> anyhow::Result<ExitCode> {
+        match self.cmd {
+            Some(Subcommands::Run(cmd)) => cmd.execute().await,
+            #[cfg(feature = "admin")]
+            Some(Subcommands::Admin(cmd)) => cmd.execute().await,
+            None => {
+                eprintln!("Please run with `--help` for options.");
+                Ok(ExitCode::FAILURE)
+            }
+        }
+    }
+}
+
+#[derive(Subcommand, Clone, Debug, PartialEq)]
+enum Subcommands {
+    #[command(visible_alias = "hint")]
+    Run(run::Run),
+    #[cfg(feature = "admin")]
+    Admin(admin::Admin),
+}
+
+pub fn print_completions<G: Generator>(gen: G, cmd: &mut Command) {
+    generate(gen, cmd, cmd.get_name().to_string(), &mut std::io::stdout());
+}
+
+#[cfg(test)]
+mod tests {
+    use super::Options;
+
+    use clap::CommandFactory;
+
+    #[test]
+    fn verify_cli() {
+        Options::command().debug_assert();
+    }
+}
+```
+
+### Steps to reproduce the bug with the above code
+
+```
+$ cargo run --features=admin --bin mdb_server -- --generate=zsh
+> /// '/usr/local/share/zsh/site-functions/_completion_derive' does not exist
+$ compinit
+$ ./target/debug/mdb_server --<TAB>
+```
+
+### Actual Behaviour
+
+No auto-complete available
+
+### Expected Behaviour
+
+Auto-completion working properly.
+
+### Additional Context
+
+There is no _share_ folder under the _/usr/local/_ folder.
+<img width="686" alt="image" src="https://github.com/clap-rs/clap/assets/38807139/5bccb8e0-4db5-4ba4-9a49-5e9b2b0552e7">
+
+
+### Debug Output
+
+```
+[clap_builder::builder::command]Command::_do_parse
+[clap_builder::builder::command]Command::_build: name="malwaredb"
+[clap_builder::builder::command]Command::_propagate:malwaredb
+[clap_builder::builder::command]Command::_check_help_and_version:malwaredb expand_help_tree=false
+[clap_builder::builder::command]Command::long_help_exists
+[clap_builder::builder::command]Command::_check_help_and_version: Building default --help
+[clap_builder::builder::command]Command::_check_help_and_version: Building default --version
+[clap_builder::builder::command]Command::_check_help_and_version: Building help subcommand
+[clap_builder::builder::command]Command::_propagate_global_args:malwaredb
+[clap_builder::builder::debug_asserts]Command::_debug_asserts
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:generator
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:help
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:version
+[clap_builder::builder::debug_asserts]Command::_verify_positionals
+[clap_builder::parser::parser]Parser::get_matches_with
+[clap_builder::parser::parser]Parser::get_matches_with: Begin parsing '"--generate=zsh"'
+[clap_builder::parser::parser]Parser::possible_subcommand: arg=Ok("--generate=zsh")
+[clap_builder::parser::parser]Parser::get_matches_with: sc=None
+[clap_builder::parser::parser]Parser::parse_long_arg
+[clap_builder::parser::parser]Parser::parse_long_arg: Does it contain '='...
+[clap_builder::parser::parser]Parser::parse_long_arg: Found valid arg or flag '--generate <GENERATOR>'
+[clap_builder::parser::parser]Parser::parse_long_arg("generate"): Found an arg with value 'Some("zsh")'
+[clap_builder::parser::parser]Parser::parse_opt_value; arg=generator, val=Some("zsh"), has_eq=true
+[clap_builder::parser::parser]Parser::parse_opt_value; arg.settings=ArgFlags(0)
+[clap_builder::parser::parser]Parser::parse_opt_value; Checking for val...
+[clap_builder::parser::parser]Parser::react action=Set, identifier=Some(Long), source=CommandLine
+[clap_builder::parser::parser]Parser::react: cur_idx:=1
+[clap_builder::parser::parser]Parser::remove_overrides: id="generator"
+[clap_builder::parser::arg_matcher]ArgMatcher::start_custom_arg: id="generator", source=CommandLine
+[clap_builder::builder::command]Command::groups_for_arg: id="generator"
+[clap_builder::parser::arg_matcher]ArgMatcher::start_custom_arg: id="Options", source=CommandLine
+[clap_builder::parser::parser]Parser::push_arg_values: ["zsh"]
+[clap_builder::parser::parser]Parser::add_single_val_to_arg: cur_idx:=2
+[clap_builder::parser::arg_matcher]ArgMatcher::needs_more_vals: o=generator, pending=0
+[clap_builder::parser::arg_matcher]ArgMatcher::needs_more_vals: expected=1, actual=0
+[clap_builder::parser::parser]Parser::react not enough values passed in, leaving it to the validator to complain
+[clap_builder::parser::parser]Parser::get_matches_with: After parse_long_arg ValuesDone
+[clap_builder::parser::parser]Parser::add_defaults
+[clap_builder::parser::parser]Parser::add_defaults:iter:generator:
+[clap_builder::parser::parser]Parser::add_default_value: doesn't have conditional defaults
+[clap_builder::parser::parser]Parser::add_default_value:iter:generator: doesn't have default vals
+[clap_builder::parser::parser]Parser::add_defaults:iter:help:
+[clap_builder::parser::parser]Parser::add_default_value: doesn't have conditional defaults
+[clap_builder::parser::parser]Parser::add_default_value:iter:help: doesn't have default vals
+[clap_builder::parser::parser]Parser::add_defaults:iter:version:
+[clap_builder::parser::parser]Parser::add_default_value: doesn't have conditional defaults
+[clap_builder::parser::parser]Parser::add_default_value:iter:version: doesn't have default vals
+[clap_builder::parser::validator]Validator::validate
+[clap_builder::builder::command]Command::groups_for_arg: id="generator"
+[clap_builder::parser::validator]Conflicts::gather_direct_conflicts id="generator", conflicts=[]
+[clap_builder::parser::validator]Conflicts::gather_direct_conflicts id="Options", conflicts=[]
+[clap_builder::parser::validator]Validator::validate_conflicts
+[clap_builder::parser::validator]Validator::validate_exclusive
+[clap_builder::parser::validator]Validator::validate_conflicts::iter: id="generator"
+[clap_builder::parser::validator]Conflicts::gather_conflicts: arg="generator"
+[clap_builder::parser::validator]Conflicts::gather_conflicts: conflicts=[]
+[clap_builder::parser::validator]Validator::validate_required: required=ChildGraph([])
+[clap_builder::parser::validator]Validator::gather_requires
+[clap_builder::parser::validator]Validator::gather_requires:iter:"generator"
+[clap_builder::parser::validator]Validator::gather_requires:iter:"Options"
+[clap_builder::parser::validator]Validator::gather_requires:iter:"Options":group
+[clap_builder::parser::validator]Validator::validate_required: is_exclusive_present=false
+[clap_builder::parser::arg_matcher]ArgMatcher::get_global_values: global_arg_vec=[]
+Generating completion file for Zsh...
+```
+
+---
+
+_Label `C-bug` added by @liby on 2023-08-12 09:43_
+
+---
+
+_Comment by @epage on 2023-08-12 11:19_
+
+If I'm understanding your reproduction steps and code, you are printing the completions to stdout and not putting them in a file for zsh to read. Is that correct?
+
+FYI please in the future provide minimal examples of a problem; the included example can't be run on its own
+
+---
+
+_Comment by @liby on 2023-08-12 12:10_
+
+> If I'm understanding your reproduction steps and code, you are printing the completions to stdout and not putting them in a file for zsh to read. Is that correct?
+
+Oh, I think I understand where the issue lies now. Thank you.
+
+> FYI please in the future provide minimal examples of a problem; the included example can't be run on its own
+
+Sorry, I will pay attention next time. Since this issue was not caused by a clap, I will close it. Sorry again.
+
+I know this might be a bit off-topic, but if possible, I'd like to ask a question.
+
+<img width="691" alt="image" src="https://github.com/clap-rs/clap/assets/38807139/29e53f3e-4c97-4d34-a95b-bdacb9994a1d">
+
+I encountered two issues while trying to generate a completion script for Zsh and redirect the output to a file within the directories specified by the `$fpath` variable.
+
+1. Permission Denied: When attempting to write the completion script to _/usr/share/zsh/site-functions/\_completion_derive_, I received a "permission denied" error. This likely occurred because the directory requires higher permissions to write to. A common solution to this problem might be to run the command with elevated permissions, such as using `sudo`. However, this approach might not be suitable for all users.
+2. Directory Not Found: When trying to write to _/usr/local/share/zsh/site-functions/\_completion_derive_, I encountered a "no such file or directory" error. This indicates that the specified path does not exist. A potential solution could be to create the directory first and then append it to the `$fpath` variable. However, this approach might be considered overly complex for some users.
+
+In both cases, I was attempting to use the `>` operator to redirect the completed result into the specified folder within the `$fpath` variable. I'm looking for a better approach that can handle these issues without requiring users to manually create directories or modify permissions. Any suggestions would be appreciated.
+
+
+
+---
+
+_Closed by @liby on 2023-08-12 12:10_
+
+---
+
+_Comment by @epage on 2023-08-12 14:03_
+
+You likely want to put the completions in your home directory, rather than in `/usr`. I don't use zsh so my understanding is limited for how to do that.
+
+---

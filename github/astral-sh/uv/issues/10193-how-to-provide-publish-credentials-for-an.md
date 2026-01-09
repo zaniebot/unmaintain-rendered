@@ -1,0 +1,126 @@
+---
+number: 10193
+title: How to provide publish credentials for an alternative (named) package index?
+type: issue
+state: closed
+author: menzenski
+labels:
+  - duplicate
+  - question
+assignees: []
+created_at: 2024-12-27T14:15:18Z
+updated_at: 2025-11-04T14:34:09Z
+url: https://github.com/astral-sh/uv/issues/10193
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# How to provide publish credentials for an alternative (named) package index?
+
+---
+
+_Issue opened by @menzenski on 2024-12-27 14:15_
+
+The documentation on [Package indexes](https://docs.astral.sh/uv/configuration/indexes/#searching-across-multiple-indexes) specifies how to provide credentials via environment variables for installing packages from a named index. The documentation on [Publishing packages](https://docs.astral.sh/uv/guides/publish/#publishing-your-package) specifies how to provide credentials via environment variables for publishing via PyPI.
+
+In my opinion the documentation seems to have a gap, in that it's not clear how to provide credentials via environment variables for publishing to an alternative (named) package index (e.g. a private Artifactory registry).
+
+For example, given an index definition named `my_artifactory` in `pyproject.toml` (which defines a `publish-url` per the [docs](https://docs.astral.sh/uv/guides/publish/#publishing-your-package)):
+
+```toml
+[[tool.uv.index]]
+name = "my_artifactory"
+url = "https://myorg.jfrog.io/artifactory/api/pypi/pypi/simple"
+publish-url = "https://myorg.jfrog.io/artifactory/api/pypi/pypi-local"
+explicit = true
+```
+
+Do I use the same `UV_INDEX_MY_ARTIFACTORY_USERNAME` / `UV_INDEX_MY_ARTIFACTORY_PASSWORD` environment variable names for publishing to the `publish-url` that I would for installing dependencies from the index's `url` ? Or should I expect to use environment variables that have `PUBLISH` in the name? (Or something else?)
+
+---
+
+_Comment by @menzenski on 2024-12-30 16:31_
+
+I tried using the same `UV_INDEX_MY_ARTIFACTORY_USERNAM`E / `UV_INDEX_MY_ARTIFACTORY_PASSWORD` environment variable names, but get a credentials error.
+
+Here's the relevant part of my GitHub Actions `publish` job definition:
+
+```yaml
+      - name: Build python package
+        run: |
+          uv build
+      - name: Publish python package
+        env:
+          UV_INDEX_MY_ARTIFACTORY_USERNAME: ${{ secrets.PUBLISH_USERNAME }}
+          UV_INDEX_MY_ARTIFACTORY_PASSWORD: ${{ secrets.PUBLISH_PASSWORD }}
+        run: |
+          uv publish --index my_artifactory
+```
+
+Here's the error:
+
+```
+Run uv publish --index my_artifactory
+  uv publish --index my_artifactory
+  shell: /usr/bin/bash -e {0}
+  env:
+    UV_CACHE_DIR: /home/runner/work/_temp/setup-uv-cache
+    pythonLocation: /opt/hostedtoolcache/Python/3.12.8/x64
+    PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.12.8/x64/lib/pkgconfig
+    Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.8/x64
+    Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.8/x64
+    Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.8/x64
+    LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.12.8/x64/lib
+    UV_INDEX_MY_ARTIFACTORY_USERNAME: ***
+    UV_INDEX_MY_ARTIFACTORY_PASSWORD: ***
+warning: `uv publish` is experimental and may change without warning
+Publishing 2 files https://myorg.jfrog.io/artifactory/api/pypi/pypi-local
+Note: Neither credentials nor keyring are configured, and there was an error fetching the trusted publishing token. If you don't want to use trusted publishing, you can ignore this error, but you need to provide credentials.
+Trusted publishing error: Environment variable ACTIONS_ID_TOKEN_REQUEST_TOKEN not set, is the `id-token: write` permission missing?
+Uploading my_package-0.2.1-py3-none-any.whl (2.5KiB)
+error: Failed to publish `dist/my_package-0.2.1-py3-none-any.whl` to https://myorg.jfrog.io/artifactory/api/pypi/pypi-local
+  Caused by: Failed to send POST request
+  Caused by: Missing credentials for https://myorg.jfrog.io/artifactory/api/pypi/pypi-local
+Error: Process completed with exit code 2.
+```
+
+For what it's worth, we publish to the same Artifactory registry using the same credentials in other Python projects with Poetry, so I'm pretty confident that the credentials and the URL are correct.
+
+---
+
+_Comment by @zanieb on 2024-12-30 16:41_
+
+Thanks for all the details!
+
+Is this a duplicate of https://github.com/astral-sh/uv/issues/9845 ?
+
+---
+
+_Comment by @menzenski on 2024-12-30 18:18_
+
+>  Is this a duplicate of [#9845](https://github.com/astral-sh/uv/issues/9845) ?
+
+Yes, I think it's the same issue - no objections to closing this as a duplicate of that.
+
+---
+
+_Closed by @zanieb on 2024-12-30 20:17_
+
+---
+
+_Label `duplicate` added by @zanieb on 2024-12-30 20:17_
+
+---
+
+_Label `question` added by @zanieb on 2024-12-30 20:17_
+
+---
+
+_Referenced in [astral-sh/uv#14253](../../astral-sh/uv/pulls/14253.md) on 2025-06-25 07:50_
+
+---
+
+_Comment by @menzenski on 2025-11-04 14:34_
+
+In case anyone finds this issue via search in the future, the documentation added in https://github.com/astral-sh/uv/pull/14253 provides instructions on publishing to Artifactory : https://docs.astral.sh/uv/guides/integration/alternative-indexes/#publishing-packages-to-jfrog-artifactory
+
+---

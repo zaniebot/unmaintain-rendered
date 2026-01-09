@@ -1,0 +1,48 @@
+---
+number: 16689
+title: "Resolve `escape` and possibly auto-fix `unsafe-markup-use` (`S704`)"
+type: issue
+state: open
+author: ntBre
+labels:
+  - rule
+assignees: []
+created_at: 2025-03-12T18:52:51Z
+updated_at: 2025-04-22T09:52:34Z
+url: https://github.com/astral-sh/ruff/issues/16689
+synced_at: 2026-01-07T13:12:16-06:00
+---
+
+# Resolve `escape` and possibly auto-fix `unsafe-markup-use` (`S704`)
+
+---
+
+_Issue opened by @ntBre on 2025-03-12 18:52_
+
+### Summary
+
+As discussed in the stabilization PR (#16643), it would be nice to avoid flagging S704 on code like this:
+
+```python
+    def dashboard_link(self) -> Markup:
+        title = escape(self.dashboard_title or "<empty>")
+        return Markup(title)
+```
+
+by resolving variables passed to `Markup`.
+
+It could also be nice to autofix simple f-strings or `format` calls into `Markup.format` calls.
+
+See https://github.com/astral-sh/ruff/pull/16643#issuecomment-2717050658 and https://github.com/astral-sh/ruff/pull/16643#issuecomment-2717087194 for more context and ideas.
+
+---
+
+_Label `rule` added by @ntBre on 2025-03-12 18:52_
+
+---
+
+_Comment by @xmo-odoo on 2025-04-22 09:52_
+
+Is it really useful? Sure the `Markup` call is technically not unsafe, but it's also useless, `escape` already returns a `Markup` so that's redundant.
+
+---

@@ -1,0 +1,73 @@
+---
+number: 6856
+title: "`uv <command> --help` should prioritise options specific to the command"
+type: issue
+state: open
+author: shaunhegarty
+labels:
+  - cli
+assignees: []
+created_at: 2024-08-30T09:21:20Z
+updated_at: 2024-09-02T08:46:44Z
+url: https://github.com/astral-sh/uv/issues/6856
+synced_at: 2026-01-07T13:12:17-06:00
+---
+
+# `uv <command> --help` should prioritise options specific to the command
+
+---
+
+_Issue opened by @shaunhegarty on 2024-08-30 09:21_
+
+This is only a minor annoyance but I keep running into it. 
+
+I typically use the terminal in VS Code, docked at the bottom, with code on top.
+
+When I run `uv <command> --help` I expect to at a minimum see the command specific options first, since I assume this is supposed to be the quick reference. 
+This is not an issue when using `uv help <command>` since it scrolls to the top, however this is the rich help and the purpose is different I think. 
+
+Example, I want remind myself quickly what options `uv run` has:
+![image](https://github.com/user-attachments/assets/67aec19d-ce6e-49e5-8ce5-44021abbdb12)
+
+The things I want to see are way up at the top. 
+
+
+---
+
+_Comment by @zanieb on 2024-08-30 12:11_
+
+I'm not sure what to do here. All of the details about the specific command are on top. It seems pretty weird to move the command-specific options to the bottom? I agree it's not great though. Unfortunately we have a lot of options!
+
+---
+
+_Label `cli` added by @zanieb on 2024-08-30 12:11_
+
+---
+
+_Comment by @shaunhegarty on 2024-08-30 12:53_
+
+Yeah I understand there's a lot of options. Possibly there's nothing to be done here that's worth doing. 
+
+I was confused as to why all the options from `sync` were included. I thought maybe they just got appended in any case.
+Reading the rich help in more detail, I found this to be surprising, at least in the specific case of `uv run`.
+> When used in a project, the project environment will be created and updated before invoking the command.
+
+So it's essentially doing a `uv sync` before and thus all of its options are required. Seems like `--no-project` is the only `uv run` specific command so it possibly wasn't the best example since all options are relevant.
+
+How about `uv tree` instead? Are the index, installer, build and cache options etc. relevant for commands like this? _Edit: All the commands seem to have well trimmed options so they probably are._ 
+
+Maybe just something to keep in mind since I imagine only more options will come in the future. 
+
+---
+
+_Comment by @zanieb on 2024-08-30 13:08_
+
+Unfortunately all of the resolver options are relevant for most project operations because we make sure everything is up to date. I wonder if we should hide more option sections by default and require `uv help` to see the full listing.
+
+---
+
+_Comment by @weihenglim on 2024-09-02 04:59_
+
+FYI, with the VS Code integrated terminal you can hit `Ctrl+Up` to scroll up to the previous command.
+
+---

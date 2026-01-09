@@ -1,0 +1,97 @@
+---
+number: 2690
+title: "`UP035`: Rewrite `typing.Callable` to `collections.abc.Callable` for Python 3.9.2+"
+type: issue
+state: closed
+author: ngnpope
+labels:
+  - question
+assignees: []
+created_at: 2023-02-09T16:26:33Z
+updated_at: 2023-07-10T01:19:17Z
+url: https://github.com/astral-sh/ruff/issues/2690
+synced_at: 2026-01-07T13:12:14-06:00
+---
+
+# `UP035`: Rewrite `typing.Callable` to `collections.abc.Callable` for Python 3.9.2+
+
+---
+
+_Issue opened by @ngnpope on 2023-02-09 16:26_
+
+There was a bug in Python 3.9.0 and 3.9.1 which resulted in `pyupgrade` only making this rewrite on 3.10+.
+
+The issue was resolved in Python 3.9.2 and we're now on Python 3.9.16. It seems a shame to not support this.
+
+See https://github.com/asottile/pyupgrade/issues/677 for context.
+
+---
+
+_Comment by @charliermarsh on 2023-02-09 23:05_
+
+We probably need to support minor version-based minimums in order to do this, right? Like, we can't enable this for all Python 3.9.X versions, can we?
+
+---
+
+_Label `question` added by @charliermarsh on 2023-02-09 23:05_
+
+---
+
+_Comment by @ngnpope on 2023-02-09 23:12_
+
+That's right, it can't be enabled for 3.9.0 or 3.9.1.
+
+---
+
+_Referenced in [astral-sh/ruff#3388](../../astral-sh/ruff/issues/3388.md) on 2023-03-08 17:25_
+
+---
+
+_Comment by @ericbn on 2023-03-08 18:00_
+
+[flake8-pep585](https://github.com/decorator-factory/flake8-pep585) makes no distinction between any of the 3.9.x versions, and supports this for py39 as a whole.
+
+---
+
+_Comment by @charliermarsh on 2023-03-08 18:02_
+
+I think those suggestions are technically incorrect for Python 3.9.0 and Python 3.9.1 though. If you make those changes, your imports will fail on those specific minor versions.
+
+---
+
+_Comment by @ericbn on 2023-03-08 19:09_
+
+Sorry, I see how pyupgrade went on the safer side. Ruff inherited that and it makes sense.
+
+---
+
+_Comment by @ericbn on 2023-03-09 03:09_
+
+A solution for users with Python >=3.9.2,<3.10 could be manually configuring the TID251 rule with:
+```
+[tool.ruff.flake8-tidy-imports]
+[tool.ruff.flake8-tidy-imports.banned-api]
+"typing.Callable".msg = "Use collections.abc.Callable instead."
+```
+
+---
+
+_Comment by @ngnpope on 2023-03-09 07:27_
+
+That's a neat workaround. I'm using 3.9+ everywhere so it's viable.
+
+I would hope that people aren't using .0 or .1 by now, but reality is never the ideal. I guess you can close this @charliermarsh if you're not wanting to special case this to check the patch version.
+
+---
+
+_Closed by @charliermarsh on 2023-07-10 01:19_
+
+---
+
+_Referenced in [pypa/setuptools#4721](../../pypa/setuptools/pulls/4721.md) on 2024-11-01 15:31_
+
+---
+
+_Referenced in [pallets-eco/flask-admin#2654](../../pallets-eco/flask-admin/pulls/2654.md) on 2025-08-11 08:52_
+
+---

@@ -1,0 +1,46 @@
+---
+number: 7158
+title: Why is install.sh (installers) not part of the repo? Where is that hosted?
+type: issue
+state: closed
+author: hoegge
+labels:
+  - question
+  - releases
+assignees: []
+created_at: 2024-09-07T08:09:31Z
+updated_at: 2024-09-07T16:06:29Z
+url: https://github.com/astral-sh/uv/issues/7158
+synced_at: 2026-01-07T13:12:17-06:00
+---
+
+# Why is install.sh (installers) not part of the repo? Where is that hosted?
+
+---
+
+_Issue opened by @hoegge on 2024-09-07 08:09_
+
+The installers are also an important part of the user experience, e.g., currently lacking setting path op so installation is a bit tedious. 
+
+Arend't the installers / shouldn't they be part of the project?
+
+
+---
+
+_Comment by @charliermarsh on 2024-09-07 11:56_
+
+They're included in the GitHub Releases, but they're created with [`cargo-dist`](https://github.com/axodotdev/cargo-dist). You're welcome to file issues with the installers here or there.
+
+---
+
+_Closed by @charliermarsh on 2024-09-07 11:56_
+
+---
+
+_Label `release` added by @charliermarsh on 2024-09-07 11:56_
+
+---
+
+_Label `question` added by @zanieb on 2024-09-07 16:06_
+
+---

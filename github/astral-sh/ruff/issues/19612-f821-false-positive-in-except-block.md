@@ -1,0 +1,71 @@
+---
+number: 19612
+title: F821 false positive in except block
+type: issue
+state: closed
+author: pavelschon
+labels: []
+assignees: []
+created_at: 2025-07-29T07:23:39Z
+updated_at: 2025-07-30T12:17:43Z
+url: https://github.com/astral-sh/ruff/issues/19612
+synced_at: 2026-01-07T13:12:16-06:00
+---
+
+# F821 false positive in except block
+
+---
+
+_Issue opened by @pavelschon on 2025-07-29 07:23_
+
+### Summary
+
+Ruff cannot detect variable defined in outer scope.
+
+```python
+try:
+    1/0  # noqa: B018
+except ZeroDivisionError as e:
+    def do_something_with_e():
+        print(e)  # noqa: T201
+
+    do_something_with_e()
+```
+
+Output:
+```
+$ ruff check test.py 
+test.py:3:29: F841 [*] Local variable `e` is assigned to but never used
+test.py:5:15: F821 Undefined name `e`
+Found 2 errors.
+[*] 1 fixable with the `--fix` option.
+
+```
+
+### Version
+
+0.12.5
+
+---
+
+_Comment by @pavelschon on 2025-07-29 10:25_
+
+https://play.ruff.rs/8642679a-f5d0-46da-a732-1ccae803690d
+
+---
+
+_Closed by @ntBre on 2025-07-29 12:24_
+
+---
+
+_Comment by @pavelschon on 2025-07-30 08:59_
+
+@ntBre Sorry, but just silently closing the issue feels a bit unpolite to me.
+
+---
+
+_Comment by @ntBre on 2025-07-30 12:17_
+
+You're right, sorry! This issue is a duplicate of https://github.com/astral-sh/ruff/issues/6878.
+
+---

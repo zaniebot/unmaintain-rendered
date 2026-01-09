@@ -1,0 +1,122 @@
+---
+number: 13706
+title: "Rule idea: Prefer dict merge"
+type: issue
+state: open
+author: jaap3
+labels:
+  - rule
+  - needs-decision
+assignees: []
+created_at: 2024-10-10T15:42:57Z
+updated_at: 2024-10-17T16:04:40Z
+url: https://github.com/astral-sh/ruff/issues/13706
+synced_at: 2026-01-07T13:12:15-06:00
+---
+
+# Rule idea: Prefer dict merge
+
+---
+
+_Issue opened by @jaap3 on 2024-10-10 15:42_
+
+I just made a PR in one of our private projects replacing patterns like:
+
+```python
+def get_form_kwargs(self):
+    return {
+        **super().get_form_kwargs(),
+        "instance": self.request.user,
+        "claims": self.token_data["claims"],
+    }
+```
+
+and
+
+```python
+def get_form_kwargs(self):
+    kwargs = super().get_form_kwargs()
+    kwargs.update(
+        instance=self.request.user,
+        claims=self.token_data["claims"]
+    )
+    return kwargs
+```
+
+with
+
+```python
+def get_form_kwargs(self):
+    return super().get_form_kwargs() | {
+        "instance": self.request.user,
+        "claims": self.token_data["claims"],
+    }
+```
+
+Then I thought to myself, it would be nice if Ruff could just autofix this.
+
+I looked into the rules, and open issues and didn't find an existing rule covering this.
+
+I did come across https://github.com/astral-sh/ruff/issues/13533#issuecomment-2394953512 which I think is suggesting (nearly) the same thing.
+
+
+---
+
+_Label `rule` added by @AlexWaygood on 2024-10-10 16:21_
+
+---
+
+_Label `needs-decision` added by @AlexWaygood on 2024-10-10 16:21_
+
+---
+
+_Comment by @dylwil3 on 2024-10-10 20:20_
+
+In the context of lists, there's already a lint rule like this but it suggests the opposite: [RUF005](https://docs.astral.sh/ruff/rules/collection-literal-concatenation/)
+
+---
+
+_Comment by @jaap3 on 2024-10-14 07:38_
+
+I don't actually particularly care about the exact form of how dictionaries are merged, it's just that I'd like it to be consistent across the codebase. I picked the union operator `|` because it's a recent language addition and resulted in the lowest line count in my case.
+
+Just did a quick (unscientific) benchmark and it appears unpacking is currently more performant:
+
+```
+python3.13 -m timeit -s "a = {'a': 1};b = {'b': 2};c = {'a': 0}" "m = a | b | c"
+2000000 loops, best of 5: 118 nsec per loop
+
+python3.13 -m timeit -s "a = {'a': 1};b = {'b': 2};c = {'a': 0}" "m = {**a, **b, **c}"
+5000000 loops, best of 5: 86.3 nsec per loop
+```
+
+Opinions may vary on the readability of the latter, but I'm fine with either.
+
+---
+
+_Referenced in [leukeleu/django-hidp#189](../../leukeleu/django-hidp/pulls/189.md) on 2024-10-15 07:26_
+
+---
+
+_Comment by @jaap3 on 2024-10-15 07:31_
+
+Ran into an interesting variation that combined both unpacking and the union operator:
+
+```python
+def get_form_kwargs(self):
+    return {**super().get_form_kwargs()} | {
+        "instance": self.request.user,
+        "claims": self.token_data["claims"],
+    }
+```
+
+Adding it here as a reminder to also detect this pattern if a rule is implemented.
+
+
+---
+
+_Comment by @lengau on 2024-10-17 16:04_
+
+I like this idea, but I'd prefer consistency with RUF005 and have dict unpacking.
+
+---

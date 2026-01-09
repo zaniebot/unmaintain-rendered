@@ -1,0 +1,73 @@
+---
+number: 11674
+title: "Feature: `uv tool install <package> <package> <package>`"
+type: issue
+state: open
+author: amotl
+labels:
+  - enhancement
+assignees: []
+created_at: 2025-02-20T18:04:29Z
+updated_at: 2025-03-19T13:34:34Z
+url: https://github.com/astral-sh/uv/issues/11674
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# Feature: `uv tool install <package> <package> <package>`
+
+---
+
+_Issue opened by @amotl on 2025-02-20 18:04_
+
+### Summary
+
+Hi. Thank you again for working on this wonderful tool.
+
+We are just getting hooked by the `uv tool` subsystem [^1], and would like to add a suggestion about it: While `uv pip install` accepts multiple package names, `uv tool install` currently doesn't. Maybe you can do something about it?
+
+[^1]: That's really an excellent one. Thank you so much!
+
+
+### Example
+
+```shell
+uv tool install --upgrade --compile-bytecode cratedb-toolkit grafana-import influxio mqttwarn
+```
+
+
+---
+
+_Label `enhancement` added by @amotl on 2025-02-20 18:04_
+
+---
+
+_Comment by @zanieb on 2025-02-20 18:18_
+
+Glad you like it!
+
+I think the hard part is that allowing installation of multiple tools in a single invocation would conflict with other options like `--from` and `--with`. We could add support and error if the other flags are used?
+
+That's part of why we have `uv tool upgrade` as a separate interface.
+
+---
+
+_Comment by @amotl on 2025-02-20 18:53_
+
+I see the conflict, thanks for explaining. Maybe it's not worth the obfuscation of the option parser: Feel free to close the ticket any time at your disposal.
+
+Indeed, we had to use `uv tool install` together with `--with` just recently over here as a workaround.
+
+- https://github.com/daq-tools/skeem/issues/112
+
+> We could add support and error if the other flags are used?
+
+I have no idea how to otherwise resolve this conflict. If this is a viable way to tremendously improve usability in likely >80% of the situations, we will be very happy about it. If not, because obfuscation weighs in negatively too much, we can absolutely understand it.
+
+
+---
+
+_Comment by @soredake on 2025-03-19 13:34_
+
+Would be nice to have ability to install multiple tools at once, as `pipx` supports this.
+
+---

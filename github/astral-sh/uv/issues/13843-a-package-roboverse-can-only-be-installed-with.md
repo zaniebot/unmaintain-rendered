@@ -1,0 +1,101 @@
+---
+number: 13843
+title: "A package (`RoboVerse`) can only be installed with editable flag with `uv add` but can be installed with both editable and no-editable flag with `uv pip install`."
+type: issue
+state: closed
+author: YouJiacheng
+labels:
+  - bug
+assignees: []
+created_at: 2025-06-04T16:53:40Z
+updated_at: 2025-06-05T11:13:38Z
+url: https://github.com/astral-sh/uv/issues/13843
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# A package (`RoboVerse`) can only be installed with editable flag with `uv add` but can be installed with both editable and no-editable flag with `uv pip install`.
+
+---
+
+_Issue opened by @YouJiacheng on 2025-06-04 16:53_
+
+### Summary
+
+`RoboVerse` can only be installed with editable flag with `uv add` but can be installed with both editable and no-editable flag with `uv pip install`. (All are local installations)
+
+I want to know why.
+
+Its `pyproject.toml` is here:
+https://github.com/RoboVerseOrg/RoboVerse/blob/main/pyproject.toml
+
+When I `uv sync` with following `pyproject.toml` (with above repo cloned into `RoboVerse`), it will install `roboverse_py-0.1.17.dist-info` into `site-packages`.
+```toml
+[project]
+name = "test"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = "==3.10.*"
+dependencies = [
+    "roboverse-py",
+]
+
+[tool.uv.sources]
+roboverse-py = { path = "RoboVerse", editable = true }
+
+```
+but if I removed `editable = true` and `uv sync` again, it will remove it.
+```
+Uninstalled 1 package in 1ms
+ - roboverse-py==0.1.17 (from file:///.../RoboVerse)
+```
+
+If I run `uv pip install ./RoboVerse`, it will install `metasim` into `site-packages`.
+If I run `uv pip install -e ./RoboVerse`, it will install `roboverse_py-0.1.17.dist-info`  into `site-packages`.
+
+I suspect this is caused by the name mismatch?
+
+
+### Platform
+
+Linux 5.15.0-136-generic x86_64 GNU/Linux
+
+### Version
+
+uv 0.7.10
+
+### Python version
+
+_No response_
+
+---
+
+_Label `bug` added by @YouJiacheng on 2025-06-04 16:53_
+
+---
+
+_Comment by @charliermarsh on 2025-06-04 19:41_
+
+Hmm, I think it's because the package doesn't have a `[build-system]` on it, and so we treat it as a "virtual" package when used as a dependency in the project APIs (`uv sync`, etc.). We're probably going to change the default around that in the future.
+
+You can use:
+
+```toml
+[tool.uv.sources]
+roboverse-py = { path = "RoboVerse", package = true }
+```
+
+
+---
+
+_Comment by @YouJiacheng on 2025-06-05 10:01_
+
+Thanks! I checked docs but didn't find the "virtual" package stuff.
+
+![Image](https://github.com/user-attachments/assets/76f2f952-bccb-4077-bd51-22d5a5394a6f)
+
+---
+
+_Closed by @charliermarsh on 2025-06-05 11:13_
+
+---

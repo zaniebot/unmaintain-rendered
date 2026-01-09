@@ -1,0 +1,123 @@
+---
+number: 13619
+title: RUF006 does not catch violations in lambda expressions
+type: issue
+state: closed
+author: hpelwintervold
+labels: []
+assignees: []
+created_at: 2024-10-03T21:46:19Z
+updated_at: 2024-10-04T15:30:42Z
+url: https://github.com/astral-sh/ruff/issues/13619
+synced_at: 2026-01-07T13:12:15-06:00
+---
+
+# RUF006 does not catch violations in lambda expressions
+
+---
+
+_Issue opened by @hpelwintervold on 2024-10-03 21:46_
+
+Ruff does not appear to find violations for rule `RUF006` ([link](https://docs.astral.sh/ruff/rules/asyncio-dangling-task/)) in lambda expressions. Example below:
+
+* List of keywords searched before opening:
+`RUF006`, `lambda`
+
+* Minimal code snippet:
+`sandbox.py`
+```
+import asyncio
+
+
+async def foo():
+    return
+
+f = lambda *args: asyncio.create_task(foo())
+
+```
+
+
+* Command invoked:
+`ruff check --select RUF006 --isolated sandbox.py`
+
+* Current ruff settings
+N/A - overridden in command
+
+* Ruff version
+`ruff 0.6.7`
+
+---
+
+_Comment by @zanieb on 2024-10-04 02:51_
+
+Thanks for the report. This is a bit tricky, as the return value of `f` could be stored in a variable later. This is technically not a violation as-written, right? Because `create_task` is never called?
+
+Implementation-wise, I tried adding this rule to the existing expression visitor but this causes a bunch of false positives when the variable _is_ assigned. I think we need to write a `Visitor` specifically to find call expressions in lambdas?
+
+I wrote some test cases
+
+```python
+f = lambda *args: asyncio.create_task(foo())
+f = lambda *args: lambda *args: asyncio.create_task(foo())
+f = lambda *args: [asyncio.create_task(foo()) for x in args]
+```
+
+---
+
+_Comment by @hpelwintervold on 2024-10-04 15:22_
+
+Thanks for taking a look, the more specific use case I have where I ran into this is signal handling. The example (which does not assign the lambda to anything)
+```
+import asyncio
+import signal
+
+
+async def foo():
+    return
+
+signal.signal(signal.SIGINT, lambda *args: asyncio.create_task(foo()))
+
+```
+Ruff does not report an error for this which prompted me to raise this bug. But thinking about this some more, I was not understanding lambdas correctly. I had thought the lambda expression `lambda *args: asyncio.create_task(foo())` essentially mapped to the following function definition:
+```
+def create_task():
+    asyncio.create_task(foo())
+```
+And ruff emits an error:
+```
+sandbox2.py:10:5: RUF006 Store a reference to the return value of `asyncio.create_task`
+   |
+ 9 | def create_task():
+10 |     asyncio.create_task(foo())
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^ RUF006
+11 | 
+12 | async def sigint_handler(*args):
+   |
+
+Found 1 error.
+```
+
+But actually the lambda returns the value - so an equivalent function is this:
+```
+def create_task():
+    return asyncio.create_task(foo())
+```
+Ruff does not emit an error for this, because the reference is returned (not lost), right?
+
+Whether or not that reference is later dropped or not seems to be outside of the scope of `RUF006`. It's a little tricky to think though, but I think the current behavior of not reporting an error makes sense - because it's up to the caller of the lambda to track the reference to the result. So I think this issue could be closed
+
+---
+
+_Comment by @zanieb on 2024-10-04 15:30_
+
+Thanks for following up!
+
+---
+
+_Closed by @zanieb on 2024-10-04 15:30_
+
+---
+
+_Referenced in [astral-sh/ruff#13628](../../astral-sh/ruff/pulls/13628.md) on 2024-10-04 15:31_
+
+---

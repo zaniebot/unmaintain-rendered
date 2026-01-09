@@ -1,0 +1,97 @@
+---
+number: 18119
+title: Tests using fixtures prefixed with underscore (_) are flagged as violating PT019
+type: issue
+state: open
+author: ckutlu
+labels:
+  - rule
+  - needs-decision
+assignees: []
+created_at: 2025-05-15T13:28:36Z
+updated_at: 2025-05-15T18:50:21Z
+url: https://github.com/astral-sh/ruff/issues/18119
+synced_at: 2026-01-07T13:12:16-06:00
+---
+
+# Tests using fixtures prefixed with underscore (_) are flagged as violating PT019
+
+---
+
+_Issue opened by @ckutlu on 2025-05-15 13:28_
+
+### Summary
+
+I would expect
+
+``` python
+import pytest
+
+
+@pytest.fixture
+def _bar():
+    return 42
+
+
+def test_bar_by_foo(_bar):
+    assert _bar / 7 == 6
+```
+
+to pass PT019 because it's using `_bar` inside `test_bar_by_foo`, but
+
+``` sh
+ruff --version && ruff check foo.py
+```
+says
+
+```
+ruff 0.11.8
+foo.py:9:21: PT019 Fixture `_bar` without value is injected as parameter, use `@pytest.mark.usefixtures` instead
+   |
+ 9 | def test_bar_by_foo(_bar):
+   |                     ^^^^ PT019
+10 |     assert _bar / 7 == 6
+   |
+
+Found 1 error.
+```
+
+### Version
+
+ruff 0.11.8
+
+---
+
+_Closed by @MichaReiser on 2025-05-15 13:37_
+
+---
+
+_Reopened by @MichaReiser on 2025-05-15 13:37_
+
+---
+
+_Comment by @ntBre on 2025-05-15 18:50_
+
+This does feel like a false positive since the rule docs say:
+
+> If the test function depends on the fixture being activated, **but does not use it in the test body** or otherwise rely on its return value
+
+but it's also consistent with the upstream linter:
+
+```shell
+> uvx --with flake8-pytest-style flake8 try.py
+try.py:5:1: PT005 fixture '_bar' returns a value, remove leading underscore
+try.py:9:1: PT019 fixture _bar without value is injected as parameter, use @pytest.mark.usefixtures instead
+```
+
+We don't currently check if the argument is actually used in the function body.
+
+---
+
+_Label `rule` added by @ntBre on 2025-05-15 18:50_
+
+---
+
+_Label `needs-decision` added by @ntBre on 2025-05-15 18:50_
+
+---

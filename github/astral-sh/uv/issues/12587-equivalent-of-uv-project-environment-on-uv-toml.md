@@ -1,0 +1,310 @@
+---
+number: 12587
+title: Equivalent of UV_PROJECT_ENVIRONMENT on uv.toml
+type: issue
+state: open
+author: carlosjourdan
+labels:
+  - enhancement
+  - configuration
+assignees: []
+created_at: 2025-03-31T15:20:47Z
+updated_at: 2025-10-28T19:52:45Z
+url: https://github.com/astral-sh/uv/issues/12587
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# Equivalent of UV_PROJECT_ENVIRONMENT on uv.toml
+
+---
+
+_Issue opened by @carlosjourdan on 2025-03-31 15:20_
+
+### Summary
+
+## Current Behavior
+Afaik, the virtual environment path can only be configured via the `UV_PROJECT_ENVIRONMENT` environment variable.
+
+## Proposed Enhancement
+Add support for configuring the virtual environment path in `uv.toml` and/or `pyproject.toml` configuration files.
+
+Example configuration:
+
+```toml
+[tool.uv]
+project-environment= "/path/to/venv"
+```
+
+## Use Case & Motivation
+- Working in a Citrix/VDI environment where the users home dir is actually a network drive under the hood
+- Need to store virtualenvs on local disk for performance reasons
+- Supporting "citizen developers" who need a simple setup process:
+  1. `git clone`
+  2. `uv sync`
+
+---
+
+_Label `enhancement` added by @carlosjourdan on 2025-03-31 15:20_
+
+---
+
+_Comment by @zanieb on 2025-04-01 20:45_
+
+I don't think we want to support this in the `pyproject.toml`, because then a project can cause a sync to an arbitrary location on your machine. This is a "user" setting, not a "project" setting — if that makes sense?
+
+---
+
+_Label `configuration` added by @zanieb on 2025-04-01 20:45_
+
+---
+
+_Comment by @zanieb on 2025-04-01 20:45_
+
+I think #1495 is a better fit for this use-case 
+
+---
+
+_Comment by @carlosjourdan on 2025-04-01 22:24_
+
+I get the distinction between "user" and "project" settings in typical development environments.
+
+However, in VDI (and I suspect many other corporate environments), there are often strict controls on where users can write files. This makes the ability to sync to an aribtrary, pre-determined location a helpful feature rather than a problem.
+
+#1495 would be a more elegant solution to this problem, but I hoped supporting the already existing environment variable through the toml configuration might be a simpler interim approach. 
+
+---
+
+_Comment by @elonzh on 2025-04-23 10:00_
+
+Our Python environment depends on conda components, such as specific versions of OpenSSL, the compilation toolchain, etc. Therefore, we create environments using conda and handle this situation by specifying `UV_PROJECT_ENVIRONMENT` and `UV_PYTHON`. However, this is very inconvenient in daily development because these environment variables need to be set every time.
+
+We have tried using pixi, but it is not suitable for us. Compared to uv, it lacks many features; for example, it does not support relative path dependencies, it can only build conda packages, and its dependency resolution prioritizes conda packages over PyPI packages.
+
+Since we must work on the Windows platform, using tools like direnv to set environment variables is also not feasible.
+
+We hope for **a local, per-project implementation solution that only requires configuration once**.
+
+---
+
+_Comment by @gsal on 2025-05-26 02:50_
+
+Just learning to use uv over the last 3 days and I too have come to need this feature.
+
+We have a team of developers and we get our hands in a mix of projects; from what I can see this early in my uv learning cuve, it would be very useful if UV_PROJECT_ENVIRONMENT could be set in the uv.toml file local to the project. 
+
+---
+
+_Referenced in [astral-sh/uv#13720](../../astral-sh/uv/issues/13720.md) on 2025-06-02 22:58_
+
+---
+
+_Referenced in [astral-sh/uv#13931](../../astral-sh/uv/issues/13931.md) on 2025-06-09 19:56_
+
+---
+
+_Comment by @uu9 on 2025-07-02 04:09_
+
+> I think [#1495](https://github.com/astral-sh/uv/issues/1495) is a better fit for this use-case
+
+
+I found these project-level environment settings variables, `UV_PROJECT` and `UV_PROJECT_ENVIRONMENT`, but I think this is probably not a good design because users typically need to frequently change these environment variables to maintain multi-projects and `uv` is designed for non-central structured  multi-projects. This seems more like environment variables used in Docker, which only requires preparing one project environment.
+
+Is it possible to make these environment variables support customization for multiple projects? For example, `UV_PROJECT_ENVIRONMENT="my_py_project1=path1:my_py_project2=path2"`. This design only requires configuration once and also is a user side configuration.
+
+---
+
+_Comment by @sascharo on 2025-07-02 08:51_
+
+> This seems more like environment variables used in Docker, which only requires preparing one project environment.
+
+I think its purpose is really just for containers as Docker by design.
+
+---
+
+_Referenced in [astral-sh/uv#15163](../../astral-sh/uv/issues/15163.md) on 2025-08-08 09:56_
+
+---
+
+_Referenced in [astral-sh/uv#14515](../../astral-sh/uv/issues/14515.md) on 2025-08-19 15:40_
+
+---
+
+_Comment by @andrew-mott on 2025-09-10 19:56_
+
+Hi! Monorepo user here. To get per-project venvs I currently set UV_PROJECT_ENVIRONMENT per project (via direnv/Just), which feels clunky.
+
+Feature request: a config knob instead of env vars:
+```toml
+[tool.uv]
+venv_mode = "project"   # or "root" (default)
+venv_path = ".venv"     # optional
+```
+
+Plus a CLI override: `uv sync --venv-mode project`.
+
+If I’ve missed an existing flag/workflow, please point me to it. Happy to help with a docs PR or a small implementation if this direction seems OK.
+
+---
+
+_Comment by @lperezmo on 2025-10-28 19:52_
+
+I was running into this exact same problem, so what I did is to setup powershell to set a storage location for the uv projects dynamically. In my case, whenever I create a project on shared drive Q it will create a local folder in my home directory under uv-envs. Perhaps not the cleanest solution, but it worked for me, maybe someone else might find it useful, just edit and add to your powershell profile, `code $PROFILE` to add with VS Code
+
+You can configure where it stores them, and if it is limited to like a shared location. I'm sure you can tweak it more, any LLM could probably handle it too
+
+```powershell
+<#
+.SYNOPSIS
+    Centralizes UV virtual environments using path-based hashing.
+
+.DESCRIPTION
+    Wraps the uv command to store virtual environments in a central location
+    instead of creating .venv folders in project directories. Particularly useful
+    for network drives and shared folders with limited space.
+
+.EXAMPLE
+    PS Q:\project> uv sync
+    Creates/uses environment at: C:\Users\YourName\uv-envs\A1B2C3D4E5F6G7H8
+
+.NOTES
+    Hash is deterministic - same path always generates same environment folder.
+    Run 'uv list-envs' to see all centralized environments.
+#>
+
+function uv {
+    param()
+    
+    # Configuration
+    $config = @{
+        # Paths requiring centralized environments (empty = all paths)
+        LimitToFolders = @(
+            "Q:\"  # Network drive
+            # "D:\Projects"  # Example additional path
+        )
+        # LimitToFolders = @() # (empty = all paths)
+        
+        # Commands that manage environments
+        EnvCommands = @('init', 'sync', 'add', 'remove', 'run', 'lock', 'venv', 'pip')
+        
+        # Base directory for centralized environments
+        BaseEnvPath = "$env:USERPROFILE\uv-envs"
+    }
+    
+    # Add custom command to list centralized environments
+    if ($args[0] -eq 'list-envs') {
+        Show-CentralizedEnvs -BaseEnvPath $config.BaseEnvPath
+        return
+    }
+    
+    # Check if this command should use centralized environment
+    if ($args.Count -gt 0 -and $config.EnvCommands -contains $args[0]) {
+        $currentPath = (Get-Location).Path
+        
+        if (Should-Centralize -Path $currentPath -AllowedPaths $config.LimitToFolders) {
+            $envPath = Setup-CentralizedEnv -Path $currentPath -BaseEnvPath $config.BaseEnvPath
+            $env:UV_PROJECT_ENVIRONMENT = $envPath
+            
+            Write-Host "-> Using centralized environment: " -ForegroundColor Cyan -NoNewline
+            Write-Host $envPath -ForegroundColor White
+            
+            # Warn about existing .venv
+            if (Test-Path ".venv") {
+                Write-Warning "Local .venv detected. Consider removing with: Remove-Item -Recurse -Force .venv"
+            }
+        }
+    }
+    
+    # Execute original uv command
+    & uv.exe @args
+}
+
+function Should-Centralize {
+    param(
+        [string]$Path,
+        [string[]]$AllowedPaths
+    )
+    
+    # Empty array means centralize everything
+    if ($AllowedPaths.Count -eq 0) { return $true }
+    
+    # Check if path matches any allowed pattern
+    foreach ($allowed in $AllowedPaths) {
+        if ($Path -like "$allowed*") { return $true }
+    }
+    
+    return $false
+}
+
+function Setup-CentralizedEnv {
+    param(
+        [string]$Path,
+        [string]$BaseEnvPath
+    )
+    
+    # Generate deterministic hash from path
+    $bytes = [System.Text.Encoding]::UTF8.GetBytes($Path.ToLower())
+    $hash = [System.Security.Cryptography.SHA256]::Create().ComputeHash($bytes)
+    $hashString = [System.BitConverter]::ToString($hash).Replace("-", "").Substring(0, 16)
+    
+    $envPath = Join-Path $BaseEnvPath $hashString
+    
+    # Ensure ONLY base directory exists
+    if (-not (Test-Path $BaseEnvPath)) {
+        New-Item -ItemType Directory -Path $BaseEnvPath -Force | Out-Null
+    }
+    
+    # Store project path reference (only if environment was created by UV)
+    if (Test-Path $envPath) {
+        $infoFile = Join-Path $envPath "_project_info.json"
+        if (-not (Test-Path $infoFile)) {
+            @{
+                ProjectPath = $Path
+                CreatedAt = (Get-Date).ToString("yyyy-MM-dd HH:mm:ss")
+                ProjectName = Split-Path $Path -Leaf
+            } | ConvertTo-Json | Set-Content $infoFile -Encoding UTF8
+        }
+    }
+    
+    return $envPath
+}
+
+function Show-CentralizedEnvs {
+    param([string]$BaseEnvPath)
+    
+    if (-not (Test-Path $BaseEnvPath)) {
+        Write-Host "No centralized environments found." -ForegroundColor Yellow
+        return
+    }
+    
+    Write-Host "`nCentralized UV Environments:" -ForegroundColor Cyan
+    Write-Host ("-" * 60) -ForegroundColor DarkGray
+    
+    Get-ChildItem $BaseEnvPath -Directory | ForEach-Object {
+        $infoFile = Join-Path $_.FullName "_project_info.json"
+        if (Test-Path $infoFile) {
+            $info = Get-Content $infoFile | ConvertFrom-Json
+            
+            # Check if project still exists
+            $exists = Test-Path $info.ProjectPath
+            $status = if ($exists) { "[OK]" } else { "[X]" }
+            $statusColor = if ($exists) { "Green" } else { "Red" }
+            
+            Write-Host "$status " -ForegroundColor $statusColor -NoNewline
+            Write-Host $_.Name -ForegroundColor Yellow -NoNewline
+            Write-Host " -> " -ForegroundColor DarkGray -NoNewline
+            Write-Host $info.ProjectPath
+            
+            # Show environment size
+            $size = (Get-ChildItem $_.FullName -Recurse | 
+                     Measure-Object -Property Length -Sum).Sum / 1MB
+            Write-Host "  Size: $([math]::Round($size, 2)) MB | Created: $($info.CreatedAt)" -ForegroundColor DarkGray
+        }
+    }
+    Write-Host ("-" * 60) -ForegroundColor DarkGray
+}
+
+# Optional: Add alias for convenience
+Set-Alias -Name uvl -Value "uv list-envs" -ErrorAction SilentlyContinue
+```
+
+---

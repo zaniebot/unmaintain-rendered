@@ -1,0 +1,58 @@
+---
+number: 16864
+title: SQLAlchemy lint rules
+type: issue
+state: open
+author: Lukas0907
+labels:
+  - plugin
+assignees: []
+created_at: 2025-03-20T07:50:14Z
+updated_at: 2025-03-21T13:33:19Z
+url: https://github.com/astral-sh/ruff/issues/16864
+synced_at: 2026-01-07T13:12:16-06:00
+---
+
+# SQLAlchemy lint rules
+
+---
+
+_Issue opened by @Lukas0907 on 2025-03-20 07:50_
+
+### Summary
+
+It would be great if ruff supported rules for linting code that uses SQLAlchemy.
+
+There is a flake8 plugin already available: https://github.com/miketheman/flake8-sqlalchemy This could be used as a starting point. There is also a ticket with some additional rules that would be useful: https://github.com/miketheman/flake8-sqlalchemy/issues/54
+
+---
+
+_Label `plugin` added by @MichaReiser on 2025-03-20 08:32_
+
+---
+
+_Comment by @Daverball on 2025-03-21 13:11_
+
+While I don't necessarily agree with all of the the rules the plugin currently provides, I think some of the suggested rules could be quite valuable and I also see great potential for additional rules that help with the transition from SQLAlchemy 1.4 -> 2.0, similar to how there are rules for transitioning to numpy v2.
+
+The `Warning` based upgrade help from 1.4 to 2.0 works well enough, but there is still a lot of churn that could easily be automated and even after your code is 2.0 "ready", it's still not really idiomatic 2.0 code, especially if you're using type hints. Most of the upgrade steps and recommendations for 2.0 code could be turned into rules with fixes.
+
+I would be interested in working on some pyupgrade style rules for SQLAlchemy, since there's still at least one large code base I have to make the transition for.
+
+---
+
+_Comment by @Lukas0907 on 2025-03-21 13:33_
+
+> I also see great potential for additional rules that help with the transition
+
+Yes, especially because certain idioms are considered legacy by SQLAlchemy 2.0 (e.g. the query interface but also other less important patterns) but do not raise warnings. Linter rules would be a good fit to detect and handle those, IMO.
+
+---
+
+_Referenced in [astral-sh/ruff#18065](../../astral-sh/ruff/pulls/18065.md) on 2025-05-13 09:03_
+
+---
+
+_Referenced in [apache/airflow#55954](../../apache/airflow/pulls/55954.md) on 2025-09-28 10:53_
+
+---

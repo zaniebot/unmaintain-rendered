@@ -1,0 +1,165 @@
+---
+number: 13065
+title: "`incorrectly-parenthesized-tuple-in-subscript` (`RUF031`) - false positives with `parenthesize-tuple-in-subscript = true` on types outside of type annotations"
+type: issue
+state: open
+author: DetachHead
+labels:
+  - rule
+  - type-inference
+assignees: []
+created_at: 2024-08-23T01:30:19Z
+updated_at: 2025-01-07T18:21:02Z
+url: https://github.com/astral-sh/ruff/issues/13065
+synced_at: 2026-01-07T13:12:15-06:00
+---
+
+# `incorrectly-parenthesized-tuple-in-subscript` (`RUF031`) - false positives with `parenthesize-tuple-in-subscript = true` on types outside of type annotations
+
+---
+
+_Issue opened by @DetachHead on 2024-08-23 01:30_
+
+the fix for #12758 only fixed the issue for type annotations, but the generic syntax for types can appear outside of type annotations, eg:
+
+```py
+foo: dict[str, int] = {"a": 1} # no error
+foo = dict[str, int](a=1) # RUF031: Use parentheses for tuples in subscripts.
+```
+[playground](https://play.ruff.rs/0a3d1260-7a71-4c6f-867e-8d9c9c274b00)
+
+i'm not sure how feasible it is to fix this without type checking (#3893), perhaps it could just assume any index access followed by a call is using a type
+
+---
+
+_Comment by @dylwil3 on 2024-08-23 03:04_
+
+Neat! This is tricky. Ignoring subscripts followed by calls would lead to false negatives for folks using a dispatch pattern:
+
+```python
+dispatch = {(0,1): north, (1,0): east, (0,-1): south, (-1,0): west }
+def walk(x,y,z):
+    return dispatch[x,y](z)
+```
+Maybe there is some sneakier way of teasing out this generic type situation...
+
+
+---
+
+_Comment by @dhruvmanila on 2024-08-23 04:27_
+
+Yeah, I also think this is tricky without type inference. @DetachHead I'm curious to know how did you run into this, do you have an example of a real world code base?
+
+---
+
+_Label `type-inference` added by @dhruvmanila on 2024-08-23 04:27_
+
+---
+
+_Label `rule` added by @dhruvmanila on 2024-08-23 04:27_
+
+---
+
+_Comment by @DetachHead on 2024-08-23 04:44_
+
+yeah there are about a hundred false positives in our codebase after enabling this rule. i haven't looked through all of them but it seems that most of them fall into one of the following scenarios:
+
+- defining the type of an empty dict and populating it later:
+  ```py
+  foo = dict[str, int]()
+  ...
+  foo["bar"] = 1
+  ```
+  an obvious workaround is to just do `foo: dict[str, int] = {}` but nevertheless this is still came from real world code (minified though because it's a private codebase)
+- defining the type of a `defaultdict` while instantiating it:
+  ```py
+  foo = defaultdict[str, list[str]](list)
+  ```
+- type aliases that don't use the `TypeAlias` annotation:
+  ```py
+  Foo = Literal["a", "b"]
+  ```
+
+all the examples i found use stdlib types so i guess in these cases they can be special-cased to reduce the risk of these false positives
+
+---
+
+_Comment by @dhruvmanila on 2024-08-23 04:48_
+
+Interesting, thanks for sharing that. cc @AlexWaygood do you think it's currently feasible to resolve this?
+
+---
+
+_Renamed from "`incorrectly-parenthesized-tuple-in-subscript` (`RUF031`) with `parenthesize-tuple-in-subscript = true` false positives on types outside of type annotations" to "`incorrectly-parenthesized-tuple-in-subscript` (`RUF031`) - false positives with `parenthesize-tuple-in-subscript = true` on types outside of type annotations" by @DetachHead on 2024-08-23 04:53_
+
+---
+
+_Comment by @AlexWaygood on 2024-08-23 12:49_
+
+Hrm, this is hard!
+
+For your three bullets in https://github.com/astral-sh/ruff/issues/13065#issuecomment-2306282918: bullets (1) and (2) would be easy with type inference; we could just check to see if the subscripted object was a type that had `__class_getitem__` defined.
+
+Bullet point 3 (detecting whether an assignment not annotated using `TypeAlias` is intended to be a runtime value or a type alias) would be hard even with type inference. It was for this very reason that `typing.TypeAlias` (backported as `typing_extensions.TypeAlias`) was introduced.
+
+I can see several options, none perfect:
+1. Ignore the rule for call expressions when `lint.ruff.parenthesize-tuple-in-subscript = true`. This would reduce false positives but it wouldn't get rid of them, and would also introduce false negatives.
+2. Special-case symbols from `builtins` and the `typing` module. And maybe other standard-library modules? It would reduce false positives, but again wouldn't get rid of them; there are lots of third-party generic types, after all.
+3. Add a prominent warning to the docs that setting `lint.ruff.parenthesize-tuple-in-subscript = true` may lead to a lot of false positives if your code is heavily typed.
+
+---
+
+_Comment by @BarrensZeppelin on 2024-09-04 06:33_
+
+Hi, I can chime in with another data point.
+In my code base I have 21 false positives from this rule.
+
+* 14 instances are from creating empty dictionaries (or `defaultdict` / `WeakKeyDictionary`): `dict[int, str]()`
+* 3 instances stem from converting a list to a tuple with known length: `tuple[int, int, int](my_list)`.
+* 2 instances occur in interfacing with pydantic:
+  `Adapter = TypeAdapter(dict[str, list[str]])`
+  `MyID = Annotated[str, AfterValidator(_check_id)]`
+* 1 instance occurs in the value for `default_factory` for a `dataclasses.field`:
+  `_cache: Final = field(default_factory=dict[str, CachedObject], init=False)`
+* 1 instance occurs when creating a type alias for a collection of literal strings without the `TypeAlias` annotation:
+  `MyStrings = Literal["foo", "bar", "baz"]`
+
+---
+
+_Comment by @dylwil3 on 2024-09-04 13:10_
+
+Maybe in the short term I can try to disable the rule for calls on builtin types like dict and tuple since I think there is some support for that. I also think it's worth the potential false negative to disable the rule for "Literal" since I doubt many people are shadowing that name and subscripting with it - plus `Literal` appears to be an instance where parentheses are explicitly disallowed, so it's a bit more dangerous of a false positive.
+
+But I'll wait for the green light from the maintainers.
+
+---
+
+_Comment by @AlexWaygood on 2024-09-04 13:14_
+
+> plus `Literal` appears to be an instance where parentheses are explicitly disallowed, so it's a bit more dangerous of a false positive.
+
+hmm, is that true? Type checkers like mypy just read the AST, and `Literal[1, 2]` has the same AST in CPython as `Literal[(1, 2)]`, so it would be a hard rule for mypy to enforce. (Ruff's AST preserves whether or not a tuple is parenthesized, but most Python ASTs do not!) Mypy [seems to cope fine](https://mypy-play.net/?mypy=latest&python=3.12&gist=2e781f45e1deb41deeb695e92e94d178) with `Literal[(1, 2)]`.
+
+---
+
+_Comment by @dylwil3 on 2024-09-04 13:18_
+
+See https://peps.python.org/pep-0586/#illegal-parameters-for-literal-at-type-check-time
+
+---
+
+_Comment by @AlexWaygood on 2024-09-04 13:20_
+
+> See [peps.python.org/pep-0586#illegal-parameters-for-literal-at-type-check-time](https://peps.python.org/pep-0586/#illegal-parameters-for-literal-at-type-check-time)
+
+TIL! And pyright appears to enforce that rule, too. Thanks!
+
+---
+
+_Referenced in [astral-sh/ruff#15264](../../astral-sh/ruff/issues/15264.md) on 2025-01-05 03:48_
+
+---
+
+_Assigned to @dylwil3 by @dylwil3 on 2025-01-07 18:21_
+
+---

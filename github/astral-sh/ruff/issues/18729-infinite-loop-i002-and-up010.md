@@ -1,0 +1,65 @@
+---
+number: 18729
+title: "[Infinite loop] I002 and UP010"
+type: issue
+state: closed
+author: dscorbett
+labels:
+  - bug
+assignees: []
+created_at: 2025-06-17T17:34:32Z
+updated_at: 2025-07-31T19:17:28Z
+url: https://github.com/astral-sh/ruff/issues/18729
+synced_at: 2026-01-07T13:12:16-06:00
+---
+
+# [Infinite loop] I002 and UP010
+
+---
+
+_Issue opened by @dscorbett on 2025-06-17 17:34_
+
+### Summary
+
+Ruff fails to converge when [`missing-required-import` (I002)](https://docs.astral.sh/ruff/rules/missing-required-import/) and [`unnecessary-future-import` (UP010)](https://docs.astral.sh/ruff/rules/unnecessary-future-import/) are selected and an unnecessary import is required.
+
+```console
+$ echo 1 | ruff --isolated check - --select I002,UP010 --config 'lint.isort.required-imports=["from __future__ import generator_stop"]' --fix
+
+error: Failed to converge after 100 iterations.
+
+This indicates a bug in Ruff. If you could open an issue at:
+
+    https://github.com/astral-sh/ruff/issues/new?title=%5BInfinite%20loop%5D
+
+...quoting the contents of `-`, the rule codes I002, along with the `pyproject.toml` settings and executed command, we'd be very appreciative!
+
+1
+-:1:1: I002 Missing required import: `from __future__ import generator_stop`
+Found 101 errors (100 fixed, 1 remaining).
+[*] 1 fixable with the `--fix` option.
+```
+
+### Version
+
+ruff 0.12.0 (87f0feb21 2025-06-17)
+
+---
+
+_Label `bug` added by @ntBre on 2025-06-17 17:46_
+
+---
+
+_Comment by @ntBre on 2025-06-17 17:48_
+
+At least somewhat related: https://github.com/astral-sh/ruff/issues/14389, https://github.com/astral-sh/ruff/issues/16802
+
+---
+
+_Referenced in [astral-sh/ruff#19413](../../astral-sh/ruff/pulls/19413.md) on 2025-07-17 21:04_
+
+---
+
+_Closed by @ntBre on 2025-07-31 19:17_
+
+---

@@ -1,0 +1,41 @@
+---
+number: 976
+title: Logging is set up too late
+type: issue
+state: closed
+author: edgarrmondragon
+labels: []
+assignees: []
+created_at: 2022-12-01T07:44:24Z
+updated_at: 2022-12-01T15:19:33Z
+url: https://github.com/astral-sh/ruff/issues/976
+synced_at: 2026-01-07T13:12:14-06:00
+---
+
+# Logging is set up too late
+
+---
+
+_Issue opened by @edgarrmondragon on 2022-12-01 07:44_
+
+It seems that in https://github.com/charliermarsh/ruff/pull/964, the call to `set_up_logging` was moved so it could take into account the configured output format:
+
+https://github.com/charliermarsh/ruff/blob/61ba7c8792192403f1e41dd226b6db26aa7dcdd4/src/main.rs#L271-L277
+
+This means that logs generated at any point before that call use the default `Off` level and logs are never emitted. For example, the debug messages in this function are ignored:
+
+https://github.com/charliermarsh/ruff/blob/f6b0a606d688dd075971f039f0f818e84bd9b2f2/src/settings/pyproject.rs#L83-L95
+
+I think this was done so it's safe to redirect JSON output for other programs to process, without the logging lines polluting the output.
+
+Another solution would be to send logs to stderr. I can send a PR.
+
+---
+
+_Referenced in [astral-sh/ruff#977](../../astral-sh/ruff/pulls/977.md) on 2022-12-01 07:47_
+
+---
+
+_Closed by @charliermarsh on 2022-12-01 15:19_
+
+---

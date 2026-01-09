@@ -1,0 +1,116 @@
+---
+number: 2170
+title: Regression in wrapping help
+type: issue
+state: closed
+author: pksunkara
+labels:
+  - C-bug
+  - A-help
+assignees: []
+created_at: 2020-10-13T07:09:46Z
+updated_at: 2020-10-25T22:29:46Z
+url: https://github.com/clap-rs/clap/issues/2170
+synced_at: 2026-01-07T13:12:19-06:00
+---
+
+# Regression in wrapping help
+
+---
+
+_Issue opened by @pksunkara on 2020-10-13 07:09_
+
+When you have a small terminal width, your code has `wrap_help` feature enabled, and you have args of which some have `about` very small so that the arg can fit in the terminal width and other args whose `about` is big such that they would be wrapped, we get the following:
+
+### Actual Behavior Summary
+
+```
+cargo-workspaces-version 
+Bump version of crates
+
+USAGE:
+    cargo workspaces version [FLAGS]
+
+FLAGS:
+    -a, --all
+            Also do versioning for private crates (will not be published)
+
+        --exact
+            Specify inter dependency version numbers exactly with `=`
+
+    -h, --help                   Prints help information
+        --no-git-commit          Do not commit version changes
+        --no-git-push
+            Do not push generated commit and tags to git remote
+```
+
+### Expected Behavior Summary
+
+The display should be consistent.
+
+```
+cargo-workspaces-version 
+Bump version of crates
+
+USAGE:
+    cargo workspaces version [FLAGS]
+
+FLAGS:
+    -a, --all
+            Also do versioning for private crates (will not be published)
+
+        --exact
+            Specify inter dependency version numbers exactly with `=`
+
+    -h, --help
+            Prints help information
+
+        --no-git-commit
+            Do not commit version changes
+
+        --no-git-push
+            Do not push generated commit and tags to git remote
+```
+
+
+### Additional context
+
+This needs to be consistent per section. If all the args can fit inside the wrapped width, then we can just do one line. If not, then all of them should be in the new line format.
+
+---
+
+_Label `T: bug` added by @pksunkara on 2020-10-13 07:09_
+
+---
+
+_Label `C: help message` added by @pksunkara on 2020-10-13 07:09_
+
+---
+
+_Added to milestone `3.0` by @pksunkara on 2020-10-13 07:09_
+
+---
+
+_Comment by @pksunkara on 2020-10-13 07:10_
+
+@ldm0 Would you like to take this? Should be easy enough.
+
+---
+
+_Comment by @ldm0 on 2020-10-13 08:46_
+
+No problem.
+
+---
+
+_Referenced in [clap-rs/clap#2174](../../clap-rs/clap/pulls/2174.md) on 2020-10-16 14:47_
+
+---
+
+_Closed by @bors[bot] on 2020-10-25 22:29_
+
+---
+
+_Referenced in [clap-rs/clap#3300](../../clap-rs/clap/issues/3300.md) on 2022-11-13 04:26_
+
+---

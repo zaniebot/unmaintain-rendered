@@ -1,0 +1,283 @@
+---
+number: 1396
+title: "Flag to allow `uv pip install` to install into specific environments (that do not necessarily contain uv)"
+type: issue
+state: closed
+author: hauntsaninja
+labels:
+  - enhancement
+  - compatibility
+assignees: []
+created_at: 2024-02-16T00:05:19Z
+updated_at: 2025-11-22T06:51:31Z
+url: https://github.com/astral-sh/uv/issues/1396
+synced_at: 2026-01-07T13:12:16-06:00
+---
+
+# Flag to allow `uv pip install` to install into specific environments (that do not necessarily contain uv)
+
+---
+
+_Issue opened by @hauntsaninja on 2024-02-16 00:05_
+
+It looks like `uv` already supports this, I just need to lie about `VIRTUAL_ENV`.
+
+Looking for something like the equivalent of pip's `--prefix` or `--python`.
+
+---
+
+_Label `enhancement` added by @zanieb on 2024-02-16 00:07_
+
+---
+
+_Label `compatibility` added by @zanieb on 2024-02-16 00:07_
+
+---
+
+_Comment by @RonNabuurs on 2024-02-16 10:52_
+
+I did also encounter this when trying to use uv as a drop in replacement for my pip projects.
+
+---
+
+_Referenced in [astral-sh/uv#1501](../../astral-sh/uv/issues/1501.md) on 2024-02-16 15:29_
+
+---
+
+_Referenced in [astral-sh/uv#1598](../../astral-sh/uv/issues/1598.md) on 2024-02-18 08:12_
+
+---
+
+_Referenced in [astral-sh/uv#1625](../../astral-sh/uv/issues/1625.md) on 2024-02-18 08:12_
+
+---
+
+_Referenced in [astral-sh/uv#1422](../../astral-sh/uv/issues/1422.md) on 2024-02-18 08:16_
+
+---
+
+_Referenced in [astral-sh/uv#1623](../../astral-sh/uv/issues/1623.md) on 2024-02-18 21:12_
+
+---
+
+_Comment by @ofek on 2024-02-18 23:13_
+
+Definitely agree, this is fundamental to allow a single UV installation to be used as a real standalone binary!
+
+---
+
+_Referenced in [astral-sh/uv#1374](../../astral-sh/uv/issues/1374.md) on 2024-02-18 23:21_
+
+---
+
+_Comment by @zanieb on 2024-02-19 00:07_
+
+Yes we should support this. Is there a consensus on the name of the flag in other tools?
+
+---
+
+_Comment by @ericbn on 2024-02-19 00:25_
+
+pip has the `--require-virtualenv` option which makes it behave like uv:
+```
+$ pip install --require-virtualenv attrs
+ERROR: Could not find an activated virtualenv (required).
+```
+but `--no-require-virtualenv` seems too long of a name for an option in uv. And sure the default uv behavior is much saner default!
+
+---
+
+_Comment by @hauntsaninja on 2024-02-19 00:55_
+
+[pip](https://pip.pypa.io/en/stable/cli/pip_install/#cmdoption-prefix) uses `--prefix` and `--python` (I think the difference relates to which Python pip should be run with, which doesn't matter to uv).
+[pypa/installer](https://installer.pypa.io/en/stable/cli/installer/) uses `--prefix`.
+
+I'm not too familiar with pdm, but the `--venv` flag several of its command support is a name not a path (which is a good choice for high level workflow tool).
+
+Meta since I got confused:
+- There's maybe some overlap between this issue and https://github.com/astral-sh/uv/issues/1374 and https://github.com/astral-sh/uv/issues/1526 (which are duplicates of each other). In both cases the workaround is to set `VIRTUAL_ENV` explicitly.
+- I view this issue as low priority and just providing a flag that does a very mechanical equivalent of `VIRTUAL_ENV=path uv pip install ...` via `uv pip install --prefix=path ...`
+- The other issues is a flag that a) does something sort of like `VIRTUAL_ENV=$(/path/to/base/python -c "import sys; print(sys.prefix)") uv pip install ...` via `uv pip install --system ...`, b) promises that setting that flag will make things work for a base Python, since it's not clear how intentional it is that setting `VIRTUAL_ENV` currently lets you point to a base Python. Those issues also maybe need more thinking about how to identify the right base Python, e.g. if you do `python -m uv ...` should it look at `sys.base_prefix`?
+
+---
+
+_Comment by @ofek on 2024-02-19 02:20_
+
+> [pip](https://pip.pypa.io/en/stable/cli/pip_install/#cmdoption-prefix) uses `--prefix` and `--python` (I think the difference relates to which Python pip should be run with, which doesn't matter to uv).
+
+A few things:
+
+1. The `--python` flag is desirable here because the tool that creates an environment is not necessarily the same program that uses an environment (perhaps in IDE). In this case, there is no knowledge of the base Python that was used and therefore no way to get information about its version, architecture, etc. It's not true to say that pip uses the flag to decide where to run (it's Python so it's already running) but rather it's entirely about information gathering.
+
+    There is no way to avoid invoking the interpreter to get that data until [PEP 739](https://discuss.python.org/t/44572) is accepted (and implemented by various tools) and then another of the same kind for virtual environments is accepted (and implemented by various tools).
+2. The `VIRTUAL_ENV` workaround indeed does not work well for base installations because the directory structure is not guaranteed and is often different based on the platform. For example, on Windows installations usually have a `python.exe` at the root whereas a virtual environment will have that under the `Scripts` directory. That command doesn't work in the official Python Docker image for instance:
+    ```
+    ❯ docker run --rm python:3.12 python -c "import sys; print(sys.prefix)"
+    /usr/local
+    ```
+
+---
+
+_Referenced in [astral-sh/uv#1336](../../astral-sh/uv/issues/1336.md) on 2024-02-19 02:26_
+
+---
+
+_Referenced in [pypa/hatch#1268](../../pypa/hatch/issues/1268.md) on 2024-02-19 03:13_
+
+---
+
+_Comment by @hauntsaninja on 2024-02-19 04:48_
+
+@ofek no, pip will literally run itself in a subprocess using a different interpreter with `--python`: https://github.com/pypa/pip/blob/ebe491a82a13e6610697b22be00db363fb5ff5e3/src/pip/_internal/cli/main_parser.py#L82
+
+---
+
+_Comment by @ofek on 2024-02-19 05:09_
+
+Thanks for linking the code, I didn't realize that's how they chose to implement it! My point still stands in that pip is already running and therefore the previous assertion that it needs to know where to run is not true (except for that implementation detail) but its purpose is rather to get details about the interpreter. Other tools like virtualenv, Hatch and Poetry use a script that returns the [environment](https://peps.python.org/pep-0508/#environment-markers) of a given interpreter:
+
+- virtualenv: https://github.com/pypa/virtualenv/blob/20.25.0/src/virtualenv/discovery/py_info.py
+- Hatch: https://github.com/pypa/hatch/blob/hatch-v1.9.3/src/hatch/utils/env.py#L45-L79
+- Poetry: https://github.com/python-poetry/poetry/blob/1.7.1/src/poetry/utils/env/script_strings.py#L30-L98
+
+---
+
+_Comment by @hauntsaninja on 2024-02-19 05:33_
+
+Sorry, I'm still a little bit confused about what your ask is. Note that `uv` does invoke the interpreter it is trying to install into in all cases:
+- https://github.com/astral-sh/uv/blob/2586f655bbf650a9797c8f88b6d9066eefe7a3dc/crates/uv-interpreter/src/get_interpreter_info.py#L1
+- https://github.com/astral-sh/uv/blob/2586f655bbf650a9797c8f88b6d9066eefe7a3dc/crates/uv-interpreter/src/virtual_env.rs#L31
+
+This issue really should just be adding a flag that does what the env var already does
+
+I don't know if uv handles installing into base python on Windows correctly with the `VIRTUAL_ENV` trick (and that's more a question for #1374). But in the official docker image case you talk about uv does the right thing with the trick, I'm not sure why you say it doesn't work: `docker run --rm python:3.12 bash -c 'pip install uv mypy; VIRTUAL_ENV=$(python -c "import sys; print(sys.prefix)") uv pip freeze' `
+
+---
+
+_Comment by @ofek on 2024-02-19 06:02_
+
+- My point is that if we are provided an option for an explicit path then it would be far more rational for that option to be a Python binary which is ultimately invoked rather than a directory that must have a specific structure in order to find the aforementioned binary. The example I gave was a real one in which IDEs act upon paths to interpreters rather than directories per se.
+
+    I didn't know UV already polls the interpreter; that's good! So it looks like just an oversight to be able to control the specific Python interpreter.
+- What I was trying to show earlier was that the `VIRTUAL_ENV` environment variable is working by happenstance because the default [`sys.prefix`](https://docs.python.org/3/library/sys.html#sys.prefix) directory `/usr/local` happens to have a `bin` directory which matches the expected Linux virtual environment structure. As you mentioned this doesn't work on Windows and I'm not certain that works for all Linux installations either.
+
+---
+
+_Comment by @hauntsaninja on 2024-02-19 07:39_
+
+Okay, I think I see! To summarise:
+
+- Currently, you can do `VIRTUAL_ENV=/path/to/prefix uv pip ...`
+- It would be nice if you could instead do `uv pip --prefix /path/to/prefix ...`
+  - This would make uv install into a specified virtual environment just a tiny bit nicer, which was my use case when opening this issue.
+  - Honestly, I don't even mind the env var that much, I think I just ran `uv pip install --help` and didn't see the pip option that I knew I could use to do this. My intention when opening issue was basically just a discoverability nit :-)
+- Alternatively, the flag could be `uv pip --python-executable /path/to/python ...`
+- `--python-executable` might have an advantage if you wanted this flag to be able to install into base environments, because while uv knows directory structure for venvs, it may not for base environments (see also #1374 / #1526 ). In particular, for base environment on Windows and for Linux distro provided Python (like when python is `/usr/bin/python3` and dist-packages nonsense is happening or whatever)
+
+So I guess if I were uv, I'd figure out what/how I want to do 1374 / 1526 and maybe that determines what should happen here. Most of the demand for those issues is probably stuff like "make official python docker image work" or "make homebrew python work", for which logic equivalent to `VIRTUAL_ENV=$(python -c "import sys; print(sys.prefix)")` works fine, modulo the easy to add extra Windows case. I spent some time looking at distro specific sysconfig stuff or framework builds or whatever else and frankly supporting those base environments looks horrible (or at least beyond my amateur interest. Also if PEP 668 is used widely, maybe easy to declare out of scope)
+
+---
+
+_Referenced in [astral-sh/uv#1526](../../astral-sh/uv/issues/1526.md) on 2024-02-19 16:24_
+
+---
+
+_Referenced in [astral-sh/uv#1831](../../astral-sh/uv/issues/1831.md) on 2024-02-21 21:12_
+
+---
+
+_Referenced in [astral-sh/uv#1632](../../astral-sh/uv/issues/1632.md) on 2024-02-23 00:25_
+
+---
+
+_Comment by @wpk-nist-gov on 2024-02-23 00:34_
+
+I'm hoping a solution to this would solve an edge case I'm running into.    I often have a conda environment with nox that then creates virtualenvs.  This leads to both `CONDA_PREFIX` and `VIRTUAL_ENV` variables being set.  With pip, this is easy to work around using `path/to/python -m pip` to install packages in the correct environment (so #1632, which I think is intimately connected to this issue, would solve this).  But having a flag like `--python-executable` or `--prefix` would also solve this, as long as passing such a flag overrides `CONDA_PREFIX` and `VIRTUAL_ENV`.   This would hopefully help wntrblm/nox#762 as well.
+
+---
+
+_Comment by @charliermarsh on 2024-02-25 02:11_
+
+I’m planning to work on this next week. I’ll post here with a concrete proposal once I’ve had time to internalize the comments. (Probably something like a `--python` flag alongside a `--system` flag but TBD.)
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2024-02-25 02:11_
+
+---
+
+_Comment by @charliermarsh on 2024-02-25 19:34_
+
+As far as I can tell from reading the linked Poetry source, apart from adding the arguments to the CLI etc., the main thing that would need to change to support arbitrary Pythons (outside of a virtual environment) is that we'd need to call `sysconfig.get_paths()` to get the various environment paths, rather than constructing them ourselves -- since the exact structure can vary for non-virtualenvs. Is there any reason this _wouldn't_ work?
+
+---
+
+_Comment by @charliermarsh on 2024-02-25 19:39_
+
+Definitely some things to learn from in the Poetry source: https://github.com/python-poetry/poetry/commit/e8f259a1f341f3f12ebc4822154bbea928ea323c
+
+---
+
+_Referenced in [meltano/meltano#8410](../../meltano/meltano/issues/8410.md) on 2024-02-26 23:22_
+
+---
+
+_Comment by @fruch on 2024-02-26 23:27_
+
+sharing one use case of using `--prefix` and `--root`, 
+
+inside a multi stages docker build, one stage is building/collecting all packages and install them into a /build directory
+and other stages just copy the content out of into their /usr/local folder.
+
+meanwhile I've worked around using those pip flags, by VIRTUAL_ENV=/user/local, and copy all of /user/local between the layers.
+
+---
+
+_Referenced in [astral-sh/uv#2000](../../astral-sh/uv/pulls/2000.md) on 2024-02-27 01:56_
+
+---
+
+_Comment by @RonNabuurs on 2024-02-27 10:01_
+
+> sharing one use case of using `--prefix` and `--root`,
+> 
+> inside a multi stages docker build, one stage is building/collecting all packages and install them into a /build directory and other stages just copy the content out of into their /usr/local folder.
+> 
+> meanwhile I've worked around using those pip flags, by VIRTUAL_ENV=/user/local, and copy all of /user/local between the layers.
+
+This is the exact use case I also have
+
+---
+
+_Closed by @charliermarsh on 2024-02-28 02:10_
+
+---
+
+_Comment by @fruch on 2024-03-03 08:13_
+
+@charliermarsh I don't think the --python solved the equivalent `pip install --root` case, you want us to open a new issue for that ?
+
+---
+
+_Comment by @strickvl on 2024-03-03 09:52_
+
+@fruch there's also now a new `--system` flag which handles what you need, I think.
+
+---
+
+_Comment by @Ox0400 on 2024-07-02 03:10_
+
+```
+uv pip install --system uv 
+```
+
+---
+
+_Comment by @Andrej730 on 2025-11-22 06:51_
+
+Came to this looking for `--project` support for `uv pip`, which is documented as not supported by `uv pip`.
+`--python` works really well for this, though it's a bit more verbose, since required interpreter path instead of just project dir.
+
+<img width="797" height="304" alt="Image" src="https://github.com/user-attachments/assets/6c56685e-e9b6-4b95-aae5-792418790f9c" />
+
+---

@@ -1,0 +1,571 @@
+---
+number: 12048
+title: Does uv lock require a source distribution and a wheel distribution be present in our index in order to lock a file?
+type: issue
+state: closed
+author: jamesharris-garmin
+labels:
+  - question
+  - needs-mre
+assignees: []
+created_at: 2025-03-07T15:39:53Z
+updated_at: 2025-03-07T20:49:57Z
+url: https://github.com/astral-sh/uv/issues/12048
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# Does uv lock require a source distribution and a wheel distribution be present in our index in order to lock a file?
+
+---
+
+_Issue opened by @jamesharris-garmin on 2025-03-07 15:39_
+
+### Question
+
+We use a pullthrough mirror for pypi and have mirrored an unpublish package that used to have an sdist upstream we never downloaded but now has nothing.
+
+For some reason `uv sync` claims it can't find the package even though the wheel still exists. Is this because the sdist is still in the package metadata?
+
+Sorry I can't come up with a MRE for this specific issue but it is driving me nuts because it seems like insufficient caching.
+
+### Platform
+
+_No response_
+
+### Version
+
+_No response_
+
+---
+
+_Label `question` added by @jamesharris-garmin on 2025-03-07 15:39_
+
+---
+
+_Comment by @charliermarsh on 2025-03-07 15:58_
+
+Can you include the exact error you're seeing when you run `uv lock -v` or equivalent?
+
+---
+
+_Label `needs-mre` added by @charliermarsh on 2025-03-07 15:58_
+
+---
+
+_Comment by @jamesharris-garmin on 2025-03-07 17:29_
+
+```
+❯ uv sync -v 
+DEBUG uv 0.6.5 (bcbcd0a1e 2025-03-06)
+DEBUG Found project root: `C:\my_project`
+DEBUG No workspace root found, using project root
+DEBUG Acquired lock for `C:\my_project`
+DEBUG Reading Python requests from version file at `C:\my_project\.python-version`
+DEBUG Using Python request `3.11` from version file at `.python-version`
+DEBUG Checking for Python environment at `.venv`
+DEBUG The virtual environment's Python version satisfies `3.11`
+DEBUG Released lock at `C:\Users\developer_user\AppData\Local\Temp\uv-8d76c22caf6f421d.lock`
+DEBUG Using request timeout of 30s
+DEBUG Found static `pyproject.toml` for: my_project @ file:///C:/my_project
+DEBUG No workspace root found, using project root
+DEBUG Ignoring existing lockfile due to mismatched requirements for: `my_project==0.1.0`
+  Requested: {Requirement { name: PackageName("appdirs"), extras: [], groups: [], marker: true, source: Registry { specifier: VersionSpecifiers([VersionSpecifier { operator: Equal, version: "1.4.4" }]), index: None, conflict: None }, origin: None }, Requirement { name: PackageName("attrs"), extras: [], groups: [], marker: true, source: Registry { specifier: VersionSpecifiers([VersionSpecifier { operator: GreaterThanEqual, version: "24.2.0" }]), index: None, conflict: None }, origin: None }, Requirement { name: PackageName("beautifulsoup4"), extras: [], groups: [], marker: true, source: Registry { specifier: VersionSpecifiers([VersionSpecifier { operator: Equal, version: "4.10.0" }]), index: None, conflict: None }, origin: None }, Requirement { name: PackageName("cattrs"), extras: [], groups: [], marker: true, source: Registry { specifier: VersionSpecifiers([VersionSpecifier { operator: GreaterThanEqual, version: "24.1.2" }]), index: None, conflict: None }, origin: None }, Requirement { name: PackageName("cryptography"), extras: [], groups: [], marker: true, source: Registry { specifier: VersionSpecifiers([VersionSpecifier { operator: Equal, version: "36.0.1" }]), index: None, conflict: None }, origin: None }, Requirement { name: PackageName("dataclass-wizard"), extras: [], groups: [], marker: true, source: Registry { specifier: VersionSpecifiers([VersionSpecifier { operator: Equal, version: "0.22.2" }]), index: None, conflict: None }, origin: None }, Requirement { name: PackageName("deepdiff"), extras: [], groups: [], marker: true, source: Registry { specifier: VersionSpecifiers([VersionSpecifier { operator: Equal, version: "5.5.0" }]), index: None, conflict: None }, origin: None }, Requirement { name: PackageName("elasticsearch"), extras: [], groups: [], marker: true, source: Registry { specifier: VersionSpecifiers([VersionSpecifier { operator: Equal, version: "7.14.1" }]), index: None, conflict: None }, origin: None }, Requirement { name: PackageName("furl"), extras: [], groups: [], marker: true, source: Registry { specifier: VersionSpecifiers([VersionSpecifier { operator: Equal, version: "2.1.2" }]), index: None, conflict: None }, origin: None }, Requirement { name: PackageName("hvac"), extras: [], groups: [], marker: true, source: Registry { specifier: VersionSpecifiers([VersionSpecifier { operator: Equal, version: "0.11.0" }]), index: None, conflict: None }, origin: None }, Requirement { name: PackageName("jsonpickle"), extras: [], groups: [], marker: true, source: Registry { specifier: VersionSpecifiers([VersionSpecifier { operator: Equal, version: "3.0.1" }]), index: None, conflict: None }, origin: None }, Requirement { name: PackageName("jsonschema"), extras: [], groups: [], marker: true, source: Registry { specifier: VersionSpecifiers([VersionSpecifier { operator: Equal, version: "3.2.0" }]), index: None, conflict: None }, origin: None }, Requirement { name: PackageName("loguru"), extras: [], groups: [], marker: true, source: Registry { specifier: VersionSpecifiers([VersionSpecifier { operator: Equal, version: "0.5.3" }]), index: None, conflict: None }, origin: None }, Requirement { name: PackageName("networkx"), extras: [], groups: [], marker: true, source: Registry { specifier: VersionSpecifiers([VersionSpecifier { operator: Equal, version: "2.6.3" }]), index: None, conflict: None }, origin: None }, Requirement { name: PackageName("nox"), extras: [], groups: [], marker: true, source: Registry { specifier: VersionSpecifiers([VersionSpecifier { operator: GreaterThanEqual, version: "2025.2.9" }]), index: None, conflict: None }, origin: None }, Requirement { name: PackageName("pip-system-certs"), extras: [], groups: [], marker: true, source: Registry { specifier: VersionSpecifiers([VersionSpecifier { operator: Equal, version: "4.0" }]), index: None, conflict: None }, origin: None }, Requirement { name: PackageName("pysimplegui"), extras: [], groups: [], marker: true, source: Registry { specifier: VersionSpecifiers([VersionSpecifier { operator: Equal, version: "4.70.1" }]), index: None, conflict: None }, origin: None }, Requirement { name: PackageName("pywin32"), extras: [], groups: [], marker: sys_platform == 'win32', source: Registry { specifier: VersionSpecifiers([VersionSpecifier { operator: Equal, version: "305" }]), index: None, conflict: None }, origin: None }, Requirement { name: PackageName("reportlab"), extras: [], groups: [], marker: true, source: Registry { specifier: VersionSpecifiers([VersionSpecifier { operator: Equal, version: "3.6.12" }]), index: None, conflict: None }, origin: None }, Requirement { name: PackageName("requests"), extras: [], groups: [], marker: true, source: Registry { specifier: VersionSpecifiers([VersionSpecifier { operator: Equal, version: "2.26.0" }]), index: None, conflict: None }, origin: None }, Requirement { name: PackageName("xlsxwriter"), extras: [], groups: [], marker: true, source: Registry { specifier: VersionSpecifiers([VersionSpecifier { operator: Equal, version: "3.0.1" }]), index: None, conflict: None }, origin: None }}
+  Existing: {Requirement { name: PackageName("appdirs"), extras: [], groups: [], marker: true, source: Registry { specifier: VersionSpecifiers([VersionSpecifier { operator: Equal, version: "1.4.4" }]), index: None, conflict: None }, origin: None }, Requirement { name: PackageName("attrs"), extras: [], groups: [], marker: true, source: Registry { specifier: VersionSpecifiers([VersionSpecifier { operator: GreaterThanEqual, version: "24.2.0" }]), index: None, conflict: None }, origin: None }, Requirement { name: PackageName("beautifulsoup4"), extras: [], groups: [], marker: true, source: Registry { specifier: VersionSpecifiers([VersionSpecifier { operator: Equal, version: "4.10.0" }]), index: None, conflict: None }, origin: None }, Requirement { name: PackageName("cattrs"), extras: [], groups: [], marker: true, source: Registry { specifier: VersionSpecifiers([VersionSpecifier { operator: GreaterThanEqual, version: "24.1.2" }]), index: None, conflict: None }, origin: None }, Requirement { name: PackageName("cryptography"), extras: [], groups: [], marker: true, source: Registry { specifier: VersionSpecifiers([VersionSpecifier { operator: Equal, version: "36.0.1" }]), index: None, conflict: None }, origin: None }, Requirement { name: PackageName("dataclass-wizard"), extras: [], groups: [], marker: true, source: Registry { specifier: VersionSpecifiers([VersionSpecifier { operator: Equal, version: "0.22.2" }]), index: None, conflict: None }, origin: None }, Requirement { name: PackageName("deepdiff"), extras: [], groups: [], marker: true, source: Registry { specifier: VersionSpecifiers([VersionSpecifier { operator: Equal, version: "5.5.0" }]), index: None, conflict: None }, origin: None }, Requirement { name: PackageName("elasticsearch"), extras: [], groups: [], marker: true, source: Registry { specifier: VersionSpecifiers([VersionSpecifier { operator: Equal, version: "7.14.1" }]), index: None, conflict: None }, origin: None }, Requirement { name: PackageName("furl"), extras: [], groups: [], marker: true, source: Registry { specifier: VersionSpecifiers([VersionSpecifier { operator: Equal, version: "2.1.2" }]), index: None, conflict: None }, origin: None }, Requirement { name: PackageName("hvac"), extras: [], groups: [], marker: true, source: Registry { specifier: VersionSpecifiers([VersionSpecifier { operator: Equal, version: "0.11.0" }]), index: None, conflict: None }, origin: None }, Requirement { name: PackageName("jsonpickle"), extras: [], groups: [], marker: true, source: Registry { specifier: VersionSpecifiers([VersionSpecifier { operator: Equal, version: "3.0.1" }]), index: None, conflict: None }, origin: None }, Requirement { name: PackageName("jsonschema"), extras: [], groups: [], marker: true, source: Registry { specifier: VersionSpecifiers([VersionSpecifier { operator: Equal, version: "3.2.0" }]), index: None, conflict: None }, origin: None }, Requirement { name: PackageName("loguru"), extras: [], groups: [], marker: true, source: Registry { specifier: VersionSpecifiers([VersionSpecifier { operator: Equal, version: "0.5.3" }]), index: None, conflict: None }, origin: None }, Requirement { name: PackageName("networkx"), extras: [], groups: [], marker: true, source: Registry { specifier: VersionSpecifiers([VersionSpecifier { operator: Equal, version: "2.6.3" }]), index: None, conflict: None }, origin: None }, Requirement { name: PackageName("nox"), extras: [], groups: [], marker: true, source: Registry { specifier: VersionSpecifiers([VersionSpecifier { operator: GreaterThanEqual, version: "2025.2.9" }]), index: None, conflict: None }, origin: None }, Requirement { name: PackageName("pip-system-certs"), extras: [], groups: [], marker: true, source: Registry { specifier: VersionSpecifiers([VersionSpecifier { operator: Equal, version: "4.0" }]), index: None, conflict: None }, origin: None }, Requirement { name: PackageName("pysimplegui"), extras: [], groups: [], marker: true, source: Registry { specifier: VersionSpecifiers([VersionSpecifier { operator: LessThan, version: "5" }]), index: None, conflict: None }, origin: None }, Requirement { name: PackageName("pywin32"), extras: [], groups: [], marker: sys_platform == 'win32', source: Registry { specifier: VersionSpecifiers([VersionSpecifier { operator: Equal, version: "305" }]), index: None, conflict: None }, origin: None }, Requirement { name: PackageName("reportlab"), extras: [], groups: [], marker: true, source: Registry { specifier: VersionSpecifiers([VersionSpecifier { operator: Equal, version: "3.6.12" }]), index: None, conflict: None }, origin: None }, Requirement { name: PackageName("requests"), extras: [], groups: [], marker: true, source: Registry { specifier: VersionSpecifiers([VersionSpecifier { operator: Equal, version: "2.26.0" }]), index: None, conflict: None }, origin: None }, Requirement { name: PackageName("xlsxwriter"), extras: [], groups: [], marker: true, source: Registry { specifier: VersionSpecifiers([VersionSpecifier { operator: Equal, version: "3.0.1" }]), index: None, conflict: None }, origin: None }}
+DEBUG Solving with installed Python version: 3.11.11
+DEBUG Solving with target Python version: >=3.11
+DEBUG Adding direct dependency: my_project*
+DEBUG Adding direct dependency: my_project:ci*
+DEBUG Adding direct dependency: my_project:dev*
+DEBUG Adding direct dependency: my_project:docs*
+DEBUG Adding direct dependency: my_project:secret-gen*
+DEBUG Adding direct dependency: my_project:test*
+DEBUG Searching for a compatible version of my_project @ file:///C:/my_project (*)
+DEBUG Adding direct dependency: appdirs>=1.4.4, <1.4.4+
+DEBUG Adding direct dependency: attrs>=24.2.0
+DEBUG Adding direct dependency: beautifulsoup4>=4.10.0, <4.10.0+
+DEBUG Acquired lock for `C:\Users\developer_user\AppData\Local\uv\cache\simple-v15\index\45c11632efb0d54a\appdirs.lock`
+DEBUG Adding direct dependency: cattrs>=24.1.2
+DEBUG Acquired lock for `C:\Users\developer_user\AppData\Local\uv\cache\simple-v15\index\45c11632efb0d54a\attrs.lock`
+DEBUG Acquired lock for `C:\Users\developer_user\AppData\Local\uv\cache\simple-v15\index\45c11632efb0d54a\beautifulsoup4.lock`
+DEBUG Acquired lock for `C:\Users\developer_user\AppData\Local\uv\cache\simple-v15\index\45c11632efb0d54a\cattrs.lock`
+DEBUG Adding direct dependency: cryptography>=36.0.1, <36.0.1+
+DEBUG Adding direct dependency: dataclass-wizard>=0.22.2, <0.22.2+
+DEBUG Acquired lock for `C:\Users\developer_user\AppData\Local\uv\cache\simple-v15\index\45c11632efb0d54a\dataclass-wizard.lock`
+DEBUG Acquired lock for `C:\Users\developer_user\AppData\Local\uv\cache\simple-v15\index\45c11632efb0d54a\deepdiff.lock`
+DEBUG Acquired lock for `C:\Users\developer_user\AppData\Local\uv\cache\simple-v15\index\45c11632efb0d54a\elasticsearch.lock`
+DEBUG Acquired lock for `C:\Users\developer_user\AppData\Local\uv\cache\simple-v15\index\45c11632efb0d54a\pysimplegui.lock`
+DEBUG Acquired lock for `C:\Users\developer_user\AppData\Local\uv\cache\simple-v15\index\45c11632efb0d54a\hvac.lock`
+DEBUG Acquired lock for `C:\Users\developer_user\AppData\Local\uv\cache\simple-v15\index\45c11632efb0d54a\cryptography.lock`
+DEBUG Adding direct dependency: deepdiff>=5.5.0, <5.5.0+
+DEBUG Acquired lock for `C:\Users\developer_user\AppData\Local\uv\cache\simple-v15\index\45c11632efb0d54a\jsonpickle.lock`
+DEBUG Acquired lock for `C:\Users\developer_user\AppData\Local\uv\cache\simple-v15\index\45c11632efb0d54a\jsonschema.lock`
+DEBUG Acquired lock for `C:\Users\developer_user\AppData\Local\uv\cache\simple-v15\index\45c11632efb0d54a\loguru.lock`
+DEBUG Acquired lock for `C:\Users\developer_user\AppData\Local\uv\cache\simple-v15\index\45c11632efb0d54a\networkx.lock`
+DEBUG Acquired lock for `C:\Users\developer_user\AppData\Local\uv\cache\simple-v15\index\45c11632efb0d54a\nox.lock`
+DEBUG Acquired lock for `C:\Users\developer_user\AppData\Local\uv\cache\simple-v15\index\45c11632efb0d54a\pip-system-certs.lock`
+DEBUG Acquired lock for `C:\Users\developer_user\AppData\Local\uv\cache\simple-v15\index\45c11632efb0d54a\furl.lock`
+DEBUG Acquired lock for `C:\Users\developer_user\AppData\Local\uv\cache\simple-v15\index\45c11632efb0d54a\pywin32.lock`
+DEBUG Acquired lock for `C:\Users\developer_user\AppData\Local\uv\cache\simple-v15\index\45c11632efb0d54a\reportlab.lock`
+DEBUG Acquired lock for `C:\Users\developer_user\AppData\Local\uv\cache\simple-v15\index\45c11632efb0d54a\requests.lock`
+DEBUG Acquired lock for `C:\Users\developer_user\AppData\Local\uv\cache\simple-v15\index\45c11632efb0d54a\xlsxwriter.lock`
+DEBUG Found fresh response for: https://mirrors.my-company-mirror.net/pypi/simple/appdirs/
+DEBUG Adding direct dependency: elasticsearch>=7.14.1, <7.14.1+
+DEBUG Released lock at `C:\Users\developer_user\AppData\Local\uv\cache\simple-v15\index\45c11632efb0d54a\appdirs.lock`
+DEBUG Adding direct dependency: furl>=2.1.2, <2.1.2+
+DEBUG Found fresh response for: https://mirrors.my-company-mirror.net/pypi/simple/attrs/
+DEBUG Adding direct dependency: hvac>=0.11.0, <0.11.0+
+DEBUG Adding direct dependency: jsonpickle>=3.0.1, <3.0.1+
+DEBUG Adding direct dependency: jsonschema>=3.2.0, <3.2.0+
+DEBUG Adding direct dependency: loguru>=0.5.3, <0.5.3+
+DEBUG Released lock at `C:\Users\developer_user\AppData\Local\uv\cache\simple-v15\index\45c11632efb0d54a\attrs.lock`
+DEBUG Adding direct dependency: networkx>=2.6.3, <2.6.3+
+DEBUG Found fresh response for: https://mirrors.my-company-mirror.net/pypi/simple/beautifulsoup4/
+DEBUG Adding direct dependency: nox>=2025.2.9
+DEBUG Released lock at `C:\Users\developer_user\AppData\Local\uv\cache\simple-v15\index\45c11632efb0d54a\beautifulsoup4.lock`
+DEBUG Adding direct dependency: pip-system-certs>=4.0, <4.0+
+DEBUG Found fresh response for: https://mirrors.my-company-mirror.net/pypi/simple/cattrs/
+DEBUG Released lock at `C:\Users\developer_user\AppData\Local\uv\cache\simple-v15\index\45c11632efb0d54a\cattrs.lock`
+DEBUG Adding direct dependency: pysimplegui>=4.70.1, <4.70.1+
+DEBUG Adding direct dependency: pywin32{sys_platform == 'win32'}>=305, <305+
+DEBUG Found fresh response for: https://mirrors.my-company-mirror.net/pypi/simple/dataclass-wizard/
+DEBUG Adding direct dependency: reportlab>=3.6.12, <3.6.12+
+DEBUG Released lock at `C:\Users\developer_user\AppData\Local\uv\cache\simple-v15\index\45c11632efb0d54a\dataclass-wizard.lock`
+DEBUG Adding direct dependency: requests>=2.26.0, <2.26.0+
+DEBUG Found fresh response for: https://mirrors.my-company-mirror.net/pypi/simple/pysimplegui/
+DEBUG Adding direct dependency: xlsxwriter>=3.0.1, <3.0.1+
+DEBUG Released lock at `C:\Users\developer_user\AppData\Local\uv\cache\simple-v15\index\45c11632efb0d54a\pysimplegui.lock`
+DEBUG Searching for a compatible version of my_project @ file:///C:/my_project (*)
+DEBUG Found fresh response for: https://mirrors.my-company-mirror.net/pypi/simple/elasticsearch/
+DEBUG Adding direct dependency: my_project:ci==0.1.0
+DEBUG Released lock at `C:\Users\developer_user\AppData\Local\uv\cache\simple-v15\index\45c11632efb0d54a\elasticsearch.lock`
+DEBUG Searching for a compatible version of my_project @ file:///C:/my_project (*)
+DEBUG Adding direct dependency: my_project:dev==0.1.0
+DEBUG Found fresh response for: https://mirrors.my-company-mirror.net/pypi/simple/hvac/
+DEBUG Released lock at `C:\Users\developer_user\AppData\Local\uv\cache\simple-v15\index\45c11632efb0d54a\hvac.lock`
+DEBUG Searching for a compatible version of my_project @ file:///C:/my_project (*)
+DEBUG Found fresh response for: https://mirrors.my-company-mirror.net/pypi/simple/deepdiff/
+DEBUG Adding direct dependency: my_project:docs==0.1.0
+DEBUG Released lock at `C:\Users\developer_user\AppData\Local\uv\cache\simple-v15\index\45c11632efb0d54a\deepdiff.lock`
+DEBUG Searching for a compatible version of my_project @ file:///C:/my_project (*)
+DEBUG Adding direct dependency: my_project:secret-gen==0.1.0
+DEBUG Found fresh response for: https://mirrors.my-company-mirror.net/pypi/simple/furl/
+DEBUG Released lock at `C:\Users\developer_user\AppData\Local\uv\cache\simple-v15\index\45c11632efb0d54a\furl.lock`
+DEBUG Searching for a compatible version of my_project @ file:///C:/my_project (*)
+DEBUG Adding direct dependency: my_project:test==0.1.0
+DEBUG Acquired lock for `C:\Users\developer_user\AppData\Local\uv\cache\wheels-v5\index\45c11632efb0d54a\hvac\hvac-0.11.0-py2.py3-none-any.lock`
+DEBUG Acquired lock for `C:\Users\developer_user\AppData\Local\uv\cache\wheels-v5\index\45c11632efb0d54a\furl\furl-2.1.2-py2.py3-none-any.lock`
+DEBUG Acquired lock for `C:\Users\developer_user\AppData\Local\uv\cache\wheels-v5\index\45c11632efb0d54a\elasticsearch\elasticsearch-7.14.1-py2.py3-none-any.lock`
+DEBUG Acquired lock for `C:\Users\developer_user\AppData\Local\uv\cache\wheels-v5\index\45c11632efb0d54a\deepdiff\deepdiff-5.5.0-py3-none-any.lock`
+DEBUG Acquired lock for `C:\Users\developer_user\AppData\Local\uv\cache\wheels-v5\index\45c11632efb0d54a\dataclass-wizard\dataclass_wizard-0.22.2-py2.py3-none-any.lock`
+DEBUG Searching for a compatible version of my_project @ file:///C:/my_project (==0.1.0)
+DEBUG Acquired lock for `C:\Users\developer_user\AppData\Local\uv\cache\wheels-v5\index\45c11632efb0d54a\cattrs\cattrs-24.1.2-py3-none-any.lock`
+DEBUG Acquired lock for `C:\Users\developer_user\AppData\Local\uv\cache\wheels-v5\index\45c11632efb0d54a\beautifulsoup4\beautifulsoup4-4.10.0-py3-none-any.lock`
+DEBUG Acquired lock for `C:\Users\developer_user\AppData\Local\uv\cache\wheels-v5\index\45c11632efb0d54a\attrs\attrs-25.1.0-py3-none-any.lock`
+DEBUG Found fresh response for: https://mirrors.my-company-mirror.net/pypi/simple/cryptography/
+DEBUG Acquired lock for `C:\Users\developer_user\AppData\Local\uv\cache\wheels-v5\index\45c11632efb0d54a\appdirs\appdirs-1.4.4-py2.py3-none-any.lock`
+DEBUG Adding direct dependency: nox>=2024.4.15
+DEBUG Adding direct dependency: pre-commit<4
+DEBUG Released lock at `C:\Users\developer_user\AppData\Local\uv\cache\simple-v15\index\45c11632efb0d54a\cryptography.lock`
+DEBUG Adding direct dependency: pre-commit-uv>=4.1.4
+DEBUG Adding direct dependency: pyinstaller<6.11
+DEBUG Found fresh response for: https://mirrors.my-company-mirror.net/pypi/simple/jsonpickle/
+DEBUG Adding direct dependency: pytest>=8.3.4
+DEBUG Released lock at `C:\Users\developer_user\AppData\Local\uv\cache\simple-v15\index\45c11632efb0d54a\jsonpickle.lock`
+DEBUG Adding direct dependency: python-dotenv>=1.0.1
+DEBUG Adding direct dependency: sphinx<8
+DEBUG Found fresh response for: https://mirrors.my-company-mirror.net/pypi/simple/networkx/
+DEBUG Adding direct dependency: sphinx-autobuild>=2024.9.3
+DEBUG Released lock at `C:\Users\developer_user\AppData\Local\uv\cache\simple-v15\index\45c11632efb0d54a\networkx.lock`
+DEBUG Adding direct dependency: sphinx-rtd-theme*
+DEBUG Found fresh response for: https://mirrors.my-company-mirror.net/pypi/simple/nox/
+DEBUG Released lock at `C:\Users\developer_user\AppData\Local\uv\cache\simple-v15\index\45c11632efb0d54a\nox.lock`
+DEBUG Adding direct dependency: sphinxcontrib-confluencebuilder*
+DEBUG Found fresh response for: https://mirrors.my-company-mirror.net/pypi/simple/jsonschema/
+DEBUG Adding direct dependency: typer>=0.15.1
+DEBUG Adding direct dependency: uv>=0.5.2, <0.6
+DEBUG Released lock at `C:\Users\developer_user\AppData\Local\uv\cache\simple-v15\index\45c11632efb0d54a\jsonschema.lock`
+DEBUG Searching for a compatible version of my_project @ file:///C:/my_project (==0.1.0)
+DEBUG Found fresh response for: https://mirrors.my-company-mirror.net/pypi/simple/pip-system-certs/
+DEBUG Released lock at `C:\Users\developer_user\AppData\Local\uv\cache\simple-v15\index\45c11632efb0d54a\pip-system-certs.lock`
+DEBUG Adding direct dependency: nox>=2024.4.15
+DEBUG Adding direct dependency: pyinstaller<6.11
+DEBUG Adding direct dependency: pytest>=8.3.4
+DEBUG Found fresh response for: https://mirrors.my-company-mirror.net/pypi/simple/loguru/
+DEBUG Adding direct dependency: python-dotenv>=1.0.1
+DEBUG Released lock at `C:\Users\developer_user\AppData\Local\uv\cache\simple-v15\index\45c11632efb0d54a\loguru.lock`
+DEBUG Adding direct dependency: sphinx<8
+DEBUG Found fresh response for: https://mirrors.my-company-mirror.net/pypi/simple/xlsxwriter/
+DEBUG Released lock at `C:\Users\developer_user\AppData\Local\uv\cache\simple-v15\index\45c11632efb0d54a\xlsxwriter.lock`
+DEBUG Adding direct dependency: sphinx-autobuild>=2024.9.3
+DEBUG Found fresh response for: https://mirrors.my-company-mirror.net/pypi/simple/pywin32/
+DEBUG Adding direct dependency: sphinx-rtd-theme*
+DEBUG Released lock at `C:\Users\developer_user\AppData\Local\uv\cache\simple-v15\index\45c11632efb0d54a\pywin32.lock`
+DEBUG Adding direct dependency: sphinxcontrib-confluencebuilder*
+DEBUG Found fresh response for: https://mirrors.my-company-mirror.net/pypi/simple/requests/
+DEBUG Released lock at `C:\Users\developer_user\AppData\Local\uv\cache\simple-v15\index\45c11632efb0d54a\requests.lock`
+DEBUG Adding direct dependency: typer>=0.15.1
+DEBUG Found fresh response for: https://mirrors.my-company-mirror.net/pypi/simple/reportlab/
+DEBUG Searching for a compatible version of my_project @ file:///C:/my_project (==0.1.0)
+DEBUG Released lock at `C:\Users\developer_user\AppData\Local\uv\cache\simple-v15\index\45c11632efb0d54a\reportlab.lock`
+DEBUG Adding direct dependency: sphinx<8
+DEBUG Adding direct dependency: sphinx-autobuild>=2024.9.3
+DEBUG Adding direct dependency: sphinx-rtd-theme*
+DEBUG Adding direct dependency: sphinxcontrib-confluencebuilder*
+DEBUG Acquired lock for `C:\Users\developer_user\AppData\Local\uv\cache\wheels-v5\index\45c11632efb0d54a\cryptography\cryptography-36.0.1-cp36-abi3-macosx_10_10_universal2.lock`
+DEBUG Acquired lock for `C:\Users\developer_user\AppData\Local\uv\cache\simple-v15\index\45c11632efb0d54a\pre-commit.lock`
+DEBUG Acquired lock for `C:\Users\developer_user\AppData\Local\uv\cache\simple-v15\index\45c11632efb0d54a\pre-commit-uv.lock`
+DEBUG Acquired lock for `C:\Users\developer_user\AppData\Local\uv\cache\simple-v15\index\45c11632efb0d54a\pyinstaller.lock`
+DEBUG Acquired lock for `C:\Users\developer_user\AppData\Local\uv\cache\simple-v15\index\45c11632efb0d54a\pytest.lock`
+DEBUG Acquired lock for `C:\Users\developer_user\AppData\Local\uv\cache\simple-v15\index\45c11632efb0d54a\python-dotenv.lock`
+DEBUG Acquired lock for `C:\Users\developer_user\AppData\Local\uv\cache\simple-v15\index\45c11632efb0d54a\sphinx.lock`
+DEBUG Acquired lock for `C:\Users\developer_user\AppData\Local\uv\cache\simple-v15\index\45c11632efb0d54a\sphinx-autobuild.lock`
+DEBUG Acquired lock for `C:\Users\developer_user\AppData\Local\uv\cache\simple-v15\index\45c11632efb0d54a\sphinx-rtd-theme.lock`
+DEBUG Acquired lock for `C:\Users\developer_user\AppData\Local\uv\cache\simple-v15\index\45c11632efb0d54a\sphinxcontrib-confluencebuilder.lock`
+DEBUG Acquired lock for `C:\Users\developer_user\AppData\Local\uv\cache\simple-v15\index\45c11632efb0d54a\typer.lock`
+DEBUG Acquired lock for `C:\Users\developer_user\AppData\Local\uv\cache\simple-v15\index\45c11632efb0d54a\uv.lock`
+DEBUG Acquired lock for `C:\Users\developer_user\AppData\Local\uv\cache\wheels-v5\index\45c11632efb0d54a\jsonpickle\jsonpickle-3.0.1-py2.py3-none-any.lock`
+DEBUG Acquired lock for `C:\Users\developer_user\AppData\Local\uv\cache\wheels-v5\index\45c11632efb0d54a\networkx\networkx-2.6.3-py3-none-any.lock`
+DEBUG Acquired lock for `C:\Users\developer_user\AppData\Local\uv\cache\wheels-v5\index\45c11632efb0d54a\nox\nox-2025.2.9-py3-none-any.lock`
+DEBUG Acquired lock for `C:\Users\developer_user\AppData\Local\uv\cache\wheels-v5\index\45c11632efb0d54a\jsonschema\jsonschema-3.2.0-py2.py3-none-any.lock`
+DEBUG Searching for a compatible version of my_project @ file:///C:/my_project (==0.1.0)
+DEBUG Acquired lock for `C:\Users\developer_user\AppData\Local\uv\cache\wheels-v5\index\45c11632efb0d54a\pip-system-certs\pip_system_certs-4.0-py2.py3-none-any.lock`
+DEBUG Acquired lock for `C:\Users\developer_user\AppData\Local\uv\cache\wheels-v5\index\45c11632efb0d54a\loguru\loguru-0.5.3-py3-none-any.lock`
+DEBUG Acquired lock for `C:\Users\developer_user\AppData\Local\uv\cache\wheels-v5\index\45c11632efb0d54a\xlsxwriter\xlsxwriter-3.0.1-py3-none-any.lock`
+DEBUG Found stale response for: https://mirrors.my-company-mirror.net/pypi/packages/hvac/0.11.0/hvac-0.11.0-py2.py3-none-any.whl#sha256=705822074cceb10a498a809b2e14f6e296e86f045ae9635529c41b8af5e07a18 
+DEBUG Acquired lock for `C:\Users\developer_user\AppData\Local\uv\cache\wheels-v5\index\45c11632efb0d54a\requests\requests-2.26.0-py2.py3-none-any.lock`
+DEBUG Adding direct dependency: python-dotenv>=1.0.1
+DEBUG Adding direct dependency: typer>=0.15.1
+DEBUG Sending revalidation request for: https://mirrors.my-company-mirror.net/pypi/packages/hvac/0.11.0/hvac-0.11.0-py2.py3-none-any.whl#sha256=705822074cceb10a498a809b2e14f6e296e86f045ae9635529c41b8af5e07a18
+DEBUG Searching for a compatible version of my_project @ file:///C:/my_project (==0.1.0)
+DEBUG Adding direct dependency: pytest>=8.3.4
+DEBUG Found stale response for: https://mirrors.my-company-mirror.net/pypi/packages/dataclass-wizard/0.22.2/dataclass_wizard-0.22.2-py2.py3-none-any.whl#sha256=49be36ecc64bc5a1e9a35a6bad1d71d33b6b9b06877404931a17c6a3a6dfbb10
+DEBUG Sending revalidation request for: https://mirrors.my-company-mirror.net/pypi/packages/dataclass-wizard/0.22.2/dataclass_wizard-0.22.2-py2.py3-none-any.whl#sha256=49be36ecc64bc5a1e9a35a6bad1d71d33b6b9b06877404931a17c6a3a6dfbb10
+DEBUG Searching for a compatible version of appdirs (>=1.4.4, <1.4.4+)
+DEBUG Found stale response for: https://mirrors.my-company-mirror.net/pypi/packages/furl/2.1.2/furl-2.1.2-py2.py3-none-any.whl#sha256=a2c6adb472fc5faba2e18b6c28b83464b80201f168fd10b81997895a7cb5d5a6   
+DEBUG Selecting: appdirs==1.4.4 [preference] (appdirs-1.4.4-py2.py3-none-any.whl)
+DEBUG Sending revalidation request for: https://mirrors.my-company-mirror.net/pypi/packages/furl/2.1.2/furl-2.1.2-py2.py3-none-any.whl#sha256=a2c6adb472fc5faba2e18b6c28b83464b80201f168fd10b81997895a7cb5d5a6
+DEBUG Found stale response for: https://mirrors.my-company-mirror.net/pypi/packages/deepdiff/5.5.0/deepdiff-5.5.0-py3-none-any.whl#sha256=e054fed9dfe0d83d622921cbb3a3d0b3a6dd76acd2b6955433a0a2d35147774a
+DEBUG Sending revalidation request for: https://mirrors.my-company-mirror.net/pypi/packages/deepdiff/5.5.0/deepdiff-5.5.0-py3-none-any.whl#sha256=e054fed9dfe0d83d622921cbb3a3d0b3a6dd76acd2b6955433a0a2d35147774a
+DEBUG Found stale response for: https://mirrors.my-company-mirror.net/pypi/packages/elasticsearch/7.14.1/elasticsearch-7.14.1-py2.py3-none-any.whl#sha256=1a9f146b7126a7e0621085f1825b6b2d091693a714d3b16c208749762e79c2bc
+DEBUG Sending revalidation request for: https://mirrors.my-company-mirror.net/pypi/packages/elasticsearch/7.14.1/elasticsearch-7.14.1-py2.py3-none-any.whl#sha256=1a9f146b7126a7e0621085f1825b6b2d091693a714d3b16c208749762e79c2bc
+DEBUG Acquired lock for `C:\Users\developer_user\AppData\Local\uv\cache\wheels-v5\index\45c11632efb0d54a\reportlab\reportlab-3.6.12-cp311-cp311-macosx_10_9_x86_64.lock`
+DEBUG Found stale response for: https://mirrors.my-company-mirror.net/pypi/packages/cattrs/24.1.2/cattrs-24.1.2-py3-none-any.whl#sha256=67c7495b760168d931a10233f979b28dc04daf853b30752246f4f8471c6d68d0 
+DEBUG Sending revalidation request for: https://mirrors.my-company-mirror.net/pypi/packages/cattrs/24.1.2/cattrs-24.1.2-py3-none-any.whl#sha256=67c7495b760168d931a10233f979b28dc04daf853b30752246f4f8471c6d68d0
+DEBUG Found stale response for: https://mirrors.my-company-mirror.net/pypi/packages/beautifulsoup4/4.10.0/beautifulsoup4-4.10.0-py3-none-any.whl#sha256=9a315ce70049920ea4572a4055bc4bd700c940521d36fc858205ad4fcde149bf
+DEBUG Sending revalidation request for: https://mirrors.my-company-mirror.net/pypi/packages/beautifulsoup4/4.10.0/beautifulsoup4-4.10.0-py3-none-any.whl#sha256=9a315ce70049920ea4572a4055bc4bd700c940521d36fc858205ad4fcde149bf
+DEBUG Found fresh response for: https://mirrors.my-company-mirror.net/pypi/packages/attrs/25.1.0/attrs-25.1.0-py3-none-any.whl#sha256=c75a69e28a550a7e93789579c22aa26b0f5b83b75dc4e08fe092980051e1090a
+DEBUG Released lock at `C:\Users\developer_user\AppData\Local\uv\cache\wheels-v5\index\45c11632efb0d54a\attrs\attrs-25.1.0-py3-none-any.lock`
+DEBUG Found stale response for: https://mirrors.my-company-mirror.net/pypi/packages/appdirs/1.4.4/appdirs-1.4.4-py2.py3-none-any.whl#sha256=a841dacd6b99318a741b166adb07e19ee71a274450e68237b4650ca1055ab128
+DEBUG Sending revalidation request for: https://mirrors.my-company-mirror.net/pypi/packages/appdirs/1.4.4/appdirs-1.4.4-py2.py3-none-any.whl#sha256=a841dacd6b99318a741b166adb07e19ee71a274450e68237b4650ca1055ab128
+DEBUG Found stale response for: https://mirrors.my-company-mirror.net/pypi/packages/cryptography/36.0.1/cryptography-36.0.1-cp36-abi3-macosx_10_10_universal2.whl#sha256=73bc2d3f2444bcfeac67dd130ff2ea598ea5f20b40e36d19821b4df8c9c5037b
+DEBUG Sending revalidation request for: https://mirrors.my-company-mirror.net/pypi/packages/cryptography/36.0.1/cryptography-36.0.1-cp36-abi3-macosx_10_10_universal2.whl#sha256=73bc2d3f2444bcfeac67dd130ff2ea598ea5f20b40e36d19821b4df8c9c5037b
+DEBUG Found fresh response for: https://mirrors.my-company-mirror.net/pypi/simple/pre-commit-uv/
+DEBUG Released lock at `C:\Users\developer_user\AppData\Local\uv\cache\simple-v15\index\45c11632efb0d54a\pre-commit-uv.lock`
+DEBUG Found stale response for: https://mirrors.my-company-mirror.net/pypi/packages/jsonpickle/3.0.1/jsonpickle-3.0.1-py2.py3-none-any.whl#sha256=130d8b293ea0add3845de311aaba55e6d706d0bb17bc123bd2c8baf8a39ac77c
+DEBUG Sending revalidation request for: https://mirrors.my-company-mirror.net/pypi/packages/jsonpickle/3.0.1/jsonpickle-3.0.1-py2.py3-none-any.whl#sha256=130d8b293ea0add3845de311aaba55e6d706d0bb17bc123bd2c8baf8a39ac77c
+DEBUG Found fresh response for: https://mirrors.my-company-mirror.net/pypi/simple/sphinx-rtd-theme/
+DEBUG Released lock at `C:\Users\developer_user\AppData\Local\uv\cache\simple-v15\index\45c11632efb0d54a\sphinx-rtd-theme.lock`
+DEBUG Found stale response for: https://mirrors.my-company-mirror.net/pypi/packages/networkx/2.6.3/networkx-2.6.3-py3-none-any.whl#sha256=80b6b89c77d1dfb64a4c7854981b60aeea6360ac02c6d4e4913319e0a313abef
+DEBUG Sending revalidation request for: https://mirrors.my-company-mirror.net/pypi/packages/networkx/2.6.3/networkx-2.6.3-py3-none-any.whl#sha256=80b6b89c77d1dfb64a4c7854981b60aeea6360ac02c6d4e4913319e0a313abef
+DEBUG Found fresh response for: https://mirrors.my-company-mirror.net/pypi/simple/typer/
+DEBUG Released lock at `C:\Users\developer_user\AppData\Local\uv\cache\simple-v15\index\45c11632efb0d54a\typer.lock`
+DEBUG Found fresh response for: https://mirrors.my-company-mirror.net/pypi/simple/sphinxcontrib-confluencebuilder/
+DEBUG Released lock at `C:\Users\developer_user\AppData\Local\uv\cache\simple-v15\index\45c11632efb0d54a\sphinxcontrib-confluencebuilder.lock`
+DEBUG Found stale response for: https://mirrors.my-company-mirror.net/pypi/packages/nox/2025.2.9/nox-2025.2.9-py3-none-any.whl#sha256=7d1e92d1918c6980d70aee9cf1c1d19d16faa71c4afe338fffd39e8a460e2067
+DEBUG Sending revalidation request for: https://mirrors.my-company-mirror.net/pypi/packages/nox/2025.2.9/nox-2025.2.9-py3-none-any.whl#sha256=7d1e92d1918c6980d70aee9cf1c1d19d16faa71c4afe338fffd39e8a460e2067
+DEBUG Found stale response for: https://mirrors.my-company-mirror.net/pypi/packages/loguru/0.5.3/loguru-0.5.3-py3-none-any.whl#sha256=f8087ac396b5ee5f67c963b495d615ebbceac2796379599820e324419d53667c   
+DEBUG Sending revalidation request for: https://mirrors.my-company-mirror.net/pypi/packages/loguru/0.5.3/loguru-0.5.3-py3-none-any.whl#sha256=f8087ac396b5ee5f67c963b495d615ebbceac2796379599820e324419d53667c
+DEBUG Found fresh response for: https://mirrors.my-company-mirror.net/pypi/simple/sphinx-autobuild/
+DEBUG Released lock at `C:\Users\developer_user\AppData\Local\uv\cache\simple-v15\index\45c11632efb0d54a\sphinx-autobuild.lock`
+DEBUG Found stale response for: https://mirrors.my-company-mirror.net/pypi/packages/xlsxwriter/3.0.1/XlsxWriter-3.0.1-py3-none-any.whl#sha256=2f2af944d2b4b5f21cd3ac8e01b2417ec74c60e2ca11cae90b4f32ee172c99d6
+DEBUG Sending revalidation request for: https://mirrors.my-company-mirror.net/pypi/packages/xlsxwriter/3.0.1/XlsxWriter-3.0.1-py3-none-any.whl#sha256=2f2af944d2b4b5f21cd3ac8e01b2417ec74c60e2ca11cae90b4f32ee172c99d6
+DEBUG Found stale response for: https://mirrors.my-company-mirror.net/pypi/packages/jsonschema/3.2.0/jsonschema-3.2.0-py2.py3-none-any.whl#sha256=4e5b3cf8216f577bee9ce139cbe72eca3ea4f292ec60928ff24758ce626cd163
+DEBUG Sending revalidation request for: https://mirrors.my-company-mirror.net/pypi/packages/jsonschema/3.2.0/jsonschema-3.2.0-py2.py3-none-any.whl#sha256=4e5b3cf8216f577bee9ce139cbe72eca3ea4f292ec60928ff24758ce626cd163
+DEBUG Found fresh response for: https://mirrors.my-company-mirror.net/pypi/simple/pre-commit/
+DEBUG Released lock at `C:\Users\developer_user\AppData\Local\uv\cache\simple-v15\index\45c11632efb0d54a\pre-commit.lock`
+DEBUG Found fresh response for: https://mirrors.my-company-mirror.net/pypi/simple/python-dotenv/
+DEBUG Released lock at `C:\Users\developer_user\AppData\Local\uv\cache\simple-v15\index\45c11632efb0d54a\python-dotenv.lock`
+DEBUG Found stale response for: https://mirrors.my-company-mirror.net/pypi/packages/pip-system-certs/4.0/pip_system_certs-4.0-py2.py3-none-any.whl#sha256=47202b9403a6f40783a9674bbc8873f5fc86544ec01a49348fa913e99e2ff68b
+DEBUG Sending revalidation request for: https://mirrors.my-company-mirror.net/pypi/packages/pip-system-certs/4.0/pip_system_certs-4.0-py2.py3-none-any.whl#sha256=47202b9403a6f40783a9674bbc8873f5fc86544ec01a49348fa913e99e2ff68b
+DEBUG Found fresh response for: https://mirrors.my-company-mirror.net/pypi/simple/pyinstaller/
+DEBUG Released lock at `C:\Users\developer_user\AppData\Local\uv\cache\simple-v15\index\45c11632efb0d54a\pyinstaller.lock`
+DEBUG Found fresh response for: https://mirrors.my-company-mirror.net/pypi/simple/sphinx/
+DEBUG Released lock at `C:\Users\developer_user\AppData\Local\uv\cache\simple-v15\index\45c11632efb0d54a\sphinx.lock`
+DEBUG Found fresh response for: https://mirrors.my-company-mirror.net/pypi/simple/pytest/
+DEBUG Released lock at `C:\Users\developer_user\AppData\Local\uv\cache\simple-v15\index\45c11632efb0d54a\pytest.lock`
+DEBUG Found stale response for: https://mirrors.my-company-mirror.net/pypi/packages/requests/2.26.0/requests-2.26.0-py2.py3-none-any.whl#sha256=6c1246513ecd5ecd4528a0906f910e8f0f9c6b8ec72030dc9fd154dc1a6efd24
+DEBUG Sending revalidation request for: https://mirrors.my-company-mirror.net/pypi/packages/requests/2.26.0/requests-2.26.0-py2.py3-none-any.whl#sha256=6c1246513ecd5ecd4528a0906f910e8f0f9c6b8ec72030dc9fd154dc1a6efd24
+DEBUG Found stale response for: https://mirrors.my-company-mirror.net/pypi/packages/reportlab/3.6.12/reportlab-3.6.12-cp311-cp311-macosx_10_9_x86_64.whl#sha256=236a6483210049205f6180d7a7595d0ca2e4ce343d83cc94ca719a4145809c6f
+DEBUG Sending revalidation request for: https://mirrors.my-company-mirror.net/pypi/packages/reportlab/3.6.12/reportlab-3.6.12-cp311-cp311-macosx_10_9_x86_64.whl#sha256=236a6483210049205f6180d7a7595d0ca2e4ce343d83cc94ca719a4145809c6f
+DEBUG Found fresh response for: https://mirrors.my-company-mirror.net/pypi/simple/uv/
+DEBUG Released lock at `C:\Users\developer_user\AppData\Local\uv\cache\simple-v15\index\45c11632efb0d54a\uv.lock`
+DEBUG Acquired lock for `C:\Users\developer_user\AppData\Local\uv\cache\wheels-v5\index\45c11632efb0d54a\pre-commit-uv\pre_commit_uv-4.1.4-py3-none-any.lock`
+DEBUG Acquired lock for `C:\Users\developer_user\AppData\Local\uv\cache\wheels-v5\index\45c11632efb0d54a\sphinx-rtd-theme\sphinx_rtd_theme-3.0.2-py2.py3-none-any.lock`
+DEBUG Acquired lock for `C:\Users\developer_user\AppData\Local\uv\cache\wheels-v5\index\45c11632efb0d54a\typer\typer-0.15.2-py3-none-any.lock`
+DEBUG Acquired lock for `C:\Users\developer_user\AppData\Local\uv\cache\wheels-v5\index\45c11632efb0d54a\sphinxcontrib-confluencebuilder\sphinxcontrib_confluencebuilder-2.12.0-py3-none-any.lock`  
+DEBUG Acquired lock for `C:\Users\developer_user\AppData\Local\uv\cache\wheels-v5\index\45c11632efb0d54a\sphinx-autobuild\sphinx_autobuild-2024.10.3-py3-none-any.lock`
+DEBUG Acquired lock for `C:\Users\developer_user\AppData\Local\uv\cache\wheels-v5\index\45c11632efb0d54a\pre-commit\pre_commit-3.8.0-py2.py3-none-any.lock`
+DEBUG Acquired lock for `C:\Users\developer_user\AppData\Local\uv\cache\wheels-v5\index\45c11632efb0d54a\python-dotenv\python_dotenv-1.0.1-py3-none-any.lock`
+DEBUG Acquired lock for `C:\Users\developer_user\AppData\Local\uv\cache\wheels-v5\index\45c11632efb0d54a\pyinstaller\pyinstaller-6.10.0-py3-none-macosx_10_13_universal2.lock`
+DEBUG Acquired lock for `C:\Users\developer_user\AppData\Local\uv\cache\wheels-v5\index\45c11632efb0d54a\sphinx\sphinx-7.3.7-py3-none-any.lock`
+DEBUG Acquired lock for `C:\Users\developer_user\AppData\Local\uv\cache\wheels-v5\index\45c11632efb0d54a\pytest\pytest-8.3.5-py3-none-any.lock`
+DEBUG Acquired lock for `C:\Users\developer_user\AppData\Local\uv\cache\wheels-v5\index\45c11632efb0d54a\uv\uv-0.5.31-py3-none-linux_armv6l.lock`
+DEBUG Found fresh response for: https://mirrors.my-company-mirror.net/pypi/packages/sphinx-rtd-theme/3.0.2/sphinx_rtd_theme-3.0.2-py2.py3-none-any.whl#sha256=422ccc750c3a3a311de4ae327e82affdaf59eb695ba4936538552f3b00f4ee13
+DEBUG Released lock at `C:\Users\developer_user\AppData\Local\uv\cache\wheels-v5\index\45c11632efb0d54a\sphinx-rtd-theme\sphinx_rtd_theme-3.0.2-py2.py3-none-any.lock`
+DEBUG Found stale response for: https://mirrors.my-company-mirror.net/pypi/packages/pre-commit-uv/4.1.4/pre_commit_uv-4.1.4-py3-none-any.whl#sha256=7f01fb494fa1caa5097d20a38f71df7cea0209197b2564699cef9b3f3aa9d135
+DEBUG Sending revalidation request for: https://mirrors.my-company-mirror.net/pypi/packages/pre-commit-uv/4.1.4/pre_commit_uv-4.1.4-py3-none-any.whl#sha256=7f01fb494fa1caa5097d20a38f71df7cea0209197b2564699cef9b3f3aa9d135
+DEBUG Found stale response for: https://mirrors.my-company-mirror.net/pypi/packages/typer/0.15.2/typer-0.15.2-py3-none-any.whl#sha256=46a499c6107d645a9c13f7ee46c5d5096cae6f5fc57dd11eccbbb9ae3e44ddfc   
+DEBUG Sending revalidation request for: https://mirrors.my-company-mirror.net/pypi/packages/typer/0.15.2/typer-0.15.2-py3-none-any.whl#sha256=46a499c6107d645a9c13f7ee46c5d5096cae6f5fc57dd11eccbbb9ae3e44ddfc
+DEBUG Found stale response for: https://mirrors.my-company-mirror.net/pypi/packages/sphinx-autobuild/2024.10.3/sphinx_autobuild-2024.10.3-py3-none-any.whl#sha256=158e16c36f9d633e613c9aaf81c19b0fc458ca78b112533b20dafcda430d60fa
+DEBUG Sending revalidation request for: https://mirrors.my-company-mirror.net/pypi/packages/sphinx-autobuild/2024.10.3/sphinx_autobuild-2024.10.3-py3-none-any.whl#sha256=158e16c36f9d633e613c9aaf81c19b0fc458ca78b112533b20dafcda430d60fa
+DEBUG Found stale response for: https://mirrors.my-company-mirror.net/pypi/packages/pre-commit/3.8.0/pre_commit-3.8.0-py2.py3-none-any.whl#sha256=9a90a53bf82fdd8778d58085faf8d83df56e40dfe18f45b19446e26bf1b3a63f
+DEBUG Sending revalidation request for: https://mirrors.my-company-mirror.net/pypi/packages/pre-commit/3.8.0/pre_commit-3.8.0-py2.py3-none-any.whl#sha256=9a90a53bf82fdd8778d58085faf8d83df56e40dfe18f45b19446e26bf1b3a63f
+DEBUG Found stale response for: https://mirrors.my-company-mirror.net/pypi/packages/python-dotenv/1.0.1/python_dotenv-1.0.1-py3-none-any.whl#sha256=f7b63ef50f1b690dddf550d03497b66d609393b40b564ed0d674909a68ebf16a
+DEBUG Sending revalidation request for: https://mirrors.my-company-mirror.net/pypi/packages/python-dotenv/1.0.1/python_dotenv-1.0.1-py3-none-any.whl#sha256=f7b63ef50f1b690dddf550d03497b66d609393b40b564ed0d674909a68ebf16a
+DEBUG Found stale response for: https://mirrors.my-company-mirror.net/pypi/packages/pyinstaller/6.10.0/pyinstaller-6.10.0-py3-none-macosx_10_13_universal2.whl#sha256=d60fb22859e11483af735aec115fdde09467cdbb29edd9844839f2c920b748c0
+DEBUG Sending revalidation request for: https://mirrors.my-company-mirror.net/pypi/packages/pyinstaller/6.10.0/pyinstaller-6.10.0-py3-none-macosx_10_13_universal2.whl#sha256=d60fb22859e11483af735aec115fdde09467cdbb29edd9844839f2c920b748c0
+DEBUG Found stale response for: https://mirrors.my-company-mirror.net/pypi/packages/sphinx/7.3.7/sphinx-7.3.7-py3-none-any.whl#sha256=413f75440be4cacf328f580b4274ada4565fb2187d696a84970c23f77b64d8c3
+DEBUG Sending revalidation request for: https://mirrors.my-company-mirror.net/pypi/packages/sphinx/7.3.7/sphinx-7.3.7-py3-none-any.whl#sha256=413f75440be4cacf328f580b4274ada4565fb2187d696a84970c23f77b64d8c3
+DEBUG Found fresh response for: https://mirrors.my-company-mirror.net/pypi/packages/sphinxcontrib-confluencebuilder/2.12.0/sphinxcontrib_confluencebuilder-2.12.0-py3-none-any.whl#sha256=839218b38b51ec6f2239ed6776dfaab05c3e248e515352f2bf3133fe1166c549
+DEBUG Released lock at `C:\Users\developer_user\AppData\Local\uv\cache\wheels-v5\index\45c11632efb0d54a\sphinxcontrib-confluencebuilder\sphinxcontrib_confluencebuilder-2.12.0-py3-none-any.lock`   
+DEBUG Found fresh response for: https://mirrors.my-company-mirror.net/pypi/packages/pytest/8.3.5/pytest-8.3.5-py3-none-any.whl#sha256=c69214aa47deac29fad6c2a4f590b9c4a9fdb16a403176fe154b79c0b4d4d820   
+DEBUG Released lock at `C:\Users\developer_user\AppData\Local\uv\cache\wheels-v5\index\45c11632efb0d54a\pytest\pytest-8.3.5-py3-none-any.lock`
+DEBUG Found fresh response for: https://mirrors.my-company-mirror.net/pypi/packages/uv/0.5.31/uv-0.5.31-py3-none-linux_armv6l.whl#sha256=ba5707a6e363284ba1acd29ae9e70e2377ed31e272b953069798c444bae847ef
+DEBUG Released lock at `C:\Users\developer_user\AppData\Local\uv\cache\wheels-v5\index\45c11632efb0d54a\uv\uv-0.5.31-py3-none-linux_armv6l.lock`
+DEBUG Found not-modified response for: https://mirrors.my-company-mirror.net/pypi/packages/cattrs/24.1.2/cattrs-24.1.2-py3-none-any.whl#sha256=67c7495b760168d931a10233f979b28dc04daf853b30752246f4f8471c6d68d0
+DEBUG Released lock at `C:\Users\developer_user\AppData\Local\uv\cache\wheels-v5\index\45c11632efb0d54a\cattrs\cattrs-24.1.2-py3-none-any.lock`
+DEBUG Found not-modified response for: https://mirrors.my-company-mirror.net/pypi/packages/beautifulsoup4/4.10.0/beautifulsoup4-4.10.0-py3-none-any.whl#sha256=9a315ce70049920ea4572a4055bc4bd700c940521d36fc858205ad4fcde149bf
+DEBUG Released lock at `C:\Users\developer_user\AppData\Local\uv\cache\wheels-v5\index\45c11632efb0d54a\beautifulsoup4\beautifulsoup4-4.10.0-py3-none-any.lock`
+DEBUG Found not-modified response for: https://mirrors.my-company-mirror.net/pypi/packages/cryptography/36.0.1/cryptography-36.0.1-cp36-abi3-macosx_10_10_universal2.whl#sha256=73bc2d3f2444bcfeac67dd130ff2ea598ea5f20b40e36d19821b4df8c9c5037b
+DEBUG Found not-modified response for: https://mirrors.my-company-mirror.net/pypi/packages/loguru/0.5.3/loguru-0.5.3-py3-none-any.whl#sha256=f8087ac396b5ee5f67c963b495d615ebbceac2796379599820e324419d53667c
+DEBUG Released lock at `C:\Users\developer_user\AppData\Local\uv\cache\wheels-v5\index\45c11632efb0d54a\cryptography\cryptography-36.0.1-cp36-abi3-macosx_10_10_universal2.lock`
+DEBUG Released lock at `C:\Users\developer_user\AppData\Local\uv\cache\wheels-v5\index\45c11632efb0d54a\loguru\loguru-0.5.3-py3-none-any.lock`
+DEBUG Found not-modified response for: https://mirrors.my-company-mirror.net/pypi/packages/jsonschema/3.2.0/jsonschema-3.2.0-py2.py3-none-any.whl#sha256=4e5b3cf8216f577bee9ce139cbe72eca3ea4f292ec60928ff24758ce626cd163
+DEBUG Found not-modified response for: https://mirrors.my-company-mirror.net/pypi/packages/jsonpickle/3.0.1/jsonpickle-3.0.1-py2.py3-none-any.whl#sha256=130d8b293ea0add3845de311aaba55e6d706d0bb17bc123bd2c8baf8a39ac77c
+DEBUG Found not-modified response for: https://mirrors.my-company-mirror.net/pypi/packages/deepdiff/5.5.0/deepdiff-5.5.0-py3-none-any.whl#sha256=e054fed9dfe0d83d622921cbb3a3d0b3a6dd76acd2b6955433a0a2d35147774a
+DEBUG Found not-modified response for: https://mirrors.my-company-mirror.net/pypi/packages/python-dotenv/1.0.1/python_dotenv-1.0.1-py3-none-any.whl#sha256=f7b63ef50f1b690dddf550d03497b66d609393b40b564ed0d674909a68ebf16a
+DEBUG Found not-modified response for: https://mirrors.my-company-mirror.net/pypi/packages/reportlab/3.6.12/reportlab-3.6.12-cp311-cp311-macosx_10_9_x86_64.whl#sha256=236a6483210049205f6180d7a7595d0ca2e4ce343d83cc94ca719a4145809c6f
+DEBUG Found not-modified response for: https://mirrors.my-company-mirror.net/pypi/packages/pre-commit-uv/4.1.4/pre_commit_uv-4.1.4-py3-none-any.whl#sha256=7f01fb494fa1caa5097d20a38f71df7cea0209197b2564699cef9b3f3aa9d135
+DEBUG Found not-modified response for: https://mirrors.my-company-mirror.net/pypi/packages/pre-commit/3.8.0/pre_commit-3.8.0-py2.py3-none-any.whl#sha256=9a90a53bf82fdd8778d58085faf8d83df56e40dfe18f45b19446e26bf1b3a63f
+DEBUG Found not-modified response for: https://mirrors.my-company-mirror.net/pypi/packages/sphinx/7.3.7/sphinx-7.3.7-py3-none-any.whl#sha256=413f75440be4cacf328f580b4274ada4565fb2187d696a84970c23f77b64d8c3
+DEBUG Found not-modified response for: https://mirrors.my-company-mirror.net/pypi/packages/networkx/2.6.3/networkx-2.6.3-py3-none-any.whl#sha256=80b6b89c77d1dfb64a4c7854981b60aeea6360ac02c6d4e4913319e0a313abef
+DEBUG Found not-modified response for: https://mirrors.my-company-mirror.net/pypi/packages/dataclass-wizard/0.22.2/dataclass_wizard-0.22.2-py2.py3-none-any.whl#sha256=49be36ecc64bc5a1e9a35a6bad1d71d33b6b9b06877404931a17c6a3a6dfbb10
+DEBUG Found not-modified response for: https://mirrors.my-company-mirror.net/pypi/packages/sphinx-autobuild/2024.10.3/sphinx_autobuild-2024.10.3-py3-none-any.whl#sha256=158e16c36f9d633e613c9aaf81c19b0fc458ca78b112533b20dafcda430d60fa
+DEBUG Found not-modified response for: https://mirrors.my-company-mirror.net/pypi/packages/nox/2025.2.9/nox-2025.2.9-py3-none-any.whl#sha256=7d1e92d1918c6980d70aee9cf1c1d19d16faa71c4afe338fffd39e8a460e2067
+DEBUG Found not-modified response for: https://mirrors.my-company-mirror.net/pypi/packages/hvac/0.11.0/hvac-0.11.0-py2.py3-none-any.whl#sha256=705822074cceb10a498a809b2e14f6e296e86f045ae9635529c41b8af5e07a18
+DEBUG Found not-modified response for: https://mirrors.my-company-mirror.net/pypi/packages/pip-system-certs/4.0/pip_system_certs-4.0-py2.py3-none-any.whl#sha256=47202b9403a6f40783a9674bbc8873f5fc86544ec01a49348fa913e99e2ff68b
+DEBUG Found not-modified response for: https://mirrors.my-company-mirror.net/pypi/packages/elasticsearch/7.14.1/elasticsearch-7.14.1-py2.py3-none-any.whl#sha256=1a9f146b7126a7e0621085f1825b6b2d091693a714d3b16c208749762e79c2bc
+DEBUG Found not-modified response for: https://mirrors.my-company-mirror.net/pypi/packages/appdirs/1.4.4/appdirs-1.4.4-py2.py3-none-any.whl#sha256=a841dacd6b99318a741b166adb07e19ee71a274450e68237b4650ca1055ab128
+DEBUG Found not-modified response for: https://mirrors.my-company-mirror.net/pypi/packages/requests/2.26.0/requests-2.26.0-py2.py3-none-any.whl#sha256=6c1246513ecd5ecd4528a0906f910e8f0f9c6b8ec72030dc9fd154dc1a6efd24
+DEBUG Found not-modified response for: https://mirrors.my-company-mirror.net/pypi/packages/furl/2.1.2/furl-2.1.2-py2.py3-none-any.whl#sha256=a2c6adb472fc5faba2e18b6c28b83464b80201f168fd10b81997895a7cb5d5a6
+DEBUG Found not-modified response for: https://mirrors.my-company-mirror.net/pypi/packages/pyinstaller/6.10.0/pyinstaller-6.10.0-py3-none-macosx_10_13_universal2.whl#sha256=d60fb22859e11483af735aec115fdde09467cdbb29edd9844839f2c920b748c0
+DEBUG Found not-modified response for: https://mirrors.my-company-mirror.net/pypi/packages/typer/0.15.2/typer-0.15.2-py3-none-any.whl#sha256=46a499c6107d645a9c13f7ee46c5d5096cae6f5fc57dd11eccbbb9ae3e44ddfc
+DEBUG Found not-modified response for: https://mirrors.my-company-mirror.net/pypi/packages/xlsxwriter/3.0.1/XlsxWriter-3.0.1-py3-none-any.whl#sha256=2f2af944d2b4b5f21cd3ac8e01b2417ec74c60e2ca11cae90b4f32ee172c99d6
+DEBUG Released lock at `C:\Users\developer_user\AppData\Local\uv\cache\wheels-v5\index\45c11632efb0d54a\jsonschema\jsonschema-3.2.0-py2.py3-none-any.lock`
+DEBUG Released lock at `C:\Users\developer_user\AppData\Local\uv\cache\wheels-v5\index\45c11632efb0d54a\jsonpickle\jsonpickle-3.0.1-py2.py3-none-any.lock`
+DEBUG Released lock at `C:\Users\developer_user\AppData\Local\uv\cache\wheels-v5\index\45c11632efb0d54a\deepdiff\deepdiff-5.5.0-py3-none-any.lock`
+DEBUG Released lock at `C:\Users\developer_user\AppData\Local\uv\cache\wheels-v5\index\45c11632efb0d54a\python-dotenv\python_dotenv-1.0.1-py3-none-any.lock`
+DEBUG Released lock at `C:\Users\developer_user\AppData\Local\uv\cache\wheels-v5\index\45c11632efb0d54a\reportlab\reportlab-3.6.12-cp311-cp311-macosx_10_9_x86_64.lock`
+DEBUG Released lock at `C:\Users\developer_user\AppData\Local\uv\cache\wheels-v5\index\45c11632efb0d54a\pre-commit-uv\pre_commit_uv-4.1.4-py3-none-any.lock`
+DEBUG Released lock at `C:\Users\developer_user\AppData\Local\uv\cache\wheels-v5\index\45c11632efb0d54a\pre-commit\pre_commit-3.8.0-py2.py3-none-any.lock`
+DEBUG Released lock at `C:\Users\developer_user\AppData\Local\uv\cache\wheels-v5\index\45c11632efb0d54a\sphinx\sphinx-7.3.7-py3-none-any.lock`
+DEBUG Released lock at `C:\Users\developer_user\AppData\Local\uv\cache\wheels-v5\index\45c11632efb0d54a\networkx\networkx-2.6.3-py3-none-any.lock`
+DEBUG Released lock at `C:\Users\developer_user\AppData\Local\uv\cache\wheels-v5\index\45c11632efb0d54a\dataclass-wizard\dataclass_wizard-0.22.2-py2.py3-none-any.lock`
+DEBUG Released lock at `C:\Users\developer_user\AppData\Local\uv\cache\wheels-v5\index\45c11632efb0d54a\sphinx-autobuild\sphinx_autobuild-2024.10.3-py3-none-any.lock`
+DEBUG Released lock at `C:\Users\developer_user\AppData\Local\uv\cache\wheels-v5\index\45c11632efb0d54a\nox\nox-2025.2.9-py3-none-any.lock`
+DEBUG Released lock at `C:\Users\developer_user\AppData\Local\uv\cache\wheels-v5\index\45c11632efb0d54a\hvac\hvac-0.11.0-py2.py3-none-any.lock`
+DEBUG Released lock at `C:\Users\developer_user\AppData\Local\uv\cache\wheels-v5\index\45c11632efb0d54a\pip-system-certs\pip_system_certs-4.0-py2.py3-none-any.lock`
+DEBUG Released lock at `C:\Users\developer_user\AppData\Local\uv\cache\wheels-v5\index\45c11632efb0d54a\elasticsearch\elasticsearch-7.14.1-py2.py3-none-any.lock`
+DEBUG Released lock at `C:\Users\developer_user\AppData\Local\uv\cache\wheels-v5\index\45c11632efb0d54a\appdirs\appdirs-1.4.4-py2.py3-none-any.lock`
+DEBUG Searching for a compatible version of beautifulsoup4 (>=4.10.0, <4.10.0+)
+DEBUG Selecting: beautifulsoup4==4.10.0 [preference] (beautifulsoup4-4.10.0-py3-none-any.whl)
+DEBUG Adding transitive dependency for beautifulsoup4==4.10.0: soupsieve>1.2
+DEBUG Searching for a compatible version of cryptography (>=36.0.1, <36.0.1+)
+DEBUG Released lock at `C:\Users\developer_user\AppData\Local\uv\cache\wheels-v5\index\45c11632efb0d54a\requests\requests-2.26.0-py2.py3-none-any.lock`
+DEBUG Selecting: cryptography==36.0.1 [preference] (cryptography-36.0.1-cp36-abi3-macosx_10_10_universal2.whl)
+DEBUG Adding transitive dependency for cryptography==36.0.1: cffi>=1.12
+DEBUG Searching for a compatible version of dataclass-wizard (>=0.22.2, <0.22.2+)
+DEBUG Selecting: dataclass-wizard==0.22.2 [preference] (dataclass_wizard-0.22.2-py2.py3-none-any.whl)
+DEBUG Released lock at `C:\Users\developer_user\AppData\Local\uv\cache\wheels-v5\index\45c11632efb0d54a\furl\furl-2.1.2-py2.py3-none-any.lock`
+DEBUG Searching for a compatible version of deepdiff (>=5.5.0, <5.5.0+)
+DEBUG Selecting: deepdiff==5.5.0 [preference] (deepdiff-5.5.0-py3-none-any.whl)
+DEBUG Adding transitive dependency for deepdiff==5.5.0: ordered-set>=4.0.2, <4.0.2+
+DEBUG Searching for a compatible version of elasticsearch (>=7.14.1, <7.14.1+)
+DEBUG Selecting: elasticsearch==7.14.1 [preference] (elasticsearch-7.14.1-py2.py3-none-any.whl)
+DEBUG Adding transitive dependency for elasticsearch==7.14.1: certifi*
+DEBUG Adding transitive dependency for elasticsearch==7.14.1: urllib3>=1.21.1, <2
+DEBUG Released lock at `C:\Users\developer_user\AppData\Local\uv\cache\wheels-v5\index\45c11632efb0d54a\pyinstaller\pyinstaller-6.10.0-py3-none-macosx_10_13_universal2.lock`
+DEBUG Searching for a compatible version of furl (>=2.1.2, <2.1.2+)
+DEBUG Selecting: furl==2.1.2 [preference] (furl-2.1.2-py2.py3-none-any.whl)
+DEBUG Adding transitive dependency for furl==2.1.2: orderedmultidict>=1.0.1
+DEBUG Adding transitive dependency for furl==2.1.2: six>=1.8.0
+DEBUG Searching for a compatible version of hvac (>=0.11.0, <0.11.0+)
+DEBUG Released lock at `C:\Users\developer_user\AppData\Local\uv\cache\wheels-v5\index\45c11632efb0d54a\typer\typer-0.15.2-py3-none-any.lock`
+DEBUG Selecting: hvac==0.11.0 [preference] (hvac-0.11.0-py2.py3-none-any.whl)
+DEBUG Adding transitive dependency for hvac==0.11.0: requests>=2.21.0
+DEBUG Adding transitive dependency for hvac==0.11.0: six>=1.5.0
+DEBUG Searching for a compatible version of jsonpickle (>=3.0.1, <3.0.1+)
+DEBUG Selecting: jsonpickle==3.0.1 [preference] (jsonpickle-3.0.1-py2.py3-none-any.whl)
+DEBUG Searching for a compatible version of jsonschema (>=3.2.0, <3.2.0+)
+DEBUG Selecting: jsonschema==3.2.0 [preference] (jsonschema-3.2.0-py2.py3-none-any.whl)
+DEBUG Released lock at `C:\Users\developer_user\AppData\Local\uv\cache\wheels-v5\index\45c11632efb0d54a\xlsxwriter\xlsxwriter-3.0.1-py3-none-any.lock`
+DEBUG Adding transitive dependency for jsonschema==3.2.0: attrs>=17.4.0
+DEBUG Adding transitive dependency for jsonschema==3.2.0: pyrsistent>=0.14.0
+DEBUG Adding transitive dependency for jsonschema==3.2.0: setuptools*
+DEBUG Acquired lock for `C:\Users\developer_user\AppData\Local\uv\cache\simple-v15\index\45c11632efb0d54a\certifi.lock`
+DEBUG Acquired lock for `C:\Users\developer_user\AppData\Local\uv\cache\simple-v15\index\45c11632efb0d54a\cffi.lock`
+DEBUG Acquired lock for `C:\Users\developer_user\AppData\Local\uv\cache\simple-v15\index\45c11632efb0d54a\ordered-set.lock`
+DEBUG Adding transitive dependency for jsonschema==3.2.0: six>=1.11.0
+DEBUG Acquired lock for `C:\Users\developer_user\AppData\Local\uv\cache\simple-v15\index\45c11632efb0d54a\soupsieve.lock`
+DEBUG Acquired lock for `C:\Users\developer_user\AppData\Local\uv\cache\simple-v15\index\45c11632efb0d54a\urllib3.lock`
+DEBUG Acquired lock for `C:\Users\developer_user\AppData\Local\uv\cache\simple-v15\index\45c11632efb0d54a\orderedmultidict.lock`
+DEBUG Acquired lock for `C:\Users\developer_user\AppData\Local\uv\cache\simple-v15\index\45c11632efb0d54a\six.lock`
+DEBUG Acquired lock for `C:\Users\developer_user\AppData\Local\uv\cache\simple-v15\index\45c11632efb0d54a\pyrsistent.lock`
+DEBUG Acquired lock for `C:\Users\developer_user\AppData\Local\uv\cache\simple-v15\index\45c11632efb0d54a\setuptools.lock`
+DEBUG Searching for a compatible version of loguru (>=0.5.3, <0.5.3+)
+DEBUG Found fresh response for: https://mirrors.my-company-mirror.net/pypi/simple/ordered-set/
+DEBUG Released lock at `C:\Users\developer_user\AppData\Local\uv\cache\simple-v15\index\45c11632efb0d54a\ordered-set.lock`
+DEBUG Selecting: loguru==0.5.3 [preference] (loguru-0.5.3-py3-none-any.whl)
+DEBUG Found fresh response for: https://mirrors.my-company-mirror.net/pypi/simple/certifi/
+DEBUG Released lock at `C:\Users\developer_user\AppData\Local\uv\cache\simple-v15\index\45c11632efb0d54a\certifi.lock`
+DEBUG Adding transitive dependency for loguru==0.5.3: colorama{sys_platform == 'win32'}>=0.3.4
+DEBUG Found fresh response for: https://mirrors.my-company-mirror.net/pypi/simple/cffi/
+DEBUG Adding transitive dependency for loguru==0.5.3: win32-setctime{sys_platform == 'win32'}>=1.0.0
+DEBUG Released lock at `C:\Users\developer_user\AppData\Local\uv\cache\simple-v15\index\45c11632efb0d54a\cffi.lock`
+DEBUG Searching for a compatible version of networkx (>=2.6.3, <2.6.3+)
+DEBUG Selecting: networkx==2.6.3 [preference] (networkx-2.6.3-py3-none-any.whl)
+DEBUG Acquired lock for `C:\Users\developer_user\AppData\Local\uv\cache\sdists-v8\index\45c11632efb0d54a\ordered-set\4.0.2`
+DEBUG Acquired lock for `C:\Users\developer_user\AppData\Local\uv\cache\wheels-v5\index\45c11632efb0d54a\certifi\certifi-2025.1.31-py3-none-any.lock`
+DEBUG Acquired lock for `C:\Users\developer_user\AppData\Local\uv\cache\simple-v15\index\45c11632efb0d54a\colorama.lock`
+DEBUG Searching for a compatible version of pip-system-certs (>=4.0, <4.0+)
+DEBUG Found fresh response for: https://mirrors.my-company-mirror.net/pypi/simple/soupsieve/
+DEBUG Acquired lock for `C:\Users\developer_user\AppData\Local\uv\cache\simple-v15\index\45c11632efb0d54a\win32-setctime.lock`
+DEBUG Selecting: pip-system-certs==4.0 [preference] (pip_system_certs-4.0-py2.py3-none-any.whl)
+DEBUG Released lock at `C:\Users\developer_user\AppData\Local\uv\cache\simple-v15\index\45c11632efb0d54a\soupsieve.lock`
+DEBUG Adding transitive dependency for pip-system-certs==4.0: wrapt>=1.10.4
+DEBUG Found fresh response for: https://mirrors.my-company-mirror.net/pypi/simple/six/
+DEBUG Released lock at `C:\Users\developer_user\AppData\Local\uv\cache\simple-v15\index\45c11632efb0d54a\six.lock`
+DEBUG Found fresh response for: https://mirrors.my-company-mirror.net/pypi/simple/orderedmultidict/
+DEBUG Released lock at `C:\Users\developer_user\AppData\Local\uv\cache\simple-v15\index\45c11632efb0d54a\orderedmultidict.lock`
+DEBUG Searching for a compatible version of pysimplegui (>=4.70.1, <4.70.1+)
+DEBUG Found fresh response for: https://mirrors.my-company-mirror.net/pypi/simple/urllib3/
+DEBUG No compatible version found for: pysimplegui
+DEBUG Released lock at `C:\Users\developer_user\AppData\Local\uv\cache\simple-v15\index\45c11632efb0d54a\urllib3.lock`
+DEBUG Recording unit propagation conflict of pysimplegui from incompatibility of (my_project)
+DEBUG Searching for a compatible version of my_project @ file:///C:/my_project (<0.1.0 | >0.1.0)
+DEBUG No compatible version found for: my_project
+DEBUG Found fresh response for: https://mirrors.my-company-mirror.net/pypi/simple/pyrsistent/
+DEBUG Acquired lock for `C:\Users\developer_user\AppData\Local\uv\cache\wheels-v5\index\45c11632efb0d54a\cffi\cffi-1.17.1-cp311-cp311-macosx_10_9_x86_64.lock`
+DEBUG Released lock at `C:\Users\developer_user\AppData\Local\uv\cache\simple-v15\index\45c11632efb0d54a\pyrsistent.lock`
+DEBUG Found fresh response for: https://mirrors.my-company-mirror.net/pypi/simple/setuptools/
+DEBUG Released lock at `C:\Users\developer_user\AppData\Local\uv\cache\simple-v15\index\45c11632efb0d54a\setuptools.lock`
+DEBUG Acquired lock for `C:\Users\developer_user\AppData\Local\uv\cache\wheels-v5\index\45c11632efb0d54a\soupsieve\soupsieve-2.6-py3-none-any.lock`
+DEBUG Acquired lock for `C:\Users\developer_user\AppData\Local\uv\cache\simple-v15\index\45c11632efb0d54a\wrapt.lock`
+DEBUG Acquired lock for `C:\Users\developer_user\AppData\Local\uv\cache\wheels-v5\index\45c11632efb0d54a\six\six-1.17.0-py2.py3-none-any.lock`
+DEBUG Acquired lock for `C:\Users\developer_user\AppData\Local\uv\cache\wheels-v5\index\45c11632efb0d54a\orderedmultidict\orderedmultidict-1.0.1-py2.py3-none-any.lock`
+DEBUG Acquired lock for `C:\Users\developer_user\AppData\Local\uv\cache\wheels-v5\index\45c11632efb0d54a\urllib3\urllib3-1.26.20-py2.py3-none-any.lock`
+DEBUG Acquired lock for `C:\Users\developer_user\AppData\Local\uv\cache\wheels-v5\index\45c11632efb0d54a\pyrsistent\pyrsistent-0.20.0-cp311-cp311-macosx_10_9_universal2.lock`
+DEBUG Found fresh response for: https://mirrors.my-company-mirror.net/pypi/simple/colorama/
+DEBUG Acquired lock for `C:\Users\developer_user\AppData\Local\uv\cache\wheels-v5\index\45c11632efb0d54a\setuptools\setuptools-75.8.2-py3-none-any.lock`
+DEBUG Released lock at `C:\Users\developer_user\AppData\Local\uv\cache\simple-v15\index\45c11632efb0d54a\colorama.lock`
+DEBUG Found fresh response for: https://mirrors.my-company-mirror.net/pypi/packages/ordered-set/4.0.2/ordered-set-4.0.2.tar.gz#sha256=ba93b2df055bca202116ec44b9bead3df33ea63a7d5827ff8e16738b97f33a95   
+DEBUG Found fresh response for: https://mirrors.my-company-mirror.net/pypi/simple/win32-setctime/
+DEBUG Released lock at `C:\Users\developer_user\AppData\Local\uv\cache\simple-v15\index\45c11632efb0d54a\win32-setctime.lock`
+DEBUG Found fresh response for: https://mirrors.my-company-mirror.net/pypi/packages/certifi/2025.1.31/certifi-2025.1.31-py3-none-any.whl#sha256=ca78db4565a652026a4db2bcdf68f2fb589ea80d0be70e03929ed730746b84fe
+DEBUG Released lock at `C:\Users\developer_user\AppData\Local\uv\cache\wheels-v5\index\45c11632efb0d54a\certifi\certifi-2025.1.31-py3-none-any.lock`
+DEBUG Found stale response for: https://mirrors.my-company-mirror.net/pypi/packages/cffi/1.17.1/cffi-1.17.1-cp311-cp311-macosx_10_9_x86_64.whl#sha256=a45e3c6913c5b87b3ff120dcdc03f6131fa0065027d0ed7ee6190736a74cd401
+DEBUG Sending revalidation request for: https://mirrors.my-company-mirror.net/pypi/packages/cffi/1.17.1/cffi-1.17.1-cp311-cp311-macosx_10_9_x86_64.whl#sha256=a45e3c6913c5b87b3ff120dcdc03f6131fa0065027d0ed7ee6190736a74cd401
+DEBUG No `pyproject.toml` available for: ordered-set==4.0.2
+DEBUG Found stale response for: https://mirrors.my-company-mirror.net/pypi/packages/soupsieve/2.6/soupsieve-2.6-py3-none-any.whl#sha256=e72c4ff06e4fb6e4b5a9f0f55fe6e81514581fca1515028625d0f299c602ccc9 
+DEBUG Sending revalidation request for: https://mirrors.my-company-mirror.net/pypi/packages/soupsieve/2.6/soupsieve-2.6-py3-none-any.whl#sha256=e72c4ff06e4fb6e4b5a9f0f55fe6e81514581fca1515028625d0f299c602ccc9
+DEBUG Found stale response for: https://mirrors.my-company-mirror.net/pypi/packages/orderedmultidict/1.0.1/orderedmultidict-1.0.1-py2.py3-none-any.whl#sha256=43c839a17ee3cdd62234c47deca1a8508a3f2ca1d0678a3bf791c87cf84adbf3
+DEBUG Sending revalidation request for: https://mirrors.my-company-mirror.net/pypi/packages/orderedmultidict/1.0.1/orderedmultidict-1.0.1-py2.py3-none-any.whl#sha256=43c839a17ee3cdd62234c47deca1a8508a3f2ca1d0678a3bf791c87cf84adbf3
+DEBUG Found fresh response for: https://mirrors.my-company-mirror.net/pypi/packages/six/1.17.0/six-1.17.0-py2.py3-none-any.whl#sha256=4721f391ed90541fddacab5acf947aa0d3dc7d27b2e1e8eda2be8970586c3274   
+DEBUG Released lock at `C:\Users\developer_user\AppData\Local\uv\cache\wheels-v5\index\45c11632efb0d54a\six\six-1.17.0-py2.py3-none-any.lock`
+DEBUG Found stale response for: https://mirrors.my-company-mirror.net/pypi/packages/setuptools/75.8.2/setuptools-75.8.2-py3-none-any.whl#sha256=558e47c15f1811c1fa7adbd0096669bf76c1d3f433f58324df69f3f5ecac4e8f
+DEBUG Sending revalidation request for: https://mirrors.my-company-mirror.net/pypi/packages/setuptools/75.8.2/setuptools-75.8.2-py3-none-any.whl#sha256=558e47c15f1811c1fa7adbd0096669bf76c1d3f433f58324df69f3f5ecac4e8f
+DEBUG No static `PKG-INFO` available for: ordered-set==4.0.2 (PkgInfo(UnsupportedMetadataVersion("2.1")))
+DEBUG Found stale response for: https://mirrors.my-company-mirror.net/pypi/packages/pyrsistent/0.20.0/pyrsistent-0.20.0-cp311-cp311-macosx_10_9_universal2.whl#sha256=0f3b1bcaa1f0629c978b355a7c37acd58907390149b7311b5db1b37648eb6958
+DEBUG Sending revalidation request for: https://mirrors.my-company-mirror.net/pypi/packages/pyrsistent/0.20.0/pyrsistent-0.20.0-cp311-cp311-macosx_10_9_universal2.whl#sha256=0f3b1bcaa1f0629c978b355a7c37acd58907390149b7311b5db1b37648eb6958
+DEBUG Found stale response for: https://mirrors.my-company-mirror.net/pypi/packages/urllib3/1.26.20/urllib3-1.26.20-py2.py3-none-any.whl#sha256=0ed14ccfbf1c30a9072c7ca157e4319b70d65f623e91e7b32fadb2853431016e
+DEBUG Sending revalidation request for: https://mirrors.my-company-mirror.net/pypi/packages/urllib3/1.26.20/urllib3-1.26.20-py2.py3-none-any.whl#sha256=0ed14ccfbf1c30a9072c7ca157e4319b70d65f623e91e7b32fadb2853431016e
+DEBUG Found fresh response for: https://mirrors.my-company-mirror.net/pypi/simple/wrapt/
+DEBUG Released lock at `C:\Users\developer_user\AppData\Local\uv\cache\simple-v15\index\45c11632efb0d54a\wrapt.lock`
+DEBUG Using cached metadata for: ordered-set==4.0.2
+DEBUG Released lock at `C:\Users\developer_user\AppData\Local\uv\cache\sdists-v8\index\45c11632efb0d54a\ordered-set\4.0.2\.lock`
+DEBUG Acquired lock for `C:\Users\developer_user\AppData\Local\uv\cache\wheels-v5\index\45c11632efb0d54a\wrapt\wrapt-1.17.2-cp311-cp311-macosx_10_9_universal2.lock`
+DEBUG Found fresh response for: https://mirrors.my-company-mirror.net/pypi/packages/wrapt/1.17.2/wrapt-1.17.2-cp311-cp311-macosx_10_9_universal2.whl#sha256=ff04ef6eec3eee8a5efef2401495967a916feaa353643defcc03fc74fe213b58
+DEBUG Released lock at `C:\Users\developer_user\AppData\Local\uv\cache\wheels-v5\index\45c11632efb0d54a\wrapt\wrapt-1.17.2-cp311-cp311-macosx_10_9_universal2.lock`
+DEBUG Found not-modified response for: https://mirrors.my-company-mirror.net/pypi/packages/cffi/1.17.1/cffi-1.17.1-cp311-cp311-macosx_10_9_x86_64.whl#sha256=a45e3c6913c5b87b3ff120dcdc03f6131fa0065027d0ed7ee6190736a74cd401
+DEBUG Found not-modified response for: https://mirrors.my-company-mirror.net/pypi/packages/orderedmultidict/1.0.1/orderedmultidict-1.0.1-py2.py3-none-any.whl#sha256=43c839a17ee3cdd62234c47deca1a8508a3f2ca1d0678a3bf791c87cf84adbf3
+DEBUG Found not-modified response for: https://mirrors.my-company-mirror.net/pypi/packages/soupsieve/2.6/soupsieve-2.6-py3-none-any.whl#sha256=e72c4ff06e4fb6e4b5a9f0f55fe6e81514581fca1515028625d0f299c602ccc9
+DEBUG Released lock at `C:\Users\developer_user\AppData\Local\uv\cache\wheels-v5\index\45c11632efb0d54a\cffi\cffi-1.17.1-cp311-cp311-macosx_10_9_x86_64.lock`
+DEBUG Released lock at `C:\Users\developer_user\AppData\Local\uv\cache\wheels-v5\index\45c11632efb0d54a\orderedmultidict\orderedmultidict-1.0.1-py2.py3-none-any.lock`
+DEBUG Released lock at `C:\Users\developer_user\AppData\Local\uv\cache\wheels-v5\index\45c11632efb0d54a\soupsieve\soupsieve-2.6-py3-none-any.lock`
+DEBUG Found not-modified response for: https://mirrors.my-company-mirror.net/pypi/packages/urllib3/1.26.20/urllib3-1.26.20-py2.py3-none-any.whl#sha256=0ed14ccfbf1c30a9072c7ca157e4319b70d65f623e91e7b32fadb2853431016e
+DEBUG Found not-modified response for: https://mirrors.my-company-mirror.net/pypi/packages/setuptools/75.8.2/setuptools-75.8.2-py3-none-any.whl#sha256=558e47c15f1811c1fa7adbd0096669bf76c1d3f433f58324df69f3f5ecac4e8f
+DEBUG Found not-modified response for: https://mirrors.my-company-mirror.net/pypi/packages/pyrsistent/0.20.0/pyrsistent-0.20.0-cp311-cp311-macosx_10_9_universal2.whl#sha256=0f3b1bcaa1f0629c978b355a7c37acd58907390149b7311b5db1b37648eb6958
+DEBUG Released lock at `C:\Users\developer_user\AppData\Local\uv\cache\wheels-v5\index\45c11632efb0d54a\urllib3\urllib3-1.26.20-py2.py3-none-any.lock`
+DEBUG Released lock at `C:\Users\developer_user\AppData\Local\uv\cache\wheels-v5\index\45c11632efb0d54a\setuptools\setuptools-75.8.2-py3-none-any.lock`
+DEBUG Released lock at `C:\Users\developer_user\AppData\Local\uv\cache\wheels-v5\index\45c11632efb0d54a\pyrsistent\pyrsistent-0.20.0-cp311-cp311-macosx_10_9_universal2.lock`
+  × No solution found when resolving dependencies:
+  ╰─▶ Because there is no version of pysimplegui==4.70.1 and your project depends on pysimplegui==4.70.1, we can conclude that your project's requirements are unsatisfiable.
+```
+Note: If I set pysimplegui<5, it finds pysimplegui==4.38.0 which has an sdist mirrored as well as the wheel.
+
+but that forcefully downgrades me which is not something I am happy about.
+
+---
+
+_Comment by @jamesharris-garmin on 2025-03-07 17:31_
+
+A workaround is to download the wheel from my mirror and add the wheel in the path to the project instead of going the other direction. But in this case I really don't need the sdist so I don't care if my mirror has it or not.
+
+---
+
+_Comment by @charliermarsh on 2025-03-07 18:43_
+
+What does `https://mirrors.my-company-mirror.net/pypi/simple/pysimplegui/` return?
+
+---
+
+_Comment by @jamesharris-garmin on 2025-03-07 19:44_
+
+it appears the version I am looking for is not present on the page the index returns. Which admittedly sounds like a sonatype nexus problem not a uv problem.:
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head><title>Links for pysimplegui</title>
+  <meta name="api-version" value="2"/>
+</head>
+<body><h1>Links for pysimplegui</h1>
+        <a href="[../../packages/pysimplegui/4.38.0/PySimpleGUI-4.38.0-py3-none-any.whl#sha256=47a932cbeb2ac847bad6bb8be92e78c59595b7537d48d015e491fd897e883c76](view-source:https://mirrors.garmin.com/pypi/packages/pysimplegui/4.38.0/PySimpleGUI-4.38.0-py3-none-any.whl#sha256=47a932cbeb2ac847bad6bb8be92e78c59595b7537d48d015e491fd897e883c76)" rel="internal"  >PySimpleGUI-4.38.0-py3-none-any.whl</a><br/>
+        <a href="[../../packages/pysimplegui/4.38.0/PySimpleGUI-4.38.0.tar.gz#sha256=6e2b450bff91e507ea85a011728506acce8dccedaead0d0bb60bd5258f9f82f6](view-source:https://mirrors.garmin.com/pypi/packages/pysimplegui/4.38.0/PySimpleGUI-4.38.0.tar.gz#sha256=6e2b450bff91e507ea85a011728506acce8dccedaead0d0bb60bd5258f9f82f6)" rel="internal"  >PySimpleGUI-4.38.0.tar.gz</a><br/>
+        <a href="[../../packages/pysimplegui/5.0.0.16/pysimplegui-5.0.0.16-py3-none-any.whl#sha256=90850f182899da92fc2900624c463fecc616a38446e5de68282d79ded0646ec6](view-source:https://mirrors.garmin.com/pypi/packages/pysimplegui/5.0.0.16/pysimplegui-5.0.0.16-py3-none-any.whl#sha256=90850f182899da92fc2900624c463fecc616a38446e5de68282d79ded0646ec6)" rel="internal" data-requires-python="&gt;=3.6" >pysimplegui-5.0.0.16-py3-none-any.whl</a><br/>
+        <a href="[../../packages/pysimplegui/5.0.0.16/pysimplegui-5.0.0.16.tar.gz#sha256=912e86985839ef554a3b63368877dfeb8ea708aff11abd60cedd1ed8398bf3a3](view-source:https://mirrors.garmin.com/pypi/packages/pysimplegui/5.0.0.16/pysimplegui-5.0.0.16.tar.gz#sha256=912e86985839ef554a3b63368877dfeb8ea708aff11abd60cedd1ed8398bf3a3)" rel="internal" data-requires-python="&gt;=3.6" >pysimplegui-5.0.0.16.tar.gz</a><br/>
+        <a href="[../../packages/pysimplegui/5.0.99.99/pysimplegui-5.0.99.99-py3-none-any.whl#sha256=348650533f7a73a45c06aea661ad85e1ffa097c1eb64576faa6b078cb7564dfc](view-source:https://mirrors.garmin.com/pypi/packages/pysimplegui/5.0.99.99/pysimplegui-5.0.99.99-py3-none-any.whl#sha256=348650533f7a73a45c06aea661ad85e1ffa097c1eb64576faa6b078cb7564dfc)" rel="internal" data-requires-python="&gt;=3.6" >pysimplegui-5.0.99.99-py3-none-any.whl</a><br/>
+        <a href="[../../packages/pysimplegui/5.0.99.99/pysimplegui-5.0.99.99.tar.gz#sha256=27d22e94bc4d0ce5782bfbdff6df8c22d75dc196895465713ff6c84523850190](view-source:https://mirrors.garmin.com/pypi/packages/pysimplegui/5.0.99.99/pysimplegui-5.0.99.99.tar.gz#sha256=27d22e94bc4d0ce5782bfbdff6df8c22d75dc196895465713ff6c84523850190)" rel="internal" data-requires-python="&gt;=3.6" >pysimplegui-5.0.99.99.tar.gz</a><br/>
+</body>
+</html>
+```
+I wonder if I could republish it internally and fix this whole issue.
+
+
+---
+
+_Comment by @jamesharris-garmin on 2025-03-07 20:42_
+
+Yes. it was an internal server problem. Very annoying.
+
+---
+
+_Comment by @charliermarsh on 2025-03-07 20:49_
+
+Gah, sorry about that. Thanks for following up.
+
+---
+
+_Closed by @charliermarsh on 2025-03-07 20:49_
+
+---

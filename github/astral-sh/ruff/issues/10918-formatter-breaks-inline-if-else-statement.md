@@ -1,0 +1,136 @@
+---
+number: 10918
+title: "Formatter breaks inline `if/else` statement different than Black when used on function argument"
+type: issue
+state: closed
+author: kikefdezl
+labels:
+  - formatter
+assignees: []
+created_at: 2024-04-13T12:25:51Z
+updated_at: 2024-04-18T17:56:30Z
+url: https://github.com/astral-sh/ruff/issues/10918
+synced_at: 2026-01-07T13:12:15-06:00
+---
+
+# Formatter breaks inline `if/else` statement different than Black when used on function argument
+
+---
+
+_Issue opened by @kikefdezl on 2024-04-13 12:25_
+
+Hey! 
+
+I have the following snippet of code:
+
+```python
+def my_function(argument: str | None):
+    print(argument)
+
+super_duper_very_long_variable_name = "foo"
+
+my_function(argument=super_duper_very_long_variable_name if super_duper_very_long_variable_name else None)
+```
+
+Line 6 surpasses the maximum length of `88` so the line has to be broken.
+
+`black` produces:
+```python
+my_function(
+    argument=(
+        super_duper_very_long_variable_name
+        if super_duper_very_long_variable_name
+        else None
+    )
+)
+```
+
+`ruff` produces:
+```python
+my_function(
+    argument=super_duper_very_long_variable_name
+    if super_duper_very_long_variable_name
+    else None
+)
+```
+
+I am just running `ruff format this-file.py` using the default settings and version `0.3.7`.
+
+I believe the `black` output to be more readable. I am willing to try to open a PR myself if you confirm that this is a change you'd be interested in.
+
+
+
+---
+
+_Comment by @kikefdezl on 2024-04-13 12:30_
+
+I'd like to add a second example to illustrate why the current output is not very readable. In a scenario where we have multiple arguments in our function, it all becomes a bit more cluttered:
+
+```python
+from dataclasses import dataclass
+
+
+@dataclass
+class MyClass:
+    attr_1: str
+    attr_2: str | None
+    attr_3: str
+
+
+super_duper_very_long_variable_name = "foo"
+
+c = MyClass(
+    attr_1="my_value_1",
+    attr_2=super_duper_very_long_variable_name
+    if super_duper_very_long_variable_name
+    else None,
+    attr_3="my_value_3",
+)
+```
+
+whereas `black` produces:
+```python
+c = MyClass(
+    attr_1="my_value_1",
+    attr_2=(
+        super_duper_very_long_variable_name
+        if super_duper_very_long_variable_name
+        else None
+    ),
+    attr_3="my_value_3",
+)
+```
+
+---
+
+_Renamed from "Format: Inline `if/else` statement breaks lines different than Black when assigning to function argument." to "Formatter breaks inline `if/else` statement different than Black when used on function argument" by @kikefdezl on 2024-04-13 12:32_
+
+---
+
+_Label `formatter` added by @AlexWaygood on 2024-04-13 13:50_
+
+---
+
+_Comment by @MichaReiser on 2024-04-15 06:49_
+
+Hy @kikefdezl 
+
+I agree that Black's formatting looks better in this specific case. This is a known and intentional deviation. We want to explore alternative formatting that makes long-subexpressions more readable without needing to use parentheses (which is something that Black otherwise tries very hard to avoid). See [known deviation](https://docs.astral.sh/ruff/formatter/black/#parenthesizing-long-nested-expressions) for more details. 
+
+---
+
+_Closed by @MichaReiser on 2024-04-15 06:49_
+
+---
+
+_Comment by @kikefdezl on 2024-04-15 07:37_
+
+Understood, thank you :+1: 
+
+---
+
+_Comment by @dvdkon on 2024-04-18 17:56_
+
+As feedback, I'd like to say that aligning the rest of the `if/else` expression with keyword arguments looks confusing to me. I'd at least indent them in this specific case, was that considered as an option?
+
+---

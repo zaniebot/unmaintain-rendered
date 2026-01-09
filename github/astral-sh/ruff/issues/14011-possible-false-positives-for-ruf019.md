@@ -1,0 +1,86 @@
+---
+number: 14011
+title: Possible false positives for RUF019
+type: issue
+state: open
+author: LordAro
+labels:
+  - rule
+  - type-inference
+assignees: []
+created_at: 2024-10-31T09:27:35Z
+updated_at: 2024-10-31T11:27:30Z
+url: https://github.com/astral-sh/ruff/issues/14011
+synced_at: 2026-01-07T13:12:16-06:00
+---
+
+# Possible false positives for RUF019
+
+---
+
+_Issue opened by @LordAro on 2024-10-31 09:27_
+
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* List of keywords you searched for before creating this issue. Write them down here so that others can find this issue more easily and help provide feedback.
+  e.g. "RUF001", "unused variable", "Jupyter notebook"
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+RUF019 can raise false positives if a class defines `__contains__` and `__getitem__` but not `get`. Alternatively, a class may implement `get` but do something entirely different with it.
+
+(Yes, this is extremely contrived)
+
+```py
+class Foo:
+    def __contains__(self, a):
+        return True
+
+    def __getitem__(self, a):
+        return 7
+
+
+class Foo2(Foo):
+    def get(self):
+        return "something completely different"
+
+
+f = Foo()
+if "" in f and f[""]:
+    pass
+```
+
+I suspect you'd be unlikely to be able to do anything about this until red_knot is done, but maybe worth documenting in the meantime? Even then might not even be able to do anything about it for the `Foo2` case.
+
+Ruff: 0.7.1
+
+
+---
+
+_Comment by @MichaReiser on 2024-10-31 09:31_
+
+Thanks for reporting this issue. 
+
+We should be able to do better with red knot because I understand from the rule description that it should only apply to dictionaries and not arbitrary other types. However, Ruff currently lacks a mechanism to detect dictionaries (it has one, but it has a too high false-negative rate).  Red Knot should make this trivial because it allows us to precisely answer whether `f` is a dictionary or not.
+
+---
+
+_Label `rule` added by @MichaReiser on 2024-10-31 09:31_
+
+---
+
+_Label `type-inference` added by @MichaReiser on 2024-10-31 09:31_
+
+---
+
+_Comment by @LordAro on 2024-10-31 09:55_
+
+Looked into it a bit deeper, and the first example isn't nearly as contrived as first thought. Second one is a bit more contrived but maybe introducing different behaviour is worse than introducing a crash..
+
+---

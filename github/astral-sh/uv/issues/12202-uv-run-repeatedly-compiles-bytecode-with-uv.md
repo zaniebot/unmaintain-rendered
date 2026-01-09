@@ -1,0 +1,303 @@
+---
+number: 12202
+title: "`uv run` repeatedly compiles bytecode with `UV_COMPILE_BYTECODE=1`"
+type: issue
+state: open
+author: mwaskom
+labels:
+  - bug
+assignees: []
+created_at: 2025-03-16T15:42:47Z
+updated_at: 2025-04-03T13:50:25Z
+url: https://github.com/astral-sh/uv/issues/12202
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# `uv run` repeatedly compiles bytecode with `UV_COMPILE_BYTECODE=1`
+
+---
+
+_Issue opened by @mwaskom on 2025-03-16 15:42_
+
+### Summary
+
+Starting with uv 0.5.5, `uv run` will compile bytecode files on every invocation when `UV_COMPILE_BYTECODE=1` is set:
+
+```
+$ uv init
+Initialized project `pyc-woe`
+$ UV_COMPILE_BYTECODE=1 uv run python -c ''
+Using CPython 3.13.0
+Creating virtual environment at: .venv
+Bytecode compiled 1 file in 39ms
+$ UV_COMPILE_BYTECODE=1 uv run python -c ''
+Bytecode compiled 1 file in 36ms
+$ UV_COMPILE_BYTECODE=1 uv run python -c ''
+Bytecode compiled 1 file in 35ms```
+```
+
+While not shown here, _all_ packages in the venv get their bytecode recompiled, so this can add a lot of latency for large environments.
+
+My understanding is that `UV_COMPILE_BYTECODE` should be telling uv to compile bytecode when _installing_ packages:
+
+> Equivalent to the --compile-bytecode command-line argument. If set, uv will compile Python source files to bytecode after installation
+
+Instead, it seems to be effectively setting "ignore the pyc cache and recompile on every invocation of `uv run`". Maybe that's expected on your end, but we found it very surprising.
+
+Note that this behavior was introduced in 0.5.5. I'm guessing it's a result of [this PR](https://github.com/astral-sh/uv/pull/9378).
+
+### Platform
+
+Linux 5.15.0-101.103.2.1.el9uek.x86_64 x86_64 GNU/Linux
+
+### Version
+
+uv 0.6.6 (as mentioned, the behavior was introduced in 0.5.5)
+
+### Python version
+
+Python 3.9.18 when making the repro, but it's not Python version dependent
+
+---
+
+_Label `bug` added by @mwaskom on 2025-03-16 15:42_
+
+---
+
+_Comment by @zanieb on 2025-03-16 22:24_
+
+cc @konstin 
+
+---
+
+_Comment by @charliermarsh on 2025-03-17 01:47_
+
+We do recompile the entire environment, as opposed to only compiling newly-installed packages. However, IIUC, it's not quite correct to say that the behavior is "ignore the pyc cache and recompile on every invocation of uv run", since bytecode compilation only _actually_ runs if a file's timestamp or size changes. (See, e.g., https://docs.python.org/3/library/py_compile.html#py_compile.PycInvalidationMode.)
+
+
+---
+
+_Comment by @mwaskom on 2025-03-17 12:45_
+
+> However, IIUC, it's not quite correct to say that the behavior is "ignore the pyc cache and recompile on every invocation of uv run", since bytecode compilation only actually runs if a file's timestamp or size changes.
+
+What's causing the timestamp or size to change here? E.g. if I expand my environment a little bit
+
+```
+$ uv pip install fastapi[standard]
+Resolved 34 packages in 155ms
+Prepared 34 packages in 172ms
+Installed 34 packages in 19ms
+ ...
+```
+
+Then it sure looks like the entire site-packages is getting recompiled on every `uv run`:
+
+```
+$ UV_COMPILE_BYTECODE=1 uv run python -c ''
+Bytecode compiled 1178 files in 522ms
+$ UV_COMPILE_BYTECODE=1 uv run python -c ''
+Bytecode compiled 1178 files in 40ms
+$ UV_COMPILE_BYTECODE=1 uv run python -c ''
+Bytecode compiled 1178 files in 44ms
+```
+
+---
+
+_Comment by @charliermarsh on 2025-03-17 12:46_
+
+Look at the difference in time though? 522ms to 40ms. The subsequent runs short-circuit (on a per-file basis) if the timestamp hasn't changed. This is a feature that's built-in to CPython's bytecode compiler, not uv.
+
+---
+
+_Comment by @mwaskom on 2025-03-17 12:52_
+
+40 ms of extra latency for each `uv run` is still not ideal though? And that's just for one requested package + its dependencies. Copying this log from one of our users:
+
+```
+root@modal:/code/crafty$ UV_COMPILE_BYTECODE=1 uv run python -c ""
+Bytecode compiled 11165 files in 9.90s
+root@modal:/code/crafty$ UV_COMPILE_BYTECODE=1 uv run python -c ""
+Bytecode compiled 11165 files in 1.77s
+root@modal:/code/crafty$ UV_COMPILE_BYTECODE=1 uv run python -c ""
+Bytecode compiled 11165 files in 1.76s
+root@modal:/code/crafty$ UV_COMPILE_BYTECODE=1 uv run python -c ""
+Bytecode compiled 11165 files in 1.75s
+```
+
+So, OK fair enough that it's not _ignoring_ the cache, but the point remains that it's a surprising and harmful behavior.
+
+(I guess a separate issue is whether the log should say "Bytecode compiled n files" if that's not what it's actually doing).
+
+---
+
+_Comment by @charliermarsh on 2025-03-17 13:00_
+
+Why not enable bytecode compilation at install time, then, rather than globally?
+
+(I'm not sure that there are other great options here. E.g., if we _didn't_ re-check the bytecode compilation in `uv run` even when enabled, then `uv run --compile-bytecode python -c ""` _wouldn't_ compile bytecode at all. IIRC it actually worked that way in the past and we (justifiably) received issues.)
+
+
+---
+
+_Comment by @mwaskom on 2025-03-17 13:10_
+
+> Why not enable bytecode compilation at install time, then, rather than globally?
+
+We enable it globally because uv's default behavior w/r/t not compiling during the install is very harmful for containerized workflows. We are trying to help disarm this footgun for our users. And there is not always a clear "install time" distinction from the platform's perspective. Still, we will need to work on that if this is expected behavior for uv, because this outcome is probably worse.
+
+FWIW, I am not a sophisticated user of uv (just passing on issues are users are having with it), but I don't think I really understand the rationale here. My mental model is that `uv run` can install/update packages on each invocation. _If it does that_, than I would expect it to also recompile bytecode. (It still feels like it should only scan the new packages, but maybe that's not possible, I don't know.) The surprising behavior here is forcing bytecode compilation (or at least a scan of the pyc cache or something) even though nothing about the environment has changed and nothing needed to be installed. Maybe that's the wrong model though.
+
+---
+
+_Comment by @mwaskom on 2025-03-17 13:15_
+
+> then uv run --compile-bytecode python -c "" wouldn't compile bytecode at all 
+
+Do you mean that Python itself won't invalidate the pyc cache / write new pyc files when the program executes? Or just that uv won't do "just in time" pre-compilation in this case?
+
+It's not obvious to me that pre-compilation is very meaningful in the `uv run` context, since there's no separation from the user's perspective between "install time" and "run time" there. But again, I haven't thought much about exactly what happens when you `uv run`.
+
+---
+
+_Comment by @charliermarsh on 2025-03-17 13:27_
+
+> We enable it globally because uv's default behavior w/r/t not compiling during the install is very harmful for containerized workflows.
+
+That makes sense. We typically recommend setting this in (e.g.) the install commands within the Dockerfile.
+
+> Do you mean that Python itself won't invalidate the pyc cache / write new pyc files when the program executes? Or just that uv won't do "just in time" pre-compilation in this case?
+
+The latter.
+
+This is good feedback, we'll think on it, thanks for engaging. We should consider skipping bytecode compilation in `uv run` if no packages are installed. I just know we've received issues about that in the past, which I believe prompted this change. The other option is to change the bytecode compilation model more broadly to only compile newly-installed packages. \cc @konstin 
+
+
+---
+
+_Comment by @mwaskom on 2025-03-17 14:25_
+
+> That makes sense. We typically recommend setting this in (e.g.) the install commands within the Dockerfile.
+
+Yeah, everything would be easier if we could assume users would carefully read all the documentation for their tools :)
+
+In our case (providing a platform for containerized applications), users can experience significantly degraded performance if they don't realize that `uv pip install` behaves very differently from `pip install` in this respect. And it's very hard for users to correctly attribute slow container startup to the true cause; they just assume our system is not performant. So we have opted to be conservative and set the provided environment variable, since it's always the desired behavior at install time, and we did not expect that there would be any runtime consequences.
+
+---
+
+_Comment by @konstin on 2025-03-19 12:56_
+
+To me it makes sense to skip bytecode compilation when nothing else changed.
+
+The current design was built under the assumption that people would pass `--compile-bytecode` to the last uv command they run in their docker container, this would then bytecode compile everything that was previously installed, giving faster docker startup times.
+
+An easy-to implement option to make this more explicit would be an `uv bytecode-compile` command that you call as a last step in a docker build. (This applies equally to non-docker deployments that value fast startup).
+
+Changing bytecode compilation to only consider files we install in this step would is an option too, though a bigger change as we have to track all files on the install side.
+
+---
+
+_Comment by @cjw296 on 2025-03-26 16:57_
+
+I came across this issue precisely because it appears that, in a docker-based project, `uv` is doing a bunch of work when I use `uv run` that it shouldn't :-/ 
+
+Here's my `Dockerfile`, cribbed from https://github.com/astral-sh/uv-docker-example/blob/main/Dockerfile:
+
+```Dockerfile
+# Use a Python image with uv pre-installed
+FROM ghcr.io/astral-sh/uv:python3.12-bookworm-slim
+
+# Install the project into `/app`
+WORKDIR /app
+
+# Enable bytecode compilation
+ENV UV_COMPILE_BYTECODE=1
+
+# Copy from the cache instead of linking since it's a mounted volume
+ENV UV_LINK_MODE=copy
+
+# Install the project's dependencies using the lockfile and settings
+RUN --mount=type=cache,target=/root/.cache/uv \
+    --mount=type=bind,source=uv.lock,target=uv.lock \
+    --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
+    uv sync --frozen --no-install-project --no-dev
+
+COPY . /app
+RUN --mount=type=cache,target=/root/.cache/uv \
+    uv sync --frozen --no-dev
+
+ENTRYPOINT ["uv", "run", "client.py"]
+```
+
+But then:
+
+```bash
+$ docker build -t ddns:dev .
+...
+$ docker run ddns:dev --help
+Bytecode compiled 78 files in 24ms
+...
+```
+
+How can I tell `uv run` to not do anything other than just run in the built environment?
+
+---
+
+_Comment by @zanieb on 2025-04-01 19:26_
+
+@cjw296 `uv run --no-sync` would work (there's also the `UV_NO_SYNC` environment variable)
+
+---
+
+_Comment by @cjw296 on 2025-04-01 21:32_
+
+Slightly surprising that "no sync" isn't the default...
+
+---
+
+_Comment by @zanieb on 2025-04-01 21:36_
+
+`uv run` ensures changes you've made to the project are reflected in the environment. We've optimized for the development experience here, as it's much easier to toggle the setting once in a deployment context than manually ensure the project is synced on every `run` invocation while developing.
+
+---
+
+_Comment by @cjw296 on 2025-04-01 21:39_
+
+I can see the intention, but there are [issues with that](https://github.com/astral-sh/uv/issues/11932) too...
+
+---
+
+_Comment by @cjw296 on 2025-04-03 07:55_
+
+Okay, so the end of my Dockerfile now looks like:
+
+```Dockerfile
+COPY . /app
+RUN --mount=type=cache,target=/root/.cache/uv uv sync --frozen --no-dev
+
+ENV UV_NO_SYNC=true
+
+ENTRYPOINT ["uv", "run", "client.py"]
+```
+
+Would a PR to add that to https://github.com/astral-sh/uv-docker-example/blob/main/Dockerfile be welcome?
+
+---
+
+_Comment by @zanieb on 2025-04-03 13:12_
+
+We don't use `uv run` there, so I don't think it's applicable. Perhaps we could add a note in a comment though?
+
+---
+
+_Comment by @cjw296 on 2025-04-03 13:43_
+
+Not sure if there's a better place to discuss this, but yeah, I;m curious why that Dockerfile, which is presented as a "best practice" for uv docker stuff, blanks out the entrypoint and then specifies a command, rather than leaving `uv` as a entrypoint and then having `["run", "fastapi", ...]` as the command?
+
+---
+
+_Comment by @zanieb on 2025-04-03 13:50_
+
+Yeah I would rather not keep going here, as it's pretty unrelated to the issue but... the file is intended to demonstrate deploying an application — there's no reason to invoke uv, it just adds a layer of indirection. The process tree is simpler if it's omitted. 
+
+---

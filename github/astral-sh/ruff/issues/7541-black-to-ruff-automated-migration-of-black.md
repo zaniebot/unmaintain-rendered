@@ -1,0 +1,66 @@
+---
+number: 7541
+title: "`black_to_ruff`: automated migration of black configuration settings"
+type: issue
+state: closed
+author: konstin
+labels:
+  - formatter
+  - wish
+assignees: []
+created_at: 2023-09-20T12:19:54Z
+updated_at: 2023-11-03T03:05:42Z
+url: https://github.com/astral-sh/ruff/issues/7541
+synced_at: 2026-01-07T13:12:15-06:00
+---
+
+# `black_to_ruff`: automated migration of black configuration settings
+
+---
+
+_Issue opened by @konstin on 2023-09-20 12:19_
+
+Once the configuration for the formatter is implemented, we should write a tool, let's call it `black_to_ruff`, that automatically migrates as much of the black configuration to ruff configuration as possible. This should be based on or extend `flake8_to_ruff` which already reads some basic black config.
+
+- [ ] Read the black configuration: line-length, target-version, skip-magic-trailing-comma, preview, include, exclude
+- [ ] Find the relevant ruff configuration, `pyproject.toml or `ruff.toml`
+- [ ] Ignore redundant options, warn and ignore for conflicting options
+- [ ] rewrite (toml_edit) the toml configuration file
+
+---
+
+_Label `formatter` added by @konstin on 2023-09-20 12:19_
+
+---
+
+_Renamed from "`blake_to_ruff`: automated migration of black configuration settings" to "`black_to_ruff`: automated migration of black configuration settings" by @konstin on 2023-09-20 12:20_
+
+---
+
+_Comment by @MichaReiser on 2023-09-20 12:51_
+
+We may want to consider a `ruff init` or `ruff migrate` command that is part of ruff instead of `falke8_to_ruff` which is an independent binary
+
+---
+
+_Comment by @charliermarsh on 2023-09-20 13:27_
+
+I'm sort of medium on this, based on my experience with `flake8-to-ruff`. It's a nice idea in theory but ends up being a pain to translate from another tool's settings to our own (for example, how would we do includes and excludes, where Black uses a single regular expression?). And the payoff hasn't been great since it's a one-time tool. (Perhaps the discoverability is low given that it's a separate package and not a subcommand.) My hope is that our configuration is close enough to Black's that the migration should be trivial to do by-hand...
+
+This isn't a hard no, but rather, I question whether it's a worthwhile investment (upfront and in ongoing maintenance) vs. other areas.
+
+---
+
+_Label `wish` added by @MichaReiser on 2023-10-27 02:07_
+
+---
+
+_Comment by @charliermarsh on 2023-11-03 03:05_
+
+I'm gonna close this as I'd prefer not to invest effort here. There are few enough configuration knobs that it's probably easy to just port the configuration than to download and figure out how to run a separate tool :)
+
+---
+
+_Closed by @charliermarsh on 2023-11-03 03:05_
+
+---

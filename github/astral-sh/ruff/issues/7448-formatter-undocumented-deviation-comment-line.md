@@ -1,0 +1,181 @@
+---
+number: 7448
+title: "Formatter undocumented deviation: comment line wrapping inside lists"
+type: issue
+state: closed
+author: m-richards
+labels:
+  - bug
+  - formatter
+  - accepted
+assignees: []
+created_at: 2023-09-17T05:52:11Z
+updated_at: 2023-10-19T09:24:13Z
+url: https://github.com/astral-sh/ruff/issues/7448
+synced_at: 2026-01-07T13:12:15-06:00
+---
+
+# Formatter undocumented deviation: comment line wrapping inside lists
+
+---
+
+_Issue opened by @m-richards on 2023-09-17 05:52_
+
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+Hi, thanks for building ruff, it's a great tool, and I've been watching eargerly for auto-formatter support for a while now. Have just tried it out and wanted to report a few formatting deviations - at least as far as I can tell from reading the readme. Apologies if any of these are duplicates, I've had a quick scan of the open issues and I can't seem to see these exact cases.
+
+```python
+# before / with black
+def test_to_wkb(self):
+    wkbs0 = [
+        (
+            b"\x01\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00"
+            b"\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"
+        ),  # POINT (0 0)
+    ]
+```
+
+```python
+# after running `ruff format`
+def test_to_wkb(self):
+    wkbs0 = [
+        (
+            b"\x01\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00"
+            b"\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"  # POINT (0 0)
+        ),
+    ]
+
+```
+I don't know if this is related to the pragma comment rules? The difference is super minor but black's behaviour is preferable as it is the entire binary sequence inside the parentheses that is the binary encoding of a Point.
+
+
+---
+
+_Comment by @MichaReiser on 2023-09-17 13:22_
+
+This sounds similar to https://github.com/astral-sh/ruff/pull/7269 
+
+Although implementing a generic solution could be challenging. But it may be worth special casing it for implicit concatenated strings.
+
+My recommendation would be to make this a leading comment instead. leading comments tend to work better than trailing comments
+
+```python
+def test_to_wkb(self):
+    wkbs0 = [
+		 # POINT (0 0)
+        (
+            b"\x01\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00"
+            b"\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"
+        )
+    ]
+```
+
+Although Ruff get's this wrong too (for the same reasons):
+
+```python
+def test_to_wkb(self):
+    wkbs0 = [
+        (
+			# POINT (0 0)
+            b"\x01\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00"
+            b"\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"
+        )
+    ]
+```
+
+---
+
+_Label `formatter` added by @MichaReiser on 2023-09-17 13:22_
+
+---
+
+_Label `needs-decision` added by @MichaReiser on 2023-09-17 13:22_
+
+---
+
+_Added to milestone `Formatter: Beta` by @MichaReiser on 2023-09-17 13:22_
+
+---
+
+_Comment by @MichaReiser on 2023-09-17 17:20_
+
+For comparison, Prettier always moves comments out of the parentheses. This would work well in the second example I made, but prevents you from e.g. documenting the first item. 
+
+---
+
+_Label `needs-decision` removed by @MichaReiser on 2023-09-27 16:11_
+
+---
+
+_Comment by @charliermarsh on 2023-09-27 16:12_
+
+For now, our priority is gonna be to fix the suggested alternative:
+
+```python
+def test_to_wkb(self):
+    wkbs0 = [
+        # POINT (0 0)
+        (
+            b"\x01\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00"
+            b"\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"
+        ),
+        (1)
+    ]
+```
+
+Which we currently format as:
+
+```python
+def test_to_wkb(self):
+    wkbs0 = [
+        (
+            # POINT (0 0)
+            b"\x01\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00"
+            b"\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"
+        ),
+        (1),
+    ]
+```
+
+We want this to be part of the Beta.
+
+It'd be nice to fix the trailing comment case here, but we see it as lower-priority. It may fall out of the same solution.
+
+
+---
+
+_Label `bug` added by @charliermarsh on 2023-09-27 16:13_
+
+---
+
+_Label `accepted` added by @charliermarsh on 2023-09-27 18:48_
+
+---
+
+_Comment by @charliermarsh on 2023-10-01 03:34_
+
+(This probably requires rethinking how we handle parenthesized comments in general.)
+
+---
+
+_Assigned to @konstin by @konstin on 2023-10-09 14:13_
+
+---
+
+_Referenced in [astral-sh/ruff#7873](../../astral-sh/ruff/pulls/7873.md) on 2023-10-10 11:48_
+
+---
+
+_Closed by @konstin on 2023-10-19 09:24_
+
+---

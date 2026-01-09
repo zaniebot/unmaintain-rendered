@@ -1,0 +1,122 @@
+---
+number: 777
+title: App name, author and about are not wrapped
+type: issue
+state: closed
+author: malbarbo
+labels:
+  - C-enhancement
+  - A-help
+assignees: []
+created_at: 2016-12-14T17:29:38Z
+updated_at: 2018-08-02T03:29:58Z
+url: https://github.com/clap-rs/clap/issues/777
+synced_at: 2026-01-07T13:12:19-06:00
+---
+
+# App name, author and about are not wrapped
+
+---
+
+_Issue opened by @malbarbo on 2016-12-14 17:29_
+
+### Rust Version
+
+rustc 1.15.0-nightly (1c448574b 2016-11-28)
+
+### Affected Version of clap
+
+2.19.2
+
+### Expected Behavior Summary
+
+The text should be wrapped at width 35.
+
+### Actual Behavior Summary
+
+The app name, author and about text are not wrapped
+
+```
+A app with a very long long long name 1.0
+Some Very Long Name <email@server.com>
+Show how the about text is not wrapped
+
+USAGE:
+    x
+
+FLAGS:
+    -h, --help
+            Prints help information
+    -V, --version
+            Prints version
+            information
+```
+
+### Steps to Reproduce the issue
+
+Run the code:
+
+```rust
+extern crate clap;
+
+use clap::App;
+
+fn main() {
+    App::new("A app with a very long long long name")
+        .version("1.0")
+        .author("Some Very Long Name <email@server.com>")
+        .about("Show how the about text is not wrapped")
+        .set_term_width(35)
+        .get_matches();
+}
+```
+
+---
+
+_Comment by @kbknapp on 2016-12-18 20:22_
+
+Ah thanks for pointing this out, I think author, and version got left out by mistake!
+
+---
+
+_Label `C: help message` added by @kbknapp on 2016-12-18 20:23_
+
+---
+
+_Label `D: easy` added by @kbknapp on 2016-12-18 20:23_
+
+---
+
+_Label `P3: want to have` added by @kbknapp on 2016-12-18 20:23_
+
+---
+
+_Label `T: bug` added by @kbknapp on 2016-12-18 20:23_
+
+---
+
+_Label `W: 2.x` added by @kbknapp on 2016-12-18 20:23_
+
+---
+
+_Label `T: enhancement` added by @kbknapp on 2016-12-18 20:23_
+
+---
+
+_Label `T: bug` removed by @kbknapp on 2016-12-18 20:23_
+
+---
+
+_Comment by @kbknapp on 2016-12-18 20:23_
+
+Also, just a heads up; due to the holidays it may be a week or so before I can get this knocked out. But It'll be fixed soon ;)
+
+---
+
+_Added to milestone `2.20.0` by @kbknapp on 2017-01-02 21:48_
+
+---
+
+_Closed by @homu on 2017-01-03 01:19_
+
+---

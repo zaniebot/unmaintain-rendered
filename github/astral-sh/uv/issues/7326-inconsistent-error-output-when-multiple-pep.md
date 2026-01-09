@@ -1,0 +1,141 @@
+---
+number: 7326
+title: Inconsistent error output when multiple PEP violations are present in pyproject.toml
+type: issue
+state: open
+author: benjaminbauer
+labels: []
+assignees: []
+created_at: 2024-09-12T08:47:04Z
+updated_at: 2024-09-14T00:29:05Z
+url: https://github.com/astral-sh/uv/issues/7326
+synced_at: 2026-01-07T13:12:17-06:00
+---
+
+# Inconsistent error output when multiple PEP violations are present in pyproject.toml
+
+---
+
+_Issue opened by @benjaminbauer on 2024-09-12 08:47_
+
+I am running `uv lock` (0.4.9, linux/arm) on a `uv init example` project where I added:
+
+1. `authors = ["a"]`, which as I realized is wrong, but poetry does not complain
+2. `dependencies = ["ruff == 0.6.4"]`
+
+and `uv lock` works w/o errors:
+```toml
+[project]
+name = "example"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.11"
+authors = ["a"]
+dependencies = ["ruff == 0.6.4"]
+```
+
+When I introduce a typo in the dependency specification (`=~` instead of `~=`):
+```toml
+[project]
+name = "example"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.11"
+authors = ["a"]
+dependencies = ["ruff =~ 0.6.4"]
+```
+`uv lock` fails with
+```
+Using Python 3.11.9 interpreter at: /usr/local/bin/python3.11
+error: Failed to build: `example @ file:///tmp/test-uv/example`
+  Caused by: Build backend failed to determine extra requires with `build_wheel()` with exit status: 1
+--- stdout:
+configuration error: `project.authors[0]` must be object
+GIVEN VALUE:
+    "a"
+
+OFFENDING RULE: 'type'
+
+DEFINITION:
+    {
+        "$id": "#/definitions/author",
+        "title": "Author or Maintainer",
+        "$comment": "https://peps.python.org/pep-0621/#authors-maintainers",
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+            "name": {
+                "type": "string",
+                "$$description": [
+                    "MUST be a valid email name, i.e. whatever can be put as a name, before an",
+                    "email, in :rfc:`822`."
+                ]
+            },
+            "email": {
+                "type": "string",
+                "format": "idn-email",
+                "description": "MUST be a valid email address"
+            }
+        }
+    }
+
+For more details about `format` see
+https://validate-pyproject.readthedocs.io/en/latest/api/validate_pyproject.formats.html
+
+--- stderr:
+Traceback (most recent call last):
+  File "<string>", line 14, in <module>
+  File "/home/vscode/.cache/uv/builds-v0/.tmpg1sWZn/lib/python3.11/site-packages/setuptools/build_meta.py", line 332, in get_requires_for_build_wheel
+    return self._get_build_requires(config_settings, requirements=[])
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vscode/.cache/uv/builds-v0/.tmpg1sWZn/lib/python3.11/site-packages/setuptools/build_meta.py", line 302, in _get_build_requires
+    self.run_setup()
+  File "/home/vscode/.cache/uv/builds-v0/.tmpg1sWZn/lib/python3.11/site-packages/setuptools/build_meta.py", line 503, in run_setup
+    super().run_setup(setup_script=setup_script)
+  File "/home/vscode/.cache/uv/builds-v0/.tmpg1sWZn/lib/python3.11/site-packages/setuptools/build_meta.py", line 318, in run_setup
+    exec(code, locals())
+  File "<string>", line 1, in <module>
+  File "/home/vscode/.cache/uv/builds-v0/.tmpg1sWZn/lib/python3.11/site-packages/setuptools/__init__.py", line 117, in setup
+    return distutils.core.setup(**attrs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vscode/.cache/uv/builds-v0/.tmpg1sWZn/lib/python3.11/site-packages/setuptools/_distutils/core.py", line 158, in setup
+    dist.parse_config_files()
+  File "/home/vscode/.cache/uv/builds-v0/.tmpg1sWZn/lib/python3.11/site-packages/_virtualenv.py", line 20, in parse_config_files
+    result = old_parse_config_files(self, *args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vscode/.cache/uv/builds-v0/.tmpg1sWZn/lib/python3.11/site-packages/setuptools/dist.py", line 608, in parse_config_files
+    pyprojecttoml.apply_configuration(self, filename, ignore_option_errors)
+  File "/home/vscode/.cache/uv/builds-v0/.tmpg1sWZn/lib/python3.11/site-packages/setuptools/config/pyprojecttoml.py", line 71, in apply_configuration
+    config = read_configuration(filepath, True, ignore_option_errors, dist)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vscode/.cache/uv/builds-v0/.tmpg1sWZn/lib/python3.11/site-packages/setuptools/config/pyprojecttoml.py", line 139, in read_configuration
+    validate(subset, filepath)
+  File "/home/vscode/.cache/uv/builds-v0/.tmpg1sWZn/lib/python3.11/site-packages/setuptools/config/pyprojecttoml.py", line 60, in validate
+    raise ValueError(f"{error}\n{summary}") from None
+ValueError: invalid pyproject.toml config: `project.authors[0]`.
+configuration error: `project.authors[0]` must be object
+---
+```
+
+# What I observe
+1. complains about the `authors` field (which it accepted before)
+2. does not mention the error I introduced with `=~`
+
+# What I expect
+1. the `=~` should be mentioned
+2. the wrong type of `authors` should always or never be mentioned (maybe as a warning?)
+
+# What I suspect
+When I fix/remove the `authors` entry, `uv lock` correctly fails, mentioning the faulty dependency spec. So the error output is generated only on the first encountered error? If that is true, why does it not fail, when only the `authors` field is faulty?
+
+
+
+---
+
+_Comment by @charliermarsh on 2024-09-14 00:29_
+
+For what it's worth, that error isn't coming from uv. It's coming from setuptools which is attempting to build your project.
+
+---

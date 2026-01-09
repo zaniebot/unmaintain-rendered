@@ -1,0 +1,99 @@
+---
+number: 7244
+title: Rule F401 cause panic
+type: issue
+state: closed
+author: qarmin
+labels:
+  - bug
+assignees: []
+created_at: 2023-09-08T13:37:46Z
+updated_at: 2023-09-10T16:31:27Z
+url: https://github.com/astral-sh/ruff/issues/7244
+synced_at: 2026-01-07T13:12:15-06:00
+---
+
+# Rule F401 cause panic
+
+---
+
+_Issue opened by @qarmin on 2023-09-08 13:37_
+
+Ruff 0.0.287 (latest changes from main branch)
+```
+ruff  *.py --select F401 --no-cache --fix
+```
+
+file content(at least simple cpython script shows that this is valid python file):
+```
+from datameta_client_lib.model_utils import (  # noqa: F401
+noqa )
+```
+
+error
+```
+warning: Linting panicked /home/rafal/test/tmp_folder/295_IDX_0_RAND_65295806300875131446962.py: This indicates a bug in `ruff`. If you could open an issue at:
+
+https://github.com/astral-sh/ruff/issues/new?title=%5BLinter%20panic%5D
+
+with the relevant file contents, the `pyproject.toml` settings, and the following stack trace, we'd be very appreciative!
+
+panicked at 'called `Result::unwrap()` on an `Err` value: TryFromIntError(())', crates/ruff/src/noqa.rs:132:59
+Backtrace:    0: ruff_cli::panic::catch_unwind::{{closure}}
+   1: <alloc::boxed::Box<F,A> as core::ops::function::Fn<Args>>::call
+             at /rustc/5680fa18feaa87f3ff04063800aec256c3d4b4be/library/alloc/src/boxed.rs:2007:9
+   2: std::panicking::rust_panic_with_hook
+             at /rustc/5680fa18feaa87f3ff04063800aec256c3d4b4be/library/std/src/panicking.rs:709:13
+   3: std::panicking::begin_panic_handler::{{closure}}
+             at /rustc/5680fa18feaa87f3ff04063800aec256c3d4b4be/library/std/src/panicking.rs:597:13
+   4: std::sys_common::backtrace::__rust_end_short_backtrace
+             at /rustc/5680fa18feaa87f3ff04063800aec256c3d4b4be/library/std/src/sys_common/backtrace.rs:151:18
+   5: rust_begin_unwind
+             at /rustc/5680fa18feaa87f3ff04063800aec256c3d4b4be/library/std/src/panicking.rs:593:5
+   6: core::panicking::panic_fmt
+             at /rustc/5680fa18feaa87f3ff04063800aec256c3d4b4be/library/core/src/panicking.rs:67:14
+   7: core::result::unwrap_failed
+             at /rustc/5680fa18feaa87f3ff04063800aec256c3d4b4be/library/core/src/result.rs:1651:5
+   8: ruff::noqa::Directive::try_extract
+   9: ruff::checkers::ast::Checker::rule_is_ignored
+  10: ruff::checkers::ast::analyze::deferred_scopes::deferred_scopes
+  11: ruff::checkers::ast::check_ast
+  12: ruff::linter::check_path
+  13: ruff::linter::lint_fix
+  14: ruff_cli::diagnostics::lint_path
+  15: rayon::iter::plumbing::bridge_producer_consumer::helper
+  16: ruff_cli::commands::check::check
+  17: ruff_cli::check
+  18: ruff_cli::run
+  19: ruff::main
+  20: std::sys_common::backtrace::__rust_begin_short_backtrace
+  21: main
+  22: __libc_start_call_main
+             at ./csu/../sysdeps/nptl/libc_start_call_main.h:58:16
+  23: __libc_start_main_impl
+             at ./csu/../csu/libc-start.c:360:3
+  24: _start
+
+
+```
+
+[python_compressed.zip](https://github.com/astral-sh/ruff/files/12560399/python_compressed.zip)
+
+
+---
+
+_Label `bug` added by @MichaReiser on 2023-09-08 13:54_
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2023-09-10 10:03_
+
+---
+
+_Referenced in [astral-sh/ruff#7260](../../astral-sh/ruff/pulls/7260.md) on 2023-09-10 16:21_
+
+---
+
+_Closed by @charliermarsh on 2023-09-10 16:31_
+
+---

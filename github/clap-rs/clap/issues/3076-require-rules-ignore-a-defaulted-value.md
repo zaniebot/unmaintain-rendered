@@ -1,0 +1,115 @@
+---
+number: 3076
+title: Require rules ignore a defaulted value
+type: issue
+state: closed
+author: epage
+labels:
+  - C-bug
+  - E-medium
+  - A-validators
+assignees: []
+created_at: 2021-12-07T21:56:41Z
+updated_at: 2022-02-08T18:59:20Z
+url: https://github.com/clap-rs/clap/issues/3076
+synced_at: 2026-01-07T13:12:19-06:00
+---
+
+# Require rules ignore a defaulted value
+
+---
+
+_Issue opened by @epage on 2021-12-07 21:56_
+
+### 
+
+- [x] I have searched the [discussions](https://github.com/clap-rs/clap/discussions)
+- [x] I have searched the existing issues
+
+### Description
+
+This consolidates:
+- https://github.com/clap-rs/clap/issues/2714
+- https://github.com/clap-rs/clap/issues/1586
+- https://github.com/clap-rs/clap/issues/1906
+- https://github.com/clap-rs/clap/issues/2897
+
+An attempt at a fix was reverted in 9753f68a76091bebd7743dc2763bb272cbd4054a.  See also #3020 
+
+---
+
+_Label `T: bug` added by @epage on 2021-12-07 21:56_
+
+---
+
+_Label `C: args` added by @epage on 2021-12-07 21:56_
+
+---
+
+_Label `C: arg groups` added by @epage on 2021-12-07 21:56_
+
+---
+
+_Added to milestone `3.1` by @epage on 2021-12-07 22:30_
+
+---
+
+_Assigned to @pksunkara by @pksunkara on 2021-12-08 00:25_
+
+---
+
+_Label `C: args` removed by @epage on 2021-12-08 19:56_
+
+---
+
+_Label `C: arg groups` removed by @epage on 2021-12-08 19:56_
+
+---
+
+_Label `A-builder` added by @epage on 2021-12-08 19:56_
+
+---
+
+_Label `C: validators` added by @epage on 2021-12-08 19:56_
+
+---
+
+_Referenced in [clap-rs/clap#1140](../../clap-rs/clap/issues/1140.md) on 2021-12-08 20:03_
+
+---
+
+_Referenced in [clap-rs/clap#1264](../../clap-rs/clap/issues/1264.md) on 2021-12-09 18:36_
+
+---
+
+_Referenced in [clap-rs/clap#3020](../../clap-rs/clap/pulls/3020.md) on 2021-12-10 19:41_
+
+---
+
+_Referenced in [clap-rs/clap#3059](../../clap-rs/clap/issues/3059.md) on 2021-12-10 20:38_
+
+---
+
+_Label `A-builder` removed by @epage on 2021-12-13 22:34_
+
+---
+
+_Label `E-medium` added by @epage on 2021-12-13 22:34_
+
+---
+
+_Removed from milestone `3.x` by @epage on 2022-02-02 19:50_
+
+---
+
+_Added to milestone `3.1` by @epage on 2022-02-02 19:50_
+
+---
+
+_Referenced in [clap-rs/clap#3420](../../clap-rs/clap/pulls/3420.md) on 2022-02-08 18:27_
+
+---
+
+_Closed by @epage on 2022-02-08 18:59_
+
+---

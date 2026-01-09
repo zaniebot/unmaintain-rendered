@@ -1,0 +1,103 @@
+---
+number: 4934
+title: "`name` is documented to default to the crate name, but it defaults to the package name"
+type: issue
+state: closed
+author: Nemo157
+labels:
+  - C-bug
+assignees: []
+created_at: 2023-05-23T12:59:11Z
+updated_at: 2023-05-23T13:39:24Z
+url: https://github.com/clap-rs/clap/issues/4934
+synced_at: 2026-01-07T13:12:20-06:00
+---
+
+# `name` is documented to default to the crate name, but it defaults to the package name
+
+---
+
+_Issue opened by @Nemo157 on 2023-05-23 12:59_
+
+### Please complete the following tasks
+
+- [X] I have searched the [discussions](https://github.com/clap-rs/clap/discussions)
+- [X] I have searched the [open](https://github.com/clap-rs/clap/issues) and [rejected](https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed) issues
+
+### Rust Version
+
+rustc 1.71.0-nightly (9d871b061 2023-05-21)
+
+### Clap Version
+
+4.3.0
+
+### Minimal reproducible code
+
+```toml
+[package]
+name = "foo"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+clap = { version = "4.3.0", features = ["derive"] }
+
+[[bin]]
+name = "bar"
+path = "src/main.rs"
+```
+
+```rust
+use clap::Parser;
+
+#[derive(Parser)]
+#[command(version)]
+struct Args {}
+
+fn main() {
+  Args::parse();
+}
+```
+
+### Steps to reproduce the bug with the above code
+
+`cargo run -- --version`
+
+### Actual Behaviour
+
+see context
+
+### Expected Behaviour
+
+see context
+
+### Additional Context
+
+https://github.com/clap-rs/clap/blob/944556ed20d524a9f20ae6e2882970cc0079ce48/src/_derive/mod.rs#L143-L144 states that when not present the "crate `name`" will be used, but links to the "package `name`" field.
+
+https://github.com/clap-rs/clap/blob/944556ed20d524a9f20ae6e2882970cc0079ce48/clap_derive/src/derives/parser.rs#L31 uses `CARGO_PKG_NAME` instead of `CARGO_CRATE_NAME`.
+
+There's some confusion in the ecosystem about what a "crate" is, I think it's important to be careful to not perpetuate this misunderstanding in documentation.
+
+### Debug Output
+
+_No response_
+
+---
+
+_Label `C-bug` added by @Nemo157 on 2023-05-23 12:59_
+
+---
+
+_Closed by @epage on 2023-05-23 13:39_
+
+---
+
+_Comment by @epage on 2023-05-23 13:39_
+
+> There's some confusion in the ecosystem about what a "crate" is, I think it's important to be careful to not perpetuate this misunderstanding in documentation.
+
+Agreed.  I don't think I knew the difference until being on the cargo team for a while
+
+---

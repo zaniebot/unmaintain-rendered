@@ -1,0 +1,115 @@
+---
+number: 1273
+title: Custom stdout and stderr
+type: issue
+state: closed
+author: Arcterus
+labels: []
+assignees: []
+created_at: 2018-05-15T23:46:26Z
+updated_at: 2018-08-02T03:30:24Z
+url: https://github.com/clap-rs/clap/issues/1273
+synced_at: 2026-01-07T13:12:19-06:00
+---
+
+# Custom stdout and stderr
+
+---
+
+_Issue opened by @Arcterus on 2018-05-15 23:46_
+
+Would it be possible to add support for custom `stdout` and `stderr`?  Something like so:
+```rust
+let mut file = File::create("somefile").unwrap();
+let mut another = File::create("anotherfile").unwrap();
+
+let app = App::new("utils").stdout(file).stderr(another);
+```
+
+---
+
+_Comment by @eminence on 2018-05-20 22:04_
+
+This feature would also be useful when you want to redirect *all* clap output to a certain stream (like to stderr)
+
+---
+
+_Comment by @Arcterus on 2018-05-25 22:16_
+
+I added support in a fork at [mesalock-linux/clap-rs](https://github.com/mesalock-linux/clap-rs).  I may have missed something while adding support, but things seem to be working.  Adding support required extending `App` from `struct App<'a, 'b> where 'a: 'b` to:
+```rust
+struct App<'a, 'b, I, O, E>
+where
+    'a: 'b,
+    I: BufRead,
+    O: Write,
+    E: Write
+```
+
+---
+
+_Comment by @kbknapp on 2018-06-05 01:19_
+
+You can do this by using the [`App::get_matches_safe`](https://docs.rs/clap/2.31.2/clap/struct.App.html#method.get_matches_safe) methods which allow one to print the output to whatever stream you like. 
+
+I don't particularly want to add the additional generics for something that isn't as common though. I'm not against adding a method which writes to a different stream, however it's not something I currently have time to add.
+
+---
+
+_Closed by @kbknapp on 2018-06-05 01:19_
+
+---
+
+_Comment by @Arcterus on 2018-06-05 02:24_
+
+That was what I tried to do at first, but I was getting incorrect output when calling the `write_` functions manually (in one case I was actually getting nothing).
+
+It would also be trivial to remove the generics, but doing so would require dynamic dispatch.
+
+---
+
+_Comment by @eminence on 2018-06-05 02:52_
+
+`get_matches_safe` worked for me, but I also had to `DisableHelpCommand` and `DisableVersion`, since those seem [hard-coded](https://github.com/kbknapp/clap-rs/blob/f74646de8c94d98db3e50f19846f050f6fee9c76/src/app/parser.rs#L1923-L1927) to use `stdout`
+
+---
+
+_Comment by @kbknapp on 2018-06-05 13:35_
+
+@Arcterus if you're using the `write_` methods you'll have to [`flush`](https://doc.rust-lang.org/std/io/trait.Write.html#tymethod.flush) the stream manually.
+
+---
+
+_Comment by @Arcterus on 2018-06-05 14:42_
+
+@kbknapp I did.  I flush before exiting.
+
+@eminence pretty sure I tried that, but I’ll see if that fixes some of my issues on an older version of the code.
+
+---
+
+_Comment by @kbknapp on 2018-06-05 18:28_
+
+@eminence [`App::write_help`](https://github.com/kbknapp/clap-rs/blob/f74646de8c94d98db3e50f19846f050f6fee9c76/src/app/parser.rs#L1929-L1931) will let you write to any stream. You'll still have to use the DisableHelp and DisableVersion, but you can then write those to whatever stream you want.
+
+@Arcterus Do you have the code I could look at that's not working?
+
+---
+
+_Comment by @Arcterus on 2018-06-05 19:10_
+
+I’ll try to find it in the next day or two.
+
+---
+
+_Comment by @eminence on 2018-06-05 22:44_
+
+Yep, it worked fine.  But I had to dig into the source to figure out what was going on.  Actually, would you accept a PR to improve the docs on this?
+
+---
+
+_Comment by @kbknapp on 2018-06-05 23:37_
+
+@eminence of course! I'm thankful for all PRs :smile: 
+
+---

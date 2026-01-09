@@ -1,0 +1,107 @@
+---
+number: 4268
+title: "I suggest that ruff should update the code for detecting ambiguous unicode characters with following VSCode's code."
+type: issue
+state: closed
+author: yuji38kwmt
+labels:
+  - configuration
+assignees: []
+created_at: 2023-05-07T08:51:59Z
+updated_at: 2023-05-08T18:20:46Z
+url: https://github.com/astral-sh/ruff/issues/4268
+synced_at: 2026-01-07T13:12:14-06:00
+---
+
+# I suggest that ruff should update the code for detecting ambiguous unicode characters with following VSCode's code.
+
+---
+
+_Issue opened by @yuji38kwmt on 2023-05-07 08:51_
+
+
+
+# Python code
+
+`sample.py`
+
+```python
+# HIRAGANA LETTER
+"""
+あいうえお
+かきくけこ
+さしすせそ
+たちつてと
+なにぬねの
+はひふへほ
+まみむめも
+やゆよ
+らりるれろ
+わゐゑを
+ん
+"""
+
+# KATAKANA LETTER
+"""
+アイウエオ
+カキクケコ
+サシスセソ
+タチツテト
+ナニヌネノ
+ハヒフヘホ
+マミムメモ
+ヤユヨ
+ラリルレロ
+ワヰヱヲ
+ン
+"""
+
+```
+
+# Command
+
+```
+$ ruff check sample.py --select RUF
+sample.py:22:5: RUF001 [*] String contains ambiguous unicode character `ノ` (did you mean `/`?)
+Found 1 error.
+[*] 1 potentially fixable with the --fix option.
+```
+
+# Issue
+The above python code contains all HIRAGANA and KATAKANA LETTERS, but Ruff only identifies ノ ([Katakana Letter No](https://www.compart.com/en/unicode/U+30CE)) as an ambiguous unicode character.
+
+Ruff's code for detecting ambiguous Unicode characters was ported from [VSCode's code](https://github.com/microsoft/vscode/blob/095ddabc52b82498ee7f718a34f9dd11d59099a8/src/vs/base/common/strings.ts#L1195), but this code was modified in 2021. In March 2023, [VSCode fixed the code](https://github.com/microsoft/vscode/pull/175918). Therefore, I suggest that Ruff should update its code for detecting ambiguous Unicode characters.
+
+# Settings
+no pyproject.toml
+
+# Version
+
+```
+$ ruff --version
+ruff 0.0.264
+
+```
+
+
+
+
+---
+
+_Label `configuration` added by @charliermarsh on 2023-05-07 13:52_
+
+---
+
+_Comment by @charliermarsh on 2023-05-07 13:52_
+
+Nice, we'll pull in this update, thanks.
+
+---
+
+_Referenced in [astral-sh/ruff#4274](../../astral-sh/ruff/pulls/4274.md) on 2023-05-08 09:57_
+
+---
+
+_Closed by @charliermarsh on 2023-05-08 18:20_
+
+---

@@ -1,0 +1,468 @@
+---
+number: 1696
+title: "Using clap to set arguments for `cargo test`"
+type: issue
+state: closed
+author: hyunsukimsokcho
+labels: []
+assignees: []
+created_at: 2020-02-16T07:29:42Z
+updated_at: 2020-02-20T09:40:24Z
+url: https://github.com/clap-rs/clap/issues/1696
+synced_at: 2026-01-07T13:12:19-06:00
+---
+
+# Using clap to set arguments for `cargo test`
+
+---
+
+_Issue opened by @hyunsukimsokcho on 2020-02-16 07:29_
+
+I am trying to feed arguments to specific test using `clap`, and it has been hard time finding out what is getting me wrong. In `main.rs`, we were able to successfully use `clap` for proper argument parsing. Here is our projects configuration for `clap`:
+
+In `bin/cli.yml`:
+```yaml
+ name: kecc
+ args:
+     - print:
+         short: p
+         long: print
+         help: Prints the input file's AST
+     - check:
+         short: c
+         long: check
+         help: Type-checks the input file
+     - irgen:
+         short: i
+         long: irgen
+         help: Generates IR
+     - optimize:
+         short: O
+         long: optimize
+         help: Optimizes IR
+     - output:
+         short: o
+         long: output
+         value_name: FILE
+         help: Sets the output file to use
+         takes_value: true
+     - INPUT:
+         help: Sets the input file to use
+         required: true
+         index: 1  
+```
+
+`bin/main.rs`:
+```rust
+fn main() {
+     let yaml = load_yaml!("cli.yml");
+     let matches = App::from_yaml(yaml)
+         .get_matches();
+     ...
+}
+```
+
+I could check it is working by typing (with output):
+```bash
+$ cargo run -- --help
+...
+kecc
+
+USAGE:
+    kecc [FLAGS] [OPTIONS] <INPUT>
+
+FLAGS:
+    -c, --check       Type-checks the input file
+    -h, --help        Prints help information
+    -i, --irgen       Generates IR
+    -O, --optimize    Optimizes IR
+    -p, --print       Prints the input file's AST
+    -V, --version     Prints version information
+
+OPTIONS:
+    -o, --output <FILE>    Sets the output file to use
+
+ARGS:
+    <INPUT>    Sets the input file to use
+```
+
+Then, I tried to apply clap on a test (function annotated with `#[test]`) either.
+In `tests/cli.yml`:
+```yaml
+ name: fuzz
+ settings:
+     - AllowExternalSubcommands
+     - AllowLeadingHyphen
+ subcommands:
+     - fuzz_ast_printer:
+         args:
+             - runtime:
+                 help: Sets Csmith runtime directory
+                 takes_value: true
+             - test_file:
+                 short: t
+                 help: Sets the test file to use
+                 takes_value: true
+                 required: true
+```
+
+In `tests/ast_printer_test.rs`:
+```rust
+#[test]
+fn fuzz_ast_printer() {
+     let yaml = load_yaml!("cli.yml");
+     let matches = App::from_yaml(yaml)
+         .get_matches();
+     println!("{:?}", matches);    // For debugging
+     ...
+```
+As I tried to see if clap works, I ran following consecutive commands: Firstly,
+```bash
+$ cargo test fuzz_ast_printer -- --help
+...
+Usage: fuzz_ast_printer [OPTIONS] [FILTER]
+
+Options:
+        --include-ignored 
+                        Run ignored and not ignored tests
+        --ignored       Run only ignored tests
+        --force-run-in-process 
+                        Forces tests to run in-process when panic=abort
+        --exclude-should-panic 
+                        Excludes tests marked as should_panic
+        --test          Run tests and not benchmarks
+        --bench         Run benchmarks instead of tests
+        --list          List all tests and benchmarks
+    -h, --help          Display this message (longer with --help)
+        --logfile PATH  Write logs to the specified file instead of stdout
+        --nocapture     don't capture stdout/stderr of each task, allow
+                        printing directly
+        --test-threads n_threads
+                        Number of threads used for running tests in parallel
+        --skip FILTER   Skip tests whose names contain FILTER (this flag can
+                        be used multiple times)
+    -q, --quiet         Display one character per test instead of one line.
+                        Alias to --format=terse
+        --exact         Exactly match filters rather than by substring
+        --color auto|always|never
+                        Configure coloring of output:
+                        auto = colorize if stdout is a tty and tests are run
+                        on serially (default);
+                        always = always colorize output;
+                        never = never colorize output;
+        --format pretty|terse|json
+                        Configure formatting of output:
+                        pretty = Print verbose output;
+                        terse = Display one character per test;
+                        json = Output a json document
+        --show-output   Show captured stdout of successful tests
+    -Z unstable-options Enable nightly-only flags:
+                        unstable-options = Allow use of experimental features
+        --report-time [plain|colored]
+                        Show execution time of each test. Awailable values:
+                        plain = do not colorize the execution time (default);
+                        colored = colorize output according to the `color`
+                        parameter value;
+                        Threshold values for colorized output can be
+                        configured via
+                        `RUST_TEST_TIME_UNIT`, `RUST_TEST_TIME_INTEGRATION`
+                        and
+                        `RUST_TEST_TIME_DOCTEST` environment variables.
+                        Expected format of environment variable is
+                        `VARIABLE=WARN_TIME,CRITICAL_TIME`.
+                        Not available for --format=terse
+        --ensure-time   Treat excess of the test execution time limit as
+                        error.
+                        Threshold values for this option can be configured via
+                        `RUST_TEST_TIME_UNIT`, `RUST_TEST_TIME_INTEGRATION`
+                        and
+                        `RUST_TEST_TIME_DOCTEST` environment variables.
+                        Expected format of environment variable is
+                        `VARIABLE=WARN_TIME,CRITICAL_TIME`.
+                        `CRITICAL_TIME` here means the limit that should not
+                        be exceeded by test.
+
+
+The FILTER string is tested against the name of all tests, and only those
+tests whose names contain the filter are run.
+
+By default, all tests are run in parallel. This can be altered with the
+--test-threads flag or the RUST_TEST_THREADS environment variable when running
+tests (set it to 1).
+
+All tests have their standard output and standard error captured by default.
+This can be overridden with the `--nocapture` flag or setting RUST_TEST_NOCAPTURE
+environment variable to a value other than "0". Logging is not captured by default.
+
+Test Attributes:
+
+    `#[test]`        - Indicates a function is a test to be run. This function
+                       takes no arguments.
+    `#[bench]`       - Indicates a function is a benchmark to be run. This
+                       function takes one argument (test::Bencher).
+    `#[should_panic]` - This function (also labeled with `#[test]`) will only pass if
+                        the code causes a panic (an assertion failure or panic!)
+                        A message may be provided, which the failure string must
+                        contain: #[should_panic(expected = "foo")].
+    `#[ignore]`       - When applied to a function which is already attributed as a
+                        test, then the test runner will ignore these tests during
+                        normal test runs. Running with --ignored or --include-ignored will run
+                        these tests.
+``` 
+Then,
+```bash
+$ cargo test fuzz_ast_printer -- any
+...
+error: Found argument 'any' which wasn't expected, or isn't valid in this context
+
+USAGE:
+    ast_printer_test-77cddfec87489dbf fuzz_ast_printer [OPTIONS] -t <test_file>
+
+For more information try --help
+error: test failed, to rerun pass '--test ast_printer_test'
+```
+From the error message, I was glad that I could now use `-t` flag at last! OF COURSE I RAN:
+```bash
+$ cargo test fuzz_ast_printer -- -t test.c
+...
+error: Unrecognized option: 't'
+error: test failed, to rerun pass '--lib'
+```
+which was despairing.
+
+## What I did
+
+Now, indeed, I got myself a solution which is very ad-hoc to the situation. Please note that I have no specific idea how `clap` works, and here are my thoughts: (1) Binary built by `cargo test` first checks options/flags that was fed through cli interface, then (2) `clap` works with the same line as (1). Importantly, (1) does its sanity check so that if any undefined (by [cargo-test](https://doc.rust-lang.org/cargo/commands/cargo-test.html)) option or flag is fed, (2) doesn't even get the chance to parse. 
+
+Thus, my solution is using a option that both `cargo-test` and `clap` recognizes, say `-q` (replacing `short: t` to `short: q` in above `tests/cli.yml`). This will turn on `--quiet` option with respect to `cargo-test` and enable option for user-defined subcommand, `fuzz_ast_printer` as specified in `tests/cli.yml`. I could even just use argument itself without any flag/option.
+
+Still, there is a problem for this ad-hoc solution: default options for `cargo-test`, e.g. `--nocapture`, `--ignored` don't work any longer. I wonder if this is the design of `clap`, or something we can improve.
+
+Lastly, but not least, what I really want to do is getting arguments from command line as neat as clap offers. So, if there's any better or similar work around for this situation, please feel free to yell at me.
+
+---
+
+_Label `T: RFC / question` added by @hyunsukimsokcho on 2020-02-16 07:29_
+
+---
+
+_Comment by @CreepySkeleton on 2020-02-16 14:59_
+
+> please feel free to yell at me
+
+It's very tempting offer ;) I don't generally need a permission to yell at people, but thanks, I'll keep it in mind when I feel like yelling.
+
+Let's start with some theory first.
+
+`#[test]` tests aren't supposed to take CL arguments, let me tell you. A `#[test]` function is *not* a binary on it's own, an `.rs` file is a binary. It can contain multiple tests. Besides, those binaries is immutable-ish, in a sense that they have all the stuff needed to test compiled *within*. You aren't supposed to pass command line args to these biaries, neither you have the ability to do so. Let me elaborate the later statement.
+
+Recall how `tests/cli.yml` looks like: 
+```
+ name: fuzz
+ settings:
+     - AllowExternalSubcommands
+     - AllowLeadingHyphen
+ subcommands:
+     - fuzz_ast_printer:
+         args:
+             - runtime:
+                 help: Sets Csmith runtime directory
+                 takes_value: true
+             - test_file:
+                 short: t
+                 help: Sets the test file to use
+                 takes_value: true
+                 required: true
+```
+
+And what was the output you saw from `cargo test fuzz_ast_printer -- --help`?
+```
+Usage: fuzz_ast_printer [OPTIONS] [FILTER]
+
+Options:
+        --include-ignored 
+                        Run ignored and not ignored tests
+        --ignored       Run only ignored tests
+        --force-run-in-process 
+                        Forces tests to run in-process when panic=abort
+        --exclude-should-panic 
+                        Excludes tests marked as should_panic
+        --test          Run tests and not benchmarks
+        --bench         Run benchmarks instead of tests
+        --list          List all tests and benchmarks
+    -h, --help          Display this message (longer with --help)
+        --logfile PATH  Write logs to the specified file instead of stdout
+        --nocapture     don't capture stdout/stderr of each task, allow
+                        printing directly
+        --test-threads n_threads
+                        Number of threads used for running tests in parallel
+        --skip FILTER   Skip tests whose names contain FILTER (this flag can
+                        be used multiple times)
+    -q, --quiet         Display one character per test instead of one line.
+                        Alias to --format=terse
+        --exact         Exactly match filters rather than by substring
+        --color auto|always|never
+                        Configure coloring of output:
+                        auto = colorize if stdout is a tty and tests are run
+                        on serially (default);
+                        always = always colorize output;
+                        never = never colorize output;
+        --format pretty|terse|json
+                        Configure formatting of output:
+                        pretty = Print verbose output;
+                        terse = Display one character per test;
+                        json = Output a json document
+        --show-output   Show captured stdout of successful tests
+    -Z unstable-options Enable nightly-only flags:
+                        unstable-options = Allow use of experimental features
+        --report-time [plain|colored]
+                        Show execution time of each test. Awailable values:
+                        plain = do not colorize the execution time (default);
+                        colored = colorize output according to the `color`
+                        parameter value;
+                        Threshold values for colorized output can be
+                        configured via
+                        `RUST_TEST_TIME_UNIT`, `RUST_TEST_TIME_INTEGRATION`
+                        and
+                        `RUST_TEST_TIME_DOCTEST` environment variables.
+                        Expected format of environment variable is
+                        `VARIABLE=WARN_TIME,CRITICAL_TIME`.
+                        Not available for --format=terse
+        --ensure-time   Treat excess of the test execution time limit as
+                        error.
+                        Threshold values for this option can be configured via
+                        `RUST_TEST_TIME_UNIT`, `RUST_TEST_TIME_INTEGRATION`
+                        and
+                        `RUST_TEST_TIME_DOCTEST` environment variables.
+                        Expected format of environment variable is
+                        `VARIABLE=WARN_TIME,CRITICAL_TIME`.
+                        `CRITICAL_TIME` here means the limit that should not
+                        be exceeded by test.
+
+
+The FILTER string is tested against the name of all tests, and only those
+tests whose names contain the filter are run.
+
+By default, all tests are run in parallel. This can be altered with the
+--test-threads flag or the RUST_TEST_THREADS environment variable when running
+tests (set it to 1).
+
+All tests have their standard output and standard error captured by default.
+This can be overridden with the `--nocapture` flag or setting RUST_TEST_NOCAPTURE
+environment variable to a value other than "0". Logging is not captured by default.
+
+Test Attributes:
+
+    `#[test]`        - Indicates a function is a test to be run. This function
+                       takes no arguments.
+    `#[bench]`       - Indicates a function is a benchmark to be run. This
+                       function takes one argument (test::Bencher).
+    `#[should_panic]` - This function (also labeled with `#[test]`) will only pass if
+                        the code causes a panic (an assertion failure or panic!)
+                        A message may be provided, which the failure string must
+                        contain: #[should_panic(expected = "foo")].
+    `#[ignore]`       - When applied to a function which is already attributed as a
+                        test, then the test runner will ignore these tests during
+                        normal test runs. Running with --ignored or --include-ignored will run
+                        these tests.
+```
+
+**They do not match in the slightest.**
+
+The reason they do not match is - your code is not the one executed first. The binary `libtest` generates has it's own CLI (see the output) which is *competing* with your `clap::App`. This CLI is defined somewhere [there](https://github.com/rust-lang/libtest/blob/dbf328db62eacebe1aa719fa806c729bafa319b3/libtest/lib.rs#L457).
+
+So, if you want to crank it up, you're going to have to produce a CLI which is *compatible* with the one from `libtest` (heavens no!). I strongly *do not* advise this approach, I'm very well convinced that you're doing it wrong.
+
+Could you please elaborate on what you're trying to achieve? What is the problem you're attempting to resolve with CLI args passing to tests?
+
+---
+
+_Comment by @hyunsukimsokcho on 2020-02-17 02:02_
+
+@CreepySkeleton Thanks for bringing the issue into more details like `libtest`. I barely imagined such behavior, and now I can see what's going on more closely. (It was kind converse rather than yelling:D)
+
+Anyway, since you ask,
+> Could you please elaborate on what you're trying to achieve? What is the problem you're attempting to resolve with CLI args passing to tests?
+
+The test I would like to run involves reading a file, and I want to pass the **path to the file** since the filename may differ. Indeed, by now, I found that the following works quite neatly, with some bugs, still:
+
+In `tests/cli.yml`:
+```yaml
+ name: ast_printer_test
+ subcommands:
+     - fuzz_ast_printer:
+         args:
+             - nocapture:
+                 help: Don't capture stdout/stderr of each task, allow printing directly
+                 long: nocapture
+             - TEST_FILE:
+                 help: Sets the test file written by Csmith
+                 required: true
+```
+
+Following command lines work with perfection:
+```bash
+$ cargo test fuzz_ast_printer -- path/to/testfile
+$ cargo test fuzz ast_printer -- --nocapture path/to/testfile
+```
+BUT doesn't work for:
+```bash
+$ cargo test fuzz_ast_printer -- --quiet path/to/testfile
+running 1 test
+error: Found argument '--quiet' which wasn't expected, or isn't valid in this context
+
+USAGE:
+    ast_printer_test-77cddfec87489dbf fuzz_ast_printer [FLAGS] <TEST_FILE>
+
+For more information try --help
+error: test failed, to rerun pass '--test ast_printer_test'
+```
+
+Note that I gracefully specified `nocaputre` flag in `tests/cli.yml` so that it works, however not for `quiet`. So, let me state the problem again: While `libtest` already specifies their options, if one wants to use `clap` in `#[test]` as usual way (in `main.rs`), one may have to copy and paste all the flags in `libtest` to make it working. (and IMO, this is what user wants for any crate to do it for them)
+
+---
+
+_Comment by @CreepySkeleton on 2020-02-17 16:10_
+
+> While libtest already specifies their options
+
+I think this is what's preventing you from understanding the issue. `libtest` doesn't specify a CLI *already* but rather specifies *yet another CLI that works with the same `std::env::args()` your `clap::App` does*, emphasis on "the same args".
+
+Let's see what's happening step by step:
+1. The test binary gets run. OS puts all the CLI args somewhere `std::env::args()` gives you access to. This *somewhere* is effectively immutable, let's call this place `args`.
+2. The CLI parser `libtest` has generated (`lib-cli` for short) checks that the `args` is valid (in it's own understanding), and if it isn't, aborts the program.
+3. Your test code gets run. Your `clap::App` defines *yet another CLI* that checks that the `args` is valid (in it's own understanding), and if it isn't, aborts the program.
+
+You see? **`args` must be valid for both `lib-cli` and `clap::App`**. This is why you have to "copy and paste all the flags in libtest to make it working", because they both parse *the same* CL array the binary has got.
+
+This is not a problem with clap, honestly, it's just you're trying to squeeze a CLI parser in somewhere it doesn't belong to. It's going to be the same with `clap`, `getopts` (libtest uses it btw), `docopt`, you name it.
+
+Now, let's get back to your *real* problem - why do you want to pass the file path to a `#[test]`?
+
+---
+
+_Comment by @pksunkara on 2020-02-20 06:59_
+
+I am closing this. Please feel free to reopen when you respond @hyunsukimsokcho 
+
+---
+
+_Closed by @pksunkara on 2020-02-20 06:59_
+
+---
+
+_Comment by @hyunsukimsokcho on 2020-02-20 08:15_
+
+@CreepySkeleton I really appreciate the elaborations about the issue. What we decided to do is that rather build another binary for testing purpose with distinct `.yml` configuration for `clap`. We now deeply understand that `cargo test` doesn't take any arguments from outside. It made our project still neat and simple. I personally learned nitty-gritty details of `cargo`, which is exciting:) Thanks again for your comments and everything!
+
+---
+
+_Comment by @Dylan-DPC-zz on 2020-02-20 09:40_
+
+@hyunsukimsokcho if you want to test clis look at `assert_cli` crate 
+
+---
+
+_Referenced in [orhun/kmon#23](../../orhun/kmon/pulls/23.md) on 2020-10-01 10:48_
+
+---

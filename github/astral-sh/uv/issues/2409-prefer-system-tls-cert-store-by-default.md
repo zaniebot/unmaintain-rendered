@@ -1,0 +1,75 @@
+---
+number: 2409
+title: Prefer system TLS cert store by default
+type: issue
+state: closed
+author: DragoonAethis
+labels:
+  - question
+  - configuration
+assignees: []
+created_at: 2024-03-13T12:43:20Z
+updated_at: 2024-03-13T14:30:54Z
+url: https://github.com/astral-sh/uv/issues/2409
+synced_at: 2026-01-07T13:12:17-06:00
+---
+
+# Prefer system TLS cert store by default
+
+---
+
+_Issue opened by @DragoonAethis on 2024-03-13 12:43_
+
+This is a follow-up on #2362 where bundled root cert stores became the default.
+
+In scenarios where uv is wrapped by another rool (like rye) or buried somewhere deep in layers of Makefiles, "just" adding a command-line flag might not be trivial to make things work again. This change affects both users behind corporate HTTPS inspection proxies and private registry clients, where the registry is not world-facing but rather available only on the intranet with an internal cert issuer.
+
+While I understand this makes initial startup benchmarks look rather bad, it also makes uv a pain to use in corporate environments. Please reconsider the default behavior to respect the system root cert store again, or at least make this configurable from environment variables/configuration files.
+
+---
+
+_Comment by @samypr100 on 2024-03-13 13:01_
+
+This is partially fixed by https://github.com/astral-sh/uv/pull/2401 if you have a ca bundle file.
+
+We can go a bit further and add another env var as a shothand to --native-tls.
+
+This change would be in uv crate itself and not in uv-client crate.
+
+---
+
+_Comment by @charliermarsh on 2024-03-13 14:15_
+
+No problem, I'll add an environment variable for it.
+
+> While I understand this makes initial startup benchmarks look rather bad, it also makes uv a pain to use in corporate environments.
+
+It's actually not even about benchmarks -- there's minimal overhead on Linux. But I use macOS and it makes uv ~50-100x slower on basic commands.
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2024-03-13 14:15_
+
+---
+
+_Label `question` added by @zanieb on 2024-03-13 14:17_
+
+---
+
+_Referenced in [astral-sh/uv#2412](../../astral-sh/uv/pulls/2412.md) on 2024-03-13 14:18_
+
+---
+
+_Label `configuration` added by @charliermarsh on 2024-03-13 14:18_
+
+---
+
+_Closed by @charliermarsh on 2024-03-13 14:29_
+
+---
+
+_Comment by @DragoonAethis on 2024-03-13 14:30_
+
+Thank you!
+
+---

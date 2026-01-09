@@ -1,0 +1,133 @@
+---
+number: 4011
+title: "FR: re-enforce distinction between download time and build time"
+type: issue
+state: closed
+author: neutrinoceros
+labels:
+  - tracing
+assignees: []
+created_at: 2024-06-04T07:55:53Z
+updated_at: 2024-06-18T18:38:19Z
+url: https://github.com/astral-sh/uv/issues/4011
+synced_at: 2026-01-07T13:12:17-06:00
+---
+
+# FR: re-enforce distinction between download time and build time
+
+---
+
+_Issue opened by @neutrinoceros on 2024-06-04 07:55_
+
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with uv.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
+* The current uv platform.
+* The current uv version (`uv --version`).
+-->
+
+Hi, thanks for this wonderful tool !
+I noticed that when building packages from source, either locally or from downloaded tarballs, reports build time is bundled in download time, which is somewhat misleading. I think it'd be more correct (and informative) to show time spent building sources separately, especially because it's usually much longer than resolution/download/install and that uv is not actually doing the heavy lifting there.
+To illustrate what I mean, here's what happens if I run `uv pip install yt --no-binary yt` in a fresh env
+
+```
+Resolved 39 packages in 690ms
+   Built yt==4.3.1
+Downloaded 1 package in 33.49s
+Installed 39 packages in 220ms
+...
+```
+almost all the time is spent waiting for compilers and linkers (~33s), but it's still included in "downloaded".
+
+Another aspect of this is the message you see as the package is being built (downloading itself takes a couple seconds at most)
+![Screenshot 2024-06-04 at 09 49 56](https://github.com/astral-sh/uv/assets/14075922/45654536-f122-4b33-8a7b-a7251f0e4ae8)
+
+
+Furthermore, if I instead clone https://github/yt-project/yt.git and install locally (`uv pip install -e .`), I *still* see build time being included in "download" time, which in this context seems plain wrong
+```
+Resolved 47 packages in 389ms
+   Built yt @ file:///Users/clm/dev/yt-project/yt
+Downloaded 10 packages in 25.44s
+Installed 47 packages in 153ms
+...
+```
+
+
+---
+
+_Label `bug` added by @zanieb on 2024-06-04 18:26_
+
+---
+
+_Label `tracing` added by @zanieb on 2024-06-04 18:26_
+
+---
+
+_Comment by @zanieb on 2024-06-04 18:27_
+
+Thanks for the clear report! This sounds incorrect, though I'm uncertain how easy it will be to fix.
+
+---
+
+_Comment by @charliermarsh on 2024-06-04 18:34_
+
+It isn’t really “possible” to fix this because we don’t download-then-build in discrete phases. We download and build in parallel across all packages. So while some packages are being downloaded, others are being built.
+
+---
+
+_Label `bug` removed by @charliermarsh on 2024-06-04 18:35_
+
+---
+
+_Comment by @charliermarsh on 2024-06-04 18:35_
+
+We can use a more generic term, but conceptually we can’t report separate phases.
+
+---
+
+_Comment by @zanieb on 2024-06-04 19:00_
+
+Yeah the concurrent pipelining was my concern regarding feasibility. We could track the separate total times but I don't know we'd report it in a coherent way.
+
+---
+
+_Comment by @neutrinoceros on 2024-06-05 12:40_
+
+Thanks for clarifying that the built/download phase is conccurent, this wasn't obvious to me.
+Since I'm having trouble coming up with a more generic term, how about something like this ?
+
+```
+Downloaded/built 10 packages in 25.44s
+```
+
+---
+
+_Comment by @neutrinoceros on 2024-06-05 12:42_
+
+I'm thinking it could also be nice to report how long each package took to build
+```
+   Built yt==4.3.1 in xxx s 
+```
+Although that might make it confusing since all other reported times are wall times, but this one would be CPU time (I think ?).
+
+---
+
+_Referenced in [astral-sh/uv#4391](../../astral-sh/uv/issues/4391.md) on 2024-06-18 17:50_
+
+---
+
+_Referenced in [astral-sh/uv#4394](../../astral-sh/uv/pulls/4394.md) on 2024-06-18 18:15_
+
+---
+
+_Closed by @zanieb on 2024-06-18 18:38_
+
+---
+
+_Closed by @zanieb on 2024-06-18 18:38_
+
+---

@@ -1,0 +1,99 @@
+---
+number: 12089
+title: "How would I correctly \"install\" a package located in /usr/lib/python3/dist-packages into uv venv"
+type: issue
+state: closed
+author: michealroberts
+labels:
+  - question
+assignees: []
+created_at: 2025-03-10T09:40:31Z
+updated_at: 2025-07-16T13:50:23Z
+url: https://github.com/astral-sh/uv/issues/12089
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# How would I correctly "install" a package located in /usr/lib/python3/dist-packages into uv venv
+
+---
+
+_Issue opened by @michealroberts on 2025-03-10 09:40_
+
+### Question
+
+I'm hoping this is an easy one, and technically it is perhaps not related to uv but rather virtual environments. However, I figured there might be some nice tricks that uv provides that could help ...
+
+I have an awkward situation where a package is not installable by pip (or, uv, rather). Instead, the package comes with a Debian package installation and is located here:
+
+```
+/usr/lib/python3/dist-packages
+```
+
+However, I would like the package to be accessible from within a virtual environment.
+
+I'm thinking to try this:
+
+```
+export PYTHONPATH="/usr/lib/python3/dist-packages:$PYTHONPATH"
+```
+
+However, I'm not confident that this will work at this stage. I will try this, but I was wondering if uv could help manage this out of the box, in someway ... 
+
+
+
+
+### Platform
+
+Darwin 23.5.0 arm64
+
+### Version
+
+uv 0.6.0
+
+---
+
+_Label `question` added by @michealroberts on 2025-03-10 09:40_
+
+---
+
+_Comment by @konstin on 2025-03-10 09:44_
+
+You can try using the system interpreter and system site packages with `uv venv -p <path to system python> --system-site-packages`. The latter option should allow you to use the package (even though `uv pip list` currently doesn't see the package).
+
+---
+
+_Comment by @michealroberts on 2025-03-10 10:10_
+
+@konstin Thanks for this Konstin.
+
+So, just to be sure, the command to run here is:
+
+```bash
+uv venv -p /usr/lib/python3/dist-packages --system-site-packages
+```
+
+🙏 
+
+---
+
+_Comment by @konstin on 2025-03-10 19:25_
+
+I think it's `uv venv -p /usr/bin/python3 --system-site-packages`, but it depends on your distro. Try it out - with venvs, you can't break much, `rm -rf .venv` cleans it all up again.
+
+---
+
+_Comment by @michealroberts on 2025-03-13 13:22_
+
+@konstin Hi Konstin, unfortunately, this did not work. I want to install the package into the venv ... the global python interpreter is a different version that required, I need to pull the library located in `/usr/lib/python3/dist-packages` into the venv ...
+
+---
+
+_Comment by @konstin on 2025-03-13 14:50_
+
+Unfortunately, I don't think we can support this across Python versions, packages often contain version-specific modules.
+
+---
+
+_Closed by @charliermarsh on 2025-07-16 13:50_
+
+---

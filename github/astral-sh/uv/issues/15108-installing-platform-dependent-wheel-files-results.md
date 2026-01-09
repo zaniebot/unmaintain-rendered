@@ -1,0 +1,697 @@
+---
+number: 15108
+title: Installing platform dependent wheel files results in distribution cache error
+type: issue
+state: open
+author: vivekfe
+labels:
+  - windows
+  - needs-mre
+assignees: []
+created_at: 2025-08-06T13:33:06Z
+updated_at: 2025-12-16T12:17:03Z
+url: https://github.com/astral-sh/uv/issues/15108
+synced_at: 2026-01-07T13:12:19-06:00
+---
+
+# Installing platform dependent wheel files results in distribution cache error
+
+---
+
+_Issue opened by @vivekfe on 2025-08-06 13:33_
+
+### Summary
+
+@zanieb  @charliermarsh 
+
+This is similar to Issue #1491.
+
+
+I am using an enterprise package as described below under the corporate firewall so have to install it from local file system.
+
+However when I run uv lock --native-tls or uv lock --native-tls --no-cache , it results in error for line which has detail for Linux package.
+
+Caused by: Failed to read from the distribution cache
+ Caused by: failed to rename file from \\?\\C:\users
+
+I suspected that in uv/cache it tries to the rename  nxpy Folder in temp folder. When we install the packages, win and Linux both versions have same directory name. However, if I use a separate package versions for windows and Linux, the error disappears.
+
+[tool.uv.sources]
+nxpy = [
+  { path = "nxdist/nxpy-21.3.4-cp310-cp310-win_amd64.whl", marker = "platform_system == 'Windows'" },
+  { path = "nxdist/nxpy-21.3.4-cp310-cp310-linux_x86_64.whl", marker = "platform_system == 'Linux'" }
+]
+
+### Platform
+
+Windows 10
+
+### Version
+
+uv 0.8.4
+
+### Python version
+
+python 3.10.10
+
+
+
+---
+
+_Label `bug` added by @vivekfe on 2025-08-06 13:33_
+
+---
+
+_Comment by @vivekfe on 2025-08-20 11:33_
+
+Hi Team
+
+Want to check if this issue with distribution cache is expected ?
+
+---
+
+_Comment by @charliermarsh on 2025-08-26 02:23_
+
+I don't think this is expected, but are you able to come up with a reproduction that we can run ourselves? As-is, it's hard to help because we can't reproduce the issue.
+
+---
+
+_Label `bug` removed by @charliermarsh on 2025-08-26 02:23_
+
+---
+
+_Label `needs-mre` added by @charliermarsh on 2025-08-26 02:23_
+
+---
+
+_Comment by @vivekfe on 2025-08-26 05:59_
+
+Hi Charlie
+
+Thanks for checking however this is similar to
+https://github.com/astral-sh/uv/issues/7485
+
+I am temporarily avoiding this issue by using a different cache
+
+
+$env:TEMP = $TempDir
+$env:TMP = $TempDir
+$env:TMPDIR = $TempDir
+$env:UV_CACHE_DIR = $CacheDir
+
+Write-Host "[Info] TEMP set to $env:TEMP"
+Write-Host "[Info] TMP set to $env:TMP"
+Write-Host "[Info] TMPDIR set to $env:TMPDIR"
+Write-Host "[Info] UV_CACHE_DIR set to $env:UV_CACHE_DIR"
+
+Unfortunately the packages are internal to my firm so I can't share them
+here however this was not happening earlier and started with recent
+releases.
+
+
+
+
+On Tue, 26 Aug 2025, 4:23 am Charlie Marsh, ***@***.***>
+wrote:
+
+> *charliermarsh* left a comment (astral-sh/uv#15108)
+> <https://github.com/astral-sh/uv/issues/15108#issuecomment-3222340567>
+>
+> I don't think this is expected, but are you able to come up with a
+> reproduction that we can run ourselves? As-is, it's hard to help because we
+> can't reproduce the issue.
+>
+> —
+> Reply to this email directly, view it on GitHub
+> <https://github.com/astral-sh/uv/issues/15108#issuecomment-3222340567>,
+> or unsubscribe
+> <https://github.com/notifications/unsubscribe-auth/AADKLIDMCTKIRB63G2Z3OD33PPAKHAVCNFSM6AAAAACDIAH7R2VHI2DSMVQWIX3LMV43OSLTON2WKQ3PNVWWK3TUHMZTEMRSGM2DANJWG4>
+> .
+> You are receiving this because you authored the thread.Message ID:
+> ***@***.***>
+>
+
+
+---
+
+_Comment by @vivekfe on 2025-09-19 06:37_
+
+Here is my pyproject.toml
+
+
+
+[project]
+
+name = "Global-Project"
+
+version = "0.1.0"
+
+readme = "README.md"
+
+requires-python = ">=3.10.10"
+
+dependencies = [
+
+                "marimo>=0.13.10",
+
+                "arcticdb>=4.4.2",
+
+                "colour>=0.1.5",
+
+                "cryptography>=44.0.0",
+
+                "cvxpy>=1.6.0",
+
+                "cx-oracle>=8.3.0",
+
+                "dash<=2.18.2",
+
+                "dash-ag-grid==31.3.1",
+
+                "dash-bootstrap-components>=1.7.1",
+
+                "dash-enterprise-libraries>=0.0.1",
+
+                "dash-loading-spinners>=1.0.3",
+
+                "diskcache>=5.6.3",
+
+                "duckdb>=1.1.3",
+
+                "fastapi>=0.115.6",
+
+                "google-cloud-storage>=2.19.0",
+
+                "igraph>=0.11.8",
+
+                "jupyter>=1.0.0",
+
+                "jupyterlab>=3.5.3",
+
+                "matplotlib>=3.10.0",
+
+                "numexpr>=2.10.2",
+
+                "openpyxl>=3.1.5",
+
+                "packaging>=24.2.0",
+
+                "pandas>=2.2.3",
+
+                "pandoc>=2.4",
+
+                "pip-system-certs>=4.0",
+
+                "pkginfo>=1.12.0",
+
+                "pydantic>=2.10.5",
+
+                "pyxll>=5.9.2",
+
+                "quantlib>=1.36",
+
+                "scipy>=1.15.1",
+
+                "tqdm>=4.67.1",
+
+                "uvicorn>=0.34.0",
+
+                "xlwings>=0.33.6",
+
+                "nxpy",
+
+                "nxtools",
+
+                "celery>=5.2.7",
+
+                "flower>=2.0.1",
+
+                "redis>=3.5.3",
+
+                "pip>=25.0.1",
+
+                "polars>=1.24.0",
+
+                "twine>=6.1.0",
+
+                "pulp>=3.1.1",
+
+                "pyarrow>=20.0.0",
+
+                "fastparquet>=2024.11.0",
+
+                "ipyvolume>=0.6.3",
+
+                "ipython-genutils>=0.2.0",
+
+                "ipywidgets>=8.1.6",
+
+                "dash-mantine-components==1.2",
+
+                "dash-iconify>=0.1.2",
+
+                "setuptools==66.1.1",
+
+                "pyfolio>=0.9.2",
+
+                "ruff>=0.12.2",
+
+                "black>=25.1.0",
+
+                "flake8>=7.3.0",
+
+                "isort>=6.0.1",
+
+                "numba>=0.61.2",
+
+                "python-frontmatter>=1.1.0",
+
+                "python-constraint>=1.4.0",
+
+                "nbconvert>=7.16.6",
+
+                "aleatory>=1.1.1",
+
+                "install>=1.3.5",
+
+                "atlassian-python-api>=4.0.7",
+
+                "bt>=1.1.2",
+
+                "pdoc>=15.0.4",
+
+]
+
+
+
+
+
+[dependency-groups]
+
+efx_tooling = [
+
+"stratpy-utils>=0.7.48"
+
+]
+
+solutions = [
+
+  "hsbc_anl>=4.0.260",
+
+  "hsbc-anl-infra>=4.0.359"
+
+]
+
+
+
+dash_prop_tools = [
+
+"dash-embedded>=2.0.0",
+
+"dash-design-kit>=2.2.0",
+
+"dash-snapshots>=2.3.0",
+
+"dash-notes>=0.0.3",
+
+]
+
+
+
+optional-tools = [
+
+    "blinker>=1.9.0",
+
+    "cachecontrol>=0.14.2",
+
+    "cleo>=2.1.0",
+
+    "distlib>=0.3.9",
+
+    "fastjsonschema>=2.21.1",
+
+    "filelock>=3.16.1",
+
+    "importlib-resources>=6.5.2",
+
+    "ipykernel>=6.29.5",
+
+    "ipython>=8.31.0",
+
+    "pywin32-ctypes>=0.2.3",
+
+    "shellingham>=1.5.4",
+
+]
+
+linters = [
+
+    "black>=22.12.0",
+
+    "flake8>=7.1.1",
+
+    "flake8-docstrings>=1.7.0",
+
+    "flake8-html>=0.4.3",
+
+    "isort>=5.13.2",
+
+    "mypy>=1.14.1",
+
+    "pep8-naming>=0.14.1",
+
+    "pylint>=3.3.3",
+
+    "ruff>=0.9.2",
+
+]
+
+test-tools = [
+
+    "pytest>=8.3.4",
+
+    "pytest-cov>=6.0.0",
+
+]
+
+google-apis = [
+
+    "db-dtypes>=1.3.1",
+
+    "gcloud>=0.18.3",
+
+    "google-cloud-bigquery>=3.27.0",
+
+    "google-cloud-bigquery-storage>=2.27.0",
+
+    "pandas-gbq>=0.23.1",
+
+]
+
+
+
+
+
+[tool.uv]
+
+constraint-dependencies = ["numpy==1.26"]
+
+python-preference = "only-system"
+
+reinstall = false
+
+default-groups = ["efx_tooling", "solutions", "dash_prop_tools",
+"optional-tools", "linters", "test-tools", "google-apis"]
+
+package = false
+
+
+
+
+
+
+
+[tool.uv.sources]
+
+hsbc_anl = { index = "wpb-amg-gcp"}
+
+hsbc_anl_infra = { index = "wpb-amg-gcp"}
+
+stratpy-utils = {index = "gbm-nexus"}
+
+tensorflow-cpu = {index = "gbm-nexus"}
+
+tensorflow-io-gcs-filesystem = {index = "gbm-nexus"}
+
+
+
+nxpy = [
+
+                {path = "exdist/nxpy-21.3.4-cp310-cp310-win_amd64.whl",
+marker = "platform_system == 'Windows'"},
+
+                {path = "exdist/nxpy-21.3.0-cp310-cp310-linux_x86_64.whl",
+marker = "platform_system == 'Linux'"}
+
+]
+
+nxtools = {path = "exdist/nxtools-1.2a2-py3-none-any.whl"}
+
+
+
+dash-design-kit = {path = "exdist/dash_design_kit-1.6.8.tar.gz"}
+
+dash-snapshots = {path = "exdist/dash_snapshots-2.3.0-py2.py3-none-any.whl"}
+
+dash-embedded = {index = "amg-dash-cloud"}
+
+dash-notes = {path = "exdist/dash_notes-0.0.3-py2.py3-none-any.whl"}
+
+
+
+
+
+[build-system]
+
+requires = ["setuptools"]
+
+build-backend = "setuptools.build_meta"
+
+
+
+
+
+
+
+
+
+In order to avoid such error for some time, I used a custom path for the
+cache by running a bat file:
+
+
+
+*Custom_command_prompt.bat*
+
+
+
+@echo off
+
+setlocal EnableDelayedExpansion
+
+
+
+:: ====== USER CONFIGURATION ======
+
+:: Set your user home directory for cache/temp
+
+set "USER_HOME=C:\sandbox\investment_project"
+
+set "TEMP_DIR=%USER_HOME%\uvtemp"
+
+set "CACHE_DIR=%TEMP_DIR%\cache"
+
+:: =================================
+
+
+
+:: Create temp and cache directories if they don't exist
+
+if not exist "%TEMP_DIR%" (
+
+    mkdir "%TEMP_DIR%"
+
+)
+
+if not exist "%CACHE_DIR%" (
+
+    mkdir "%CACHE_DIR%"
+
+)
+
+
+
+:: Set environment variables for uv
+
+set "TEMP=%TEMP_DIR%"
+
+set "TMP=%TEMP_DIR%"
+
+set "TMPDIR=%TEMP_DIR%"
+
+set "UV_CACHE_DIR=%CACHE_DIR%"
+
+
+
+echo [INFO] TEMP set to %TEMP%
+
+echo [INFO] TMP set to %TMP%
+
+echo [INFO] TMPDIR set to %TMPDIR%
+
+echo [INFO] UV_CACHE_DIR set to %UV_CACHE_DIR%
+
+
+
+echo ==========================================================
+
+echo [INFO] Cache and temp environment set up.
+
+echo [INFO] Python virtual environment will be activated automatically.
+
+echo [INFO] You may now run any commands of your choice in this prompt.
+
+echo ==========================================================
+
+cmd /K
+
+
+
+
+
+
+
+*When I run command uv sync –native-tls,*
+
+
+
+uv.exe sync --native-tls
+
+error: Failed to generate package metadata for `nxpy==21.3.0 @
+path+exdist/nxpy-21.3.0-cp310-cp310-linux_x86_64.whl`
+
+  Caused by: Failed to write to the distribution cache
+
+  Caused by: failed to rename file from
+C:\sandbox\amginvestment\uvtemp\cache\.tmpy6Oi28 to
+C:\sandbox\amginvestment\uvtemp\cache\archive-v0\LLsiTsyuSxSbWpWdQRiWC:
+Access is denied. (os error 5)
+
+
+
+On Tue, 26 Aug 2025, 7:58 am Vivek Srivastava, ***@***.***> wrote:
+
+> Hi Charlie
+>
+> Thanks for checking however this is similar to
+> https://github.com/astral-sh/uv/issues/7485
+>
+> I am temporarily avoiding this issue by using a different cache
+>
+>
+> $env:TEMP = $TempDir
+> $env:TMP = $TempDir
+> $env:TMPDIR = $TempDir
+> $env:UV_CACHE_DIR = $CacheDir
+>
+> Write-Host "[Info] TEMP set to $env:TEMP"
+> Write-Host "[Info] TMP set to $env:TMP"
+> Write-Host "[Info] TMPDIR set to $env:TMPDIR"
+> Write-Host "[Info] UV_CACHE_DIR set to $env:UV_CACHE_DIR"
+>
+> Unfortunately the packages are internal to my firm so I can't share them
+> here however this was not happening earlier and started with recent
+> releases.
+>
+>
+>
+>
+> On Tue, 26 Aug 2025, 4:23 am Charlie Marsh, ***@***.***>
+> wrote:
+>
+>> *charliermarsh* left a comment (astral-sh/uv#15108)
+>> <https://github.com/astral-sh/uv/issues/15108#issuecomment-3222340567>
+>>
+>> I don't think this is expected, but are you able to come up with a
+>> reproduction that we can run ourselves? As-is, it's hard to help because we
+>> can't reproduce the issue.
+>>
+>> —
+>> Reply to this email directly, view it on GitHub
+>> <https://github.com/astral-sh/uv/issues/15108#issuecomment-3222340567>,
+>> or unsubscribe
+>> <https://github.com/notifications/unsubscribe-auth/AADKLIDMCTKIRB63G2Z3OD33PPAKHAVCNFSM6AAAAACDIAH7R2VHI2DSMVQWIX3LMV43OSLTON2WKQ3PNVWWK3TUHMZTEMRSGM2DANJWG4>
+>> .
+>> You are receiving this because you authored the thread.Message ID:
+>> ***@***.***>
+>>
+>
+
+
+---
+
+_Referenced in [python/mypy#20200](../../python/mypy/issues/20200.md) on 2025-11-07 11:26_
+
+---
+
+_Comment by @MarcCharron on 2025-11-07 15:40_
+
+Hello,
+
+I'm the author of the mypy issue [20200](https://github.com/python/mypy/issues/20200)
+I tried with this configuration :
+
+```toml
+[tool.uv]
+native-tls = true
+link-mode = "copy"
+```
+
+But it still doesn't work in entreprise environnement (I have Trellix running on my computer).
+
+---
+
+_Comment by @MarcCharron on 2025-11-25 10:16_
+
+```shell
+Using CPython 3.12.10 interpreter at: C:\Program Files\Python\python.exe
+Creating virtual environment at: .venv
+  × Failed to download `mypy==1.18.2`
+  ├─▶ Failed to read from the distribution cache
+  ╰─▶ failed to rename file from C:\Users\USERXXX\AppData\Local\uv\cache\.tmpY0qi9j 
+      to C:\Users\USERXXX\AppData\Local\uv\cache\archive-v0\YQY-kdG0vVLvidw-fW6wT: 
+      Access denied. (os error 5)
+  help: `mypy` (v1.18.2) was included because `project_xxxx:dev` (v0.1.0) depends on `mypy`
+```
+
+Could be possible to implement a retry on the rename fonction, in order to wait the antivirus ?
+Perhaps I could try to code it despite my small knowledge of rust ?
+
+Thank you in advance
+
+---
+
+_Comment by @alexmjd on 2025-11-25 10:44_
+
+I am also concerned by this issue
+I suspect that uv is so powerfull that windows can't unlock cache file while uv installing dependencies, error on mypy and pandas spotted in my case
+
+---
+
+_Comment by @nathanjmcdougall on 2025-11-26 18:40_
+
+This seems like a duplicate of #11134, also see #7382 
+
+---
+
+_Comment by @konstin on 2025-12-16 12:16_
+
+> Using CPython 3.12.10 interpreter at: C:\Program Files\Python\python.exe
+> Creating virtual environment at: .venv
+>   × Failed to download `mypy==1.18.2`
+>   ├─▶ Failed to read from the distribution cache
+>   ╰─▶ failed to rename file from C:\Users\USERXXX\AppData\Local\uv\cache\.tmpY0qi9j 
+>       to C:\Users\USERXXX\AppData\Local\uv\cache\archive-v0\YQY-kdG0vVLvidw-fW6wT: 
+>       Access denied. (os error 5)
+>   help: `mypy` (v1.18.2) was included because `project_xxxx:dev` (v0.1.0) depends on `mypy`
+> 
+> Could be possible to implement a retry on the rename fonction, in order to wait the antivirus ? Perhaps I could try to code it despite my small knowledge of rust ?
+> 
+> Thank you in advance
+
+uv should already be using retries and backoff when renaming files: https://github.com/astral-sh/uv/blob/62bf92132b848df77747a10c92809667c9af9e4d/crates/uv-fs/src/lib.rs#L293-L330
+
+---
+
+_Label `windows` added by @konstin on 2025-12-16 12:17_
+
+---

@@ -1,0 +1,142 @@
+---
+number: 2599
+title: "`multiple_occurrences` behaviour does not match documentation"
+type: issue
+state: closed
+author: sstadick
+labels:
+  - C-bug
+  - A-derive
+assignees: []
+created_at: 2021-07-15T14:43:26Z
+updated_at: 2021-12-07T21:58:24Z
+url: https://github.com/clap-rs/clap/issues/2599
+synced_at: 2026-01-07T13:12:19-06:00
+---
+
+# `multiple_occurrences` behaviour does not match documentation
+
+---
+
+_Issue opened by @sstadick on 2021-07-15 14:43_
+
+### Please complete the following tasks
+
+- [X] I have searched the [discussions](https://github.com/clap-rs/clap/discussions)
+- [X] I have searched the existing issues
+
+### Clap Version
+
+3.0.0-beta.2
+
+### Where?
+
+https://docs.rs/clap/3.0.0-beta.2/clap/struct.Arg.html#method.multiple_occurrences
+
+### What's wrong?
+
+The documentation claims that with the above method set to true, something like `-a 1 2` would be disallowed and only `-a 1 -a 2` would be allowed. However, the tests don't agree:
+
+https://github.com/clap-rs/clap/blob/412b71efb64d9ac88667b6206c4110460c8d93e1/clap_derive/tests/options.rs#L225
+
+And questions have been answered based on the docs: https://github.com/clap-rs/clap/discussions/2259#discussioncomment-220052
+
+### How to fix?
+
+Make behavior match the docs, unless there is some other way of getting the behavior described in the discussions link above. 
+
+To clarify further, I'd expect the test case:
+
+```rust
+    assert_eq!(
+        Opt {
+            arg: Some(vec![1, 2])
+        },
+        Opt::parse_from(&["test", "-a", "1", "2"])
+    );
+```
+
+to instead be
+
+```rust
+    assert_eq!(
+        Opt {
+            arg: Some(vec![1])
+        },
+        Opt::parse_from(&["test", "-a", "1", "2"])
+    );
+```
+
+---
+
+_Label `C: docs` added by @sstadick on 2021-07-15 14:43_
+
+---
+
+_Label `T: bug` added by @pksunkara on 2021-07-16 15:14_
+
+---
+
+_Label `C: docs` removed by @pksunkara on 2021-07-16 15:14_
+
+---
+
+_Added to milestone `3.0` by @pksunkara on 2021-07-16 15:14_
+
+---
+
+_Comment by @pksunkara on 2021-07-16 15:17_
+
+It's not a doc issue, but looks like a bug with how `Vec` adapter in clap_derive interacts with `multiple*` methods. Possibly a duplicate of #1772 
+
+---
+
+_Comment by @ldm0 on 2021-07-20 18:05_
+
+Nope, I don't think it's a bug. `Option<Vec<T>>` implies `multiple_values`.
+
+---
+
+_Comment by @epage on 2021-07-21 20:40_
+
+When `multiple` was removed, `Vec<_>` was switched to `multiple_values` but I think what people would expect is that `Vec<_>` would map to `multiple_occurrences`.
+
+I plan to bring this up in my work on #1772 
+
+---
+
+_Referenced in [clap-rs/clap#1772](../../clap-rs/clap/issues/1772.md) on 2021-07-22 15:29_
+
+---
+
+_Comment by @pksunkara on 2021-07-25 14:11_
+
+Yeah, we need to allow combination of `values`, `occurrences` and both.
+
+---
+
+_Label `C: derive macros` added by @pksunkara on 2021-08-13 21:09_
+
+---
+
+_Referenced in [clap-rs/clap#2993](../../clap-rs/clap/pulls/2993.md) on 2021-11-05 14:24_
+
+---
+
+_Referenced in [clap-rs/clap#3024](../../clap-rs/clap/issues/3024.md) on 2021-11-14 13:10_
+
+---
+
+_Referenced in [epage/clapng#190](../../epage/clapng/issues/190.md) on 2021-12-06 21:16_
+
+---
+
+_Comment by @epage on 2021-12-07 21:58_
+
+Something like #2993 was recently merged, along with a new derive reference.
+
+---
+
+_Closed by @epage on 2021-12-07 21:58_
+
+---

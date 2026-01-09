@@ -1,0 +1,91 @@
+---
+number: 9877
+title: "`D413` is enforcing excessive whitespace"
+type: issue
+state: closed
+author: BrentWilkins
+labels:
+  - bug
+  - docstring
+assignees: []
+created_at: 2024-02-07T19:31:04Z
+updated_at: 2024-02-07T21:48:29Z
+url: https://github.com/astral-sh/ruff/issues/9877
+synced_at: 2026-01-07T13:12:15-06:00
+---
+
+# `D413` is enforcing excessive whitespace
+
+---
+
+_Issue opened by @BrentWilkins on 2024-02-07 19:31_
+
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+It seems that the change in [this PR](https://github.com/astral-sh/ruff/pull/9654) is exposing a bug in the `D413`. Ruff is calling this docstring bad:
+
+```python
+"""Make a summary line.
+
+Note:
+----
+  Per the code comment the next two lines are blank. "// The first blank line is the line containing the closing
+      triple quotes, so we need at least two."
+
+"""
+```
+
+> Missing blank line after last section ("Note") Ruff([D413](https://docs.astral.sh/ruff/rules/blank-line-after-last-section))
+
+I can't see what's different between what I have and the `Use instead:` section of [the documentation](https://docs.astral.sh/ruff/rules/blank-line-after-last-section/).
+
+I can make Ruff happy by adding excessive blank lines:
+
+```python
+"""Make a summary line.
+
+Note:
+----
+  Per the code comment the next two lines are blank. "// The first blank line is the line containing the closing
+      triple quotes, so we need at least two."
+
+
+"""
+```
+
+---
+
+_Comment by @charliermarsh on 2024-02-07 19:32_
+
+Thanks!
+
+---
+
+_Label `bug` added by @charliermarsh on 2024-02-07 19:32_
+
+---
+
+_Label `docstring` added by @charliermarsh on 2024-02-07 19:32_
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2024-02-07 19:32_
+
+---
+
+_Referenced in [astral-sh/ruff#9878](../../astral-sh/ruff/pulls/9878.md) on 2024-02-07 21:03_
+
+---
+
+_Closed by @charliermarsh on 2024-02-07 21:48_
+
+---

@@ -1,0 +1,57 @@
+---
+number: 19972
+title: Get linting output conform with ruff formatter
+type: issue
+state: closed
+author: jkrauth
+labels:
+  - question
+assignees: []
+created_at: 2025-08-18T15:40:11Z
+updated_at: 2025-09-30T07:16:38Z
+url: https://github.com/astral-sh/ruff/issues/19972
+synced_at: 2026-01-07T13:12:16-06:00
+---
+
+# Get linting output conform with ruff formatter
+
+---
+
+_Issue opened by @jkrauth on 2025-08-18 15:40_
+
+### Question
+
+On the ruff [rules page](https://docs.astral.sh/ruff/rules/) it states:
+
+<img width="1055" height="78" alt="Image" src="https://github.com/user-attachments/assets/dce9a65e-36f5-4cf6-b808-178688bc9e9e" />
+
+My questions are the following:
+
+- Why is it desired to omit any stylistic rules overlapping with the formatter?
+- What is the easiest way to get a set of linting rules overlapping with the formatter?
+
+I would like to use the code quality display feature within merge requests in GitLab, which works with the output of the ruff linter, but as far as I understand the defaults would not show me any items that should have been formatted by the ruff formatter. So if someone forgets to use the formatter before pushing, the code quality information in my merge request is useless.
+
+I think it might be nice to have an option in `ruff format` which yields the output of the linter for everything that would be formatted with `ruff format`, without formatting it OR to have an easy way to include the rules used by the formatter in the linter.
+
+### Version
+
+0.12.9
+
+---
+
+_Label `question` added by @jkrauth on 2025-08-18 15:40_
+
+---
+
+_Comment by @ntBre on 2025-08-18 16:00_
+
+If I understand correctly, I think the main request here is for an `--output-format` CLI/config option like the linter has, which is also discussed in https://github.com/astral-sh/ruff/issues/10430. The title is about a GitHub format, but I think we'll get the whole array of output formats for free once the formatter uses the same diagnostic system, as Micha says in that thread.
+
+I don't think all of the formatter's behaviors are covered by lint rules, so it's only a partial overlap at best, which is why I think being able to specify a GitLab output format sounds more helpful for you.
+
+---
+
+_Closed by @MichaReiser on 2025-09-30 07:16_
+
+---

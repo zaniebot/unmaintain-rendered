@@ -1,0 +1,271 @@
+---
+number: 13065
+title: uv pip tree showing incorrect top-level dependencies 
+type: issue
+state: closed
+author: tekumara
+labels:
+  - question
+assignees: []
+created_at: 2025-04-23T10:12:22Z
+updated_at: 2025-04-24T00:41:30Z
+url: https://github.com/astral-sh/uv/issues/13065
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# uv pip tree showing incorrect top-level dependencies 
+
+---
+
+_Issue opened by @tekumara on 2025-04-23 10:12_
+
+### Summary
+
+Given
+```toml
+[project]
+name = "c"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "moto[server]>=5.1.4",
+]
+```
+
+I see a tree that shows top level dependencies that aren't in the pyproject.toml 
+```
+❯ uv pip tree
+antlr4-python3-runtime v4.13.2
+aws-xray-sdk v2.14.0
+├── botocore v1.38.0
+│   ├── jmespath v1.0.1
+│   ├── python-dateutil v2.9.0.post0
+│   │   └── six v1.17.0
+│   └── urllib3 v2.4.0
+└── wrapt v1.17.2
+cfn-lint v1.34.1
+├── aws-sam-translator v1.97.0
+│   ├── boto3 v1.38.0
+│   │   ├── botocore v1.38.0 (*)
+│   │   ├── jmespath v1.0.1
+│   │   └── s3transfer v0.12.0
+│   │       └── botocore v1.38.0 (*)
+│   ├── jsonschema v4.23.0
+│   │   ├── attrs v25.3.0
+│   │   ├── jsonschema-specifications v2024.10.1
+│   │   │   └── referencing v0.36.2
+│   │   │       ├── attrs v25.3.0
+│   │   │       ├── rpds-py v0.24.0
+│   │   │       └── typing-extensions v4.13.2
+│   │   ├── referencing v0.36.2 (*)
+│   │   └── rpds-py v0.24.0
+│   ├── pydantic v2.11.3
+│   │   ├── annotated-types v0.7.0
+│   │   ├── pydantic-core v2.33.1
+│   │   │   └── typing-extensions v4.13.2
+│   │   ├── typing-extensions v4.13.2
+│   │   └── typing-inspection v0.4.0
+│   │       └── typing-extensions v4.13.2
+│   └── typing-extensions v4.13.2
+├── jsonpatch v1.33
+│   └── jsonpointer v3.0.0
+├── networkx v3.4.2
+├── pyyaml v6.0.2
+├── regex v2024.11.6
+├── sympy v1.13.3
+│   └── mpmath v1.3.0
+└── typing-extensions v4.13.2
+docker v7.1.0
+├── requests v2.32.3
+│   ├── certifi v2025.1.31
+│   ├── charset-normalizer v3.4.1
+│   ├── idna v3.10
+│   └── urllib3 v2.4.0
+└── urllib3 v2.4.0
+flask-cors v5.0.1
+├── flask v3.1.0
+│   ├── blinker v1.9.0
+│   ├── click v8.1.8
+│   ├── itsdangerous v2.2.0
+│   ├── jinja2 v3.1.6
+│   │   └── markupsafe v3.0.2
+│   └── werkzeug v3.1.3
+│       └── markupsafe v3.0.2
+└── werkzeug v3.1.3 (*)
+graphql-core v3.2.6
+joserfc v1.0.4
+└── cryptography v44.0.2
+    └── cffi v1.17.1
+        └── pycparser v2.22
+jsonpath-ng v1.7.0
+└── ply v3.11
+moto v5.1.4
+├── boto3 v1.38.0 (*)
+├── botocore v1.38.0 (*)
+├── cryptography v44.0.2 (*)
+├── jinja2 v3.1.6 (*)
+├── python-dateutil v2.9.0.post0 (*)
+├── requests v2.32.3 (*)
+├── responses v0.25.7
+│   ├── pyyaml v6.0.2
+│   ├── requests v2.32.3 (*)
+│   └── urllib3 v2.4.0
+├── werkzeug v3.1.3 (*)
+└── xmltodict v0.14.2
+openapi-spec-validator v0.7.1
+├── jsonschema v4.23.0 (*)
+├── jsonschema-path v0.3.4
+│   ├── pathable v0.4.4
+│   ├── pyyaml v6.0.2
+│   ├── referencing v0.36.2 (*)
+│   └── requests v2.32.3 (*)
+├── lazy-object-proxy v1.11.0
+└── openapi-schema-validator v0.6.3
+    ├── jsonschema v4.23.0 (*)
+    ├── jsonschema-specifications v2024.10.1 (*)
+    └── rfc3339-validator v0.1.4
+        └── six v1.17.0
+py-partiql-parser v0.6.1
+pyparsing v3.2.3
+setuptools v79.0.0
+(*) Package tree already displayed
+❯ uv pip tree
+antlr4-python3-runtime v4.13.2
+aws-xray-sdk v2.14.0
+├── botocore v1.38.0
+│   ├── jmespath v1.0.1
+│   ├── python-dateutil v2.9.0.post0
+│   │   └── six v1.17.0
+│   └── urllib3 v2.4.0
+└── wrapt v1.17.2
+cfn-lint v1.34.1
+├── aws-sam-translator v1.97.0
+│   ├── boto3 v1.38.0
+│   │   ├── botocore v1.38.0 (*)
+│   │   ├── jmespath v1.0.1
+│   │   └── s3transfer v0.12.0
+│   │       └── botocore v1.38.0 (*)
+│   ├── jsonschema v4.23.0
+│   │   ├── attrs v25.3.0
+│   │   ├── jsonschema-specifications v2024.10.1
+│   │   │   └── referencing v0.36.2
+│   │   │       ├── attrs v25.3.0
+│   │   │       ├── rpds-py v0.24.0
+│   │   │       └── typing-extensions v4.13.2
+│   │   ├── referencing v0.36.2 (*)
+│   │   └── rpds-py v0.24.0
+│   ├── pydantic v2.11.3
+│   │   ├── annotated-types v0.7.0
+│   │   ├── pydantic-core v2.33.1
+│   │   │   └── typing-extensions v4.13.2
+│   │   ├── typing-extensions v4.13.2
+│   │   └── typing-inspection v0.4.0
+│   │       └── typing-extensions v4.13.2
+│   └── typing-extensions v4.13.2
+├── jsonpatch v1.33
+│   └── jsonpointer v3.0.0
+├── networkx v3.4.2
+├── pyyaml v6.0.2
+├── regex v2024.11.6
+├── sympy v1.13.3
+│   └── mpmath v1.3.0
+└── typing-extensions v4.13.2
+docker v7.1.0
+├── requests v2.32.3
+│   ├── certifi v2025.1.31
+│   ├── charset-normalizer v3.4.1
+│   ├── idna v3.10
+│   └── urllib3 v2.4.0
+└── urllib3 v2.4.0
+flask-cors v5.0.1
+├── flask v3.1.0
+│   ├── blinker v1.9.0
+│   ├── click v8.1.8
+│   ├── itsdangerous v2.2.0
+│   ├── jinja2 v3.1.6
+│   │   └── markupsafe v3.0.2
+│   └── werkzeug v3.1.3
+│       └── markupsafe v3.0.2
+└── werkzeug v3.1.3 (*)
+graphql-core v3.2.6
+joserfc v1.0.4
+└── cryptography v44.0.2
+    └── cffi v1.17.1
+        └── pycparser v2.22
+jsonpath-ng v1.7.0
+└── ply v3.11
+moto v5.1.4
+├── boto3 v1.38.0 (*)
+├── botocore v1.38.0 (*)
+├── cryptography v44.0.2 (*)
+├── jinja2 v3.1.6 (*)
+├── python-dateutil v2.9.0.post0 (*)
+├── requests v2.32.3 (*)
+├── responses v0.25.7
+│   ├── pyyaml v6.0.2
+│   ├── requests v2.32.3 (*)
+│   └── urllib3 v2.4.0
+├── werkzeug v3.1.3 (*)
+└── xmltodict v0.14.2
+openapi-spec-validator v0.7.1
+├── jsonschema v4.23.0 (*)
+├── jsonschema-path v0.3.4
+│   ├── pathable v0.4.4
+│   ├── pyyaml v6.0.2
+│   ├── referencing v0.36.2 (*)
+│   └── requests v2.32.3 (*)
+├── lazy-object-proxy v1.11.0
+└── openapi-schema-validator v0.6.3
+    ├── jsonschema v4.23.0 (*)
+    ├── jsonschema-specifications v2024.10.1 (*)
+    └── rfc3339-validator v0.1.4
+        └── six v1.17.0
+py-partiql-parser v0.6.1
+pyparsing v3.2.3
+setuptools v79.0.0
+(*) Package tree already displayed
+```
+
+These are all `moto[server]` deps so I'd expect them to appear under `moto`
+
+### Platform
+
+macos 15 arm64
+
+### Version
+
+uv 0.6.16 (Homebrew 2025-04-22)
+
+### Python version
+
+3.12
+
+---
+
+_Label `bug` added by @tekumara on 2025-04-23 10:12_
+
+---
+
+_Renamed from "uv pip tree" to "uv pip tree showing incorrect top-level dependencies " by @tekumara on 2025-04-23 10:13_
+
+---
+
+_Comment by @konstin on 2025-04-23 11:29_
+
+After installation, `uv pip` can't tell that `moto[server]` was installed, and not `moto`, causing the unexpected tree. You can get the correct tree with `uv tree` instead.
+
+---
+
+_Label `bug` removed by @konstin on 2025-04-23 11:29_
+
+---
+
+_Label `question` added by @konstin on 2025-04-23 11:29_
+
+---
+
+_Closed by @tekumara on 2025-04-24 00:41_
+
+---

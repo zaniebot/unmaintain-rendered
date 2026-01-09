@@ -1,0 +1,92 @@
+---
+number: 5588
+title: Paths to using published versions of vendored, forked crates?
+type: issue
+state: closed
+author: musicinmybrain
+labels:
+  - question
+  - internal
+assignees: []
+created_at: 2024-07-30T05:04:59Z
+updated_at: 2024-10-21T22:59:12Z
+url: https://github.com/astral-sh/uv/issues/5588
+synced_at: 2026-01-07T13:12:17-06:00
+---
+
+# Paths to using published versions of vendored, forked crates?
+
+---
+
+_Issue opened by @musicinmybrain on 2024-07-30 05:04_
+
+While finishing up a `uv` package for Fedora Linux, I’ve documented several cases where third-party crates have been copied into `uv`.
+
+- `crates/pep440-rs` is forked from version 0.6.0 of https://crates.io/crates/pep440_rs which is maintained in https://github.com/konstin/pep440-rs
+- `crates/pep508-rs` is forked from version 0.6.0 of https://crates.io/crates/pep508_rs which is maintained in https://github.com/konstin/pep508_rs
+- `crates/uv-extract/src/vendor/cloneable_seekable_reader.rs` appears to be forked from https://crates.io/crates/ripunzip which is maintained in https://github.com/google/ripunzip; based on the file’s contents and when it was originally introduced, I think it was forked from version 0.4.0, i.e. https://github.com/google/ripunzip/blob/v0.4.0/src/unzip/cloneable_seekable_reader.rs.
+- `wheel_metadata_from_remote_zip` in `crates//uv-client/src/remote_metadata.rs` is forked from `lazy_read_wheel_metadata` in `crates/rattler_installs_packages/src/index/lazy_metadata.rs` in version 0.9.0 https://crates.io/crates/rattler_installs_packages which is maintained at https://github.com/prefix-dev/rip
+- `crates/uv-virtualenv/` as a whole is derived from https://github.com/konstin/gourgeist 0.0.4, which was published as https://crates.io/crates/gourgeist. I am inclined not to treat this as a case of bundling, because it looks like the project was subsumed into `uv`, and the link to `uv` at https://konstin.github.io/gourgeist/ seems to support this.
+
+(Please correct me if any of the above is not quite right.)
+
+[Fedora policy](https://docs.fedoraproject.org/en-US/packaging-guidelines/#bundling) requires me to ask if there is a path toward eventually using a system copy of any or all of these libraries, i.e., if the necessary changes may eventually be worked around or upstreamed in the original crates.io packages.
+
+---
+
+_Comment by @musicinmybrain on 2024-07-30 05:05_
+
+I also found that `crates/uv-python/python/packaging` is vendored from https://pypi.org/project/packaging, but the fact that `uv` does not necessarily depend on a Python interpreter or environment provides much of the explanation for why this is necessary, and the commit message for 7964bfbb2bed50a5c7b0650a7b6799a66503a33a seems to provide most of the remaining rationale.
+
+A similar rationale seems to apply for `crates/uv-virtualenv/src/activator/`, bundled and slightly forked from files in https://pypi.org/project/virtualenv and specificially https://github.com/pypa/virtualenv/tree/main/src/virtualenv/activation.
+
+---
+
+_Comment by @musicinmybrain on 2024-07-30 05:05_
+
+Regarding forked crates that are not directly vendored, but referenced by `git` dependencies:
+- I already asked about `async_zip`, https://github.com/astral-sh/uv/issues/5556
+- I already asked about `pubgrub`, https://github.com/astral-sh/uv/issues/3794
+- and I believe I understand that the path to using upstream `reqwest-middleware`/`reqwest-retry` is for some form of https://github.com/TrueLayer/reqwest-middleware/pull/159 to be merged, but please correct me if I am mistaken
+
+---
+
+_Comment by @konstin on 2024-07-30 08:52_
+
+> crates/pep440-rs is forked from version 0.6.0 of https://crates.io/crates/pep440_rs which is maintained in https://github.com/konstin/pep440-rs
+> crates/pep508-rs is forked from version 0.6.0 of https://crates.io/crates/pep508_rs which is maintained in https://github.com/konstin/pep508_rs
+> crates/uv-virtualenv/ as a whole is derived from https://github.com/konstin/gourgeist 0.0.4, which was published as https://crates.io/crates/gourgeist. I am inclined not to treat this as a case of bundling, because it looks like the project was subsumed into uv, and the link to uv at https://konstin.github.io/gourgeist/ seems to support this.
+
+These have diverged significantly and the upstream versions are only passively maintained, uv requires these custom versions and can't use a system copy.
+
+---
+
+_Label `question` added by @charliermarsh on 2024-07-30 12:27_
+
+---
+
+_Label `internal` added by @charliermarsh on 2024-07-30 12:27_
+
+---
+
+_Referenced in [prefix-dev/pixi#2002](../../prefix-dev/pixi/issues/2002.md) on 2024-09-07 14:18_
+
+---
+
+_Comment by @zanieb on 2024-10-21 21:20_
+
+Are there remaining open questions here?
+
+---
+
+_Comment by @musicinmybrain on 2024-10-21 22:58_
+
+I think this is adequately answered – thanks!
+
+(I’m also tracking the forked `tl` crate, https://github.com/astral-sh/uv/issues/6687, but that’s just waiting on `tl` upstream to become active again and consider https://github.com/y21/tl/pull/69.)
+
+---
+
+_Closed by @musicinmybrain on 2024-10-21 22:58_
+
+---

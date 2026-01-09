@@ -1,0 +1,95 @@
+---
+number: 9613
+title: "Inline metadata ignored in uv run if the script is named `__main__.py`"
+type: issue
+state: closed
+author: mgaitan
+labels:
+  - question
+assignees: []
+created_at: 2024-12-03T18:06:34Z
+updated_at: 2024-12-03T18:43:50Z
+url: https://github.com/astral-sh/uv/issues/9613
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# Inline metadata ignored in uv run if the script is named `__main__.py`
+
+---
+
+_Issue opened by @mgaitan on 2024-12-03 18:06_
+
+When attempting to run a script named `toolbot/__main__.py` using `uv run toolbot`, uv does not recognize the inline metadata defined in the script. However, it still try to run it resulting in a `ModuleNotFoundError`
+
+```
+# /// script
+# requires-python = ">=3.12"
+# dependencies = [
+#   "rich",
+#   "uvicorn",
+#   "fastapi",
+#   "httpx",
+#   "python-dotenv",
+# ]
+# ///
+
+import httpx
+...
+```
+
+```
+$ uv run toolbot/
+warning: No `requires-python` value found in the workspace. Defaulting to `>=3.12`.
+Traceback (most recent call last):
+  ...
+ModuleNotFoundError: No module named 'httpx'
+```
+
+If the script is renamed, it does work ok 
+
+```
+$  uv run toolbot/main.py 
+Reading inline script metadata from `toolbot/main.py`
+⠸ Resolving dependencies...        
+....
+```
+
+---
+
+_Comment by @zanieb on 2024-12-03 18:13_
+
+That's not a valid way to pass a script to uv (that's a shorthand for invoking a _module_ which cannot have PEP 723 metadata), you can pass the full path instead:
+
+```
+❯ mkdir foo
+❯ touch foo/__main__.py
+❯ uv add --script foo/__main__.py httpx
+Updated `foo/__main__.py`
+❯ uv run foo/__main__.py
+Reading inline script metadata from `foo/__main__.py`
+Installed 7 packages in 14ms
+```
+
+
+
+---
+
+_Label `question` added by @zanieb on 2024-12-03 18:13_
+
+---
+
+_Comment by @mgaitan on 2024-12-03 18:18_
+
+ok that's fair, but why it still try to run it? 
+
+---
+
+_Closed by @mgaitan on 2024-12-03 18:18_
+
+---
+
+_Comment by @zanieb on 2024-12-03 18:43_
+
+Because `uv run <module>` is a valid way to run a module.
+
+---

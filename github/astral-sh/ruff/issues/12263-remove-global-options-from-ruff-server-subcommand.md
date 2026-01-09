@@ -1,0 +1,80 @@
+---
+number: 12263
+title: "Remove global options from `ruff server` subcommand"
+type: issue
+state: open
+author: dhruvmanila
+labels:
+  - cli
+  - server
+assignees: []
+created_at: 2024-07-10T02:59:59Z
+updated_at: 2025-04-03T13:48:11Z
+url: https://github.com/astral-sh/ruff/issues/12263
+synced_at: 2026-01-07T13:12:15-06:00
+---
+
+# Remove global options from `ruff server` subcommand
+
+---
+
+_Issue opened by @dhruvmanila on 2024-07-10 02:59_
+
+Currently, the `ruff server` subcommand includes the global options:
+
+```console
+$ ruff server --help       
+Run the language server
+
+Usage: ruff server [OPTIONS]
+
+Options:
+      --preview  Enable preview mode; required for regular operation
+  -h, --help     Print help
+
+Log levels:
+  -v, --verbose  Enable verbose logging
+  -q, --quiet    Print diagnostics, but nothing else
+  -s, --silent   Disable all logging (but still exit with status code "1" upon detecting diagnostics)
+
+Global options:
+      --config <CONFIG_OPTION>  Either a path to a TOML configuration file (`pyproject.toml` or `ruff.toml`), or a TOML `<KEY> = <VALUE>` pair (such
+                                as you might find in a `ruff.toml` configuration file) overriding a specific configuration option. Overrides of
+                                individual settings using this option always take precedence over all configuration files, including configuration
+                                files that were also specified using `--config`
+      --isolated                Ignore all configuration files
+```
+
+The "Log levels" and "Global options" aren't required for the server as it's never used internally and is actually provided via the server initialization options.
+
+---
+
+_Label `cli` added by @dhruvmanila on 2024-07-10 02:59_
+
+---
+
+_Label `server` added by @dhruvmanila on 2024-07-10 02:59_
+
+---
+
+_Added to milestone `Ruff Server: Stable` by @dhruvmanila on 2024-07-10 02:59_
+
+---
+
+_Comment by @dhruvmanila on 2024-07-11 11:37_
+
+This isn't possible today (https://github.com/clap-rs/clap/discussions/5578). It would require doing some major changes like moving the `GlobalConfigVars` to each subcommand struct, flattening it, and then updating all of the references to use the values from the subcommand struct. I don't think it's worth the effort right now to do this change.
+
+---
+
+_Removed from milestone `Ruff Server: Stable` by @dhruvmanila on 2024-07-11 11:37_
+
+---
+
+_Added to milestone `Ruff Server: Post-Stable` by @dhruvmanila on 2024-07-11 11:37_
+
+---
+
+_Removed from milestone `Ruff Server: Post-Stable` by @dhruvmanila on 2025-04-03 13:48_
+
+---

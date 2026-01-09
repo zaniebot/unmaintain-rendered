@@ -1,0 +1,143 @@
+---
+number: 14817
+title: "Indices don't get added to pyproject.toml in same order as command"
+type: issue
+state: closed
+author: DougCal
+labels:
+  - bug
+assignees: []
+created_at: 2025-07-22T16:22:59Z
+updated_at: 2025-07-22T19:10:00Z
+url: https://github.com/astral-sh/uv/issues/14817
+synced_at: 2026-01-07T13:12:19-06:00
+---
+
+# Indices don't get added to pyproject.toml in same order as command
+
+---
+
+_Issue opened by @DougCal on 2025-07-22 16:22_
+
+### Summary
+
+Issue happened at work, so limited on the info I can give, but will aim at sharing generically.
+
+```bash
+uv --project "$CLIENT_FOLDER" add \
+    -p "$PYTHON_VERSION" \
+    -r "$CLIENT_FOLDER"/requirements.txt \
+    -r "$COMMON_REQS" \
+    -c "$COMMON_CONSTRAINTS" \
+    --index "$PIP_ARTIFACTORY_INDEX" \
+    --index "$PIP_ARTIFACTORY_INDEX_LEGACY" \
+    --index-strategy unsafe-best-match \
+    --no-progress
+```
+
+The Artifactory legacy index is expected to be a fallback for when the non-legacy index doesn't have a package.
+
+Redacting the URLs, but going to reference the variables in the command to provide the idea.
+
+```toml
+[[tool.uv.index]]
+url = "PIP_ARTIFACTORY_INDEX_LEGACY"
+
+[[tool.uv.index]]
+url = "PIP_ARTIFACTORY_INDEX"
+```
+
+Considering that "Indexes are prioritized in the order in which they’re defined..." (see [here](https://docs.astral.sh/uv/concepts/indexes/#defining-an-index)), I would've expected that "PIP_ARTIFACTORY_INDEX" would be defined first in the `pyproject.toml` file after the command ran, since it was defined first on the command.
+
+### Platform
+
+Distribution: Ubuntu 22.04.5 LTS
+Architecture: x86_64
+
+and
+
+Darwin 24.5.0 arm64
+
+### Version
+
+uv 0.6.7
+
+### Python version
+
+Python 3.9
+
+---
+
+_Label `bug` added by @DougCal on 2025-07-22 16:23_
+
+---
+
+_Comment by @DougCal on 2025-07-22 16:38_
+
+Originally put `Darwin 24.5.0 arm64` for Platform but found it worked fine there.  The issue was seen on Ubuntu, and went ahead and updated the description to reflect that.
+
+---
+
+_Comment by @charliermarsh on 2025-07-22 16:44_
+
+Yeah that order does look wrong (but I haven't tried to reproduce myself yet).
+
+---
+
+_Comment by @DougCal on 2025-07-22 16:58_
+
+Okay, I was able to reproduce the issue on Mac.  Events occurred in the same order in Ubuntu.
+
+First command I ran was this
+```bash
+uv --project "$CLIENT_FOLDER" add \
+    -p "$PYTHON_VERSION" \
+    -r "$CLIENT_FOLDER"/requirements.txt \
+    -r "$COMMON_REQS" \
+    -c "$COMMON_CONSTRAINTS" \
+    --index "$PIP_ARTIFACTORY_INDEX" \
+    --index-strategy unsafe-best-match \
+    --no-progress
+```
+
+This resulted in pyproject being as expected
+```toml
+[[tool.uv.index]]
+url = "PIP_ARTIFACTORY_INDEX"
+```
+
+What made it go out of order was following up with this command right after that one
+```bash
+uv --project "$CLIENT_FOLDER" add \
+    -p "$PYTHON_VERSION" \
+    -r "$CLIENT_FOLDER"/requirements.txt \
+    -r "$COMMON_REQS" \
+    -c "$COMMON_CONSTRAINTS" \
+    --index "$PIP_ARTIFACTORY_INDEX" \
+    --index "$PIP_ARTIFACTORY_INDEX_LEGACY" \
+    --index-strategy unsafe-best-match \
+    --no-progress
+```
+
+When you run them in this order, it resulted in the toml file in the description.
+```toml
+[[tool.uv.index]]
+url = "PIP_ARTIFACTORY_INDEX_LEGACY"
+
+[[tool.uv.index]]
+url = "PIP_ARTIFACTORY_INDEX"
+```
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2025-07-22 17:33_
+
+---
+
+_Referenced in [astral-sh/uv#14831](../../astral-sh/uv/pulls/14831.md) on 2025-07-22 18:45_
+
+---
+
+_Closed by @charliermarsh on 2025-07-22 19:10_
+
+---

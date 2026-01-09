@@ -1,0 +1,51 @@
+---
+number: 20468
+title: "Reconsider `valid-magic-values` option"
+type: issue
+state: closed
+author: julianstirling
+labels: []
+assignees: []
+created_at: 2025-09-18T14:15:04Z
+updated_at: 2025-09-18T14:20:21Z
+url: https://github.com/astral-sh/ruff/issues/20468
+synced_at: 2026-01-07T13:12:16-06:00
+---
+
+# Reconsider `valid-magic-values` option
+
+---
+
+_Issue opened by @julianstirling on 2025-09-18 14:15_
+
+### Summary
+
+This was discussed before (See #6256). Pylint has a way to set valid magic values, ruff does not.
+
+The reason for closing was given as:
+
+> This was an intentional divergence, if I recall correctly, since we couldn't find any motivating use-cases for parameterizing on specific values, the thinking being that if there's a value that should be allowed that's specific to the codebase, it should probably be encoded as a variable; and if a value should be allowed but isn't specific to the codebase, it should probably just be allowed by default (like 0).
+
+I can think of a few examples which are not magic and specific, but maybe not everyone wants. For example:
+
+We have a project that does a lot of image handing. Generally images are unit8, sometimes unit16 if getting raw data with higher bit depth. Often certain calculations that could overflow are done as a different datatype. Before conversion you often find yourself checking for overflows.
+
+255 really is not magic in a codebase that does a lot of uint8 maths. But it may be considered so in other codebases. I would like (and 65535) to not be magic, but I can see reasonable arguments for them counting as magic in other codebases.
+
+
+
+---
+
+_Comment by @ntBre on 2025-09-18 14:20_
+
+Thanks for the suggestion and finding the old issue! There's a bit more recent discussion in #10009.
+
+---
+
+_Closed by @ntBre on 2025-09-18 14:20_
+
+---
+
+_Referenced in [astral-sh/ruff#10009](../../astral-sh/ruff/issues/10009.md) on 2025-09-18 20:08_
+
+---

@@ -1,0 +1,180 @@
+---
+number: 8863
+title: "Detect `asyncio-dangling-task` (`RUF006`) when discarding return value"
+type: issue
+state: closed
+author: tjkuson
+labels:
+  - bug
+assignees: []
+created_at: 2023-11-28T00:33:23Z
+updated_at: 2023-12-09T21:10:39Z
+url: https://github.com/astral-sh/ruff/issues/8863
+synced_at: 2026-01-07T13:12:15-06:00
+---
+
+# Detect `asyncio-dangling-task` (`RUF006`) when discarding return value
+
+---
+
+_Issue opened by @tjkuson on 2023-11-28 00:33_
+
+```python
+import asyncio
+
+for i in range(10):
+    asyncio.create_task(foo)
+```
+
+triggers `asyncio-dangling-task` but
+
+```python
+import asyncio
+
+for i in range(10):
+    _ = asyncio.create_task(foo)
+```
+
+does not.
+
+I would expect Ruff to trigger `asyncio-dangling-task` when the return value of `asyncio.create_task` is discarded, following the [rationale of the rule](https://docs.astral.sh/ruff/rules/asyncio-dangling-task/).
+
+---
+
+_Renamed from "Detect `asyncio-dangling-task` when discarding return value" to "Detect `asyncio-dangling-task`(`RUF006`) when discarding return value" by @tjkuson on 2023-11-28 00:35_
+
+---
+
+_Renamed from "Detect `asyncio-dangling-task`(`RUF006`) when discarding return value" to "Detect `asyncio-dangling-task` (`RUF006`) when discarding return value" by @tjkuson on 2023-11-28 00:35_
+
+---
+
+_Label `good first issue` added by @zanieb on 2023-11-28 18:32_
+
+---
+
+_Comment by @zanieb on 2023-11-28 18:32_
+
+This seems reasonable to me!
+
+---
+
+_Label `bug` added by @zanieb on 2023-11-28 18:32_
+
+---
+
+_Comment by @allaboutevemirolive on 2023-12-05 08:42_
+
+Hye, @tjkuson 
+<details>
+  <summary>Minimizing</summary>
+
+I'm new to Ruff's contributions. I try to duplicate your issue by compiling Ruff using `cargo build --release` and running the command on a Python file.
+
+```
+./ruff check /home/nemesis/Documents/Github/test/python/game.py
+```
+
+game.py:
+
+```py
+import asyncio
+
+
+async def some_coro(param):
+    print(f"Executing coroutine with param: {param}")
+    await asyncio.sleep(1)
+    print(f"Coroutine with param {param} completed")
+
+
+async def main():
+    for i in range(10):
+        asyncio.create_task(some_coro(param=i))
+
+
+if __name__ == "__main__":
+    asyncio.run(main())
+```
+
+I expected it would produce an error: `asyncio-dangling-task`, like you mentioned above, but it didn't.
+
+The result is also the same for this snippet.
+
+```py
+_ = asyncio.create_task(some_coro(param=i))
+``` 
+
+Python Version:
+
+```
+$ python3 --version
+Python 3.12.0
+```
+
+Local Machine:
+
+```
+Release 11 (bullseye) 64-bit
+Kernel Linux 5.10.0-26-amd64 x86_64
+Memory: 7.5 GiB
+Processor: Intel® Core™ i5-8250U CPU @ 1.60GHz × 8 
+Graphics: Mesa Intel® UHD Graphics 620 (KBL GT2)
+```
+</details>
+
+Edit:
+
+The rule is disabled by default. Use:
+```
+./ruff check --select RUF006 [PATH]
+```
+
+
+---
+
+_Comment by @MichaReiser on 2023-12-05 08:52_
+
+I'm not sure if this behavior is intentional, similar to that ruff allows `_` variables to be unused. @charliermarsh was it an intentional decision to not raise the lint for variables starting with `_`?
+
+---
+
+_Comment by @charliermarsh on 2023-12-05 14:44_
+
+@MichaReiser - Not intentional -- this rule doesn't look at _assignments_, it only looks at standalone expressions that include `asyncio.create_task(...)`, and then assumes that those are dangling by virtue of being a standalone expression statement.
+
+---
+
+_Label `good first issue` removed by @charliermarsh on 2023-12-05 14:44_
+
+---
+
+_Comment by @tjkuson on 2023-12-05 16:51_
+
+@allaboutevemirolive I think you need to select the rule (it isn't enabled by default) using `--select RUF006`.
+
+---
+
+_Referenced in [astral-sh/ruff#9060](../../astral-sh/ruff/pulls/9060.md) on 2023-12-08 21:04_
+
+---
+
+_Comment by @asafamr-mm on 2023-12-08 21:11_
+
+Hi,I gave it a try.
+I'm new to rust (and the project codebase) and would love feedback. What do you think? 
+
+---
+
+_Comment by @charliermarsh on 2023-12-08 22:28_
+
+Thanks @asafamr-mm!
+
+---
+
+_Assigned to @asafamr-mm by @charliermarsh on 2023-12-08 22:28_
+
+---
+
+_Closed by @charliermarsh on 2023-12-09 21:10_
+
+---

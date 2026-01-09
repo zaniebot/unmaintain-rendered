@@ -1,0 +1,281 @@
+---
+number: 14834
+title: Regression in v0.8.1 - UV_CACHE_DIR causes build error with hatchling
+type: issue
+state: closed
+author: chipselden
+labels:
+  - bug
+assignees: []
+created_at: 2025-07-22T23:13:40Z
+updated_at: 2025-07-23T00:44:02Z
+url: https://github.com/astral-sh/uv/issues/14834
+synced_at: 2026-01-07T13:12:19-06:00
+---
+
+# Regression in v0.8.1 - UV_CACHE_DIR causes build error with hatchling
+
+---
+
+_Issue opened by @chipselden on 2025-07-22 23:13_
+
+### Summary
+
+## Summary
+
+Executing `uv build` using UV 0.8.1 and 0.8.2 for a python package using hatchling where the `UV_CACHE_DIR` environment variable is set yields an error. This did not occur with UV 0.8.0. The location of the `UV_CACHE_DIR` does not matter. Unsetting `UV_CACHE_DIR` or adding the cache dir to .gitignore resolves the issue.
+
+```
+❯ uv build
+Building source distribution...
+  × Failed to build `/Users/SELDS001/git/uv-bug-test`
+  ├─▶ I/O operation failed during extraction
+  ├─▶ failed to unpack `/Users/SELDS001/git/uv-bug-test/.uv-cache/sdists-v9/.tmp5JvgqG/uv_bug_test-0.1.0/.uv-cache/builds-v0/.tmp6zl9MJ/bin/python`
+  ╰─▶ symlink destination for /opt/homebrew/Cellar/python@3.13/3.13.5/Frameworks/Python.framework/Versions/3.13/bin/python3.13 is outside of the target directory
+```
+
+## Minimum Reproducible Example
+
+### Setup
+
+From an empty directory:
+
+```
+uv init
+
+mkdir my_application
+
+mv main.py my_application/
+
+cat << EOF >> pyproject.toml
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["my_application"]
+EOF
+
+export UV_CACHE_DIR=$(pwd)/.uv-cache
+
+uv build --verbose
+```
+
+### Actual Result
+
+```
+DEBUG uv 0.8.2 (21fadbcc1 2025-07-22)
+DEBUG Found workspace root: `/Users/SELDS001/git/my_application`
+DEBUG Adding root workspace member: `/Users/SELDS001/git/my_application`
+DEBUG Reading Python requests from version file at `/Users/SELDS001/git/my_application/.python-version`
+DEBUG Searching for Python 3.13 in virtual environments, managed installations, or search path
+DEBUG Searching for managed installations at `/Users/SELDS001/.local/share/uv/python`
+DEBUG Found `cpython-3.13.5-macos-aarch64-none` at `/opt/homebrew/bin/python3.13` (first executable in the search path)
+DEBUG Using request timeout of 30s
+DEBUG Not using uv build backend direct build of , pyproject.toml does not match: The value for `build_system.build-backend` should be `"uv_build"`, not `"hatchling.build"`
+Building source distribution...
+DEBUG No workspace root found, using project root
+DEBUG Using base executable for virtual environment: /opt/homebrew/opt/python@3.13/bin/python3.13
+DEBUG Resolving build requirements
+DEBUG Solving with installed Python version: 3.13.5
+DEBUG Solving with target Python version: >=3.13.5
+DEBUG Adding direct dependency: hatchling*
+DEBUG Found fresh response for: https://pypi.org/simple/hatchling/
+DEBUG Searching for a compatible version of hatchling (*)
+DEBUG Selecting: hatchling==1.27.0 [compatible] (hatchling-1.27.0-py3-none-any.whl)
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/08/e7/ae38d7a6dfba0533684e0b2136817d667588ae3ec984c1a4e5df5eb88482/hatchling-1.27.0-py3-none-any.whl.metadata
+DEBUG Adding transitive dependency for hatchling==1.27.0: packaging>=24.2
+DEBUG Adding transitive dependency for hatchling==1.27.0: pathspec>=0.10.1
+DEBUG Adding transitive dependency for hatchling==1.27.0: pluggy>=1.0.0
+DEBUG Adding transitive dependency for hatchling==1.27.0: trove-classifiers*
+DEBUG Found fresh response for: https://pypi.org/simple/packaging/
+DEBUG Found fresh response for: https://pypi.org/simple/pathspec/
+DEBUG Searching for a compatible version of packaging (>=24.2)
+DEBUG Selecting: packaging==25.0 [compatible] (packaging-25.0-py3-none-any.whl)
+DEBUG Found fresh response for: https://pypi.org/simple/trove-classifiers/
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/cc/20/ff623b09d963f88bfde16306a54e12ee5ea43e9b597108672ff3a408aad6/pathspec-0.12.1-py3-none-any.whl.metadata
+DEBUG Found fresh response for: https://pypi.org/simple/pluggy/
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/20/12/38679034af332785aac8774540895e234f4d07f7545804097de4b666afd8/packaging-25.0-py3-none-any.whl.metadata
+DEBUG Searching for a compatible version of pathspec (>=0.10.1)
+DEBUG Selecting: pathspec==0.12.1 [compatible] (pathspec-0.12.1-py3-none-any.whl)
+DEBUG Searching for a compatible version of pluggy (>=1.0.0)
+DEBUG Selecting: pluggy==1.6.0 [compatible] (pluggy-1.6.0-py3-none-any.whl)
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/54/20/4d324d65cc6d9205fabedc306948156824eb9f0ee1633355a8f7ec5c66bf/pluggy-1.6.0-py3-none-any.whl.metadata
+DEBUG Searching for a compatible version of trove-classifiers (*)
+DEBUG Selecting: trove-classifiers==2025.5.9.12 [compatible] (trove_classifiers-2025.5.9.12-py3-none-any.whl)
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/92/ef/c6deb083748be3bcad6f471b6ae983950c161890bf5ae1b2af80cc56c530/trove_classifiers-2025.5.9.12-py3-none-any.whl.metadata
+DEBUG Tried 5 versions: hatchling 1, packaging 1, pathspec 1, pluggy 1, trove-classifiers 1
+DEBUG marker environment resolution took 0.003s
+DEBUG Installing in pluggy==1.6.0, hatchling==1.27.0, trove-classifiers==2025.5.9.12, packaging==25.0, pathspec==0.12.1 in /Users/SELDS001/git/my_application/.uv-cache/builds-v0/.tmpDhNEGH
+DEBUG Registry requirement already cached: pluggy==1.6.0
+DEBUG Registry requirement already cached: hatchling==1.27.0
+DEBUG Registry requirement already cached: trove-classifiers==2025.5.9.12
+DEBUG Registry requirement already cached: packaging==25.0
+DEBUG Registry requirement already cached: pathspec==0.12.1
+DEBUG Installing build requirements: pluggy==1.6.0, hatchling==1.27.0, trove-classifiers==2025.5.9.12, packaging==25.0, pathspec==0.12.1
+DEBUG Creating PEP 517 build environment
+DEBUG Calling `hatchling.build.get_requires_for_build_sdist()`
+DEBUG No workspace root found, using project root
+DEBUG Calling `hatchling.build.build_sdist("/Users/SELDS001/git/my_application/dist", {})`
+  × Failed to build `/Users/SELDS001/git/my_application`
+  ├─▶ I/O operation failed during extraction
+  ├─▶ failed to unpack `/Users/SELDS001/git/my_application/.uv-cache/sdists-v9/.tmppoc9AX/my_application-0.1.0/.uv-cache/builds-v0/.tmpDhNEGH/bin/python`
+  ╰─▶ symlink destination for /opt/homebrew/opt/python@3.13/bin/python3.13 is outside of the target directory
+```
+
+### Expected Result (using UV 0.8.0)
+
+```
+DEBUG uv 0.8.0 (0b2357294 2025-07-17)
+DEBUG Found workspace root: `/Users/SELDS001/git/my_application`
+DEBUG Adding root workspace member: `/Users/SELDS001/git/my_application`
+DEBUG Reading Python requests from version file at `/Users/SELDS001/git/my_application/.python-version`
+DEBUG Searching for Python 3.13 in virtual environments, managed installations, or search path
+DEBUG Searching for managed installations at `/Users/SELDS001/.local/share/uv/python`
+DEBUG Found `cpython-3.13.5-macos-aarch64-none` at `/opt/homebrew/bin/python3.13` (first executable in the search path)
+DEBUG Using request timeout of 30s
+DEBUG Not using uv build backend direct build of , pyproject.toml does not match: The value for `build_system.build-backend` should be `"uv_build"`, not `"hatchling.build"`
+Building source distribution...
+DEBUG No workspace root found, using project root
+DEBUG Using base executable for virtual environment: /opt/homebrew/opt/python@3.13/bin/python3.13
+DEBUG Removing existing directory due to `--clear`
+DEBUG Resolving build requirements
+DEBUG Solving with installed Python version: 3.13.5
+DEBUG Solving with target Python version: >=3.13.5
+DEBUG Adding direct dependency: hatchling*
+DEBUG Found fresh response for: https://pypi.org/simple/hatchling/
+DEBUG Searching for a compatible version of hatchling (*)
+DEBUG Selecting: hatchling==1.27.0 [compatible] (hatchling-1.27.0-py3-none-any.whl)
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/08/e7/ae38d7a6dfba0533684e0b2136817d667588ae3ec984c1a4e5df5eb88482/hatchling-1.27.0-py3-none-any.whl.metadata
+DEBUG Adding transitive dependency for hatchling==1.27.0: packaging>=24.2
+DEBUG Adding transitive dependency for hatchling==1.27.0: pathspec>=0.10.1
+DEBUG Adding transitive dependency for hatchling==1.27.0: pluggy>=1.0.0
+DEBUG Adding transitive dependency for hatchling==1.27.0: trove-classifiers*
+DEBUG Found fresh response for: https://pypi.org/simple/packaging/
+DEBUG Searching for a compatible version of packaging (>=24.2)
+DEBUG Selecting: packaging==25.0 [compatible] (packaging-25.0-py3-none-any.whl)
+DEBUG Found fresh response for: https://pypi.org/simple/pathspec/
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/20/12/38679034af332785aac8774540895e234f4d07f7545804097de4b666afd8/packaging-25.0-py3-none-any.whl.metadata
+DEBUG Searching for a compatible version of pathspec (>=0.10.1)
+DEBUG Selecting: pathspec==0.12.1 [compatible] (pathspec-0.12.1-py3-none-any.whl)
+DEBUG Found fresh response for: https://pypi.org/simple/pluggy/
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/cc/20/ff623b09d963f88bfde16306a54e12ee5ea43e9b597108672ff3a408aad6/pathspec-0.12.1-py3-none-any.whl.metadata
+DEBUG Searching for a compatible version of pluggy (>=1.0.0)
+DEBUG Found fresh response for: https://pypi.org/simple/trove-classifiers/
+DEBUG Selecting: pluggy==1.6.0 [compatible] (pluggy-1.6.0-py3-none-any.whl)
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/54/20/4d324d65cc6d9205fabedc306948156824eb9f0ee1633355a8f7ec5c66bf/pluggy-1.6.0-py3-none-any.whl.metadata
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/92/ef/c6deb083748be3bcad6f471b6ae983950c161890bf5ae1b2af80cc56c530/trove_classifiers-2025.5.9.12-py3-none-any.whl.metadata
+DEBUG Searching for a compatible version of trove-classifiers (*)
+DEBUG Selecting: trove-classifiers==2025.5.9.12 [compatible] (trove_classifiers-2025.5.9.12-py3-none-any.whl)
+DEBUG Tried 5 versions: hatchling 1, packaging 1, pathspec 1, pluggy 1, trove-classifiers 1
+DEBUG marker environment resolution took 0.002s
+DEBUG Installing in pluggy==1.6.0, hatchling==1.27.0, trove-classifiers==2025.5.9.12, packaging==25.0, pathspec==0.12.1 in /Users/SELDS001/git/my_application/.uv-cache/builds-v0/.tmp76nc18
+DEBUG Registry requirement already cached: pluggy==1.6.0
+DEBUG Registry requirement already cached: hatchling==1.27.0
+DEBUG Registry requirement already cached: trove-classifiers==2025.5.9.12
+DEBUG Registry requirement already cached: packaging==25.0
+DEBUG Registry requirement already cached: pathspec==0.12.1
+DEBUG Installing build requirements: pluggy==1.6.0, hatchling==1.27.0, trove-classifiers==2025.5.9.12, packaging==25.0, pathspec==0.12.1
+DEBUG Creating PEP 517 build environment
+DEBUG Calling `hatchling.build.get_requires_for_build_sdist()`
+DEBUG No workspace root found, using project root
+DEBUG Calling `hatchling.build.build_sdist("/Users/SELDS001/git/my_application/dist", {})`
+Building wheel from source distribution...
+DEBUG No workspace root found, using project root
+DEBUG Using base executable for virtual environment: /opt/homebrew/opt/python@3.13/bin/python3.13
+DEBUG Removing existing directory due to `--clear`
+DEBUG Resolving build requirements
+DEBUG Solving with installed Python version: 3.13.5
+DEBUG Solving with target Python version: >=3.13.5
+DEBUG Adding direct dependency: hatchling*
+DEBUG Searching for a compatible version of hatchling (*)
+DEBUG Selecting: hatchling==1.27.0 [compatible] (hatchling-1.27.0-py3-none-any.whl)
+DEBUG Adding transitive dependency for hatchling==1.27.0: packaging>=24.2
+DEBUG Adding transitive dependency for hatchling==1.27.0: pathspec>=0.10.1
+DEBUG Adding transitive dependency for hatchling==1.27.0: pluggy>=1.0.0
+DEBUG Adding transitive dependency for hatchling==1.27.0: trove-classifiers*
+DEBUG Searching for a compatible version of packaging (>=24.2)
+DEBUG Selecting: packaging==25.0 [compatible] (packaging-25.0-py3-none-any.whl)
+DEBUG Searching for a compatible version of pathspec (>=0.10.1)
+DEBUG Selecting: pathspec==0.12.1 [compatible] (pathspec-0.12.1-py3-none-any.whl)
+DEBUG Searching for a compatible version of pluggy (>=1.0.0)
+DEBUG Selecting: pluggy==1.6.0 [compatible] (pluggy-1.6.0-py3-none-any.whl)
+DEBUG Searching for a compatible version of trove-classifiers (*)
+DEBUG Selecting: trove-classifiers==2025.5.9.12 [compatible] (trove_classifiers-2025.5.9.12-py3-none-any.whl)
+DEBUG Tried 5 versions: hatchling 1, packaging 1, pathspec 1, pluggy 1, trove-classifiers 1
+DEBUG marker environment resolution took 0.000s
+DEBUG Installing in pluggy==1.6.0, hatchling==1.27.0, trove-classifiers==2025.5.9.12, packaging==25.0, pathspec==0.12.1 in /Users/SELDS001/git/my_application/.uv-cache/builds-v0/.tmprOrv7h
+DEBUG Registry requirement already cached: pluggy==1.6.0
+DEBUG Registry requirement already cached: hatchling==1.27.0
+DEBUG Registry requirement already cached: trove-classifiers==2025.5.9.12
+DEBUG Registry requirement already cached: packaging==25.0
+DEBUG Registry requirement already cached: pathspec==0.12.1
+DEBUG Installing build requirements: pluggy==1.6.0, hatchling==1.27.0, trove-classifiers==2025.5.9.12, packaging==25.0, pathspec==0.12.1
+DEBUG Creating PEP 517 build environment
+DEBUG Calling `hatchling.build.get_requires_for_build_wheel()`
+DEBUG No workspace root found, using project root
+DEBUG Calling `hatchling.build.build_wheel("/Users/SELDS001/git/my_application/dist", {}, None)`
+Successfully built dist/my_application-0.1.0.tar.gz
+Successfully built dist/my_application-0.1.0-py3-none-any.whl
+```
+
+### Platform
+
+Darwin 24.2.0 arm64
+
+### Version
+
+0.8.1 and 0.8.2
+
+### Python version
+
+Python 3.13.5
+
+---
+
+_Label `bug` added by @chipselden on 2025-07-22 23:13_
+
+---
+
+_Comment by @charliermarsh on 2025-07-22 23:49_
+
+Hmm, this looks right though? The virtual environment is being included in your source distribution, and as long as it's in the source distribution, it's correct for uv to reject it.
+
+pip will also reject `built dist/my_application-0.1.0.tar.gz`:
+
+```
+❯ .venv/bin/pip install dist/foo-0.1.0.tar.gz
+Processing ./dist/foo-0.1.0.tar.gz
+ERROR: Invalid member in the tar file /Users/crmarsh/workspace/uv/foo/dist/foo-0.1.0.tar.gz: '.uv-cache/builds-v0/.tmp5fgeRG/bin/python' is a link to an absolute path
+```
+
+It's up to the build backend (and you) to omit the virtual environment.
+
+
+---
+
+_Comment by @charliermarsh on 2025-07-22 23:55_
+
+To phrase it differently: I think the behavior of `uv build` is probably unchanged here, and the virtual environment is probably being included in your `.tar.gz` file even on prior versions. But we now (correctly) reject that source distribution, since the Python spec says that source distributions can't contain symlinks that point outside it (and a virtual environment will always contain such a link).
+
+---
+
+_Comment by @chipselden on 2025-07-23 00:44_
+
+Thanks for the quick response, I understand what you're saying. In my investigation I thought reproduced the issue with a UV_CACHE_DIR outside of the project repo, but I may not have been cleaning up properly.
+
+So UV is actually doing us a favor! Excellent! Closing this issue. Thanks again.
+
+---
+
+_Closed by @chipselden on 2025-07-23 00:44_
+
+---
+
+_Referenced in [astral-sh/uv#14897](../../astral-sh/uv/issues/14897.md) on 2025-07-25 18:13_
+
+---
+
+_Referenced in [astral-sh/uv#15096](../../astral-sh/uv/issues/15096.md) on 2025-08-06 00:17_
+
+---

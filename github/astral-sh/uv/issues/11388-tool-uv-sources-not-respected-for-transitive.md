@@ -1,0 +1,133 @@
+---
+number: 11388
+title: "`tool.uv.sources` not respected for transitive dependencies"
+type: issue
+state: closed
+author: zmeir
+labels:
+  - bug
+assignees: []
+created_at: 2025-02-10T15:49:07Z
+updated_at: 2025-02-10T18:55:28Z
+url: https://github.com/astral-sh/uv/issues/11388
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# `tool.uv.sources` not respected for transitive dependencies
+
+---
+
+_Issue opened by @zmeir on 2025-02-10 15:49_
+
+### Summary
+
+Hi,
+
+First just let me say how much I appreciate your work on this tool. Using `uv` has made my workflow simpler, faster, and much more enjoyable!
+
+I tried looking for any reference to this problem in the docs or similar issues but failed. If this is not an issue but an intended behavior I apologize in advance.
+
+Steps to reproduce:
+1. Create 3 temporary directories for our projects:
+```bash
+mkdir a b c
+```
+2. In dir `a` create the following `pyproject.toml`:
+```toml
+[project]
+name = "a"
+version = "0.1.0"
+requires-python = ">=3.13"
+dependencies = []
+```
+3. In dir `b` create the following `pyproject.toml`:
+```toml
+[project]
+name = "b"
+version = "0.1.0"
+requires-python = ">=3.13"
+dependencies = ["a"]
+```
+4. In dir `c` create the following `pyproject.toml`:
+```toml
+[project]
+name = "c"
+version = "0.1.0"
+requires-python = ">=3.13"
+dependencies = ["b"]
+
+[tool.uv.sources]
+a = { path = "../a", editable = true }
+b = { path = "../b", editable = true }
+```
+5. In dir `c` run `uv lock` - you should get the following `uv.lock`:
+```toml
+version = 1
+requires-python = ">=3.13"
+
+[[package]]
+name = "a"
+version = "1.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/22/94/2c8ae1f5a1173347404c7d94a7dd822ff059ff6d19f8fa6240ffde1cb956/a-1.0.tar.gz", hash = "sha256:ac14dc3a69f5746f06fd72fd2f2dace84bc07247182b3b117eaaa14dfd5fb0cd", size = 564 }
+
+[[package]]
+name = "b"
+version = "0.1.0"
+source = { editable = "../b" }
+dependencies = [
+    { name = "a" },
+]
+
+[package.metadata]
+requires-dist = [{ name = "a" }]
+
+[[package]]
+name = "c"
+version = "0.1.0"
+source = { virtual = "." }
+dependencies = [
+    { name = "b" },
+]
+
+[package.metadata]
+requires-dist = [{ name = "b", editable = "../b" }]
+```
+
+As you can see, the `[[package]]` section for `b` correctly sets `source = { editable = "../b" }` but for `a` it ignores `tool.uv.sources` and sets `source = { registry = "https://pypi.org/simple" }`
+
+If I add `a = { path = "../a", editable = true }` to `[tool.uv.sources]` in `b/pyproject.toml`, and then run `uv lock` from `c` dir, then the `uv.lock` file looks as I expect - with `source = { editable = "../a" }` correctly set for the `b` package. But that's "cheating" because I want to override the sources when I'm working on `c`.
+
+### Platform
+
+Darwin 23.6.0 arm64
+
+### Version
+
+uv 0.5.29 (ca73c4754 2025-02-05)
+
+### Python version
+
+Python 3.13.1
+
+---
+
+_Label `bug` added by @zmeir on 2025-02-10 15:49_
+
+---
+
+_Comment by @charliermarsh on 2025-02-10 17:38_
+
+Thank you! I think this might be a duplicate of #9446?
+
+---
+
+_Comment by @zmeir on 2025-02-10 18:40_
+
+Thanks @charliermarsh - looks like a duplicate indeed!
+
+---
+
+_Closed by @konstin on 2025-02-10 18:55_
+
+---

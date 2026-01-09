@@ -1,0 +1,73 @@
+---
+number: 11435
+title: Enable multiple tools in one env
+type: issue
+state: closed
+author: nixjdm
+labels:
+  - question
+assignees: []
+created_at: 2025-02-12T04:49:47Z
+updated_at: 2025-04-26T15:02:06Z
+url: https://github.com/astral-sh/uv/issues/11435
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# Enable multiple tools in one env
+
+---
+
+_Issue opened by @nixjdm on 2025-02-12 04:49_
+
+`uv tool install glances` and `uv tool install ipython` make those tools generally available in my shell, and they are isolated from each other.
+
+What if I want to install libraries, like numpy or requests, in the same env that ipython is installed in? Or many other libraries? If I recall, I could do this with rye or pipx, but I've looked and talked to a few others, and can't figure it out in uv - so I think this ability doesn't exist yet. If it does, how do I do it?
+
+I'm not asking to put all tools in one env, but to optionally install more than one tool in a shared env.
+
+I toyed with making a uv env in my home directory and using `uv add` rather than `uv tool install`, but that changes how all of the projects under my home directory are treated.
+
+---
+
+_Label `enhancement` added by @nixjdm on 2025-02-12 04:49_
+
+---
+
+_Comment by @zanieb on 2025-02-12 05:00_
+
+This is supported already `uv tool install --with numpy --with requests ipython`
+
+https://docs.astral.sh/uv/concepts/tools/#including-additional-dependencies
+
+---
+
+_Label `enhancement` removed by @zanieb on 2025-02-12 05:00_
+
+---
+
+_Label `question` added by @zanieb on 2025-02-12 05:00_
+
+---
+
+_Comment by @nixjdm on 2025-02-12 05:29_
+
+Thank you, that does what I asked for. I have a follow-up that I still don't see, but it's distinct, so I'll make a new issue for it and close this.
+
+---
+
+_Closed by @nixjdm on 2025-02-12 05:29_
+
+---
+
+_Referenced in [astral-sh/uv#11436](../../astral-sh/uv/issues/11436.md) on 2025-02-12 05:33_
+
+---
+
+_Comment by @alexrecuenco on 2025-04-26 15:01_
+
+Although this is marked as closed, I enconted that jupyter-nbconvert comes from nbconvert, while jupyter itself comes from jupyter-core, so I haven't found a way to get both jupyter and jupyter-nbconvert to come from the same venv, since 
+
+1. `uv tool install nbconvert --with jupyter` makes jupyter-dejavu, and jupyter-nbconvert available
+2. `uv tool install jupyter-core --with jupyter --with nbconvert` make jupyter, jupyter-migrate, and jupyter-troubleshoot available.
+
+---

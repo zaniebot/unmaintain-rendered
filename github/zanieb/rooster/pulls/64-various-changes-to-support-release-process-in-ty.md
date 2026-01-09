@@ -1,0 +1,45 @@
+---
+number: 64
+title: Various changes to support release process in ty
+type: pull_request
+state: closed
+author: zanieb
+labels: []
+assignees: []
+base: main
+head: zb/version-update
+created_at: 2025-05-05T21:03:04Z
+updated_at: 2025-05-13T12:06:41Z
+url: https://github.com/zanieb/rooster/pull/64
+synced_at: 2026-01-07T13:12:14-06:00
+---
+
+# Various changes to support release process in ty
+
+---
+
+_Pull request opened by @zanieb on 2025-05-05 21:03_
+
+_No description provided._
+
+---
+
+_Referenced in [zanieb/rooster#67](../../zanieb/rooster/pulls/67.md) on 2025-05-13 10:09_
+
+---
+
+_Renamed from "Update version file handling" to "Various changes to support release process in ty" by @zanieb on 2025-05-13 12:06_
+
+---
+
+_Marked ready for review by @zanieb on 2025-05-13 12:06_
+
+---
+
+_Merged by @zanieb on 2025-05-13 12:06_
+
+---
+
+_Closed by @zanieb on 2025-05-13 12:06_
+
+---

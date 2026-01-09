@@ -1,0 +1,88 @@
+---
+number: 15820
+title: ruff check --fix makes changes that immediately fail line length checks
+type: issue
+state: closed
+author: juledwar
+labels: []
+assignees: []
+created_at: 2025-01-29T23:31:24Z
+updated_at: 2025-01-30T14:59:02Z
+url: https://github.com/astral-sh/ruff/issues/15820
+synced_at: 2026-01-07T13:12:16-06:00
+---
+
+# ruff check --fix makes changes that immediately fail line length checks
+
+---
+
+_Issue opened by @juledwar on 2025-01-29 23:31_
+
+### Description
+
+```
+ruff --version
+ruff 0.9.3
+```
+
+Before:
+```
+ruff check heliosclient
+heliosclient/cli/project.py:313:14: B905 [*] `zip()` without an explicit `strict=` parameter
+    |
+311 |     """
+312 |     vuln_filters = [
+313 |         dict(zip(('cvenum', 'reason'), cve.split(":", maxsplit=1)))
+    |              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ B905
+314 |         for cve in vuln_filters
+315 |     ]
+    |
+    = help: Add explicit value for parameter `strict=`
+
+Found 1 error.
+[*] 1 fixable with the `--fix` option.
+```
+
+After:
+```
+ruff check --fix heliosclient
+heliosclient/cli/project.py:313:80: E501 Line too long (81 > 79)
+    |
+311 |     """
+312 |     vuln_filters = [
+313 |         dict(zip(('cvenum', 'reason'), cve.split(":", maxsplit=1), strict=False))
+    |                                                                                ^^ E501
+314 |         for cve in vuln_filters
+315 |     ]
+    |
+```
+
+---
+
+_Comment by @tjkuson on 2025-01-30 01:32_
+
+Hi! I think this might be related to #8106 (and sort of #9203).
+
+---
+
+_Comment by @juledwar on 2025-01-30 05:41_
+
+Yes I think they are the same, I didn't see those (pretty old!) issues, sorry. 
+
+---
+
+_Comment by @tjkuson on 2025-01-30 12:39_
+
+No problem! It took me quite a while to find them and already knew they existed. GitHub's issue search is pretty rough, so linking here should help others discover the issue.
+
+---
+
+_Comment by @dylwil3 on 2025-01-30 14:59_
+
+Thanks for bumping this! I'm gonna close this as a duplicate, but it should still help when folks search as @tjkuson pointed out.
+
+---
+
+_Closed by @dylwil3 on 2025-01-30 14:59_
+
+---

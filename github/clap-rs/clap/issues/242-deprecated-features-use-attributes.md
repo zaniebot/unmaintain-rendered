@@ -1,0 +1,191 @@
+---
+number: 242
+title: Deprecated features; use attributes
+type: issue
+state: closed
+author: WildCryptoFox
+labels:
+  - C-enhancement
+assignees: []
+created_at: 2015-09-09T08:25:28Z
+updated_at: 2018-08-02T03:29:44Z
+url: https://github.com/clap-rs/clap/issues/242
+synced_at: 2026-01-07T13:12:19-06:00
+---
+
+# Deprecated features; use attributes
+
+---
+
+_Issue opened by @WildCryptoFox on 2015-09-09 08:25_
+
+Rust has stability markers.  `#[$stability_level] $ITEM`:
+- `#[stable]`: Stable and officially supported for this major release
+- `#[unstable]`: Exists in this major release, but is not officially stable and may become deprecated.
+- ~~`#[experimental]`: Exists, but is neither stable, unstable, nor deprecated~~
+- `#[deprecated]`: Existed as stable or unstable in a previous major release, has been marked for removal for the next major
+
+An important note here is that rust will warn any consumers who use the deprecated, experimental, or unstable functions.
+
+---
+
+This was just off the top of my head, things may have changed. IIRC something was happening with experimental; maybe removed.
+
+
+---
+
+_Renamed from "Depricated features; use attributes" to "Deprecated features; use attributes" by @WildCryptoFox on 2015-09-09 08:26_
+
+---
+
+_Comment by @WildCryptoFox on 2015-09-09 08:50_
+
+Appears to have been migrated to a compiler feature `#![feature(staged_api)] #![staged_api]`. Only gives `stable` `unstable` and `deprecated` stability markers.
+
+
+---
+
+_Comment by @Vinatorul on 2015-09-09 08:52_
+
+This is good idea, but, I think it will not work on `stable` and `beta` rust, isn't it?
+
+
+---
+
+_Comment by @WildCryptoFox on 2015-09-09 09:21_
+
+Anything `#[stable]` will work fine. Anything `#[unstable]` should be rejected by `stable` and `beta`, while `nightly` should allow the usage of these.
+
+Rust stops the consumption of these marked items, it doesn't prevent their existence. They would not prevent building on stable (unless a stable function attempts to use an unstable or deprecated function).
+
+## 
+
+Thanks @Vinatorul for mentioning this, I only use nightly and so forgot about this detail.
+
+
+---
+
+_Comment by @Vinatorul on 2015-09-09 10:30_
+
+> unless a stable function attempts to use an unstable or deprecated function
+
+What will happend when user will try to use `deprecated` function on `stable`? Compilation error, or warning?
+
+
+---
+
+_Comment by @WildCryptoFox on 2015-09-09 10:48_
+
+Good question, but sadly I can't test, I only have nightly. If you have stable rust - you could try to consume something deprecated from `std`.
+
+
+---
+
+_Comment by @kbknapp on 2015-09-09 11:46_
+
+An early version of `clap` used these, but the Rust team quickly stated these were only for internal Rust use. We've asked about allowing them outside of `std` which worked, but was advised against. I haven't revisited the topic in a long time, but if this is now good to go outside of `std` I'm all for it and think it's a great idea!
+
+
+---
+
+_Comment by @WildCryptoFox on 2015-09-09 12:00_
+
+I must have missed this discussion. Thanks for the note. Currently I'm trying to add them to my own code and for some reason; they don't appear to even want to be applied to my functions.... I also can't find any documentation past http://doc.rust-lang.org/reference.html.
+
+
+---
+
+_Comment by @kbknapp on 2015-09-09 12:07_
+
+I don't remember where the conversation took place, I think it was Reddit, and this was pre 1.0. Steveklabnik was the one with "official guidance" although there were quite a few people wanting to use something like these stability attributes. I believe even burntsushi was using them, who is now on the official libs team....so I have no idea what the current status of this is, or if it's even been brought back up. 
+
+
+---
+
+_Comment by @WildCryptoFox on 2015-09-09 12:24_
+
+The section that I referenced in the link above; shows that the feature remains and **SHOULD** be accessible to crates... But attempting to use so far, not having any luck.
+
+
+---
+
+_Comment by @kbknapp on 2015-09-10 04:11_
+
+Awesome, I'll try and look into this more over the next few days too. It'd be great if we can start incorporating these!
+
+
+---
+
+_Comment by @WildCryptoFox on 2015-09-10 08:59_
+
+https://github.com/rust-lang/rust/blob/9165a4e2dcaaa878a33379c6ff097c68f0ca0485/src/test/auxiliary/inherited_stability.rs
+
+``` rust
+#![feature(staged_api)]
+#![staged_api]
+// Default everything to unstable with issue 0.
+// Issue 0: Milestone 1.5.0 checklist
+#![unstable(feature = "clap", issue = "0")]
+
+// This function is stable
+#[stable(feature = "clap", since = "1.4.0")]
+fn stable() { /* .. */ }
+
+// This function was stable in 1.2.0. Since 1.4.0 it has been removed.
+#[stable(feature = "clap", since = "1.2.0")]
+#[deprecated(since = "1.4.0")] // In favor of???
+fn deprecated_function_since_1_4_0(foo: Foo) {
+    // ...
+}
+```
+
+Attempting to use `deprecated_function_since_1_4_0` will cause the following **WARNING**.
+
+```
+warning: use of deprecated item, #[warn(deprecated)] on by default
+```
+
+## Implementation
+
+Every stable item needs to have it's stability set. Unstable can carry over as a crate wide default, stable does not have this effect.
+
+## Consumers
+
+Consumers should be able to just use the crate such that they only use stable features. If an unstable feature is used, `#![feature(clap)]` is required to unlock the `unstable` items.  If the code already uses a deprecated function, a warning will inform for the deprecation at compile time.
+
+
+---
+
+_Comment by @kbknapp on 2015-09-10 11:54_
+
+Huge :+1:
+
+
+---
+
+_Label `T: enhancement` added by @kbknapp on 2015-09-10 18:46_
+
+---
+
+_Label `D: easy` added by @kbknapp on 2015-09-10 18:46_
+
+---
+
+_Label `P3: want to have` added by @kbknapp on 2015-09-10 18:46_
+
+---
+
+_Label `E: tedious` added by @kbknapp on 2015-09-10 18:46_
+
+---
+
+_Comment by @kbknapp on 2016-03-18 01:20_
+
+The deprecated attribute should be stable now for everyone's use. There's also no deprecated items in clap right now, so this closed. All future depreciations will use said attribute.
+
+
+---
+
+_Closed by @kbknapp on 2016-03-18 01:20_
+
+---

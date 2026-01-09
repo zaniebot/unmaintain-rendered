@@ -1,0 +1,185 @@
+---
+number: 11776
+title: "`# isort: split` ignored if in trailing comment"
+type: issue
+state: open
+author: ndevenish
+labels:
+  - isort
+assignees: []
+created_at: 2024-06-06T14:04:58Z
+updated_at: 2024-08-09T11:17:54Z
+url: https://github.com/astral-sh/ruff/issues/11776
+synced_at: 2026-01-07T13:12:15-06:00
+---
+
+# `# isort: split` ignored if in trailing comment
+
+---
+
+_Issue opened by @ndevenish on 2024-06-06 14:04_
+
+test.py:
+```python
+import x
+import y
+
+import f # isort: split
+
+import a
+import b
+```
+isort is a noop:
+```
+% isort --version
+                 _                 _
+                (_) ___  ___  _ __| |_
+                | |/ _/ / _ \/ '__  _/
+                | |\__ \/\_\/| |  | |_
+                |_|\___/\___/\_/   \_/
+
+      isort your imports, so you don't have to.
+
+                    VERSION 5.13.2
+% isort --diff test.py
+%
+```
+ruff ignores the marker:
+
+```diff
+% ruff --version
+ruff 0.4.8
+% ruff check --select=I --diff test.py
+--- test.py
++++ test.py
+@@ -1,8 +1,7 @@
+
+-import x
+-import y
+-
+-import f # isort: split
++import f  # isort: split
+
+ import a
+ import b
++import x
++import y
+
+Would fix 3 errors.
+```
+
+---
+
+_Label `isort` added by @MichaReiser on 2024-06-06 14:06_
+
+---
+
+_Comment by @charliermarsh on 2024-06-07 02:46_
+
+I find it a bit confusing. How should the `import f` be treated in such a case? Is it "before" or "after" the split, or neither?
+
+---
+
+_Comment by @charliermarsh on 2024-06-07 02:48_
+
+I'm tempted to call this unsupported. Do you have a use-case for the inline split?
+
+---
+
+_Comment by @ndevenish on 2024-06-07 07:35_
+
+> I find it a bit confusing. How should the `import f` be treated in such a case? Is it "before" or "after" the split, or neither?
+
+It's effectively treated as
+```python
+import x
+import y
+
+# isort: split
+import f
+# isort: split
+
+import a
+import b
+```
+
+This is explicitly documented in isort: https://pycqa.github.io/isort/docs/configuration/action_comments.html#isort-split
+
+> You can also use it inline to keep an import from having imports above or below it swap position:
+
+---
+
+> I'm tempted to call this unsupported. Do you have a use-case for the inline split?
+
+We've used this in the past for cases where upstream dependencies have not handled arbitrary-import-order very well, and so a specific import needs to be "First". We can work around by using normal split/on/off features.
+
+Perhaps the fact that we're the only ones to notice this in so long is perhaps evidence that supporting it isn't very important.
+
+---
+
+_Comment by @seproDev on 2024-06-12 22:02_
+
+I am not sure if this is 100% related, but we also ran in to differences with trailing `# isort: split`. This is a noop in isort 5.13.2:
+```python
+from x import a  # isort: split
+from x import b
+```
+While ruff 0.4.8 changes it to:
+```python
+from x import a  # isort: split
+
+from x import b
+```
+When running
+```
+ruff check --select I --fix --isolated
+```
+
+---
+
+_Comment by @charliermarsh on 2024-06-13 01:26_
+
+Yeah I think we just don't really support inline `# isort: split` right now.
+
+---
+
+_Referenced in [pytorch/pytorch#132574](../../pytorch/pytorch/pulls/132574.md) on 2024-08-09 11:13_
+
+---
+
+_Comment by @XuehaiPan on 2024-08-09 11:17_
+
+From the `isort` documentation: https://pycqa.github.io/isort/docs/configuration/action_comments.html#isort-split
+
+> isort split is exactly the same as placing an `# isort: on` immediately below an `# isort: off`
+
+Originally posted at https://github.com/pytorch/pytorch/pull/132574#discussion_r1703287249:
+
+- https://github.com/pytorch/pytorch/pull/132574#discussion_r1703287249
+
+> `ruff check --select=I --fix` do not respect `# isort: split` for asterisk imports. This is a bug.
+> 
+> ```python
+> from xxx.b import *  # isort: split
+> from xxx.a import *  # isort: split  # avoid circular imports
+> ```
+> 
+> will be format to:
+> 
+> ```python
+> from xxx.a import *  # isort: split  # avoid circular imports
+> from xxx.b import *  # isort: split
+> ```
+
+The `# isort: split` inline comment should be equivalent to:
+
+```python
+# isort: off
+from xxx.b import *
+# isort: on
+# isort: off
+from xxx.a import *  # avoid circular imports
+# isort: on
+```
+
+---

@@ -1,0 +1,208 @@
+---
+number: 1789
+title: Support flags via environment variables
+type: issue
+state: closed
+author: gaborbernat
+labels:
+  - good first issue
+  - configuration
+assignees: []
+created_at: 2024-02-21T00:25:58Z
+updated_at: 2024-04-19T14:12:08Z
+url: https://github.com/astral-sh/uv/issues/1789
+synced_at: 2026-01-07T13:12:16-06:00
+---
+
+# Support flags via environment variables
+
+---
+
+_Issue opened by @gaborbernat on 2024-02-21 00:25_
+
+Pip supports setting environment variables via flags, today I know of UV_INDEX_URL and UV_EXTRA_INDEX_URL that uv also has.
+
+However, such as `PIP_PREFER_BINARY=true` I don't think has an equivalent. It would be nice if uv would do similar for all flags in case.
+
+---
+
+_Comment by @zanieb on 2024-02-21 00:31_
+
+I think it's unlikely that we try to match _all_ of the pip environment variables — we've tried to avoid environment based configuration in Ruff (for reasons unknown to me, I kind of like having a variable for each option). Is there a particular reason this would be useful?
+
+---
+
+_Comment by @gaborbernat on 2024-02-21 01:01_
+
+Because you can control the indexes via `UV_INDEX_URL` and `UV_EXTRA_INDEX_URL`; but if both have a package currently the first one will take priority, and there's no way without this to tell, prioritize the index that has a wheel...
+
+---
+
+_Comment by @charliermarsh on 2024-02-21 03:13_
+
+I don't mind adding environment variable support, personally. (But I'd prefer to have our own `UV_*` variables rather than read `PIP_*` variables.)
+
+---
+
+_Label `configuration` added by @charliermarsh on 2024-02-21 03:13_
+
+---
+
+_Comment by @gaborbernat on 2024-02-21 03:29_
+
+I agree with not reusing pip ones 🧐
+
+---
+
+_Comment by @mgaitan on 2024-02-21 20:36_
+
+running `uv --help` I can see there is some flags that supports envvars, like
+
+```
+      --cache-dir <CACHE_DIR>
+          Path to the cache directory
+          
+          [env: UV_CACHE_DIR=]
+```
+
+but others doesn't like `--color`  or `--verbose`  . Couldn't be the support for environment variable generalized with the same `UV_<UPPER_CLI_FLAG>` pattern? 
+
+---
+
+_Label `good first issue` added by @zanieb on 2024-02-21 20:38_
+
+---
+
+_Referenced in [astral-sh/uv#1839](../../astral-sh/uv/issues/1839.md) on 2024-02-21 22:39_
+
+---
+
+_Referenced in [astral-sh/uv#1841](../../astral-sh/uv/issues/1841.md) on 2024-02-21 23:24_
+
+---
+
+_Referenced in [napari/napari#6668](../../napari/napari/pulls/6668.md) on 2024-02-27 11:56_
+
+---
+
+_Comment by @Czaki on 2024-03-04 18:28_
+
+@zanieb @charliermarsh I may be interested to implementing this (it is blocking me to migrate test to use uv). Where is the best place to ask some questions (if I am good, understanding code structure for example)? 
+
+---
+
+_Comment by @charliermarsh on 2024-03-04 20:59_
+
+@Czaki -- You're welcome to either (1) ask questions here, (2) open a draft PR early and ask questions there, or (3) ask in Discord. I have a minor preference for fielding questions in GitHub but it's whatever you prefer!
+
+I suspect the changes would mostly be in: https://github.com/astral-sh/uv/blob/14d968ac224c88988c60b6c067f0cafbc3ea4a07/crates/uv/src/main.rs#L475.
+
+(Not sure if @zanieb has objections to adding these, maybe wait for Zanie to chime in.)
+
+---
+
+_Comment by @zanieb on 2024-03-04 21:02_
+
+We can add these but we might want to scope some of the more specific options e.g.`ONLY_BINARY` to `UV_PIP_` instead of `UV_`.
+
+Edit: I said this same thing longer at https://github.com/astral-sh/uv/issues/1535#issuecomment-1960718966
+
+---
+
+_Comment by @mimre25 on 2024-03-05 09:13_
+
+Not sure if this is the right place, but I stumbled upon `PIP_CONSTRAINT` for build constraints missing. 
+
+I've tried `UV_CONSTRAINT`, but that doesn't seem to be accounted for either.
+
+Is there currently a way to set this? 
+
+---
+
+_Comment by @Czaki on 2024-03-05 09:15_
+
+@mimre25 only using flags. This Issue is about introducing such an option. 
+
+---
+
+_Comment by @mimre25 on 2024-03-05 09:41_
+
+:facepalm: why didn't I think of that?
+
+Anyhow, to offer something to the discussion:
+
+The premise first premises of `uv` states:
+> An extremely fast Python package installer and resolver, written in Rust. Designed as a **drop-in replacement** for `pip` and `pip-compile`.
+
+(Highlight by me).
+
+Wouldn't it make sense to use the `PIP_*` environment variable in this case? Otherwise, `uv` won't be a _drop-in replacement_ for `pip` anymore.
+
+---
+
+_Comment by @Czaki on 2024-03-05 11:38_
+
+I agree that this statement is not true, and based on other issues it will never be true. 
+
+---
+
+_Comment by @charliermarsh on 2024-03-05 13:46_
+
+I'd like to support more environment variables for uv, but reading configuration files and environment variables intended for other tools isn't a sustainable strategy. It means we need to be bug-for-bug compatible with those other tools, since users will end up relying on bugs in the format, the parser, etc.; and if the other tool _changes_ the format in some way, we're then locked in to changing it in parallel ways to avoid breaking things for users. If that configuration is versioned in some way, it gets even harder, since we might need to know _which version_ of the other tool you're expecting to use. It _also_ means that we _cannot_ introduce any of our settings or configuration, since otherwise our `pip.conf` (if we, for example, used that configuration file) would no longer be useable with `pip`. Conversely, it can _also_ lead to a lot of user confusion -- if we read configuration files intended for other tools, I'm certain we'd receive issues in which users were surprised that we _did_ read those files, since they're not intended for us.
+
+We plan to have our own environment variables and our own persistent configuration format. We'll document these differences in our pip compatibility policy (https://github.com/astral-sh/uv/issues/2023).
+
+
+---
+
+_Referenced in [astral-sh/uv#1404](../../astral-sh/uv/issues/1404.md) on 2024-03-05 15:10_
+
+---
+
+_Comment by @tafia on 2024-03-06 00:41_
+
+I think I understand where you're coming from but pip.conf is a de-facto standard. I don't remember ever changing it so I'd say it is particularly stable and deserves an exception.
+
+---
+
+_Comment by @zanieb on 2024-03-06 01:48_
+
+It's really important to distinguish between de-facto standards established by tools and _actual_ standards though. We're very interested in improving the standards such that there is not a tool-specific file that every other tool needs to deal with.
+
+---
+
+_Comment by @pawamoy on 2024-03-28 15:15_
+
+Sorry if this is the wrong place: could uv support a `UV_RESOLUTION` environment variable, with possible values `highest`, `lowest`, `lowest-direct`? It's not critical, I can easily check this env var and set the according CLI flag myself :slightly_smiling_face: 
+
+```bash
+if [ -n "${UV_RESOLUTION}" ]; then
+  uv_opts="--resolution=${UV_RESOLUTION}"
+fi
+```
+
+---
+
+_Comment by @charliermarsh on 2024-03-28 15:21_
+
+Happy to add -- do you mind creating a separate issue just for tracking?
+
+---
+
+_Referenced in [astral-sh/uv#2710](../../astral-sh/uv/issues/2710.md) on 2024-03-28 15:23_
+
+---
+
+_Comment by @charliermarsh on 2024-04-19 14:12_
+
+Closing for now as we have many of these.
+
+---
+
+_Closed by @charliermarsh on 2024-04-19 14:12_
+
+---
+
+_Referenced in [astral-sh/uv#3162](../../astral-sh/uv/pulls/3162.md) on 2024-04-20 16:07_
+
+---

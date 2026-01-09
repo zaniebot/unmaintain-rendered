@@ -1,0 +1,117 @@
+---
+number: 14492
+title: "Autofix for `undocumented-public-function`: insert docstring stub"
+type: issue
+state: open
+author: sbrugman
+labels:
+  - docstring
+  - fixes
+assignees: []
+created_at: 2024-11-20T15:46:36Z
+updated_at: 2024-11-20T17:54:50Z
+url: https://github.com/astral-sh/ruff/issues/14492
+synced_at: 2026-01-07T13:12:16-06:00
+---
+
+# Autofix for `undocumented-public-function`: insert docstring stub
+
+---
+
+_Issue opened by @sbrugman on 2024-11-20 15:46_
+
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* List of keywords you searched for before creating this issue. Write them down here so that others can find this issue more easily and help provide feedback.
+  e.g. "RUF001", "unused variable", "Jupyter notebook"
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+The `undocumented-public-function` rule currently has no autofix. 
+Writing documentation for functions can be made more effective by providing the documentation template automatically.
+PyCharm allows to insert a "documentation string stub":
+
+```python
+def func1(arg1: str, arg2: int) -> int:
+    raise ValueError("Value not valid")
+```
+
+Proposed by PyCharm (depends on the docstring style configuration):
+
+```python
+def func1(arg1: str, arg2: int) -> int:
+    """
+
+    Args:
+        arg1: 
+        arg2: 
+
+    Returns:
+        object: 
+    """
+    raise ValueError("Value not valid")
+```
+
+Would you accept a similar (unsafe) fix in `ruff`?
+
+Ideally, the rule considers arguments, return values and exceptions.
+
+
+```python
+def func1(arg1: str, arg2: int) -> int:
+    """...
+
+    Args:
+        arg1: ...
+        arg2: ...
+
+    Returns:
+        ... 
+
+    Raises:
+        ValueError: ...
+    """
+    raise ValueError("Value not valid")
+```
+
+
+---
+
+_Comment by @MichaReiser on 2024-11-20 15:52_
+
+This could make sense, but only with `Applicabilty::DisplayOnly` so that the fix needs to be applied manually because this is more an editor refactor than a "proper fix". 
+
+I'm not sure how the CLI or LSP handle display only fixes 
+
+---
+
+_Label `fixes` added by @MichaReiser on 2024-11-20 15:52_
+
+---
+
+_Comment by @sbrugman on 2024-11-20 16:24_
+
+For completeness:
+
+Applying the fix will break down `undocumented-public-function` (`D103`) into multiple violations:
+
+- `empty-docstring-section` (`D414`): Section has no content ("Returns")
+- `undocumented-param` (`D417`): Missing argument descriptions in the docstring for `func1`
+- and various others related to the function summary/description D415, D212, D205
+
+
+---
+
+_Referenced in [astral-sh/ruff#14494](../../astral-sh/ruff/issues/14494.md) on 2024-11-20 16:35_
+
+---
+
+_Label `docstring` added by @AlexWaygood on 2024-11-20 17:54_
+
+---

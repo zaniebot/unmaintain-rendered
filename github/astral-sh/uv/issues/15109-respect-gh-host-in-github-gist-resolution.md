@@ -1,0 +1,76 @@
+---
+number: 15109
+title: "Respect `GH_HOST` in GitHub Gist resolution"
+type: issue
+state: open
+author: zanieb
+labels:
+  - enhancement
+  - good first issue
+assignees: []
+created_at: 2025-08-06T14:23:23Z
+updated_at: 2025-08-21T17:37:12Z
+url: https://github.com/astral-sh/uv/issues/15109
+synced_at: 2026-01-07T13:12:19-06:00
+---
+
+# Respect `GH_HOST` in GitHub Gist resolution
+
+---
+
+_Issue opened by @zanieb on 2025-08-06 14:23_
+
+Would also be nice if this would work with GitHub enterprise gists as well, maybe by environment variables like `gh` does (`GH_HOST`).
+
+_Originally posted by @jakeswenson in https://github.com/astral-sh/uv/issues/15058#issuecomment-3160356231_
+            
+
+---
+
+_Label `enhancement` added by @zanieb on 2025-08-06 14:23_
+
+---
+
+_Label `good first issue` added by @zanieb on 2025-08-06 14:23_
+
+---
+
+_Comment by @charliermarsh on 2025-08-08 09:22_
+
+With GHE, can we know if the URL is `https:// <hostname>/gist` or `https:// gist.<hostname>`? It seems like that's configurable?
+
+---
+
+_Comment by @zanieb on 2025-08-08 11:28_
+
+I don't know. We'll probably need feedback from some GHE users. I guess we could just try both.
+
+---
+
+_Comment by @jorgehermo9 on 2025-08-21 16:54_
+
+In Github Enterprise Server, not only the hostname changes for the rest API, but the rest api path. This documentation is very descriptive: https://docs.github.com/en/enterprise-cloud@latest/apps/sharing-github-apps/making-your-github-app-available-for-github-enterprise-server#the-app-code-must-use-the-correct-urls
+
+We can take a look to how `gh` cli does this in https://github.com/cli/cli/blob/5eddf8d52369df321693c5f5131fdd138cd237a6/internal/ghinstance/host.go#L59
+
+We should use `https://api.github.com/gists/{gist_id}` or `https://my.company.com/api/v3/gists/{gist_id}` if `GH_HOST` is not `github.com`
+
+
+Gist url: https://github.com/cli/cli/blob/5eddf8d52369df321693c5f5131fdd138cd237a6/internal/ghinstance/host.go#L80
+
+However, supporting those differences would make the gist detection of uv more complicated, as right now uv only checks ` if url.host_str() == Some("gist.github.com")`. In Github Enterprise server, the gist web url could be `https://github.my.company.com/gists/` instead. We should check  `url.host_str() == Some("gist.github.com") || url.path().starts_with("/gists")`
+https://github.com/astral-sh/uv/blob/11633549fd39a7493154705f108e91c51ef590e3/crates/uv/src/commands/project/run.rs#L1749
+
+
+Also, if the user inputs an Github Enterprise Server gist such as `https://github.my.company.com/gists/...`, should we use the `GH_HOST`? To me, we should use instead  `https://github.my.company.com` as the api's host if the gist web url comes from that host. `GH_HOST` in `gh` cli is for use cases where we do not have an url and instead, a gist id such as `3d90c4e5594ddcdf6dd023a80959c107`. If the input to `uv run` is an url, we should use that url's hosts instead of `GH_HOST`. If we allow both GH_HOST and gist web url, we can end up in inconsistencies such as `GH_HOST=https://github.another.company.com uv run https://github.my.company.com/gists/...`, where the gist is from `github.my.company.com` but the `GH_HOST` specifies another host
+
+
+`GH_HOST` would be useful if we had something like `GH_HOST=github.com uv run --gist 3d90c4e5594ddcdf6dd023a80959c107`, but requires a new cli option for `uv run` and specifying the gist id instead of the gist web url. 
+
+Should we use this issue to support Github Enterprise Server gists for commands such as `uv run https://github.my.company.com/gists/...`  and create another issue for the gist id use case  `GH_HOST=github.com uv run --gist  3d90c4e5594ddcdf6dd023a80959c107`? 
+
+---
+
+_Referenced in [astral-sh/uv#15841](../../astral-sh/uv/pulls/15841.md) on 2025-09-14 15:51_
+
+---

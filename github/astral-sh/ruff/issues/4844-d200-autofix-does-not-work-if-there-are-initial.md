@@ -1,0 +1,66 @@
+---
+number: 4844
+title: "D200: autofix does not work if there are initial/end double quotes in the dockstring"
+type: issue
+state: closed
+author: saippuakauppias
+labels: []
+assignees: []
+created_at: 2023-06-03T22:40:38Z
+updated_at: 2023-06-04T02:01:22Z
+url: https://github.com/astral-sh/ruff/issues/4844
+synced_at: 2026-01-07T13:12:14-06:00
+---
+
+# D200: autofix does not work if there are initial/end double quotes in the dockstring
+
+---
+
+_Issue opened by @saippuakauppias on 2023-06-03 22:40_
+
+Example:
+```python
+def download_url():
+    """
+    User-friendly url for further downloading: "/attachments/1234567/"
+    """
+    ...
+
+
+def foo():
+    """
+    "first" second
+    """
+```
+
+Ruff output:
+```sh
+$ ruff --fix --select D200 ruff_errors/D200.py
+
+ruff_errors/D200.py:2:5: D200 One-line docstring should fit on one line
+ruff_errors/D200.py:9:5: D200 One-line docstring should fit on one line
+Found 2 errors.
+```
+
+---
+
+_Comment by @charliermarsh on 2023-06-03 23:09_
+
+I believe these are intentional. The latter is maybe fixable? But the former can't be fixed without escaping, this introduces a syntax error:
+
+```py
+def download_url():
+    """User-friendly url for further downloading: "/attachments/1234567/""""
+```
+
+---
+
+_Comment by @saippuakauppias on 2023-06-03 23:58_
+
+Yes, it's probably best to leave it up to users to fix manually, rather than trying to change the type of quotes inside, as I originally thought.
+
+---
+
+_Closed by @charliermarsh on 2023-06-04 02:01_
+
+---

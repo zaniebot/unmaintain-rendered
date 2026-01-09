@@ -1,0 +1,187 @@
+---
+number: 12054
+title: UV fails to fetch during concurrent downloads
+type: issue
+state: closed
+author: nithish-b
+labels:
+  - question
+  - network
+assignees: []
+created_at: 2025-03-07T18:18:59Z
+updated_at: 2025-09-18T07:10:05Z
+url: https://github.com/astral-sh/uv/issues/12054
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# UV fails to fetch during concurrent downloads
+
+---
+
+_Issue opened by @nithish-b on 2025-03-07 18:18_
+
+### Question
+
+We in our project recently upgraded the uv version from `0.4.9` to `0.5.30`.
+The `uv` commands which worked with `0.4.9` started failing and could work only when the the concurrent downloads is limited by setting the variable `UV_CONCURRENT_DOWNLOADS` to  4. 
+This reduces the overall performance of `uv` and sometimes the package installation still fails and the `UV_CONCURRENT_DOWNLOADS` has to be set to 1.
+We are behind a corporate proxy and we have several internally hosted python package index repositories in Artifactory which has to be queried during package installation.
+
+I share here the example command for one package when the default value of `UV_CONCURRENT_DOWNLOADS` is used and also attached the detailed logs.
+I have used the dummy index url just to get an idea what are we actually doing and the number of repositories to be queried to fetch a matching version. 
+
+Example Command
+```
+uv pip install twine \
+--index-url https://pypi.org/simple \
+--extra-index-url https://artifactory.com/artifactory/api/pypi/pypi-local-2/simple \
+--extra-index-url https://artifactory.com/artifactory/api/pypi/pypi-local-3/simple \
+--extra-index-url https://artifactory.com/artifactory/api/pypi/pypi-local-4/simple \
+--extra-index-url https://artifactory.com/artifactory/api/pypi/pypi-local-5/simple \
+--extra-index-url https://artifactory.com/artifactory/api/pypi/pypi-local-6/simple \
+--extra-index-url https://artifactory.com/artifactory/api/pypi/pypi-local-7/simple \
+--extra-index-url https://artifactory.com/artifactory/api/pypi/pypi-local-8/simple \
+--extra-index-url https://artifactory.com/artifactory/api/pypi/pypi-local-9/simple \
+--extra-index-url https://artifactory.com/artifactory/api/pypi/pypi-local-10/simple \
+--extra-index-url https://artifactory.com/artifactory/api/pypi/pypi-local-11/simple \
+--extra-index-url https://artifactory.com/artifactory/api/pypi/pypi-local-12/simple \
+--extra-index-url https://artifactory.com/artifactory/api/pypi/pypi-local-13/simple \
+--index-strategy unsafe-best-match -vv
+```
+Error
+```
+error: Failed to fetch: `https://artifactory.com/artifactory/api/pypi/pypi-local-8/simple/jaraco-functools/`
+  Caused by: error sending request for url (https://artifactory.com/artifactory/api/pypi/pypi-local-8/simple/jaraco-functools/)
+  Caused by: client error (SendRequest)
+  Caused by: connection error
+  Caused by: stream closed because of a broken pipe
+```
+The error differs for every run here the error is throw failing to fetch `jaraco-functools` but this can be a different package in next run.
+
+PS: We have several internally hosted python repositories in Artifactory and we install around 300 packages in our docker container. 
+We use the commands `uv pip compile` to generate requirements.txt, `uv sync` to update the uv cache and `uv pip install` for dependency package installation while running `nox` build. 
+Also important to note that the package from internet can also be installed.
+
+[uv_verbose.log](https://github.com/user-attachments/files/19131503/uv_verbose.log)
+
+### Platform
+
+Linux 5.4.0-204-generic x86_64 GNU/Linux
+
+### Version
+
+uv 0.5.30
+
+---
+
+_Label `question` added by @nithish-b on 2025-03-07 18:18_
+
+---
+
+_Comment by @charliermarsh on 2025-03-07 18:39_
+
+Hmm, I'm not really sure what to do here -- it seems like it's a problem with your server, not with the client?
+
+I guess we should verify that the requests are being retried, though that's more a bandaid than anything else. Do you see evidence that the requests are being retried, if you look at the `-v` logs?
+
+---
+
+_Comment by @zanieb on 2025-03-07 18:43_
+
+Have you tried contacting JFrog about it? Does it work differently when you're not behind your proxy? Are there proxy logs that show errors?
+
+---
+
+_Comment by @charliermarsh on 2025-03-07 18:45_
+
+Also, if you run with `-v` and `UV_CONCURRENT_DOWNLOADS=4`, can you verify that we're only making four requests at a time?
+
+---
+
+_Comment by @nithish-b on 2025-03-09 00:37_
+
+> Also, if you run with `-v` and `UV_CONCURRENT_DOWNLOADS=4`, can you verify that we're only making four requests at a time?
+
+From the logs I could check that the retry is being done, but couldn't confirm how many requests are being made at a time. Is there any way to capture this information? I tried all possible options but not able to pin point the requests done at a time.
+
+---
+
+_Comment by @nithish-b on 2025-03-09 01:12_
+
+With `RUST_LOG=uv=trace` I observed the following difference in fetching the package metadata. I am not sure if this means anything.
+
+Here there is no multiple requests and the package download was successful
+<details>
+ <summary>UV_CONCURRENT_DOWNLOADS=4</summary>
+TRACE Fetching metadata for rich from https://artifactory.com/artifactory/api/pypi/pypi-local-12/simple/rich/
+
+TRACE Cached request https://artifactory.com/artifactory/api/pypi/pypi-local-12/simple/rich/ is storable because its response has an 'max-age' cache-control directive
+TRACE Freshness lifetime found via cache-control max age setting: 60s
+DEBUG Found fresh response for: https://artifactory.com/artifactory/api/pypi/pypi-local-12/simple/rich/
+</details>
+
+Here there is an error: unsupported status code 304
+<details>
+ <summary>UV_CONCURRENT_DOWNLOADS=50</summary>
+TRACE Request for https://artifactory.com/artifactory/api/pypi/pypi-local-12/simple/rich/ failed with 401 Unauthorized, checking for credentials
+
+TRACE Found cached credentials for realm https://artifactory.com
+TRACE Retrying request for https://artifactory.com/artifactory/api/pypi/pypi-local-12/simple/rich/ with credentials from cache Credentials { username: Username(Some("xxxxx")), password: Some("xxxxxxxxxxxxxxxxxx") }
+DEBUG Found modified response for: https://artifactory.com/artifactory/api/pypi/pypi-local-12/simple/rich/
+**_TRACE Cached request https://artifactory.com/artifactory/api/pypi/pypi-local-12/simple/rich/ is not storable because its response has unsupported status code 304_**
+**_WARN Server returned unusable 304 for:_** https://artifactory.com/artifactory/api/pypi/pypi-local-12/simple/rich/
+TRACE Sending fresh GET request for https://artifactory.com/artifactory/api/pypi/pypi-local-12/simple/rich/
+TRACE Handling request for https://artifactory.com/artifactory/api/pypi/pypi-local-12/simple/rich/
+TRACE Request for https://artifactory.com/artifactory/api/pypi/pypi-local-12/simple/rich/ is unauthenticated, checking cache
+TRACE No credentials in cache for URL https://artifactory.com/artifactory/api/pypi/pypi-local-12/simple/rich/
+TRACE Attempting unauthenticated request for https://artifactory.com/artifactory/api/pypi/pypi-local-12/simple/rich/
+TRACE Considering retry of error: Reqwest(reqwest::Error { kind: Request, url: "https://artifactory.com/artifactory/api/pypi/pypi-local-12/simple/rich/", source: hyper_util::client::legacy::Error(SendRequest, hyper::Error(Io, Custom { kind: BrokenPipe, error: "stream closed because of a broken pipe" })) })
+TRACE Cannot retry error: not one of `ConnectionReset` or `UnexpectedEof`
+TRACE Considering retry of error: Error { kind: WrappedReqwestError(Url { scheme: "https", cannot_be_a_base: false, username: "", password: None, host: Some(Domain("artifactory.com")), port: None, path: "/artifactory/api/pypi/pypi-local-12/simple/rich/", query: None, fragment: None }, WrappedReqwestError(Middleware(error sending request for url (https://artifactory.com/artifactory/api/pypi/pypi-local-12/simple/rich/)
+
+Caused by:
+    0: client error (SendRequest)
+    1: connection error
+    2: stream closed because of a broken pipe))) }
+TRACE Cannot retry error: not one of `ConnectionReset` or `UnexpectedEof`
+DEBUG Released lock at `/.venv/.lock`
+error: Failed to fetch: `https://artifactory.com/artifactory/api/pypi/pypi-local-12/simple/rich/`
+  Caused by: error sending request for url (https://artifactory.com/artifactory/api/pypi/pypi-local-12/simple/rich/)
+  Caused by: client error (SendRequest)
+  Caused by: connection error
+  Caused by: stream closed because of a broken pipe
+</details>
+
+---
+
+_Comment by @nithish-b on 2025-03-10 10:29_
+
+Also please note that I can still run the uv pip installation successfully with the exact number of index urls as mentioned above on the same environment with the uv version `0.4.9` and the command fails with `0.5.0` and higher. The major difference in these versions is the way uv is installed, earlier it used `CARGO_HOME` and now it uses `~/.local/bin`.
+
+---
+
+_Comment by @nithish-b on 2025-03-10 15:05_
+
+> Have you tried contacting JFrog about it? Does it work differently when you're not behind your proxy? Are there proxy logs that show errors?
+
+@zanieb  We have the same behavior while running the uv installation commands in the Azure cloud (which is outside proxy). So I believe this behavior is seen with or without proxy.
+
+---
+
+_Comment by @konstin on 2025-07-18 07:20_
+
+We're now also retrying broken pipe errors.
+
+---
+
+_Closed by @konstin on 2025-07-18 07:20_
+
+---
+
+_Label `network` added by @konstin on 2025-09-18 07:10_
+
+---
+
+_Referenced in [seanmonstar/reqwest#2819](../../seanmonstar/reqwest/issues/2819.md) on 2025-09-18 07:21_
+
+---

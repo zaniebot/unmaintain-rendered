@@ -1,0 +1,196 @@
+---
+number: 3245
+title: unused_braces warning for default_value_t
+type: issue
+state: closed
+author: href
+labels:
+  - C-bug
+  - E-easy
+  - A-derive
+assignees: []
+created_at: 2022-01-03T08:49:01Z
+updated_at: 2022-01-04T13:38:11Z
+url: https://github.com/clap-rs/clap/issues/3245
+synced_at: 2026-01-07T13:12:19-06:00
+---
+
+# unused_braces warning for default_value_t
+
+---
+
+_Issue opened by @href on 2022-01-03 08:49_
+
+### Please complete the following tasks
+
+- [X] I have searched the [discussions](https://github.com/clap-rs/clap/discussions)
+- [X] I have searched the existing issues
+
+### Rust Version
+
+rustc 1.57.0 (f1edd0429 2021-11-29)
+
+### Clap Version
+
+3.0.0
+
+### Minimal reproducible code
+
+```rust
+use clap::{ArgEnum, Parser, Subcommand};
+
+#[derive(Parser)]
+struct Cli {
+    #[clap(subcommand)]
+    command: Commands,
+}
+
+#[derive(Debug, ArgEnum, Clone)]
+enum DisplayFormat {
+    List,
+}
+
+impl Default for DisplayFormat {
+    fn default() -> Self { DisplayFormat::List }
+}
+
+#[derive(Subcommand)]
+enum Commands {
+    Hosts {
+        #[clap(short, long, arg_enum, default_value_t)]
+        format: DisplayFormat,
+    },
+}
+
+fn main() {
+    let cli = Cli::parse();
+
+    match &cli.command {
+        Commands::Hosts { format } => {
+            println!("Format: {:?}", format);
+        }
+    }
+}
+```
+
+### Steps to reproduce the bug with the above code
+
+cargo check
+
+### Actual Behaviour
+
+```
+warning: unnecessary braces around method argument
+  --> src/main.rs:21:39
+   |
+21 |         #[clap(short, long, arg_enum, default_value_t)]
+   |                                       ^              ^
+   |
+   = note: `#[warn(unused_braces)]` on by default
+help: remove these braces
+   |
+21 -         #[clap(short, long, arg_enum, default_value_t)]
+21 +         #[clap(short, long, arg_enum, default_value_t)]
+   |
+
+warning: `hello` (bin "hello") generated 1 warning
+```
+
+### Expected Behaviour
+
+There should be no warning
+
+### Additional Context
+
+Pretty inexperienced in Rust and new to Clap, so hopefully I'm not doing something wrong.
+
+### Debug Output
+
+_No response_
+
+---
+
+_Label `C-bug` added by @href on 2022-01-03 08:49_
+
+---
+
+_Referenced in [clap-rs/clap#3246](../../clap-rs/clap/pulls/3246.md) on 2022-01-03 17:32_
+
+---
+
+_Label `A-derive` added by @epage on 2022-01-03 17:32_
+
+---
+
+_Label `E-easy` added by @epage on 2022-01-03 17:32_
+
+---
+
+_Closed by @epage on 2022-01-03 17:55_
+
+---
+
+_Comment by @href on 2022-01-03 18:11_
+
+Thank you! That was very quick 😌
+
+---
+
+_Comment by @epage on 2022-01-03 18:13_
+
+v3.0.1 is now released with the fix
+
+---
+
+_Comment by @href on 2022-01-03 21:18_
+
+I still seem to be getting the error with 3.0.1:
+
+```
+cargo check
+    Checking clap v3.0.1
+    Checking hello v0.1.0 (/Users/denis/Code/hello)
+warning: unnecessary braces around method argument
+  --> src/main.rs:21:39
+   |
+21 |         #[clap(short, long, arg_enum, default_value_t)]
+   |                                       ^              ^
+   |
+   = note: `#[warn(unused_braces)]` on by default
+help: remove these braces
+   |
+21 -         #[clap(short, long, arg_enum, default_value_t)]
+21 +         #[clap(short, long, arg_enum, default_value_t)]
+   |
+
+warning: `hello` (bin "hello") generated 1 warning
+    Finished dev [unoptimized + debuginfo] target(s) in 2.18s
+```
+
+Same code, just with 3.0.1 in Cargo.toml.
+
+---
+
+_Comment by @epage on 2022-01-04 00:53_
+
+Sorry, forgot to mark `clap_derive` for being released.  It should be now.
+
+---
+
+_Comment by @href on 2022-01-04 07:39_
+
+Does this mean it will be fixed in 3.0.2, since I already have 3.0.1?
+
+---
+
+_Comment by @epage on 2022-01-04 13:04_
+
+It is fixed in `clap_derive` 3.0.1.  Run `cargo update -p clap_derive` and you should have the fix.
+
+---
+
+_Comment by @href on 2022-01-04 13:38_
+
+That did it, thank you!
+
+---

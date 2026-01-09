@@ -1,0 +1,243 @@
+---
+number: 12469
+title: Ord violation panic when fixing file with nightly compiler
+type: issue
+state: closed
+author: qarmin
+labels:
+  - bug
+assignees: []
+created_at: 2024-07-23T06:15:32Z
+updated_at: 2024-07-23T13:14:23Z
+url: https://github.com/astral-sh/ruff/issues/12469
+synced_at: 2026-01-07T13:12:15-06:00
+---
+
+# Ord violation panic when fixing file with nightly compiler
+
+---
+
+_Issue opened by @qarmin on 2024-07-23 06:15_
+
+File content(at the bottom should be attached raw, not formatted file - github removes some non-printable characters, so copying from here may not work):
+```
+from population.models import Population,DetailFamily,Family,Religion,Profession,Citizen,Aldeia,Village,User,Temporary
+from population.forms import Family_form,Family_form,FamilyPosition,Population_form,PopulationTemporary_form,Temporary_form
+```
+
+command
+```
+timeout -v 100 ruff check TEST___FILE.py --select ALL --preview --output-format concise --no-cache --fix --unsafe-fixes --isolated --ignore E999,PGH001,PGH002,RUF011,TRY200
+```
+
+cause this
+```
+All checks passed!
+
+warning: `PGH001` has been remapped to `S307`.
+warning: `PGH002` has been remapped to `G010`.
+warning: `RUF011` has been remapped to `B035`.
+warning: `TRY200` has been remapped to `B904`.
+warning: `one-blank-line-before-class` (D203) and `no-blank-line-before-class` (D211) are incompatible. Ignoring `one-blank-line-before-class`.
+warning: `multi-line-summary-first-line` (D212) and `multi-line-summary-second-line` (D213) are incompatible. Ignoring `multi-line-summary-second-line`.
+error: Panicked while linting /opt/BROKEN_FILES_DIR/794_IDX_0_RAND_143088555838722165118924.py: This indicates a bug in Ruff. If you could open an issue at:
+
+    https://github.com/astral-sh/ruff/issues/new?title=%5BLinter%20panic%5D
+
+...with the relevant file contents, the `pyproject.toml` settings, and the following stack trace, we'd be very appreciative!
+
+panicked at library/core/src/slice/sort/shared/smallsort.rs:848:5:
+Ord violation
+Backtrace:    0: ruff::panic::catch_unwind::{{closure}}
+             at ./ruff/crates/ruff/src/panic.rs:31:25
+   1: <alloc::boxed::Box<F,A> as core::ops::function::Fn<Args>>::call
+             at /rustc/92c6c03805408a1a261b98013304e9bbf59ee428/library/alloc/src/boxed.rs:2084:9
+   2: std::panicking::rust_panic_with_hook
+             at /rustc/92c6c03805408a1a261b98013304e9bbf59ee428/library/std/src/panicking.rs:808:13
+   3: std::panicking::begin_panic_handler::{{closure}}
+             at /rustc/92c6c03805408a1a261b98013304e9bbf59ee428/library/std/src/panicking.rs:667:13
+   4: std::sys::backtrace::__rust_end_short_backtrace
+             at /rustc/92c6c03805408a1a261b98013304e9bbf59ee428/library/std/src/sys/backtrace.rs:168:18
+   5: rust_begin_unwind
+             at /rustc/92c6c03805408a1a261b98013304e9bbf59ee428/library/std/src/panicking.rs:665:5
+   6: core::panicking::panic_fmt
+             at /rustc/92c6c03805408a1a261b98013304e9bbf59ee428/library/core/src/panicking.rs:74:14
+   7: core::slice::sort::shared::smallsort::panic_on_ord_violation
+             at /rustc/92c6c03805408a1a261b98013304e9bbf59ee428/library/core/src/slice/sort/shared/smallsort.rs:848:5
+   8: core::slice::sort::shared::smallsort::bidirectional_merge
+             at /rustc/92c6c03805408a1a261b98013304e9bbf59ee428/library/core/src/slice/sort/shared/smallsort.rs:841:13
+   9: core::slice::sort::shared::smallsort::small_sort_general_with_scratch
+             at /rustc/92c6c03805408a1a261b98013304e9bbf59ee428/library/core/src/slice/sort/shared/smallsort.rs:289:9
+  10: <T as core::slice::sort::shared::smallsort::StableSmallSortTypeImpl>::small_sort
+             at /rustc/92c6c03805408a1a261b98013304e9bbf59ee428/library/core/src/slice/sort/shared/smallsort.rs:64:9
+  11: core::slice::sort::stable::quicksort::quicksort
+             at /rustc/92c6c03805408a1a261b98013304e9bbf59ee428/library/core/src/slice/sort/stable/quicksort.rs:27:13
+  12: core::slice::sort::stable::drift::create_run
+             at /rustc/92c6c03805408a1a261b98013304e9bbf59ee428/library/core/src/slice/sort/stable/drift.rs:257:9
+  13: core::slice::sort::stable::drift::sort
+             at /rustc/92c6c03805408a1a261b98013304e9bbf59ee428/library/core/src/slice/sort/stable/drift.rs:66:17
+  14: core::slice::sort::stable::driftsort_main
+             at /rustc/92c6c03805408a1a261b98013304e9bbf59ee428/library/core/src/slice/sort/stable/mod.rs:86:5
+  15: core::slice::sort::stable::sort
+             at /rustc/92c6c03805408a1a261b98013304e9bbf59ee428/library/core/src/slice/sort/stable/mod.rs:47:5
+  16: alloc::slice::stable_sort
+             at /rustc/92c6c03805408a1a261b98013304e9bbf59ee428/library/alloc/src/slice.rs:867:5
+  17: alloc::slice::<impl [T]>::sort_by
+             at /rustc/92c6c03805408a1a261b98013304e9bbf59ee428/library/alloc/src/slice.rs:284:9
+  18: itertools::Itertools::sorted_by
+             at /home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/itertools-0.13.0/src/lib.rs:2912:9
+  19: ruff_linter::fix::apply_fixes
+             at ./ruff/crates/ruff_linter/src/fix/mod.rs:64:24
+  20: ruff_linter::fix::fix_file
+             at ./ruff/crates/ruff_linter/src/fix/mod.rs:48:14
+  21: ruff_linter::linter::lint_fix
+             at ./ruff/crates/ruff_linter/src/linter.rs:549:14
+  22: ruff::diagnostics::lint_path
+             at ./ruff/crates/ruff/src/diagnostics.rs:277:14
+  23: ruff::commands::check::lint_path::{{closure}}
+             at ./ruff/crates/ruff/src/commands/check.rs:192:9
+  24: std::panicking::try::do_call
+             at /rustc/92c6c03805408a1a261b98013304e9bbf59ee428/library/std/src/panicking.rs:557:40
+  25: __rust_try
+  26: std::panicking::try
+             at /rustc/92c6c03805408a1a261b98013304e9bbf59ee428/library/std/src/panicking.rs:521:19
+  27: std::panic::catch_unwind
+             at /rustc/92c6c03805408a1a261b98013304e9bbf59ee428/library/std/src/panic.rs:350:14
+  28: ruff::panic::catch_unwind
+             at ./ruff/crates/ruff/src/panic.rs:40:18
+  29: ruff::commands::check::lint_path
+             at ./ruff/crates/ruff/src/commands/check.rs:191:18
+  30: ruff::commands::check::check::{{closure}}
+             at ./ruff/crates/ruff/src/commands/check.rs:93:17
+  31: <rayon::iter::filter_map::FilterMapFolder<C,P> as rayon::iter::plumbing::Folder<T>>::consume
+             at /home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rayon-1.10.0/src/iter/filter_map.rs:123:36
+  32: rayon::iter::plumbing::Folder::consume_iter
+             at /home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rayon-1.10.0/src/iter/plumbing/mod.rs:178:20
+  33: rayon::iter::plumbing::Producer::fold_with
+             at /home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rayon-1.10.0/src/iter/plumbing/mod.rs:109:9
+  34: rayon::iter::plumbing::bridge_producer_consumer::helper
+             at /home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rayon-1.10.0/src/iter/plumbing/mod.rs:437:13
+  35: rayon::iter::plumbing::bridge_producer_consumer
+             at /home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rayon-1.10.0/src/iter/plumbing/mod.rs:396:12
+  36: <rayon::iter::plumbing::bridge::Callback<C> as rayon::iter::plumbing::ProducerCallback<I>>::callback
+             at /home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rayon-1.10.0/src/iter/plumbing/mod.rs:372:13
+  37: <rayon::slice::Iter<T> as rayon::iter::IndexedParallelIterator>::with_producer
+             at /home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rayon-1.10.0/src/slice/mod.rs:826:9
+  38: rayon::iter::plumbing::bridge
+             at /home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rayon-1.10.0/src/iter/plumbing/mod.rs:356:12
+  39: <rayon::slice::Iter<T> as rayon::iter::ParallelIterator>::drive_unindexed
+             at /home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rayon-1.10.0/src/slice/mod.rs:802:9
+  40: <rayon::iter::filter_map::FilterMap<I,P> as rayon::iter::ParallelIterator>::drive_unindexed
+             at /home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rayon-1.10.0/src/iter/filter_map.rs:46:9
+  41: <rayon::iter::fold::Fold<I,ID,F> as rayon::iter::ParallelIterator>::drive_unindexed
+             at /home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rayon-1.10.0/src/iter/fold.rs:59:9
+  42: rayon::iter::reduce::reduce
+             at /home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rayon-1.10.0/src/iter/reduce.rs:15:5
+  43: rayon::iter::ParallelIterator::reduce
+             at /home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rayon-1.10.0/src/iter/mod.rs:998:9
+  44: ruff::commands::check::check
+             at ./ruff/crates/ruff/src/commands/check.rs:163:10
+  45: ruff::check
+             at ./ruff/crates/ruff/src/lib.rs:411:13
+  46: ruff::run
+             at ./ruff/crates/ruff/src/lib.rs:186:33
+  47: ruff::main
+             at ./ruff/crates/ruff/src/main.rs:85:11
+  48: core::ops::function::FnOnce::call_once
+             at /rustc/92c6c03805408a1a261b98013304e9bbf59ee428/library/core/src/ops/function.rs:250:5
+  49: std::sys::backtrace::__rust_begin_short_backtrace
+             at /rustc/92c6c03805408a1a261b98013304e9bbf59ee428/library/std/src/sys/backtrace.rs:152:18
+  50: std::rt::lang_start::{{closure}}
+             at /rustc/92c6c03805408a1a261b98013304e9bbf59ee428/library/std/src/rt.rs:162:18
+  51: core::ops::function::impls::<impl core::ops::function::FnOnce<A> for &F>::call_once
+             at /rustc/92c6c03805408a1a261b98013304e9bbf59ee428/library/core/src/ops/function.rs:284:13
+  52: std::panicking::try::do_call
+             at /rustc/92c6c03805408a1a261b98013304e9bbf59ee428/library/std/src/panicking.rs:557:40
+  53: std::panicking::try
+             at /rustc/92c6c03805408a1a261b98013304e9bbf59ee428/library/std/src/panicking.rs:521:19
+  54: std::panic::catch_unwind
+             at /rustc/92c6c03805408a1a261b98013304e9bbf59ee428/library/std/src/panic.rs:350:14
+  55: std::rt::lang_start_internal::{{closure}}
+             at /rustc/92c6c03805408a1a261b98013304e9bbf59ee428/library/std/src/rt.rs:141:48
+  56: std::panicking::try::do_call
+             at /rustc/92c6c03805408a1a261b98013304e9bbf59ee428/library/std/src/panicking.rs:557:40
+  57: std::panicking::try
+             at /rustc/92c6c03805408a1a261b98013304e9bbf59ee428/library/std/src/panicking.rs:521:19
+  58: std::panic::catch_unwind
+             at /rustc/92c6c03805408a1a261b98013304e9bbf59ee428/library/std/src/panic.rs:350:14
+  59: std::rt::lang_start_internal
+             at /rustc/92c6c03805408a1a261b98013304e9bbf59ee428/library/std/src/rt.rs:141:20
+  60: std::rt::lang_start
+             at /rustc/92c6c03805408a1a261b98013304e9bbf59ee428/library/std/src/rt.rs:161:17
+  61: <unknown>
+  62: __libc_start_main
+  63: _start
+
+
+
+##### Automatic Fuzzer note, output status "Some(0)", output signal "None"
+```
+[compressed.zip](https://github.com/user-attachments/files/16344447/compressed.zip)
+
+
+---
+
+_Renamed from "Ord violation panic when fixing file" to "Ord violation panic when fixing file with nightly compiler" by @qarmin on 2024-07-23 06:17_
+
+---
+
+_Comment by @MichaReiser on 2024-07-23 06:30_
+
+This is probably related to 
+
+https://github.com/astral-sh/ruff/blob/ec3243a6e5fa647260f8f3c0fe6e97ad77bc4b69/crates/ruff_linter/src/fix/mod.rs#L131-L157
+
+I'm starring at it right now but it isn't entirely clear where we violate the ord constraints.
+
+---
+
+_Label `bug` added by @MichaReiser on 2024-07-23 06:30_
+
+---
+
+_Comment by @MichaReiser on 2024-07-23 06:37_
+
+Hmm, I have not been able to reproduce this with `run --bin ruff --release -- check --select ALL --preview --output-format concise --no-cache --fix --unsafe-fixes --isolated --ignore E999,PGH001,PGH002,RUF011,TRY200 /home/micha/Downloads/794_IDX_0_RAND_143088555838722165118924.py`
+
+---
+
+_Comment by @qarmin on 2024-07-23 06:37_
+
+Did you compiled ruff with nightly rust compiler?
+
+---
+
+_Comment by @MichaReiser on 2024-07-23 06:55_
+
+Nope, that's it
+
+Okay, I think the problem is the first return that higher prioritizes `UnusedImport`. The problem is that it violates
+
+> < is transitive: a < b and b < c implies a < c. The same must hold for both == and >.
+
+Let's say we have
+
+* `a`: `RedefinedWhileUnused` with a min fix of 100
+* `b`: `UnusedImport` with a min fix of 0
+* `c`: any other rule with a min fix of 5
+
+then:
+* `a < b` because of `(Rule::RedefinedWhileUnused, Rule::UnusedImport) => std::cmp::Ordering::Less,`
+* `b < c` because of `.then_with(|| fix1.min_start().cmp(&fix2.min_start()))`
+* but `a > c` `.then_with(|| fix1.min_start().cmp(&fix2.min_start()))`
+
+
+---
+
+_Referenced in [astral-sh/ruff#12471](../../astral-sh/ruff/pulls/12471.md) on 2024-07-23 07:03_
+
+---
+
+_Closed by @MichaReiser on 2024-07-23 13:14_
+
+---

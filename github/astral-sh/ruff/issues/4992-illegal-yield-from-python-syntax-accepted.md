@@ -1,0 +1,122 @@
+---
+number: 4992
+title: "Illegal \"yield (from)\" python syntax accepted"
+type: issue
+state: closed
+author: addisoncrump
+labels:
+  - bug
+assignees: []
+created_at: 2023-06-09T21:51:38Z
+updated_at: 2023-06-13T13:52:16Z
+url: https://github.com/astral-sh/ruff/issues/4992
+synced_at: 2026-01-07T13:12:15-06:00
+---
+
+# Illegal "yield (from)" python syntax accepted
+
+---
+
+_Issue opened by @addisoncrump on 2023-06-09 21:51_
+
+I'm not quite sure where the incorrectness here is, but I think this bug indicates an incorrect parsing of the `yield from` expression. The following is a python snippet with illegal syntax:
+
+```py
+def e():
+  x = yield from y = 5
+```
+
+We can verify that it is indeed illegal syntax with:
+
+```
+$ python yield-elision.py 
+  File "/tmp/tmp.1z4PScoI6T/yield-elision.py", line 2
+    x = yield from y = 5
+        ^^^^^^^^^^^^
+SyntaxError: assignment to yield expression not possible
+```
+
+Ruff, however, believes this is valid syntax:
+
+```
+$ ruff yield-elision.py --show-source --show-fixes
+yield-elision.py:2:3: F841 [*] Local variable `x` is assigned to but never used
+  |
+2 | def e():
+3 |   x = yield from y = 5
+  |   ^ F841
+  |
+  = help: Remove assignment to unused variable `x`
+
+yield-elision.py:2:18: F821 Undefined name `y`
+  |
+2 | def e():
+3 |   x = yield from y = 5
+  |                  ^ F821
+  |
+
+Found 2 errors.
+```
+
+And will attempt to fix it, leading to a self-reported parsing error:
+
+```
+$ ruff yield-elision.py  --fix
+error: Autofix introduced a syntax error in `yield-elision.py` with rule codes F841: invalid syntax. Got unexpected token '=' at byte offset 24
+---
+def e():
+  yield from y = 5
+
+---
+yield-elision.py:2:3: F841 Local variable `x` is assigned to but never used
+yield-elision.py:2:18: F821 Undefined name `y`
+Found 2 errors.
+```
+
+I believe this indicates a parsing bug.
+
+---
+
+_Referenced in [astral-sh/ruff#4972](../../astral-sh/ruff/issues/4972.md) on 2023-06-09 21:53_
+
+---
+
+_Comment by @charliermarsh on 2023-06-09 22:01_
+
+Woah, strange!
+
+---
+
+_Label `bug` added by @charliermarsh on 2023-06-09 22:01_
+
+---
+
+_Renamed from "Illegal "yield from" python syntax accepted" to "Illegal "yield (from)" python syntax accepted" by @addisoncrump on 2023-06-10 01:08_
+
+---
+
+_Comment by @addisoncrump on 2023-06-10 01:09_
+
+I just observed another reproducer for this which used `yield` not `yield from`, so it's likely related to the `yield` keyword specifically.
+
+---
+
+_Referenced in [RustPython/Parser#89](../../RustPython/Parser/issues/89.md) on 2023-06-13 13:50_
+
+---
+
+_Comment by @charliermarsh on 2023-06-13 13:51_
+
+I'm going to re-open this in the parser repository instead -- hope that's ok.
+
+---
+
+_Closed by @charliermarsh on 2023-06-13 13:51_
+
+---
+
+_Comment by @addisoncrump on 2023-06-13 13:52_
+
+Makes sense! I'll fix the link in the tracking issue.
+
+---

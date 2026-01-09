@@ -1,0 +1,105 @@
+---
+number: 7192
+title: W505 not reported AND stripped
+type: issue
+state: closed
+author: RivenSkaye
+labels:
+  - question
+assignees: []
+created_at: 2023-09-06T14:04:52Z
+updated_at: 2024-07-26T01:58:24Z
+url: https://github.com/astral-sh/ruff/issues/7192
+synced_at: 2026-01-07T13:12:15-06:00
+---
+
+# W505 not reported AND stripped
+
+---
+
+_Issue opened by @RivenSkaye on 2023-09-06 14:04_
+
+W505 does not trigger for a multiline docstring that is too long, the relevant `noqa` added for `flake8` gets stripped off and it seems impossible to apply any `noqa` on multiline docstrings as a whole. [This is the code I noticed it on](https://github.com/RivenSkaye/rvsfunc/blob/34028dcdf33fc1f19f77ae033588e85d6b936def/rvsfunc/utils.py#L215-L237) after adding Ruff to the project. Either my `ruff.toml` is causing it to be skipped through some other matching rule, or I've hit a bug.
+
+Minimal `ruff.toml`:
+```toml
+select = ["D", "E", "F", "RUF", "W"]
+line-length = 85
+[pycodestyle]
+max-doc-length = 85
+```
+Code example:
+```py
+from typing import Union
+
+def somefunc(
+    a: int, b: float, c: str,
+    d: Union[list, dict], e: bool
+) -> int:
+    """
+    This docstring will go out of bounds
+
+    a:                  sxedc5rfvtgbyhnujmi8k,ol.p;/123456789/*-+.
+                        `vsutil.Range <http://vsutil.encode.moe/en/latest/api.html#vsutil.Range>`_
+    b:                  x
+    c:                  x
+    d:                  x
+    e:                  x
+    """
+```
+
+This happens both with and without `--isolated`, running only `ruff . --fix`
+❯ ruff --version
+ruff 0.0.287
+
+In case I missed something, the full ruff config used is attached with a suffix to make GH accept the upload.
+[ruff.toml.txt](https://github.com/astral-sh/ruff/files/12538226/ruff.toml.txt)
+
+Temporary solution for me is to mark `RUF100` as unfixable so it doesn't break flake8 runs upon re-adding the `noqa` directives, as I use flake8 plugins not (yet) implemented in Ruff, like rst-docstrings.
+
+---
+
+_Comment by @zanieb on 2023-09-06 14:10_
+
+Hi!
+
+The reason a violation for W505 is not raised there is covered in the documentation
+
+https://github.com/astral-sh/ruff/blob/005e21a139ac2518887548a529688daaded15a54/crates/ruff/src/rules/pycodestyle/rules/doc_line_too_long.rs#L21-L25
+
+The proper way to use noqa for a multiline docstring is discussed in [#7011 ](https://github.com/astral-sh/ruff/discussions/7011#discussioncomment-6869239)
+
+---
+
+_Label `question` added by @zanieb on 2023-09-06 14:10_
+
+---
+
+_Comment by @RivenSkaye on 2023-09-06 14:14_
+
+The old code _had_ the `noqa: W505` behind the closing quotes on the docstring, which was stripped. And unless there is some special handling for the rST `` `link directive <https://example.com>`_ ``, it should definitely be seeing whitespace in the line. I'll edit the example to include said directive, as I can see this being somewhat faulty for an example.
+
+Unless this, for some reason, treats ``>`_`` as valid URL components. They're not valid characters and should be percent encoded, but I'd understand that being out of scope for a Python parser
+
+---
+
+_Comment by @zanieb on 2023-09-06 16:07_
+
+Yeah if W505 is not raised then the noqa comment will be removed.
+
+It is not being raised because of the URL. If you replace the URL with "x"s then the violation is raised as you'd expect. We do not use comprehensive validation for a URL
+
+https://github.com/astral-sh/ruff/blob/e6158706590fd31ac6388ddc17495480c7fd0265/crates/ruff/src/rules/pycodestyle/helpers.rs#L97
+
+
+---
+
+_Comment by @charliermarsh on 2024-07-26 01:58_
+
+I think this is working as intended.
+
+---
+
+_Closed by @charliermarsh on 2024-07-26 01:58_
+
+---

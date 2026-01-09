@@ -1,0 +1,72 @@
+---
+number: 10839
+title: "spurious \"--frozen is a no-op\" warning for PEP723 script with lockfile"
+type: issue
+state: closed
+author: ctcjab
+labels:
+  - bug
+assignees: []
+created_at: 2025-01-22T02:07:58Z
+updated_at: 2025-01-22T13:19:29Z
+url: https://github.com/astral-sh/uv/issues/10839
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# spurious "--frozen is a no-op" warning for PEP723 script with lockfile
+
+---
+
+_Issue opened by @ctcjab on 2025-01-22 02:07_
+
+### Summary
+
+I'm providing an executable in `/usr/local/bin` for my users (who don't have write access to /usr/local/bin) to run, and the executable begins with:
+```
+#!/usr/bin/env -S uv run -s --frozen
+# /// script
+# requires-python = "~=3.12"
+# dependencies = [<my-dependencies-here>]
+# ///
+```
+I am also providing an accompanying lockfile that I generated via `uv lock --script /usr/local/bin/my-script`.
+
+When the script is run, uv emits "warning: `--frozen` is a no-op for Python scripts with inline metadata, which always run in isolation". But if I remove the `--frozen` from the shebang, invoking the script fails with "error: failed to write to file `/usr/local/bin/my-script.lock`: Permission denied (os error 13)" for users since they don't have write access to /usr/local/bin.
+
+Is this warning spurious, or am I holding uv wrong? Apologies if so!
+
+### Platform
+
+Ubuntu 24.04
+
+### Version
+
+uv 0.5.21 (3478c068b 2025-01-17)
+
+### Python version
+
+3.12.8
+
+---
+
+_Label `bug` added by @ctcjab on 2025-01-22 02:07_
+
+---
+
+_Comment by @charliermarsh on 2025-01-22 02:10_
+
+Ah sorry, that's a spurious warning leftover from before scripts supported lockfiles. I will remove it.
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2025-01-22 02:19_
+
+---
+
+_Referenced in [astral-sh/uv#10840](../../astral-sh/uv/pulls/10840.md) on 2025-01-22 02:22_
+
+---
+
+_Closed by @charliermarsh on 2025-01-22 13:19_
+
+---

@@ -1,0 +1,110 @@
+---
+number: 16256
+title: "uv add [package] => package cmd fails\"\"=> re-activate the environment \"source .venv/bin/activate\""
+type: issue
+state: closed
+author: AhnafCodes
+labels:
+  - question
+assignees: []
+created_at: 2025-10-12T16:00:59Z
+updated_at: 2025-10-12T23:20:28Z
+url: https://github.com/astral-sh/uv/issues/16256
+synced_at: 2026-01-07T13:12:19-06:00
+---
+
+# uv add [package] => package cmd fails""=> re-activate the environment "source .venv/bin/activate"
+
+---
+
+_Issue opened by @AhnafCodes on 2025-10-12 16:00_
+
+
+
+### Question: Is "uv sync" or "source .venv/bin/activate" -environment refresh,  needed after  "uv add"
+
+```
+  (.venv) % uv add django
+      Resolved 5 packages in 352ms
+      Installed 3 packages in 153ms
+       + asgiref==3.10.0
+       + django==5.2.7
+       + sqlparse==0.5.3
+
+ (.venv)%  django-admin startproject main .
+
+      Traceback (most recent call last):
+        File "/Library/Frameworks/Python.framework/Versions/3.13/bin/django-admin", line 5, in <module>
+          from django.core.management import execute_from_command_line
+        File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/django/core/management/__init__.py", line 17, in <module>
+          from django.conf import settings
+      File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/django/conf/__init__.py", line 19, in <module>
+        from django.utils.deprecation import RemovedInDjango60Warning
+      File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/django/utils/deprecation.py", line 4, in <module>
+      from asgiref.sync import iscoroutinefunction, markcoroutinefunction, sync_to_async
+
+  ModuleNotFoundError: No module named 'asgiref'
+
+(.venv) % source .venv/bin/activate       
+
+(.venv) % django-admin startproject main .
+(.venv)  % 
+
+```
+
+<img width="750" height="500" alt="Image" src="https://github.com/user-attachments/assets/89aae4c0-a0db-4402-86f6-887cb8cef9be" />
+
+### Platform
+
+iMac, MacOS Sequoia
+
+### Version
+
+uv 0.7.13 (62ed17b23 2025-06-12)
+
+---
+
+_Label `question` added by @AhnafCodes on 2025-10-12 16:01_
+
+---
+
+_Comment by @zanieb on 2025-10-12 16:59_
+
+> Is "uv sync" or "source .venv/bin/activate" -environment refresh, needed after "uv add"?
+
+Not usually.
+
+Are you sure you had the right virtual environment active? I'd recommend just using `uv run django-admin ...` to ensure you're in the correct environment instead of activating it.
+
+Please use code blocks instead of screenshots in the future.
+
+---
+
+_Comment by @AhnafCodes on 2025-10-12 19:24_
+
+yes, i did run "which python" to test. Its the right one.
+Also you can see in the attached image, I dont close and reopen the shell, but rather I run "source .venv/bin/activate" after it fails and that fixes it. 
+
+---
+
+_Comment by @zanieb on 2025-10-12 22:09_
+
+The activation script shouldn't change the available packages.
+
+You can clearly see that `django-admin` was invoked from the wrong path in your logs
+
+> /Library/Frameworks/Python.framework/Versions/3.13/bin/django-admin
+
+rather than from within the virtual environment.
+
+---
+
+_Comment by @AhnafCodes on 2025-10-12 23:20_
+
+Thanks for the help and checking
+
+---
+
+_Closed by @AhnafCodes on 2025-10-12 23:20_
+
+---

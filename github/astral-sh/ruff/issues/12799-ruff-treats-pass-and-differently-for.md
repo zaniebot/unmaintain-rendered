@@ -1,0 +1,95 @@
+---
+number: 12799
+title: "Ruff treats `pass` and `...` differently for "
+type: issue
+state: open
+author: ssteinerx
+labels:
+  - documentation
+assignees: []
+created_at: 2024-08-11T06:31:59Z
+updated_at: 2024-08-14T15:48:18Z
+url: https://github.com/astral-sh/ruff/issues/12799
+synced_at: 2026-01-07T13:12:15-06:00
+---
+
+# Ruff treats `pass` and `...` differently for 
+
+---
+
+_Issue opened by @ssteinerx on 2024-08-11 06:31_
+
+*Ruff version*: `ruff 0.5.7`
+
+I searched for "pass", "...", "blank-line-between-methods", and "E301" but found nothing.
+
+The example at [blank-line-between-methods (E301)](https://docs.astral.sh/ruff/rules/blank-line-between-methods/#blank-line-between-methods-e301) shows insertion of blank lines between methods of a class.
+
+With `--preview` and `E301` enabled, missing blank lines are detected and fixed.
+
+If, instead of `pass`, you use `...`, then the missing blank between methods is not detected or corrected.  There is a mention in the doc about the rule not enabled in `.pyi` files; this isn't one of those.
+
+```python
+# This will get spaced out as per the example for E301
+class MyClass(object):
+    def func1():
+        pass
+    def func2():
+        pass
+```
+Becomes:
+```python
+class MyClass(object):
+    def func1():
+        pass
+
+    def func2():
+        pass
+```
+```python
+# This will NOT get the missing blank lines detected or inserted
+# It doesn't matter whether the `...` is on the same line as the `def` or not
+# NOTE: ruff *does* bring the `...` up to the same line as the `def` as might be expected in a `.pyi` file, 
+# I'm not sure if that be an altogether different rule that may be interacting with E301..
+class MyClass(object):
+    def func1(): ...
+    def func2():
+        ...
+```
+Becomes:
+```python
+class MyClass(object):
+    def func1(): ...
+    def func2(): ...
+```
+
+
+---
+
+_Label `documentation` added by @MichaReiser on 2024-08-11 15:05_
+
+---
+
+_Label `question` added by @MichaReiser on 2024-08-11 15:05_
+
+---
+
+_Comment by @MichaReiser on 2024-08-11 15:10_
+
+Hi
+
+This behavior was added in https://github.com/astral-sh/ruff/pull/10704 to make the rule [compatible with the formatter]( https://github.com/astral-sh/ruff/issues/10211). Mentioning this behavior in the documentation does make sense.
+
+---
+
+_Label `question` removed by @MichaReiser on 2024-08-11 15:10_
+
+---
+
+_Comment by @ssteinerx on 2024-08-14 15:48_
+
+I want the code formatted the same as everything else with the dummy body (or the other dummy body, whichever is which) on next line, indented, and a space between it and the next method.  Oddly enough, I would have expected the current behaviour for an overload annotation with `...`; go figure.
+
+Since, from reading the related issues, this looks like a horrendous PITA, and is likely to get even more annoying in the future, just documenting that `...` and `pass` are treated differently should be fine.
+
+---

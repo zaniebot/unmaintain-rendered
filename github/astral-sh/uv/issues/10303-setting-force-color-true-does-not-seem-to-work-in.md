@@ -1,0 +1,118 @@
+---
+number: 10303
+title: Setting FORCE_COLOR=true does not seem to work (in GH actions at least)
+type: issue
+state: closed
+author: scop
+labels:
+  - bug
+  - good first issue
+  - help wanted
+  - cli
+assignees: []
+created_at: 2025-01-05T16:54:40Z
+updated_at: 2025-01-06T02:18:18Z
+url: https://github.com/astral-sh/uv/issues/10303
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# Setting FORCE_COLOR=true does not seem to work (in GH actions at least)
+
+---
+
+_Issue opened by @scop on 2025-01-05 16:54_
+
+Setting `FORCE_COLOR=true`  does not seem to give colorized output in GitHub actions.
+
+Reproducer pipeline job at https://github.com/scop/pytekukko/actions/runs/12620953794/job/35167229162 (the "Install Python dev dependencies" step)
+- Shows that `FORCE_COLOR` is set to `true` in the env, and there's no `NO_COLOR` or `CLICOLOR_FORCE` env vars present
+- Shows that there's no `--color` arg passed to uv
+
+...but the uv output has no color. I tried explicit `export` of `FORCE_COLOR` too, to no avail.
+
+Another job at https://github.com/scop/pytekukko/actions/runs/12620965743/job/35167258389 that passes `--color always` does result in color output (again, see the "Install Python dev dependencies" step).
+
+This workflow uses the current astral-sh/setup-uv action, so uv is current, too.
+
+---
+
+_Comment by @samypr100 on 2025-01-05 18:35_
+
+Can you give `CLICOLOR_FORCE="true"` instead a quick try?
+
+---
+
+_Label `bug` added by @samypr100 on 2025-01-05 18:36_
+
+---
+
+_Comment by @samypr100 on 2025-01-05 19:46_
+
+Here's an isolated MRE
+
+Works
+```shell
+docker run --platform linux/x86_64 -e CLICOLOR_FORCE=1 --rm ghcr.io/astral-sh/uv:python3.12-alpine /bin/sh -c "uv init test"
+```
+
+Does not work
+```shell
+docker run --platform linux/x86_64 -e FORCE_COLOR=1 --rm ghcr.io/astral-sh/uv:python3.12-alpine /bin/sh -c "uv init test"
+```
+
+Seems like this stopped working after 0.5.0, possibly related to https://github.com/astral-sh/uv/pull/8215
+
+Works
+```shell
+docker run --platform linux/x86_64 -e FORCE_COLOR=1 --rm ghcr.io/astral-sh/uv:0.4.30-python3.12-alpine /bin/sh -c "uv init test"
+docker run --platform linux/x86_64 -e CLICOLOR_FORCE=1 --rm ghcr.io/astral-sh/uv:0.4.30-python3.12-alpine /bin/sh -c "uv init test"
+docker run --platform linux/x86_64 -e CLICOLOR_FORCE=1 --rm ghcr.io/astral-sh/uv:0.5.0-python3.12-alpine /bin/sh -c "uv init test"
+```
+
+Does not work
+```shell
+docker run --platform linux/x86_64 -e FORCE_COLOR=1 --rm ghcr.io/astral-sh/uv:0.5.0-python3.12-alpine /bin/sh -c "uv init test"
+```
+
+
+---
+
+_Label `cli` added by @samypr100 on 2025-01-05 19:47_
+
+---
+
+_Comment by @charliermarsh on 2025-01-05 20:12_
+
+Thanks @samypr100!
+
+---
+
+_Label `good first issue` added by @charliermarsh on 2025-01-05 20:46_
+
+---
+
+_Label `help wanted` added by @charliermarsh on 2025-01-05 20:46_
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2025-01-06 00:56_
+
+---
+
+_Referenced in [astral-sh/uv#10315](../../astral-sh/uv/pulls/10315.md) on 2025-01-06 01:00_
+
+---
+
+_Comment by @charliermarsh on 2025-01-06 01:01_
+
+Fixed in https://github.com/astral-sh/uv/pull/10315.
+
+---
+
+_Closed by @charliermarsh on 2025-01-06 02:18_
+
+---
+
+_Closed by @charliermarsh on 2025-01-06 02:18_
+
+---

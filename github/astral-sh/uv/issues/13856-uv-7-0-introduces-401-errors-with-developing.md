@@ -1,0 +1,131 @@
+---
+number: 13856
+title: uv 7.0 introduces 401 errors with developing private package projects
+type: issue
+state: closed
+author: ketozhang
+labels:
+  - bug
+assignees: []
+created_at: 2025-06-05T07:15:46Z
+updated_at: 2025-09-22T20:07:51Z
+url: https://github.com/astral-sh/uv/issues/13856
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# uv 7.0 introduces 401 errors with developing private package projects
+
+---
+
+_Issue opened by @ketozhang on 2025-06-05 07:15_
+
+### Summary
+
+This feature was introduced by https://github.com/astral-sh/uv/pull/12805 where ...
+
+> When using the [first-index strategy](https://docs.astral.sh/uv/configuration/indexes/#searching-across-multiple-indexes), uv will stop searching across indexes if an HTTP 401 Unauthorized or HTTP 403 Forbidden status code is encountered. The one exception is that uv will ignore 403s when searching the pytorch index (since this index returns a 403 when a package is not present).
+> — https://docs.astral.sh/uv/configuration/indexes/#ignoring-error-codes-when-searching-across-indexes
+
+The implementation however forces any project that is intended to be uploaded to a private package index to either always be authenticated while developing (e.g., during editable installs) or to add a `ignore-error-codes = [401]` to your `[[tool.uv.index]]` array. The first choice is inconvenient and the second choice opts out of this security feature: to avoid installing similarly named private packages from pypi.org.
+
+Here's an example. Notice there are no dependencies and this package is intended to be published to `private-index`. I expected to still be able to develop this project since I have the source code.
+
+```toml
+[project]
+name = "my-private-package"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = []
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[[tool.uv.index]]
+name = "private-index"
+url = "https://my.private.pypi.com/simple/"  
+publish-url = "https://my.private.pypi.com"  
+```
+
+```
+# Reproduced if the index url exists and return 401
+$ uv sync
+  × No solution found when resolving dependencies:
+  ╰─▶ Because my-private-package was not found in the package registry and your project depends on mypackage, we can conclude that your project's requirements are
+      unsatisfiable.
+
+      hint: An index URL (https://my.private.pypi.com/simple/) could not be queried due to
+      a lack of valid authentication credentials (401 Unauthorized).
+```
+
+
+### Platform
+
+Darwin 24.4.0 x86_64
+
+### Version
+
+uv 0.7.10 (Homebrew 2025-06-03)
+
+### Python version
+
+Python 3.12.10
+
+---
+
+_Label `bug` added by @ketozhang on 2025-06-05 07:15_
+
+---
+
+_Referenced in [astral-sh/uv#13452](../../astral-sh/uv/issues/13452.md) on 2025-06-05 17:52_
+
+---
+
+_Comment by @konstin on 2025-06-06 15:31_
+
+Does `explicit = true` on the index solve the problem?
+
+---
+
+_Comment by @zanieb on 2025-06-06 16:58_
+
+Sorry, but where is `mypackage` in the error coming from in that example? The name of the package is `my-private-package`?
+
+---
+
+_Comment by @ketozhang on 2025-06-06 22:10_
+
+@zanieb 
+Oops sorry those aren't real outputs since I can't reproduce after obfuscating. Edited to be `my-private-package` on the output.
+
+---
+
+_Comment by @ketozhang on 2025-06-06 22:18_
+
+@konstin That does work! The DX is much better, just gotta remember to add `explicit = true` (can't be done with `uv add --index ...`)
+
+---
+
+_Closed by @charliermarsh on 2025-06-09 00:22_
+
+---
+
+_Comment by @rafalkrupinski on 2025-09-22 11:56_
+
+without `explicit`, uv tries to fetch hatchling from your private index 
+
+---
+
+_Comment by @ketozhang on 2025-09-22 19:58_
+
+@rafalkrupinski I didn't think much of this through, but we could add a feature request to make `explicit = true` be the default.
+
+---
+
+_Comment by @rafalkrupinski on 2025-09-22 20:07_
+
+@ketozhang I think it makes perfect sense. Wasn't it the case from the start?
+
+---

@@ -1,0 +1,94 @@
+---
+number: 15568
+title: "Allow declaring match-runtime for project's own build dependencies"
+type: pull_request
+state: open
+author: zsol
+labels:
+  - enhancement
+assignees: []
+draft: true
+base: main
+head: zsol/jj-ormktspssmzq
+created_at: 2025-08-28T10:19:24Z
+updated_at: 2025-12-06T13:50:58Z
+url: https://github.com/astral-sh/uv/pull/15568
+synced_at: 2026-01-07T13:12:19-06:00
+---
+
+# Allow declaring match-runtime for project's own build dependencies
+
+---
+
+_Pull request opened by @zsol on 2025-08-28 10:19_
+
+## Summary
+
+This PR allows specifying:
+```toml
+[tool.uv.build-dependencies-metadata.foo]
+match-runtime = true
+```
+
+which when paired with:
+```toml
+[build-system]
+requires = ["foo", "bar"]
+# ...
+```
+will cause the `foo` build-time dependency to be runtime-matched when this is applicable.
+
+A few differences between this approach and triggering runtime-matching via `extra-build-dependencies`:
+
+> [!NOTE]
+> It is impossible to introduce new dependencies using `build-dependencies-metadata` (these should simply be added to `build-system.requires` instead), so trying to specify metadata for a package that's not a build-time dependency is an error.
+
+> [!NOTE]
+> This PR implements runtime matching slightly differently from the current `extra-build-dependencies` option: the latter takes the (lowered) extra requirements, and mutates them according to the "top-level" resolution to attach the corresponding `source` before passing it into the build frontend, which checks that the extra requirements have been mutated before appending them to the build environment resolution.
+> This PR's implementation passes down the entire "top-level" resolution into the frontend, which then does the requirement matching and validation in the same place.
+
+
+
+## TODOs
+
+- [ ] Add more docs about how this works
+- [x] `tool.uv.build-dependencies-metadata.foo` should fail if `foo` isn't a build-time dependency
+- [x] `uv build`ing a wheel should fail if a package tries to runtime match a build dependency
+
+And a future PR should unify how `extra-build-dependencies`'s `match-runtime` works with this approach
+
+
+---
+
+_Renamed from "WIP: allow declaring match-runtime for project's own build dependencies" to "Allow declaring match-runtime for project's own build dependencies" by @zsol on 2025-08-31 12:28_
+
+---
+
+_Comment by @codspeed-hq[bot] on 2025-08-31 12:40_
+
+<!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->
+## [CodSpeed Performance Report](https://codspeed.io/astral-sh/uv/branches/zsol%2Fjj-ormktspssmzq?utm_source=github&utm_medium=comment&utm_content=header)
+
+### Merging #15568 will **not alter performance**
+
+<sub>Comparing <code>zsol/jj-ormktspssmzq</code> (88aceda) with <code>main</code> (c2c713e)</sub>
+
+
+
+### Summary
+
+`✅ 3` untouched  
+
+
+
+
+
+---
+
+_Label `enhancement` added by @konstin on 2025-09-01 07:21_
+
+---
+
+_Referenced in [astral-sh/uv#15984](../../astral-sh/uv/issues/15984.md) on 2025-09-22 20:22_
+
+---

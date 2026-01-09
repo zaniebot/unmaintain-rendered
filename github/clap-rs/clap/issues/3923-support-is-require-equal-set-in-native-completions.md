@@ -1,0 +1,56 @@
+---
+number: 3923
+title: "Support `is_require_equal_set` in native completions"
+type: issue
+state: open
+author: epage
+labels:
+  - C-enhancement
+  - A-completion
+  - E-help-wanted
+  - E-easy
+  - ":money_with_wings: $20"
+assignees: []
+created_at: 2022-07-13T14:20:36Z
+updated_at: 2022-11-08T04:30:42Z
+url: https://github.com/clap-rs/clap/issues/3923
+synced_at: 2026-01-07T13:12:20-06:00
+---
+
+# Support `is_require_equal_set` in native completions
+
+---
+
+_Issue opened by @epage on 2022-07-13 14:20_
+
+See #3166 for more context
+
+---
+
+_Label `C-enhancement` added by @epage on 2022-07-13 14:20_
+
+---
+
+_Label `A-completion` added by @epage on 2022-07-13 14:20_
+
+---
+
+_Referenced in [clap-rs/clap#3166](../../clap-rs/clap/issues/3166.md) on 2022-07-13 14:20_
+
+---
+
+_Label `:money_with_wings: $20` added by @epage on 2022-09-13 14:36_
+
+---
+
+_Label `E-help-wanted` added by @epage on 2022-11-08 04:30_
+
+---
+
+_Label `E-easy` added by @epage on 2022-11-08 04:30_
+
+---
+
+_Referenced in [clap-rs/clap#5587](../../clap-rs/clap/issues/5587.md) on 2024-07-22 18:02_
+
+---

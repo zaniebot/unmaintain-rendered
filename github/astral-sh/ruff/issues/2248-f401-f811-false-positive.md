@@ -1,0 +1,125 @@
+---
+number: 2248
+title: F401+F811 false positive
+type: issue
+state: closed
+author: dalcinl
+labels:
+  - bug
+assignees: []
+created_at: 2023-01-27T10:36:32Z
+updated_at: 2023-05-20T02:54:20Z
+url: https://github.com/astral-sh/ruff/issues/2248
+synced_at: 2026-01-07T13:12:14-06:00
+---
+
+# F401+F811 false positive
+
+---
+
+_Issue opened by @dalcinl on 2023-01-27 10:36_
+
+
+#### Minimal reproducer
+```python
+from foo import Foo
+from typing import TypeAlias
+
+class Bar:
+    Foo: TypeAlias = Foo
+    def bar(self) -> Foo: ...
+```
+
+#### Output
+```
+$ ruff stub.pyi 
+stub.pyi:1:17: F401 `foo.Foo` imported but unused
+stub.pyi:5:5: F811 Redefinition of unused `Foo` from line 1
+Found 2 error(s).
+1 potentially fixable with the --fix option.
+```
+
+Ruff version: `0.0.227`
+
+
+---
+
+_Comment by @ngnpope on 2023-01-27 11:31_
+
+Confirmed with `0.0.236` with a `.pyi` file.
+Doesn't occur with a `.py` file unless prepending with `from __future__ import annotations`.
+
+---
+
+_Comment by @charliermarsh on 2023-01-27 13:24_
+
+Is this, maybe, the same as #1401?
+
+---
+
+_Comment by @dalcinl on 2023-01-27 14:43_
+
+I believe it is not exactly the same. 
+My reproducer would be equivalent to:
+```python
+from foo import Foo
+
+class Bar:
+    Foo = Foo
+    def bar(self) -> Foo: ...
+```
+and `ruff` is happy with this code.
+
+
+---
+
+_Comment by @dalcinl on 2023-01-29 07:50_
+
+This is a small variation to my original reproducer:
+
+```python
+from typing import TypeAlias
+class Foo: ...
+
+class Bar:
+    Foo: TypeAlias = Foo
+    def bar(self) -> Foo: ...
+```
+This time Ruff is happy with it.
+1. My original reproducer triggers the warnings. 
+2. Similar code with a locally defined symbol does not.
+3. Removing the `TypeAlias ` annotation silences the warning.
+4. Changing the annotation to  `Foo: Type = Foo` also silences the warning.
+So far this looks like a subtle bug related to visibility and/or the `TypeAlias` annotation. 
+
+---
+
+_Label `bug` added by @charliermarsh on 2023-02-03 18:24_
+
+---
+
+_Comment by @charliermarsh on 2023-05-18 16:14_
+
+Yeah this is really tricky.
+
+---
+
+_Comment by @charliermarsh on 2023-05-18 16:27_
+
+Obligatory link to Tweet: https://twitter.com/charliermarsh/status/1659233087786459139
+
+---
+
+_Comment by @charliermarsh on 2023-05-18 16:29_
+
+I believe we need to change the logic in this case to eagerly resolve if the binding is already defined, and otherwise, go through standard deferred resolution.
+
+---
+
+_Referenced in [astral-sh/ruff#4509](../../astral-sh/ruff/pulls/4509.md) on 2023-05-18 20:41_
+
+---
+
+_Closed by @charliermarsh on 2023-05-20 02:54_
+
+---

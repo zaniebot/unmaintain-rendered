@@ -1,0 +1,86 @@
+---
+number: 15085
+title: "Couldn't parse requirement for git hash"
+type: issue
+state: closed
+author: sdbds
+labels:
+  - question
+assignees: []
+created_at: 2025-08-05T17:13:07Z
+updated_at: 2025-08-06T09:27:26Z
+url: https://github.com/astral-sh/uv/issues/15085
+synced_at: 2026-01-07T13:12:19-06:00
+---
+
+# Couldn't parse requirement for git hash
+
+---
+
+_Issue opened by @sdbds on 2025-08-05 17:13_
+
+### Summary
+
+just uv compile with some github deps and uv sync had errors.
+
+error: Couldn't parse requirement in `requirements-uv.txt` at position 1374
+  Caused by: Expected direct URL (`https://github.com/rednote-hilab/dots.ocr.git@6a5e2ba95c4cbcffcbd11cad2eb4e42c4e23f952`) to end in a supported file extension: `.whl`, `.tar.gz`, `.zip`, `.tar.bz2`, `.tar.lz`, `.tar.lzma`, `.tar.xz`, `.tar.zst`, `.tar`, `.tbz`, `.tgz`, `.tlz`, or `.txz`
+dots-ocr @ https://github.com/rednote-hilab/dots.ocr.git@6a5e2ba95c4cbcffcbd11cad2eb4e42c4e23f952
+
+### Platform
+
+Windows 11 X64
+
+### Version
+
+uv 0.8.4 (e176e1714 2025-07-30)
+
+### Python version
+
+Python 3.11.10
+
+---
+
+_Label `bug` added by @sdbds on 2025-08-05 17:13_
+
+---
+
+_Comment by @zanieb on 2025-08-05 17:15_
+
+You want `@ git+https://...` I presume?
+
+---
+
+_Label `bug` removed by @zanieb on 2025-08-05 17:15_
+
+---
+
+_Label `question` added by @zanieb on 2025-08-05 17:15_
+
+---
+
+_Comment by @sdbds on 2025-08-06 01:35_
+
+> You want `@ git+https://...` I presume?
+
+I think so, but I'm using uv pip compile to compile the default requirements-uv.txt, if we can automatic transform github url end with 'git' to git+？
+
+---
+
+_Comment by @zanieb on 2025-08-06 03:18_
+
+Can you share a complete example please? How are you generating the requirements file? See #9452 for more details on what we usually need to help you.
+
+---
+
+_Comment by @sdbds on 2025-08-06 09:27_
+
+> Can you share a complete example please? How are you generating the requirements file? See [#9452](https://github.com/astral-sh/uv/issues/9452) for more details on what we usually need to help you.
+
+After careful consideration, this seems inconsistent with pip. My apologies for bringing this up; I think we can close this issue. Thank you.
+
+---
+
+_Closed by @sdbds on 2025-08-06 09:27_
+
+---

@@ -1,0 +1,39 @@
+---
+number: 3963
+title: "Remap `PIE802` to `C419`"
+type: issue
+state: closed
+author: charliermarsh
+labels: []
+assignees: []
+created_at: 2023-04-13T20:02:20Z
+updated_at: 2023-04-14T02:12:34Z
+url: https://github.com/astral-sh/ruff/issues/3963
+synced_at: 2026-01-07T13:12:14-06:00
+---
+
+# Remap `PIE802` to `C419`
+
+---
+
+_Issue opened by @charliermarsh on 2023-04-13 20:02_
+
+This was added in the most recent release: https://github.com/adamchainz/flake8-comprehensions/pull/427.
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2023-04-13 20:11_
+
+---
+
+_Referenced in [astral-sh/ruff#3971](../../astral-sh/ruff/pulls/3971.md) on 2023-04-14 01:47_
+
+---
+
+_Closed by @charliermarsh on 2023-04-14 02:12_
+
+---
+
+_Referenced in [ManimCommunity/manim#3224](../../ManimCommunity/manim/pulls/3224.md) on 2023-05-01 14:05_
+
+---

@@ -1,0 +1,50 @@
+---
+number: 311
+title: Automatically remove coding comments 
+type: issue
+state: closed
+author: charliermarsh
+labels:
+  - good first issue
+  - rule
+assignees: []
+created_at: 2022-10-03T22:21:38Z
+updated_at: 2022-11-06T19:23:08Z
+url: https://github.com/astral-sh/ruff/issues/311
+synced_at: 2026-01-07T13:12:14-06:00
+---
+
+# Automatically remove coding comments 
+
+---
+
+_Issue opened by @charliermarsh on 2022-10-03 22:21_
+
+Source: https://github.com/asottile/pyupgrade
+
+![Screen Shot 2022-10-03 at 6 19 45 PM](https://user-images.githubusercontent.com/1309177/193696317-cfa5ccb7-4210-4cbc-9bf1-b201be3ebf9b.png)
+
+
+---
+
+_Label `good first issue` added by @charliermarsh on 2022-10-03 22:21_
+
+---
+
+_Label `rule` added by @charliermarsh on 2022-10-03 22:21_
+
+---
+
+_Comment by @sobolevn on 2022-10-13 17:36_
+
+It can also be `# -*- coding: utf8 -*-`
+
+---
+
+_Referenced in [astral-sh/ruff#618](../../astral-sh/ruff/pulls/618.md) on 2022-11-06 10:05_
+
+---
+
+_Closed by @charliermarsh on 2022-11-06 19:23_
+
+---

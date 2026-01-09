@@ -1,0 +1,48 @@
+---
+number: 6661
+title: Please implement SIM905
+type: issue
+state: closed
+author: nth10sd
+labels:
+  - rule
+  - needs-decision
+assignees: []
+created_at: 2023-08-17T20:46:05Z
+updated_at: 2025-03-11T12:32:26Z
+url: https://github.com/astral-sh/ruff/issues/6661
+synced_at: 2026-01-07T13:12:15-06:00
+---
+
+# Please implement SIM905
+
+---
+
+_Issue opened by @nth10sd on 2023-08-17 20:46_
+
+`x = "abc bcd cde".split(" ")` will turn into `x = ["abc", "bcd", "cde"]`. This rule is called `Split string directly if only constants are used`, however, it is an experimental `SIM9` flake8-simplify rule and I'm not sure if it's applicable yet.
+
+```
+$ ruff --version
+ruff 0.0.284
+```
+
+---
+
+_Label `rule` added by @charliermarsh on 2023-08-18 03:30_
+
+---
+
+_Label `needs-decision` added by @charliermarsh on 2023-08-18 03:30_
+
+---
+
+_Comment by @MichaReiser on 2025-03-11 12:32_
+
+This rule has been implemented in https://github.com/astral-sh/ruff/issues/14008
+
+---
+
+_Closed by @MichaReiser on 2025-03-11 12:32_
+
+---

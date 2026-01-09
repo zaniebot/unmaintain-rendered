@@ -1,0 +1,59 @@
+---
+number: 10563
+title: SSL Verification Issue
+type: issue
+state: closed
+author: sssaha
+labels: []
+assignees: []
+created_at: 2025-01-13T13:29:20Z
+updated_at: 2025-01-13T14:43:41Z
+url: https://github.com/astral-sh/uv/issues/10563
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# SSL Verification Issue
+
+---
+
+_Issue opened by @sssaha on 2025-01-13 13:29_
+
+Hello 
+How can I avoid putting this string `pip --trusted-host=pypi.python.org --trusted-host=pypi.org --trusted-host=files.pythonhosted.org install ` every time I want to use UV to install packages via PIP? 
+I have my original provided `.pem` set as ROOT certificate on the default python that I use to download UV.  
+
+---
+
+_Comment by @charliermarsh on 2025-01-13 13:51_
+
+Have you tried the native TLS option?
+
+---
+
+_Comment by @sssaha on 2025-01-13 14:41_
+
+I tried the uv ADD and this always happens 
+
+``` bash
+error: Failed to fetch: `https://pypi.org/simple/pandas/`
+  Caused by: Request failed after 3 retries
+  Caused by: error sending request for url (https://pypi.org/simple/pandas/)
+  Caused by: client error (Connect)
+  Caused by: invalid peer certificate: UnknownIssuer
+```
+
+---
+
+_Comment by @sssaha on 2025-01-13 14:43_
+
+Figured it out native-tls it is 
+
+---
+
+_Closed by @sssaha on 2025-01-13 14:43_
+
+---
+
+_Referenced in [astral-sh/uv#10574](../../astral-sh/uv/issues/10574.md) on 2025-01-13 18:11_
+
+---

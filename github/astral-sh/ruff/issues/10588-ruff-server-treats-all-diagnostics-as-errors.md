@@ -1,0 +1,55 @@
+---
+number: 10588
+title: "`ruff server` treats all diagnostics as errors"
+type: issue
+state: closed
+author: charliermarsh
+labels:
+  - server
+assignees: []
+created_at: 2024-03-25T21:07:12Z
+updated_at: 2024-03-28T11:14:19Z
+url: https://github.com/astral-sh/ruff/issues/10588
+synced_at: 2026-01-07T13:12:15-06:00
+---
+
+# `ruff server` treats all diagnostics as errors
+
+---
+
+_Issue opened by @charliermarsh on 2024-03-25 21:07_
+
+In the existing LSP (yellow):
+
+![Screenshot 2024-03-25 at 5 05 43 PM](https://github.com/astral-sh/ruff/assets/1309177/64ac8cb7-b6f6-4742-863a-c5325ba27d19)
+
+With `ruff server` (red):
+
+![Screenshot 2024-03-25 at 5 06 02 PM](https://github.com/astral-sh/ruff/assets/1309177/3a19be52-6a43-41ec-8ce2-1e1305292a07)
+
+In the existing LSP, we have a dedicated list of codes that we treat as errors, and the rest are treated as warnings. (If anything, everything should be a warning, rather than an error.)
+
+
+---
+
+_Assigned to @snowsignal by @snowsignal on 2024-03-25 22:30_
+
+---
+
+_Label `server` added by @dhruvmanila on 2024-03-26 03:35_
+
+---
+
+_Comment by @dhruvmanila on 2024-03-26 03:35_
+
+Reference implementation in `ruff-lsp`: https://github.com/astral-sh/ruff-lsp/blob/187d7790be0783b9ac41ce025a724cf389bf575c/ruff_lsp/server.py#L748-L756
+
+---
+
+_Referenced in [astral-sh/ruff#10643](../../astral-sh/ruff/pulls/10643.md) on 2024-03-28 05:58_
+
+---
+
+_Closed by @snowsignal on 2024-03-28 11:14_
+
+---

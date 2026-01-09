@@ -1,0 +1,119 @@
+---
+number: 1549
+title: Option not to reorder possible values for an argument
+type: issue
+state: closed
+author: rzumer
+labels:
+  - C-bug
+  - A-help
+  - E-easy
+assignees: []
+created_at: 2019-09-20T17:05:23Z
+updated_at: 2022-02-02T20:11:20Z
+url: https://github.com/clap-rs/clap/issues/1549
+synced_at: 2026-01-07T13:12:19-06:00
+---
+
+# Option not to reorder possible values for an argument
+
+---
+
+_Issue opened by @rzumer on 2019-09-20 17:05_
+
+### Affected Version of clap
+
+2.33.0
+
+### Bug or Feature Request Summary
+
+I have a list of possible *numeric* values for a given argument, but clap reorders them in alphabetical (non-numeric) order.
+
+### Expected Behavior Summary
+
+Being able to tell clap not to reorder my argument list.
+
+### Actual Behavior Summary
+
+A list of numbers (e.g. ["0", "1", "2", "12"]) is reordered in non-numeric order (e.g. ["0", "1", "12", "2"]).
+
+### Sample Code or Link to Sample Code
+
+```
+let number_strings = ["0", "1", "2", "12"];
+
+(boilerplate)
+.arg(
+    Arg::with_name("my_arg")
+    .short("m")
+    .long("my_arg")
+    .value_name("MY_ARG")
+    .possible_values(&number_strings)
+)
+(boilerplate)
+```
+
+<details>
+<summary> Example Output </summary>
+<pre>
+<code>
+
+error: 'blah' isn't a valid value for '--my_arg <MY_ARG>'
+        [possible values: 0, 1, 12, 2]
+
+</code>
+</pre>
+</details>
+
+
+---
+
+_Comment by @rzumer on 2019-09-27 19:45_
+
+Actually, it looks like `--help` displays options as ordered in the input list, but when passing an invalid argument value, the list of possible values displayed is reordered. So it is only an issue in the latter situation for me.
+
+---
+
+_Label `C: help message` added by @CreepySkeleton on 2020-02-01 12:16_
+
+---
+
+_Label `P4: nice to have` added by @CreepySkeleton on 2020-02-01 12:16_
+
+---
+
+_Label `T: enhancement` added by @CreepySkeleton on 2020-02-01 12:16_
+
+---
+
+_Added to milestone `3.1` by @pksunkara on 2020-04-09 08:11_
+
+---
+
+_Referenced in [epage/clapng#125](../../epage/clapng/issues/125.md) on 2021-12-06 18:37_
+
+---
+
+_Label `C-enhancement` removed by @epage on 2021-12-09 20:17_
+
+---
+
+_Label `P4: nice to have` removed by @epage on 2021-12-09 20:17_
+
+---
+
+_Label `C-bug` added by @epage on 2021-12-09 20:17_
+
+---
+
+_Label `E-easy` added by @epage on 2021-12-09 20:17_
+
+---
+
+_Referenced in [clap-rs/clap#3391](../../clap-rs/clap/pulls/3391.md) on 2022-02-02 19:59_
+
+---
+
+_Closed by @epage on 2022-02-02 20:11_
+
+---

@@ -1,0 +1,60 @@
+---
+number: 2583
+title: Help add supporting uv in renovatebot
+type: issue
+state: closed
+author: staners2
+labels:
+  - integration
+assignees: []
+created_at: 2024-03-21T06:18:25Z
+updated_at: 2024-09-16T03:02:02Z
+url: https://github.com/astral-sh/uv/issues/2583
+synced_at: 2026-01-07T13:12:17-06:00
+---
+
+# Help add supporting uv in renovatebot
+
+---
+
+_Issue opened by @staners2 on 2024-03-21 06:18_
+
+I open issue for supporting `uv` in `renovatebot`. Help me push this issue to release in prod and supplement with useful information that will simplify support for `renovatebot`
+
+P.S. Renovatebot - bot supporting upgrade dependencies. Get pull requests to update your dependencies and lock files.
+
+Issue: https://github.com/renovatebot/renovate/issues/27841
+
+---
+
+_Comment by @zanieb on 2024-03-21 14:26_
+
+Let me know if you need something concrete or feel free to point renovatebot maintainers over here.
+
+I read through the issue and am not sure what else to provide.
+
+Related #2512 
+
+---
+
+_Label `integration` added by @zanieb on 2024-03-21 14:27_
+
+---
+
+_Comment by @mschoettle on 2024-09-16 02:41_
+
+I was looking into whether Renovate supports uv lockfiles and saw that support for uv was added (https://github.com/renovatebot/renovate/pull/30756).
+
+So this issue can probably be closed unless there's something else you need.
+
+---
+
+_Comment by @zanieb on 2024-09-16 03:02_
+
+Thanks! There's also https://github.com/renovatebot/renovate/issues/30909 but we can close this.
+
+---
+
+_Closed by @zanieb on 2024-09-16 03:02_
+
+---

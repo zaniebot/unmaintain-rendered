@@ -1,0 +1,108 @@
+---
+number: 9063
+title: E712 fix results in unsafe behavior
+type: issue
+state: closed
+author: DavidSlayback
+labels: []
+assignees: []
+created_at: 2023-12-08T23:54:01Z
+updated_at: 2023-12-11T21:43:45Z
+url: https://github.com/astral-sh/ruff/issues/9063
+synced_at: 2026-01-07T13:12:15-06:00
+---
+
+# E712 fix results in unsafe behavior
+
+---
+
+_Issue opened by @DavidSlayback on 2023-12-08 23:54_
+
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+If Ruff is allowed to check for and fix E712 errors, this can result in unexpected behavior with things like pandas DataFrames. Example:
+```python
+mask = (df["bool_col"] == True) & (df["other_col"].isna())
+# If we add noqa, we're ok
+mask = (df["bool_col"] == True) & (df["other_col"].isna())  & (df["other_col"].isna()) # noqa: E712
+# But if we let ruff fix as part of a pre-commit...
+# ruff check . --fix
+mask = (df["bool_col"] is True) & (df["other_col"].isna()) 
+```
+The original behavior produces a mask for each operand and combines them. The "fix" makes the first operand always return False, which means the whole mask is False.
+
+**Ruff version**: v0.1.6
+
+I think the desired behavior would be to either consider the fix unsafe or to favor removing `== True` and `!= True`, but the latter might be difficult (because the correct equivalent to != in Pandas is `~df`, not `!df` or `not df`
+
+
+---
+
+_Comment by @zanieb on 2023-12-09 00:49_
+
+Please see https://github.com/astral-sh/ruff/issues/4560
+
+This fix should already be marked as unsafe and not applied unless you've opted into unsafe fixes e.g.
+
+```
+❯ ruff check example.py --isolated --no-cache --select E712 --fix
+example.py:1:27: E712 Comparison to `True` should be `cond is True` or `if cond:`
+Found 1 error.
+No fixes available (1 hidden fix can be enabled with the `--unsafe-fixes` option).
+❯ ruff check example.py --isolated --no-cache --select E712 --fix --unsafe-fixes
+Found 1 error (1 fixed, 0 remaining).
+```
+
+---
+
+_Closed by @zanieb on 2023-12-09 00:49_
+
+---
+
+_Comment by @DavidSlayback on 2023-12-09 11:12_
+
+Hmm...sorry about that, I'll have to figure out how the auto fix got triggered, our pre-commit doesn't specify `--unsafe-fixes`
+
+---
+
+_Comment by @charliermarsh on 2023-12-09 12:44_
+
+Hmm, could you have unsafe-fixes = true set in your pyproject.toml or ruff.toml file?
+
+---
+
+_Comment by @DavidSlayback on 2023-12-11 15:19_
+
+No `ruff.toml`, `pyproject.toml` doesn't specify anything about the fixes, and `.pre-commit-config.yaml` section is:
+```yaml
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    # Ruff version.
+    rev: v0.1.6
+    hooks:
+      - id: ruff
+        name: "Lint and fix code using Ruff"
+        args: [ --fix, --exit-non-zero-on-fix ]
+        stages: [commit]
+```
+Going to assume maybe someone triggered it manually to get it to stop complaining
+
+---
+
+_Referenced in [astral-sh/ruff#9095](../../astral-sh/ruff/pulls/9095.md) on 2023-12-11 16:04_
+
+---
+
+_Comment by @zanieb on 2023-12-11 21:43_
+
+@DavidSlayback https://github.com/astral-sh/ruff/pull/9095 will be in our next release so you can disable unsafe fixes entirely to hide that complaint :)
+
+---

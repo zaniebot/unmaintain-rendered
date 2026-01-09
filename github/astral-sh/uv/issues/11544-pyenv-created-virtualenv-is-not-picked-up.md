@@ -1,0 +1,155 @@
+---
+number: 11544
+title: "`pyenv`-created virtualenv is not picked up"
+type: issue
+state: open
+author: fjarri
+labels:
+  - bug
+assignees: []
+created_at: 2025-02-15T23:45:17Z
+updated_at: 2025-04-03T19:27:25Z
+url: https://github.com/astral-sh/uv/issues/11544
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# `pyenv`-created virtualenv is not picked up
+
+---
+
+_Issue opened by @fjarri on 2025-02-15 23:45_
+
+### Summary
+
+I asked this in a comment to #2109, but perhaps it's better as a separate issue.
+
+My goal is to keep managing my virtual environments with `pyenv`, but use `uv` for project management (dependency resolution, build, etc). Steps (with `uv` 0.5.30):
+
+Make a new directory and add `pyproject.toml` with contents:
+```toml
+[project]
+name = "myproject"
+version = "0.0.1"
+requires-python = ">=3.10"
+dependencies = []
+```
+
+Create and set the virtual environment.
+```
+> pyenv virtualenv 3.10.10 myenv
+> pyenv local myenv
+```
+
+`uv` picks it up when asked for `pip list`:
+```
+> uv pip list
+Using Python 3.10.10 environment at: <...>/.pyenv/versions/myenv
+Package    Version
+---------- -------
+pip        22.3.1
+setuptools 65.5.0
+```
+
+But `uv tree` does not work
+```
+> uv tree
+error: No interpreter found for executable name `myenv` in managed installations or search path
+```
+
+What am I doing wrong?
+
+### Platform
+
+MacOS 15.2
+
+### Version
+
+0.5.30 (Homebrew 2025-02-10)
+
+### Python version
+
+3.10.10
+
+---
+
+_Label `bug` added by @fjarri on 2025-02-15 23:45_
+
+---
+
+_Comment by @charliermarsh on 2025-02-16 01:46_
+
+Is there a `.python-version` file in the directory?
+
+---
+
+_Comment by @zanieb on 2025-02-16 04:10_
+
+Same as https://github.com/astral-sh/uv/pull/7935 (some discussion there)
+
+We don't support use of `pyenv local` with `pyenv-virtualenv` since it writes environment names to the `.python-version` file which we use for Python version pins.
+
+---
+
+_Comment by @zanieb on 2025-02-16 04:10_
+
+Thank you for the clear reproduction though!
+
+---
+
+_Comment by @fjarri on 2025-02-16 18:53_
+
+> Is there a .python-version file in the directory?
+
+Yes, created by `pyenv local`.
+
+> We don't support use of pyenv local with pyenv-virtualenv since it writes environment names to the .python-version file which we use for Python version pins.
+
+Just out of curiosity, why does `uv pip list` recognize the venv then?
+
+I guess this can be closed in favor of #7935 (or #6204).
+
+---
+
+_Comment by @zanieb on 2025-02-16 19:09_
+
+`uv pip list` doesn't read `.python-version` files, presumably it finds the `python` shim from `pyenv` and infers the active environment from that?
+
+We could stop supporting "names" in `.python-version` files (and just ignore them in that case), but that'd be a breaking. It seems okay to fallback to ignoring it if it's a name request though.
+
+---
+
+_Comment by @fjarri on 2025-02-16 19:16_
+
+> uv pip list doesn't read .python-version files, presumably it finds the python shim from pyenv and infers the active environment from that?
+
+In this case, could `uv tree` do the same?
+
+---
+
+_Comment by @zanieb on 2025-02-16 19:22_
+
+No, that runs in the context of a "project" and needs to respect the same semantics as the rest of our top-level interface.
+
+---
+
+_Comment by @fjarri on 2025-02-16 19:26_
+
+I guess, it all hinges on how to use `.python-version`? The way I see it, since it's not technically a part of any PIP (as far as I know), both `pyenv` and `uv` should ideally not use this name, but instead have their own prefixed versions. But it will be a breaking change for both, and I expect there would be a lot of pushback if someone proposed to change it. 
+
+---
+
+_Comment by @zanieb on 2025-02-16 20:22_
+
+Yes the file contents are arbitrary and not enforced by a standard. I certainly think it's reasonable for it to only contain Python versions rather than the name of an environment that should be loaded from a tool-specific location though. 
+
+---
+
+_Comment by @albireox on 2025-04-03 19:27_
+
+Would it make sense for the `.python-version` file to be ignored if the `--active` flag is passed? At that point we'd be using the loaded `python` binary in the PATH.
+
+---
+
+_Referenced in [davistdaniel/PiHoleLongTermStats#1](../../davistdaniel/PiHoleLongTermStats/pulls/1.md) on 2025-04-28 21:22_
+
+---

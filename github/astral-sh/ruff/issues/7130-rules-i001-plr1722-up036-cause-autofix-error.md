@@ -1,0 +1,74 @@
+---
+number: 7130
+title: Rules I001, PLR1722, UP036 cause autofix error
+type: issue
+state: closed
+author: qarmin
+labels:
+  - bug
+  - fuzzer
+assignees: []
+created_at: 2023-09-04T11:49:43Z
+updated_at: 2024-08-01T12:56:53Z
+url: https://github.com/astral-sh/ruff/issues/7130
+synced_at: 2026-01-07T13:12:15-06:00
+---
+
+# Rules I001, PLR1722, UP036 cause autofix error
+
+---
+
+_Issue opened by @qarmin on 2023-09-04 11:49_
+
+Ruff 0.0.287 (latest changes from main branch)
+```
+ruff  *.py --select I001,PLR1722,UP036 --no-cache --fix
+```
+
+file content(at least simple cpython script shows that this is valid python file):
+```
+if (sys.version_info < (2,7,0)):
+    exit(1)
+elif (sys.version_info >= (3,0)):
+    i
+```
+
+error
+```
+/home/rafal/test/tmp_folder/875119901397.py:2:5: PLR1722 Use `sys.exit()` instead of `exit`
+Found 1 error.
+
+error: Autofix introduced a syntax error. Reverting all changes.
+
+This indicates a bug in `ruff`. If you could open an issue at:
+
+    https://github.com/astral-sh/ruff/issues/new?title=%5BAutofix%20error%5D
+
+...quoting the contents of `/home/rafal/test/tmp_folder/875119901397.py`, the rule codes I001, PLR1722, UP036, along with the `pyproject.toml` settings and executed command, we'd be very appreciative!
+
+```
+
+[python_compressed.zip](https://github.com/astral-sh/ruff/files/12513455/python_compressed.zip)
+
+
+---
+
+_Label `bug` added by @MichaReiser on 2023-09-04 14:46_
+
+---
+
+_Label `fuzzer` added by @MichaReiser on 2023-09-04 14:46_
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2023-09-04 21:53_
+
+---
+
+_Unassigned @charliermarsh by @charliermarsh on 2023-09-04 21:57_
+
+---
+
+_Closed by @qarmin on 2024-08-01 12:56_
+
+---

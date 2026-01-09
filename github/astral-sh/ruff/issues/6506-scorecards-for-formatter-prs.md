@@ -1,0 +1,82 @@
+---
+number: 6506
+title: Scorecards for formatter PRs
+type: issue
+state: closed
+author: cnpryer
+labels:
+  - internal
+  - formatter
+assignees: []
+created_at: 2023-08-11T16:23:30Z
+updated_at: 2023-10-27T02:14:41Z
+url: https://github.com/astral-sh/ruff/issues/6506
+synced_at: 2026-01-07T13:12:15-06:00
+---
+
+# Scorecards for formatter PRs
+
+---
+
+_Issue opened by @cnpryer on 2023-08-11 16:23_
+
+I can't claim this just yet, but if I can I'll come and snag it.
+
+It'd be nice to generate this scorecard for formatter PRs
+```
+| project      | score   | improved  | main     |
+|--------------|---------|-----------|----------|
+| build        | 0.75623 | +0.001    | 0.75622  |
+| cpython      | 0.75989 | +0.005    | 0.75987  |
+| django       | 0.99784 | +0.002    | 0.99782  |
+| transformers | 0.99470 | +0.001    | 0.99469  |
+| typeshed     | 0.74853 | +0.001    | 0.74852  |
+| warehouse    | 0.99585 | +0.001    | 0.99584  |
+| zulip        | 0.99702 | +0.001    | 0.99701  |
+```
+
+"score" is the similarity index. "improved" is the change in "score" from `main`'s similarity index.
+
+---
+
+_Label `formatter` added by @konstin on 2023-08-11 16:24_
+
+---
+
+_Label `internal` added by @konstin on 2023-08-11 16:24_
+
+---
+
+_Comment by @cnpryer on 2023-08-11 16:28_
+
+Could be cool to add green and red color to the "improved" column data if it's not complicated
+
+---
+
+_Comment by @charliermarsh on 2023-09-27 16:27_
+
+(Nice-to-have but not blocking for any releases.)
+
+---
+
+_Comment by @zanieb on 2023-09-27 16:30_
+
+Related to https://github.com/astral-sh/ruff/issues/7239
+
+---
+
+_Comment by @MichaReiser on 2023-10-26 23:56_
+
+I'll close this in favor of ruff-shades. The score card was useful when trying to match Black perfectly, but becomes less useful when we start intentionally diverging from black.
+
+---
+
+_Closed by @MichaReiser on 2023-10-26 23:56_
+
+---
+
+_Comment by @cnpryer on 2023-10-27 02:14_
+
+The good kind of *not planned* :)
+
+---

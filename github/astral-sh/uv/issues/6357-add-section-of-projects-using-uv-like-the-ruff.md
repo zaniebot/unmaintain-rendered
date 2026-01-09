@@ -1,0 +1,27 @@
+---
+number: 6357
+title: Add section of projects using uv (like the ruff README)
+type: issue
+state: open
+author: dsully
+labels: []
+assignees: []
+created_at: 2024-08-21T16:57:36Z
+updated_at: 2024-08-21T16:57:36Z
+url: https://github.com/astral-sh/uv/issues/6357
+synced_at: 2026-01-07T13:12:17-06:00
+---
+
+# Add section of projects using uv (like the ruff README)
+
+---
+
+_Issue opened by @dsully on 2024-08-21 16:57_
+
+It'd be great to have a section in the `uv` README / documentation for projects that are using it / have switched from another system.
+
+This will be helpful to show internally at my workplace.
+
+Thanks for the amazing work!
+
+---

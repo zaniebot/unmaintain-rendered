@@ -1,0 +1,66 @@
+---
+number: 7426
+title: "Backwards tokenizer: Be smarter about where we are in the comment ranges"
+type: issue
+state: closed
+author: konstin
+labels: []
+assignees: []
+created_at: 2023-09-15T22:03:00Z
+updated_at: 2023-09-16T18:04:52Z
+url: https://github.com/astral-sh/ruff/issues/7426
+synced_at: 2026-01-07T13:12:15-06:00
+---
+
+# Backwards tokenizer: Be smarter about where we are in the comment ranges
+
+---
+
+_Issue opened by @konstin on 2023-09-15 22:03_
+
+              Nit: Storing a slice and updating the slice when needed should give you the same
+
+```suggestion
+    comment_ranges: &'a [TextRange],
+```
+
+In the next function:
+
+```rust
+while self
+                .comment_ranges
+                .last()
+                .is_some_and(|comment| comment.start() > self.back_offset)
+            {
+                self.comment_ranges = &self.comment_ranges.split_last().unwrap().1;
+            }
+
+            // Inside of a comment
+            if self.comment_ranges
+                .last()
+                .is_some_and(|comment| comment.contains_inclusive(self.back_offset))
+            {
+            } else {
+            }
+```
+
+_Originally posted by @MichaReiser in https://github.com/astral-sh/ruff/pull/7360#discussion_r1327208727_
+            
+
+---
+
+_Assigned to @konstin by @konstin on 2023-09-15 22:03_
+
+---
+
+_Renamed from "Backwards tokenizer: Be smater about where we are in the comment ranges" to "Backwards tokenizer: Be smarter about where we are in the comment ranges" by @charliermarsh on 2023-09-16 02:17_
+
+---
+
+_Referenced in [astral-sh/ruff#7432](../../astral-sh/ruff/pulls/7432.md) on 2023-09-16 03:38_
+
+---
+
+_Closed by @charliermarsh on 2023-09-16 18:04_
+
+---

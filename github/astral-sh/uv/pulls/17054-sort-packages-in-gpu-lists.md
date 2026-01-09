@@ -1,0 +1,52 @@
+---
+number: 17054
+title: Sort packages in GPU lists
+type: pull_request
+state: closed
+author: charliermarsh
+labels:
+  - internal
+assignees: []
+base: main
+head: charlie/so
+created_at: 2025-12-09T19:46:26Z
+updated_at: 2025-12-09T20:10:08Z
+url: https://github.com/astral-sh/uv/pull/17054
+synced_at: 2026-01-07T13:12:19-06:00
+---
+
+# Sort packages in GPU lists
+
+---
+
+_Pull request opened by @charliermarsh on 2025-12-09 19:46_
+
+## Summary
+
+No semantic changes; this is just bothering me.
+
+---
+
+_Label `internal` added by @charliermarsh on 2025-12-09 19:46_
+
+---
+
+_Marked ready for review by @charliermarsh on 2025-12-09 19:46_
+
+---
+
+_@zanieb approved on 2025-12-09 19:47_
+
+---
+
+_Merged by @charliermarsh on 2025-12-09 20:10_
+
+---
+
+_Closed by @charliermarsh on 2025-12-09 20:10_
+
+---
+
+_Branch deleted on 2025-12-09 20:10_
+
+---

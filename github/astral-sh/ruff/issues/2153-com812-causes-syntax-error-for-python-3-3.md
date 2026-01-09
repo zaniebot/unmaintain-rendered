@@ -1,0 +1,72 @@
+---
+number: 2153
+title: COM812 causes syntax error for Python 3.3
+type: issue
+state: closed
+author: spaceone
+labels:
+  - documentation
+assignees: []
+created_at: 2023-01-25T13:59:13Z
+updated_at: 2023-01-25T17:36:51Z
+url: https://github.com/astral-sh/ruff/issues/2153
+synced_at: 2026-01-07T13:12:14-06:00
+---
+
+# COM812 causes syntax error for Python 3.3
+
+---
+
+_Issue opened by @spaceone on 2023-01-25 13:59_
+
+1.
+```
+$ cat foo.py
+def foo(*a,**kw): return (a, kw)
+foo(
+    1,2,3,
+    *[4,5,6],
+    foo=7
+)
+$ ruff --isolated --select COM812 --target-version py33 --fix foo.py                                                 
+Found 1 error(s) (1 fixed, 0 remaining).
+$ docker run -it -v "$PWD":/usr/src/myapp python:3.3 python /usr/src/myapp/foo.py
+  File "/usr/src/myapp/foo.py", line 6
+    )
+    ^
+SyntaxError: invalid syntax
+$ cat foo.py
+def foo(*a,**kw): return (a, kw)
+foo(
+    1,2,3,
+    *[4,5,6],
+    foo=7,
+)
+```
+
+2. which is the minimum supported Python version? This could be mentioned explicitly in the README. (we are still supporting Python 2.7 for ~2 years). The command line accepts `py33` as minimum.
+3. the format for `--target-version` can not easily be guessed and could be added as example to the `--help` output. `3.5` is invalid while `py35` is valid.
+
+---
+
+_Comment by @charliermarsh on 2023-01-25 14:00_
+
+We only support Python 3.7 onward. I'll clarify this in a few places.
+
+---
+
+_Label `documentation` added by @charliermarsh on 2023-01-25 14:00_
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2023-01-25 14:00_
+
+---
+
+_Referenced in [astral-sh/ruff#2159](../../astral-sh/ruff/pulls/2159.md) on 2023-01-25 17:04_
+
+---
+
+_Closed by @charliermarsh on 2023-01-25 17:36_
+
+---

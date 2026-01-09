@@ -1,0 +1,68 @@
+---
+number: 1591
+title: uv self update
+type: issue
+state: closed
+author: woutervh
+labels:
+  - enhancement
+assignees: []
+created_at: 2024-02-17T14:21:39Z
+updated_at: 2024-03-19T20:02:50Z
+url: https://github.com/astral-sh/uv/issues/1591
+synced_at: 2026-01-07T13:12:16-06:00
+---
+
+# uv self update
+
+---
+
+_Issue opened by @woutervh on 2024-02-17 14:21_
+
+Poetry can udate itself via
+
+```
+poetry self update
+```
+
+see 
+https://python-poetry.org/docs/cli/#self-update
+
+An uv-equivalent would be nice, given the fast iterations 
+
+
+---
+
+_Comment by @notatallshaw on 2024-02-17 16:18_
+
+FYI, I needed to do this yesterday and found `uv pip install --reinstall uv` worked.
+
+I don't know if *how* you installed uv affects that, maybe that's only for via originally installing it from Pip.
+
+---
+
+_Label `enhancement` added by @zanieb on 2024-02-17 16:21_
+
+---
+
+_Comment by @zanieb on 2024-02-17 16:22_
+
+This is on the roadmap, probably via [`cargo-dist`](https://github.com/axodotdev/cargo-dist)
+
+---
+
+_Referenced in [astral-sh/uv#2228](../../astral-sh/uv/pulls/2228.md) on 2024-03-06 05:13_
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2024-03-06 05:20_
+
+---
+
+_Closed by @charliermarsh on 2024-03-19 20:02_
+
+---
+
+_Referenced in [casey/just#2006](../../casey/just/issues/2006.md) on 2024-04-17 10:02_
+
+---

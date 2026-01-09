@@ -1,0 +1,64 @@
+---
+number: 7933
+title: uv add quarto-cli does not work
+type: issue
+state: closed
+author: Yasin197
+labels:
+  - question
+assignees: []
+created_at: 2024-10-04T19:10:25Z
+updated_at: 2024-10-21T21:56:03Z
+url: https://github.com/astral-sh/uv/issues/7933
+synced_at: 2026-01-07T13:12:17-06:00
+---
+
+# uv add quarto-cli does not work
+
+---
+
+_Issue opened by @Yasin197 on 2024-10-04 19:10_
+
+I am trying to download quart-cli with the following command `uv add quarto-cli`:
+
+```
+yahmed@DLONTE00092 MINGW64 /n/gitrepos/testing/poc/gt-poc (master)
+$ uv add quarto-cli
+Resolved 128 packages in 3.55s
+error: Failed to prepare distributions
+  Caused by: Failed to fetch wheel: quarto-cli==1.5.57
+  Caused by: Build backend failed to build wheel through `build_wheel()` (exit code: 1)
+--- stdout:
+Current working directory: C:\Users\yahmed\AppData\Local\uv\cache\sdists-v4\index\a0d646ae3ef09302\quarto-cli\1.5.57\pg5xYHv8qrFp4jTQ4dhIM\quarto_cli-1.5.57.tar.gz
+running bdist_wheel
+running build
+running build_py
+Downloading and installing quarto-cli binaries...
+Downloading https://github.com/quarto-dev/quarto-cli/releases/download/v1.5.57/quarto-1.5.57-win.zip
+--- stderr:
+error: [Errno 2] No such file or directory: 'quarto_cli\\quarto-1.5.57\\bin\\vendor\\deno-land\\x\\puppeteer@9-0-2\\vendor\\puppeteer-core\\puppeteer\\common\\AriaQueryHandler.d.ts'
+---
+```
+
+
+---
+
+_Comment by @zanieb on 2024-10-04 20:22_
+
+This looks like a bug in `quarto-cli` itself, does this install with `pip`?
+
+---
+
+_Label `question` added by @zanieb on 2024-10-04 20:22_
+
+---
+
+_Comment by @Yasin197 on 2024-10-04 20:38_
+
+I believe it does install with pip but not on my setup, it could indeed be a bug with the package itself
+
+---
+
+_Closed by @zanieb on 2024-10-21 21:56_
+
+---

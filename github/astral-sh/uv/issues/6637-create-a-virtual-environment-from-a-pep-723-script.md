@@ -1,0 +1,361 @@
+---
+number: 6637
+title: Create a virtual environment from a PEP 723 script
+type: issue
+state: closed
+author: gnosys-nmercer
+labels:
+  - enhancement
+  - cli
+assignees: []
+created_at: 2024-08-26T02:18:33Z
+updated_at: 2025-02-12T16:02:18Z
+url: https://github.com/astral-sh/uv/issues/6637
+synced_at: 2026-01-07T13:12:17-06:00
+---
+
+# Create a virtual environment from a PEP 723 script
+
+---
+
+_Issue opened by @gnosys-nmercer on 2024-08-26 02:18_
+
+It would be useful to be able to create a virtual environment from a PEP723 script.
+
+For example if you specify `uv venv --script scriptfile.py` it could read the dependencies from the script and create a virtual environment in the same directory.
+
+I know that you can run the script using `uv run --script scriptfile.py`, but when editing/debugging the script in an IDE (like vscode) you need an environment. This functionality would be useful to quickly create the environment without needing to manually read the dependencies from the script file and then creating the environment.
+
+
+
+---
+
+_Comment by @zanieb on 2024-08-26 17:27_
+
+Can you share more about how you'd use this from an IDE? We're a bit hesitant about adding this interface.
+
+---
+
+_Label `enhancement` added by @zanieb on 2024-08-26 17:27_
+
+---
+
+_Label `cli` added by @zanieb on 2024-08-26 17:27_
+
+---
+
+_Comment by @gnosys-nmercer on 2024-08-27 15:10_
+
+> Can you share more about how you'd use this from an IDE? We're a bit hesitant about adding this interface.
+
+@zanieb 
+
+Yes I can. Although technically I didn't mean that I would use it from the IDE directly. I will describe my use case and hopefully that will make it clear what I mean.
+
+If I have a PEP723 script file called **myscript.py** and inside this script, it defines the python version and some dependencies using the PEP723 format.
+
+Right now, I am able to run the script using `uv run --script myscript.py` which will create a temporary virtual environment on the system (not in the local ./.venv directory) and it will install the dependencies. This is all great and I really appreciate this capability.
+
+However, now, for example I want to edit the script and debug it using vscode for example. When I open the script and I with vscode, before I can debug, I will need to set the interpreter (virtual environment) to use to debug. But because it is a PEP723 script, there is no virtual environment set up for it so I would then have to manually create one using `uv venv` and then `uv pip install` to install the dependencies. This will create a virtual environment at ./.venv which I can now tell vscode is my interpreter and I can debug.
+
+But I would like to instead, be able to do `uv venv --script myscript.py` which will understand that myscript.py is a PEP723 script and it will be able to read the dependencies from this script and create an environment at ./.venv with my dependencies. Now I can tell vscode that this is my interpreter and I can debug.
+
+So essentially it makes it easier to create an environment from a script file so I don't have to manually read each dependency and do a `uv pip install` for each one of these dependencies.
+
+I hope this is more clear. Thanks. 
+
+---
+
+_Comment by @Zeddicus414 on 2024-08-30 23:13_
+
+Haha, I did the exact same thing. It went like this:
+1. "WOW, this script running thing is AMAZING!!!!"
+2. "Wait... but now VSCode has no idea what's happening in my python script and I have to make a venv to work on it effectively."
+
+It's a good problem to have considering the script running works like magic!
+
+---
+
+_Label `needs-decision` added by @zanieb on 2024-09-03 14:30_
+
+---
+
+_Comment by @zanieb on 2024-09-03 14:30_
+
+Thanks for the additional context. We'll discuss this and report back here.
+
+---
+
+_Renamed from "feature request: create environment from PEP73 script" to "feature request: create environment from PEP723 script" by @gnosys-nmercer on 2024-09-24 16:42_
+
+---
+
+_Referenced in [astral-sh/uv#8652](../../astral-sh/uv/issues/8652.md) on 2024-10-29 05:00_
+
+---
+
+_Referenced in [astral-sh/uv#8856](../../astral-sh/uv/issues/8856.md) on 2024-11-06 15:38_
+
+---
+
+_Comment by @edgarrmondragon on 2024-11-16 01:03_
+
+I wanted to comment that I have the exact same use case as https://github.com/astral-sh/uv/issues/6637#issuecomment-2312835746, but that the `uv venv --script myscript.py` UI might not be desirable if (close) parity with `virtualenv` is desired.
+
+Maybe `uv sync --script myscript.py`?
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2024-12-29 16:25_
+
+---
+
+_Comment by @remleduff on 2025-01-08 19:31_
+
+> Haha, I did the exact same thing. It went like this:
+> 
+> 1. "WOW, this script running thing is AMAZING!!!!"
+> 2. "Wait... but now VSCode has no idea what's happening in my python script and I have to make a venv to work on it effectively."
+> 
+> It's a good problem to have considering the script running works like magic!
+
+I'm not sure if a me-too comment is useful or not, but I just faced the exact same issue.
+
+(I have a directory in my project that's basically a dumping ground for a bunch of scripts and I'd like to use inline metadata for all of them. Working on them in vscode now requires manually looking for all the deps and doing a bunch of "uv pip install".
+
+Would be great to be able to "uv pip install --from-script *.py" and not have to figure that all out manually.
+
+---
+
+_Comment by @oyarsa on 2025-01-10 21:54_
+
+Another possibility would a `uv` subcommand to open a subshell with the venv for script sourced. Or a `uv run` flag to run a command using the environment from the script. Both of these would work if the IDE could detect this environment. I know you can do this for neovim, but I don't know if it's generally applicable. 
+
+---
+
+_Comment by @zanieb on 2025-01-10 22:01_
+
+As of the latest version...
+
+```
+❯ uv init --script main.py
+Initialized script at `main.py`
+❯ uv add --script main.py anyio
+Updated `main.py`
+❯ uv venv main.venv && uv export --script main.py | uv pip install -r - -p main.venv && uv run -p main.venv -- python -c "import anyio; print(anyio)"
+Using CPython 3.14.0a3 interpreter at: /Users/zb/.local/bin/python
+Creating virtual environment at: main.venv
+Activate with: source main.venv/bin/activate
+Resolved 3 packages in 90ms
+Using Python 3.14.0a3 environment at: main.venv
+Resolved 3 packages in 1ms
+Installed 3 packages in 5ms
+ + anyio==4.8.0
+ + idna==3.10
+ + sniffio==1.3.1
+<module 'anyio' from '/Users/zb/example/main.venv/lib/python3.14/site-packages/anyio/__init__.py'>
+```
+
+Of course, you can call the environment whatever you want — the commands are simpler if you use the default name.
+
+---
+
+_Closed by @zanieb on 2025-01-10 22:02_
+
+---
+
+_Comment by @oyarsa on 2025-01-10 22:26_
+
+Thanks for the update! 
+
+It's good that we can do this with the existing features, but maybe it should be considered to offer a more streamlined interface? 
+
+---
+
+_Comment by @zanieb on 2025-01-10 22:34_
+
+We're considering that still, e.g., `uv sync --script`, but I'm not really sure if it makes sense.
+
+---
+
+_Comment by @oyarsa on 2025-01-11 15:48_
+
+@zanieb Your demonstration seems to work properly, but running the script directly uses `uv`'s temporary directory instead of the venv:
+
+```
+$ echo '
+# /// script
+# requires-python = ">=3.12"
+# dependencies = []
+# ///
+
+import sys
+print(sys.executable)
+' > main.py
+
+$ uv venv main.venv && uv export --script main.py | uv pip install -r - -p main.venv && uv run -p main.venv main.py
+Using CPython 3.12.3 interpreter at: /Users/italo/.local/share/mise/installs/python/3.12.3/bin/python3.12
+Creating virtual environment at: main.venv
+Activate with: source main.venv/bin/activate.fish
+Resolved in 14ms
+warning: No dependencies found in stdin
+Using Python 3.12.3 environment at: main.venv
+Audited in 27ms
+Reading inline script metadata from `main.py`
+/Users/italo/Library/Caches/uv/archive-v0/du4CKJWedb4NBSF-PZBfA/bin/python3
+```
+
+Explicitly using `python` works, though:
+
+```
+$ uv venv main.venv && uv export --script main.py | uv pip install -r - -p main.venv && uv run -p main.venv -- python main.py
+Using CPython 3.12.3 interpreter at: /Users/italo/.local/share/mise/installs/python/3.12.3/bin/python3.12
+Creating virtual environment at: main.venv
+Activate with: source main.venv/bin/activate.fish
+Resolved in 0.88ms
+warning: No dependencies found in stdin
+Using Python 3.12.3 environment at: main.venv
+Audited in 2ms
+/private/tmp/testsuggestion/main.venv/bin/python3
+```
+
+---
+
+_Comment by @charliermarsh on 2025-01-11 15:51_
+
+That looks right to me.
+
+---
+
+_Comment by @oyarsa on 2025-01-11 15:55_
+
+If I understand correctly, `uv run -p main.venv main.py` ignores `-p main.venv` and always uses the temporary environment. Is this the intended behaviour?
+
+---
+
+_Comment by @charliermarsh on 2025-01-11 15:59_
+
+Yeah. The `-p` is the base interpreter. Scripts still get their own environment. What are you trying to do? Why?
+
+---
+
+_Comment by @oyarsa on 2025-01-11 16:04_
+
+I want to be able to run a command (e.g. neovim) inside the script's temporary environment. I don't really care about a local venv (like `main.venv in the example). I just want to either source the temporary environment or open a command that's aware of the environment.
+
+The main problem I'm trying to address is that `uv run script.py` works , automatically creating the venv and installing dependencies. But when editing the script with an with LSP or an IDE, they don't have access to the venv and can't find the dependencies, so I get errors like "could not resolve module ...".
+
+Exporting the dependencies and creating a venv with them works, but then I should be able to run the script in that venv so I don't have two separate venvs, one for the editor and another for running the script.
+
+---
+
+_Comment by @dnwe on 2025-01-14 14:00_
+
+@charliermarsh similarly I'd love a `uv edit script.py` that creates/returns the same cached/temporary venv as `uv run` and calls (for example) `source $HOME/.cache/uv/archive-v0/BGtlGcLdG53DhWjMv43cv/bin/activate && $EDITOR script.py` in a subshell so that the editor uses the identical inline-metadata generated venv for python and dependency resolution
+
+---
+
+_Comment by @zanieb on 2025-01-14 18:39_
+
+That's a pretty interesting idea :)
+
+---
+
+_Comment by @BenediktMaag on 2025-01-28 15:30_
+
+> We're considering that still, e.g., `uv sync --script`, but I'm not really sure if it makes sense.
+
+Hi @zanieb,
+i tried your solution and unfortunately it didnt work for my usecase when installing from a local index:
+
+> uv init --script script.py
+> uv add --script script.py mydependency --index internal=<path-to-index>
+
+This will add mydependency into the script, add my index under tool.uv.index and link the mydependecy to this index.
+
+> uv venv
+> uv export --script script.py | uv pip install -r -
+
+  × No solution found when resolving dependencies:
+  ╰─▶ Because there is no version of mydependency ==0.13.3 and you require mydependency ==0.13.3, we can conclude that your requirements are unsatisfiable.
+
+uv can't resolve the package because the index information gets lost with uv export.
+I would really benefit form adding uv sync --script
+
+Im also happy if you can provide another way to get the code completion working in vscode and neovim without creating the virtual environment
+
+---
+
+_Reopened by @zanieb on 2025-01-28 18:00_
+
+---
+
+_Renamed from "feature request: create environment from PEP723 script" to "Create a virtual environment from a PEP 723 script" by @zanieb on 2025-01-28 18:01_
+
+---
+
+_Label `needs-decision` removed by @zanieb on 2025-01-28 18:01_
+
+---
+
+_Unassigned @charliermarsh by @zanieb on 2025-01-28 18:01_
+
+---
+
+_Comment by @zanieb on 2025-01-28 18:01_
+
+Thanks for the use-case @BenediktMaag — we'll need to think about a solution.
+
+---
+
+_Comment by @BenediktMaag on 2025-01-29 08:53_
+
+I created another issue that should probably considered when thinking about a solution as it is closely related:
+
+https://github.com/astral-sh/uv/issues/11053
+
+---
+
+_Referenced in [astral-sh/uv#11197](../../astral-sh/uv/issues/11197.md) on 2025-02-03 21:51_
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2025-02-07 03:29_
+
+---
+
+_Comment by @Nishikoh on 2025-02-09 16:55_
+
+I want to propose a use case using Docker for this topic.  
+
+```Dockerfile
+FROM  ghcr.io/astral-sh/uv:latest
+COPY my_script.py my_script.py
+
+CMD uv run --script my_script.py
+```
+
+In the above case, the environment is set up when running `docker run`, which results in a longer execution time.  
+
+By enabling pre-installation as shown below, startup time can be reduced.  
+
+```Dockerfile
+FROM  ghcr.io/astral-sh/uv:latest
+COPY my_script.py my_script.py
+RUN # pre-install Python packages using uv for my_script.py
+
+CMD uv run --script my_script.py
+```
+
+If `my_script.py` was developed with a tool other than `uv` that supports PEP 723, it would not have a `uv.lock` file.  
+If a virtual environment is to be built from PEP 723 metadata, it would be desirable to allow environment setup even in the absence of `uv.lock`.  
+
+---
+
+_Referenced in [astral-sh/uv#11361](../../astral-sh/uv/pulls/11361.md) on 2025-02-09 19:14_
+
+---
+
+_Closed by @charliermarsh on 2025-02-12 16:02_
+
+---

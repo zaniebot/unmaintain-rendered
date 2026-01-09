@@ -1,0 +1,31 @@
+---
+number: 10810
+title: using private repositories as dependencies
+type: issue
+state: closed
+author: c90x
+labels: []
+assignees: []
+created_at: 2025-01-21T11:38:00Z
+updated_at: 2025-01-21T11:50:01Z
+url: https://github.com/astral-sh/uv/issues/10810
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# using private repositories as dependencies
+
+---
+
+_Issue opened by @c90x on 2025-01-21 11:38_
+
+_No description provided._
+
+---
+
+_Closed by @c90x on 2025-01-21 11:42_
+
+---
+
+_Renamed from "Q: Using private repositories as dependencies" to "using private repositories as dependencies" by @c90x on 2025-01-21 11:43_
+
+---

@@ -1,0 +1,40 @@
+---
+number: 1216
+title: "Make (e.g.) `--extend-ignore` always-extensive"
+type: issue
+state: closed
+author: charliermarsh
+labels:
+  - configuration
+assignees: []
+created_at: 2022-12-12T17:12:09Z
+updated_at: 2022-12-15T01:22:41Z
+url: https://github.com/astral-sh/ruff/issues/1216
+synced_at: 2026-01-07T13:12:14-06:00
+---
+
+# Make (e.g.) `--extend-ignore` always-extensive
+
+---
+
+_Issue opened by @charliermarsh on 2022-12-12 17:12_
+
+If a `pyproject.toml` file has an `extend-ignore`, and you provide `--extend-ignore` on the command-line, they should be "additive".
+
+---
+
+_Label `configuration` added by @charliermarsh on 2022-12-12 17:12_
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2022-12-15 00:36_
+
+---
+
+_Referenced in [astral-sh/ruff#1245](../../astral-sh/ruff/pulls/1245.md) on 2022-12-15 01:12_
+
+---
+
+_Closed by @charliermarsh on 2022-12-15 01:22_
+
+---

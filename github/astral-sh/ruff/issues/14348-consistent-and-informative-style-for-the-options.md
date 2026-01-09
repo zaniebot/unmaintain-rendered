@@ -1,0 +1,75 @@
+---
+number: 14348
+title: "Consistent and informative style for the \"Options\" section in rule documentation"
+type: issue
+state: open
+author: InSyncWithFoo
+labels:
+  - wish
+assignees: []
+created_at: 2024-11-15T00:05:12Z
+updated_at: 2024-11-15T06:38:35Z
+url: https://github.com/astral-sh/ruff/issues/14348
+synced_at: 2026-01-07T13:12:16-06:00
+---
+
+# Consistent and informative style for the "Options" section in rule documentation
+
+---
+
+_Issue opened by @InSyncWithFoo on 2024-11-15 00:05_
+
+Currently, this is how the documentation for [`F821`](https://docs.astral.sh/ruff/rules/undefined-name/) is rendered in PyCharm and VSCode:
+
+| PyCharm                                                                              | VSCode                                                                               |
+|--------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------|
+| ![](https://github.com/user-attachments/assets/b662b36e-ae39-402b-a7b1-8766b29437b2) | ![](https://github.com/user-attachments/assets/5372c705-2f35-4279-9858-2f37c0c0b1c3) |
+
+Zoomed in:
+
+![](https://github.com/user-attachments/assets/2ec76634-def6-47cc-a272-a757b03835a3)
+![](https://github.com/user-attachments/assets/ac62448b-fd3c-451c-98c3-2781db2b29e8)
+
+And this is the only example I can find in which a description is included. All other 125 similar sections follow this format, plain and uninformative:
+
+```markdown
+## Options
+- `foo.option1`
+- `bar.option2`
+```
+
+The lack of proper links make such options non-interactable: The user can't just jump straight to the docs but forced to search all on their own. Leaving the IDE while working is uncomfortable.
+
+----
+
+Personally, I have a special use case as a plugin developer: resolving these links in-place. In other words, the rule's documentation can be directly and immediately replaced with the option's documentation, right inside the IDE, no browser involved.
+
+PyCharm allows plugins to determine what to do on link clicks, and I want to take advantage of that. I'm already doing this for the options' documentation (e.g., `extend-select`, which mentions `select`). Currently, I'm forced to do the error-prone task of parsing Markdown myself; this shouldn't be necessary.
+
+---
+
+_Renamed from "Consistent and informative style for the _Options_ section in rule documentation" to "Consistent and informative style for the *Options* section in rule documentation" by @InSyncWithFoo on 2024-11-15 00:05_
+
+---
+
+_Renamed from "Consistent and informative style for the *Options* section in rule documentation" to "Consistent and informative style for the "Options" section in rule documentation" by @InSyncWithFoo on 2024-11-15 00:05_
+
+---
+
+_Comment by @MichaReiser on 2024-11-15 06:38_
+
+Adding the link to the options makes sense to me
+
+---
+
+_Label `wish` added by @MichaReiser on 2024-11-15 06:38_
+
+---
+
+_Referenced in [astral-sh/ruff#14666](../../astral-sh/ruff/issues/14666.md) on 2024-11-29 05:17_
+
+---
+
+_Referenced in [astral-sh/ruff#16010](../../astral-sh/ruff/issues/16010.md) on 2025-02-07 04:32_
+
+---

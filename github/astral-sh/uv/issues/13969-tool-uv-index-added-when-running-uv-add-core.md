@@ -1,0 +1,296 @@
+---
+number: 13969
+title: tool.uv.index added when running uv add core --index proximal
+type: issue
+state: closed
+author: kurt-rhee
+labels:
+  - question
+assignees: []
+created_at: 2025-06-11T15:19:55Z
+updated_at: 2025-06-11T16:17:41Z
+url: https://github.com/astral-sh/uv/issues/13969
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# tool.uv.index added when running uv add core --index proximal
+
+---
+
+_Issue opened by @kurt-rhee on 2025-06-11 15:19_
+
+### Question
+
+I have a `.sh` script which adds a library from AWS CodeArtifacts.  I have noticed that when I run this script a line gets added to my `pyproject.toml`.  Is this expected behavior?  What does it mean?
+
+The script:
+```
+export AWS_CODEARTIFACT_TOKEN="$(
+    aws codeartifact get-authorization-token \
+    --domain xxx \
+    --domain-owner xxx \
+    --query authorizationToken \
+    --output text
+)"
+
+export UV_INDEX_PROXIMAL_USERNAME=aws
+export UV_INDEX_PROXIMAL_PASSWORD="$AWS_CODEARTIFACT_TOKEN"
+
+
+echo $UV_INDEX_PROXIMAL_USERNAME
+echo $UV_INDEX_PROXIMAL_PASSWORD
+
+uv sync
+uv add core --index proximal
+```
+
+The added line in pyproject.toml
+```
+[[tool.uv.index]]
+url = "file:///Users/kurt/Programs/api/proximal"
+```
+
+Verbose
+```
+(api) kurt@Mac api % uv add core --index proximal -v
+DEBUG uv 0.7.12 (Homebrew 2025-06-06)
+DEBUG Found project root: `/Users/kurt/Programs/api`
+DEBUG No workspace root found, using project root
+DEBUG Acquired lock for `/Users/kurt/Programs/api`
+DEBUG Reading Python requests from version file at `/Users/kurt/Programs/api/.python-version`
+DEBUG Using Python request `3.12.8` from version file at `.python-version`
+DEBUG Checking for Python environment at `.venv`
+DEBUG The project environment's Python version satisfies the request: `Python 3.12.8`
+DEBUG Released lock at `/var/folders/z_/736vb5fx16990cf_4ydxkbs40000gn/T/uv-fd1c606080761fc5.lock`
+DEBUG Acquired lock for `.venv`
+DEBUG No changes to dependencies; skipping update
+DEBUG Using request timeout of 30s
+DEBUG Found static `pyproject.toml` for: api @ file:///Users/kurt/Programs/api
+DEBUG No workspace root found, using project root
+DEBUG Existing `uv.lock` satisfies workspace requirements
+Resolved 195 packages in 10ms
+DEBUG Using request timeout of 30s
+DEBUG Requirement already installed: aiofiles==24.1.0
+DEBUG Requirement already installed: aiohappyeyeballs==2.6.1
+DEBUG Requirement already installed: aiohttp==3.11.18
+DEBUG Requirement already installed: async-timeout==4.0.3
+DEBUG Requirement already installed: asyncer==0.0.8
+DEBUG Requirement already installed: attrs==24.3.0
+DEBUG Requirement already installed: bidict==0.23.1
+DEBUG Requirement already installed: boto3==1.38.7
+DEBUG Requirement already installed: chevron==0.14.0
+DEBUG Requirement already installed: clerk-backend-api==2.2.0
+DEBUG Requirement already installed: core==0.1.4
+DEBUG Requirement already installed: cryptography==44.0.2
+DEBUG Requirement already installed: dataclasses-json==0.6.7
+DEBUG Requirement already installed: deprecated==1.2.18
+DEBUG Requirement already installed: dnspython==2.7.0
+DEBUG Requirement already installed: email-validator==2.2.0
+DEBUG Requirement already installed: et-xmlfile==1.1.0
+DEBUG Requirement already installed: fastapi==0.115.12
+DEBUG Requirement already installed: fastapi-cli==0.0.7
+DEBUG Requirement already installed: fastapi-socketio==0.0.10
+DEBUG Requirement already installed: filetype==1.2.0
+DEBUG Requirement already installed: frozenlist==1.6.0
+DEBUG Requirement already installed: geoalchemy2==0.15.2
+DEBUG Requirement already installed: google-api-python-client==2.169.0
+DEBUG Requirement already installed: google-auth-httplib2==0.2.0
+DEBUG Requirement already installed: google-auth-oauthlib==1.2.2
+DEBUG Requirement already installed: googleapis-common-protos==1.70.0
+DEBUG Requirement already installed: grpcio==1.71.0
+DEBUG Requirement already installed: httptools==0.6.4
+DEBUG Requirement already installed: httpx==0.28.1
+DEBUG Requirement already installed: importlib-metadata==8.6.1
+DEBUG Requirement already installed: jinja2==3.1.6
+DEBUG Requirement already installed: kaleido==0.2.1
+DEBUG Requirement already installed: lazify==0.4.0
+DEBUG Requirement already installed: literalai==0.0.629
+DEBUG Requirement already installed: markdown-it-py==3.0.0
+DEBUG Requirement already installed: mdurl==0.1.2
+DEBUG Requirement already installed: multidict==6.4.3
+DEBUG Requirement already installed: natsort==8.4.0
+DEBUG Requirement already installed: nest-asyncio==1.6.0
+DEBUG Requirement already installed: openai==1.52.0
+DEBUG Requirement already installed: openpyxl==3.1.5
+DEBUG Requirement already installed: orjson==3.10.18
+DEBUG Requirement already installed: pandas==2.2.3
+DEBUG Requirement already installed: pillow==11.2.1
+DEBUG Requirement already installed: plotly==5.24.1
+DEBUG Requirement already installed: polars==1.29.0
+DEBUG Requirement already installed: psycopg2-binary==2.9.10
+DEBUG Requirement already installed: pvlib==0.12.0
+DEBUG Requirement already installed: pyarrow==20.0.0
+DEBUG Requirement already installed: pyjwt==2.10.1
+DEBUG Requirement already installed: python-dotenv==1.1.0
+DEBUG Requirement already installed: python-graphql-client==0.4.3
+DEBUG Requirement already installed: python-multipart==0.0.20
+DEBUG Requirement already installed: requests==2.32.4
+DEBUG Requirement already installed: s3fs==0.4.2
+DEBUG Requirement already installed: sentry-sdk==2.27.0
+DEBUG Requirement already installed: shapely==2.1.0
+DEBUG Requirement already installed: sqlalchemy==2.0.41
+DEBUG Requirement already installed: syncer==2.0.3
+DEBUG Requirement already installed: tenacity==9.1.2
+DEBUG Requirement already installed: uptrace==1.31.0
+DEBUG Requirement already installed: uvicorn==0.32.1
+DEBUG Requirement already installed: xlsxwriter==3.2.3
+DEBUG Requirement already installed: aiosignal==1.3.2
+DEBUG Requirement already installed: propcache==0.3.1
+DEBUG Requirement already installed: yarl==1.20.0
+DEBUG Requirement already installed: anyio==4.9.0
+DEBUG Requirement already installed: botocore==1.38.7
+DEBUG Requirement already installed: jmespath==1.0.1
+DEBUG Requirement already installed: s3transfer==0.12.0
+DEBUG Requirement already installed: pydantic==2.11.4
+DEBUG Requirement already installed: dotenv==0.9.9
+DEBUG Requirement already installed: cffi==1.17.1
+DEBUG Requirement already installed: marshmallow==3.26.1
+DEBUG Requirement already installed: typing-inspect==0.9.0
+DEBUG Requirement already installed: wrapt==1.17.2
+DEBUG Requirement already installed: idna==3.10
+DEBUG Requirement already installed: starlette==0.46.2
+DEBUG Requirement already installed: typing-extensions==4.13.2
+DEBUG Requirement already installed: rich-toolkit==0.14.4
+DEBUG Requirement already installed: typer==0.15.3
+DEBUG Requirement already installed: python-socketio==5.13.0
+DEBUG Requirement already installed: packaging==25.0
+DEBUG Requirement already installed: google-api-core==2.24.2
+DEBUG Requirement already installed: google-auth==2.39.0
+DEBUG Requirement already installed: httplib2==0.22.0
+DEBUG Requirement already installed: uritemplate==4.1.1
+DEBUG Requirement already installed: requests-oauthlib==2.0.0
+DEBUG Requirement already installed: protobuf==5.29.4
+DEBUG Requirement already installed: certifi==2025.4.26
+DEBUG Requirement already installed: httpcore==1.0.9
+DEBUG Requirement already installed: zipp==3.21.0
+DEBUG Requirement already installed: markupsafe==3.0.2
+DEBUG Requirement already installed: distro==1.9.0
+DEBUG Requirement already installed: jiter==0.9.0
+DEBUG Requirement already installed: sniffio==1.3.1
+DEBUG Requirement already installed: tqdm==4.67.1
+DEBUG Requirement already installed: numpy==2.2.5
+DEBUG Requirement already installed: python-dateutil==2.9.0.post0
+DEBUG Requirement already installed: pytz==2025.2
+DEBUG Requirement already installed: tzdata==2025.2
+DEBUG Requirement already installed: h5py==3.13.0
+DEBUG Requirement already installed: scipy==1.15.2
+DEBUG Requirement already installed: websockets==15.0.1
+DEBUG Requirement already installed: charset-normalizer==3.4.1
+DEBUG Requirement already installed: urllib3==2.4.0
+DEBUG Requirement already installed: fsspec==2025.3.2
+DEBUG Requirement already installed: opentelemetry-api==1.31.1
+DEBUG Requirement already installed: opentelemetry-exporter-otlp==1.31.1
+DEBUG Requirement already installed: opentelemetry-instrumentation==0.52b1
+DEBUG Requirement already installed: opentelemetry-sdk==1.31.1
+DEBUG Requirement already installed: click==8.1.8
+DEBUG Requirement already installed: h11==0.16.0
+DEBUG Requirement already installed: annotated-types==0.7.0
+DEBUG Requirement already installed: pydantic-core==2.33.2
+DEBUG Requirement already installed: typing-inspection==0.4.0
+DEBUG Requirement already installed: pycparser==2.22
+DEBUG Requirement already installed: mypy-extensions==1.1.0
+DEBUG Requirement already installed: rich==14.0.0
+DEBUG Requirement already installed: shellingham==1.5.4
+DEBUG Requirement already installed: pyyaml==6.0.2
+DEBUG Requirement already installed: uvloop==0.21.0
+DEBUG Requirement already installed: watchfiles==1.0.5
+DEBUG Requirement already installed: python-engineio==4.12.0
+DEBUG Requirement already installed: proto-plus==1.26.1
+DEBUG Requirement already installed: cachetools==5.5.2
+DEBUG Requirement already installed: pyasn1-modules==0.4.2
+DEBUG Requirement already installed: rsa==4.9.1
+DEBUG Requirement already installed: pyparsing==3.2.3
+DEBUG Requirement already installed: oauthlib==3.2.2
+DEBUG Requirement already installed: six==1.17.0
+DEBUG Requirement already installed: opentelemetry-exporter-otlp-proto-grpc==1.31.1
+DEBUG Requirement already installed: opentelemetry-exporter-otlp-proto-http==1.31.1
+DEBUG Requirement already installed: opentelemetry-semantic-conventions==0.52b1
+DEBUG Requirement already installed: pygments==2.19.1
+DEBUG Requirement already installed: simple-websocket==1.1.0
+DEBUG Requirement already installed: pyasn1==0.6.1
+DEBUG Requirement already installed: opentelemetry-exporter-otlp-proto-common==1.31.1
+DEBUG Requirement already installed: opentelemetry-proto==1.31.1
+DEBUG Requirement already installed: wsproto==1.2.0
+DEBUG Unnecessary package: alembic==1.15.2
+DEBUG Unnecessary package: appnope==0.1.4
+DEBUG Unnecessary package: asttokens==3.0.0
+DEBUG Unnecessary package: boto3-stubs==1.38.7
+DEBUG Unnecessary package: botocore-stubs==1.38.7
+DEBUG Unnecessary package: cfgv==3.4.0
+DEBUG Unnecessary package: comm==0.2.2
+DEBUG Unnecessary package: debugpy==1.8.14
+DEBUG Unnecessary package: decorator==5.2.1
+DEBUG Unnecessary package: distlib==0.3.9
+DEBUG Unnecessary package: executing==2.2.0
+DEBUG Unnecessary package: filelock==3.18.0
+DEBUG Unnecessary package: identify==2.6.10
+DEBUG Unnecessary package: iniconfig==2.1.0
+DEBUG Unnecessary package: ipykernel==6.29.5
+DEBUG Unnecessary package: ipython==9.2.0
+DEBUG Unnecessary package: ipython-pygments-lexers==1.1.1
+DEBUG Unnecessary package: jedi==0.19.2
+DEBUG Unnecessary package: jupyter-client==8.6.3
+DEBUG Unnecessary package: jupyter-core==5.7.2
+DEBUG Unnecessary package: mako==1.3.10
+DEBUG Unnecessary package: matplotlib-inline==0.1.7
+DEBUG Unnecessary package: mypy==1.15.0
+DEBUG Unnecessary package: nodeenv==1.9.1
+DEBUG Unnecessary package: pandas-stubs==2.2.3.250308
+DEBUG Unnecessary package: parso==0.8.4
+DEBUG Unnecessary package: pastel==0.2.1
+DEBUG Unnecessary package: pexpect==4.9.0
+DEBUG Unnecessary package: platformdirs==4.3.7
+DEBUG Unnecessary package: pluggy==1.5.0
+DEBUG Unnecessary package: poethepoet==0.34.0
+DEBUG Unnecessary package: pre-commit==4.2.0
+DEBUG Unnecessary package: prompt-toolkit==3.0.51
+DEBUG Unnecessary package: psutil==7.0.0
+DEBUG Unnecessary package: ptyprocess==0.7.0
+DEBUG Unnecessary package: pure-eval==0.2.3
+DEBUG Unnecessary package: pytest==8.3.5
+DEBUG Unnecessary package: pytest-mock==3.14.0
+DEBUG Unnecessary package: pyzmq==26.4.0
+DEBUG Unnecessary package: stack-data==0.6.3
+DEBUG Unnecessary package: tomli==2.2.1
+DEBUG Unnecessary package: tornado==6.4.2
+DEBUG Unnecessary package: traitlets==5.14.3
+DEBUG Unnecessary package: types-awscrt==0.26.1
+DEBUG Unnecessary package: types-psycopg2==2.9.21.20250318
+DEBUG Unnecessary package: types-pytz==2025.2.0.20250326
+DEBUG Unnecessary package: types-requests==2.32.0.20250328
+DEBUG Unnecessary package: types-s3transfer==0.12.0
+DEBUG Unnecessary package: virtualenv==20.30.0
+DEBUG Unnecessary package: wcwidth==0.2.13
+Audited 141 packages in 2ms
+DEBUG Released lock at `/Users/kurt/Programs/api/.venv/.lock`
+```
+
+### Platform
+
+Darwin 24.5.0 arm64
+
+### Version
+
+0.7.12
+
+---
+
+_Label `question` added by @kurt-rhee on 2025-06-11 15:19_
+
+---
+
+_Comment by @zanieb on 2025-06-11 15:30_
+
+We're fixing this — see https://github.com/astral-sh/uv/issues/13874
+
+---
+
+_Comment by @kurt-rhee on 2025-06-11 16:17_
+
+Awesome thank you so much, closing as duplicate
+
+---
+
+_Closed by @kurt-rhee on 2025-06-11 16:17_
+
+---

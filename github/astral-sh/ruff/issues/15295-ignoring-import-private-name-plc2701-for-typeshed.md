@@ -1,0 +1,56 @@
+---
+number: 15295
+title: "Ignoring `import-private-name (PLC2701)` for `_typeshed` import"
+type: issue
+state: open
+author: Avasam
+labels:
+  - rule
+  - needs-decision
+assignees: []
+created_at: 2025-01-06T04:07:05Z
+updated_at: 2025-01-06T08:21:58Z
+url: https://github.com/astral-sh/ruff/issues/15295
+synced_at: 2026-01-07T13:12:16-06:00
+---
+
+# Ignoring `import-private-name (PLC2701)` for `_typeshed` import
+
+---
+
+_Issue opened by @Avasam on 2025-01-06 04:07_
+
+`_typeshed` exposes plenty of very useful type aliases and protocols. A lot of those are even marked as `stable` by typeshed maintainers.
+`_typeshed` imports can *only* be used in annotations and type-stubs.
+
+For these reasons, I don't think `import-private-name (PLC2701)` brings value in applying to the `_typeshed` import. I'd like to see this rule ignore that import. Or to have a way to configure names and/or modules I'd like ignored.
+
+Ruff: 0.8.5
+
+---
+
+_Referenced in [astral-sh/ruff#14535](../../astral-sh/ruff/issues/14535.md) on 2025-01-06 04:28_
+
+---
+
+_Label `rule` added by @MichaReiser on 2025-01-06 08:06_
+
+---
+
+_Label `needs-decision` added by @MichaReiser on 2025-01-06 08:06_
+
+---
+
+_Comment by @MichaReiser on 2025-01-06 08:09_
+
+For reference: The documentation of the `_typeshed` module can be found [here](https://github.com/python/typeshed/tree/main/stdlib/_typeshed)
+
+I'm more leaning towards an option (e.g. an allowlist of modules where private names are allowed), if we want to change this at all as this module is in a gray area where it is somewhat public but also not entirely stable. Another alternative is to remove it from `PLC2701` and introduce a new rule specifically to `_typeshed`. 
+
+---
+
+_Comment by @Avasam on 2025-01-06 08:21_
+
+An allowlist would be my go-to solution, whether or not you have it default to include `_typeshed`. It's more flexible for the end user and their cases where they know they have to repeatedly import a private name or from a private module.
+
+---

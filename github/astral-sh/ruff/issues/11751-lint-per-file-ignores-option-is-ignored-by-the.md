@@ -1,0 +1,150 @@
+---
+number: 11751
+title: "`lint.per-file-ignores` option is ignored by the new language server"
+type: issue
+state: closed
+author: DetachHead
+labels:
+  - bug
+  - server
+assignees: []
+created_at: 2024-06-05T12:21:19Z
+updated_at: 2024-06-08T05:48:54Z
+url: https://github.com/astral-sh/ruff/issues/11751
+synced_at: 2026-01-07T13:12:15-06:00
+---
+
+# `lint.per-file-ignores` option is ignored by the new language server
+
+---
+
+_Issue opened by @DetachHead on 2024-06-05 12:21_
+
+when enabling the new `ruff.nativeServer` setting in vscode, it seems to ignore `tool.ruff.lint.per-file-ignores`
+```toml
+# pyproject.toml
+
+[tool.ruff.lint]
+extend-select = ["S101"]
+[tool.ruff.lint.per-file-ignores]
+"tests/**/.py" = ["S101"]
+```
+```jsonc
+// .vscode/settings.json
+
+{
+  "ruff.nativeServer": true
+}
+```
+
+![image](https://github.com/astral-sh/ruff/assets/57028336/b773846b-0b02-4f01-b41d-65baee0d2ebf)
+
+
+---
+
+_Label `bug` added by @MichaReiser on 2024-06-05 12:25_
+
+---
+
+_Label `server` added by @MichaReiser on 2024-06-05 12:25_
+
+---
+
+_Comment by @charliermarsh on 2024-06-05 16:44_
+
+I think you have a typo: `"tests/**/.py"` should be `"tests/**/*.py". Otherwise, it works in my testing.
+
+---
+
+_Comment by @DetachHead on 2024-06-05 21:22_
+
+oh oops! weird though because the old language server and the cli both seem to work with that glob
+
+---
+
+_Comment by @DetachHead on 2024-06-06 06:49_
+
+fixing that typo doesn't seem to work for me. it seems that the new lsp is only seeing the name of the file, but not the full path. `"foo.py"` works but `"tests/foo.py"` doesn't
+
+---
+
+_Comment by @charliermarsh on 2024-06-06 14:13_
+
+I'm not sure we can do. In the `ruff-vscode` repo, I added:
+
+```toml
+[tool.ruff.lint.per-file-ignores]
+"tests/**/*.py" = ["F401"]
+```
+
+And `F401` errors in `./tests/client/constants.py` are successfully ignored, as are errors in `./tests/test_server.py`.
+
+---
+
+_Comment by @DetachHead on 2024-06-07 00:13_
+
+i think it's because that repo does not use the new language server. adding the same thing to `pyproject.toml`, then adding `"ruff.nativeServer": true` to `.vscode/settings.json` causes the error to appear.
+
+---
+
+_Comment by @charliermarsh on 2024-06-07 00:27_
+
+Not for me... I have it enabled in my user settings, and I've verified that it's running via the logging. Could you be using an old Ruff version? There were some early versions of the native server that didn't support this.
+
+---
+
+_Comment by @DetachHead on 2024-06-07 00:32_
+
+according to the vscode extension log it's using 0.4.8:
+
+```
+2024-06-07 10:10:38.188 [info] Found ruff 0.4.8 at c:\Users\user\.vscode\extensions\charliermarsh.ruff-2024.26.0-win32-x64\bundled\libs\bin\ruff.exe
+```
+
+maybe it only happens on windows? i'm on windows 10, let me know if you need any more info
+
+---
+
+_Comment by @charliermarsh on 2024-06-07 02:30_
+
+I will try it on Windows, perhaps there's a difference there.
+
+---
+
+_Comment by @charliermarsh on 2024-06-07 17:31_
+
+Ok, I can successfully reproduce this on Windows.
+
+---
+
+_Comment by @charliermarsh on 2024-06-08 01:38_
+
+So the LSP file paths are now like:
+
+```
+/c%3A/Users/crmar/workspace/fastapi/tests/main.py
+```
+
+But the resolved ignore patterns are like:
+
+```
+c:\\Users\\crmar\\workspace\\fastapi\\tests\\**\\*.py
+```
+
+---
+
+_Referenced in [astral-sh/ruff#11800](../../astral-sh/ruff/pulls/11800.md) on 2024-06-08 01:49_
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2024-06-08 01:51_
+
+---
+
+_Closed by @snowsignal on 2024-06-08 05:48_
+
+---
+
+_Referenced in [astral-sh/ruff#14282](../../astral-sh/ruff/issues/14282.md) on 2024-11-11 14:45_
+
+---

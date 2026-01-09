@@ -1,0 +1,103 @@
+---
+number: 13515
+title: "Entrypoint creation isn't targeting the direct dependency, instead is built through third-party dependency"
+type: issue
+state: open
+author: WibblyGhost
+labels:
+  - needs-mre
+assignees: []
+created_at: 2025-05-18T21:42:30Z
+updated_at: 2025-05-18T22:05:03Z
+url: https://github.com/astral-sh/uv/issues/13515
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# Entrypoint creation isn't targeting the direct dependency, instead is built through third-party dependency
+
+---
+
+_Issue opened by @WibblyGhost on 2025-05-18 21:42_
+
+### Summary
+
+When trying to rename an entrypoint for one of my scripts, it seems that all subsequent `uv sync`'s inside of a docker build seems to have an incorrect entrypoint after updating to a new major package version.
+
+I have the following dependencies (Noting that these are private PIP packages, internal repo), which had an initial entrypoint of **autoupgrader.application:main** which in >=4.0.0 has changed to **autoupgrader.run_p25_install:main**
+
+- channelsimulator(autoupgrader>=3.0.0)
+- terminalsimulator(autoupgrader>=3.0.0)
+
+**Main Package**
+TestSystem (channelsimulator, terminalsimulator, **autoupgrader==4.0.0**)
+
+This should install the new entrypoints of **autoupgrader = autoupgrader.run_p25_install:main** but instead in the docker build image the resultant **/bin** entry shows the legacy script.
+```bash
+cat .venv/bin/autoupgrader 
+#!/.venv/bin/python
+# -*- coding: utf-8 -*-
+import sys
+from autoupgrader.application import main
+if __name__ == "__main__":
+    if sys.argv[0].endswith("-script.pyw"):
+        sys.argv[0] = sys.argv[0][:-11]
+    elif sys.argv[0].endswith(".exe"):
+        sys.argv[0] = sys.argv[0][:-4]
+    sys.exit(main())
+```
+
+When running a `uv sync` inside a docker build image I get the following .cache entries.
+```bash
+grep -r "autoupgrader.application" output/.cache/*
+output/.cache/uv/archive-v0/iW6SG0JKPBW03PBPUwhNz/channelsimulator-5.6.6.dist-info/entry_points.txt:autoupgrader = autoupgrader.application:main
+output/.cache/uv/archive-v0/N4lmejMS33Yh0vYbvaLmc/terminalsimulator-5.13.0.dist-info/entry_points.txt:autoupgrader = autoupgrader.application:main
+```
+
+Please see verbose sync command
+[uv-sync-verbose.txt](https://github.com/user-attachments/files/20275119/out.txt)
+
+
+
+### Platform
+
+Ubuntu24.04, uv:python3.13-bookworm
+
+### Version
+
+0.7.4
+
+### Python version
+
+cpython-3.13.3-linux-x86_64-gnu
+
+---
+
+_Label `bug` added by @WibblyGhost on 2025-05-18 21:42_
+
+---
+
+_Renamed from "Entrypoint creation isn't targeting the direct dependency, instead is build through third-party dependency" to "Entrypoint creation isn't targeting the direct dependency, instead is built through third-party dependency" by @WibblyGhost on 2025-05-18 21:42_
+
+---
+
+_Comment by @charliermarsh on 2025-05-18 21:45_
+
+Are you able to provide a complete MRE?
+
+---
+
+_Label `needs-mre` added by @charliermarsh on 2025-05-18 21:45_
+
+---
+
+_Comment by @WibblyGhost on 2025-05-18 21:52_
+
+Might be a bit difficult to provide a _externally_ reproducable  example for you, due to all of this being locked behind company security. However I'm happy to provide any verbose logs to you or run debug builds as log as I can sanitize the log outputs first.
+
+I'll spend some time and see whether I can create a localized version which doesn't have security implications for you.
+
+---
+
+_Label `bug` removed by @charliermarsh on 2025-05-18 22:05_
+
+---

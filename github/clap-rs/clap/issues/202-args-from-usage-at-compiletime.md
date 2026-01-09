@@ -1,0 +1,84 @@
+---
+number: 202
+title: args_from_usage at compiletime
+type: issue
+state: closed
+author: richard-uk1
+labels:
+  - E-hard
+assignees: []
+created_at: 2015-08-29T13:00:01Z
+updated_at: 2018-08-02T03:29:42Z
+url: https://github.com/clap-rs/clap/issues/202
+synced_at: 2026-01-07T13:12:19-06:00
+---
+
+# args_from_usage at compiletime
+
+---
+
+_Issue opened by @richard-uk1 on 2015-08-29 13:00_
+
+It seems like it would be more efficient to parse the usage string at compiletime rather than build time since it is invariant.  I don't know if this could be done with macros or if codegen would be needed.
+
+
+---
+
+_Comment by @kbknapp on 2015-08-29 14:54_
+
+@derekdreery it would be _slightly_ faster, but to my knowledge it's not really feasible without syntax extensions or some sort of codegen. Since most of that requires nightly, I just haven't put too much time into it yet. Once these things stabalize it's on my radar to implement something like this.
+
+On the positive side, the performance increase is pretty minimal, as `clap` parses everything _almost_ as fast not using an arg parsing library at all. See [this gist comparing arg parsing methods](https://gist.github.com/kbknapp/fb28a49d7a0fe8b8e400) (which should be taken with a grain of salt, because the options for that CLI are decently simple).
+
+
+---
+
+_Label `T: RFC / question` added by @kbknapp on 2015-08-29 14:55_
+
+---
+
+_Label `W: postponed` added by @kbknapp on 2015-08-29 14:55_
+
+---
+
+_Label `C: args` added by @kbknapp on 2015-08-29 14:55_
+
+---
+
+_Label `D: hard` added by @kbknapp on 2015-08-29 14:55_
+
+---
+
+_Label `P3: want to have` added by @kbknapp on 2015-08-29 14:55_
+
+---
+
+_Referenced in [clap-rs/clap#216](../../clap-rs/clap/issues/216.md) on 2015-09-02 02:22_
+
+---
+
+_Referenced in [clap-rs/clap#217](../../clap-rs/clap/issues/217.md) on 2015-09-02 17:54_
+
+---
+
+_Label `W: 2.x` added by @kbknapp on 2016-11-02 03:00_
+
+---
+
+_Label `W: 3.x` added by @kbknapp on 2016-11-02 03:00_
+
+---
+
+_Label `W: 2.x` removed by @kbknapp on 2016-11-02 03:00_
+
+---
+
+_Comment by @kbknapp on 2017-04-05 18:35_
+
+Closed since the `clap_app!` basically does exactly this minus all args being in a single string.
+
+---
+
+_Closed by @kbknapp on 2017-04-05 18:35_
+
+---

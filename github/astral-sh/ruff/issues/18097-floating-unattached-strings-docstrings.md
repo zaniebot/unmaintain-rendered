@@ -1,0 +1,106 @@
+---
+number: 18097
+title: Floating/unattached strings/docstrings
+type: issue
+state: open
+author: IlanCosman
+labels:
+  - rule
+  - needs-design
+assignees: []
+created_at: 2025-05-14T16:39:03Z
+updated_at: 2025-05-15T21:29:06Z
+url: https://github.com/astral-sh/ruff/issues/18097
+synced_at: 2026-01-07T13:12:16-06:00
+---
+
+# Floating/unattached strings/docstrings
+
+---
+
+_Issue opened by @IlanCosman on 2025-05-14 16:39_
+
+### Summary
+
+There should be a lint against floating/unattached strings/docstring literals:
+
+```python
+def foo():
+    foo = 1
+    "hello"
+    return foo
+
+
+def bar():
+    bar = 2
+    """world"""
+    return bar
+```
+
+These string statements have no effects, and are almost certainly mistakes.
+
+Use case: I mistakenly copy-pasted some stuff to a function, and accidentally put it above the docstring, thereby rendering the docstring useless. It would be nice if Ruff detected this.
+
+---
+
+_Comment by @ntBre on 2025-05-14 17:01_
+
+Interesting, I actually thought we had a rule for this, but I'm not seeing anything when selecting all rules in the [playground](https://play.ruff.rs/6340b9b7-a62b-4833-aadb-12979ea66a31). There's some overlap with the missing docstring rules in this case, but they'd still be a likely error if the function had a docstring.
+
+---
+
+_Label `rule` added by @ntBre on 2025-05-14 17:02_
+
+---
+
+_Comment by @berzi on 2025-05-15 06:35_
+
+> These string statements have no effects, and are almost certainly mistakes.
+
+Oh but they do! Editors treat them as docstrings and attach them to the variables above, similarly to what happens if you put them on the next line to a `def`, `class`, or an attribute on a class.
+
+![Image](https://github.com/user-attachments/assets/0b02107d-e73c-47e9-9043-14d34df35495)
+
+---
+
+_Comment by @MichaReiser on 2025-05-15 06:46_
+
+It seems there's some precedence for allowing "docstrings" after variables
+
+https://sphinxcontrib-napoleon.readthedocs.io/en/latest/example_google.html
+
+I think it's also somewhat common to document enum members.
+
+---
+
+_Comment by @IlanCosman on 2025-05-15 06:46_
+
+> Oh but they do! Editors treat them as docstrings and attach them to the variables above, similarly to what happens if you put them on the next line to a def, class, or an attribute on a class.
+
+Fair point, though in VSCode/Pylance there is a slightly more nuanced behavior that I've just explored a little bit.
+
+In global scope or class scope, strings will be attached to the variable above. In functions/methods, strings will not be attached. An exception is the `__init__` method, where strings do get attached.
+
+---
+
+_Label `needs-design` added by @MichaReiser on 2025-05-15 06:47_
+
+---
+
+_Comment by @MichaReiser on 2025-05-15 06:47_
+
+I think this needs some more research on where different tools and docstring styles allow comments and how this rule would avoid false positives
+
+---
+
+_Comment by @berzi on 2025-05-15 06:54_
+
+One easy and permissive implementation could be to warn on floating strings that have 1+ empty/whitespace line above them. This is anecdotal, but I've never seen a case of "floating string as docstring" where the string was separated from the variable instead of directly below it. Any such case could be easily interpreted as unintended.
+
+---
+
+_Comment by @IlanCosman on 2025-05-15 21:29_
+
+Another safe and reasonably strong heuristic would be to check if the code above is a variable type declaration or initialization. If so, the string is allowed because it might be getting attached to the variable. If not, the string isn't allowed.
+
+---

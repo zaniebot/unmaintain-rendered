@@ -1,0 +1,189 @@
+---
+number: 16250
+title: "Allow `# noqa: SIM103` on last return"
+type: issue
+state: open
+author: JKE-be
+labels:
+  - suppression
+  - needs-decision
+  - needs-design
+assignees: []
+created_at: 2025-02-19T11:37:46Z
+updated_at: 2025-07-11T05:29:22Z
+url: https://github.com/astral-sh/ruff/issues/16250
+synced_at: 2026-01-07T13:12:16-06:00
+---
+
+# Allow `# noqa: SIM103` on last return
+
+---
+
+_Issue opened by @JKE-be on 2025-02-19 11:37_
+
+### Description
+
+**searched**: SIM103 Ignore
+
+**snippet**:
+```py
+def func(a, b):
+    if a == 0:
+        return False
+
+    a = a + b / a
+    if a != 1:
+        return False
+
+    a = a * b
+    if a > 1:
+        return False
+
+    return True  # noqa SIM103
+```
+
+**Command**: `ruff check /tmp/ruff.py`
+
+**Output**: 
+```
+/tmp/ruff.py:10:5: SIM103 Return the negated condition directly
+   |
+ 9 |       a = a * b
+10 | /     if a > 1:
+11 | |         return False
+12 | |
+13 | |     return True  # noqa SIM103
+   | |_______________^ SIM103
+   |
+   = help: Inline condition
+```
+
+**version**: ruff 0.9.6
+
+**config**:
+
+```py
+fix = false
+show-fixes = true
+line-length = 120
+output-format = "full"
+target-version = "py38"
+
+[lint]
+ignore = [
+    "E501",
+    "E731",
+    "RUF012",   # mutable-class-default
+]
+select = [
+    "B",   # flake8-bugbear
+    "E",   # pycodestyle
+    "F",   # Pyflakes
+    "G",   # flake8-logging-format
+    "ISC", # flake8-implicit-str-concat
+    "PERF",# perflint
+    "RUF", # ruff specific rules
+    "SIM", # flake8-simplify
+    "W",   # pycodestyle
+]
+```
+
+**Expected** (Nice to have feature)
+
+Allow ignoring `SIM103` without requiring the `# noqa` comment on the last `if` statement itself. The goal is to enable other developers to add another `if` after the last one without modifying the previous condition.  
+
+This is why I don’t want to refactor the last condition as suggested by Ruff. It’s a special case, but I don’t want to ignore `SIM103` for the entire file or all files, as I still find it useful in 99% of cases.  
+
+Currently, I need to add `# noqa` on the last `ìf` to get `All checks passed!`
+
+```diff
+def func(a, b):
+    if a == 0:
+        return False
+
+    a = a + b / a
+    if a != 1:
+        return False
+
+    a = a * b
+-   if a > 1:  # noqa SIM103 
++   if a > 1:
+        return False
+
+-   return True
++   return True  # noqa SIM103 
+```
+
+
+---
+
+_Renamed from "allow noqa SIM103 on last return" to "Allow `# noqa SIM103` on last return" by @JKE-be on 2025-02-19 11:38_
+
+---
+
+_Comment by @InSyncWithFoo on 2025-02-19 12:25_
+
+Irrelevant, but the comment should have a colon: `# noqa: SIM103`. See also [`PGH004`](https://docs.astral.sh/ruff/rules/blanket-noqa/).
+
+---
+
+_Renamed from "Allow `# noqa SIM103` on last return" to "Allow `# noqa: SIM103` on last return" by @JKE-be on 2025-02-19 13:51_
+
+---
+
+_Comment by @dylwil3 on 2025-02-19 18:16_
+
+This is an interesting case, thank you! 
+
+As far as I can tell this would require some fairly substantial changes to how error suppression currently works for multi-line diagnostic ranges. Note that, in your example, that final return statement _is_ part of the diagnostic range, it's just that in general the in-line suppression comment is supposed to be on the first line of a diagnostic.
+
+So I think supporting this may require some design discussion to understand whether it should be done and what the ramifications might be.
+
+---
+
+_Label `suppression` added by @dylwil3 on 2025-02-19 18:16_
+
+---
+
+_Label `needs-decision` added by @dylwil3 on 2025-02-19 18:16_
+
+---
+
+_Label `needs-design` added by @dylwil3 on 2025-02-19 18:16_
+
+---
+
+_Comment by @MichaReiser on 2025-02-19 18:23_
+
+Ha, @dylwil3 I was just about to write the same. 
+
+Red Knot implements your desired behavior (see https://github.com/astral-sh/ruff/pull/15046#issuecomment-2555032954) but I'd prefer to keep the behavior of `noqa` consistent with flake8. I'd have to check what behavior flake8 uses. Either way, this is a rather significant change.
+
+There are some trade offs involved with matching both the start and end of the range (see red knot PR) and the main mitigation is to strictly use error codes. 
+
+---
+
+_Comment by @brandonchinn178 on 2025-07-11 05:29_
+
+Not sure how easy it would be to detect, but I would actually argue that this should _not_ be a violation of SIM103. The spirit of SIM103 is to replace simple if checks with a boolean expression, but fall through boolean checks is a very common idiom that should be allowed
+```python
+# GOOD - easy to read and extend
+def check(s: str) -> bool:
+    if s.startswith("/"):
+        return True
+
+    if s.endswith("/"):
+        return False
+
+    # TODO: more guards will be added in the future
+
+    return True
+
+# BAD - difficult to read or extend
+def check(s: str) -> bool:
+    return s.startswith("/") or not s.endswith("/")
+```
+
+The original ask would be a decent mitigation for this, but IMO a better resolution would be to exclude these situations, if possible.
+
+---

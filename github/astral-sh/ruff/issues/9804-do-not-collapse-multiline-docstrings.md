@@ -1,0 +1,78 @@
+---
+number: 9804
+title: Do not collapse multiline docstrings
+type: issue
+state: closed
+author: Glyphack
+labels:
+  - bug
+  - formatter
+assignees: []
+created_at: 2024-02-02T22:18:29Z
+updated_at: 2024-02-05T13:29:25Z
+url: https://github.com/astral-sh/ruff/issues/9804
+synced_at: 2026-01-07T13:12:15-06:00
+---
+
+# Do not collapse multiline docstrings
+
+---
+
+_Issue opened by @Glyphack on 2024-02-02 22:18_
+
+This issue was brought up [in the review](https://github.com/astral-sh/ruff/pull/9725#discussion_r1475596423).
+
+The summary is currently we collapse multiline docstrings, which is not compatible with black:
+
+For example:
+
+```
+class Test:
+    
+    """
+    Black's `Preview.module_docstring_newlines`
+
+
+    A code black to format
+"""
+```
+Black formats this to
+
+```
+class Test:
+    """
+    Black's `Preview.module_docstring_newlines`
+
+
+    A code black to format
+    """
+```
+
+and Ruff formats it to
+
+```
+class Test:
+    """
+    Black's `Preview.module_docstring_newlines`
+
+
+    A code black to format"""
+```
+
+---
+
+_Label `formatter` added by @zanieb on 2024-02-02 23:07_
+
+---
+
+_Label `bug` added by @zanieb on 2024-02-02 23:07_
+
+---
+
+_Referenced in [astral-sh/ruff#9813](../../astral-sh/ruff/pulls/9813.md) on 2024-02-04 17:10_
+
+---
+
+_Closed by @MichaReiser on 2024-02-05 13:29_
+
+---

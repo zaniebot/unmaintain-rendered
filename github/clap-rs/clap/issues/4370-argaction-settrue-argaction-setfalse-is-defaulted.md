@@ -1,0 +1,331 @@
+---
+number: 4370
+title: "`ArgAction::SetTrue / ArgAction::SetFalse is defaulted` panic appearing only in `--release` for a seemingly valid input"
+type: issue
+state: closed
+author: yoav-lavi
+labels:
+  - C-bug
+assignees: []
+created_at: 2022-10-11T14:23:08Z
+updated_at: 2022-10-11T16:10:34Z
+url: https://github.com/clap-rs/clap/issues/4370
+synced_at: 2026-01-07T13:12:20-06:00
+---
+
+# `ArgAction::SetTrue / ArgAction::SetFalse is defaulted` panic appearing only in `--release` for a seemingly valid input
+
+---
+
+_Issue opened by @yoav-lavi on 2022-10-11 14:23_
+
+### Please complete the following tasks
+
+- [X] I have searched the [discussions](https://github.com/clap-rs/clap/discussions)
+- [X] I have searched the [open](https://github.com/clap-rs/clap/issues) and [rejected](https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed) issues
+
+### Rust Version
+
+rustc 1.64.0 (a55dd71d5 2022-09-19)
+
+### Clap Version
+
+v4.0.12
+
+### Minimal reproducible code
+
+```rust
+use clap::{arg, command, value_parser, Arg, ArgAction, Command};
+
+/// creates the cli interface
+#[must_use]
+pub fn build_cli() -> Command {
+    command!()
+        .subcommand_required(true)
+        .arg_required_else_help(true)
+        .subcommand(
+            Command::new("dev")
+                .about("Run your grafbase project locally")
+                .args(&[
+                    arg!(-p --port <port> "Use a specific port")
+                        .default_value("4000")
+                        .value_parser(value_parser!(u16)),
+                    arg!(-s --search "If a given port is unavailable, search for another")
+                        .action(ArgAction::SetTrue),
+                    Arg::new("disable-watch")
+                        .long("disable-watch")
+                        .action(ArgAction::SetTrue)
+                        .help("Do not listen for schema changes and reload"),
+                ]),
+        )
+}
+
+#[test]
+fn verify_cli() {
+    build_cli().debug_assert();
+}
+
+fn main() {
+    let matches = build_cli().get_matches();
+
+    matches.get_flag("disable-watch");
+}
+```
+
+
+### Steps to reproduce the bug with the above code
+
+cargo run --release -- dev
+
+### Actual Behaviour
+
+Panics with
+
+```
+cause = 'ArgAction::SetTrue / ArgAction::SetFalse is defaulted'
+method = 'Panic'
+backtrace = '''
+
+   0: 0x1042e0004 - __mh_execute_header
+   1: 0x1042dffc8 - __mh_execute_header
+   2: 0x1047357cc - __mh_execute_header
+   3: 0x1042c6d08 - __mh_execute_header
+   4: 0x1042681bc - __mh_execute_header
+   5: 0x104266dd4 - __mh_execute_header
+   6: 0x104256910 - __mh_execute_header
+   7: 0x104270348 - __mh_execute_header'''
+```
+
+
+### Expected Behaviour
+
+Should not panic
+
+### Additional Context
+
+_No response_
+
+### Debug Output
+
+[      clap::builder::command]  Command::_do_parse
+[      clap::builder::command]  Command::_build: name="test3"
+[      clap::builder::command]  Command::_propagate:test3
+[      clap::builder::command]  Command::_check_help_and_version:test3 expand_help_tree=false
+[      clap::builder::command]  Command::long_help_exists
+[      clap::builder::command]  Command::_check_help_and_version: Building default --help
+[      clap::builder::command]  Command::_check_help_and_version: Building default --version
+[      clap::builder::command]  Command::_check_help_and_version: Building help subcommand
+[      clap::builder::command]  Command::_propagate_global_args:test3
+[        clap::parser::parser]  Parser::get_matches_with
+[        clap::parser::parser]  Parser::get_matches_with: Begin parsing 'RawOsStr("dev")' ([100, 101, 118])
+[        clap::parser::parser]  Parser::possible_subcommand: arg=Ok("dev")
+[        clap::parser::parser]  Parser::get_matches_with: sc=Some("dev")
+[        clap::parser::parser]  Parser::parse_subcommand
+[         clap::output::usage]  Usage::get_required_usage_from: incls=[], matcher=false, incl_last=true
+[         clap::output::usage]  Usage::get_required_usage_from: unrolled_reqs=[]
+[         clap::output::usage]  Usage::get_required_usage_from: ret_val=[]
+[      clap::builder::command]  Command::_build_subcommand Setting bin_name of dev to "test3 dev"
+[      clap::builder::command]  Command::_build_subcommand Setting display_name of dev to "test3-dev"
+[      clap::builder::command]  Command::_build: name="dev"
+[      clap::builder::command]  Command::_propagate:dev
+[      clap::builder::command]  Command::_check_help_and_version:dev expand_help_tree=false
+[      clap::builder::command]  Command::long_help_exists
+[      clap::builder::command]  Command::_check_help_and_version: Building default --help
+[      clap::builder::command]  Command::_propagate_global_args:dev
+[        clap::parser::parser]  Parser::parse_subcommand: About to parse sc=dev
+[        clap::parser::parser]  Parser::get_matches_with
+[        clap::parser::parser]  Parser::add_defaults
+[        clap::parser::parser]  Parser::add_defaults:iter:port:
+[        clap::parser::parser]  Parser::add_default_value: doesn't have conditional defaults
+[        clap::parser::parser]  Parser::add_default_value:iter:port: has default vals
+[        clap::parser::parser]  Parser::add_default_value:iter:port: wasn't used
+[        clap::parser::parser]  Parser::react action=Set, identifier=None, source=DefaultValue
+[   clap::parser::arg_matcher]  ArgMatcher::start_custom_arg: id="port", source=DefaultValue
+[      clap::builder::command]  Command::groups_for_arg: id="port"
+[        clap::parser::parser]  Parser::push_arg_values: ["4000"]
+[        clap::parser::parser]  Parser::add_single_val_to_arg: cur_idx:=1
+[      clap::builder::command]  Command::groups_for_arg: id="port"
+[        clap::parser::parser]  Parser::add_defaults:iter:search:
+[        clap::parser::parser]  Parser::add_default_value: doesn't have conditional defaults
+[        clap::parser::parser]  Parser::add_default_value:iter:search: has default vals
+[        clap::parser::parser]  Parser::add_default_value:iter:search: wasn't used
+[        clap::parser::parser]  Parser::react action=SetTrue, identifier=None, source=DefaultValue
+[   clap::parser::arg_matcher]  ArgMatcher::start_custom_arg: id="search", source=DefaultValue
+[      clap::builder::command]  Command::groups_for_arg: id="search"
+[        clap::parser::parser]  Parser::push_arg_values: ["false"]
+[        clap::parser::parser]  Parser::add_single_val_to_arg: cur_idx:=2
+[      clap::builder::command]  Command::groups_for_arg: id="search"
+[        clap::parser::parser]  Parser::add_defaults:iter:disable-watch:
+[        clap::parser::parser]  Parser::add_default_value: doesn't have conditional defaults
+[        clap::parser::parser]  Parser::add_default_value:iter:disable-watch: has default vals
+[        clap::parser::parser]  Parser::add_default_value:iter:disable-watch: wasn't used
+[        clap::parser::parser]  Parser::react action=SetTrue, identifier=None, source=DefaultValue
+[   clap::parser::arg_matcher]  ArgMatcher::start_custom_arg: id="disable-watch", source=DefaultValue
+[      clap::builder::command]  Command::groups_for_arg: id="disable-watch"
+[        clap::parser::parser]  Parser::push_arg_values: ["false"]
+[        clap::parser::parser]  Parser::add_single_val_to_arg: cur_idx:=3
+[      clap::builder::command]  Command::groups_for_arg: id="disable-watch"
+[        clap::parser::parser]  Parser::add_defaults:iter:help:
+[        clap::parser::parser]  Parser::add_default_value: doesn't have conditional defaults
+[        clap::parser::parser]  Parser::add_default_value:iter:help: doesn't have default vals
+[     clap::parser::validator]  Validator::validate
+[     clap::parser::validator]  Validator::validate_conflicts
+[     clap::parser::validator]  Validator::validate_exclusive
+[     clap::parser::validator]  Validator::validate_required: required=ChildGraph([])
+[     clap::parser::validator]  Validator::gather_requires
+[     clap::parser::validator]  Validator::validate_required: is_exclusive_present=false
+[        clap::parser::parser]  Parser::add_defaults
+[        clap::parser::parser]  Parser::add_defaults:iter:help:
+[        clap::parser::parser]  Parser::add_default_value: doesn't have conditional defaults
+[        clap::parser::parser]  Parser::add_default_value:iter:help: doesn't have default vals
+[        clap::parser::parser]  Parser::add_defaults:iter:version:
+[        clap::parser::parser]  Parser::add_default_value: doesn't have conditional defaults
+[        clap::parser::parser]  Parser::add_default_value:iter:version: doesn't have default vals
+[     clap::parser::validator]  Validator::validate
+[     clap::parser::validator]  Validator::validate_conflicts
+[     clap::parser::validator]  Validator::validate_exclusive
+[     clap::parser::validator]  Validator::validate_required: required=ChildGraph([])
+[     clap::parser::validator]  Validator::gather_requires
+[     clap::parser::validator]  Validator::validate_required: is_exclusive_present=false
+[   clap::parser::arg_matcher]  ArgMatcher::get_global_values: global_arg_vec=[]
+
+---
+
+_Label `C-bug` added by @yoav-lavi on 2022-10-11 14:23_
+
+---
+
+_Renamed from "`ArgAction::SetTrue / ArgAction::SetFalse is defaulted` appearing only in `--release` for a seemingly valid input" to "`ArgAction::SetTrue / ArgAction::SetFalse is defaulted` panic appearing only in `--release` for a seemingly valid input" by @yoav-lavi on 2022-10-11 14:36_
+
+---
+
+_Comment by @epage on 2022-10-11 14:58_
+
+Are you not seeing a panic in debug builds?  In that setting, I'm seeing the root cause
+```rust
+#!/usr/bin/env -S rust-script
+
+//! ```cargo
+//! [dependencies]
+//! clap = { version = "=4.0.12", features = ["cargo"] }
+//! ```
+
+use clap::{arg, command, value_parser, Arg, ArgAction, Command};
+
+/// creates the cli interface
+#[must_use]
+pub fn build_cli() -> Command {
+    command!()
+        .subcommand_required(true)
+        .arg_required_else_help(true)
+        .subcommand(
+            Command::new("dev")
+                .about("Run your grafbase project locally")
+                .args(&[
+                    arg!(-p --port <port> "Use a specific port")
+                        .default_value("4000")
+                        .value_parser(value_parser!(u16)),
+                    arg!(-s --search "If a given port is unavailable, search for another")
+                        .action(ArgAction::SetTrue),
+                    Arg::new("disable-watch")
+                        .long("disable-watch")
+                        .action(ArgAction::SetTrue)
+                        .help("Do not listen for schema changes and reload"),
+                ]),
+        )
+}
+
+#[test]
+fn verify_cli() {
+    build_cli().debug_assert();
+}
+
+fn main() {
+    let matches = build_cli().get_matches();
+
+    matches.get_flag("disable-watch");
+}
+```
+```console
+$ clap-4370.rs
+thread 'main' panicked at 'Mismatch between definition and access of `disable-watch`. Unknown argument or group id.  Make sure you are using the argument id and not the short or long flags
+', clap-4370.rs:41:13
+stack backtrace:
+   0: rust_begin_unwind
+             at /rustc/a55dd71d5fb0ec5a6a3a9e8c27b2127ba491ce52/library/std/src/panicking.rs:584:5
+   1: core::panicking::panic_fmt
+             at /rustc/a55dd71d5fb0ec5a6a3a9e8c27b2127ba491ce52/library/core/src/panicking.rs:142:14
+   2: clap::parser::error::MatchesError::unwrap
+             at /home/epage/.cargo/registry/src/github.com-1ecc6299db9ec823/clap-4.0.12/src/parser/error.rs:30:9
+   3: clap::parser::matches::arg_matches::ArgMatches::get_one
+             at /home/epage/.cargo/registry/src/github.com-1ecc6299db9ec823/clap-4.0.12/src/parser/matches/arg_matches.rs:113:9
+   4: clap::parser::matches::arg_matches::ArgMatches::get_flag
+             at /home/epage/.cargo/registry/src/github.com-1ecc6299db9ec823/clap-4.0.12/src/parser/matches/arg_matches.rs:174:10
+   5: clap_4370_8217ddc7b4d928393cb5406e::main
+             at /home/epage/.cache/rust-script/projects/8217ddc7b4d928393cb5406e/clap-4370.rs:41:5
+   6: core::ops::function::FnOnce::call_once
+             at /rustc/a55dd71d5fb0ec5a6a3a9e8c27b2127ba491ce52/library/core/src/ops/function.rs:248:5
+note: Some details are omitted, run with `RUST_BACKTRACE=full` for a verbose backtrace.
+```
+
+`disable-watch` isn't on the root command but on the subcommand.  You need to do `matches.subcommand()` to get the right matches
+
+---
+
+_Comment by @yoav-lavi on 2022-10-11 15:17_
+
+Sorry, I missed that when creating the example, I specifically checked the release version in this case due to the original not working only in release, in the full repo it doesn't panic in dev but does in release:
+https://github.com/grafbase/grafbase/blob/main/cli/crates/cli/src/cli_input.rs
+
+---
+
+_Comment by @epage on 2022-10-11 15:41_
+
+Can you provide a minimal reproduction of it not panicing in debug builds?
+
+---
+
+_Comment by @yoav-lavi on 2022-10-11 15:54_
+
+Ah I think I see the issue. 
+
+We have
+
+```rust
+cfg_if! {
+    if #[cfg(debug_assertions)] {
+        let command_builder = command!().arg(/* ... some flag ... */).action(ArgAction::SetTrue));
+    } else {
+        let command_builder = command!();
+    }
+}
+```
+
+To allow an extra flag when building locally, which before version 4 wouldn't panic if checking with `matches.contains_id("flag")` but now uses `matches.get_flag("flag")` which does panic in the case that the argument doesn't exist.
+
+---
+
+_Comment by @yoav-lavi on 2022-10-11 16:02_
+
+Closing this since it's not an actual issue
+
+---
+
+_Closed by @yoav-lavi on 2022-10-11 16:02_
+
+---
+
+_Comment by @epage on 2022-10-11 16:07_
+
+> To allow an extra flag when building locally, which before version 4 wouldn't panic if checking with matches.contains_id("flag") but now uses matches.get_flag("flag") which does panic in the case that the argument doesn't exist.
+
+`get_flag` is just a wrapper around `get_one` which is a wrapper around `try_get_one`.  `try_get_one` does not panic with undefined arguments but instead returns an error. I'd recommend dropping down to `try_get_one`
+
+---
+
+_Comment by @yoav-lavi on 2022-10-11 16:09_
+
+Sounds good, thank you!
+Sorry for any confusion / stress this issue may have caused! 🙂
+
+---

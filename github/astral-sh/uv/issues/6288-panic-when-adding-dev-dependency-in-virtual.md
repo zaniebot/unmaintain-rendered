@@ -1,0 +1,69 @@
+---
+number: 6288
+title: Panic when adding dev dependency in virtual workspace
+type: issue
+state: closed
+author: charliermarsh
+labels:
+  - bug
+assignees: []
+created_at: 2024-08-21T00:15:54Z
+updated_at: 2024-08-21T01:25:40Z
+url: https://github.com/astral-sh/uv/issues/6288
+synced_at: 2026-01-07T13:12:17-06:00
+---
+
+# Panic when adding dev dependency in virtual workspace
+
+---
+
+_Issue opened by @charliermarsh on 2024-08-21 00:15_
+
+Given:
+
+```toml
+[tool.uv.workspace]
+members = []
+
+[tool.uv]
+dev-dependencies = [
+    "mkdocs>=1.6, <1.7",
+    "mkdocs-material>=9.5.24, <9.6",
+    # Versioning of documentation
+    # (Py)Markdown extensions
+    "mdx-truly-sane-lists >=1.3, <2",
+    "mdx-breakless-lists >=1.0.1, <1.1",
+    # Allows setting up redirects when renaming docs files
+    "mkdocs-redirects >=1.2.1, <1.3",
+    # Used for the CLI reference
+    "mkdocs-include-markdown-plugin >=6.0.4, <6.1",
+]
+```
+
+Run `uv lock`. Then `uv add mike`.
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2024-08-21 00:15_
+
+---
+
+_Label `bug` added by @charliermarsh on 2024-08-21 00:15_
+
+---
+
+_Referenced in [astral-sh/uv#6289](../../astral-sh/uv/issues/6289.md) on 2024-08-21 00:33_
+
+---
+
+_Referenced in [astral-sh/uv#6291](../../astral-sh/uv/pulls/6291.md) on 2024-08-21 00:50_
+
+---
+
+_Closed by @charliermarsh on 2024-08-21 01:25_
+
+---
+
+_Closed by @charliermarsh on 2024-08-21 01:25_
+
+---

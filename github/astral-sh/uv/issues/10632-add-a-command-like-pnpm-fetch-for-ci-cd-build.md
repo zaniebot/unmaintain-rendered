@@ -1,0 +1,46 @@
+---
+number: 10632
+title: "Add a command like `pnpm fetch` for CI/CD build."
+type: issue
+state: open
+author: fanck0605
+labels:
+  - question
+assignees: []
+created_at: 2025-01-15T13:09:21Z
+updated_at: 2025-01-15T16:45:38Z
+url: https://github.com/astral-sh/uv/issues/10632
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# Add a command like `pnpm fetch` for CI/CD build.
+
+---
+
+_Issue opened by @fanck0605 on 2025-01-15 13:09_
+
+On CI or CD environments, the BuildKit cache mounts might not be available, because the VM or container is ephemeral and only normal docker cache will work.
+
+So an alternative is to use a typical Dockerfile with layers that are built incrementally, for this scenario, pnpm fetch is the best option, as it only needs the pnpm-lock.yaml file and the layer cache will only be lost when you change the dependencies.
+
+https://pnpm.io/docker#example-3-build-on-cicd
+
+It seems that uv can also add similar features to better comply with the CI/CD build process。
+
+---
+
+_Comment by @charliermarsh on 2025-01-15 16:37_
+
+I think `uv sync` is probably fine for this? But the suggestion is that it would need to require _only_ the `uv.lock`, is that right?
+
+---
+
+_Label `question` added by @charliermarsh on 2025-01-15 16:37_
+
+---
+
+_Comment by @zanieb on 2025-01-15 16:45_
+
+Please see https://github.com/astral-sh/uv-docker-example
+
+---

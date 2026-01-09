@@ -1,0 +1,33 @@
+---
+number: 10304
+title: Use main.py instead of hello.py when uv init
+type: issue
+state: closed
+author: thewh1teagle
+labels: []
+assignees: []
+created_at: 2025-01-05T18:33:19Z
+updated_at: 2025-01-05T20:00:49Z
+url: https://github.com/astral-sh/uv/issues/10304
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# Use main.py instead of hello.py when uv init
+
+---
+
+_Issue opened by @thewh1teagle on 2025-01-05 18:33_
+
+It will be more useful to name the main file as `main.py` rather than `hello.py`. Similar to `cargo init --bin` that creates `main.rs`
+
+---
+
+_Comment by @charliermarsh on 2025-01-05 20:00_
+
+Duplicate of https://github.com/astral-sh/uv/issues/7782. Thanks!
+
+---
+
+_Closed by @charliermarsh on 2025-01-05 20:00_
+
+---

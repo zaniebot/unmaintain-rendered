@@ -1,0 +1,94 @@
+---
+number: 5437
+title: ruff --fix when file fails to parse makes invalid file edits. i.e RUFF100 removes valid noqas.
+type: issue
+state: closed
+author: BaxHugh
+labels: []
+assignees: []
+created_at: 2023-06-29T11:00:56Z
+updated_at: 2023-06-29T16:32:44Z
+url: https://github.com/astral-sh/ruff/issues/5437
+synced_at: 2026-01-07T13:12:15-06:00
+---
+
+# ruff --fix when file fails to parse makes invalid file edits. i.e RUFF100 removes valid noqas.
+
+---
+
+_Issue opened by @BaxHugh on 2023-06-29 11:00_
+
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+When ruff fails to parse a file, it appears that fixable rules are still attempted to be fixed, even though ruff can't interpret the file properly. There are likely other rules where this is a problem, but I have noticed it for when the "RUF" fixable rule is invoked, with the "RUF100" rule causing valid noqa comments to be removed when there is a failure to parse the file.
+
+I propose that `--fix` should not be attempted on any file which does not parse.
+
+Here is an example:
+```python
+from pathlib import Path
+
+
+def shadows_builtin(dir: Path) -> None:  # noqa: A002
+    print(dir)  # noqa: T201
+
+def unfinished_func
+
+```
+The noqas here are valid, but there is a function being typed which leaves an invalid statement making the file invalid for parsing, the user has saved the file with ctrl+s and the ruff linter has been run on the file on save with the --fix arg, i.e.
+```
+ruff --select "RUF,A,T" --fixable "RUF" --fix unparsable_script.py  --isolated
+```
+This leaves the file as 
+```python
+from pathlib import Path
+
+
+def shadows_builtin(dir: Path) -> None:
+    print(dir)
+
+def unfinished_func
+
+```
+For large files with lots of noqas, this is especially annoying.
+
+Ruff version 0.0.269
+
+---
+
+_Comment by @charliermarsh on 2023-06-29 15:39_
+
+I believe this was fixed in a later version of Ruff. Can you try on latest?
+
+---
+
+_Comment by @charliermarsh on 2023-06-29 15:39_
+
+https://github.com/astral-sh/ruff/pull/4869
+
+---
+
+_Comment by @BaxHugh on 2023-06-29 16:08_
+
+Ah, you're right sorry. I was using the latest available from snap which wasn't the latest available from pypi. Using the latest doesn't have this issue, I can confirm! Thanks @charliermarsh
+
+---
+
+_Closed by @BaxHugh on 2023-06-29 16:08_
+
+---
+
+_Comment by @charliermarsh on 2023-06-29 16:32_
+
+It’s all good! I appreciate the clear issue, thanks for taking the time to file it.
+
+---

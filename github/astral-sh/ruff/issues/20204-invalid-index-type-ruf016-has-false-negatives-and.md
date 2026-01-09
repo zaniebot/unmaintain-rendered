@@ -1,0 +1,101 @@
+---
+number: 20204
+title: "`invalid-index-type` (RUF016) has false negatives and false positives"
+type: issue
+state: closed
+author: dscorbett
+labels:
+  - bug
+  - rule
+assignees: []
+created_at: 2025-09-02T12:26:44Z
+updated_at: 2025-09-12T18:37:03Z
+url: https://github.com/astral-sh/ruff/issues/20204
+synced_at: 2026-01-07T13:12:16-06:00
+---
+
+# `invalid-index-type` (RUF016) has false negatives and false positives
+
+---
+
+_Issue opened by @dscorbett on 2025-09-02 12:26_
+
+### Summary
+
+[`invalid-index-type` (RUF016)](https://docs.astral.sh/ruff/rules/invalid-index-type/) has false negatives and false positives.
+
+`bool` is a valid index type. RUF016 should allow it. [Example](https://play.ruff.rs/a21c0299-f48b-41b8-9935-9eb883aa5a10):
+```console
+$ cat >ruf016_1.py <<'# EOF'
+print([1, 2, 3][False])
+print([1, 2, 3][False:True:True])
+# EOF
+
+$ python ruf016_1.py
+1
+[1]
+
+$ ruff --isolated check ruf016_1.py --select RUF016 --output-format concise -q
+ruf016_1.py:1:17: RUF016 Indexed access to type `list` uses type `bool` instead of an integer or slice
+ruf016_1.py:2:17: RUF016 Slice in indexed access to type `list` uses type `bool` instead of an integer
+ruf016_1.py:2:23: RUF016 Slice in indexed access to type `list` uses type `bool` instead of an integer
+ruf016_1.py:2:28: RUF016 Slice in indexed access to type `list` uses type `bool` instead of an integer
+```
+
+Lambda expressions, generator expressions, and t-strings are invalid. RUF016 should not allow them. [Example](https://play.ruff.rs/360e16a4-e710-4f40-a988-cfac4b7fb1f7):
+```console
+$ cat >ruf016_2.py <<'# EOF'
+try: [1, 2, 3][lambda: 0]
+except TypeError as e: print(e)
+try: [1, 2, 3][(x for x in ())]
+except TypeError as e: print(e)
+try: [1, 2, 3][t"x"]
+except TypeError as e: print(e)
+# EOF
+
+$ python3.14 ruf016_2.py
+ruf016_2.py:1: SyntaxWarning: list indices must be integers or slices, not function; perhaps you missed a comma?
+  try: [1, 2, 3][lambda: 0]
+ruf016_2.py:3: SyntaxWarning: list indices must be integers or slices, not generator; perhaps you missed a comma?
+  try: [1, 2, 3][(x for x in ())]
+ruf016_2.py:5: SyntaxWarning: list indices must be integers or slices, not str; perhaps you missed a comma?
+  try: [1, 2, 3][t"x"]
+list indices must be integers or slices, not function
+list indices must be integers or slices, not generator
+list indices must be integers or slices, not string.templatelib.Template
+
+$ ruff --isolated check ruf016_2.py --select RUF016 --preview --target-version py314
+All checks passed!
+```
+
+### Version
+
+ruff 0.12.11 (c2bc15bc1 2025-08-28)
+
+---
+
+_Label `rule` added by @ntBre on 2025-09-02 12:52_
+
+---
+
+_Comment by @TaKO8Ki on 2025-09-02 17:08_
+
+I will work on this issue.
+
+---
+
+_Assigned to @TaKO8Ki by @ntBre on 2025-09-02 21:39_
+
+---
+
+_Referenced in [astral-sh/ruff#20213](../../astral-sh/ruff/pulls/20213.md) on 2025-09-03 14:09_
+
+---
+
+_Label `bug` added by @dylwil3 on 2025-09-12 18:36_
+
+---
+
+_Closed by @dylwil3 on 2025-09-12 18:37_
+
+---

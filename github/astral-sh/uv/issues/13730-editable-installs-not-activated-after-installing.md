@@ -1,0 +1,114 @@
+---
+number: 13730
+title: Editable installs not activated after installing in Google Colab
+type: issue
+state: closed
+author: thewh1teagle
+labels:
+  - bug
+  - external
+assignees: []
+created_at: 2025-05-30T13:02:03Z
+updated_at: 2025-09-12T16:45:31Z
+url: https://github.com/astral-sh/uv/issues/13730
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# Editable installs not activated after installing in Google Colab
+
+---
+
+_Issue opened by @thewh1teagle on 2025-05-30 13:02_
+
+### Summary
+
+The problem:
+it doesn't find the package that I just installed
+
+```console
+ModuleNotFoundError: No module named 'phonikud_tts'
+```
+
+To reproduce
+
+```console
+!pip install uv
+!git clone https://github.com/thewh1teagle/phonikud-tts
+%cd phonikud-tts
+!uv pip install --system -e .
+```
+
+```python
+import phonikud_tts
+```
+
+### Platform
+
+Colab
+
+### Version
+
+uv 0.7.8
+
+### Python version
+
+3.11
+
+
+
+By the way, is there a way to install it to the system with something like `uv sync --system`?
+
+---
+
+_Label `bug` added by @thewh1teagle on 2025-05-30 13:02_
+
+---
+
+_Renamed from "Can't run python lines in Colab cell" to "Editable installs not activated after installing in COlab" by @konstin on 2025-05-30 14:23_
+
+---
+
+_Renamed from "Editable installs not activated after installing in COlab" to "Editable installs not activated after installing in Colab" by @konstin on 2025-05-30 14:23_
+
+---
+
+_Renamed from "Editable installs not activated after installing in Colab" to "Editable installs not activated after installing in Google Colab" by @konstin on 2025-05-30 14:23_
+
+---
+
+_Comment by @konstin on 2025-05-30 14:25_
+
+The workaround is re-initializing the `site` module after installation:
+
+```python
+import site
+
+for sitepackages in site.getsitepackages():
+    site.addsitedir(sitepackages)
+```
+
+`phonikud_tts` uses an editable install through a `.pth` file, which is loaded by the `site` module at Python startup. In Google Colab, Python startup happens before the installation, so we need to manually re-initialize the module to load all (new) `.pth` files. 
+
+---
+
+_Label `external` added by @konstin on 2025-05-30 14:25_
+
+---
+
+_Closed by @charliermarsh on 2025-06-02 00:15_
+
+---
+
+_Comment by @mlouielu on 2025-09-12 16:45_
+
+> The workaround is re-initializing the `site` module after installation:
+> 
+> import site
+> 
+> for sitepackages in site.getsitepackages():
+>     site.addsitedir(sitepackages)
+> `phonikud_tts` uses an editable install through a `.pth` file, which is loaded by the `site` module at Python startup. In Google Colab, Python startup happens before the installation, so we need to manually re-initialize the module to load all (new) `.pth` files.
+
+Thanks, it helps!
+
+---

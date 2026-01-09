@@ -1,0 +1,580 @@
+---
+number: 4697
+title: Optional, nested flatten gets ignored (nested ArgGroups are unsupported)
+type: issue
+state: open
+author: jeertmans
+labels:
+  - C-enhancement
+  - E-hard
+  - A-parsing
+  - A-derive
+assignees: []
+created_at: 2023-02-08T13:03:03Z
+updated_at: 2024-03-28T19:29:31Z
+url: https://github.com/clap-rs/clap/issues/4697
+synced_at: 2026-01-07T13:12:20-06:00
+---
+
+# Optional, nested flatten gets ignored (nested ArgGroups are unsupported)
+
+---
+
+_Issue opened by @jeertmans on 2023-02-08 13:03_
+
+### Please complete the following tasks
+
+- [X] I have searched the [discussions](https://github.com/clap-rs/clap/discussions)
+- [X] I have searched the [open](https://github.com/clap-rs/clap/issues) and [rejected](https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed) issues
+
+### Rust Version
+
+rustc 1.67.0-nightly (e631891f7 2022-11-13)
+
+### Clap Version
+
+4.1.4
+
+### Minimal reproducible code
+
+Link to the [Rust Playground](https://play.rust-lang.org/?version=stable&mode=debug&edition=2021&gist=24cf7659df72ad2fc00203dda81ee573)
+
+```rust
+/// Command that defaults to `Main` if no
+/// subcommand is provided.
+#[derive(Debug, Parser)]
+#[clap(args_conflicts_with_subcommands = true)]
+#[clap(subcommand_negates_reqs = true)]
+struct MainCommand {
+    /// Arguments for main command
+    #[clap(flatten)]
+    args: Option<Main>,
+    /* comment above and uncomment next: */
+    //#[clap(flatten)]
+    //args: Option<LoginArgs>,
+
+    /// Subcommand
+    #[command(subcommand)]
+    command: Option<Command>,
+}
+
+#[derive(Args, Clone, Debug)]
+struct Main {
+    #[clap(flatten)]
+    login_args: LoginArgs,
+    
+    #[clap(long)]
+    flag_main: bool,
+}
+
+#[derive(Clone, Debug, Subcommand)]
+enum Command {
+    Subcmd(SecondaryCommand),
+}
+
+#[derive(Args, Clone, Debug)]
+struct SecondaryCommand {
+    #[clap(flatten)]
+    login_args: LoginArgs,
+    
+    #[clap(long)]
+    flag_sub: bool,
+}
+
+#[derive(Args, Clone, Debug)]
+struct LoginArgs {
+    #[clap(short, required = true)]
+    username: Option<String>,
+}
+
+fn main() {
+    assert!(MainCommand::try_parse_from(["playground"]).is_err());
+    
+    let m = MainCommand::parse_from(["playground", "-u", "jeertmans"]);
+
+    // When we use args: Option<Main>,
+    // args is None, and should be Some
+    // 
+    // If we use args: Option<LoginArgs>,
+    // args is Some as expected
+    println!("Calling main:\n{:#?}\n", m);
+
+    assert!(MainCommand::try_parse_from(["playground", "subcmd"]).is_err());
+    
+    let m = MainCommand::parse_from(["playground", "subcmd", "-u", "jeertmans"]);
+
+    // Here, args is None as expected
+    println!("Calling sub:\n{:#?}\n", m);
+}
+```
+
+See #5435 for another variant of this problem
+
+### Steps to reproduce the bug with the above code
+
+Simply run the code twice: first, with `args: Option<Main>`, and, second, with `args: Option<LoginArgs>`. Using the playground should be fine for testing.
+
+Comments in the `main()` function explain what is expected.
+
+The fact that `args` contains nested `flatten` seems to be the problem (?).
+
+### Actual Behaviour
+
+Even if the arguments defined in `Main` are all valid, i.e., all required arguments are specified, the `args` field is `None`.
+
+### Expected Behaviour
+
+I'd like the `args` field to be `Some` in the first case, when `args: Option<Main>`.
+
+### Additional Context
+
+I am aware of #3123 and #4350, but I am not sure whether what I observe it normal or not.
+
+### Debug Output
+
+```raw
+    Finished dev [unoptimized + debuginfo] target(s) in 0.01s
+     Running `target/debug/claptest`
+[      clap::builder::command] 	Command::_do_parse
+[      clap::builder::command] 	Command::_build: name="claptest"
+[      clap::builder::command] 	Command::_propagate:claptest
+[      clap::builder::command] 	Command::_check_help_and_version:claptest expand_help_tree=false
+[      clap::builder::command] 	Command::long_help_exists
+[      clap::builder::command] 	Command::_check_help_and_version: Building default --help
+[      clap::builder::command] 	Command::_check_help_and_version: Building help subcommand
+[      clap::builder::command] 	Command::_propagate_global_args:claptest
+[clap::builder::debug_asserts] 	Command::_debug_asserts
+[clap::builder::debug_asserts] 	Arg::_debug_asserts:username
+[clap::builder::debug_asserts] 	Arg::_debug_asserts:flag_main
+[clap::builder::debug_asserts] 	Arg::_debug_asserts:help
+[clap::builder::debug_asserts] 	Command::_verify_positionals
+[        clap::parser::parser] 	Parser::get_matches_with
+[        clap::parser::parser] 	Parser::add_defaults
+[        clap::parser::parser] 	Parser::add_defaults:iter:username:
+[        clap::parser::parser] 	Parser::add_default_value: doesn't have conditional defaults
+[        clap::parser::parser] 	Parser::add_default_value:iter:username: doesn't have default vals
+[        clap::parser::parser] 	Parser::add_defaults:iter:flag_main:
+[        clap::parser::parser] 	Parser::add_default_value: doesn't have conditional defaults
+[        clap::parser::parser] 	Parser::add_default_value:iter:flag_main: has default vals
+[        clap::parser::parser] 	Parser::add_default_value:iter:flag_main: wasn't used
+[        clap::parser::parser] 	Parser::react action=SetTrue, identifier=None, source=DefaultValue
+[   clap::parser::arg_matcher] 	ArgMatcher::start_custom_arg: id="flag_main", source=DefaultValue
+[        clap::parser::parser] 	Parser::push_arg_values: ["false"]
+[        clap::parser::parser] 	Parser::add_single_val_to_arg: cur_idx:=1
+[        clap::parser::parser] 	Parser::add_defaults:iter:help:
+[        clap::parser::parser] 	Parser::add_default_value: doesn't have conditional defaults
+[        clap::parser::parser] 	Parser::add_default_value:iter:help: doesn't have default vals
+[     clap::parser::validator] 	Validator::validate
+[     clap::parser::validator] 	Validator::validate_conflicts
+[     clap::parser::validator] 	Validator::validate_exclusive
+[     clap::parser::validator] 	Validator::validate_required: required=ChildGraph([Child { id: "username", children: [] }])
+[     clap::parser::validator] 	Validator::gather_requires
+[     clap::parser::validator] 	Validator::validate_required: is_exclusive_present=false
+[     clap::parser::validator] 	Validator::validate_required:iter:aog="username"
+[     clap::parser::validator] 	Validator::validate_required:iter: This is an arg
+[     clap::parser::validator] 	Validator::is_missing_required_ok: username
+[     clap::parser::validator] 	Conflicts::gather_conflicts: arg="username"
+[      clap::builder::command] 	Command::groups_for_arg: id="username"
+[     clap::parser::validator] 	Conflicts::gather_direct_conflicts id="username", conflicts=[]
+[     clap::parser::validator] 	Conflicts::gather_conflicts: conflicts=[]
+[      clap::builder::command] 	Command::groups_for_arg: id="username"
+[     clap::parser::validator] 	Conflicts::gather_conflicts: arg="LoginArgs"
+[     clap::parser::validator] 	Conflicts::gather_direct_conflicts id="LoginArgs", conflicts=[]
+[     clap::parser::validator] 	Conflicts::gather_conflicts: conflicts=[]
+[     clap::parser::validator] 	Validator::validate_required:iter: Missing "username"
+[     clap::parser::validator] 	Validator::missing_required_error; incl=["username"]
+[     clap::parser::validator] 	Validator::missing_required_error: reqs=ChildGraph([Child { id: "username", children: [] }])
+[         clap::output::usage] 	Usage::get_required_usage_from: incls=["username"], matcher=true, incl_last=true
+[         clap::output::usage] 	Usage::get_required_usage_from: unrolled_reqs=["username"]
+[         clap::output::usage] 	Usage::get_required_usage_from:iter:"username" arg is_present=false
+[         clap::output::usage] 	Usage::get_required_usage_from:iter:"username" arg is_present=false
+[         clap::output::usage] 	Usage::get_required_usage_from: ret_val=[StyledStr { pieces: [(Some(Literal), "-"), (Some(Literal), "u"), (Some(Placeholder), " "), (Some(Placeholder), "<USERNAME>")] }]
+[     clap::parser::validator] 	Validator::missing_required_error: req_args=[
+    "-u <USERNAME>",
+]
+[         clap::output::usage] 	Usage::create_usage_with_title
+[         clap::output::usage] 	Usage::create_usage_no_title
+[         clap::output::usage] 	Usage::create_smart_usage
+[         clap::output::usage] 	Usage::get_args: incls=["username"]
+[         clap::output::usage] 	Usage::get_args: unrolled_reqs=["username"]
+[         clap::output::usage] 	Usage::get_args: ret_val=[StyledStr { pieces: [(Some(Literal), "-"), (Some(Literal), "u"), (Some(Placeholder), " "), (Some(Placeholder), "<USERNAME>")] }]
+[      clap::builder::command] 	Command::color: Color setting...
+[      clap::builder::command] 	Auto
+[      clap::builder::command] 	Command::color: Color setting...
+[      clap::builder::command] 	Auto
+[      clap::builder::command] 	Command::_do_parse
+[      clap::builder::command] 	Command::_build: name="claptest"
+[      clap::builder::command] 	Command::_propagate:claptest
+[      clap::builder::command] 	Command::_check_help_and_version:claptest expand_help_tree=false
+[      clap::builder::command] 	Command::long_help_exists
+[      clap::builder::command] 	Command::_check_help_and_version: Building default --help
+[      clap::builder::command] 	Command::_check_help_and_version: Building help subcommand
+[      clap::builder::command] 	Command::_propagate_global_args:claptest
+[clap::builder::debug_asserts] 	Command::_debug_asserts
+[clap::builder::debug_asserts] 	Arg::_debug_asserts:username
+[clap::builder::debug_asserts] 	Arg::_debug_asserts:flag_main
+[clap::builder::debug_asserts] 	Arg::_debug_asserts:help
+[clap::builder::debug_asserts] 	Command::_verify_positionals
+[        clap::parser::parser] 	Parser::get_matches_with
+[        clap::parser::parser] 	Parser::get_matches_with: Begin parsing 'RawOsStr("-u")' ([45, 117])
+[        clap::parser::parser] 	Parser::possible_subcommand: arg=Ok("-u")
+[        clap::parser::parser] 	Parser::get_matches_with: sc=None
+[        clap::parser::parser] 	Parser::parse_short_arg: short_arg=ShortFlags { inner: RawOsStr("u"), utf8_prefix: CharIndices { front_offset: 0, iter: Chars(['u']) }, invalid_suffix: None }
+[        clap::parser::parser] 	Parser::parse_short_arg:iter:u
+[        clap::parser::parser] 	Parser::parse_short_arg:iter:u: Found valid opt or flag
+[        clap::parser::parser] 	Parser::parse_short_arg:iter:u: val=RawOsStr("") (bytes), val=[] (ascii), short_arg=ShortFlags { inner: RawOsStr("u"), utf8_prefix: CharIndices { front_offset: 1, iter: Chars([]) }, invalid_suffix: None }
+[        clap::parser::parser] 	Parser::parse_opt_value; arg=username, val=None, has_eq=false
+[        clap::parser::parser] 	Parser::parse_opt_value; arg.settings=ArgFlags(REQUIRED)
+[        clap::parser::parser] 	Parser::parse_opt_value; Checking for val...
+[        clap::parser::parser] 	Parser::parse_opt_value: More arg vals required...
+[        clap::parser::parser] 	Parser::get_matches_with: After parse_short_arg Opt("username")
+[        clap::parser::parser] 	Parser::get_matches_with: Begin parsing 'RawOsStr("jeertmans")' ([106, 101, 101, 114, 116, 109, 97, 110, 115])
+[   clap::parser::arg_matcher] 	ArgMatcher::needs_more_vals: o=username, pending=1
+[   clap::parser::arg_matcher] 	ArgMatcher::needs_more_vals: expected=1, actual=1
+[        clap::parser::parser] 	Parser::resolve_pending: id="username"
+[        clap::parser::parser] 	Parser::react action=Set, identifier=Some(Short), source=CommandLine
+[        clap::parser::parser] 	Parser::react: cur_idx:=1
+[        clap::parser::parser] 	Parser::remove_overrides: id="username"
+[   clap::parser::arg_matcher] 	ArgMatcher::start_custom_arg: id="username", source=CommandLine
+[      clap::builder::command] 	Command::groups_for_arg: id="username"
+[   clap::parser::arg_matcher] 	ArgMatcher::start_custom_arg: id="LoginArgs", source=CommandLine
+[        clap::parser::parser] 	Parser::push_arg_values: ["jeertmans"]
+[        clap::parser::parser] 	Parser::add_single_val_to_arg: cur_idx:=2
+[   clap::parser::arg_matcher] 	ArgMatcher::needs_more_vals: o=username, pending=0
+[   clap::parser::arg_matcher] 	ArgMatcher::needs_more_vals: expected=1, actual=0
+[        clap::parser::parser] 	Parser::react not enough values passed in, leaving it to the validator to complain
+[        clap::parser::parser] 	Parser::add_defaults
+[        clap::parser::parser] 	Parser::add_defaults:iter:username:
+[        clap::parser::parser] 	Parser::add_default_value: doesn't have conditional defaults
+[        clap::parser::parser] 	Parser::add_default_value:iter:username: doesn't have default vals
+[        clap::parser::parser] 	Parser::add_defaults:iter:flag_main:
+[        clap::parser::parser] 	Parser::add_default_value: doesn't have conditional defaults
+[        clap::parser::parser] 	Parser::add_default_value:iter:flag_main: has default vals
+[        clap::parser::parser] 	Parser::add_default_value:iter:flag_main: wasn't used
+[        clap::parser::parser] 	Parser::react action=SetTrue, identifier=None, source=DefaultValue
+[   clap::parser::arg_matcher] 	ArgMatcher::start_custom_arg: id="flag_main", source=DefaultValue
+[        clap::parser::parser] 	Parser::push_arg_values: ["false"]
+[        clap::parser::parser] 	Parser::add_single_val_to_arg: cur_idx:=3
+[        clap::parser::parser] 	Parser::add_defaults:iter:help:
+[        clap::parser::parser] 	Parser::add_default_value: doesn't have conditional defaults
+[        clap::parser::parser] 	Parser::add_default_value:iter:help: doesn't have default vals
+[     clap::parser::validator] 	Validator::validate
+[      clap::builder::command] 	Command::groups_for_arg: id="username"
+[     clap::parser::validator] 	Conflicts::gather_direct_conflicts id="username", conflicts=[]
+[     clap::parser::validator] 	Conflicts::gather_direct_conflicts id="LoginArgs", conflicts=[]
+[     clap::parser::validator] 	Validator::validate_conflicts
+[     clap::parser::validator] 	Validator::validate_exclusive
+[     clap::parser::validator] 	Validator::validate_conflicts::iter: id="username"
+[     clap::parser::validator] 	Conflicts::gather_conflicts: arg="username"
+[     clap::parser::validator] 	Conflicts::gather_conflicts: conflicts=[]
+[     clap::parser::validator] 	Validator::validate_required: required=ChildGraph([Child { id: "username", children: [] }])
+[     clap::parser::validator] 	Validator::gather_requires
+[     clap::parser::validator] 	Validator::gather_requires:iter:"username"
+[     clap::parser::validator] 	Validator::gather_requires:iter:"LoginArgs"
+[     clap::parser::validator] 	Validator::gather_requires:iter:"LoginArgs":group
+[     clap::parser::validator] 	Validator::validate_required: is_exclusive_present=false
+[   clap::parser::arg_matcher] 	ArgMatcher::get_global_values: global_arg_vec=[]
+Calling main:
+MainCommand {
+    args: None,
+    command: None,
+}
+
+[      clap::builder::command] 	Command::_do_parse
+[      clap::builder::command] 	Command::_build: name="claptest"
+[      clap::builder::command] 	Command::_propagate:claptest
+[      clap::builder::command] 	Command::_check_help_and_version:claptest expand_help_tree=false
+[      clap::builder::command] 	Command::long_help_exists
+[      clap::builder::command] 	Command::_check_help_and_version: Building default --help
+[      clap::builder::command] 	Command::_check_help_and_version: Building help subcommand
+[      clap::builder::command] 	Command::_propagate_global_args:claptest
+[clap::builder::debug_asserts] 	Command::_debug_asserts
+[clap::builder::debug_asserts] 	Arg::_debug_asserts:username
+[clap::builder::debug_asserts] 	Arg::_debug_asserts:flag_main
+[clap::builder::debug_asserts] 	Arg::_debug_asserts:help
+[clap::builder::debug_asserts] 	Command::_verify_positionals
+[        clap::parser::parser] 	Parser::get_matches_with
+[        clap::parser::parser] 	Parser::get_matches_with: Begin parsing 'RawOsStr("subcmd")' ([115, 117, 98, 99, 109, 100])
+[        clap::parser::parser] 	Parser::possible_subcommand: arg=Ok("subcmd")
+[        clap::parser::parser] 	Parser::get_matches_with: sc=Some("subcmd")
+[        clap::parser::parser] 	Parser::parse_subcommand
+[      clap::builder::command] 	Command::_build_subcommand Setting bin_name of subcmd to "playground subcmd"
+[      clap::builder::command] 	Command::_build_subcommand Setting display_name of subcmd to "claptest-subcmd"
+[      clap::builder::command] 	Command::_build: name="subcmd"
+[      clap::builder::command] 	Command::_propagate:subcmd
+[      clap::builder::command] 	Command::_check_help_and_version:subcmd expand_help_tree=false
+[      clap::builder::command] 	Command::long_help_exists
+[      clap::builder::command] 	Command::_check_help_and_version: Building default --help
+[      clap::builder::command] 	Command::_propagate_global_args:subcmd
+[clap::builder::debug_asserts] 	Command::_debug_asserts
+[clap::builder::debug_asserts] 	Arg::_debug_asserts:username
+[clap::builder::debug_asserts] 	Arg::_debug_asserts:flag_sub
+[clap::builder::debug_asserts] 	Arg::_debug_asserts:help
+[clap::builder::debug_asserts] 	Command::_verify_positionals
+[        clap::parser::parser] 	Parser::parse_subcommand: About to parse sc=subcmd
+[        clap::parser::parser] 	Parser::get_matches_with
+[        clap::parser::parser] 	Parser::add_defaults
+[        clap::parser::parser] 	Parser::add_defaults:iter:username:
+[        clap::parser::parser] 	Parser::add_default_value: doesn't have conditional defaults
+[        clap::parser::parser] 	Parser::add_default_value:iter:username: doesn't have default vals
+[        clap::parser::parser] 	Parser::add_defaults:iter:flag_sub:
+[        clap::parser::parser] 	Parser::add_default_value: doesn't have conditional defaults
+[        clap::parser::parser] 	Parser::add_default_value:iter:flag_sub: has default vals
+[        clap::parser::parser] 	Parser::add_default_value:iter:flag_sub: wasn't used
+[        clap::parser::parser] 	Parser::react action=SetTrue, identifier=None, source=DefaultValue
+[   clap::parser::arg_matcher] 	ArgMatcher::start_custom_arg: id="flag_sub", source=DefaultValue
+[        clap::parser::parser] 	Parser::push_arg_values: ["false"]
+[        clap::parser::parser] 	Parser::add_single_val_to_arg: cur_idx:=1
+[        clap::parser::parser] 	Parser::add_defaults:iter:help:
+[        clap::parser::parser] 	Parser::add_default_value: doesn't have conditional defaults
+[        clap::parser::parser] 	Parser::add_default_value:iter:help: doesn't have default vals
+[     clap::parser::validator] 	Validator::validate
+[     clap::parser::validator] 	Validator::validate_conflicts
+[     clap::parser::validator] 	Validator::validate_exclusive
+[     clap::parser::validator] 	Validator::validate_required: required=ChildGraph([Child { id: "username", children: [] }])
+[     clap::parser::validator] 	Validator::gather_requires
+[     clap::parser::validator] 	Validator::validate_required: is_exclusive_present=false
+[     clap::parser::validator] 	Validator::validate_required:iter:aog="username"
+[     clap::parser::validator] 	Validator::validate_required:iter: This is an arg
+[     clap::parser::validator] 	Validator::is_missing_required_ok: username
+[     clap::parser::validator] 	Conflicts::gather_conflicts: arg="username"
+[      clap::builder::command] 	Command::groups_for_arg: id="username"
+[     clap::parser::validator] 	Conflicts::gather_direct_conflicts id="username", conflicts=[]
+[     clap::parser::validator] 	Conflicts::gather_conflicts: conflicts=[]
+[      clap::builder::command] 	Command::groups_for_arg: id="username"
+[     clap::parser::validator] 	Conflicts::gather_conflicts: arg="LoginArgs"
+[     clap::parser::validator] 	Conflicts::gather_direct_conflicts id="LoginArgs", conflicts=[]
+[     clap::parser::validator] 	Conflicts::gather_conflicts: conflicts=[]
+[     clap::parser::validator] 	Validator::validate_required:iter: Missing "username"
+[     clap::parser::validator] 	Validator::missing_required_error; incl=["username"]
+[     clap::parser::validator] 	Validator::missing_required_error: reqs=ChildGraph([Child { id: "username", children: [] }])
+[         clap::output::usage] 	Usage::get_required_usage_from: incls=["username"], matcher=true, incl_last=true
+[         clap::output::usage] 	Usage::get_required_usage_from: unrolled_reqs=["username"]
+[         clap::output::usage] 	Usage::get_required_usage_from:iter:"username" arg is_present=false
+[         clap::output::usage] 	Usage::get_required_usage_from:iter:"username" arg is_present=false
+[         clap::output::usage] 	Usage::get_required_usage_from: ret_val=[StyledStr { pieces: [(Some(Literal), "-"), (Some(Literal), "u"), (Some(Placeholder), " "), (Some(Placeholder), "<USERNAME>")] }]
+[     clap::parser::validator] 	Validator::missing_required_error: req_args=[
+    "-u <USERNAME>",
+]
+[         clap::output::usage] 	Usage::create_usage_with_title
+[         clap::output::usage] 	Usage::create_usage_no_title
+[         clap::output::usage] 	Usage::create_smart_usage
+[         clap::output::usage] 	Usage::get_args: incls=["username"]
+[         clap::output::usage] 	Usage::get_args: unrolled_reqs=["username"]
+[         clap::output::usage] 	Usage::get_args: ret_val=[StyledStr { pieces: [(Some(Literal), "-"), (Some(Literal), "u"), (Some(Placeholder), " "), (Some(Placeholder), "<USERNAME>")] }]
+[      clap::builder::command] 	Command::color: Color setting...
+[      clap::builder::command] 	Auto
+[      clap::builder::command] 	Command::color: Color setting...
+[      clap::builder::command] 	Auto
+[      clap::builder::command] 	Command::_do_parse
+[      clap::builder::command] 	Command::_build: name="claptest"
+[      clap::builder::command] 	Command::_propagate:claptest
+[      clap::builder::command] 	Command::_check_help_and_version:claptest expand_help_tree=false
+[      clap::builder::command] 	Command::long_help_exists
+[      clap::builder::command] 	Command::_check_help_and_version: Building default --help
+[      clap::builder::command] 	Command::_check_help_and_version: Building help subcommand
+[      clap::builder::command] 	Command::_propagate_global_args:claptest
+[clap::builder::debug_asserts] 	Command::_debug_asserts
+[clap::builder::debug_asserts] 	Arg::_debug_asserts:username
+[clap::builder::debug_asserts] 	Arg::_debug_asserts:flag_main
+[clap::builder::debug_asserts] 	Arg::_debug_asserts:help
+[clap::builder::debug_asserts] 	Command::_verify_positionals
+[        clap::parser::parser] 	Parser::get_matches_with
+[        clap::parser::parser] 	Parser::get_matches_with: Begin parsing 'RawOsStr("subcmd")' ([115, 117, 98, 99, 109, 100])
+[        clap::parser::parser] 	Parser::possible_subcommand: arg=Ok("subcmd")
+[        clap::parser::parser] 	Parser::get_matches_with: sc=Some("subcmd")
+[        clap::parser::parser] 	Parser::parse_subcommand
+[      clap::builder::command] 	Command::_build_subcommand Setting bin_name of subcmd to "playground subcmd"
+[      clap::builder::command] 	Command::_build_subcommand Setting display_name of subcmd to "claptest-subcmd"
+[      clap::builder::command] 	Command::_build: name="subcmd"
+[      clap::builder::command] 	Command::_propagate:subcmd
+[      clap::builder::command] 	Command::_check_help_and_version:subcmd expand_help_tree=false
+[      clap::builder::command] 	Command::long_help_exists
+[      clap::builder::command] 	Command::_check_help_and_version: Building default --help
+[      clap::builder::command] 	Command::_propagate_global_args:subcmd
+[clap::builder::debug_asserts] 	Command::_debug_asserts
+[clap::builder::debug_asserts] 	Arg::_debug_asserts:username
+[clap::builder::debug_asserts] 	Arg::_debug_asserts:flag_sub
+[clap::builder::debug_asserts] 	Arg::_debug_asserts:help
+[clap::builder::debug_asserts] 	Command::_verify_positionals
+[        clap::parser::parser] 	Parser::parse_subcommand: About to parse sc=subcmd
+[        clap::parser::parser] 	Parser::get_matches_with
+[        clap::parser::parser] 	Parser::get_matches_with: Begin parsing 'RawOsStr("-u")' ([45, 117])
+[        clap::parser::parser] 	Parser::possible_subcommand: arg=Ok("-u")
+[        clap::parser::parser] 	Parser::get_matches_with: sc=None
+[        clap::parser::parser] 	Parser::parse_short_arg: short_arg=ShortFlags { inner: RawOsStr("u"), utf8_prefix: CharIndices { front_offset: 0, iter: Chars(['u']) }, invalid_suffix: None }
+[        clap::parser::parser] 	Parser::parse_short_arg:iter:u
+[        clap::parser::parser] 	Parser::parse_short_arg:iter:u: Found valid opt or flag
+[        clap::parser::parser] 	Parser::parse_short_arg:iter:u: val=RawOsStr("") (bytes), val=[] (ascii), short_arg=ShortFlags { inner: RawOsStr("u"), utf8_prefix: CharIndices { front_offset: 1, iter: Chars([]) }, invalid_suffix: None }
+[        clap::parser::parser] 	Parser::parse_opt_value; arg=username, val=None, has_eq=false
+[        clap::parser::parser] 	Parser::parse_opt_value; arg.settings=ArgFlags(REQUIRED)
+[        clap::parser::parser] 	Parser::parse_opt_value; Checking for val...
+[        clap::parser::parser] 	Parser::parse_opt_value: More arg vals required...
+[        clap::parser::parser] 	Parser::get_matches_with: After parse_short_arg Opt("username")
+[        clap::parser::parser] 	Parser::get_matches_with: Begin parsing 'RawOsStr("jeertmans")' ([106, 101, 101, 114, 116, 109, 97, 110, 115])
+[   clap::parser::arg_matcher] 	ArgMatcher::needs_more_vals: o=username, pending=1
+[   clap::parser::arg_matcher] 	ArgMatcher::needs_more_vals: expected=1, actual=1
+[        clap::parser::parser] 	Parser::resolve_pending: id="username"
+[        clap::parser::parser] 	Parser::react action=Set, identifier=Some(Short), source=CommandLine
+[        clap::parser::parser] 	Parser::react: cur_idx:=1
+[        clap::parser::parser] 	Parser::remove_overrides: id="username"
+[   clap::parser::arg_matcher] 	ArgMatcher::start_custom_arg: id="username", source=CommandLine
+[      clap::builder::command] 	Command::groups_for_arg: id="username"
+[   clap::parser::arg_matcher] 	ArgMatcher::start_custom_arg: id="LoginArgs", source=CommandLine
+[        clap::parser::parser] 	Parser::push_arg_values: ["jeertmans"]
+[        clap::parser::parser] 	Parser::add_single_val_to_arg: cur_idx:=2
+[   clap::parser::arg_matcher] 	ArgMatcher::needs_more_vals: o=username, pending=0
+[   clap::parser::arg_matcher] 	ArgMatcher::needs_more_vals: expected=1, actual=0
+[        clap::parser::parser] 	Parser::react not enough values passed in, leaving it to the validator to complain
+[        clap::parser::parser] 	Parser::add_defaults
+[        clap::parser::parser] 	Parser::add_defaults:iter:username:
+[        clap::parser::parser] 	Parser::add_default_value: doesn't have conditional defaults
+[        clap::parser::parser] 	Parser::add_default_value:iter:username: doesn't have default vals
+[        clap::parser::parser] 	Parser::add_defaults:iter:flag_sub:
+[        clap::parser::parser] 	Parser::add_default_value: doesn't have conditional defaults
+[        clap::parser::parser] 	Parser::add_default_value:iter:flag_sub: has default vals
+[        clap::parser::parser] 	Parser::add_default_value:iter:flag_sub: wasn't used
+[        clap::parser::parser] 	Parser::react action=SetTrue, identifier=None, source=DefaultValue
+[   clap::parser::arg_matcher] 	ArgMatcher::start_custom_arg: id="flag_sub", source=DefaultValue
+[        clap::parser::parser] 	Parser::push_arg_values: ["false"]
+[        clap::parser::parser] 	Parser::add_single_val_to_arg: cur_idx:=3
+[        clap::parser::parser] 	Parser::add_defaults:iter:help:
+[        clap::parser::parser] 	Parser::add_default_value: doesn't have conditional defaults
+[        clap::parser::parser] 	Parser::add_default_value:iter:help: doesn't have default vals
+[     clap::parser::validator] 	Validator::validate
+[      clap::builder::command] 	Command::groups_for_arg: id="username"
+[     clap::parser::validator] 	Conflicts::gather_direct_conflicts id="username", conflicts=[]
+[     clap::parser::validator] 	Conflicts::gather_direct_conflicts id="LoginArgs", conflicts=[]
+[     clap::parser::validator] 	Validator::validate_conflicts
+[     clap::parser::validator] 	Validator::validate_exclusive
+[     clap::parser::validator] 	Validator::validate_conflicts::iter: id="username"
+[     clap::parser::validator] 	Conflicts::gather_conflicts: arg="username"
+[     clap::parser::validator] 	Conflicts::gather_conflicts: conflicts=[]
+[     clap::parser::validator] 	Validator::validate_required: required=ChildGraph([Child { id: "username", children: [] }])
+[     clap::parser::validator] 	Validator::gather_requires
+[     clap::parser::validator] 	Validator::gather_requires:iter:"username"
+[     clap::parser::validator] 	Validator::gather_requires:iter:"LoginArgs"
+[     clap::parser::validator] 	Validator::gather_requires:iter:"LoginArgs":group
+[     clap::parser::validator] 	Validator::validate_required: is_exclusive_present=false
+[        clap::parser::parser] 	Parser::add_defaults
+[        clap::parser::parser] 	Parser::add_defaults:iter:username:
+[        clap::parser::parser] 	Parser::add_default_value: doesn't have conditional defaults
+[        clap::parser::parser] 	Parser::add_default_value:iter:username: doesn't have default vals
+[        clap::parser::parser] 	Parser::add_defaults:iter:flag_main:
+[        clap::parser::parser] 	Parser::add_default_value: doesn't have conditional defaults
+[        clap::parser::parser] 	Parser::add_default_value:iter:flag_main: has default vals
+[        clap::parser::parser] 	Parser::add_default_value:iter:flag_main: wasn't used
+[        clap::parser::parser] 	Parser::react action=SetTrue, identifier=None, source=DefaultValue
+[   clap::parser::arg_matcher] 	ArgMatcher::start_custom_arg: id="flag_main", source=DefaultValue
+[        clap::parser::parser] 	Parser::push_arg_values: ["false"]
+[        clap::parser::parser] 	Parser::add_single_val_to_arg: cur_idx:=1
+[        clap::parser::parser] 	Parser::add_defaults:iter:help:
+[        clap::parser::parser] 	Parser::add_default_value: doesn't have conditional defaults
+[        clap::parser::parser] 	Parser::add_default_value:iter:help: doesn't have default vals
+[     clap::parser::validator] 	Validator::validate
+[     clap::parser::validator] 	Validator::validate_conflicts
+[     clap::parser::validator] 	Validator::validate_exclusive
+[   clap::parser::arg_matcher] 	ArgMatcher::get_global_values: global_arg_vec=[]
+Calling sub:
+MainCommand {
+    args: None,
+    command: Some(
+        Subcmd(
+            SecondaryCommand {
+                login_args: LoginArgs {
+                    username: Some(
+                        "jeertmans",
+                    ),
+                },
+                flag_sub: false,
+            },
+        ),
+    ),
+}
+```
+
+---
+
+_Label `C-bug` added by @jeertmans on 2023-02-08 13:03_
+
+---
+
+_Referenced in [jeertmans/languagetool-rust#64](../../jeertmans/languagetool-rust/pulls/64.md) on 2023-02-08 13:05_
+
+---
+
+_Renamed from "bug(derive): option of nested flatten does not work as expected" to "Option of nested flatten does not work as expected" by @epage on 2023-02-08 13:42_
+
+---
+
+_Label `E-hard` added by @epage on 2023-02-08 13:42_
+
+---
+
+_Label `A-parsing` added by @epage on 2023-02-08 13:42_
+
+---
+
+_Referenced in [clap-rs/clap#3165](../../clap-rs/clap/issues/3165.md) on 2023-02-08 13:43_
+
+---
+
+_Comment by @epage on 2023-02-08 13:43_
+
+This was previously a task list item in #3165, so I've updated it to point to this issue
+
+---
+
+_Label `C-bug` removed by @epage on 2023-02-08 13:43_
+
+---
+
+_Label `C-enhancement` added by @epage on 2023-02-08 13:43_
+
+---
+
+_Label `A-derive` added by @epage on 2023-02-08 13:43_
+
+---
+
+_Renamed from "Option of nested flatten does not work as expected" to "Optional, nested flatten gets ignored (nested ArgGroups are unsupported)" by @epage on 2023-02-08 13:44_
+
+---
+
+_Comment by @jeertmans on 2023-02-08 14:01_
+
+Thanks for the update! I don't think I know Clap well enough to help with #3165, but I hope someone will :D 
+
+---
+
+_Referenced in [clap-rs/clap#4570](../../clap-rs/clap/issues/4570.md) on 2023-02-10 15:25_
+
+---
+
+_Referenced in [cargo-lambda/cargo-lambda#416](../../cargo-lambda/cargo-lambda/pulls/416.md) on 2023-03-21 20:23_
+
+---
+
+_Referenced in [clap-rs/clap#2621](../../clap-rs/clap/issues/2621.md) on 2023-03-28 17:19_
+
+---
+
+_Referenced in [clap-rs/clap#5435](../../clap-rs/clap/issues/5435.md) on 2024-03-28 19:29_
+
+---
+
+_Referenced in [clap-rs/clap#5700](../../clap-rs/clap/pulls/5700.md) on 2024-08-29 21:48_
+
+---
+
+_Referenced in [clap-rs/clap#5711](../../clap-rs/clap/issues/5711.md) on 2024-08-30 20:30_
+
+---
+
+_Referenced in [clap-rs/clap#5809](../../clap-rs/clap/issues/5809.md) on 2024-11-06 21:00_
+
+---
+
+_Referenced in [s2-streamstore/s2-cli#147](../../s2-streamstore/s2-cli/issues/147.md) on 2025-05-14 10:34_
+
+---

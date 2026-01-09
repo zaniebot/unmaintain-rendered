@@ -1,0 +1,71 @@
+---
+number: 4297
+title: Fix(Typo) no close bracket in example
+type: issue
+state: closed
+author: p4r4d0xb0x
+labels:
+  - C-bug
+assignees: []
+created_at: 2022-09-30T08:45:07Z
+updated_at: 2022-09-30T13:23:38Z
+url: https://github.com/clap-rs/clap/issues/4297
+synced_at: 2026-01-07T13:12:20-06:00
+---
+
+# Fix(Typo) no close bracket in example
+
+---
+
+_Issue opened by @p4r4d0xb0x on 2022-09-30 08:45_
+
+### Please complete the following tasks
+
+- [X] I have searched the [discussions](https://github.com/clap-rs/clap/discussions)
+- [X] I have searched the [open](https://github.com/clap-rs/clap/issues) and [rejected](https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed) issues
+
+### Rust Version
+
+not oriented
+
+### Clap Version
+
+not oriented
+
+### Minimal reproducible code
+
+no close bracket in example
+
+### Steps to reproduce the bug with the above code
+
+no close bracket in example
+
+### Actual Behaviour
+
+no close bracket in example
+
+### Expected Behaviour
+
+no close bracket in example
+
+### Additional Context
+
+no close bracket in example
+
+### Debug Output
+
+_No response_
+
+---
+
+_Label `C-bug` added by @p4r4d0xb0x on 2022-09-30 08:45_
+
+---
+
+_Referenced in [clap-rs/clap#4298](../../clap-rs/clap/pulls/4298.md) on 2022-09-30 08:45_
+
+---
+
+_Closed by @epage on 2022-09-30 13:23_
+
+---

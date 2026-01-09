@@ -1,0 +1,84 @@
+---
+number: 1207
+title: Conversion from lambda to function definition leads to syntax error
+type: issue
+state: closed
+author: charliermarsh
+labels:
+  - bug
+assignees: []
+created_at: 2022-12-12T13:43:47Z
+updated_at: 2022-12-14T18:57:26Z
+url: https://github.com/astral-sh/ruff/issues/1207
+synced_at: 2026-01-07T13:12:14-06:00
+---
+
+# Conversion from lambda to function definition leads to syntax error
+
+---
+
+_Issue opened by @charliermarsh on 2022-12-12 13:43_
+
+See: #1206.
+
+> When running ruff against 
+> 
+> ```python
+> _ = lambda x: setattr(x, "bar", 1)
+> ``` 
+> with everything enabled, this produces
+> 
+> ```python
+> def _(x):
+>     return x.bar = 1
+> ```
+> 
+> which is invalid syntax.
+
+---
+
+_Label `bug` added by @charliermarsh on 2022-12-12 13:43_
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2022-12-12 15:06_
+
+---
+
+_Renamed from "Avoid converting lambdas to function definitions for invalid identifiers" to "Conversion from lambda to function definition leads to syntax error" by @charliermarsh on 2022-12-12 15:09_
+
+---
+
+_Comment by @charliermarsh on 2022-12-12 15:20_
+
+We need to detect that we're in a context for which statements (not just expressions) are valid.
+
+
+---
+
+_Comment by @charliermarsh on 2022-12-12 15:38_
+
+Like, it's easy to special-case lambdas, but this could apply in other contexts too, like:
+
+```py
+if setattr(x, "bar", 1):
+  pass
+```
+
+---
+
+_Unassigned @charliermarsh by @charliermarsh on 2022-12-12 21:32_
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2022-12-14 18:30_
+
+---
+
+_Referenced in [astral-sh/ruff#1239](../../astral-sh/ruff/pulls/1239.md) on 2022-12-14 18:57_
+
+---
+
+_Closed by @charliermarsh on 2022-12-14 18:57_
+
+---

@@ -1,0 +1,143 @@
+---
+number: 4102
+title: "B905 not being raised for same iterable in `zip`"
+type: issue
+state: closed
+author: jamesbraza
+labels: []
+assignees: []
+created_at: 2023-04-25T21:28:52Z
+updated_at: 2023-12-11T23:29:52Z
+url: https://github.com/astral-sh/ruff/issues/4102
+synced_at: 2026-01-07T13:12:14-06:00
+---
+
+# B905 not being raised for same iterable in `zip`
+
+---
+
+_Issue opened by @jamesbraza on 2023-04-25 21:28_
+
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+With `flake8==6.0.0`, `flake8-bugbear==23.3.23`, `ruff==0.0.263`:
+
+```bash
+> flake8 a.py
+> ruff --select=B905 a.py
+a.py:2:21: B905 `zip()` without an explicit `strict=` parameter
+Found 1 error.
+```
+
+```python
+some_list = [1, 2, 3]
+for first_second in zip(some_list, some_list[1:]):
+    print(first_second)
+```
+
+I know the right move overall is `itertools.pairwise`.
+
+However, in isolation, I think `B905` should not be triggered here.  It should know that the default `strict=False` is the right move here.
+
+Aside: `ruff` triggers here while `flake8` does not.  Not sure why.
+
+---
+
+_Comment by @evanrittenhouse on 2023-04-29 12:56_
+
+I can look into this. If there's a divergence between ruff and flake8, I'd consider it a bug
+
+---
+
+_Comment by @evanrittenhouse on 2023-04-29 19:01_
+
+Isn't B905 complaining about *explicit* stricts though? Just thinking that if the rule expects an explicit strict, it probably should trigger regardless of the keyword argument's default value.
+
+---
+
+_Comment by @charliermarsh on 2023-04-29 19:07_
+
+Hmm, yeah, I think the current behavior is reasonable. Note that `flake8-bugbear` _does_ behave the same way, but you have to explicitly enable it, since it's an error code that starts with `9` (as in, `B905`), a behavior that Ruff doesn't match:
+
+```shell
+❯ flake8 foo.py --select B905
+foo.py:2:21: B905 `zip()` without an explicit `strict=` parameter
+```
+
+---
+
+_Closed by @charliermarsh on 2023-04-29 19:07_
+
+---
+
+_Comment by @jamesbraza on 2023-04-30 02:09_
+
+Oh dang, didn't know that `flake8-bugbear` has default-disabled codes.  Sorry for that.
+
+I guess I made this issue because, if one listens to the message and without paying attention and marks `strict=True`, it will result in a `ValueError`at runtime:
+
+```python
+some_list = [1, 2, 3]
+for first_second in zip(some_list, some_list[1:], strict=True):
+    pass
+
+# Leads to ValueError: zip() argument 2 is shorter than argument 1
+```
+
+To ameliorate this, it requires making a special case to only suggest `strict=False`, so I can see arguments for just leaving this false-positive-ish message around.
+
+Of course, the right action is to use `itertools.pairwise` (via `RUF007`, `pairwise-over-zipped`).  Just posting for posterity, cheers!
+
+---
+
+_Comment by @jaxwagner on 2023-12-11 23:14_
+
+Hi! I'm having an issue where rule B905 is not raising where I think it should be. I can get B905 to flag in the playground, but not via my ruff.toml config file. 
+
+here's an example where I think it should flag and it isnt with my config:
+`pairs = zip(self._points[:-1], self._points[1:])`
+
+and here is my config, where B905 is not disabled:
+```
+[lint]
+extend-select = ["I", "W", "B"]
+ignore = ["B904", "B019", "B008", "B015", "B007", "B011", "B012", "B010", "B006", "B024"]
+```
+is there something else I need to do to enable it? many other bugbear rules are working as expected, so I'm not sure why B905 is not. thanks so much for any help!
+
+---
+
+_Comment by @charliermarsh on 2023-12-11 23:17_
+
+You may need to set your minimum-supported Python version to Python 3.10. Do you have something like this in your config?
+
+```toml
+target-version = "py310"
+```
+
+Alternatively, if you set a `requires-python` in your `pyproject.toml`, Ruff will respect that too.
+
+---
+
+_Comment by @jaxwagner on 2023-12-11 23:29_
+
+thanks so much @charliermarsh! really appreciate it :) 
+
+---
+
+_Referenced in [astral-sh/ruff#16541](../../astral-sh/ruff/issues/16541.md) on 2025-03-06 18:26_
+
+---
+
+_Referenced in [astral-sh/ruff#17531](../../astral-sh/ruff/issues/17531.md) on 2025-04-21 22:13_
+
+---

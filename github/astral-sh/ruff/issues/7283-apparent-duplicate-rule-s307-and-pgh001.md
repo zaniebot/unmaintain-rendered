@@ -1,0 +1,75 @@
+---
+number: 7283
+title: "Apparent duplicate rule (`S307` and `PGH001`)"
+type: issue
+state: closed
+author: tjkuson
+labels:
+  - rule
+assignees: []
+created_at: 2023-09-11T20:10:15Z
+updated_at: 2024-07-26T01:57:47Z
+url: https://github.com/astral-sh/ruff/issues/7283
+synced_at: 2026-01-07T13:12:15-06:00
+---
+
+# Apparent duplicate rule (`S307` and `PGH001`)
+
+---
+
+_Issue opened by @tjkuson on 2023-09-11 20:10_
+
+Rules [`suspicious-eval-usage` (`S307`)](https://beta.ruff.rs/docs/rules/suspicious-eval-usage/) and [`eval` (`PGH001`)](https://beta.ruff.rs/docs/rules/eval/) seem to do the same thing. If they are, in fact, distinct, then the difference between them should probably be explained in the documentation.
+
+
+---
+
+_Comment by @zanieb on 2023-09-11 20:55_
+
+I can confirm these look duplicated and have separate implementations. I'm not sure what we should do about it though.
+
+---
+
+_Label `needs-decision` added by @zanieb on 2023-09-11 20:55_
+
+---
+
+_Comment by @charliermarsh on 2023-09-19 02:39_
+
+We should remove PGH001, and add a redirect to S307 (IMO).
+
+---
+
+_Label `rule` added by @charliermarsh on 2023-09-19 02:39_
+
+---
+
+_Referenced in [astral-sh/ruff#7506](../../astral-sh/ruff/pulls/7506.md) on 2023-09-19 03:32_
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2023-09-19 03:33_
+
+---
+
+_Label `needs-decision` removed by @charliermarsh on 2023-09-19 03:33_
+
+---
+
+_Referenced in [superlinear-ai/substrate#218](../../superlinear-ai/substrate/pulls/218.md) on 2024-02-28 12:22_
+
+---
+
+_Referenced in [astral-sh/ruff#2714](../../astral-sh/ruff/issues/2714.md) on 2024-05-13 11:21_
+
+---
+
+_Comment by @charliermarsh on 2024-07-26 01:57_
+
+This got done!
+
+---
+
+_Closed by @charliermarsh on 2024-07-26 01:57_
+
+---

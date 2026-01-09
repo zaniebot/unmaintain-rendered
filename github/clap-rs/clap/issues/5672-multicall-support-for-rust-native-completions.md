@@ -1,0 +1,52 @@
+---
+number: 5672
+title: multicall support for rust-native completions
+type: issue
+state: open
+author: epage
+labels:
+  - C-enhancement
+  - E-medium
+  - A-completion
+assignees: []
+created_at: 2024-08-12T17:17:49Z
+updated_at: 2025-04-10T16:00:44Z
+url: https://github.com/clap-rs/clap/issues/5672
+synced_at: 2026-01-07T13:12:20-06:00
+---
+
+# multicall support for rust-native completions
+
+---
+
+_Issue opened by @epage on 2024-08-12 17:17_
+
+See #3166
+
+---
+
+_Label `C-enhancement` added by @epage on 2024-08-12 17:17_
+
+---
+
+_Label `E-medium` added by @epage on 2024-08-12 17:17_
+
+---
+
+_Label `A-completion` added by @epage on 2024-08-12 17:17_
+
+---
+
+_Comment by @pedrocarlo on 2025-04-04 15:56_
+
+This would be very useful to support completions for a Repl. What do I need to learn to make this happen?
+
+---
+
+_Comment by @epage on 2025-04-10 16:00_
+
+If you are doing a REPL, then I'm assuming you only care about the completion engine and not shell integration.  In that case, its a matter of updating the [completion parser](https://github.com/clap-rs/clap/blob/master/clap_complete/src/engine/complete.rs) to handle this.
+
+To fully close this issue out, someone would need to explore how shell integration should be handled.
+
+---

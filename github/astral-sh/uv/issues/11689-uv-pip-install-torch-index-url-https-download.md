@@ -1,0 +1,68 @@
+---
+number: 11689
+title: "uv pip install torch --index-url https://download.pytorch.org/whl/cu118"
+type: issue
+state: closed
+author: qasymjomart
+labels:
+  - question
+assignees: []
+created_at: 2025-02-21T05:54:58Z
+updated_at: 2025-02-24T21:36:03Z
+url: https://github.com/astral-sh/uv/issues/11689
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# uv pip install torch --index-url https://download.pytorch.org/whl/cu118
+
+---
+
+_Issue opened by @qasymjomart on 2025-02-21 05:54_
+
+### Summary
+
+It seems like `uv pip install` cannot use `--index-url` of pip to install packages on the given url. If I use pip without uv, it can be handled.
+
+So I would like to request adding that feature as installing torch for specific version of cuda from [pytorch's website](https://pytorch.org/get-started/locally/) is important for ML development.
+
+Thanks
+
+### Example
+
+_No response_
+
+---
+
+_Label `enhancement` added by @qasymjomart on 2025-02-21 05:54_
+
+---
+
+_Comment by @charliermarsh on 2025-02-21 06:01_
+
+Sure it can — we fully support this. If you’re having trouble, I would need more information to help you (like the specific command you’re running and the output you’re seeing vs. what you expect). As-is, this isn’t an actionable issue.
+
+---
+
+_Comment by @charliermarsh on 2025-02-24 21:06_
+
+Closing but can re-open if there's clear follow-up!
+
+---
+
+_Closed by @charliermarsh on 2025-02-24 21:06_
+
+---
+
+_Label `enhancement` removed by @charliermarsh on 2025-02-24 21:06_
+
+---
+
+_Label `question` added by @charliermarsh on 2025-02-24 21:06_
+
+---
+
+_Comment by @zanieb on 2025-02-24 21:36_
+
+See #9452 for general guidance.
+
+---

@@ -1,0 +1,65 @@
+---
+number: 6726
+title: "`fmt: off` causes crash when header contains type annotation"
+type: issue
+state: closed
+author: konstin
+labels:
+  - bug
+  - good first issue
+  - formatter
+assignees: []
+created_at: 2023-08-21T13:46:47Z
+updated_at: 2023-08-22T14:19:58Z
+url: https://github.com/astral-sh/ruff/issues/6726
+synced_at: 2026-01-07T13:12:15-06:00
+---
+
+# `fmt: off` causes crash when header contains type annotation
+
+---
+
+_Issue opened by @konstin on 2023-08-21 13:46_
+
+Formatting
+
+```python
+def f() -> []:  # fmt: off
+    pass
+```
+fails with
+```
+thread 'main' panicked at 'Expected the colon marking the end of the case header but found SimpleToken { kind: RArrow, range: 8..10 } instead.', crates/ruff_python_formatter/src/statement/clause.rs:451:13
+```
+
+For the suppression comments, we need to know the location of the `:` ending the block header. The function looking for the colon however doesn't consider that functions can have a return type annotation after the last argument:
+
+https://github.com/astral-sh/ruff/blob/2a8d24dd4b1b0505f81d42c1be0046478e39f3ee/crates/ruff_python_formatter/src/statement/clause.rs#L50
+
+https://github.com/astral-sh/ruff/blob/2a8d24dd4b1b0505f81d42c1be0046478e39f3ee/crates/ruff_python_formatter/src/statement/clause.rs#L440-L459
+
+---
+
+_Label `bug` added by @konstin on 2023-08-21 13:46_
+
+---
+
+_Label `good first issue` added by @konstin on 2023-08-21 13:46_
+
+---
+
+_Label `formatter` added by @konstin on 2023-08-21 13:46_
+
+---
+
+_Referenced in [astral-sh/ruff#6733](../../astral-sh/ruff/pulls/6733.md) on 2023-08-21 15:01_
+
+---
+
+_Closed by @MichaReiser on 2023-08-21 15:45_
+
+---
+
+_Added to milestone `Formatter: Alpha` by @MichaReiser on 2023-08-22 14:19_
+
+---

@@ -1,0 +1,61 @@
+---
+number: 8830
+title: Virtual environments folder outside project
+type: issue
+state: closed
+author: tmct
+labels:
+  - duplicate
+assignees: []
+created_at: 2024-11-05T15:18:53Z
+updated_at: 2024-11-05T15:47:09Z
+url: https://github.com/astral-sh/uv/issues/8830
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# Virtual environments folder outside project
+
+---
+
+_Issue opened by @tmct on 2024-11-05 15:18_
+
+Hi,
+
+I was hoping you could help solve my problem please.
+
+At work I am often developing in a situation where I have a persistent storage directory (let's say at `/persist/code`) as well as ephemeral user directories (say at `/home/me`). I want to develop in `/persist/code` (including uv projects!), but I cannot hardlink in that folder, which drastically slows down uv pip installs etc.
+
+For other workflows (e.g. using hatch) I can work around this by defaulting to ephemeral virtual environments in a path in `/home/me`, which my projects reference. But uv appears to strongly push for virtualenv living alongside code (in `.venv`). I can understand why that choice is usually very nice, especially when you don't have to activate environments, but is there a way to tell uv "I would like you to create all my virtual environments in this folder somewhere else, by default" please? (It looks like I could set UV_PROJECT_ENVIRONMENT, but unless I wanted environments to overwrite each other, I would need to vary that setting per project/workspace.)
+
+I am wondering what the best way to achieve this might be - what might you suggest?
+
+Thanks,
+Tom
+
+---
+
+_Comment by @zanieb on 2024-11-05 15:39_
+
+Duplicate of #1495 
+
+---
+
+_Closed by @zanieb on 2024-11-05 15:39_
+
+---
+
+_Label `duplicate` added by @zanieb on 2024-11-05 15:39_
+
+---
+
+_Comment by @zanieb on 2024-11-05 15:40_
+
+I'd recommend setting `UV_PROJECT_ENVIRONMENT` with `direnv` or something for now. We haven't designed a solution to this yet.
+
+---
+
+_Comment by @tmct on 2024-11-05 15:46_
+
+Thank you! That will do nicely
+
+---

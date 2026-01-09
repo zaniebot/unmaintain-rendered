@@ -1,0 +1,110 @@
+---
+number: 1338
+title: Issue installing HTML-escaped local version
+type: issue
+state: closed
+author: stefanvanburen
+labels:
+  - bug
+assignees: []
+created_at: 2024-02-15T20:57:29Z
+updated_at: 2024-02-16T06:15:52Z
+url: https://github.com/astral-sh/uv/issues/1338
+synced_at: 2026-01-07T13:12:16-06:00
+---
+
+# Issue installing HTML-escaped local version
+
+---
+
+_Issue opened by @stefanvanburen on 2024-02-15 20:57_
+
+Hey! `uv` looks great; nice work. Not sure if this issue is on my end or yours:
+
+```
+$ uv pip install connectrpc-eliza-grpc-python --extra-index-url https://buf.build/gen/python
+error: Received some unexpected HTML from https://buf.build/gen/python/connectrpc-eliza-grpc-python
+  Caused by: Unexpected fragment (expected `#sha256=...`) on URL: 43;edc8ae343b96-py3-none-any.whl
+```
+
+I'm _assuming_ this is because we're serving local versions with a `+` delimiter, which is then URL-escaped. The HTML looks something like:
+
+```
+    <a
+      href="https://buf.build/gen/python/connectrpc-eliza-grpc-python/connectrpc_eliza_grpc_python-1.61.0.1.20230913231627&#43;233fca715f49-py3-none-any.whl"
+      data-requires-python="&gt;=3.7"
+      >connectrpc_eliza_grpc_python-1.61.0.1.20230913231627&#43;233fca715f49-py3-none-any.whl</a>
+```
+
+I haven't seen this as an issue with `pip`; it seems like something our repository should fix, but thought I'd mention in case the parsing should handle these escaped values.
+
+---
+
+_Comment by @charliermarsh on 2024-02-15 20:58_
+
+Thanks, I'll take a look!
+
+---
+
+_Label `bug` added by @charliermarsh on 2024-02-15 20:58_
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2024-02-15 20:58_
+
+---
+
+_Comment by @davidszotten on 2024-02-15 22:22_
+
+i'm running devpi and don't have fragments at all which results in
+
+```
+ uv pip install --extra-index-url <devpi> <package>
+error: Received some unexpected HTML from <devpi>/<package>
+  Caused by: Unexpected fragment (expected `#sha256=...`) on URL:
+```
+
+(not truncated, there is nothing after `URL:`)
+
+
+---
+
+_Comment by @charliermarsh on 2024-02-15 22:24_
+
+Thanks! That should be an easy fix.
+
+---
+
+_Comment by @davidszotten on 2024-02-15 22:32_
+
+happy to give it a go if you have some pointers?
+
+---
+
+_Comment by @charliermarsh on 2024-02-15 22:56_
+
+@davidszotten - I haven't tried it yet, but I'd start in `crates/uv-client/src/html.rs` which has a `parse_hash`. I think the SHA256 _used_ to be required but we relaxed it and didn't update that code.
+
+---
+
+_Unassigned @charliermarsh by @charliermarsh on 2024-02-16 05:06_
+
+---
+
+_Referenced in [astral-sh/uv#1440](../../astral-sh/uv/pulls/1440.md) on 2024-02-16 06:12_
+
+---
+
+_Referenced in [astral-sh/uv#1441](../../astral-sh/uv/issues/1441.md) on 2024-02-16 06:15_
+
+---
+
+_Comment by @charliermarsh on 2024-02-16 06:15_
+
+@davidszotten - I moved that out to a separate issue: https://github.com/astral-sh/uv/issues/1441
+
+---
+
+_Closed by @charliermarsh on 2024-02-16 06:15_
+
+---

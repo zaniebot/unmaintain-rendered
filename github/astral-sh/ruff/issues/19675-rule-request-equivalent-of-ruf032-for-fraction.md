@@ -1,0 +1,47 @@
+---
+number: 19675
+title: "[Rule Request] Equivalent of `RUF032` for `Fraction`"
+type: issue
+state: open
+author: MeGaGiGaGon
+labels:
+  - rule
+  - needs-decision
+assignees: []
+created_at: 2025-07-31T23:42:51Z
+updated_at: 2025-08-01T17:35:10Z
+url: https://github.com/astral-sh/ruff/issues/19675
+synced_at: 2026-01-07T13:12:16-06:00
+---
+
+# [Rule Request] Equivalent of `RUF032` for `Fraction`
+
+---
+
+_Issue opened by @MeGaGiGaGon on 2025-07-31 23:42_
+
+### Summary
+
+It seems odd to me that `RUF032` only covers `Decimal`, when `Fraction` has the same issues as `Decimal`:
+```py
+>>> Fraction(4.2)
+Fraction(4728779608739021, 1125899906842624)
+```
+It would make for nicer parity if `RUF032` incorporated/there was a new rule for flagging `Fraction`s with float arguments as well.
+[Playground example with `ALL` showing no error](https://play.ruff.rs/8b78f7f8-2b8a-495f-9d61-937ef1e05dbd)
+
+---
+
+_Label `rule` added by @ntBre on 2025-08-01 17:31_
+
+---
+
+_Label `needs-decision` added by @ntBre on 2025-08-01 17:31_
+
+---
+
+_Comment by @ntBre on 2025-08-01 17:35_
+
+Makes sense to me. I guess another option would be combining it with `RUF032`, although it doesn't really fit the name in that case ([decimal-from-float-literal (RUF032)](https://docs.astral.sh/ruff/rules/decimal-from-float-literal/#decimal-from-float-literal-ruf032)).
+
+---

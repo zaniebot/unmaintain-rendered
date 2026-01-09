@@ -1,0 +1,172 @@
+---
+number: 9934
+title: "`uv pip install` fails while `pip install` works"
+type: issue
+state: closed
+author: ameya98
+labels: []
+assignees: []
+created_at: 2024-12-16T12:54:59Z
+updated_at: 2024-12-16T16:30:30Z
+url: https://github.com/astral-sh/uv/issues/9934
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# `uv pip install` fails while `pip install` works
+
+---
+
+_Issue opened by @ameya98 on 2024-12-16 12:54_
+
+I am trying to install [PyEMMA](http://emma-project.org/latest/) in a new environment with `uv 0.5.5` on a Linux machine:
+
+```bash
+pip install wheel
+pip install pyemma
+```
+
+works, while:
+```bash
+uv pip install wheel
+uv pip install pyemma
+```
+
+errors out with the following:
+```
+...
+      running build_ext
+
+      [stderr]
+      /homefs/home/daigavaa/.cache/uv/builds-v0/.tmpTwnILr/lib/python3.11/site-packages/setuptools/_distutils/dist.py:261:
+      UserWarning: Unknown distribution option: 'tests_require'
+        warnings.warn(msg)
+      Traceback (most recent call last):
+        File "<string>", line 11, in <module>
+        File
+      "/homefs/home/daigavaa/.cache/uv/builds-v0/.tmpTwnILr/lib/python3.11/site-packages/setuptools/build_meta.py",
+      line 435, in build_wheel
+          return _build(['bdist_wheel'])
+                 ^^^^^^^^^^^^^^^^^^^^^^^
+        File
+      "/homefs/home/daigavaa/.cache/uv/builds-v0/.tmpTwnILr/lib/python3.11/site-packages/setuptools/build_meta.py",
+      line 426, in _build
+          return self._build_with_temp_dir(
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^
+        File
+      "/homefs/home/daigavaa/.cache/uv/builds-v0/.tmpTwnILr/lib/python3.11/site-packages/setuptools/build_meta.py",
+      line 407, in _build_with_temp_dir
+          self.run_setup()
+        File
+      "/homefs/home/daigavaa/.cache/uv/builds-v0/.tmpTwnILr/lib/python3.11/site-packages/setuptools/build_meta.py",
+      line 522, in run_setup
+          super().run_setup(setup_script=setup_script)
+        File
+      "/homefs/home/daigavaa/.cache/uv/builds-v0/.tmpTwnILr/lib/python3.11/site-packages/setuptools/build_meta.py",
+      line 320, in run_setup
+          exec(code, locals())
+        File "<string>", line 330, in <module>
+        File
+      "/homefs/home/daigavaa/.cache/uv/builds-v0/.tmpTwnILr/lib/python3.11/site-packages/setuptools/__init__.py",
+      line 117, in setup
+          return distutils.core.setup(**attrs)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        File
+      "/homefs/home/daigavaa/.cache/uv/builds-v0/.tmpTwnILr/lib/python3.11/site-packages/setuptools/_distutils/core.py",
+      line 183, in setup
+          return run_commands(dist)
+                 ^^^^^^^^^^^^^^^^^^
+        File
+      "/homefs/home/daigavaa/.cache/uv/builds-v0/.tmpTwnILr/lib/python3.11/site-packages/setuptools/_distutils/core.py",
+      line 199, in run_commands
+          dist.run_commands()
+        File
+      "/homefs/home/daigavaa/.cache/uv/builds-v0/.tmpTwnILr/lib/python3.11/site-packages/setuptools/_distutils/dist.py",
+      line 954, in run_commands
+          self.run_command(cmd)
+        File
+      "/homefs/home/daigavaa/.cache/uv/builds-v0/.tmpTwnILr/lib/python3.11/site-packages/setuptools/dist.py",
+      line 995, in run_command
+          super().run_command(command)
+        File
+      "/homefs/home/daigavaa/.cache/uv/builds-v0/.tmpTwnILr/lib/python3.11/site-packages/setuptools/_distutils/dist.py",
+      line 973, in run_command
+          cmd_obj.run()
+        File
+      "/homefs/home/daigavaa/.cache/uv/builds-v0/.tmpTwnILr/lib/python3.11/site-packages/setuptools/command/bdist_wheel.py",
+      line 381, in run
+          self.run_command("build")
+        File
+      "/homefs/home/daigavaa/.cache/uv/builds-v0/.tmpTwnILr/lib/python3.11/site-packages/setuptools/_distutils/cmd.py",
+      line 316, in run_command
+          self.distribution.run_command(command)
+        File
+      "/homefs/home/daigavaa/.cache/uv/builds-v0/.tmpTwnILr/lib/python3.11/site-packages/setuptools/dist.py",
+      line 995, in run_command
+          super().run_command(command)
+        File
+      "/homefs/home/daigavaa/.cache/uv/builds-v0/.tmpTwnILr/lib/python3.11/site-packages/setuptools/_distutils/dist.py",
+      line 973, in run_command
+          cmd_obj.run()
+        File
+      "/homefs/home/daigavaa/.cache/uv/builds-v0/.tmpTwnILr/lib/python3.11/site-packages/setuptools/_distutils/command/build.py",
+      line 135, in run
+          self.run_command(cmd_name)
+        File
+      "/homefs/home/daigavaa/.cache/uv/builds-v0/.tmpTwnILr/lib/python3.11/site-packages/setuptools/_distutils/cmd.py",
+      line 316, in run_command
+          self.distribution.run_command(command)
+        File
+      "/homefs/home/daigavaa/.cache/uv/builds-v0/.tmpTwnILr/lib/python3.11/site-packages/setuptools/dist.py",
+      line 995, in run_command
+          super().run_command(command)
+        File
+      "/homefs/home/daigavaa/.cache/uv/builds-v0/.tmpTwnILr/lib/python3.11/site-packages/setuptools/_distutils/dist.py",
+      line 973, in run_command
+          cmd_obj.run()
+        File
+      "/homefs/home/daigavaa/.cache/uv/builds-v0/.tmpTwnILr/lib/python3.11/site-packages/setuptools/command/build_ext.py",
+      line 99, in run
+          _build_ext.run(self)
+        File
+      "/homefs/home/daigavaa/.cache/uv/builds-v0/.tmpTwnILr/lib/python3.11/site-packages/setuptools/_distutils/command/build_ext.py",
+      line 359, in run
+          self.build_extensions()
+        File "<string>", line 238, in build_extensions
+        File
+      "/homefs/home/daigavaa/.cache/uv/sdists-v6/pypi/pyemma/2.5.12/3X5V7n5vYs0tJTpqXFUas/src/setup_util.py",
+      line 142, in cpp_flag
+          raise RuntimeError('Unsupported compiler ({})-- at least C++11
+      support '
+      RuntimeError: Unsupported compiler
+      (<distutils.unixccompiler.UnixCCompiler object at 0x7fb4b67270d0>)--
+      at least C++11 support is needed!
+```
+
+Any help would be very much appreciated!
+
+
+---
+
+_Comment by @dedebenui on 2024-12-16 14:08_
+
+It seems that regular `pip` manages to install the package either by successfully compiling it or by finding a pre-compiled wheel. `uv` attempts to compile it but the build script cannot find a suitable C++ compiler.
+
+I see no binary available on Windows, but if there are any on linux you can try to force and use it with `uv pip install pyemma --only-binary pyemma`
+
+Did you install regular `pip` in the environment? if yes, are you sure it is this one that is running?
+```bash
+uv pip install pip
+uv run -m pip install wheel pyemma
+```
+
+---
+
+_Comment by @ameya98 on 2024-12-16 16:30_
+
+Thank you for your help, that indeed worked! I also had to do `uv run --no-project ...` since I was working in a different virtual environment than my project default.
+
+---
+
+_Closed by @ameya98 on 2024-12-16 16:30_
+
+---

@@ -1,0 +1,141 @@
+---
+number: 315
+title: "Is \"A003 class attribute `set` is shadowing a python builtin\" too aggressive?"
+type: issue
+state: closed
+author: amotl
+labels: []
+assignees: []
+created_at: 2022-10-04T00:20:30Z
+updated_at: 2022-11-15T18:38:21Z
+url: https://github.com/astral-sh/ruff/issues/315
+synced_at: 2026-01-07T13:12:14-06:00
+---
+
+# Is "A003 class attribute `set` is shadowing a python builtin" too aggressive?
+
+---
+
+_Issue opened by @amotl on 2022-10-04 00:20_
+
+Dear Charlie,
+
+after upgrading to `ruff 0.0.52` on https://github.com/isarengineering/SecPi, we found `ruff` would emit an admonition on a code like outlined below. Do you think it might be worth to build up a dedicated exclusion list for specific symbols, in order make ruff skip those cases?
+
+With kind regards,
+Andreas.
+
+```python
+class Foobar:
+    def __init__(self):
+        self.data = {}
+
+    def get(self, key, default=None):
+        return self.data.get(key, default)
+
+    def set(self, key, value):
+        self.data[key] = value
+```
+```
+$ ruff foobar.py
+Found 1 error(s).
+foobar.py:8:5: A003 class attribute `set` is shadowing a python builtin
+```
+
+P.S.: The new features and rules added to ruff keep being an awesome driver for modernizing an outdated Python 2 code base, where I did not bother to run flake8 on it at all, see https://github.com/isarengineering/SecPi/pull/30. Cheers!
+
+
+---
+
+_Comment by @andersk on 2022-10-04 04:55_
+
+IMO, shadowing is a completely normal part of the language and doesn’t indicate a problem. This diagnostic seems too opinionated to be enabled by default.
+
+---
+
+_Comment by @charliermarsh on 2022-10-04 11:54_
+
+Sounds reasonable. I’ll remove it from the list of defaults. (In general, I’m not interested in enabling opinionated checks by default.)
+
+---
+
+_Referenced in [astral-sh/ruff#318](../../astral-sh/ruff/pulls/318.md) on 2022-10-04 12:28_
+
+---
+
+_Closed by @charliermarsh on 2022-10-04 12:28_
+
+---
+
+_Comment by @lovetox on 2022-11-15 16:19_
+
+Can someone explain to me how defining a set() method on an Object is "shadowing" anything?
+
+```
+>>> class Test:  
+...     pass
+... 
+>>> dir(Test())
+['__class__', '__delattr__', '__dict__', '__dir__', '__doc__', '__eq__', '__format__', '__ge__', '__getattribute__', '__gt__', '__hash__', '__init__', '__init_subclass__', '__le__', '__lt__', '__module__', '__ne__', '__new__', '__reduce__', '__reduce_ex__', '__repr__', '__setattr__', '__sizeof__', '__str__', '__subclasshook__', '__weakref__']
+>>>
+```
+
+A class has no inbuilt set method, if you mean the inbuilt `set()` method, we can pass a object to this method, but i dont see how this is relevant.
+
+This check is not opinonated its just wrong in what the error text says. It does not shadow something in this example in my opinion.
+
+Can this be reopened?
+
+---
+
+_Comment by @charliermarsh on 2022-11-15 16:50_
+
+I agree that it's confusing but it is consistent with `flake8-builtins`:
+
+```
+∴ flake8 foo.py --select A003
+foo.py:8:5: A003 class attribute "set" is shadowing a python builtin
+```
+
+I'm not sure what a more reasonable A003 would be, I think folks should just disable this check if they don't find the current behavior useful.
+
+
+---
+
+_Comment by @lovetox on 2022-11-15 17:01_
+
+I guess it's ok if you want to mirror the flake check exactly. Usually one wants to check variable names against builtins. For methods on classes we normally speak about overriding a method which is a common practice and not really worth a warning or error
+
+---
+
+_Comment by @andersk on 2022-11-15 17:52_
+
+> Can someone explain to me how defining a set() method on an Object is "shadowing" anything?
+
+In this example, the default value of `type_arg` refers to the unbound `set` method above rather than the builtin, which may surprise programmers unfamiliar with Python scopes.
+
+```python
+class Foobar:
+    def set(self, key, value):
+        pass
+
+    def method(self, type_arg=set):
+        pass
+```
+
+The warning is legitimate, for programmers who request warnings about shadowing.
+
+---
+
+_Comment by @lovetox on 2022-11-15 18:32_
+
+Thanks for that example, seems its indeed possible to shadow a builtin with a method, i didnt know that.
+
+Nevertheless in the original examples, nothing was shadowed.
+I guess the algo is just not very good, and just scans for method names with names of builtins.
+
+EDIT: I think i understand now, its like with variables, it warns that one cannot use the builtin in that scope anymore, so its indeed correct.
+
+Not very useful, as set() is a very common method name, but still correct.
+
+---

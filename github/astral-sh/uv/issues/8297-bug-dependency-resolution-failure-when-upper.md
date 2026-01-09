@@ -1,0 +1,66 @@
+---
+number: 8297
+title: "[Bug]: Dependency Resolution Failure when Upper Bound on Required Python Version"
+type: issue
+state: closed
+author: mahyarmirrashed
+labels:
+  - bug
+assignees: []
+created_at: 2024-10-17T17:46:43Z
+updated_at: 2024-10-23T01:15:16Z
+url: https://github.com/astral-sh/uv/issues/8297
+synced_at: 2026-01-07T13:12:17-06:00
+---
+
+# [Bug]: Dependency Resolution Failure when Upper Bound on Required Python Version
+
+---
+
+_Issue opened by @mahyarmirrashed on 2024-10-17 17:46_
+
+I noticed this error about a week ago when I switched over from `poetry` to `uv`. The dependency resolution fails when I set the upper bound of the required version in my `pyproject.toml`. (Yes, apparently this is a contentious decision, but I think I'll keep it.)
+
+```toml
+[project]
+name = "test"
+version = "0.0.0"
+requires-python = ">=3.6,<4.0"
+dependencies = []
+
+[project.optional-dependencies]
+dev = [
+  "basedpyright>=1.17.0,<1.18.0; python_version>='3.8'",
+  "pytest>=8.3.0,<8.4.0; python_version>='3.8'",
+  "boto3-stubs[ecr,s3]>=1.35.0,<1.36.0; python_version>='3.8'",
+  "types-paho-mqtt>=1.6.0,<1.7.0; python_version>='3.8'",
+]
+```
+
+That TOML should give you what is needed to reproduce the error. Your local Python version shouldn't matter in reproducing this bug.
+
+To fix it, removing `<4.0` does allow `uv` to resolve the dependencies based on the local Python version, as expected.
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2024-10-17 18:48_
+
+---
+
+_Label `bug` added by @charliermarsh on 2024-10-17 21:00_
+
+---
+
+_Referenced in [astral-sh/uv#8403](../../astral-sh/uv/pulls/8403.md) on 2024-10-21 00:56_
+
+---
+
+_Closed by @charliermarsh on 2024-10-21 01:03_
+
+---
+
+_Comment by @mahyarmirrashed on 2024-10-23 01:15_
+
+❤️ 
+
+---

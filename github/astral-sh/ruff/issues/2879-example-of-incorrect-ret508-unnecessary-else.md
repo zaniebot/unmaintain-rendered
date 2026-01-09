@@ -1,0 +1,102 @@
+---
+number: 2879
+title: "Example of incorrect RET508 Unnecessary `else` after `break` statement"
+type: issue
+state: closed
+author: adamtheturtle
+labels: []
+assignees: []
+created_at: 2023-02-14T01:21:48Z
+updated_at: 2023-02-14T02:51:14Z
+url: https://github.com/astral-sh/ruff/issues/2879
+synced_at: 2026-01-07T13:12:14-06:00
+---
+
+# Example of incorrect RET508 Unnecessary `else` after `break` statement
+
+---
+
+_Issue opened by @adamtheturtle on 2023-02-14 01:21_
+
+See the following example:
+
+```python
+def example():
+    a = 1
+    while True:
+        try:
+            raise Exception
+        except Exception:
+            if a == 1:
+                print("HERE")
+                pass
+            elif a == 2:
+                break
+            else:
+                raise
+
+example()
+```
+
+with `ruff` `0.0.246` configured with:
+
+```toml
+[tool.ruff]
+select = ["RET"]
+```
+
+This shows:
+
+```
+example.py:12:13: RET508 Unnecessary `else` after `break` statement
+Found 1 error.
+```
+
+That is not true - removing the "else" changes the functionality and leaves us in an infinite loop rather than raising.
+
+Weirdly this does not happen when the loop is not in a function.
+
+---
+
+_Renamed from "Example of incorrect RET508 Unnecessary `else` after `break` statement Found 1 error." to "Example of incorrect RET508 Unnecessary `else` after `break` statement" by @adamtheturtle on 2023-02-14 01:39_
+
+---
+
+_Comment by @charliermarsh on 2023-02-14 02:15_
+
+Yeah this has come up before. It wants you to do this:
+
+```py
+def example():
+    a = 1
+    while True:
+        try:
+            raise Exception
+        except Exception:
+            if a == 1:
+                print("HERE")
+                pass
+            else:
+                if a == 2:
+                    break
+                raise
+```
+
+Which is, I guess, correct, but not good. 
+
+It's consistent with the original `flake8-return`, but I'm going to change, because it's really confusing.
+
+
+---
+
+_Referenced in [astral-sh/ruff#2881](../../astral-sh/ruff/pulls/2881.md) on 2023-02-14 02:48_
+
+---
+
+_Closed by @charliermarsh on 2023-02-14 02:51_
+
+---
+
+_Closed by @charliermarsh on 2023-02-14 02:51_
+
+---

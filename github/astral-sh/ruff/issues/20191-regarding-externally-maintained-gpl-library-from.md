@@ -1,0 +1,54 @@
+---
+number: 20191
+title: Regarding externally maintained GPL library from which parts of the Software is derived
+type: issue
+state: closed
+author: rahulmohang
+labels:
+  - documentation
+assignees: []
+created_at: 2025-09-01T07:42:34Z
+updated_at: 2025-09-04T10:51:41Z
+url: https://github.com/astral-sh/ruff/issues/20191
+synced_at: 2026-01-07T13:12:16-06:00
+---
+
+# Regarding externally maintained GPL library from which parts of the Software is derived
+
+---
+
+_Issue opened by @rahulmohang on 2025-09-01 07:42_
+
+Hi, 
+
+The 'https://github.com/astral-sh/ruff/pull/2820' mentions a derivative work of or direct inclusion of parts of GPL library. Won't this affect the license of the package?
+
+---
+
+_Comment by @charliermarsh on 2025-09-03 23:35_
+
+Our general stance is that independently implementing rules (as opposed to copying, directly adapting, or directly including source code) does not create a derivative work or introduce those kinds of license obligations. The intent is to implement compatible APIs, rather than reuse or adapt the underlying source code. The situation is a little different for tools like pyupgrade, where we did directly port logic (e.g., tokenization helpers) at one point or another. I think that line was added to the license before we'd established a clear policy here, so it should probably be removed. I can do a pass over the license to draw a clearer distinction.
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2025-09-03 23:35_
+
+---
+
+_Label `documentation` added by @charliermarsh on 2025-09-03 23:41_
+
+---
+
+_Referenced in [astral-sh/ruff#20222](../../astral-sh/ruff/pulls/20222.md) on 2025-09-04 00:40_
+
+---
+
+_Closed by @charliermarsh on 2025-09-04 01:35_
+
+---
+
+_Comment by @rahulmohang on 2025-09-04 10:51_
+
+Thank you. 
+
+---

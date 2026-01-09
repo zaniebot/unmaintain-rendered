@@ -1,0 +1,432 @@
+---
+number: 3826
+title: "Regression from 3.1 -> 3.2 in `values_of` (i think)"
+type: issue
+state: closed
+author: cgwalters
+labels:
+  - C-bug
+assignees: []
+created_at: 2022-06-13T22:47:22Z
+updated_at: 2022-06-28T14:13:51Z
+url: https://github.com/clap-rs/clap/issues/3826
+synced_at: 2026-01-07T13:12:20-06:00
+---
+
+# Regression from 3.1 -> 3.2 in `values_of` (i think)
+
+---
+
+_Issue opened by @cgwalters on 2022-06-13 22:47_
+
+### Please complete the following tasks
+
+- [X] I have searched the [discussions](https://github.com/clap-rs/clap/discussions)
+- [X] I have searched the [open](https://github.com/clap-rs/clap/issues) and [rejected](https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed) issues
+
+### Rust Version
+
+rustc 1.60.0 (7737e0b5c 2022-04-04)
+
+### Clap Version
+
+3.2.1
+
+### Minimal reproducible code
+
+```rust
+use clap::{Arg, Command};
+
+const INCLUDE: &str = "include";
+
+fn arg_include() -> Arg<'static> {
+    Arg::new(INCLUDE)
+        .long(INCLUDE)
+        .short('i')
+        .takes_value(true)
+        .multiple_occurrences(true)
+        .allow_invalid_utf8(true)
+}
+
+fn app() -> Command<'static> {
+    Command::new("test").arg(arg_include())
+}
+
+#[derive(Copy, Clone, PartialEq, Debug)]
+pub enum IncludeKind {
+    Quoted,
+    Bracketed,
+}
+
+#[derive(Clone, PartialEq, Debug)]
+pub struct Include {
+    pub path: String,
+    pub kind: IncludeKind,
+}
+
+#[derive(Debug)]
+struct Opt {
+    include: Vec<Include>,
+}
+
+fn parse() -> Opt {
+    let matches = app().get_matches_from(&["test", "--include", "/path/to/foo"]);
+    
+    let include = matches
+        .values_of(INCLUDE)
+        .unwrap_or_default()
+        .map(|include| {
+            if include.starts_with('<') && include.ends_with('>') {
+                Include {
+                    path: include[1..include.len() - 1].to_owned(),
+                    kind: IncludeKind::Bracketed,
+                }
+            } else {
+                Include {
+                    path: include.to_owned(),
+                    kind: IncludeKind::Quoted,
+                }
+            }
+        })
+        .collect();
+    Opt {
+        include
+    }
+}
+
+fn main() {
+    dbg!(parse());
+    
+}
+```
+
+### Steps to reproduce the bug with the above code
+
+Using `clap = "3.2"` with `cargo run --release`, I get:
+
+```
+$ cargo run --release
+thread 'main' panicked at 'Must use `_os` lookups with `Arg::allow_invalid_utf8`', /var/home/walters/.cargo/registry/src/github.com-1ecc6299db9ec823/clap-3.2.1/src/parser/matches/arg_matches.rs:1651:13
+stack backtrace:
+   0: rust_begin_unwind
+             at /rustc/7737e0b5c4103216d6fd8cf941b7ab9bdbaace7c/library/std/src/panicking.rs:584:5
+   1: core::panicking::panic_fmt
+             at /rustc/7737e0b5c4103216d6fd8cf941b7ab9bdbaace7c/library/core/src/panicking.rs:143:14
+   2: clap::parser::matches::arg_matches::unwrap_string
+   3: <clap::parser::matches::arg_matches::OsValues as core::iter::traits::iterator::Iterator>::next
+   4: <alloc::vec::Vec<T> as alloc::vec::spec_from_iter::SpecFromIter<T,I>>::from_iter
+   5: clap_regression::main
+note: Some details are omitted, run with `RUST_BACKTRACE=full` for a verbose backtrace.
+```
+
+Yet specifying `clap = ">= 3.1, < 3.2"` (resolving to `v3.1.18`), the program succeeds.
+
+
+
+### Actual Behaviour
+
+Panic
+
+### Expected Behaviour
+
+Don't panic
+
+### Additional Context
+
+This was seen in https://github.com/dtolnay/cxx/pull/1057
+
+### Debug Output
+
+```
+    Finished release [optimized] target(s) in 12.03s
+     Running `target/release/clap-regression`
+[      clap::builder::command]  Command::_do_parse
+[      clap::builder::command]  Command::_build: name="test"
+[      clap::builder::command]  Command::_propagate:test
+[      clap::builder::command]  Command::_check_help_and_version: test
+[      clap::builder::command]  Command::_check_help_and_version: Removing generated version
+[      clap::builder::command]  Command::_propagate_global_args:test
+[      clap::builder::command]  Command::_derive_display_order:test
+[        clap::parser::parser]  Parser::get_matches_with
+[        clap::parser::parser]  Parser::get_matches_with: Begin parsing 'RawOsStr("--include")' ([45, 45, 105, 110, 99, 108, 117, 100, 101])
+[        clap::parser::parser]  Parser::get_matches_with: Positional counter...1
+[        clap::parser::parser]  Parser::get_matches_with: Low index multiples...false
+[        clap::parser::parser]  Parser::possible_subcommand: arg=Ok("--include")
+[        clap::parser::parser]  Parser::get_matches_with: sc=None
+[        clap::parser::parser]  Parser::parse_long_arg
+[        clap::parser::parser]  Parser::parse_long_arg: Does it contain '='...
+[        clap::parser::parser]  Parser::parse_long_arg: Found valid arg or flag '--include <include>'
+[        clap::parser::parser]  Parser::parse_long_arg("include"): Found an arg with value 'None'
+[        clap::parser::parser]  Parser::parse_opt_value; arg=include, val=None, has_eq=false
+[        clap::parser::parser]  Parser::parse_opt_value; arg.settings=ArgFlags(MULTIPLE_OCC | TAKES_VAL | UTF8_NONE)
+[        clap::parser::parser]  Parser::parse_opt_value; Checking for val...
+[        clap::parser::parser]  Parser::parse_opt_value: More arg vals required...
+[        clap::parser::parser]  Parser::get_matches_with: After parse_long_arg Opt([hash: E81C2B1E12CC3D28])
+[        clap::parser::parser]  Parser::get_matches_with: Begin parsing 'RawOsStr("/path/to/foo")' ([47, 112, 97, 116, 104, 47, 116, 111, 47, 102, 111, 111])
+[        clap::parser::parser]  Parser::get_matches_with: Positional counter...1
+[        clap::parser::parser]  Parser::get_matches_with: Low index multiples...false
+[        clap::parser::parser]  Parser::split_arg_values; arg=include, val=RawOsStr("/path/to/foo")
+[        clap::parser::parser]  Parser::split_arg_values; trailing_values=false, DontDelimTrailingVals=false
+[   clap::parser::arg_matcher]  ArgMatcher::needs_more_vals: o=include, resolved=0, pending=1
+[        clap::parser::parser]  Parser::resolve_pending: id=[hash: E81C2B1E12CC3D28]
+[        clap::parser::parser]  Parser::react action=StoreValue, identifier=Some(Long), source=CommandLine
+[        clap::parser::parser]  Parser::react: cur_idx:=1
+[        clap::parser::parser]  Parser::remove_overrides: id=[hash: E81C2B1E12CC3D28]
+[   clap::parser::arg_matcher]  ArgMatcher::start_occurrence_of_arg: id=[hash: E81C2B1E12CC3D28]
+[      clap::builder::command]  Command::groups_for_arg: id=[hash: E81C2B1E12CC3D28]
+[        clap::parser::parser]  Parser::push_arg_values: ["/path/to/foo"]
+[        clap::parser::parser]  Parser::add_single_val_to_arg: cur_idx:=2
+[      clap::builder::command]  Command::groups_for_arg: id=[hash: E81C2B1E12CC3D28]
+[        clap::parser::parser]  Parser::add_defaults
+[        clap::parser::parser]  Parser::add_defaults:iter:help:
+[        clap::parser::parser]  Parser::add_default_value:iter:help: doesn't have default missing vals
+[        clap::parser::parser]  Parser::add_default_value: doesn't have conditional defaults
+[        clap::parser::parser]  Parser::add_default_value:iter:help: doesn't have default vals
+[        clap::parser::parser]  Parser::add_defaults:iter:include:
+[        clap::parser::parser]  Parser::add_default_value:iter:include: doesn't have default missing vals
+[        clap::parser::parser]  Parser::add_default_value: doesn't have conditional defaults
+[        clap::parser::parser]  Parser::add_default_value:iter:include: doesn't have default vals
+[     clap::parser::validator]  Validator::validate
+[     clap::parser::validator]  Validator::validate_conflicts
+[     clap::parser::validator]  Validator::validate_exclusive
+[     clap::parser::validator]  Validator::validate_conflicts::iter: id=[hash: E81C2B1E12CC3D28]
+[     clap::parser::validator]  Conflicts::gather_conflicts: arg=[hash: E81C2B1E12CC3D28]
+[     clap::parser::validator]  Conflicts::gather_conflicts: conflicts=[]
+[     clap::parser::validator]  Validator::validate_required: required=ChildGraph([])
+[     clap::parser::validator]  Validator::gather_requires
+[     clap::parser::validator]  Validator::gather_requires:iter:[hash: E81C2B1E12CC3D28]
+[     clap::parser::validator]  Validator::validate_required: is_exclusive_present=false
+[     clap::parser::validator]  Validator::validate_required_unless
+[     clap::parser::validator]  Validator::validate_matched_args
+[     clap::parser::validator]  Validator::validate_matched_args:iter:[hash: E81C2B1E12CC3D28]: vals=Flatten {
+    inner: FlattenCompat {
+        iter: Fuse {
+            iter: Some(
+                Iter(
+                    [
+                        [
+                            AnyValue {
+                                inner: TypeId {
+                                    t: 4040081991788025797,
+                                },
+                            },
+                        ],
+                    ],
+                ),
+            ),
+        },
+        frontiter: None,
+        backiter: None,
+    },
+}
+[     clap::parser::validator]  Validator::validate_arg_num_vals
+[     clap::parser::validator]  Validator::validate_arg_values: arg="include"
+[     clap::parser::validator]  Validator::validate_arg_num_occurs: "include"=1
+[   clap::parser::arg_matcher]  ArgMatcher::get_global_values: global_arg_vec=[[hash: 59636393CFFBFE5F]]
+thread 'main' panicked at 'Must use `_os` lookups with `Arg::allow_invalid_utf8`', /var/home/walters/.cargo/registry/src/github.com-1ecc6299db9ec823/clap-3.2.1/src/parser/matches/arg_matches.rs:1651:13
+stack backtrace:
+   0: rust_begin_unwind
+             at /rustc/7737e0b5c4103216d6fd8cf941b7ab9bdbaace7c/library/std/src/panicking.rs:584:5
+   1: core::panicking::panic_fmt
+             at /rustc/7737e0b5c4103216d6fd8cf941b7ab9bdbaace7c/library/core/src/panicking.rs:143:14
+   2: clap::parser::matches::arg_matches::unwrap_string
+   3: <clap::parser::matches::arg_matches::Values as core::iter::traits::iterator::Iterator>::next
+   4: <alloc::vec::Vec<T> as alloc::vec::spec_from_iter::SpecFromIter<T,I>>::from_iter
+   5: clap_regression::main
+note: Some details are omitted, run with `RUST_BACKTRACE=full` for a verbose backtrace.
+```
+
+---
+
+_Label `C-bug` added by @cgwalters on 2022-06-13 22:47_
+
+---
+
+_Referenced in [dtolnay/cxx#1057](../../dtolnay/cxx/pulls/1057.md) on 2022-06-13 22:48_
+
+---
+
+_Comment by @epage on 2022-06-14 13:12_
+
+So the change was we went from `debug_assert` to `panic`, causing it to panic in release builds and  not just debug builds.
+
+We made a fundamental change to how clap tracks argument values in 3.2 that presupposes callers are using the correct `value_of` functions.  Our `debug_assert`s were our mechanism to force the correct calls are used so we could make this change.  In general, clap reports development errors as either debug asserts or panics and the behavior in release builds when the debug asserts would be firing if compiled-in is undefined.
+
+In light of this, I am closing this as expected.
+
+---
+
+_Closed by @epage on 2022-06-14 13:12_
+
+---
+
+_Comment by @cgwalters on 2022-06-14 13:58_
+
+Ahhh.  Thanks for the reply.  That makes sense.  The debug/release split caused me to think I was going a bit crazy because we are using `cargo install` on a tool which uses clap and that defaults to `--release`, which only panic'd with 3.2, but in testing I just used `cargo build` (debug) and that still failed with 3.1 causing me to think I was somehow testing the wrong code, etc.
+
+
+
+
+
+---
+
+_Referenced in [gbdev/rgbobj#4](../../gbdev/rgbobj/issues/4.md) on 2022-06-22 20:14_
+
+---
+
+_Referenced in [woodruffw/kbs2#370](../../woodruffw/kbs2/issues/370.md) on 2022-06-26 20:56_
+
+---
+
+_Comment by @woodruffw on 2022-06-26 21:59_
+
+Just to clarify here: is clap's official policy that changing the presence of panics between minor versions doesn't constitute SemVer breakage, so long as those panics were previously present in a debug build?
+
+This caused some surprising breakage on one of my projects (https://github.com/woodruffw/kbs2/issues/370), but that's possibly because I expected the wrong SemVer policy here. Either case is ultimately fine, but I think an explicit policy would be beneficial :slightly_smiling_face: 
+
+---
+
+_Referenced in [watchexec/watchexec#347](../../watchexec/watchexec/pulls/347.md) on 2022-06-27 12:27_
+
+---
+
+_Comment by @db48x on 2022-06-27 19:10_
+
+I definitely consider it to have broken semver. I had 42 separate programs break over the weekend as a result of that change. That number may seem like a joke, but I am being quite literal; I had to fix 42 separate programs using the builder api that used the `_os` accessor methods but didn’t specify `allow_invalid_utf8(true)` on the arguments. A 43rd was fixed by a colleague. 
+
+---
+
+_Comment by @epage on 2022-06-27 19:37_
+
+As was mentioned before, we generally report development-time errors through debug asserts and a situation where a debug assert would fire but isn't in a release build is undefined behavior in clap.
+
+Specifically in this case, we called out the need for `allow_invalid_utf8(true)`  for `value_of_os` in the breaking changes in clap 3.0 and called out the need to test for the debug assert in our migration guide from clap 2 to clap 3.  We made these changes to more immediately help with problems and with keeping the design open for what we did in clap 3.2.
+
+It'd be possible to make the old behavior still work though it isn't a priority for me.  I would be willing to review a PR for it.  Note that `value_of` functions will be going away in clap 4.0.
+
+---
+
+_Comment by @db48x on 2022-06-27 20:11_
+
+None of that is really very relevant. I inherited 43 programs that all used clap in the same way. They don’t have tests (at least not ones that use the Rust test runner). They’ve probably never been run in debug mode. Please don’t be so quick to make breaking changes in minor releases in the future.
+
+---
+
+_Comment by @epage on 2022-06-28 01:06_
+
+@db48x I can understand the frustration when low-touch tools break.  However, please keep in mind though that when maintaining software, a line needs to be drawn between what is defined and expected behavior that cannot break and what is undefined or deviates from the definition and can change without being a breaking change ([requisite XKCD](https://xkcd.com/1172/)).  The breaking change for this was in clap 3.0 which is relevant.
+
+> `AppSettings::StrictUtf8` is now default behaviour and asserts if `AppSettings::AllowInvalidUtf8ForExternalSubcommands` and `ArgSettings::AllowInvalidUtf8` and `ArgMatches::value_of_os` aren't used together 
+
+The functions were coupled together in their use and how we assert to enforce that is more of an implementation detail.
+
+Looking back, it does seem that we forgot to update the panic expectations for the `ArgMatches` functions and instead the clap 2 behavior is documented, which was a bug.
+
+Overall, care is given to not intentionally include breaking changes in minor releases and we try to minimize the risk of accidental ones. 
+
+---
+
+_Comment by @db48x on 2022-06-28 01:23_
+
+> The breaking change for this was in clap 3.0 which is relevant.
+
+This is the key. Either the panics should have been added in 3.0, or they should have been left out until 4.0. If they were supposed to be there all along and you suddenly noticed that they were missing, you should have decided to simply let sleeping dogs lie and wait until 4.0 to add them in. Especially since their absence was doing no harm. If we had actually tried to use a non–utf8 filename the programs just have failed to parse the arguments, and in the mean time they worked just fine.
+
+I am disappointed to find that you’re doubling down now and making excuses, rather than recognizing your mistake and apologizing.
+
+---
+
+_Comment by @woodruffw on 2022-06-28 01:29_
+
+That isn't necessary. This is an open source project; nobody here is expected to provide unpaid support or satisfy our exact requirements. There was a communication error here, but it's been recognized and their argument (that the API change happened between 2 and 3) is reasonable.
+
+
+---
+
+_Comment by @epage on 2022-06-28 01:31_
+
+>  If they were supposed to be there all along and you suddenly noticed that they were missing, you should have decided to simply let sleeping dogs lie and wait until 4.0 to add them in
+
+This is describing a bug fix and to say we cannot fix bugs within a minor or patch release is unreasonable.
+
+>  If we had actually tried to use a non–utf8 filename the programs just have failed to parse the arguments, and in the mean time they worked just fine.
+
+For `value_of_os`, yes, nothing will happen.  For its twin, `value_of`, the application would panic on non-UTF-8 arguments.
+
+---
+
+_Comment by @db48x on 2022-06-28 02:04_
+
+> > If they were supposed to be there all along and you suddenly noticed that they were missing, you should have decided to simply let sleeping dogs lie and wait until 4.0 to add them in
+> 
+> This is describing a bug fix and to say we cannot fix bugs within a minor or patch release is unreasonable.
+
+Adding a new panic to an existing method that did not panic in the past is a breaking change, not suitable for a minor release. You can fix all the bugs you want as long as the fix doesn’t break anything. If the fix would break something, save it for a major release. Change the documentation to point out the problem, and note specifically that it won’t be fixed until the next major release.
+
+> > If we had actually tried to use a non–utf8 filename the programs just have failed to parse the arguments, and in the mean time they worked just fine.
+> 
+> For `value_of_os`, yes, nothing will happen. For its twin, `value_of`, the application would panic on non-UTF-8 arguments.
+
+Absolutely. This panic would be perfectly fine! We would have been surprised, but then we would have clearly seen that the error was our own. It would have caused one failure, not 43 simultaneous ones. Additionally, as all of these programs were taking filenames (and directory names, etc) as arguments, the type system makes it pretty inconvenient to make that mistake. The mistake we did make, to use the `_os` methods on arguments not previously declared to allow non–unicode values, was a silent, invisible, and harmless one. Or at least it was harmless until someone thoughtlessly “fixed” it.
+
+> That isn't necessary. This is an open source project; nobody here is expected to provide unpaid support or satisfy our exact requirements.
+
+I ask for nothing other than a promise that this type of breaking change will be avoided in future minor releases. 
+
+---
+
+_Comment by @epage on 2022-06-28 02:18_
+
+I've tried to engage in this but @db48x has not come across to me as engaging with good faith (seeking to understand, not casting motives or degrading the other participants), I will be backing off from this moving forward.
+
+---
+
+_Comment by @db48x on 2022-06-28 05:25_
+
+Seriously? You accuse me of acting in bad faith?
+
+I sought understanding not by asking questions in a bug report. Rather I examined the source code instead, particularly the change that introduced the problem. Having gained understanding, I stopped in here to seek empathy and a promise not to do it again. I received only excuses.
+
+Please, just try to do better in the future. Perhaps try rereading the definitions over at https://semver.org/. This was not a “new feature” nor was it “backwards compatible”.
+
+---
+
+_Comment by @bgilbert on 2022-06-28 06:35_
+
+I'm just a random unaffiliated developer, but:
+
+@db48x Paragraph 1 of the semver specification says:
+
+> Software using Semantic Versioning MUST declare a public API. This API could be declared in the code itself or exist strictly in documentation. However it is done, it SHOULD be precise and comprehensive.
+
+The clap 3.0 documentation stated that your code was using the API incorrectly.  Those docs are sufficient to meet semver's requirements, but as a bonus, clap _also_ provided an automatic test to detect that case, which you [say](https://github.com/clap-rs/clap/issues/3826#issuecomment-1167833963) you didn't run.  Once you violated the API semantics, clap had no obligation to keep your code working, even if it appeared to work for a while.  Even if it wasn't obvious at the time, _this was your bug_.
+
+I think folks here understand how painful this fix has been for you, and how surprising.  But speaking as an open-source maintainer myself: directing public aggression toward a maintainer just pushes them one step closer to burnout.  **Please don't do it.**  Don't do it even if you're convinced they're wrong.  Providing free, high-quality, widely used software to the public is _hard_.  Whenever a maintainer decides their life will be better if they abandon their software and go do something that won't get them shouted at by random people on the Internet, we all lose out.
+
+I'm sorry this happened to you, and I hope next weekend brings fewer fires.  :heart:
+
+---
+
+_Comment by @db48x on 2022-06-28 14:13_
+
+> directing public aggression toward a maintainer
+
+Don’t put words in my mouth. I have not been aggressive, nor have I shouted at anyone. If you saw those things in my words, then you made a mistake.
+
+> Those docs are sufficient to meet semver's requirements,
+
+No, semver requires _backwards compatibility_. Not bureaucratic adherence to documentation, just backwards compatibility from one version of the software to the next. This sometimes requires acknowledging that a bug exists but that it cannot be fixed until the next major release.
+
+---
+
+_Referenced in [Homebrew/homebrew-core#109722](../../Homebrew/homebrew-core/pulls/109722.md) on 2022-09-06 03:25_
+
+---
+
+_Referenced in [benfred/py-spy#522](../../benfred/py-spy/pulls/522.md) on 2022-09-07 18:23_
+
+---
+
+_Referenced in [memflow/memflowup#6](../../memflow/memflowup/issues/6.md) on 2022-10-10 10:08_
+
+---

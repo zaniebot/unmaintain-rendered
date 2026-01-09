@@ -1,0 +1,458 @@
+---
+number: 13309
+title: "Permission Denied: Running UV Installed Python with Non-Root User"
+type: issue
+state: closed
+author: yxtay
+labels:
+  - question
+assignees: []
+created_at: 2025-05-06T07:16:45Z
+updated_at: 2025-05-06T10:11:11Z
+url: https://github.com/astral-sh/uv/issues/13309
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# Permission Denied: Running UV Installed Python with Non-Root User
+
+---
+
+_Issue opened by @yxtay on 2025-05-06 07:16_
+
+### Question
+
+Hi,
+
+I'm having permission issues running the uv (root) installed python binary with a non-root user.
+
+Looking at the permissions, it seems to be sufficient (`755 root:root`) and similar to the python installation from apt.
+
+Is there any particular reason why I am facing this permission issue? How can I resolve this?
+
+Running the command using `su libaries -c "$(which python)"` is a technical requirement that I am not able to change. I am using the container image in Databricks which used a particular script to install libraries and I have no control over the script. 
+
+Hence, the best way for me to get this to work is to either modify the non-root user to ensure it has sufficient permission or modify the python binary so that it can be accessed by the non-root user.
+
+Below is a sample minimal dockerfile that replicates the issue.
+
+```dockerfile
+FROM ghcr.io/astral-sh/uv:debian-slim
+
+RUN useradd --create-home libraries \
+    && apt-get update \
+    && apt-get install --yes python-is-python3 \
+    && rm -rf /var/lib/apt/lists/* \
+    && ls -l /usr/bin/python* \
+    && su libraries -c "/usr/bin/python --version" \
+    && uv self version \
+    && uv venv --python 3.12 /.venv \
+    && ls -l /.venv/bin/python \
+    && ls -l $(readlink /.venv/bin/python) \
+    && su libraries -c "/.venv/bin/python --version"  # << this is the problematic line
+```
+
+```shell
+> docker build --progress plain .
+
+#0 building with "default" instance using docker-container driver
+
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile: 480B done
+#1 DONE 0.0s
+
+#2 [internal] load metadata for ghcr.io/astral-sh/uv:debian-slim
+#2 DONE 1.8s
+
+#3 [internal] load .dockerignore
+#3 transferring context: 2B done
+#3 DONE 0.0s
+
+#4 [1/2] FROM ghcr.io/astral-sh/uv:debian-slim@sha256:100b68fcd5b6854a8a3cfd3e212f16c00460bf5f1ad322ab85a2f1dbd9074ef7
+#4 resolve ghcr.io/astral-sh/uv:debian-slim@sha256:100b68fcd5b6854a8a3cfd3e212f16c00460bf5f1ad322ab85a2f1dbd9074ef7 done
+#4 CACHED
+
+#5 [2/2] RUN useradd --create-home libraries     && apt-get update     && apt-get install --yes python-is-python3     && rm -rf /var/lib/apt/lists/*     && ls -l /usr/bin/python*     && su libraries -c "/usr/bin/python --version"     && uv venv --python 3.12 /.venv     && ls -l /.venv/bin/python     && ls -l $(readlink /.venv/bin/python)     && su libraries -c "/.venv/bin/python --version"
+#5 0.065 Get:1 http://deb.debian.org/debian bookworm InRelease [151 kB]
+#5 0.107 Get:2 http://deb.debian.org/debian bookworm-updates InRelease [55.4 kB]
+#5 0.119 Get:3 http://deb.debian.org/debian-security bookworm-security InRelease [48.0 kB]
+#5 0.130 Get:4 http://deb.debian.org/debian bookworm/main arm64 Packages [8692 kB]
+#5 0.629 Get:5 http://deb.debian.org/debian bookworm-updates/main arm64 Packages [512 B]
+#5 0.630 Get:6 http://deb.debian.org/debian-security bookworm-security/main arm64 Packages [254 kB]
+#5 1.197 Fetched 9201 kB in 1s (8004 kB/s)
+#5 1.197 Reading package lists...
+#5 1.418 Reading package lists...
+#5 1.650 Building dependency tree...
+#5 1.709 Reading state information...
+#5 1.772 The following additional packages will be installed:
+#5 1.772   ca-certificates krb5-locales libexpat1 libgpm2 libgssapi-krb5-2 libk5crypto3
+#5 1.772   libkeyutils1 libkrb5-3 libkrb5support0 libncursesw6 libnsl2
+#5 1.772   libpython3-stdlib libpython3.11-minimal libpython3.11-stdlib libreadline8
+#5 1.772   libsqlite3-0 libssl3 libtirpc-common libtirpc3 media-types openssl python3
+#5 1.772   python3-minimal python3.11 python3.11-minimal readline-common
+#5 1.772 Suggested packages:
+#5 1.772   gpm krb5-doc krb5-user python3-doc python3-tk python3-venv python3.11-venv
+#5 1.772   python3.11-doc binutils binfmt-support readline-doc
+#5 1.897 The following NEW packages will be installed:
+#5 1.897   ca-certificates krb5-locales libexpat1 libgpm2 libgssapi-krb5-2 libk5crypto3
+#5 1.897   libkeyutils1 libkrb5-3 libkrb5support0 libncursesw6 libnsl2
+#5 1.897   libpython3-stdlib libpython3.11-minimal libpython3.11-stdlib libreadline8
+#5 1.897   libsqlite3-0 libssl3 libtirpc-common libtirpc3 media-types openssl
+#5 1.897   python-is-python3 python3 python3-minimal python3.11 python3.11-minimal
+#5 1.897   readline-common
+#5 1.926 0 upgraded, 27 newly installed, 0 to remove and 0 not upgraded.
+#5 1.926 Need to get 10.4 MB of archives.
+#5 1.926 After this operation, 38.4 MB of additional disk space will be used.
+#5 1.926 Get:1 http://deb.debian.org/debian bookworm/main arm64 libssl3 arm64 3.0.15-1~deb12u1 [1811 kB]
+#5 2.044 Get:2 http://deb.debian.org/debian bookworm/main arm64 libpython3.11-minimal arm64 3.11.2-6+deb12u5 [810 kB]
+#5 2.079 Get:3 http://deb.debian.org/debian bookworm/main arm64 libexpat1 arm64 2.5.0-1+deb12u1 [84.6 kB]
+#5 2.080 Get:4 http://deb.debian.org/debian bookworm/main arm64 python3.11-minimal arm64 3.11.2-6+deb12u5 [1857 kB]
+#5 2.119 Get:5 http://deb.debian.org/debian bookworm/main arm64 python3-minimal arm64 3.11.2-1+b1 [26.3 kB]
+#5 2.119 Get:6 http://deb.debian.org/debian bookworm/main arm64 media-types all 10.0.0 [26.1 kB]
+#5 2.120 Get:7 http://deb.debian.org/debian bookworm/main arm64 libncursesw6 arm64 6.4-4 [122 kB]
+#5 2.123 Get:8 http://deb.debian.org/debian bookworm/main arm64 libkrb5support0 arm64 1.20.1-2+deb12u2 [31.8 kB]
+#5 2.123 Get:9 http://deb.debian.org/debian bookworm/main arm64 libk5crypto3 arm64 1.20.1-2+deb12u2 [79.4 kB]
+#5 2.125 Get:10 http://deb.debian.org/debian bookworm/main arm64 libkeyutils1 arm64 1.6.3-2 [8844 B]
+#5 2.125 Get:11 http://deb.debian.org/debian bookworm/main arm64 libkrb5-3 arm64 1.20.1-2+deb12u2 [313 kB]
+#5 2.132 Get:12 http://deb.debian.org/debian bookworm/main arm64 libgssapi-krb5-2 arm64 1.20.1-2+deb12u2 [124 kB]
+#5 2.136 Get:13 http://deb.debian.org/debian bookworm/main arm64 libtirpc-common all 1.3.3+ds-1 [14.0 kB]
+#5 2.136 Get:14 http://deb.debian.org/debian bookworm/main arm64 libtirpc3 arm64 1.3.3+ds-1 [80.9 kB]
+#5 2.139 Get:15 http://deb.debian.org/debian bookworm/main arm64 libnsl2 arm64 1.3.0-2 [36.9 kB]
+#5 2.140 Get:16 http://deb.debian.org/debian bookworm/main arm64 readline-common all 8.2-1.3 [69.0 kB]
+#5 2.142 Get:17 http://deb.debian.org/debian bookworm/main arm64 libreadline8 arm64 8.2-1.3 [155 kB]
+#5 2.148 Get:18 http://deb.debian.org/debian bookworm/main arm64 libsqlite3-0 arm64 3.40.1-2+deb12u1 [785 kB]
+#5 2.168 Get:19 http://deb.debian.org/debian bookworm/main arm64 libpython3.11-stdlib arm64 3.11.2-6+deb12u5 [1748 kB]
+#5 2.229 Get:20 http://deb.debian.org/debian bookworm/main arm64 python3.11 arm64 3.11.2-6+deb12u5 [573 kB]
+#5 2.245 Get:21 http://deb.debian.org/debian bookworm/main arm64 libpython3-stdlib arm64 3.11.2-1+b1 [9296 B]
+#5 2.245 Get:22 http://deb.debian.org/debian bookworm/main arm64 python3 arm64 3.11.2-1+b1 [26.3 kB]
+#5 2.246 Get:23 http://deb.debian.org/debian bookworm/main arm64 openssl arm64 3.0.15-1~deb12u1 [1392 kB]
+#5 2.293 Get:24 http://deb.debian.org/debian bookworm/main arm64 ca-certificates all 20230311 [153 kB]
+#5 2.296 Get:25 http://deb.debian.org/debian bookworm/main arm64 krb5-locales all 1.20.1-2+deb12u2 [62.8 kB]
+#5 2.300 Get:26 http://deb.debian.org/debian bookworm/main arm64 libgpm2 arm64 1.20.7-10+b1 [14.4 kB]
+#5 2.301 Get:27 http://deb.debian.org/debian bookworm/main arm64 python-is-python3 all 3.11.2-1+deb12u1 [3216 B]
+#5 2.370 debconf: delaying package configuration, since apt-utils is not installed
+#5 2.387 Fetched 10.4 MB in 0s (26.0 MB/s)
+#5 2.394 Selecting previously unselected package libssl3:arm64.
+(Reading database ... 6085 files and directories currently installed.)
+#5 2.397 Preparing to unpack .../libssl3_3.0.15-1~deb12u1_arm64.deb ...
+#5 2.398 Unpacking libssl3:arm64 (3.0.15-1~deb12u1) ...
+#5 2.473 Selecting previously unselected package libpython3.11-minimal:arm64.
+#5 2.474 Preparing to unpack .../libpython3.11-minimal_3.11.2-6+deb12u5_arm64.deb ...
+#5 2.474 Unpacking libpython3.11-minimal:arm64 (3.11.2-6+deb12u5) ...
+#5 2.519 Selecting previously unselected package libexpat1:arm64.
+#5 2.519 Preparing to unpack .../libexpat1_2.5.0-1+deb12u1_arm64.deb ...
+#5 2.520 Unpacking libexpat1:arm64 (2.5.0-1+deb12u1) ...
+#5 2.530 Selecting previously unselected package python3.11-minimal.
+#5 2.531 Preparing to unpack .../python3.11-minimal_3.11.2-6+deb12u5_arm64.deb ...
+#5 2.532 Unpacking python3.11-minimal (3.11.2-6+deb12u5) ...
+#5 2.622 Setting up libssl3:arm64 (3.0.15-1~deb12u1) ...
+#5 2.624 Setting up libpython3.11-minimal:arm64 (3.11.2-6+deb12u5) ...
+#5 2.626 Setting up libexpat1:arm64 (2.5.0-1+deb12u1) ...
+#5 2.627 Setting up python3.11-minimal (3.11.2-6+deb12u5) ...
+#5 2.891 Selecting previously unselected package python3-minimal.
+(Reading database ... 6413 files and directories currently installed.)
+#5 2.893 Preparing to unpack .../00-python3-minimal_3.11.2-1+b1_arm64.deb ...
+#5 2.893 Unpacking python3-minimal (3.11.2-1+b1) ...
+#5 2.899 Selecting previously unselected package media-types.
+#5 2.900 Preparing to unpack .../01-media-types_10.0.0_all.deb ...
+#5 2.900 Unpacking media-types (10.0.0) ...
+#5 2.907 Selecting previously unselected package libncursesw6:arm64.
+#5 2.908 Preparing to unpack .../02-libncursesw6_6.4-4_arm64.deb ...
+#5 2.908 Unpacking libncursesw6:arm64 (6.4-4) ...
+#5 2.919 Selecting previously unselected package libkrb5support0:arm64.
+#5 2.920 Preparing to unpack .../03-libkrb5support0_1.20.1-2+deb12u2_arm64.deb ...
+#5 2.920 Unpacking libkrb5support0:arm64 (1.20.1-2+deb12u2) ...
+#5 2.927 Selecting previously unselected package libk5crypto3:arm64.
+#5 2.928 Preparing to unpack .../04-libk5crypto3_1.20.1-2+deb12u2_arm64.deb ...
+#5 2.928 Unpacking libk5crypto3:arm64 (1.20.1-2+deb12u2) ...
+#5 2.937 Selecting previously unselected package libkeyutils1:arm64.
+#5 2.938 Preparing to unpack .../05-libkeyutils1_1.6.3-2_arm64.deb ...
+#5 2.938 Unpacking libkeyutils1:arm64 (1.6.3-2) ...
+#5 2.944 Selecting previously unselected package libkrb5-3:arm64.
+#5 2.944 Preparing to unpack .../06-libkrb5-3_1.20.1-2+deb12u2_arm64.deb ...
+#5 2.945 Unpacking libkrb5-3:arm64 (1.20.1-2+deb12u2) ...
+#5 2.966 Selecting previously unselected package libgssapi-krb5-2:arm64.
+#5 2.966 Preparing to unpack .../07-libgssapi-krb5-2_1.20.1-2+deb12u2_arm64.deb ...
+#5 2.967 Unpacking libgssapi-krb5-2:arm64 (1.20.1-2+deb12u2) ...
+#5 2.977 Selecting previously unselected package libtirpc-common.
+#5 2.978 Preparing to unpack .../08-libtirpc-common_1.3.3+ds-1_all.deb ...
+#5 2.978 Unpacking libtirpc-common (1.3.3+ds-1) ...
+#5 2.984 Selecting previously unselected package libtirpc3:arm64.
+#5 2.985 Preparing to unpack .../09-libtirpc3_1.3.3+ds-1_arm64.deb ...
+#5 2.985 Unpacking libtirpc3:arm64 (1.3.3+ds-1) ...
+#5 2.994 Selecting previously unselected package libnsl2:arm64.
+#5 2.995 Preparing to unpack .../10-libnsl2_1.3.0-2_arm64.deb ...
+#5 2.995 Unpacking libnsl2:arm64 (1.3.0-2) ...
+#5 3.002 Selecting previously unselected package readline-common.
+#5 3.003 Preparing to unpack .../11-readline-common_8.2-1.3_all.deb ...
+#5 3.003 Unpacking readline-common (8.2-1.3) ...
+#5 3.011 Selecting previously unselected package libreadline8:arm64.
+#5 3.012 Preparing to unpack .../12-libreadline8_8.2-1.3_arm64.deb ...
+#5 3.013 Unpacking libreadline8:arm64 (8.2-1.3) ...
+#5 3.025 Selecting previously unselected package libsqlite3-0:arm64.
+#5 3.026 Preparing to unpack .../13-libsqlite3-0_3.40.1-2+deb12u1_arm64.deb ...
+#5 3.026 Unpacking libsqlite3-0:arm64 (3.40.1-2+deb12u1) ...
+#5 3.059 Selecting previously unselected package libpython3.11-stdlib:arm64.
+#5 3.060 Preparing to unpack .../14-libpython3.11-stdlib_3.11.2-6+deb12u5_arm64.deb ...
+#5 3.060 Unpacking libpython3.11-stdlib:arm64 (3.11.2-6+deb12u5) ...
+#5 3.147 Selecting previously unselected package python3.11.
+#5 3.147 Preparing to unpack .../15-python3.11_3.11.2-6+deb12u5_arm64.deb ...
+#5 3.148 Unpacking python3.11 (3.11.2-6+deb12u5) ...
+#5 3.160 Selecting previously unselected package libpython3-stdlib:arm64.
+#5 3.160 Preparing to unpack .../16-libpython3-stdlib_3.11.2-1+b1_arm64.deb ...
+#5 3.161 Unpacking libpython3-stdlib:arm64 (3.11.2-1+b1) ...
+#5 3.168 Setting up python3-minimal (3.11.2-1+b1) ...
+#5 3.222 Selecting previously unselected package python3.
+(Reading database ... 6921 files and directories currently installed.)
+#5 3.224 Preparing to unpack .../0-python3_3.11.2-1+b1_arm64.deb ...
+#5 3.226 Unpacking python3 (3.11.2-1+b1) ...
+#5 3.233 Selecting previously unselected package openssl.
+#5 3.233 Preparing to unpack .../1-openssl_3.0.15-1~deb12u1_arm64.deb ...
+#5 3.234 Unpacking openssl (3.0.15-1~deb12u1) ...
+#5 3.296 Selecting previously unselected package ca-certificates.
+#5 3.296 Preparing to unpack .../2-ca-certificates_20230311_all.deb ...
+#5 3.297 Unpacking ca-certificates (20230311) ...
+#5 3.310 Selecting previously unselected package krb5-locales.
+#5 3.311 Preparing to unpack .../3-krb5-locales_1.20.1-2+deb12u2_all.deb ...
+#5 3.311 Unpacking krb5-locales (1.20.1-2+deb12u2) ...
+#5 3.319 Selecting previously unselected package libgpm2:arm64.
+#5 3.320 Preparing to unpack .../4-libgpm2_1.20.7-10+b1_arm64.deb ...
+#5 3.320 Unpacking libgpm2:arm64 (1.20.7-10+b1) ...
+#5 3.326 Selecting previously unselected package python-is-python3.
+#5 3.326 Preparing to unpack .../5-python-is-python3_3.11.2-1+deb12u1_all.deb ...
+#5 3.327 Unpacking python-is-python3 (3.11.2-1+deb12u1) ...
+#5 3.333 Setting up media-types (10.0.0) ...
+#5 3.335 Setting up libkeyutils1:arm64 (1.6.3-2) ...
+#5 3.336 Setting up libgpm2:arm64 (1.20.7-10+b1) ...
+#5 3.337 Setting up libtirpc-common (1.3.3+ds-1) ...
+#5 3.339 Setting up libsqlite3-0:arm64 (3.40.1-2+deb12u1) ...
+#5 3.340 Setting up krb5-locales (1.20.1-2+deb12u2) ...
+#5 3.341 Setting up libkrb5support0:arm64 (1.20.1-2+deb12u2) ...
+#5 3.343 Setting up libncursesw6:arm64 (6.4-4) ...
+#5 3.344 Setting up libk5crypto3:arm64 (1.20.1-2+deb12u2) ...
+#5 3.345 Setting up libkrb5-3:arm64 (1.20.1-2+deb12u2) ...
+#5 3.346 Setting up openssl (3.0.15-1~deb12u1) ...
+#5 3.348 Setting up readline-common (8.2-1.3) ...
+#5 3.351 Setting up libreadline8:arm64 (8.2-1.3) ...
+#5 3.352 Setting up ca-certificates (20230311) ...
+#5 3.379 debconf: unable to initialize frontend: Dialog
+#5 3.379 debconf: (TERM is not set, so the dialog frontend is not usable.)
+#5 3.379 debconf: falling back to frontend: Readline
+#5 3.379 debconf: unable to initialize frontend: Readline
+#5 3.379 debconf: (Can't locate Term/ReadLine.pm in @INC (you may need to install the Term::ReadLine module) (@INC contains: /etc/perl /usr/local/lib/aarch64-linux-gnu/perl/5.36.0 /usr/local/share/perl/5.36.0 /usr/lib/aarch64-linux-gnu/perl5/5.36 /usr/share/perl5 /usr/lib/aarch64-linux-gnu/perl-base /usr/lib/aarch64-linux-gnu/perl/5.36 /usr/share/perl/5.36 /usr/local/lib/site_perl) at /usr/share/perl5/Debconf/FrontEnd/Readline.pm line 7.)
+#5 3.379 debconf: falling back to frontend: Teletype
+#5 3.499 Updating certificates in /etc/ssl/certs...
+#5 3.716 140 added, 0 removed; done.
+#5 3.724 Setting up libgssapi-krb5-2:arm64 (1.20.1-2+deb12u2) ...
+#5 3.726 Setting up libtirpc3:arm64 (1.3.3+ds-1) ...
+#5 3.727 Setting up libnsl2:arm64 (1.3.0-2) ...
+#5 3.729 Setting up libpython3.11-stdlib:arm64 (3.11.2-6+deb12u5) ...
+#5 3.730 Setting up libpython3-stdlib:arm64 (3.11.2-1+b1) ...
+#5 3.732 Setting up python3.11 (3.11.2-6+deb12u5) ...
+#5 4.018 Setting up python3 (3.11.2-1+b1) ...
+#5 4.022 running python rtupdate hooks for python3.11...
+#5 4.022 running python post-rtupdate hooks for python3.11...
+#5 4.054 Setting up python-is-python3 (3.11.2-1+deb12u1) ...
+#5 4.056 Processing triggers for libc-bin (2.36-9+deb12u10) ...
+#5 4.060 Processing triggers for ca-certificates (20230311) ...
+#5 4.062 Updating certificates in /etc/ssl/certs...
+#5 4.196 0 added, 0 removed; done.
+#5 4.196 Running hooks in /etc/ca-certificates/update.d...
+#5 4.197 done.
+#5 4.205 lrwxrwxrwx. 1 root root       7 Jun 17  2024 /usr/bin/python -> python3
+#5 4.205 lrwxrwxrwx. 1 root root      10 Apr  9  2023 /usr/bin/python3 -> python3.11
+#5 4.205 -rwxr-xr-x. 1 root root 6618336 Nov 30 21:22 /usr/bin/python3.11
+#5 4.207 Python 3.11.2
+#5 4.576 Downloading cpython-3.12.10-linux-aarch64-gnu (download) (17.1MiB)
+#5 5.377  Downloading cpython-3.12.10-linux-aarch64-gnu (download)
+#5 5.481 Using CPython 3.12.10
+#5 5.481 Creating virtual environment at: /.venv
+#5 5.483 lrwxrwxrwx. 1 root root 77 May  6 07:00 /.venv/bin/python -> /root/.local/share/uv/python/cpython-3.12.10-linux-aarch64-gnu/bin/python3.12
+#5 5.484 -rwxr-xr-x. 1 root root 70896 May  6 07:00 /root/.local/share/uv/python/cpython-3.12.10-linux-aarch64-gnu/bin/python3.12
+#5 5.486 sh: 1: /.venv/bin/python: Permission denied
+#5 ERROR: process "/bin/sh -c useradd --create-home libraries     && apt-get update     && apt-get install --yes python-is-python3     && rm -rf /var/lib/apt/lists/*     && ls -l /usr/bin/python*     && su libraries -c \"/usr/bin/python --version\"     && uv venv --python 3.12 /.venv     && ls -l /.venv/bin/python     && ls -l $(readlink /.venv/bin/python)     && su libraries -c \"/.venv/bin/python --version\"" did not complete successfully: exit code: 126
+------
+ > [2/2] RUN useradd --create-home libraries     && apt-get update     && apt-get install --yes python-is-python3     && rm -rf /var/lib/apt/lists/*     && ls -l /usr/bin/python*     && su libraries -c "/usr/bin/python --version"     && uv venv --python 3.12 /.venv     && ls -l /.venv/bin/python     && ls -l $(readlink /.venv/bin/python)     && su libraries -c "/.venv/bin/python --version":
+4.205 lrwxrwxrwx. 1 root root      10 Apr  9  2023 /usr/bin/python3 -> python3.11
+4.205 -rwxr-xr-x. 1 root root 6618336 Nov 30 21:22 /usr/bin/python3.11
+4.391 Python 3.11.2
+4.395 uv 0.7.2
+5.754 Downloading cpython-3.12.10-linux-aarch64-gnu (download) (17.1MiB)
+6.667  Downloading cpython-3.12.10-linux-aarch64-gnu (download)
+6.766 Using CPython 3.12.10
+6.766 Creating virtual environment at: /.venv
+6.768 lrwxrwxrwx. 1 root root 77 May  6 07:18 /.venv/bin/python -> /root/.local/share/uv/python/cpython-3.12.10-linux-aarch64-gnu/bin/python3.12
+6.769 -rwxr-xr-x. 1 root root 70896 May  6 07:18 /root/.local/share/uv/python/cpython-3.12.10-linux-aarch64-gnu/bin/python3.12
+6.770 sh: 1: /.venv/bin/python: Permission denied
+------
+WARNING: No output specified with docker-container driver. Build result will only remain in the build cache. To push result image into registry use --push or to load image into docker use --load
+Dockerfile:3
+--------------------
+   2 |     
+   3 | >>> RUN useradd --create-home libraries \
+   4 | >>>     && apt-get update \
+   5 | >>>     && apt-get install --yes python-is-python3 \
+   6 | >>>     && rm -rf /var/lib/apt/lists/* \
+   7 | >>>     && ls -l /usr/bin/python* \
+   8 | >>>     && su libraries -c "/usr/bin/python --version" \
+   9 | >>>     && uv version \
+  10 | >>>     && uv venv --python 3.12 /.venv \
+  11 | >>>     && ls -l /.venv/bin/python \
+  12 | >>>     && ls -l $(readlink /.venv/bin/python) \
+  13 | >>>     && su libraries -c "/.venv/bin/python --version"
+  14 |     
+--------------------
+ERROR: failed to solve: process "/bin/sh -c useradd --create-home libraries     && apt-get update     && apt-get install --yes python-is-python3     && rm -rf /var/lib/apt/lists/*     && ls -l /usr/bin/python*     && su libraries -c \"/usr/bin/python --version\"     && uv version     && uv venv --python 3.12 /.venv     && ls -l /.venv/bin/python     && ls -l $(readlink /.venv/bin/python)     && su libraries -c \"/.venv/bin/python --version\"" did not complete successfully: exit code: 126
+```
+
+### Platform
+
+debian:bookworm-slim
+ubuntu:24.04
+
+### Version
+
+uv 0.7.2
+
+---
+
+_Label `question` added by @yxtay on 2025-05-06 07:16_
+
+---
+
+_Renamed from "Permission Denied Running UV Installed Python with Non-Root User" to "Permission Denied: Running UV Installed Python with Non-Root User" by @yxtay on 2025-05-06 07:16_
+
+---
+
+_Comment by @konstin on 2025-05-06 08:19_
+
+Can you run the entire installation under the libraries user? uv use `~/.local` and `~/.cache` of the user running the installation, which causes the permission error in your case.
+
+---
+
+_Comment by @yxtay on 2025-05-06 08:34_
+
+> Can you run the entire installation under the libraries user? uv use `~/.local` and `~/.cache` of the user running the installation, which causes the permission error in your case.
+
+Unfortunately not. I believe it is also a technical requirement that python be installed as root. Will it work if I have the uv python installed in another path such as `/opt`?
+
+I'm actually trying to work around a few issues due to the limitations of using container services on Databricks.
+- OS: ubuntu
+- python be availabe on `/usr/bin/python`
+  - there are noted vulnerabilities with apt installed `python3.11-dev`, hence I am looking for alternative installation
+  - I am able to use `uv venv --allow-existing --python 3.11 /usr`
+- `virtualenv` must be available in system python environment
+  - System python `virtualenv` is used to create virtual environment for each notebook runs
+  - This is created with the root user I believe
+- common python libraries can be installed in `VIRTUAL_ENV=/databricks/python3/`
+  - I am setting up this virtual environmnt completely with uv
+  - However, there are also 2 different ways to install libraries when using databricks
+  - On the cluster level, additional libraries are installed with the `libraries` user, which is the source of the permission issues I am raising here.
+  - On the notebook level, libraries can also be installed with cell magics `%pip install <package_name>`
+
+---
+
+_Comment by @konstin on 2025-05-06 08:45_
+
+> I believe it is also a technical requirement that python be installed as root.
+
+Why is that? Managed Python versions installed by uv are always in the current user's directory. This is unlike system Python installation (i.e. `apt install python`) which is installed globally and available to all users.
+
+> there are noted vulnerabilities with apt installed python3.11-dev, hence I am looking for alternative installation
+
+Do you have a source for this, and have you checked this with debian and their versioning/patching scheme?
+
+uv is optimized for a single user, and assumes it can use `~/.local/share` and `~/.cache` for storing files. The main exception is that you can use `--system` to install packages into the system interpreter as root, otherwise uv assumes that there is a venv that is owned by the current user that it can use.
+
+---
+
+_Comment by @yxtay on 2025-05-06 09:01_
+
+> > I believe it is also a technical requirement that python be installed as root.
+> 
+> Why is that? Managed Python versions installed by uv are always in the current user's directory. This is unlike system Python installation (i.e. `apt install python`) which is installed globally and available to all users.
+
+My answer is based on my understanding. With Databricks, the same python binary needs to be accessed by both the `root` and `libraries` user. Libraries are installed on the cluster level using the `libraries` user. These libraries will then be available to use in notebook runs, which is done with the `root` user.
+
+> > there are noted vulnerabilities with apt installed python3.11-dev, hence I am looking for alternative installation
+> 
+> Do you have a source for this, and have you checked this with debian and their versioning/patching scheme?
+
+https://ubuntu.com/security/notices/USN-6891-1
+
+The vulnerabilites are noted by AWS Inspector, hence I am required to remediate them to pass audit checks at my workplace. Unfortunately, the fix for `ubuntu:22.04` (`3.11.0~rc1-1~22.04.1~esm1`) is only available to Ubuntu Pro customers. The current Databricks Runtime LTS uses python 3.11 and ubuntu:22.04.
+
+
+
+
+---
+
+_Comment by @yxtay on 2025-05-06 09:03_
+
+In any case, it seems to work if I set `UV_PYTHON_INSTALL_DIR=/opt`. So, I think this can be considered resolved. I will test the container and close the issue if it works.
+
+```dockerfile
+FROM ghcr.io/astral-sh/uv:debian-slim
+
+ENV UV_PYTHON_INSTALL_DIR=/opt
+
+RUN useradd --create-home libraries \
+    && uv self version \
+    && uv venv --python 3.11 /.venv \
+    && ls -l /.venv/bin/python \
+    && ls -l $(readlink /.venv/bin/python) \
+    && su libraries -c "/.venv/bin/python --version"
+```
+
+```shell
+> docker build --progress plain .
+
+#0 building with "default" instance using docker-container driver
+
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile: 377B done
+#1 DONE 0.0s
+
+#2 [internal] load metadata for ghcr.io/astral-sh/uv:debian-slim
+#2 DONE 0.3s
+
+#3 [internal] load .dockerignore
+#3 transferring context: 2B done
+#3 DONE 0.0s
+
+#4 [1/2] FROM ghcr.io/astral-sh/uv:debian-slim@sha256:100b68fcd5b6854a8a3cfd3e212f16c00460bf5f1ad322ab85a2f1dbd9074ef7
+#4 resolve ghcr.io/astral-sh/uv:debian-slim@sha256:100b68fcd5b6854a8a3cfd3e212f16c00460bf5f1ad322ab85a2f1dbd9074ef7 done
+#4 CACHED
+
+#5 [2/2] RUN useradd --create-home libraries     && uv self version     && uv venv --python 3.11 /.venv     && ls -l /.venv/bin/python     && ls -l $(readlink /.venv/bin/python)     && su libraries -c "/.venv/bin/python --version"  # << this is the problematic line
+#5 0.073 uv 0.7.2
+#5 1.488 Downloading cpython-3.11.12-linux-aarch64-gnu (download) (19.3MiB)
+#5 2.377  Downloading cpython-3.11.12-linux-aarch64-gnu (download)
+#5 2.465 Using CPython 3.11.12
+#5 2.465 Creating virtual environment at: /.venv
+#5 2.468 lrwxrwxrwx. 1 root root 53 May  6 09:33 /.venv/bin/python -> /opt/cpython-3.11.12-linux-aarch64-gnu/bin/python3.11
+#5 2.468 -rwxr-xr-x. 1 root root 70896 May  6 09:33 /opt/cpython-3.11.12-linux-aarch64-gnu/bin/python3.11
+#5 2.472 Python 3.11.12
+#5 DONE 2.6s
+```
+
+Alternatively, give `libraries` user acl to `/root`.
+```dockerfile
+FROM ghcr.io/astral-sh/uv:debian-slim
+
+RUN useradd --create-home libraries \
+    && apt-get update \
+    && apt-get install --yes acl \
+    && rm -rf /var/lib/apt/lists/* \
+    && setfacl --modify user:libraries:rx /root \
+    && uv self version \
+    && uv venv --python 3.11 /.venv \
+    && ls -l /.venv/bin/python \
+    && ls -l $(readlink /.venv/bin/python) \
+    && su libraries -c "/.venv/bin/python --version"
+```
+
+---
+
+_Closed by @yxtay on 2025-05-06 10:11_
+
+---

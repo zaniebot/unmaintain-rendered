@@ -1,0 +1,59 @@
+---
+number: 22166
+title: RUF012 warns for ctypes Structure._fields_
+type: issue
+state: open
+author: behrmann
+labels:
+  - rule
+assignees: []
+created_at: 2025-12-23T22:35:08Z
+updated_at: 2025-12-25T10:40:19Z
+url: https://github.com/astral-sh/ruff/issues/22166
+synced_at: 2026-01-07T13:12:16-06:00
+---
+
+# RUF012 warns for ctypes Structure._fields_
+
+---
+
+_Issue opened by @behrmann on 2025-12-23 22:35_
+
+### Summary
+
+The class variable `_fields_` on ctypes `Structure` objects, e.g.
+```python
+class mount_attr(ctypes.Structure):
+    _fields_ = [
+        ("attr_set", ctypes.c_uint64),
+        ("attr_clr", ctypes.c_uint64),
+        ("propagation", ctypes.c_uint64),
+        ("userns_fd", ctypes.c_uint64),
+    ]
+```
+will trigger RUF012, but [documentation says](https://docs.python.org/3/library/ctypes.html#ctypes.Structure._fields_)
+> The _fields_ class variable can only be set once. Later assignments will raise an [AttributeError](https://docs.python.org/3/library/exceptions.html#AttributeError).
+
+so an exception to this rule would be helpful. 
+
+---
+
+_Comment by @ntBre on 2025-12-24 15:37_
+
+It makes sense to me to add this as an exception. In the meantime I think you could annotate the field as either `typing.ClassVar` or `typing.Final` to suppress the diagnostic. Or maybe use a tuple for the `_fields_` since the docs just say it needs to be a sequence.
+
+---
+
+_Label `rule` added by @ntBre on 2025-12-24 15:37_
+
+---
+
+_Comment by @behrmann on 2025-12-25 10:40_
+
+Thanks! 
+
+> In the meantime I think you could annotate the field as either typing.ClassVar or typing.Final to suppress the diagnostic. Or maybe use a tuple for the _fields_ since the docs just say it needs to be a sequence.
+
+I only found this lint while looking through additional lints to add. For now I'll just disable it, because adding the annotations or switching the list to a tuple is too much churn. Since the upstream ctypes documentation uses lists of tuples for `_fields_` everywhere, this is probably in most cases written like this. 
+
+---

@@ -1,0 +1,273 @@
+---
+number: 12696
+title: Failure to build cydifflib (Compatibility with CMake < 3.5 error)
+type: issue
+state: open
+author: jlevy
+labels:
+  - question
+  - external
+assignees: []
+created_at: 2025-04-07T02:34:10Z
+updated_at: 2025-04-15T20:36:12Z
+url: https://github.com/astral-sh/uv/issues/12696
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# Failure to build cydifflib (Compatibility with CMake < 3.5 error)
+
+---
+
+_Issue opened by @jlevy on 2025-04-07 02:34_
+
+### Summary
+
+I'm trying to track down a build issue that has appeared on recent GitHub Actions builds of a library of mine, due to errors in building the dependency [cydifflib](https://github.com/rapidfuzz/CyDifflib).
+
+Perhaps someone can help me narrow down if it's a uv issue or something else like a cmake or scikit-build issue in certain environments.
+
+The exact same build used to work with uv and Python 3.13 and GitHub's ubuntu runner but then stopped working, without any change to deps or code, so it seems linked to certain environments.  I even narrowed it down that the exact same build had passed but then failed when rerun 2 weeks later (first and second runs of [this build](https://github.com/jlevy/chopdiff/actions/runs/13886580625), which presumably would only be due to a newer GitHub Actions runner image or maybe uv cache interactions).
+
+I've also gotten reports of this issue on macOS but can't reproduce that myself. It affects Python 3.13 but not Python 3.11 and 3.12 on my tests.
+
+The error is on latest uv and latest GitHub ubuntu runner: `Compatibility with CMake < 3.5 has been removed from CMake`.
+
+But I've confirmed the build environment actually has cmake version 3.31.6. And [cydifflib's declarations](https://github.com/rapidfuzz/CyDifflib/blob/main/CMakeLists.txt#L1) ask for cmake 3.12.
+
+A full repro and logs of this on GitHub Actions with a minimal project (only cydifflib as a dep) is [here](https://github.com/jlevy/test-cydifflib/actions/runs/14299332468/job/40071007310)
+
+Thanks so much for any pointers!
+
+Edit: Note the fix of setting CMAKE_ARGS to "-DCMAKE_POLICY_VERSION_MINIMUM=3.5" does work as a workaround on GitHub Actions. But this is still an issue because I want users to be able to `uv tool install` my libs without issues.
+
+```
+Downloaded nodejs-wheel-binaries
+  × Failed to build `cydifflib==1.1.0`
+  ├─▶ The build backend returned an error
+  ╰─▶ Call to `setuptools.build_meta.build_wheel` failed (exit status: 1)
+...
+      CMake Error at CMakeLists.txt:1 (cmake_minimum_required):
+        Compatibility with CMake < 3.5 has been removed from CMake.
+
+        Update the VERSION argument <min> value.  Or, use the <min>...<max>
+      syntax
+        to tell CMake that the project requires at least <min> but has been
+      updated
+        to work with policies introduced by <max> or earlier.
+
+        Or, add -DCMAKE_POLICY_VERSION_MINIMUM=3.5 to try configuring anyway.
+
+      ********************************************************************************
+                      scikit-build could not get a working generator for your
+      system. Aborting build.
+
+                      Building Linux wheels for Python 3.13 requires a
+      compiler (e.g gcc).
+      But scikit-build does *NOT* know how to install it on ubuntu
+
+      To build compliant wheels, consider using the manylinux system described
+      in PEP-[51](https://github.com/jlevy/test-cydifflib/actions/runs/14299332468/job/40071007310#step:6:52)3.
+      Get it with "dockcross/manylinux-x64" docker image:
+
+        https://github.com/dockcross/dockcross#readme
+
+      For more details, please refer to scikit-build documentation:
+
+        http://scikit-build.readthedocs.io/en/latest/generators.html#linux
+```
+
+### Platform
+
+ubuntu-latest 3.13 (GitHub Actions current runner 2.323.0)
+
+### Version
+
+v0.6.12
+
+### Python version
+
+Python 3.13.2
+
+---
+
+_Label `bug` added by @jlevy on 2025-04-07 02:34_
+
+---
+
+_Comment by @shauneccles on 2025-04-07 08:46_
+
+GitHub updated runner images - see https://github.com/actions/runner-images/issues/11926
+
+That's likely the cause of your issues.
+
+---
+
+_Comment by @jlevy on 2025-04-07 18:00_
+
+@shauneccles thanks! Yeah it seems likely that was the trigger. Wow there are a lot of linked workaround commits on that runner-images issue.
+
+I think it's still of concern to uv, in that I want uv to "just work" for libs like cydifflib, and I think this could bite people in other situations too?
+
+---
+
+_Comment by @shauneccles on 2025-04-07 18:46_
+
+This isn't a uv issue - it's a build issue outside uvs control/sphere of influence.
+
+All uv can do is surface the reason the build isn't working for people to troubleshoot.
+
+The reasons a build doesn't work are numerous and complex - how can uv control/manage system level things such as the installed C compiler version?
+
+---
+
+_Label `external` added by @zanieb on 2025-04-08 18:11_
+
+---
+
+_Comment by @zanieb on 2025-04-08 18:12_
+
+Unfortunately we can't pin or check system packages yet. https://peps.python.org/pep-0725/ pokes at this idea.
+
+---
+
+_Label `bug` removed by @zanieb on 2025-04-08 18:12_
+
+---
+
+_Label `question` added by @zanieb on 2025-04-08 18:12_
+
+---
+
+_Comment by @jlevy on 2025-04-08 19:32_
+
+@zanieb thanks! Interesting. Of course this is a large issue in general, but is there any recommended approach currently when distributing packages to streamline the experience for users where there a dependency like this?
+
+An enormous benefit of uv is that you can just tell someone to uv tool install your package and it "just works."
+
+I realize some deps can't be handled except externally. In this case the build works if you add a single env var (CMAKE_ARGS="-DCMAKE_POLICY_VERSION_MINIMUM=3.5"). Seems like there could be a way to tell uv this?
+
+I'm even considering adding a kind of bootstrapping process around uv that tests/inspects and suggests what to install based on the current platform, since I have a tool that expects cydifflib and a few other external deps. But that also kind of defeats the elegance of uv...
+
+---
+
+_Comment by @zanieb on 2025-04-08 19:45_
+
+It seems like that would need to be handled in [cydifflib](https://github.com/rapidfuzz/CyDifflib)'s build system. We could add supporting for patching environment variables while building dependencies, but that's sort of a whack-a-mole approach whereas tweaking the build system upstream would resolve the issue for everyone.
+
+---
+
+_Referenced in [rapidfuzz/CyDifflib#6](../../rapidfuzz/CyDifflib/issues/6.md) on 2025-04-08 23:25_
+
+---
+
+_Comment by @jlevy on 2025-04-08 23:43_
+
+@zanieb I've added an issue there too now, thanks. Definitely agree long term goal should always be proper fixes upstream.
+
+At the same time, it's a bit ugly, but imo it'd be great if developers could do _something_ in their projects (besides just giving more complex install instructions) to avoid headaches for _their_ users, without waiting for upstream deps to change.
+
+Fwiw another example is WeasyPrint and again the (hopefully temporary) workaround was for me to manually hack env vars for users:
+https://github.com/Kozea/WeasyPrint/issues/1448
+https://github.com/astral-sh/uv/issues/6971
+
+So the q is not so much whether to play whack-a-mole, but whether it can be played with less effort. :) Thanks again.
+
+
+
+---
+
+_Comment by @shauneccles on 2025-04-09 00:04_
+
+Your best bet might be to using docker to manage the entire process if you're worried about managing user environments.
+
+---
+
+_Comment by @jlevy on 2025-04-09 17:06_
+
+@zanieb for what it's worth just saw a good discussion of this need [here on r/Python](https://www.reddit.com/r/Python/comments/1jv3t1e/comment/mm7dbt1/?utm_source=share&utm_medium=web3x&utm_name=web3xcss&utm_term=1&utm_content=share_button) as well.
+
+Docker is certainly useful but doesn't apply to the use case helping downstream users/team members/etc who want to run with minimal fuss (aside from installing uv) and without Docker.
+
+---
+
+_Comment by @zanieb on 2025-04-09 17:37_
+
+> At the same time, it's a bit ugly, but imo it'd be great if developers could do something in their projects (besides just giving more complex install instructions) to avoid headaches for their users, without waiting for upstream deps to change.
+
+To be clear, are you asking for a feature where you can configure _your_ package to set a variable for a _dependent_ package such that when a user installs _your_ package (e.g., via `uv tool install <name>` ) we populate the variable?
+
+---
+
+_Comment by @jlevy on 2025-04-09 20:49_
+
+@zanieb yes. I'm new to uv and correct me if uv already supports some other way to do this, but what I was imagining was:
+
+If I am building `mytool` and it depends on `somelib`, it should be possible be to have a uv setting in `mytool`'s pyproject.toml that gives `mytool` control over what env vars are set before `somelib` is built. That way it's zero config for anyone who wants to `uvx mytool` or `uv tool install mytool`. 
+
+Thinking about it a little more:
+
+- I could imagine use cases also for markers just like existing support of markers in deps (like one env var for macOS and one for Linux)
+
+-  But it's much more complexity to consider this like deps transitively across all packages, e.g. it might be confusing to deal with conflicting deps (`a` depends on `b` and `c` and `b` and `c` have env vars declared to affect `d`).
+
+- So to perhaps it could simply be considered a pyproject.toml equivalent to UV_ENV_FILE and only apply at the top level of the build? This puts the responsibility of the build settings on the final tool packager but not on libs everywhere.
+
+
+
+---
+
+_Comment by @zanieb on 2025-04-09 21:00_
+
+We don't want to do that because `somelib` may be a dependency of some other package (`foo`) in the dependency tree and then `somelib` could break if the configuration `mytool` sets is not compatible with the needs of `foo`.
+
+---
+
+_Comment by @jlevy on 2025-04-09 21:35_
+
+Yes. But if I am the packager of `mytool` I'm responsible for making it work on all its deps, just as I am responsible for testing my code for interactions after any uv.lock change.
+
+My setting won't break anyone else if the env vars apply to `mytool`'s build only. It's not perfect control, but isn't  it then equivalent to if I edit my CI env setting? It's just in my toml file.
+
+---
+
+_Comment by @zanieb on 2025-04-09 22:04_
+
+There's no way to limit `mytool`'s installation such that it's not installed with other packages you don't control. What if someone does `uv add mytool foo`? What if they do `uv tool run --with foo mytool`?
+
+I think if you want more control over a dependency, you should just vendor it into `mytool`.
+
+---
+
+_Comment by @jlevy on 2025-04-10 19:36_
+
+Agree it's tricky. Bear with me thinking about it a bit more as the best option isn't obvious to me.
+
+Say I have `mytool` and it depends on `somelib` _plus_ some build options (`OPT=hack1`) to get `somelib` to work in the context of `mytool`. Ideally, anyone can just install `mytool` and it works.
+
+Now `yourtool` depends on `mytool` and `foo`. And `foo` has incompatible build options (`OPT=hack2`) for `somelib`. Ideally this would be a conflict `yourtool` would have to deal with.
+
+Options (from surgical to extensive):
+
+1. In the `mytool` readme I tell users to set `OPT=hack1` before installation (current status quo)
+2. There's a way for `uv tool install mytool` to automatically set `OPT=hack1` but this doesn't apply to builds for `yourtool` (that is what I was hoping for as it's a quick fix)
+3. I fork `somelib` with build changes and alter `mytool` to depend on `somelib-fork`
+4. We formally declare these build options somehow so that it's apparent to uv when build options are incompatible and it tells developers
+5. There's something else like a stub or hook that lets you alter/wrap a dependency via another script
+
+I do wonder if longer term something like (4) would be quite useful. It's in fact similar to functionality uv already offers in terms of identifying incompatible dependency constraints.
+
+Maybe this is effectively where uv+PEP-725 is going? In a lot of ways, things like `CMAKE_ARGS` and running `brew install ffmpeg` are pretty similar. Just external OS deps with unclear implications, but still worth tracking formally.
+
+Glad for any further thoughts. I'm still not sure (2) is impossible if it was basically like an env var workaround to putting something in a readme. But thinking for now (3) is my best option as that isn't blocked on uv or on upstream changes. Maybe there could be a way to make (3) less extensive and more maintainable than a full GitHub fork.
+
+---
+
+_Comment by @zanieb on 2025-04-15 20:36_
+
+Yeah I think (4) requires upstream standardization, or uv cannot reliably detect conflicts.
+
+(3) makes sense. We are interested in the idea of improving vendoring workflows like that, but it's a bit lower priority than some other pain points.
+
+(2) could work, but it's a little questionable as it invalidates some base assumptions in our cache. I think in the long term, we want to special case tool installs when the package uses uv, such as adding a `--locked` option.
+
+---

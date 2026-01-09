@@ -1,0 +1,85 @@
+---
+number: 10570
+title: "stability/performance: better tuning of concurrent downloads/installs"
+type: issue
+state: open
+author: morotti
+labels:
+  - performance
+assignees: []
+created_at: 2025-01-13T16:07:58Z
+updated_at: 2025-01-14T20:13:51Z
+url: https://github.com/astral-sh/uv/issues/10570
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# stability/performance: better tuning of concurrent downloads/installs
+
+---
+
+_Issue opened by @morotti on 2025-01-13 16:07_
+
+Hello,
+
+I've having another play with uv. I've noticed some suboptimal settings that make it unstable at times.
+
+**download:** the default is 50 concurrent downloads https://docs.astral.sh/uv/reference/settings/#concurrent-downloads
+it's too much. it's getting connection errors at times, when going to internal mirrors. 
+it probably drops too for people who have broadband with only a few Mbps or kbps.
+people reported the issue before and added retries, though the root is likely to be making too many concurrent requests. https://github.com/astral-sh/uv/issues/3514
+
+**Can I suggest to reduce the download concurrency to 20 by default?**
+It should address issues with timeouts/disconnections. 
+It doesn't reduce performance, it's a percent or two faster in my experience.
+(I note that 20 is still a high value, users might get disconnections for example if they run against a pypi mirror with limited CPU).
+
+As a nice side effect, shells are around 80 characters * 24 lines by default. You can now see all the 20 lines of output :D
+
+**install:** the default is number of cores. https://docs.astral.sh/uv/reference/settings/#concurrent-installs
+this is not a safe value since the average computer now has 128 or 256 cores (well, the average server 😉 )
+
+Optimal settings will vary depending on the type of storage and block size. It's more difficult to optimize but 100+ is vastly counterproductive on all types of devices. 
+I believe uv has small block sizes and most python files are 1-100 kB. With small I/O like that, you have to make dozens of concurrent operation to utilize the hardware effectively. 
+**Can I suggest to cap concurrent installs to `min(cpu_count, 32)` as a safe and optimal value for most storage?**
+
+I see a couple percent faster installation and 10% less sys time (kernel time) with that on my 128 cores machine.
+
+Cheers.
+
+---
+
+_Renamed from "stability/performance: better tuning of concurrent downloads/install" to "stability/performance: better tuning of concurrent downloads/installs" by @morotti on 2025-01-13 16:09_
+
+---
+
+_Comment by @charliermarsh on 2025-01-13 16:28_
+
+These seem like reasonable changes (especially the CPU change), though I'd like to benchmark them on my own machine for another datapoint. (My own setup is probably not representative of the "average" but still useful.)
+
+---
+
+_Label `performance` added by @charliermarsh on 2025-01-13 16:57_
+
+---
+
+_Comment by @konstin on 2025-01-14 08:41_
+
+Can you share timing number how different configurations perform on your machine? For example with `uv pip compile --universal scripts/requirements/airflow.in`, `uv pip install --universal scripts/requirements/airflow.in` or `uv pip compile scripts/requirements/jupyter.in`. We need to tune these values on real world data, so numbers from different setups help with picking the right defaults.
+
+---
+
+_Comment by @notatallshaw on 2025-01-14 12:21_
+
+> For example with `uv pip compile --universal scripts/requirements/airflow.in`
+
+I suspect the issue people have on slow or unreliable Internet connections is more likely to trigger when downloading multiple large wheels, not collecting metadata.
+
+As downloading a single wheel on it's own can take several minutes the chance of a failure can be much higher than a download that takes a couple of seconds, and are increased if downloading the wheel becomes slower, which would happen if the processes kicks of downloading 30+ other wheels.
+
+---
+
+_Comment by @konstin on 2025-01-14 20:13_
+
+The plan here is to make a script to test different configurations, have different users run that on a variety of machines and internet connections and tweak the configuration from that data.
+
+---

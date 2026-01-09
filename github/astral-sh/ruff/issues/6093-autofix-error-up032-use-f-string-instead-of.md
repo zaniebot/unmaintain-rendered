@@ -1,0 +1,232 @@
+---
+number: 6093
+title: "[Autofix error] UP032 Use f-string instead of `format` call"
+type: issue
+state: closed
+author: Azd325
+labels:
+  - bug
+assignees: []
+created_at: 2023-07-26T12:35:46Z
+updated_at: 2023-07-26T13:28:13Z
+url: https://github.com/astral-sh/ruff/issues/6093
+synced_at: 2026-01-07T13:12:15-06:00
+---
+
+# [Autofix error] UP032 Use f-string instead of `format` call
+
+---
+
+_Issue opened by @Azd325 on 2023-07-26 12:35_
+
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+Code Example
+
+testing.py
+```python
+from django.contrib import messages
+
+from apps.user.models import User
+
+
+def unblock_many(employees):
+    return employees
+
+
+def block_many_in_14_days(user, employees):
+    return user, employees
+
+
+def test_view(request, employees, is_company, action):
+    if request.method == "POST":
+        if action == "unblock":
+            messages.info(
+                request,
+                ("{} unblock many".format(unblock_many(employees))),
+            )
+        elif is_company and action == "block-in-14-days":
+            messages.info(
+                request,
+                (
+                    "{} block many in 14 days.".format(
+                        block_many_in_14_days(
+                            request.user, User.objects.filter(employee__in=employees)
+                        )
+                    )
+                ),
+            )
+```
+
+
+pyproject.toml
+
+```toml
+[tool.ruff]
+line-length = 100
+exclude = [
+    ".git",
+    "migrations",
+    "frontend",
+    "public",
+    "lib",
+    "lib64",
+    "bin",
+    ".venv",
+]
+ignore = [
+    "E501",
+    "E731",
+]
+select = [
+    "C9",
+    "E",
+    "F",
+    "W",
+    "UP",       # pyupgrade
+    "I",        # isort
+    "RUF100",   # Unused noqa directive
+]
+```
+
+CLI
+
+```bash
+ruff testing.py
+testing.py:19:18: UP032 [*] Use f-string instead of `format` call
+testing.py:25:21: UP032 [*] Use f-string instead of `format` call
+Found 2 errors.
+[*] 2 potentially fixable with the --fix option.
+```
+```bash
+ruff testing.py --fix
+
+error: Autofix introduced a syntax error. Reverting all changes.
+
+This indicates a bug in `ruff`. If you could open an issue at:
+
+    https://github.com/astral-sh/ruff/issues/new?title=%5BAutofix%20error%5D
+
+...quoting the contents of `testing.py`, the rule codes UP032, along with the `pyproject.toml` settings and executed command, we'd be very appreciative!
+
+testing.py:19:18: UP032 Use f-string instead of `format` call
+testing.py:25:21: UP032 Use f-string instead of `format` call
+Found 2 errors.
+
+```
+
+Version
+```
+ruff --version
+ruff 0.0.280
+```
+
+---
+
+_Renamed from "[Autofix error]" to "[Autofix error] UP032 Use f-string instead of `format` call" by @Azd325 on 2023-07-26 12:38_
+
+---
+
+_Comment by @charliermarsh on 2023-07-26 12:39_
+
+@harupy - any thoughts on this one?
+
+---
+
+_Comment by @harupy on 2023-07-26 12:44_
+
+Isn't this the issue fixed by #5971?
+
+---
+
+_Comment by @harupy on 2023-07-26 12:46_
+
+```
+> git log -1
+commit 77396c6f92f1515b0cb9ac1f8ba1cdbf39b1d287 (HEAD -> main, upstream/main)
+Author: Harutaka Kawamura <hkawamura0130@gmail.com>
+Date:   Wed Jul 26 21:37:32 2023 +0900
+
+    Fix `SIM102` to handle indented `elif` (#6072)
+
+> cat a.py
+from django.contrib import messages
+
+from apps.user.models import User
+
+
+def unblock_many(employees):
+    return employees
+
+
+def block_many_in_14_days(user, employees):
+    return user, employees
+
+
+def test_view(request, employees, is_company, action):
+    if request.method == "POST":
+        if action == "unblock":
+            messages.info(
+                request,
+                ("{} unblock many".format(unblock_many(employees))),
+            )
+        elif is_company and action == "block-in-14-days":
+            messages.info(
+                request,
+                (
+                    "{} block many in 14 days.".format(
+                        block_many_in_14_days(
+                            request.user, User.objects.filter(employee__in=employees)
+                        )
+                    )
+                ),
+            )
+
+> cargo run -p ruff_cli -- check a.py --no-cache --select UP032 --fix
+    Finished dev [unoptimized + debuginfo] target(s) in 0.08s
+     Running `target/debug/ruff check a.py --no-cache --select UP032 --fix`
+Found 1 error (1 fixed, 0 remaining).
+```
+
+---
+
+_Comment by @harupy on 2023-07-26 12:52_
+
+```python
+                        block_many_in_14_days(
+                            request.user, User.objects.filter(employee__in=employees)
+                        )
+```
+
+is a multiline expression. Inserting this in an f-string causes a syntax error. #5971 fixed it.
+
+---
+
+_Comment by @charliermarsh on 2023-07-26 13:00_
+
+Thank you :)
+
+---
+
+_Closed by @charliermarsh on 2023-07-26 13:00_
+
+---
+
+_Label `bug` added by @charliermarsh on 2023-07-26 13:00_
+
+---
+
+_Comment by @Azd325 on 2023-07-26 13:28_
+
+Cool Thanks.
+
+---

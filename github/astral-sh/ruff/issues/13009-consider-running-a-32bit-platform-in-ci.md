@@ -1,0 +1,74 @@
+---
+number: 13009
+title: Consider running a 32bit platform in CI
+type: issue
+state: open
+author: WhyNotHugo
+labels:
+  - testing
+assignees: []
+created_at: 2024-08-20T13:26:09Z
+updated_at: 2025-08-04T15:49:15Z
+url: https://github.com/astral-sh/ruff/issues/13009
+synced_at: 2026-01-07T13:12:15-06:00
+---
+
+# Consider running a 32bit platform in CI
+
+---
+
+_Issue opened by @WhyNotHugo on 2024-08-20 13:26_
+
+There have been several releases which inadvertently broke on 32bit architectures (and the more niche s390x), and this only came up when packaging the release downstream.
+
+This is a feature request to integrate some 32bit system into CI to pick up these issues earlier during development.
+
+
+
+---
+
+_Comment by @zanieb on 2024-08-20 13:58_
+
+Can you share some example bugs?
+
+---
+
+_Label `testing` added by @zanieb on 2024-08-20 13:58_
+
+---
+
+_Comment by @MichaReiser on 2024-08-20 14:06_
+
+We now do have a 32bit WASM CI step that at least asserts that Ruff and Red Knot build on a 32bit target. We don't have a step that runs all tests
+
+---
+
+_Comment by @WhyNotHugo on 2024-08-20 17:37_
+
+> Can you share some example bugs?
+
+Recent examples are https://github.com/astral-sh/ruff/issues/12885, https://github.com/astral-sh/ruff/issues/12661 and https://github.com/astral-sh/ruff/issues/10359
+
+I had the impression of having reported a few more, but others are actually on riscv and ppc64le
+
+---
+
+_Comment by @WhyNotHugo on 2024-12-02 07:57_
+
+Another one: https://github.com/astral-sh/ruff/issues/14724
+
+
+
+---
+
+_Comment by @MichaReiser on 2024-12-02 08:08_
+
+I'd accept a PR that sets up a 32 job that runs on main
+
+---
+
+_Comment by @WhyNotHugo on 2025-08-04 15:49_
+
+Also relevant: https://github.com/astral-sh/ruff/issues/19640
+
+---

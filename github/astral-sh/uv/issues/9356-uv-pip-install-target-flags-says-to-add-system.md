@@ -1,0 +1,105 @@
+---
+number: 9356
+title: "`uv pip install --target` flags says to add `--system` "
+type: issue
+state: closed
+author: PatrickAlphaC
+labels:
+  - bug
+  - error messages
+assignees: []
+created_at: 2024-11-22T14:22:58Z
+updated_at: 2024-11-22T22:06:44Z
+url: https://github.com/astral-sh/uv/issues/9356
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# `uv pip install --target` flags says to add `--system` 
+
+---
+
+_Issue opened by @PatrickAlphaC on 2024-11-22 14:22_
+
+Running the following:
+
+```bash
+uv pip install requests --target ./
+```
+
+Results in:
+
+```
+error: No virtual environment found; run `uv venv` to create an environment, or pass `--system` to install into a non-virtual environment
+```
+
+However, I think this is incorrect. I am giving the pip install a target so it shouldn't want to be installed with --system? 
+
+---
+
+_Comment by @ReinforcedKnowledge on 2024-11-22 16:55_
+
+If I may add on your issue:
+```bash
+uv init --package try_pip_install_target
+cd try_pip_install_target
+uv add numpy
+cd ..
+uv pip install --target try_pip_install_target requests
+```
+
+Gives the same error.
+```bash
+error: No virtual environment found; run `uv venv` to create an environment, or pass `--system` to install into a non-virtual environment
+```
+
+But:
+```bash
+cd try_pip_install_target
+uv pip install --target ./ requests
+```
+Works.
+
+So doing `uv pip install --target <target-path>` where `<target-path>` is a sub-directory or unrelated directory won't work even if that directory contains a `venv`. But doing it inside a directory that contains a `venv` works.
+
+So either the command was not designed to mirror `pip install` and in that case maybe the documentation is not clear enough, and I guess in that case, probably, this is a command made for workspaces.
+
+Or it was designed to mirror `pip install` but doesn't work correctly.
+
+Or I'm misunderstanding some subtle detail 😅
+
+---
+
+_Label `bug` added by @charliermarsh on 2024-11-22 19:14_
+
+---
+
+_Label `error messages` added by @charliermarsh on 2024-11-22 19:14_
+
+---
+
+_Comment by @charliermarsh on 2024-11-22 19:49_
+
+I need to refresh my memory here, but I agree that at minimum it's confusing.
+
+---
+
+_Comment by @charliermarsh on 2024-11-22 20:33_
+
+This has come up enough times that I'll look into changing it:
+
+- https://github.com/astral-sh/uv/issues/3348
+- https://github.com/astral-sh/uv/issues/6198
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2024-11-22 20:33_
+
+---
+
+_Referenced in [astral-sh/uv#9371](../../astral-sh/uv/pulls/9371.md) on 2024-11-22 20:55_
+
+---
+
+_Closed by @charliermarsh on 2024-11-22 22:06_
+
+---

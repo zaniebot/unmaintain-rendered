@@ -1,0 +1,72 @@
+---
+number: 11939
+title: uv add xxx  --offline failure
+type: issue
+state: closed
+author: miaomiao1992
+labels:
+  - needs-mre
+assignees: []
+created_at: 2025-03-04T01:43:50Z
+updated_at: 2025-04-13T11:34:55Z
+url: https://github.com/astral-sh/uv/issues/11939
+synced_at: 2026-01-07T13:12:18-06:00
+---
+
+# uv add xxx  --offline failure
+
+---
+
+_Issue opened by @miaomiao1992 on 2025-03-04 01:43_
+
+### Summary
+
+i copy uv_cache_dir to a new computer which is offline，and "run uv add xxx --offline" failed
+
+### Platform
+
+win10 22h2
+
+### Version
+
+0.6.3
+
+### Python version
+
+python 3.12
+
+---
+
+_Label `bug` added by @miaomiao1992 on 2025-03-04 01:43_
+
+---
+
+_Comment by @zanieb on 2025-03-04 01:59_
+
+Hi! This doesn't meet our requirements for a bug report. Please see #9452 and add the requested information.
+
+---
+
+_Label `needs-mre` added by @zanieb on 2025-03-04 01:59_
+
+---
+
+_Label `bug` removed by @charliermarsh on 2025-03-04 13:55_
+
+---
+
+_Comment by @miaomiao1992 on 2025-04-13 11:33_
+
+ok
+
+---
+
+_Comment by @miaomiao1992 on 2025-04-13 11:34_
+
+ok
+
+---
+
+_Closed by @miaomiao1992 on 2025-04-13 11:34_
+
+---

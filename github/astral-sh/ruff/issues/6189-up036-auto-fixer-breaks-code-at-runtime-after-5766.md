@@ -1,0 +1,158 @@
+---
+number: 6189
+title: "UP036 auto-fixer breaks code at runtime after #5766"
+type: issue
+state: closed
+author: mrcljx
+labels:
+  - bug
+assignees: []
+created_at: 2023-07-31T09:41:27Z
+updated_at: 2023-08-01T17:54:44Z
+url: https://github.com/astral-sh/ruff/issues/6189
+synced_at: 2026-01-07T13:12:15-06:00
+---
+
+# UP036 auto-fixer breaks code at runtime after #5766
+
+---
+
+_Issue opened by @mrcljx on 2023-07-31 09:41_
+
+After #5766 the auto-fixer for UP036 has broken some code for us:
+
+```diff
+from typing import Any
+
+import cachetools
+
+class MyClass:
+    def __init__(self) -> None:
+        self._cache: "cachetools.LRUCache[Any, Any]" = cachetools.LRUCache(maxsize=100)
+```
+
+```
+ruff --isolated --select UP --fix ruff_up037.py
+```
+
+> ruff_up037.py:7:22: UP037 [*] Remove quotes from type annotation
+
+The auto-fixer strips the quotes. However this is semantically not valid, as `LRUCache` is not `Generic` at runtime, only for the `pyi` files.
+
+```
+$ ruff --version
+ruff 0.0.280
+```
+
+
+---
+
+_Label `bug` added by @charliermarsh on 2023-07-31 13:18_
+
+---
+
+_Comment by @clement-escolano on 2023-08-01 12:03_
+
+I would like to add another example of the rule breaking code at runtime:
+
+```py
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from dependency import MyClass
+
+def my_func():
+    result: list["MyClass"] = []
+    return result
+```
+
+The quotes around `MyClass` are removed which breaks at run time.
+
+If this should be in a separate issue, please tell me and I will open one
+
+---
+
+_Comment by @charliermarsh on 2023-08-01 12:45_
+
+@clement-escolano -- Hmm, I'm unable to reproduce. This, for example, runs without error for me:
+
+```python
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from dependency import MyClass
+
+def my_func():
+    result: list[MyClass] = []
+    return result
+
+my_func()
+```
+
+Running `python foo.py` completes without error.
+
+---
+
+_Referenced in [astral-sh/ruff#6237](../../astral-sh/ruff/pulls/6237.md) on 2023-08-01 12:46_
+
+---
+
+_Comment by @clement-escolano on 2023-08-01 12:47_
+
+@charliermarsh 
+The issue is that `dependency` is not installed in our production environment (in our project, this is `django_stubs_ext` which is only used in development for typing). If this is out of scope of this rule, I understand :-)
+
+---
+
+_Comment by @charliermarsh on 2023-08-01 12:50_
+
+I don't think the dependency has to be installed in order for the above to work, I don't have a dependency called `dependency` locally :) Python doesn't evaluate unquoted annotated assignments within function bodies. But perhaps there's another reason that it's failing for you? Or is it just that it's showing up as an error in your editor?
+
+The same is true of the originating comment @mrcljx. This runs fine for me:
+
+```python
+from typing import Any
+
+import cachetools
+
+class MyClass:
+    def __init__(self) -> None:
+        self._cache: cachetools.LRUCache[Any, Any] = cachetools.LRUCache(maxsize=100)
+
+MyClass()
+```
+
+---
+
+_Closed by @charliermarsh on 2023-08-01 13:03_
+
+---
+
+_Comment by @mrcljx on 2023-08-01 13:05_
+
+@charliermarsh This indeed seems to have been an IDE bug. Very sorry for bothering you with this report, thanks for Ruff!
+
+---
+
+_Comment by @charliermarsh on 2023-08-01 13:07_
+
+No worries, I went ahead and reverted any way, it seems like it's going to cause some annoyance for folks.
+
+---
+
+_Comment by @zanieb on 2023-08-01 15:02_
+
+@mrcljx Which IDE? Did you open an issue there?
+
+---
+
+_Comment by @mrcljx on 2023-08-01 17:54_
+
+<img width="639" alt="CleanShot 2023-08-01 at 19 53 31@2x" src="https://github.com/astral-sh/ruff/assets/56807/b61c38e0-3454-4e02-81d5-1f754610a0fc">
+
+PyCharm. That said, it also had that warning earlier (but it became more visually pronounced in ^):
+
+<img width="364" alt="CleanShot 2023-08-01 at 19 54 10@2x" src="https://github.com/astral-sh/ruff/assets/56807/e57602ab-eb1e-4d4e-b862-604a718bdaa7">
+
+
+---

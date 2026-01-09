@@ -1,0 +1,53 @@
+---
+number: 16082
+title: "UP036 doesn't handle three digit version numbers correctly"
+type: issue
+state: closed
+author: henryiii
+labels:
+  - bug
+  - rule
+assignees: []
+created_at: 2025-02-10T16:51:09Z
+updated_at: 2025-02-11T07:40:58Z
+url: https://github.com/astral-sh/ruff/issues/16082
+synced_at: 2026-01-07T13:12:16-06:00
+---
+
+# UP036 doesn't handle three digit version numbers correctly
+
+---
+
+_Issue opened by @henryiii on 2025-02-10 16:51_
+
+### Description
+
+The following check:
+
+```python
+if sys.version_info < (3, 8, 7):
+```
+
+Should not be removed for Python `>=3.8`, but currently, it is - the check seems to ignore the third digit entirely. It should only be removed for `>=3.9`. Occurs in Python packaging related repos like scikit-build-core due to a bug in sysconfig fixed in 3.8.7.
+
+---
+
+_Label `bug` added by @AlexWaygood on 2025-02-10 17:13_
+
+---
+
+_Label `rule` added by @AlexWaygood on 2025-02-10 17:14_
+
+---
+
+_Referenced in [astral-sh/ruff#16091](../../astral-sh/ruff/pulls/16091.md) on 2025-02-11 01:46_
+
+---
+
+_Closed by @MichaReiser on 2025-02-11 07:40_
+
+---
+
+_Closed by @MichaReiser on 2025-02-11 07:40_
+
+---

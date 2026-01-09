@@ -1,0 +1,77 @@
+---
+number: 10023
+title: "RUF027: false positive for gettext translation strings"
+type: issue
+state: closed
+author: spaceone
+labels:
+  - bug
+  - good first issue
+assignees: []
+created_at: 2024-02-18T12:00:16Z
+updated_at: 2024-02-25T23:17:57Z
+url: https://github.com/astral-sh/ruff/issues/10023
+synced_at: 2026-01-07T13:12:15-06:00
+---
+
+# RUF027: false positive for gettext translation strings
+
+---
+
+_Issue opened by @spaceone on 2024-02-18 12:00_
+
+```
+bar = 'something'
+foo = _('my translation {bar}')
+
+# later: foo.format(bar=bar)
+```
+is detected as `RUF027 Possible f-string without an "f" prefix`.
+
+I consider this false-positive, as strings in `_()` should never be `f` strings or otherwise formatted.
+
+---
+
+_Comment by @charliermarsh on 2024-02-18 12:12_
+
+Makes sense, we’ll omit these.
+
+---
+
+_Label `bug` added by @charliermarsh on 2024-02-18 12:12_
+
+---
+
+_Label `good first issue` added by @charliermarsh on 2024-02-20 06:02_
+
+---
+
+_Comment by @robincaloudis on 2024-02-22 21:54_
+
+Hey @charliermarsh, seems like a good issue for a newby in the ruff code base. I'd like to give it a shot.
+
+---
+
+_Comment by @charliermarsh on 2024-02-22 21:55_
+
+Go for it @robincaloudis! Thanks!
+
+---
+
+_Referenced in [astral-sh/ruff#10118](../../astral-sh/ruff/pulls/10118.md) on 2024-02-25 11:52_
+
+---
+
+_Comment by @robincaloudis on 2024-02-25 12:23_
+
+Hey @charliermarsh, do you mind to review https://github.com/astral-sh/ruff/pull/10118? Thank you. 
+
+---
+
+_Assigned to @robincaloudis by @charliermarsh on 2024-02-25 21:53_
+
+---
+
+_Closed by @charliermarsh on 2024-02-25 23:17_
+
+---

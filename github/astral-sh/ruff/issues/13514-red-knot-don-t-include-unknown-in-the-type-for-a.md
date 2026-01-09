@@ -1,0 +1,80 @@
+---
+number: 13514
+title: "[red-knot] don't include Unknown in the type for a conditionally-defined import"
+type: issue
+state: closed
+author: carljm
+labels:
+  - help wanted
+  - ty
+assignees: []
+created_at: 2024-09-25T19:11:19Z
+updated_at: 2024-10-16T20:46:31Z
+url: https://github.com/astral-sh/ruff/issues/13514
+synced_at: 2026-01-07T13:12:15-06:00
+---
+
+# [red-knot] don't include Unknown in the type for a conditionally-defined import
+
+---
+
+_Issue opened by @carljm on 2024-09-25 19:11_
+
+If `lib.py` has:
+```
+if flag:
+    x: int = 1
+```
+and `main.py` has `from lib import x`, currently we infer the imported type of `x` as `Unknown | int`, with the `Unknown` coming from the "not bound" path. But this is silly; if the name is not bound, you'll get an error, but you won't get some random type. We should just infer the type of the import as `int` in this case (and possibly emit an "import may not be defined" diagnostic, but that's separate from this issue).
+
+In other words, the unbound case should become `Never` (because if the name doesn't exist your code will stop running with an error), which will then disappear when unioned with the other path; it shouldn't become `Unknown`.
+
+Both mypy and pyright also infer simply `int` here.
+
+---
+
+_Label `help wanted` added by @carljm on 2024-09-25 19:11_
+
+---
+
+_Label `red-knot` added by @carljm on 2024-09-25 19:11_
+
+---
+
+_Renamed from "[red-knot] don't include Unknown as a type for a conditionally-defined import" to "[red-knot] don't include Unknown in the type for a conditionally-defined import" by @carljm on 2024-09-25 19:11_
+
+---
+
+_Comment by @Slyces on 2024-09-28 21:17_
+
+I started to check out this issue, and I noticed the following inferences
+```python
+if flag:
+    x: int = 1        # Unknown | int
+    y = 1             # Unbound | Literal[1]
+```
+I had some questions:
+- Is this difference in behaviour expected (given that `Literal[1]` is a specialisation of `int`, it probably shouldn't impact the `Unknown/Unbound` behaviour?)
+- To fix the current issue, do we need to address both (`x` -> `int` and `y` -> `Literal[1]`)
+
+---
+
+_Referenced in [astral-sh/ruff#13563](../../astral-sh/ruff/pulls/13563.md) on 2024-09-30 03:02_
+
+---
+
+_Comment by @carljm on 2024-09-30 20:43_
+
+> * Is this difference in behaviour expected
+
+Yes and no -- it was expected but really neither of those types should show up in the public type (and `Unbound` really shouldn't be a type at all, it should be separate metadata about a particular use of a name), so it's not desired :)
+
+> * do we need to address both (`x` -> `int` and `y` -> `Literal[1]`)
+
+Yes, we should; sorry, that wasn't clear in my issue description.
+
+---
+
+_Closed by @carljm on 2024-10-16 20:46_
+
+---

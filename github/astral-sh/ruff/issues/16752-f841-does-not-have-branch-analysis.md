@@ -1,0 +1,60 @@
+---
+number: 16752
+title: F841 does not have branch analysis
+type: issue
+state: open
+author: sk-
+labels:
+  - rule
+  - type-inference
+assignees: []
+created_at: 2025-03-14T15:46:45Z
+updated_at: 2025-03-14T15:50:34Z
+url: https://github.com/astral-sh/ruff/issues/16752
+synced_at: 2026-01-07T13:12:16-06:00
+---
+
+# F841 does not have branch analysis
+
+---
+
+_Issue opened by @sk- on 2025-03-14 15:46_
+
+### Summary
+
+F841 does not report variables that are unused in certain branches. Below is a short example ([playground](https://play.ruff.rs/0e1d38e6-17b0-4355-a37a-089d454de311)) showing the issue
+
+```python
+def func(x):
+    if x:
+        io = ""
+    else:
+        io = "foo"
+        print(io)   
+```
+
+This issue was [originally reported](https://github.com/PyCQA/pyflakes/issues/758) to pyflakes and closed as duplicate of https://github.com/PyCQA/pyflakes/issues/715.
+
+They mention is unlikely they will implement branch analysis, but ruff already has (I guess) the machinery needed to support this use case.
+
+### Version
+
+v0.11.0 (playground)
+
+---
+
+_Label `rule` added by @MichaReiser on 2025-03-14 15:49_
+
+---
+
+_Label `type-inference` added by @MichaReiser on 2025-03-14 15:49_
+
+---
+
+_Comment by @MichaReiser on 2025-03-14 15:50_
+
+> They mention is unlikely they will implement branch analysis, but ruff already has (I guess) the machinery needed to support this use case.
+
+Actually, Ruff doesn't have the machinery to support this, but we're working on it. But it's going to take a while to get ready for prime time ;)
+
+---

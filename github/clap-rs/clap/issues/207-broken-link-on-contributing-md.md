@@ -1,0 +1,84 @@
+---
+number: 207
+title: Broken link on CONTRIBUTING.md
+type: issue
+state: closed
+author: sru
+labels:
+  - A-docs
+assignees: []
+created_at: 2015-08-30T19:05:50Z
+updated_at: 2018-08-02T03:29:43Z
+url: https://github.com/clap-rs/clap/issues/207
+synced_at: 2026-01-07T13:12:19-06:00
+---
+
+# Broken link on CONTRIBUTING.md
+
+---
+
+_Issue opened by @sru on 2015-08-30 19:05_
+
+`conventional` link is broken in CONTRIBUTING.md and README.md
+
+`CONTRIBUTING.md` didn't say anything about message starting with lowercase letter and without dot.
+
+It might be better to have README.md redirect to CONTRIBUTING.md on "How to Contribute" section.
+
+<sub>I am sorry I didn't follow the guidelines.</sub>
+
+
+---
+
+_Comment by @Vinatorul on 2015-08-30 19:16_
+
+Nice catch, thank you! Good idea! I'll fix it.
+
+
+---
+
+_Label `C: docs` added by @Vinatorul on 2015-08-30 19:18_
+
+---
+
+_Label `D: easy` added by @Vinatorul on 2015-08-30 19:18_
+
+---
+
+_Comment by @kbknapp on 2015-08-30 19:27_
+
+:+1: 
+
+
+---
+
+_Comment by @Vinatorul on 2015-08-30 19:30_
+
+I have looked at current convential-changelog repo and found only https://github.com/ajoslin/conventional-changelog/blob/a5505865ff3dd710cf757f50530e73ef0ca641da/conventions/angular.md
+
+May be we'd better create our own CONVENTIONS file. Or not we, but `clog`
+
+
+---
+
+_Comment by @kbknapp on 2015-08-30 19:32_
+
+I'm good with linking to that page/commit. Let's just ensure we add a blurb saying something to the effect of, "In addition to the conventions defined above, we also use `imp`, `wip`, etc." 
+
+
+---
+
+_Comment by @Vinatorul on 2015-08-30 19:33_
+
+Okey, got it
+
+
+---
+
+_Referenced in [clap-rs/clap#208](../../clap-rs/clap/pulls/208.md) on 2015-08-30 19:43_
+
+---
+
+_Closed by @Vinatorul on 2015-08-30 20:13_
+
+---

@@ -1,0 +1,101 @@
+---
+number: 1623
+title: "Clap eats double hyphens on \"last\"+\"multiple\" arguments"
+type: issue
+state: closed
+author: ejmahler
+labels: []
+assignees: []
+created_at: 2020-01-05T09:23:57Z
+updated_at: 2020-01-05T09:33:33Z
+url: https://github.com/clap-rs/clap/issues/1623
+synced_at: 2026-01-07T13:12:19-06:00
+---
+
+# Clap eats double hyphens on "last"+"multiple" arguments
+
+---
+
+_Issue opened by @ejmahler on 2020-01-05 09:23_
+
+### Rust Version
+
+rustc 1.39.0
+
+### Affected Version of clap
+
+```
+[dependencies.clap]
+version = "2.27.1"
+default-features = false
+```
+
+### Expected Behavior Summary
+
+If `last` and `multiple` and `allow_hyphen_values`  are specified on an argument, then clap should consume the first bare "--" it encounters, and should pass *everything* after that to the last argument.
+
+### Actual Behavior Summary
+
+Clap silently omits all bare "--" entries from the argument value.
+
+### Sample Code or Link to Sample Code
+This is a program that would theoretically pair cargo with cbindgen, compiling a DLL and generating a c++ header in the same step. The `CARGO_ARGS` argument will be forwarded as-is to cargo.
+
+```rust
+use std::path::PathBuf;
+use clap::clap_app;
+
+fn main() {
+    let matches = clap_app!(unreal_rust_compile =>
+        (version: "0.1")
+        (author: "Elliott Mahler <jointogethe.r@gmail.com>")
+        (about: "Runs cargo and cbindgen on a crate. Intended for use with Unreal Engine's build system.")
+        (@arg CRATE_DIR: --crate_dir +required +takes_value "Input crate directory")
+        (@arg OUTPUT_HEADER_FILE: --output_header_file +required +takes_value "Destination filename for the generated header")
+        (@arg CARGO_ARGS: +last +multiple +allow_hyphen_values "Arguments to cargo. Cargo will be run with \"crate_dir\" as the working directory.")
+    ).get_matches();
+
+    // pull arguments from the argument parser
+    let _crate_dir : PathBuf = matches.value_of("CRATE_DIR").expect("crate_dir not provided").into();
+    let _output_filename : PathBuf = matches.value_of("OUTPUT_HEADER_FILE").expect("output_file not provided").into();
+    let cargo_args = matches.values_of("CARGO_ARGS").expect("No cargo args provided");
+
+    println!("cargo {}", cargo_args.collect::<Vec<_>>().join(" "));
+}
+```
+
+Input: `cargo run -- --crate_dir /crate/dir --output_header_file /path/to/header.h -- rustc --release -- -C extra-filename=my_suffix`
+
+Expected output: `cargo rustc --release -- -C extra-filename=my_suffix`
+Actual output: `cargo rustc --release -C extra-filename=my_suffix`
+
+### Debug output
+
+Can't compile debug output, because I'm on a windows machine, and the debug feature doesn't compile for me:
+
+```
+   Compiling clap v2.27.1
+error[E0433]: failed to resolve: could not find `unix` in `os`
+ --> C:\Users\Elliott\.cargo\registry\src\github.com-1ecc6299db9ec823\clap-2.27.1\src\app\parser.rs:7:14
+  |
+7 | use std::os::unix::ffi::OsStrExt;
+  |              ^^^^ could not find `unix` in `os`
+```
+
+---
+
+_Comment by @ejmahler on 2020-01-05 09:32_
+
+Well, this is awkward.
+
+Through a miracle, I discovered that I wasn't using the latest version. I assumed 2.27 was the latest without looking. And the good news is that this is fixed in the latest version.
+
+I'm pretty sure I copied it from the docs, which still lists 2.27:
+
+https://docs.rs/clap/2.33.0/clap/#usage
+
+---
+
+_Closed by @ejmahler on 2020-01-05 09:32_
+
+---

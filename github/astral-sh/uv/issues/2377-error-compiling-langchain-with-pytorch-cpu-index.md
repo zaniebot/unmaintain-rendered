@@ -1,0 +1,91 @@
+---
+number: 2377
+title: Error compiling langchain with pytorch CPU index URL
+type: issue
+state: closed
+author: silb-saxobank
+labels:
+  - bug
+assignees: []
+created_at: 2024-03-12T07:09:50Z
+updated_at: 2024-03-13T14:32:36Z
+url: https://github.com/astral-sh/uv/issues/2377
+synced_at: 2026-01-07T13:12:17-06:00
+---
+
+# Error compiling langchain with pytorch CPU index URL
+
+---
+
+_Issue opened by @silb-saxobank on 2024-03-12 07:09_
+
+Compiling langchain with the pytorch CPU index URL gives an error:
+```
+thread 'main' panicked at crates/uv-resolver/src/resolution.rs:230:50:
+no entry found for key
+```
+
+MWE:
+```bash
+echo langchain > requirements.txt && RUST_BACKTRACE=full uv pip compile --verbose -o requirements.out requirements.txt --extra-index-url "https://download.pytorch.org/whl/cpu"
+```
+
+This only (?) seems to occur with this index-url, not with any other random index-url I tested.
+If I use `pip-tools` it seems to work fine.
+
+Running in WSL2 with uv 0.1.17
+
+Am I missing something obvious here?
+Of course, in this MWE I can remove the extra-index-url, but in my original requirements I also need pytorch-cpu and still get this error.
+
+Thanks in advance for the help, and thanks for creating this really cool tool!
+
+---
+
+_Comment by @silb-saxobank on 2024-03-12 07:11_
+
+Could be related to #1248 ?
+
+---
+
+_Comment by @silb-saxobank on 2024-03-12 08:31_
+
+I'm also getting an issue when trying to compile a specific version of the requests library with the extra index URL:
+```bash
+echo requests==2.31.0 > requirements.txt && RUST_BACKTRACE=full uv pip compile --verbose -o requirements.out requirements.txt --extra-index-url "https://download.pytorch.org/whl/cpu"
+```
+which outputs:
+```
+  × No solution found when resolving dependencies:
+  ╰─▶ Because there is no version of requests==2.31.0 and you require requests==2.31.0, we can conclude that the
+      requirements are unsatisfiable.
+```
+And if I remove the extra index URL it works fine.
+
+---
+
+_Comment by @konstin on 2024-03-12 12:55_
+
+Langchain has been fixed in https://github.com/astral-sh/uv/pull/2360, could you try running from main if that fixes your problem, too?
+
+---
+
+_Comment by @charliermarsh on 2024-03-12 14:57_
+
+I suspect the `requests` issue is that `requests` exists on https://download.pytorch.org/whl/cpu, but not at that version. We stop at the first index that contains the dependency.
+
+---
+
+_Comment by @charliermarsh on 2024-03-13 14:32_
+
+Closing in favor of some other issues. The `no entry found for key` is fixed in the latest release. The "`requests` not found" is discussed in detail here: https://github.com/astral-sh/uv/issues/171.
+
+---
+
+_Closed by @charliermarsh on 2024-03-13 14:32_
+
+---
+
+_Label `bug` added by @charliermarsh on 2024-03-13 14:32_
+
+---

@@ -1,0 +1,90 @@
+---
+number: 13324
+title: flake8 flag F811 when ruff not flag it
+type: issue
+state: closed
+author: lrandrianasoloarinavalona
+labels: []
+assignees: []
+created_at: 2024-09-11T08:30:55Z
+updated_at: 2024-09-12T01:30:44Z
+url: https://github.com/astral-sh/ruff/issues/13324
+synced_at: 2026-01-07T13:12:15-06:00
+---
+
+# flake8 flag F811 when ruff not flag it
+
+---
+
+_Issue opened by @lrandrianasoloarinavalona on 2024-09-11 08:30_
+
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* List of keywords you searched for before creating this issue. Write them down here so that others can find this issue more easily and help provide feedback.
+  e.g. "RUF001", "unused variable", "Jupyter notebook"
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+
+Hi, I don't know if it's one of the deviated behavior from flake8 or a bug.
+
+It seem that RUFF flag F811 when it's a duplicate import, but weirdly, it don't work well with function. Here is a sample file.
+
+```python
+"""test."""
+
+
+def _get_rejection_causes_for_image(image: str) -> set:
+    causes = set()
+    del image
+    return causes
+
+
+def _get_rejection_causes_for_image(image: str) -> set:
+    causes = set()
+    del image
+    return causes
+
+
+_get_rejection_causes_for_image("foo")
+
+```
+
+**Current behavior :**
+
+Well `ruff check .` pass, flake8 flag F811
+
+**Excpected Behavior :**
+
+Ruff mark this as F811
+
+**Ruff version :**
+
+```sh
+root@e0723ae7ba6c:/repo# ruff --version
+ruff 0.6.4
+```
+
+---
+
+_Comment by @dhruvmanila on 2024-09-11 20:42_
+
+Yeah, this is because the rule would ignore names like `_foo` (prefixed with one or more underscores) and others as per the [`dummy-variable-rgx`](https://docs.astral.sh/ruff/settings/#lint_dummy-variable-rgx) config value. I'll close this as it's working as expected, but feel free to ask any follow up questions that you might have.
+
+---
+
+_Closed by @dhruvmanila on 2024-09-11 20:43_
+
+---
+
+_Comment by @lrandrianasoloarinavalona on 2024-09-12 01:30_
+
+Okay, thank you. I've used to use underscore to mark a function/method as private.
+
+---

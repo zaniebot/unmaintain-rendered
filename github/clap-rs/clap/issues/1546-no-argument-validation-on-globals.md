@@ -1,0 +1,530 @@
+---
+number: 1546
+title: No argument validation on globals
+type: issue
+state: open
+author: gabbifish
+labels:
+  - C-enhancement
+  - A-parsing
+  - A-validators
+  - S-waiting-on-design
+assignees: []
+created_at: 2019-09-12T23:53:32Z
+updated_at: 2025-04-24T14:16:22Z
+url: https://github.com/clap-rs/clap/issues/1546
+synced_at: 2026-01-07T13:12:19-06:00
+---
+
+# No argument validation on globals
+
+---
+
+_Issue opened by @gabbifish on 2019-09-12 23:53_
+
+<!--
+Please use the following template to assist with creating an issue and to ensure a speedy resolution. If an area is not applicable, feel free to delete the area or mark with `N/A`
+-->
+
+### Rust Version
+
+rustc 1.36.0 (a53f9df32 2019-07-03)
+
+### Affected Version of clap
+
+2.33.0
+
+### Bug or Feature Request Summary
+
+I was hoping that I could make an argument required, and also use the `global()` function to ensure that a user of my CLI could specify my required option wherever they please.
+
+### Expected Behavior Summary
+
+An Arg with both `.global()` and `.required_unless()` would be usable.
+
+### Actual Behavior Summary
+
+I see
+```console
+thread 'main' panicked at 'Global arguments cannot be required.
+
+	'binding' is marked as global and required', /home/gabbi/.cargo/registry/src/github.com-1ecc6299db9ec823/clap-2.33.0/src/app/parser.rs:204:9
+```
+
+### Steps to Reproduce the issue
+
+Create a clap App with the arg below, and attempt to run it.
+
+### Sample Code or Link to Sample Code
+
+```rust
+                .arg(
+                    Arg::with_name("binding")
+                    .help("The binding of the namespace this action applies to")
+                    .short("b")
+                    .long("binding")
+                    .value_name("BINDING NAME")
+                    .takes_value(true)
+                    .global(true)
+                    .conflicts_with("namespace-id")
+                )
+```
+
+---
+
+_Comment by @jamestwebber on 2019-10-23 20:02_
+
+I'll +1 this issue, I would like this to work as well. My tool has a bunch of universal required arguments (e.g. input directory) and then different tasks have some specific options. I was hoping to have usage look like
+
+`cmd --input [dir] --cmd-specific-option [option]`
+`cmd subcmd --input [dir] --subcmd-specific-option [option]`
+
+Where `--input` is always required but can be specified after `subcmd` for readability (I find that dropping a subcommand in the middle of the line is hard to use/read).
+
+Maybe there's a better way to set this up?
+
+---
+
+_Label `C: args` added by @CreepySkeleton on 2020-02-01 12:19_
+
+---
+
+_Label `C: options` added by @CreepySkeleton on 2020-02-01 12:19_
+
+---
+
+_Label `help wanted` added by @CreepySkeleton on 2020-02-01 12:19_
+
+---
+
+_Label `T: enhancement` added by @CreepySkeleton on 2020-02-01 12:19_
+
+---
+
+_Label `W: 3.x` added by @CreepySkeleton on 2020-02-01 12:19_
+
+---
+
+_Added to milestone `3.0` by @pksunkara on 2020-04-23 08:35_
+
+---
+
+_Referenced in [aslamplr/gh-cli#40](../../aslamplr/gh-cli/issues/40.md) on 2020-06-03 09:34_
+
+---
+
+_Removed from milestone `3.0` by @pksunkara on 2021-02-22 09:20_
+
+---
+
+_Added to milestone `3.1` by @pksunkara on 2021-02-22 09:20_
+
+---
+
+_Comment by @erayerdin on 2021-06-02 06:45_
+
+I don't know why this is the case, but a workaround now would be defining a `.default_value("whatever")` and do whatever when you get `whatever` as value.
+
+This is one way, however one should keep in mind that this *default value* also limits what can be done with value. In my case, I will use an arg as Telegram token value, which is a long string, so setting default to `"INVALID"` makes sense in my case because I'm fairly sure there won't be any bot token with value "INVALID". On the other hand, if I used that arg as a file path, that would eliminate a directory or file named "INVALID".
+
+Wish this will be implemented soon.
+
+---
+
+_Label `W: 3.x` removed by @pksunkara on 2021-06-03 19:32_
+
+---
+
+_Comment by @pksunkara on 2021-06-03 19:34_
+
+I would welcome people to design how this should work and implement it. Unfortunately, as it is now, we have no design to implement this because the `global` arg gets propagated to all subcommands and we haven't yet decided on how to resolve the `required` situation when that happens.
+
+---
+
+_Removed from milestone `3.1` by @pksunkara on 2021-06-03 19:34_
+
+---
+
+_Label `W: maybe` added by @pksunkara on 2021-06-03 19:34_
+
+---
+
+_Label `help wanted` removed by @pksunkara on 2021-06-03 19:34_
+
+---
+
+_Comment by @jplatte on 2021-11-01 15:54_
+
+Until this is supported, maybe the derive macro could raise an error when `#[clap(global = true)]` is used on a required setting?
+
+---
+
+_Referenced in [epage/clapng#124](../../epage/clapng/issues/124.md) on 2021-12-06 18:37_
+
+---
+
+_Label `C: args` removed by @epage on 2021-12-08 20:20_
+
+---
+
+_Label `C: options` removed by @epage on 2021-12-08 20:20_
+
+---
+
+_Label `A-parsing` added by @epage on 2021-12-08 20:20_
+
+---
+
+_Label `S-waiting-on-decision` removed by @epage on 2021-12-09 20:16_
+
+---
+
+_Label `S-waiting-on-design` added by @epage on 2021-12-09 20:16_
+
+---
+
+_Comment by @erayerdin on 2022-02-17 22:23_
+
+I have come to say that I have run across this use-case several times now. It's been a long time (since Sep 2019) and this should be considered.
+
+---
+
+_Comment by @epage on 2022-02-18 13:37_
+
+> It's been a long time (since Sep 2019) and this should be considered.
+
+I can understand the desire for this but it unfortunately isn't a priority.  Before, the focus was on finishing the committed items for clap 3 by maintainers who had little time.  We are now have some more liberal sponsorship (my employer) but I've completed the sponsored objective (clap3) and have to balance clap work against other sponsored objectives (cargo-edit atm).  We have around [160 open issues](https://github.com/clap-rs/clap/issues) which all exist because someone cares about them and we have to prioritize among them.  Our current area of focus is in [re-shaping clap to be more open ended with faster compile times and smaller binary sizes](https://github.com/clap-rs/clap/discussions/3476).
+
+If you'd like to work on this, I would be willing to help mentor you on it.
+
+---
+
+_Referenced in [clap-rs/clap#3606](../../clap-rs/clap/issues/3606.md) on 2022-04-03 00:58_
+
+---
+
+_Comment by @wildwestrom on 2022-07-29 00:53_
+
+I'd like to start working on this. I'm just not sure where in the codebase I should be looking first.
+I just got started with a debugger to see what's going on.
+@pksunkara @epage
+
+---
+
+_Comment by @epage on 2022-07-29 02:13_
+
+The relevant calls are roughly
+[`_do_parse`](https://github.com/clap-rs/clap/blob/master/src/builder/command.rs#L3733)
+- [`validate`](https://github.com/clap-rs/clap/blob/master/src/parser/validator.rs#L23) via `get_matches_with` which is what checks for required args and sets defaults
+- [`propagate_globals`](https://github.com/clap-rs/clap/blob/4887695aca79e35480a88ca0f2c745084e7b9273/src/parser/arg_matcher.rs#L45)
+
+Naively swapping the calls around would probably affect the way globals and defaults interact.  Whether we are willing to change that is up to the details of the situation. Unsure what other concerns might lurk in this.
+
+Note that master is now for [v4](https://github.com/clap-rs/clap/milestone/78).  I would encourage doing development on a major feature there.  If you want it earlier than v4's release (trying to keep it narrowly scoped to not extend more than a month or two) then once its merged, you can cherry pick it into the v3-master branch.
+
+---
+
+_Comment by @wildwestrom on 2022-07-30 18:57_
+
+OK, I've bitten off more than I can chew. I'm gonna need more help on this if anything. It's hard for me to track where things are going even stepping through with a debugger.
+
+Here's a minimal example:
+```rust
+use clap::{Arg, Command};
+fn main() {
+    let subcmd1 = Command::new("sub1");
+    let subcmd2 = Command::new("sub2")
+        .arg(clap::Arg::new("optional_arg").help("Optional argument for subcommand"));
+
+    let cli = Command::new("clap-fix")
+        .arg(Arg::new("string_arg").required(true).global(true))
+        .arg(Arg::new("num_arg").global(true).short('n').long("num-arg"))
+        .subcommand(subcmd1)
+        .subcommand(subcmd2);
+
+    // This works but it's incorrect.
+    let _ = cli.get_matches_from(["clap-fix", "string_arg_before", "sub1", "string_arg_after"]);
+    // If this works then we're good.
+    // let _ = cli.get_matches_from(["clap-fix", "sub1", "string_arg_after"]);
+}
+```
+
+I also saw you guys were on opencollective. Can I open a bounty on this issue?
+
+---
+
+_Comment by @epage on 2022-08-01 17:12_
+
+> I also saw you guys were on opencollective. Can I open a bounty on this issue?
+
+Probably?  Previous maintainers were the ones mostly dealing with that; I have little experience.  I've not seen people take up bounties too much for issues.
+
+---
+
+_Comment by @dvc94ch on 2022-12-19 12:57_
+
+@epage was this fixed recently, seems to work with 0.4.29?
+
+---
+
+_Referenced in [indygreg/apple-platform-rs#54](../../indygreg/apple-platform-rs/pulls/54.md) on 2022-12-19 13:01_
+
+---
+
+_Comment by @dvc94ch on 2022-12-19 13:03_
+
+ah sorry, the issue persists, just the error message is wrong now. should I open a separate issue?
+```
+app-store-connect device list --api-key ~/.analog/developer.key.json
+error: The following required arguments were not provided:
+  --api-key <API_KEY>
+
+Usage: app-store-connect --api-key <API_KEY> device --api-key <API_KEY> <COMMAND>
+
+For more information try '--help'
+```
+
+---
+
+_Comment by @sondrelg on 2023-02-22 23:57_
+
+Is it possible to work around this by manually producing the right error when a global argument isn't specified?
+
+I tried handling the `None` case of my optional global argument by calling:
+
+```rust
+Foo::command()
+  .error(
+    MissingRequiredArgument, 
+    "the following required arguments were not provided:\n  \x1b[32m--application <APP>\x1b[0m",
+  )
+  .exit()
+```
+
+And that seems to produce the right error:
+
+```
+error: the following required arguments were not provided:
+  --application <APP>
+
+USAGE:
+    ok secret --application <APP> <COMMAND>
+
+For more information, try '--help'.
+```
+
+EDIT: The original error message had an error
+
+---
+
+_Comment by @epage on 2023-02-23 01:57_
+
+If it isn't important to provide the custom usage, I'd just drop that and have `Command::error` generate it for you.
+
+In theory, we've opened up all of the APIs so you can generate the error like clap:
+- `Error::new` with `ErrorKind::MissingRequiredArgument`
+- `Error::with_cmd`
+- `Error::insert` with `ContextKind::InvalidArg`, `ContextValue::Strings(required)` 
+- `Error::insert` with `ContextKind::Usage`, `ContextValue::StyledStr(usage)`
+
+See https://docs.rs/clap/latest/src/clap/error/mod.rs.html#487
+
+The [RichFormatter](https://docs.rs/clap/latest/src/clap/error/format.rs.html#55-115) will then generate the appropriate message for you.
+
+---
+
+_Comment by @hwittenborn on 2023-06-01 00:52_
+
+Sorry if I'm missing something, but is there any technical reason this can't be done? Like if the check for when an `Arg` is both global and required was simply removed, would there be something that would start breaking?
+
+---
+
+_Comment by @epage on 2023-06-01 15:06_
+
+> Sorry if I'm missing something, but is there any technical reason this can't be done? Like if the check for when an `Arg` is both global and required was simply removed, would there be something that would start breaking?
+
+Currently, globals are propagated after all validation has occurred which would cause missing-required errors where they don't apply.
+
+For details, see [my earlier comment](https://github.com/clap-rs/clap/issues/1546#issuecomment-1198809765)
+
+---
+
+_Referenced in [clap-rs/clap#4941](../../clap-rs/clap/issues/4941.md) on 2023-06-01 15:06_
+
+---
+
+_Referenced in [sigp/lighthouse#4488](../../sigp/lighthouse/issues/4488.md) on 2023-07-11 03:48_
+
+---
+
+_Referenced in [clap-rs/clap#5020](../../clap-rs/clap/issues/5020.md) on 2023-07-19 13:55_
+
+---
+
+_Comment by @kingzcheung on 2023-11-29 10:55_
+
+This is very strange and does not conform to the normal usage.
+
+```
+cmd subcmd --global-arg # not work
+cmd --global-arg subcmd # work
+```
+
+
+---
+
+_Comment by @Kibouo on 2023-11-29 11:00_
+
+Sometimes you want flags that are available for each subcommands. Replicating it in every subcommand's config is not great for maintainability.
+________________________________
+From: KK Cheung ***@***.***>
+Sent: Wednesday, November 29, 2023 11:55:26 AM
+To: clap-rs/clap ***@***.***>
+Cc: Kibouo ***@***.***>; Manual ***@***.***>
+Subject: Re: [clap-rs/clap] Why can't global args be required? (#1546)
+
+
+This is very strange and does not conform to the normal usage.
+
+cmd cubcmd --global-arg # not work
+cmd --global-arg cubcmd # work
+
+
+—
+Reply to this email directly, view it on GitHub<https://github.com/clap-rs/clap/issues/1546#issuecomment-1831665848>, or unsubscribe<https://github.com/notifications/unsubscribe-auth/AGESTOPXHBMVPTJIIHPCM5DYG4IB5AVCNFSM4IWKXEK2U5DIOJSWCZC7NNSXTN2JONZXKZKDN5WW2ZLOOQ5TCOBTGE3DMNJYGQ4A>.
+You are receiving this because you are subscribed to this thread.Message ID: ***@***.***>
+
+
+---
+
+_Referenced in [clap-rs/clap#5234](../../clap-rs/clap/issues/5234.md) on 2023-12-01 02:00_
+
+---
+
+_Comment by @Emilgardis on 2024-01-25 22:58_
+
+While this isn't solved, I've managed to implement a rather (little) hacky way to still get a nice error message when using `global` and `default_value`
+
+[playground](https://play.rust-lang.org/?version=stable&mode=debug&edition=2021&gist=d2bb30a07cb28518dc2fbc7bfe2fb51d)
+
+```rs
+use clap::{CommandFactory as _, FromArgMatches as _, Parser};
+
+pub const DEFAULT_NOT_SET: &str = "\u{0}\u{beef}";
+
+#[derive(Debug, Parser)]
+pub struct Cli {
+    #[arg(global = true, long, default_value = DEFAULT_NOT_SET)]
+    pub required: String,
+    #[command(subcommand)]
+    pub subcommand: Option<Subcommand>,
+}
+
+#[derive(Debug, clap::Subcommand)]
+pub enum Subcommand {
+    Command {
+        
+    },
+}
+
+pub fn main() -> Result<(),Box<dyn std::error::Error>> {
+    let _cli: Cli = {
+        let mut cmd = Cli::command();
+        let matches = Cli::command().get_matches_from(["playground", "command"]);
+        let mut strings = vec![];
+
+        let succ = std::iter::successors(Some((cmd.clone(), &matches)), |(cmd, matches)| {
+            let (sub, matches) = matches.subcommand()?;
+            Some((cmd.find_subcommand(sub)?.clone(), matches))
+        });
+        for (cmd, matches) in succ {
+            let ids = cmd
+                .get_arguments()
+                .filter(|&arg| arg.is_global_set())
+                .map(|arg| {
+                    (
+                        arg.clone()
+                            // this is a hacky way to display, without the override here the stylized call will panic
+                            .num_args(arg.get_num_args().unwrap_or_default())
+                            .to_string(),
+                        arg.get_id(),
+                    )
+                });
+
+            for (display, id) in ids {
+                if !matches!(
+                    matches.value_source(id.as_str()),
+                    Some(clap::parser::ValueSource::DefaultValue)
+                ) {
+                    continue;
+                }
+                let mut raw = matches.get_raw(id.as_str()).unwrap();
+                if raw.len() != 1 {
+                    continue;
+                }
+                let raw = raw.next().unwrap();
+                if raw.to_string_lossy() != DEFAULT_NOT_SET {
+                    continue;
+                }
+                strings.push(display);
+            }
+        }
+
+        if strings.is_empty() {
+            Cli::from_arg_matches(&matches)?
+        } else {
+            let mut err = clap::Error::new(clap::error::ErrorKind::MissingRequiredArgument);
+            err.insert(
+                clap::error::ContextKind::InvalidArg,
+                clap::error::ContextValue::Strings(strings),
+            );
+            err.insert(
+               clap::error::ContextKind::Usage,
+               clap::error::ContextValue::StyledStr(cmd.render_usage()),
+            );
+            err.with_cmd(&cmd).exit();
+        }
+    };
+    Ok(())
+}
+```
+
+one thing missing here is usage, since there is no good way to render it the same way clap does internally.
+
+---
+
+_Referenced in [clap-rs/clap#5335](../../clap-rs/clap/issues/5335.md) on 2024-02-01 10:01_
+
+---
+
+_Renamed from "Why can't global args be required?" to "No argument validation on globals" by @epage on 2024-02-01 15:38_
+
+---
+
+_Referenced in [clap-rs/clap#5588](../../clap-rs/clap/issues/5588.md) on 2024-07-19 16:06_
+
+---
+
+_Referenced in [clap-rs/clap#5813](../../clap-rs/clap/pulls/5813.md) on 2024-11-13 03:11_
+
+---
+
+_Referenced in [clap-rs/clap#5899](../../clap-rs/clap/issues/5899.md) on 2025-02-03 17:27_
+
+---
+
+_Label `A-validators` added by @epage on 2025-04-24 14:16_
+
+---
+
+_Referenced in [clap-rs/clap#5977](../../clap-rs/clap/issues/5977.md) on 2025-04-24 14:16_
+
+---
+
+_Referenced in [clap-rs/clap#6049](../../clap-rs/clap/issues/6049.md) on 2025-06-27 15:16_
+
+---
+
+_Referenced in [clap-rs/clap#6160](../../clap-rs/clap/issues/6160.md) on 2025-10-24 15:11_
+
+---

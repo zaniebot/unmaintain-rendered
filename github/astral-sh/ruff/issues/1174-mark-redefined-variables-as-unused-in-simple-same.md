@@ -1,0 +1,49 @@
+---
+number: 1174
+title: Mark redefined variables as unused in simple same-branch cases
+type: issue
+state: closed
+author: charliermarsh
+labels:
+  - rule
+assignees: []
+created_at: 2022-12-10T04:37:59Z
+updated_at: 2023-06-19T04:16:16Z
+url: https://github.com/astral-sh/ruff/issues/1174
+synced_at: 2026-01-07T13:12:14-06:00
+---
+
+# Mark redefined variables as unused in simple same-branch cases
+
+---
+
+_Issue opened by @charliermarsh on 2022-12-10 04:37_
+
+Given this code:
+
+```py
+def f():
+    x = 1
+    x = 2
+```
+
+We should be able to mark `x = 1` as redefined-while-unused.
+
+Because we don't do full branch analysis, I don't _think_ we can flag cases like:
+
+```py
+def f():
+    x = 1
+    if True:
+      x = 2
+```
+
+---
+
+_Label `rule` added by @charliermarsh on 2022-12-10 04:37_
+
+---
+
+_Closed by @charliermarsh on 2023-06-19 04:16_
+
+---

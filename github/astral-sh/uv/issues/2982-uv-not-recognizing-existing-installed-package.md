@@ -1,0 +1,161 @@
+---
+number: 2982
+title: uv not recognizing existing installed package
+type: issue
+state: closed
+author: shiyangcao
+labels:
+  - needs-mre
+assignees: []
+created_at: 2024-04-10T22:27:35Z
+updated_at: 2024-05-20T00:49:14Z
+url: https://github.com/astral-sh/uv/issues/2982
+synced_at: 2026-01-07T13:12:17-06:00
+---
+
+# uv not recognizing existing installed package
+
+---
+
+_Issue opened by @shiyangcao on 2024-04-10 22:27_
+
+Hi,
+
+I apologize if this has been reported elsewhere but I didn't see it. UV with --find-links and no-index currently doesn't look at existing installed packages correctly.
+
+For example:
+
+1. Create an empty virtualenv, install urllib3
+
+```
+$ uv pip freeze
+
+
+pip==23.3.1
+setuptools==69.0.2
+urllib3==2.2.1
+wheel==0.42.0
+```
+
+Then download the latest requests wheel file and put it somewhere
+
+Then try to install it:
+```
+$uv pip install requests --find-links . --no-index --offline
+
+  × No solution found when resolving dependencies:
+  ╰─▶ Because urllib3>=1.21.1, <3 was not found in the provided package locations and requests==2.31.0 depends on urllib3>=1.21.1,<3, we can conclude that requests==2.31.0 cannot be used.
+      And because only requests==2.31.0 is available and you require requests, we can conclude that the requirements are unsatisfiable.
+```
+
+It complains that it cannot find urllib3 from the find-links, which is correct, but shouldn't it detect that urllib3 is already installed and does not need reinstalling?
+
+Thanks
+
+
+
+---
+
+_Comment by @charliermarsh on 2024-04-10 22:32_
+
+Can you share your uv version? This works as expected for me.
+
+---
+
+_Comment by @charliermarsh on 2024-04-10 22:34_
+
+For example (with `urllib3` and `idna` installed, and `certifi`, `charset-normalizer`, and `requests` in `~/Downloads`):
+
+```
+❯ uv pip install requests --find-links ~/Downloads --no-index --offline
+Resolved 5 packages in 3ms
+Downloaded 3 packages in 8ms
+Installed 3 packages in 2ms
+ + certifi==2022.12.7
+ + charset-normalizer==2.1.1
+ + requests==2.31.0
+```
+
+---
+
+_Label `needs-mre` added by @charliermarsh on 2024-04-10 22:34_
+
+---
+
+_Comment by @shiyangcao on 2024-04-10 23:57_
+
+```
+(uv_test) $ uv --version
+uv 0.1.31
+(uv_test) $ uv pip freeze
+certifi==2024.2.2
+charset-normalizer==3.3.2
+idna==3.6
+pip==23.3.1
+setuptools==69.0.2
+urllib3==2.2.1
+uv==0.1.31
+wheel==0.42.0
+(uv_test) $ python3.11 -m uv pip install requests --find-links . --no-index --upgrade
+  × No solution found when resolving dependencies:
+  ╰─▶ Because urllib3>=1.21.1, <3 was not found in the provided package locations and requests==2.31.0 depends on urllib3>=1.21.1,<3, we can conclude that requests==2.31.0 cannot be used.
+      And because only requests==2.31.0 is available and you require requests, we can conclude that the requirements are unsatisfiable.
+```
+
+my bad, my version was originally not the latest, but on the latest, the `--upgrade` flag triggers the same behavior.
+
+thanks for responding so quickly!
+
+---
+
+_Comment by @charliermarsh on 2024-04-10 23:59_
+
+@zanieb - what's the intended behavior here?
+
+---
+
+_Comment by @zanieb on 2024-04-11 00:22_
+
+Ah perhaps you're looking for `--upgrade-package requests` instead of `--upgrade`? Otherwise I think we will not consider your local `urllib3` version since you've requested an upgrade of the full dependency tree.
+
+---
+
+_Comment by @shiyangcao on 2024-04-11 00:23_
+
+I see, this behavior differs from `pip` but i'll take a look
+
+---
+
+_Comment by @shiyangcao on 2024-04-11 01:34_
+
+ok this works for me! thanks
+
+
+On Wed, Apr 10, 2024 at 20:23 Zanie Blue ***@***.***> wrote:
+
+> Ah perhaps you're looking for --upgrade-package requests instead of
+> --upgrade? Otherwise I think we will not consider your local urllib3
+> version since you've requested an upgrade of the full dependency tree.
+>
+> —
+> Reply to this email directly, view it on GitHub
+> <https://github.com/astral-sh/uv/issues/2982#issuecomment-2048640358>, or
+> unsubscribe
+> <https://github.com/notifications/unsubscribe-auth/AARQI2KKHA3Z3DEYW6VU5F3Y4XJW7AVCNFSM6AAAAABGBHUM3OVHI2DSMVQWIX3LMV43OSLTON2WKQ3PNVWWK3TUHMZDANBYGY2DAMZVHA>
+> .
+> You are receiving this because you authored the thread.Message ID:
+> ***@***.***>
+>
+
+
+---
+
+_Comment by @zanieb on 2024-04-11 02:53_
+
+I wonder if we should limit exclusions to the directly requested dependencies during upgrades.
+
+---
+
+_Closed by @charliermarsh on 2024-05-20 00:49_
+
+---
