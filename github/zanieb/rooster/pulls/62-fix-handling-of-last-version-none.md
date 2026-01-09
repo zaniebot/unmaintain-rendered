@@ -12,7 +12,7 @@ head: zb/fix-missing-version
 created_at: 2025-05-05T13:54:13Z
 updated_at: 2025-05-05T13:57:23Z
 url: https://github.com/zanieb/rooster/pull/62
-synced_at: 2026-01-09T23:51:29Z
+synced_at: 2026-01-09T23:57:07Z
 ---
 
 # Fix handling of `last_version == None`

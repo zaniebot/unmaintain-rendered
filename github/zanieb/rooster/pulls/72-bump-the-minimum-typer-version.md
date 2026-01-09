@@ -12,7 +12,7 @@ head: zb/bump-typer
 created_at: 2025-07-29T21:41:51Z
 updated_at: 2025-08-26T16:10:09Z
 url: https://github.com/zanieb/rooster/pull/72
-synced_at: 2026-01-09T23:51:29Z
+synced_at: 2026-01-09T23:57:07Z
 ---
 
 # Bump the minimum typer version

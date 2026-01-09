@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-09-02T10:09:26Z
 updated_at: 2025-09-08T14:45:35Z
 url: https://github.com/zanieb/rooster/issues/47
-synced_at: 2026-01-09T23:51:29Z
+synced_at: 2026-01-09T23:57:07Z
 ---
 
 # Include release date

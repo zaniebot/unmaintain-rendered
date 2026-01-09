@@ -12,7 +12,7 @@ head: zb/version-cargo
 created_at: 2025-05-14T21:14:10Z
 updated_at: 2025-09-08T12:56:34Z
 url: https://github.com/zanieb/rooster/pull/70
-synced_at: 2026-01-09T23:51:29Z
+synced_at: 2026-01-09T23:57:07Z
 ---
 
 # Use Cargo-style versions in the changelog if configured

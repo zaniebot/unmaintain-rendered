@@ -9,7 +9,7 @@ assignees: []
 created_at: 2025-01-28T15:19:15Z
 updated_at: 2025-01-28T15:19:15Z
 url: https://github.com/zanieb/rooster/issues/49
-synced_at: 2026-01-09T23:51:29Z
+synced_at: 2026-01-09T23:57:07Z
 ---
 
 # Support updating version in `CITATION.cff` files

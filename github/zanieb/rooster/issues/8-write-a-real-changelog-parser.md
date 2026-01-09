@@ -9,7 +9,7 @@ assignees: []
 created_at: 2023-11-08T17:34:21Z
 updated_at: 2024-02-22T20:19:46Z
 url: https://github.com/zanieb/rooster/issues/8
-synced_at: 2026-01-09T23:51:29Z
+synced_at: 2026-01-09T23:57:07Z
 ---
 
 # Write a real changelog parser
