@@ -1,0 +1,39 @@
+---
+number: 9
+title: Publish to PyPI
+type: issue
+state: closed
+author: zanieb
+labels: []
+assignees: []
+created_at: 2023-11-08T17:40:14Z
+updated_at: 2024-02-22T20:47:33Z
+url: https://github.com/zanieb/rooster/issues/9
+synced_at: 2026-01-09T23:51:29Z
+---
+
+# Publish to PyPI
+
+---
+
+_Issue opened by @zanieb on 2023-11-08 17:40_
+
+The name "Rooster" is taken unfortunately but the project looks stale
+
+---
+
+_Comment by @zanieb on 2023-11-08 18:19_
+
+I contacted the author via email today.
+
+---
+
+_Comment by @zanieb on 2024-02-22 20:45_
+
+Ref https://github.com/pypi/support/issues/3668
+
+---
+
+_Closed by @zanieb on 2024-02-22 20:47_
+
+---
